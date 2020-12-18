@@ -76,7 +76,7 @@ namespace VDS.RDF.Dynamic
                     throw new ArgumentNullException(nameof(node));
                 }
 
-                return new DynamicNode(node, PredicateBaseUri);
+                return new DynamicNode(node, _g, PredicateBaseUri);
             }
 
             set
@@ -118,7 +118,7 @@ namespace VDS.RDF.Dynamic
             // so dynamic references are resolved correctly
             // (they depend on node's graph)
             // TODO: Which graph exactly are we copying into?
-            var targetNode = new DynamicNode(subject.CopyNode(_g), PredicateBaseUri);
+            var targetNode = new DynamicNode(subject, _g, PredicateBaseUri);
 
             foreach (DictionaryEntry entry in ConvertToDictionary(predicateAndObjects))
             {

@@ -38,7 +38,8 @@ namespace VDS.RDF.Skos
         /// Creates a new ordered collection for the given resource.
         /// </summary>
         /// <param name="resource">Resource representing the ordered collection.</param>
-        public SkosOrderedCollection(INode resource) : base(resource) { }
+        /// <param name="graph">The graph containing the collection.</param>
+        public SkosOrderedCollection(INode resource, IGraph graph) : base(resource, graph) { }
 
         /// <summary>
         /// Gets the ordered list of members of the collection.
@@ -47,11 +48,11 @@ namespace VDS.RDF.Skos
         {
             get
             {
-                return Resource.Graph
+                return Graph
                     .GetListItems(
                         GetObjects(SkosHelper.MemberList)
                         .Single())
-                    .Select(SkosMember.Create);
+                    .Select(x=> SkosMember.Create(x, Graph));
             }
         }
     }

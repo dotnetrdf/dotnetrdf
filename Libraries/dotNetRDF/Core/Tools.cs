@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 
@@ -278,186 +279,16 @@ namespace VDS.RDF
             }
         }
 
-        /// <summary>
-        /// Copies a Node so it can be used in another Graph since by default Triples cannot contain Nodes from more than one Graph.
-        /// </summary>
-        /// <param name="original">Node to Copy.</param>
-        /// <param name="target">Graph to Copy into.</param>
-        /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Node being copied.</param>
-        /// <returns></returns>
-        public static INode CopyNode(INode original, IGraph target, bool keepOriginalGraphUri)
-        {
-            if (!keepOriginalGraphUri)
-            {
-                return CopyNode(original, target);
-            }
-            else
-            {
-                INode temp = CopyNode(original, target);
-                temp.GraphUri = original.GraphUri;
-                return temp;
-            }
-        }
+
 
         /// <summary>
-        /// Copies a Node so it can be used in another Graph since by default Triples cannot contain Nodes from more than one Graph.
+        /// Does a quick and simple combination of the Hash Codes of two or more objects.
         /// </summary>
-        /// <param name="original">Node to Copy.</param>
-        /// <param name="target">Graph to Copy into.</param>
+        /// <param name="objects">The objects whose hash codes are to be combined.</param>
         /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Graphs is done.
-        /// </para>
-        /// </remarks>
-        public static INode CopyNode(INode original, IGraph target)
+        public static int CombineHashCodes(params object[] objects)
         {
-            // No need to copy if it's already in the relevant Graph
-            if (ReferenceEquals(original.Graph, target)) return original;
-
-            // if a node can copy itself then let it do it
-            var selfcopyable_original = original as Storage.Virtualisation.ICanCopy;
-            if (selfcopyable_original != null) return selfcopyable_original.CopyNode(target);
-            
-            // if it doesn't, copy it's values:
-
-            if (original.NodeType == NodeType.Uri)
-            {
-                var u = (IUriNode)original;
-                IUriNode u2 = new UriNode(target, u.Uri);
-
-                return u2;
-            }
-            else if (original.NodeType == NodeType.Literal)
-            {
-                var l = (ILiteralNode)original;
-                ILiteralNode l2;
-                if (l.Language.Equals(string.Empty))
-                {
-                    if (!(l.DataType == null))
-                    {
-                        l2 = new LiteralNode(target, l.Value, l.DataType, false);
-                    }
-                    else
-                    {
-                        l2 = new LiteralNode(target, l.Value, false);
-                    }
-                }
-                else
-                {
-                    l2 = new LiteralNode(target, l.Value, l.Language, false);
-                }
-
-                return l2;
-            }
-            else if (original.NodeType == NodeType.Blank)
-            {
-                var b = (IBlankNode)original;
-                IBlankNode b2;
-
-                b2 = new BlankNode(target, b.InternalID);
-                return b2;
-            }
-            else if (original.NodeType == NodeType.Variable)
-            {
-                var v = (IVariableNode)original;
-                return new VariableNode(target, v.VariableName);
-            }
-            else
-            {
-                throw new RdfException("Unable to Copy '" + original.GetType().ToString() + "' Nodes between Graphs");
-            }
-        }
-
-        /// <summary>
-        /// Copies a Node using another Node Factory.
-        /// </summary>
-        /// <param name="original">Node to copy.</param>
-        /// <param name="target">Factory to copy into.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Factories is done.
-        /// </para>
-        /// </remarks>
-        public static INode CopyNode(INode original, INodeFactory target)
-        {
-            if (ReferenceEquals(original.Graph, target)) return original;
-
-            switch (original.NodeType)
-            {
-                case NodeType.Blank:
-                    return target.CreateBlankNode(((IBlankNode)original).InternalID);
-                case NodeType.GraphLiteral:
-                    return target.CreateGraphLiteralNode(((IGraphLiteralNode)original).SubGraph);
-                case NodeType.Literal:
-                    var lit = (ILiteralNode)original;
-                    if (lit.DataType != null)
-                    {
-                        return target.CreateLiteralNode(lit.Value, lit.DataType);
-                    }
-                    else if (!lit.Language.Equals(string.Empty))
-                    {
-                        return target.CreateLiteralNode(lit.Value, lit.Language);
-                    }
-                    else
-                    {
-                        return target.CreateLiteralNode(lit.Value);
-                    }
-                case NodeType.Uri:
-                    return target.CreateUriNode(((IUriNode)original).Uri);
-                case NodeType.Variable:
-                    return target.CreateVariableNode(((IVariableNode)original).VariableName);
-                default:
-                    throw new RdfException("Unable to Copy '" + original.GetType().ToString() + "' Nodes between Node Factories");
-            }
-        }
-
-        /// <summary>
-        /// Copies a Triple from one Graph to another.
-        /// </summary>
-        /// <param name="t">Triple to copy.</param>
-        /// <param name="target">Graph to copy to.</param>
-        /// <returns></returns>
-        public static Triple CopyTriple(Triple t, IGraph target)
-        {
-            return CopyTriple(t, target, false);
-        }
-
-        /// <summary>
-        /// Copies a Triple from one Graph to another.
-        /// </summary>
-        /// <param name="t">Triple to copy.</param>
-        /// <param name="target">Graph to copy to.</param>
-        /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Nodes being copied.</param>
-        /// <returns></returns>
-        public static Triple CopyTriple(Triple t, IGraph target, bool keepOriginalGraphUri)
-        {
-            // No need to copy if Triple already comes from the Target Graph
-            if (ReferenceEquals(t.Graph, target)) return t;
-
-            // Copy the Nodes
-            INode subj, pred, obj;
-            subj = CopyNode(t.Subject, target, keepOriginalGraphUri);
-            pred = CopyNode(t.Predicate, target, keepOriginalGraphUri);
-            obj = CopyNode(t.Object, target, keepOriginalGraphUri);
-
-            // Return a new Triple
-            return new Triple(subj, pred, obj, t.Context);
-        }
-
-        /// <summary>
-        /// Does a quick and simple combination of the Hash Codes of two Objects.
-        /// </summary>
-        /// <param name="x">First Object.</param>
-        /// <param name="y">Second Object.</param>
-        /// <returns></returns>
-        public static int CombineHashCodes(object x, object y)
-        {
-            var hash = 17;
-            hash = hash * 31 + x.GetHashCode();
-            hash = hash * 31 + y.GetHashCode();
-            return hash;
+            return objects.Aggregate(17, (current, o) => (31 * current) + o.GetHashCode());
         }
     }
 }

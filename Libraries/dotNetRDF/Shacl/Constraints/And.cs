@@ -49,13 +49,13 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
                 from member in Graph.GetListItems(this)
-                let shape = Shape.Parse(member)
-                let conforms = shape.Validate(valueNode)
+                let shape = Shape.Parse(member, Shape.Graph)
+                let conforms = shape.Validate(dataGraph, valueNode)
                 group conforms by valueNode into conform
                 where !conform.All(valid => valid)
                 select conform.Key;

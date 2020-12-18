@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 
             if (arg.NumericType == SparqlNumericType.NaN || root.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot root when one/both arguments are non-numeric");
 
-            return new DoubleNode(null, Math.Pow(arg.AsDouble(), (1d / root.AsDouble())));
+            return new DoubleNode(Math.Pow(arg.AsDouble(), (1d / root.AsDouble())));
         }
 
         /// <summary>

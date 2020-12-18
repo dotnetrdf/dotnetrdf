@@ -244,7 +244,7 @@ ex:Subject ex:hasBlank [ ex:hasObject ex:Object ] .");
 
             var store = new TripleStore();
             store.Add(sourceGraph);
-            ISparqlDataset dataset = new InMemoryDataset(store, sourceGraph.BaseUri);
+            ISparqlDataset dataset = new InMemoryDataset(store, sourceGraph.Name);
 
             // when
             var command = new SparqlParameterizedString
@@ -318,7 +318,7 @@ _:blank rr:objectMap _:autos2.";
             var store = new TripleStore();
             store.Add(graph);
 
-            var dataset = new InMemoryDataset(store, graph.BaseUri);
+            var dataset = new InMemoryDataset(store, graph.Name);
             ISparqlUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             var updateParser = new SparqlUpdateParser();
             processor.ProcessCommandSet(updateParser.ParseFromString(update));
@@ -360,7 +360,7 @@ INSERT { ?o ?p ?s } WHERE { ?s ?p ?o }";
             Assert.Equal(1, store.Graphs.Count);
             Assert.Equal(2, store.Triples.Count());
 
-            var def = store[null];
+            var def = store[(IRefNode)null];
             var a = def.Triples.Where(t => t.Subject.NodeType == NodeType.Blank).FirstOrDefault();
             Assert.NotNull(a);
             var b = def.Triples.Where(t => t.Object.NodeType == NodeType.Blank).FirstOrDefault();
@@ -423,25 +423,24 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
         {
             var g = new Graph();
             g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
-            var h = new Graph();
+            var h = new Graph(new UriNode(UriFactory.Create("http://subject")));
             h.Merge(g);
-            h.BaseUri = UriFactory.Create("http://subject");
 
             var dataset = new InMemoryDataset(g);
             dataset.AddGraph(h);
             dataset.Flush();
 
-            Assert.Equal(2, dataset.GraphUris.Count());
+            Assert.Equal(2, dataset.GraphNames.Count());
 
             var updates = "DELETE { GRAPH ?s { ?s ?p ?o } } WHERE { ?s ?p ?o }";
-            var commands = new SparqlUpdateParser().ParseFromString(updates);
+            SparqlUpdateCommandSet commands = new SparqlUpdateParser().ParseFromString(updates);
 
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(commands);
 
-            Assert.Equal(2, dataset.GraphUris.Count());
-            Assert.True(dataset.HasGraph(UriFactory.Create("http://subject")));
-            Assert.Equal(0, dataset[UriFactory.Create("http://subject")].Triples.Count);
+            Assert.Equal(2, dataset.GraphNames.Count());
+            Assert.True(dataset.HasGraph(new UriNode(UriFactory.Create("http://subject"))));
+            Assert.Equal(0, dataset[new UriNode(UriFactory.Create("http://subject"))].Triples.Count);
         }
 
         [Fact]
@@ -449,15 +448,14 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
         {
             var g = new Graph();
             g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
-            var h = new Graph();
+            var h = new Graph(new UriNode(UriFactory.Create("http://subject")));
             h.Merge(g);
-            h.BaseUri = UriFactory.Create("http://subject");
 
             var dataset = new InMemoryDataset(g);
             dataset.AddGraph(h);
             dataset.Flush();
 
-            Assert.Equal(2, dataset.GraphUris.Count());
+            Assert.Equal(2, dataset.GraphNames.Count());
 
             var updates = "DELETE { GRAPH ?s { ?s ?p ?o } } INSERT { GRAPH ?o { ?s ?p ?o } } WHERE { ?s ?p ?o }";
             var commands = new SparqlUpdateParser().ParseFromString(updates);
@@ -465,10 +463,10 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(commands);
 
-            Assert.Equal(3, dataset.GraphUris.Count());
-            Assert.True(dataset.HasGraph(UriFactory.Create("http://subject")));
-            Assert.True(dataset.HasGraph(UriFactory.Create("http://object")));
-            Assert.Equal(0, dataset[UriFactory.Create("http://subject")].Triples.Count);
+            Assert.Equal(3, dataset.GraphNames.Count());
+            Assert.True(dataset.HasGraph(new UriNode(UriFactory.Create("http://subject"))));
+            Assert.True(dataset.HasGraph(new UriNode(UriFactory.Create("http://object"))));
+            Assert.Equal(0, dataset[new UriNode(UriFactory.Create("http://subject"))].Triples.Count);
         }
 
         [Fact]
@@ -524,17 +522,17 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
         public void SparqlUpdateDeleteCommandWithNoMatchingGraphAndChildGraphPatterns()
         {
             var dataset = new InMemoryDataset();
-            var updateGraphUri = new Uri("http://example.org/g2");
-            var updateGraph = new Graph{BaseUri = updateGraphUri };
+            var updateGraphUri = new UriNode(new Uri("http://example.org/g2"));
+            var updateGraph = new Graph(updateGraphUri);
             updateGraph.Assert(new Triple(updateGraph.CreateUriNode(new Uri("http://example.org/s")),
                 updateGraph.CreateUriNode(new Uri("http://example.org/p")),
                 updateGraph.CreateUriNode(new Uri("http://example.org/o"))));
             dataset.AddGraph(updateGraph);
 
-            var egGraph = new Uri("http://example.org/graph");
+            var egGraph = new UriNode(new Uri("http://example.org/graph"));
             dataset.HasGraph(egGraph).Should().BeFalse();
             var processor = new LeviathanUpdateProcessor(dataset);
-            var cmdSet = new SparqlUpdateParser().ParseFromString(
+            SparqlUpdateCommandSet cmdSet = new SparqlUpdateParser().ParseFromString(
                 "WITH <" + egGraph +
                 "> DELETE { GRAPH <http://example.org/g2> { <http://example.org/s> <http://example.org/p> <http://example.org/o> }} WHERE {}");
             processor.ProcessCommandSet(cmdSet);

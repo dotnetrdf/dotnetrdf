@@ -152,8 +152,8 @@ namespace VDS.RDF.Query.Spin
             }
         }
 
-        internal Resource AsResource(INode node) {
-            return Resource.Get(node, spinProcessor);
+        internal Resource AsResource(INode node, IGraph graph) {
+            return Resource.Get(node, graph, spinProcessor);
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Spin
                     .Where(g =>
                         !Configuration.GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, g)
                         .Union(Configuration.GetTriplesWithPredicateObject(RDFRuntime.PropertyRemovesGraph, g)).Any())
-                    .Select(g => AsResource(g))
+                    .Select(g => AsResource(g, Configuration))
                     .ToList();
             }
             private set { }
@@ -238,9 +238,9 @@ namespace VDS.RDF.Query.Spin
                     .Where(g =>
                         !Configuration.GetTriplesWithPredicateObject(RDFRuntime.PropertyReplacesGraph, g)
                         .Union(Configuration.GetTriplesWithPredicateObject(RDFRuntime.PropertyRemovesGraph, g)).Any())
-                    .Select(g => AsResource(g))
+                    .Select(g => AsResource(g, Configuration))
                     .ToList();
-                graphs.Add(AsResource(RDFUtil.CreateUriNode(Uri)));
+                graphs.Add(AsResource(RDFUtil.CreateUriNode(Uri), Configuration));
                 return graphs;
             }
             private set { }
@@ -371,8 +371,9 @@ namespace VDS.RDF.Query.Spin
 
         #region ISparqlDataset implementation
 
-        private readonly HashSet<Uri> _activeGraphs = new HashSet<Uri>(RDFUtil.uriComparer);
-        private readonly HashSet<Uri> _defaultGraphs = new HashSet<Uri>(RDFUtil.uriComparer); // do we really need this one ?
+        private readonly NodeFactory _graphNameNodeFactory = new NodeFactory();
+        private readonly HashSet<IRefNode> _activeGraphs = new HashSet<IRefNode>();
+        private readonly HashSet<IRefNode> _defaultGraphs = new HashSet<IRefNode>(); // do we really need this one ?
 
         /// <inheritdoc />
         public void SetActiveGraph(IEnumerable<Uri> graphUris)
@@ -384,15 +385,36 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public void SetActiveGraph(IList<IRefNode> graphNames)
+        {
+            foreach (IRefNode graphName in graphNames)
+            {
+                SetActiveGraph(graphName);
+            }
+        }
+
+        /// <inheritdoc />
         public void SetActiveGraph(Uri graphUri)
         {
-            _activeGraphs.Add(graphUri);
+            _activeGraphs.Add(graphUri == null ? null : _graphNameNodeFactory.CreateUriNode(graphUri));
+        }
+
+        /// <inheritdoc />
+        public void SetActiveGraph(IRefNode graphName)
+        {
+            _activeGraphs.Add(graphName);
         }
 
         /// <inheritdoc />
         public void SetDefaultGraph(Uri graphUri)
         {
-            _defaultGraphs.Add(graphUri);
+            _defaultGraphs.Add(graphUri == null ? null : _graphNameNodeFactory.CreateUriNode(graphUri));
+        }
+
+        /// <inheritdoc />
+        public void SetDefaultGraph(IRefNode graphName)
+        {
+            _defaultGraphs.Add(graphName);
         }
 
         /// <inheritdoc />
@@ -401,6 +423,15 @@ namespace VDS.RDF.Query.Spin
             foreach (Uri graphUri in graphUris)
             {
                 SetDefaultGraph(graphUri);
+            }
+        }
+
+        /// <inheritdoc />
+        public void SetDefaultGraph(IList<IRefNode> graphNames)
+        {
+            foreach (IRefNode graphName in graphNames)
+            {
+                SetDefaultGraph(graphName);
             }
         }
 
@@ -432,15 +463,43 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public IEnumerable<IRefNode> DefaultGraphNames
+        {
+            get
+            {
+                var graphNames = new HashSet<IRefNode>();
+                graphNames.UnionWith(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph).Select(t=>t.Subject).OfType<IRefNode>());
+                graphNames.UnionWith(Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology).Select(t=>t.Subject).OfType<IRefNode>());
+                return graphNames;
+            }
+        }
+
+        /// <inheritdoc />
         public IEnumerable<Uri> ActiveGraphUris
         {
             get
             {
-                //HashSet<Uri> graphUris = new HashSet<Uri>(RDFUtil.uriComparer);
-                //graphUris.UnionWith(_configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph)
-                //    .Select(t => ((IUriNode)t.Subject).Uri));
-                //return graphUris;
-                return _activeGraphs.ToList();
+                foreach (IRefNode graphName in _activeGraphs)
+                {
+                    switch (graphName)
+                    {
+                        case null:
+                            yield return null;
+                            break;
+                        case IUriNode uriNode:
+                            yield return uriNode.Uri;
+                            break;
+                    }
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<IRefNode> ActiveGraphNames
+        {
+            get
+            {
+                return _activeGraphs;
             }
         }
 
@@ -483,6 +542,12 @@ namespace VDS.RDF.Query.Spin
             return Configuration.RemoveGraph(graphUri);
         }
 
+        /// <inheritdoc />
+        public bool RemoveGraph(IRefNode graphName)
+        {
+            return Configuration.RemoveGraph(graphName);
+        }
+
         /// <summary>
         /// Gets whether a Graph with the given URI is the Dataset
         /// </summary>
@@ -491,6 +556,11 @@ namespace VDS.RDF.Query.Spin
         public bool HasGraph(Uri graphUri)
         {
             return Configuration.HasGraph(graphUri);
+        }
+
+        public bool HasGraph(IRefNode graphName)
+        {
+            return Configuration.HasGraph(graphName);
         }
 
         /// <inheritdoc />
@@ -515,7 +585,20 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public IEnumerable<IRefNode> GraphNames
+        {
+            get
+            {
+                return Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SD.ClassGraph)
+                    .Select(t => t.Subject).OfType<IRefNode>();
+            }
+        }
+
+        /// <inheritdoc />
         public IGraph this[Uri graphUri] => Configuration[graphUri];
+
+        /// <inheritdoc />
+        public IGraph this[IRefNode graphName] => Configuration[graphName];
 
         /// <summary>
         /// 
@@ -525,6 +608,12 @@ namespace VDS.RDF.Query.Spin
         public IGraph GetModifiableGraph(Uri graphUri)
         {
             return Configuration.GetModifiableGraph(graphUri);
+        }
+
+        /// <inheritdoc />
+        public IGraph GetModifiableGraph(IRefNode graphName)
+        {
+            return Configuration.GetModifiableGraph(graphName);
         }
 
         /// <summary>
@@ -551,8 +640,8 @@ namespace VDS.RDF.Query.Spin
             {
                 _hasPendingChanges = false; // for security only
                 var commands = new List<IUpdate>();
-                commands.Add(new DeleteDataImpl(RDF.Nil, spinProcessor));
-                commands.Add(new InsertDataImpl(RDF.Nil, spinProcessor));
+                commands.Add(new DeleteDataImpl(RDF.Nil, null, spinProcessor));
+                commands.Add(new InsertDataImpl(RDF.Nil, null, spinProcessor));
                 ExecuteUpdate(commands);
             }
             ResetActiveGraph();
@@ -691,7 +780,7 @@ namespace VDS.RDF.Query.Spin
                             throw new SpinException("Infinite loop encountered. Execution is canceled");
                         }
                         _loopPreventionChecks.Add(t);
-                        newTypes.Add(AsResource(t.Object));
+                        newTypes.Add(AsResource(t.Object, remoteChanges));
                     }
                     else if (RDFUtil.sameTerm(RDFRuntime.PropertyHasChanged, t.Predicate)) 
                     {
@@ -740,8 +829,8 @@ namespace VDS.RDF.Query.Spin
             {
                 CommandCalls.Add(command.ToString());
                 Storage.Update(command.ToString());
-                UpdateInternal(new DeleteDataImpl(RDF.Nil, spinProcessor), outputGraphUri);
-                UpdateInternal(new InsertDataImpl(RDF.Nil, spinProcessor), outputGraphUri);
+                UpdateInternal(new DeleteDataImpl(RDF.Nil, null, spinProcessor), outputGraphUri);
+                UpdateInternal(new InsertDataImpl(RDF.Nil, null, spinProcessor), outputGraphUri);
                 ResetActiveGraph();
                 return;
             }

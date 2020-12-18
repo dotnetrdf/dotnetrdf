@@ -52,9 +52,21 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by Contains(IRefNode)")]
         public override bool Contains(Uri graphUri)
         {
             return _dataset.HasGraph(graphUri);
+        }
+
+        /// <summary>
+        /// Checks whether the graph with the given name exists in this graph collection.
+        /// </summary>
+        /// <param name="graphName">Graph name to test for.</param>
+        /// <returns>True if a graph with the specified name is in the collection, false otherwise.</returns>
+        /// <remarks>The null value is used to reference the default (unnamed) graph.</remarks>
+        public override bool Contains(IRefNode graphName)
+        {
+            return _dataset.HasGraph(graphName);
         }
 
         /// <summary>
@@ -65,7 +77,7 @@ namespace VDS.RDF.Query.Datasets
         /// <exception cref="RdfException">Thrown if a Graph with the given URI already exists and the <paramref name="mergeIfExists">mergeIfExists</paramref> is set to false.</exception>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
-            if (Contains(g.BaseUri))
+            if (Contains(g.Name))
             {
                 if (mergeIfExists)
                 {
@@ -97,6 +109,7 @@ namespace VDS.RDF.Query.Datasets
         /// Removes a Graph from the Collection.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to removed.</param>
+        [Obsolete("Replaced by Remove(IRefNode)")]
         protected internal override bool Remove(Uri graphUri)
         {
             if (Contains(graphUri))
@@ -108,6 +121,31 @@ namespace VDS.RDF.Query.Datasets
                 temp.Dispose();
                 return removed;
             }
+            return false;
+        }
+
+        /// <summary>
+        /// Removes a graph from the collection.
+        /// </summary>
+        /// <param name="graphName">Name of the Graph to remove.</param>
+        /// <remarks>
+        /// The null value is used to reference the Default Graph.
+        /// </remarks>
+        protected internal override bool Remove(IRefNode graphName)
+        {
+            if (graphName is IBlankNode) return false;
+            var graphUriNode = graphName as IUriNode;
+            Uri graphUri = graphUriNode?.Uri;
+            if (_dataset.HasGraph(graphUri))
+            {
+                IGraph temp = _dataset[graphUri];
+                var removed = _dataset.RemoveGraph(graphUri);
+                _dataset.Flush();
+                RaiseGraphRemoved(temp);
+                temp.Dispose();
+                return removed;
+            }
+
             return false;
         }
 
@@ -125,6 +163,7 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets the URIs of Graphs in the Collection.
         /// </summary>
+        [Obsolete("Replaced by GraphNames")]
         public override IEnumerable<Uri> GraphUris
         {
             get 
@@ -134,10 +173,23 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
+        /// Provides an enumeration of the names of all of teh graphs in the collection.
+        /// </summary>
+        public override IEnumerable<IRefNode> GraphNames
+        {
+            get
+            {
+                var factory = new NodeFactory();
+                return _dataset.GraphUris.Select(g => g == null ? null : factory.CreateUriNode(g));
+            }
+        }
+
+        /// <summary>
         /// Gets the Graph with the given URI.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by this[IRefNode]")]
         public override IGraph this[Uri graphUri]
         {
             get 
@@ -153,6 +205,23 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets a graph from the collection.
+        /// </summary>
+        /// <param name="graphName">The name of the graph to retrieve.</param>
+        /// <returns></returns>
+        /// <remarks>The null value is used to reference the default graph.</remarks>
+        public override IGraph this[IRefNode graphName]
+        {
+            get
+            {
+                if (_dataset.HasGraph(graphName))
+                {
+                    return _dataset[graphName];
+                }
+                throw new RdfException("The graph with the given name does not exist in this graph collection");
+            }
+        }
         /// <summary>
         /// Disposes of the Graph Collection.
         /// </summary>

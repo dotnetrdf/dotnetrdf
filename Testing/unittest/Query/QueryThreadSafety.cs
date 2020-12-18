@@ -148,10 +148,9 @@ namespace VDS.RDF.Query
             Assert.False(q2.UsesDefaultDataset, "Query 2 should not be thread safe");
 
             var dataset = new InMemoryDataset();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri = new Uri("http://example.org/1");
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
 
@@ -187,13 +186,11 @@ namespace VDS.RDF.Query
             var cmds = parser.ParseFromString(update1);
 
             var dataset = new InMemoryDataset();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/1")));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            g.BaseUri = new Uri("http://example.org/1");
-            var h = new Graph();
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            h.BaseUri = new Uri("http://example.org/2");
-            var i = new Graph {BaseUri = new Uri("http://example.org/3")};
+            var i = new Graph(new UriNode(new Uri("http://example.org/3")));
 
             dataset.AddGraph(g);
             dataset.AddGraph(h);

@@ -89,33 +89,6 @@ namespace VDS.RDF
         }
 
         [Fact]
-        public void Delegates_Graph()
-        {
-            var node = new Graph().CreateBlankNode();
-            var wrapper = new MockWrapperNode(node);
-
-            var expected = node.Graph;
-            var actual = wrapper.Graph;
-
-            Assert.Same(expected, actual);
-        }
-
-        [Fact]
-        public void Delegates_GraphUri()
-        {
-            var node = new NodeFactory().CreateBlankNode();
-            var wrapper = new MockWrapperNode(node)
-            {
-                GraphUri = UriFactory.Create("http://example.com/")
-            };
-
-            var expected = node.GraphUri;
-            var actual = wrapper.GraphUri;
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
         public void Delegates_CompareTo_node()
         {
             var node = new NodeFactory().CreateBlankNode() as INode;

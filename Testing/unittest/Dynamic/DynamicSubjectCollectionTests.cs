@@ -88,7 +88,7 @@ namespace VDS.RDF.Dynamic
 
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(o);
+            var d = new DynamicNode(o, g);
             var c = new DynamicSubjectCollection(p, d);
 
             Assert.Equal(3, c.Count());
@@ -100,7 +100,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             var p = g.CreateBlankNode();
             var o = g.CreateBlankNode();
-            var d = new DynamicNode(o);
+            var d = new DynamicNode(o, g);
             var c = new DynamicSubjectCollection(p, d);
 
             Assert.False(c.IsReadOnly);
@@ -118,7 +118,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(o);
+            var d = new DynamicNode(o, g);
             var c = new DynamicSubjectCollection(p, d);
 
             c.Add(s);
@@ -193,7 +193,7 @@ namespace VDS.RDF.Dynamic
 
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(o);
+            var d = new DynamicNode(o, g);
             var c = new DynamicSubjectCollection(p, d);
 
             c.Clear();
@@ -238,7 +238,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             var c = new DynamicSubjectCollection(p, d);
 
             Assert.Contains(s, c);
@@ -284,7 +284,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(o);
+            var d = new DynamicNode(o, g);
             var c = new DynamicSubjectCollection(p, d);
 
             var objects = new INode[5]; // +2 for padding on each side
@@ -332,7 +332,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             var c = new DynamicSubjectCollection(p, d);
 
             var expected = new[] { s, p, o }.GetEnumerator();
@@ -417,7 +417,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(o);
+            var d = new DynamicNode(o, g);
             var c = new DynamicSubjectCollection(p, d);
 
             c.Remove(s);
@@ -464,7 +464,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             var c = new DynamicSubjectCollection(p, d) as IEnumerable;
 
             var expected = new[] { s, p, o }.GetEnumerator();
@@ -488,7 +488,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(o);
+            var d = new DynamicNode(o, g);
             var l = new DynamicSubjectCollection(p, d) as IDynamicMetaObjectProvider;
             var mo = l.GetMetaObject(Expression.Empty());
 

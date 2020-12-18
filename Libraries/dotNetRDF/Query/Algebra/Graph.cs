@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Algebra
                         else
                         {
                             // Query is over entire dataset/default Graph since no named Graphs are explicitly specified
-                            activeGraphs.AddRange(context.Data.GraphUris.Select(u => u.ToSafeString()));
+                            activeGraphs.AddRange(context.Data.GraphNames.Select(u => u.ToSafeString()));
                         }
                     }
                 }
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Algebra
                         if (_graphSpecifier.TokenType == Token.VARIABLE)
                         {
                             // Include graph variable if not yet bound
-                            INode currGraph = new UriNode(null, currGraphUri);
+                            INode currGraph = new UriNode(currGraphUri);
                             var s = new Set();
                             s.Add(_graphSpecifier.Value.Substring(1), currGraph);
                             finalResult.Add(s);
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Algebra
                         if (_graphSpecifier.TokenType == Token.VARIABLE)
                         {
                             var gvar = _graphSpecifier.Value.Substring(1);
-                            INode currGraph = new UriNode(null, currGraphUri);
+                            INode currGraph = new UriNode(currGraphUri);
                             foreach (var id in result.SetIDs.ToList())
                             {
                                 ISet s = result[id];

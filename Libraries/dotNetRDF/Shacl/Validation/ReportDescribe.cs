@@ -50,7 +50,7 @@ namespace VDS.RDF.Shacl.Validation
                     {
                         if (Vocabulary.PredicatesToExpandInReport.Contains(t.Predicate))
                         {
-                            @object = @object.Graph.CreateBlankNode();
+                            @object = handler.CreateBlankNode();
                             map.Add(@object, t.Object);
                             outstanding.Enqueue(@object);
                         }

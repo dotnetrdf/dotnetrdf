@@ -566,7 +566,8 @@ namespace VDS.RDF.Query.Spin
                 throw new SpinException("Unknown Pattern Items are not representable in SPIN RDF Syntax");
             }
 
-            return i.CopyNode(g);
+            //return i.CopyNode(g);
+            return i;
         }
 
         internal static INode ToSpinRdf(this ISparqlAggregate aggregate, IGraph g, SpinVariableTable varTable)

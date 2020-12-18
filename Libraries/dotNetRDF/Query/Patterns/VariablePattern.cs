@@ -105,23 +105,24 @@ namespace VDS.RDF.Query.Patterns
             switch (value.NodeType)
             {
                 case NodeType.Blank:
-                    if (!context.PreserveBlankNodes && value.GraphUri != null)
-                    {
-                        // Rename Blank Node based on the Graph Uri Hash Code
-                        var hash = value.GraphUri.GetEnhancedHashCode();
-                        if (hash >= 0)
-                        {
-                            return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
-                        }
-                        else
-                        {
-                            return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + hash);
-                        }
-                    }
-                    else
-                    {
-                        return new BlankNode(context.Graph, ((IBlankNode)value).InternalID);
-                    }
+                    return new BlankNode(((IBlankNode)value).InternalID);
+                    //if (!context.PreserveBlankNodes && value.GraphUri != null)
+                    //{
+                    //    // Rename Blank Node based on the Graph Uri Hash Code
+                    //    var hash = value.GraphUri.GetEnhancedHashCode();
+                    //    if (hash >= 0)
+                    //    {
+                    //        return new BlankNode(((IBlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
+                    //    }
+                    //    else
+                    //    {
+                    //        return new BlankNode(((IBlankNode)value).InternalID + hash);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    return new BlankNode(((IBlankNode)value).InternalID);
+                    //}
 
                 default:
                     return context.GetNode(value);

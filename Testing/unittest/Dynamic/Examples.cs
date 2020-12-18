@@ -216,7 +216,7 @@ namespace VDS.RDF.Dynamic
             var actual = new Graph();
             dynamic d = actual.AsDynamic(UriFactory.Create("http://www.dotnetrdf.org/people#"));
 
-            var rvesse = new FoafPerson(d.rvesse);
+            var rvesse = new FoafPerson(d.rvesse, actual);
             rvesse.Names.Add("Rob Vesse");
             rvesse.FirstNames.Add("Rob");
             rvesse.LastNames.Add("Vesse");
@@ -228,23 +228,23 @@ namespace VDS.RDF.Dynamic
             rvesse.Emails.Add(UriFactory.Create("mailto:rvesse@vdesign-studios.com"));
             rvesse.Emails.Add(UriFactory.Create("mailto:rvesse@yarcdata.com"));
 
-            var account = new FoafAccount(d.CreateBlankNode());
+            var account = new FoafAccount(d.CreateBlankNode(), actual);
             account.Names.Add("RobVesse");
             account.Profiles.Add(UriFactory.Create("http://twitter.com/RobVesse"));
             account.Services.Add(UriFactory.Create("http://twitter.com/"));
             rvesse.Accounts.Add(account);
 
-            var jena = new DoapProject(d.CreateBlankNode());
+            var jena = new DoapProject(d.CreateBlankNode(), actual);
             jena.Names.Add("Apache Jena");
             jena.Homepages.Add(UriFactory.Create("http://incubator.apache.org/jena"));
             rvesse.Projects.Add(jena);
 
-            var dnr = new DoapProject(d.CreateBlankNode());
+            var dnr = new DoapProject(d.CreateBlankNode(), actual);
             dnr.Names.Add("dotNetRDF");
             dnr.Homepages.Add(UriFactory.Create("http://www.dotnetrdf.org/"));
             rvesse.Projects.Add(dnr);
 
-            var key = new WotKey(d.CreateBlankNode());
+            var key = new WotKey(d.CreateBlankNode(), actual);
             key.Ids.Add("6E2497EB");
             key.Fingerprints.Add("7C4C 2916 BF74 E242 53BC  C5B7 764D FB13 6E24 97EB");
             rvesse.Keys.Add(key);
@@ -254,8 +254,8 @@ namespace VDS.RDF.Dynamic
 
         private class FoafPerson : DynamicNode
         {
-            public FoafPerson(INode node)
-                : base(node, UriFactory.Create("http://xmlns.com/foaf/0.1/"))
+            public FoafPerson(INode node, IGraph graph)
+                : base(node, graph, UriFactory.Create("http://xmlns.com/foaf/0.1/"))
                 => Add("rdf:type", UriFactory.Create("http://xmlns.com/foaf/0.1/Person"));
 
             public ICollection<string> Names => new DynamicObjectCollection<string>(this, "name");
@@ -277,8 +277,8 @@ namespace VDS.RDF.Dynamic
 
         private class FoafAccount : DynamicNode
         {
-            public FoafAccount(INode node)
-                : base(node, UriFactory.Create("http://xmlns.com/foaf/0.1/")) { }
+            public FoafAccount(INode node, IGraph graph)
+                : base(node, graph, UriFactory.Create("http://xmlns.com/foaf/0.1/")) { }
 
             public ICollection<string> Names => new DynamicObjectCollection<string>(this, "accountName");
 
@@ -289,8 +289,8 @@ namespace VDS.RDF.Dynamic
 
         private class DoapProject : DynamicNode
         {
-            public DoapProject(INode node)
-                : base(node, UriFactory.Create("http://www.web-semantics.org/ns/pm#"))
+            public DoapProject(INode node, IGraph graph)
+                : base(node, graph, UriFactory.Create("http://www.web-semantics.org/ns/pm#"))
                 => Add("rdf:type", UriFactory.Create("http://usefulinc.com/ns/doap#Project"));
 
             public ICollection<string> Names => new DynamicObjectCollection<string>(this, "name");
@@ -300,8 +300,8 @@ namespace VDS.RDF.Dynamic
 
         private class WotKey : DynamicNode
         {
-            public WotKey(INode node)
-                : base(node, UriFactory.Create("http://xmlns.com/wot/0.1/"))
+            public WotKey(INode node, IGraph graph)
+                : base(node, graph, UriFactory.Create("http://xmlns.com/wot/0.1/"))
                 => Add("rdf:type", UriFactory.Create("http://xmlns.com/wot/0.1/PubKey"));
 
             public ICollection<string> Ids => new DynamicObjectCollection<string>(this, "hex_id");

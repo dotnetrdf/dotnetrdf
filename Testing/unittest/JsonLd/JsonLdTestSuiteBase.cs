@@ -138,7 +138,7 @@ namespace VDS.RDF.JsonLd
                     jsonldParser.Load(actualStore, inputPath);
                     Assert.True(expectedStore.Graphs.Count.Equals(actualStore.Graphs.Count) ||
                                 (expectedStore.Graphs.Count == 0 && actualStore.Graphs.Count == 1 &&
-                                 actualStore.Graphs[null].IsEmpty),
+                                 actualStore.Graphs[(IRefNode)null].IsEmpty),
                         $"Test failed for input {Path.GetFileName(inputPath)}.\r\nActual graph count {actualStore.Graphs.Count} does not match expected graph count {expectedStore.Graphs.Count}.");
                     AssertStoresEqual(expectedStore, actualStore, Path.GetFileName(inputPath));
                     break;
@@ -166,9 +166,9 @@ namespace VDS.RDF.JsonLd
             {
                 if (graphUri == null)
                 {
-                    Assert.True(actualTripleStore.HasGraph(null), 
+                    Assert.True(actualTripleStore.HasGraph((IRefNode)null), 
                         $"Test failed for input {testFile}.\r\nExpected a default graph to be present.");
-                    AssertGraphsEqual(expectedTripleStore[null], actualTripleStore[null],
+                    AssertGraphsEqual(expectedTripleStore[(IRefNode)null], actualTripleStore[(IRefNode)null],
                         expectedTripleStore, actualTripleStore, testFile);
                 } 
                 else if (graphUri.ToString().StartsWith("nquads:bnode:"))

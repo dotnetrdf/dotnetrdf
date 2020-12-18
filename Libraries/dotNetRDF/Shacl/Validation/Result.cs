@@ -33,14 +33,14 @@ namespace VDS.RDF.Shacl.Validation
     /// <summary>
     /// Represents a SHACL validation result.
     /// </summary>
-    public class Result : WrapperNode
+    public class Result : GraphWrapperNode
     {
         [DebuggerStepThrough]
-        private Result(INode node)
-            : base(node)
+        private Result(IGraph resultGraph, INode node)
+            : base(node, resultGraph)
         {
         }
-
+        
         /// <summary>
         /// Gets or sets the severity of the result.
         /// </summary>
@@ -205,7 +205,7 @@ namespace VDS.RDF.Shacl.Validation
         {
             get
             {
-                return Vocabulary.ResultPath.ObjectsOf(this).Select(Path.Parse).SingleOrDefault();
+                return Vocabulary.ResultPath.ObjectsOf(this).Select(x=>Path.Parse(x, Graph)).SingleOrDefault();
             }
 
             set
@@ -275,7 +275,7 @@ namespace VDS.RDF.Shacl.Validation
 
         internal static Result Create(IGraph g)
         {
-            var report = new Result(g.CreateBlankNode())
+            var report = new Result(g, g.CreateBlankNode())
             {
                 Type = Vocabulary.ValidationResult,
             };
@@ -283,9 +283,9 @@ namespace VDS.RDF.Shacl.Validation
             return report;
         }
 
-        internal static Result Parse(INode node)
+        internal static Result Parse(IGraph graph, INode node)
         {
-            return new Result(node);
+            return new Result(graph, node);
         }
     }
 }

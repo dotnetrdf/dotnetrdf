@@ -35,8 +35,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class CreateImpl : UpdateImpl, ICreate
     {
 
-        public CreateImpl(INode node, SpinProcessor graph)
-            : base(node, graph)
+        public CreateImpl(INode node, IGraph graph, SpinProcessor processor)
+            : base(node, graph, processor)
         {
 
         }

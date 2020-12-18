@@ -38,8 +38,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class SPINInstanceImpl : Resource, ISPINInstance
     {
 
-        public SPINInstanceImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public SPINInstanceImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
 
         }

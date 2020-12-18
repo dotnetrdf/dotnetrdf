@@ -84,6 +84,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets the name of the graph.
+        /// </summary>
+        public virtual IRefNode Name
+        {
+            get
+            {
+                return _g.Name;
+            }
+        }
+
+        /// <summary>
         /// Gets whether the Graph is empty.
         /// </summary>
         public virtual bool IsEmpty => _g.IsEmpty;
@@ -111,7 +122,7 @@ namespace VDS.RDF
         /// <param name="t">Triple.</param>
         public virtual bool Assert(Triple t)
         {
-            return _g.Assert(t.CopyTriple(_g));
+            return _g.Assert(t);
         }
 
         /// <summary>
@@ -120,7 +131,7 @@ namespace VDS.RDF
         /// <param name="ts">Triples.</param>
         public virtual bool Assert(IEnumerable<Triple> ts)
         {
-            return _g.Assert(ts.Select(t => t.CopyTriple(_g)));
+            return _g.Assert(ts);
         }
 
         /// <summary>

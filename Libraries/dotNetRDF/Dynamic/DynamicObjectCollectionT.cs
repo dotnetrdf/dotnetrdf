@@ -37,6 +37,8 @@ namespace VDS.RDF.Dynamic
     /// <typeparam name="T">The type of statement objects.</typeparam>
     public class DynamicObjectCollection<T> : DynamicObjectCollection, ICollection<T>
     {
+        private readonly IGraph _graph;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicObjectCollection{T}"/> class.
         /// </summary>
@@ -47,6 +49,7 @@ namespace VDS.RDF.Dynamic
                 subject,
                 predicate.AsUriNode(subject.Graph, subject.BaseUri))
         {
+            _graph = subject.Graph;
         }
 
         /// <summary>
@@ -102,8 +105,8 @@ namespace VDS.RDF.Dynamic
             if (type.IsSubclassOf(typeof(DynamicNode)))
             {
                 // TODO: Exception handling
-                ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode) });
-                value = ctor.Invoke(new[] { value });
+                ConstructorInfo ctor = type.GetConstructor(new[] { typeof(INode), typeof(IGraph) });
+                value = ctor.Invoke(new[] { value, _graph });
             }
 
             return (T)value;

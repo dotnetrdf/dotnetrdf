@@ -38,7 +38,7 @@ namespace VDS.RDF.Query
     /// Class for representing a Row of a Sparql Result Set.
     /// </summary>
     public sealed class SparqlResult 
-        : IEnumerable<KeyValuePair<string, INode>>
+        : IEnumerable<KeyValuePair<string, INode>>, IEquatable<SparqlResult>
     {
         private List<string> _variables = new List<string>();
         private Dictionary<string, INode> _resultValues = new Dictionary<string, INode>();
@@ -341,41 +341,47 @@ namespace VDS.RDF.Query
             }
             if (obj is SparqlResult other)
             {
-                // Empty Results are only equal to Empty Results
-                if (_resultValues.Count == 0 && other._resultValues.Count == 0) return true;
-                if (_resultValues.Count == 0 || other._resultValues.Count == 0) return false;
-
-                // For differing numbers of values we must contain all the same values for variables
-                // bound in both or the variable missing from us must be bound to null in the other
-                foreach (var v in other.Variables)
-                {
-                    if (_resultValues.ContainsKey(v))
-                    {
-                        if (_resultValues[v] == null && other[v] != null)
-                        {
-                            return false;
-                        }
-                        else if (_resultValues[v] == null && other[v] == null)
-                        {
-                            continue;
-                        }
-                        else if (!_resultValues[v].Equals(other[v]))
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        if (other.HasBoundValue(v)) return false;
-                    }
-                }
-                return true;
-
+                return Equals(other);
             }
             else
             {
                 return false;
             }
+        }
+
+        /// <inheritdoc />
+        public bool Equals(SparqlResult other)
+        {
+            // Empty Results are only equal to Empty Results
+            if (_resultValues.Count == 0 && other._resultValues.Count == 0) return true;
+            if (_resultValues.Count == 0 || other._resultValues.Count == 0) return false;
+
+            // For differing numbers of values we must contain all the same values for variables
+            // bound in both or the variable missing from us must be bound to null in the other
+            foreach (var v in other.Variables)
+            {
+                if (_resultValues.ContainsKey(v))
+                {
+                    if (_resultValues[v] == null && other[v] != null)
+                    {
+                        return false;
+                    }
+                    else if (_resultValues[v] == null && other[v] == null)
+                    {
+                        continue;
+                    }
+                    else if (!_resultValues[v].Equals(other[v]))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (other.HasBoundValue(v)) return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

@@ -46,7 +46,7 @@ namespace VDS.RDF.Writing
         {
             foreach (var graph in fixture.Input.Graphs)
             {
-                var graphElement = fixture.GraphElementByBaseUri(graph.BaseUri);
+                var graphElement = fixture.GraphElementByBaseUri((graph.Name as IUriNode)?.Uri);
 
                 Assert.NotNull(graphElement);
             }
@@ -57,7 +57,7 @@ namespace VDS.RDF.Writing
         {
             foreach (var graph in fixture.Input.Graphs)
             {
-                var graphElement = fixture.GraphElementByBaseUri(graph.BaseUri);
+                var graphElement = fixture.GraphElementByBaseUri((graph.Name as IUriNode)?.Uri);
 
                 var expected = graph.Triples.Count();
                 var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Edge, GraphMLSpecsHelper.NS)).Count();
@@ -71,7 +71,7 @@ namespace VDS.RDF.Writing
         {
             foreach (var graph in fixture.Input.Graphs)
             {
-                var graphElement = fixture.GraphElementByBaseUri(graph.BaseUri);
+                var graphElement = fixture.GraphElementByBaseUri((graph.Name as IUriNode)?.Uri);
 
                 var expected = graph.Nodes.Count();
                 var actual = graphElement.Elements(XName.Get(GraphMLSpecsHelper.Node, GraphMLSpecsHelper.NS)).Count();

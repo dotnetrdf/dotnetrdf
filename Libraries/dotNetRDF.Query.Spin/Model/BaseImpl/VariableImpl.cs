@@ -37,8 +37,8 @@ namespace VDS.RDF.Query.Spin.Model
 {
     internal class VariableImpl : AbstractSPINResource, IVariable
     {
-        internal VariableImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        internal VariableImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 
@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Spin.Model
             IEnumerator<Triple> it = getModel().GetTriplesWithPredicateObject(predicate, this).GetEnumerator();
             while (it.MoveNext())
             {
-                IResource subject = Resource.Get(it.Current.Subject, getModel());
+                IResource subject = Resource.Get(it.Current.Subject, Graph, getModel());
                 results.Add((TriplePatternImpl)subject.As(typeof(TriplePatternImpl)));
             }
         }

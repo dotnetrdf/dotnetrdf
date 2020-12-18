@@ -69,7 +69,7 @@ namespace VDS.RDF.Update
         {
             _dataset = data;
             options?.Invoke(_options);
-            if (!_dataset.HasGraph(null))
+            if (!_dataset.HasGraph((IRefNode)null))
             {
                 // Create the Default unnamed Graph if it doesn't exist and then Flush() the change
                 _dataset.AddGraph(new Graph());

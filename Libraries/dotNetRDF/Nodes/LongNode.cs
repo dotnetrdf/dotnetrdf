@@ -43,21 +43,19 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Long value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public LongNode(IGraph g, long value, string lexicalValue)
-            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)) { }
+        public LongNode(long value, string lexicalValue)
+            : this(value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)) { }
 
         /// <summary>
         /// Creates a new long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Long value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="datatype">Datatype URI.</param>
-        public LongNode(IGraph g, long value, string lexicalValue, Uri datatype)
-            : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
+        public LongNode(long value, string lexicalValue, Uri datatype)
+            : base(lexicalValue, datatype, SparqlNumericType.Integer)
         {
             _value = value;
         }
@@ -65,10 +63,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Long value.</param>
-        public LongNode(IGraph g, long value)
-            : this(g, value, value.ToString(CultureInfo.InvariantCulture)) { }
+        public LongNode(long value)
+            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
 
         /// <summary>
         /// Gets the long value.
@@ -139,21 +136,19 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new unsigned long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Unsigned Long value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
-        public UnsignedLongNode(IGraph g, ulong value, string lexicalValue)
-            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)) { }
+        public UnsignedLongNode(ulong value, string lexicalValue)
+            : this(value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)) { }
 
         /// <summary>
         /// Creates a new unsigned long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Unsigned Long value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="datatype">Datatype URI.</param>
-        public UnsignedLongNode(IGraph g, ulong value, string lexicalValue, Uri datatype)
-            : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
+        public UnsignedLongNode(ulong value, string lexicalValue, Uri datatype)
+            : base(lexicalValue, datatype, SparqlNumericType.Integer)
         {
             _value = value;
         }
@@ -161,10 +156,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new unsigned long valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Unsigned Long value.</param>
-        public UnsignedLongNode(IGraph g, ulong value)
-            : this(g, value, value.ToString(CultureInfo.InvariantCulture)) { }
+        public UnsignedLongNode(ulong value)
+            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
 
         /// <summary>
         /// Gets the long value of the ulong.

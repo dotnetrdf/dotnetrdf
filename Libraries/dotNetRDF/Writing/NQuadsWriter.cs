@@ -114,7 +114,7 @@ namespace VDS.RDF.Writing
                     // Queue the Graphs to be written
                     foreach (IGraph g in context.Store.Graphs)
                     {
-                        context.Add(g.BaseUri);
+                        context.Add(g.Name);
                     }
 
                     // Start making the async calls
@@ -150,7 +150,7 @@ namespace VDS.RDF.Writing
                         var graphContext = new NTriplesWriterContext(g, context.Output, NQuadsParser.AsNTriplesSyntax(Syntax));
                         foreach (Triple t in g.Triples)
                         {
-                            context.Output.WriteLine(TripleToNQuads(graphContext, t, g.BaseUri));
+                            context.Output.WriteLine(TripleToNQuads(graphContext, t, g.Name));
                         }
                     }
                     if (!leaveOpen)
@@ -185,7 +185,7 @@ namespace VDS.RDF.Writing
             }
             foreach (Triple t in context.Graph.Triples)
             {
-                context.Output.WriteLine(TripleToNQuads(context, t, context.Graph.BaseUri));
+                context.Output.WriteLine(TripleToNQuads(context, t, context.Graph.Name));
             }
             context.Output.WriteLine();
 
@@ -197,9 +197,9 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="context">Writer Context.</param>
         /// <param name="t">Triple to convert.</param>
-        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="graphName">Graph name.</param>
         /// <returns></returns>
-        private string TripleToNQuads(NTriplesWriterContext context, Triple t, Uri graphUri)
+        private string TripleToNQuads(NTriplesWriterContext context, Triple t, IRefNode graphName)
         {
             var output = new StringBuilder();
             output.Append(NodeToNTriples(context, t.Subject, TripleSegment.Subject));
@@ -207,12 +207,20 @@ namespace VDS.RDF.Writing
             output.Append(NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
             output.Append(" ");
             output.Append(NodeToNTriples(context, t.Object, TripleSegment.Object));
-            if (t.GraphUri != null || graphUri != null)
+            if (t.GraphUri != null || graphName != null)
             {
-                output.Append(" <");
                 // Favour graph name rather than per-triple graph name because we may have a triple with a different graph name than the containing graph
-                output.Append(context.UriFormatter.FormatUri(graphUri ?? t.GraphUri));
-                output.Append(">");
+                if (graphName != null)
+                {
+                    output.Append(" ");
+                    output.Append(context.NodeFormatter.Format(graphName));
+                }
+                else
+                {
+                    output.Append(" <");
+                    output.Append(context.UriFormatter.FormatUri(t.GraphUri));
+                    output.Append(">");
+                }
             }
             output.Append(" .");
 
@@ -256,7 +264,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                while (globalContext.TryGetNextUri(out Uri u))
+                while (globalContext.TryGetNextGraphName(out IRefNode u))
                 {
                     // Get the Graph from the Store
                     IGraph g = globalContext.Store.Graphs[u];

@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             if (temp == null) throw new RdfQueryException("Cannot evaluate factorial of a null");
             var l = temp.AsInteger();
 
-            if (l == 0) return new LongNode(null, 0);
+            if (l == 0) return new LongNode(0);
             long fac = 1;
             if (l > 0)
             {
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
                     fac = fac * i;
                 }
             }
-            return new LongNode(null, fac);
+            return new LongNode(fac);
         }
 
         /// <summary>

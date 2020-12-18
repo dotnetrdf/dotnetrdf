@@ -32,11 +32,11 @@ using VDS.RDF.Shacl.Shapes;
 
 namespace VDS.RDF.Shacl
 {
-    internal class ConstraintComponent : WrapperNode
+    internal class ConstraintComponent : GraphWrapperNode
     {
         [DebuggerStepThrough]
-        internal ConstraintComponent(INode node)
-            : base(node)
+        internal ConstraintComponent(INode node, IGraph graph)
+            : base(node, graph)
         {
         }
 
@@ -46,7 +46,7 @@ namespace VDS.RDF.Shacl
             {
                 return
                     from parameter in Vocabulary.Parameter.ObjectsOf(this)
-                    select new Parameter(parameter);
+                    select new Parameter(parameter, this.Graph);
             }
         }
 
@@ -64,7 +64,7 @@ namespace VDS.RDF.Shacl
                     let path = parameter.Path
                     let name = path.ToString().Split('/', '#').Last()
                     let required = !parameter.Optional
-                    let values = path.ObjectsOf(shape)
+                    let values = path.ObjectsOf((INode)shape)
                     let adjustedValues = required ? values : values.DefaultIfEmpty(null)
                     select
                         from value in adjustedValues

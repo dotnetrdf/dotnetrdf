@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 {
                     case NodeType.Literal:
                     case NodeType.Uri:
-                        return new StringNode(null, result.AsString());
+                        return new StringNode(result.AsString());
 
                     default:
                         throw new RdfQueryException("Cannot return the lexical value of Nodes which are not Literal/URI Nodes");
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "STR(" + _expr.ToString() + ")";
+            return "STR(" + _expr + ")";
         }
 
         /// <summary>

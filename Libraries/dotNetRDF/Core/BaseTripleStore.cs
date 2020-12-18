@@ -53,14 +53,13 @@ namespace VDS.RDF
         /// <param name="graphCollection">Graph Collection to use.</param>
         protected BaseTripleStore(BaseGraphCollection graphCollection)
         {
-            if (graphCollection == null) throw new ArgumentNullException("graphCollection", "Graph Collection must be an non-null instance of a class which derives from BaseGraphCollection");
-            _graphs = graphCollection;
+            _graphs = graphCollection ?? throw new ArgumentNullException(nameof(graphCollection), "Graph Collection must be an non-null instance of a class which derives from BaseGraphCollection");
 
-            GraphAddedHandler = new GraphEventHandler(OnGraphAdded);
-            GraphRemovedHandler = new GraphEventHandler(OnGraphRemoved);
-            GraphChangedHandler = new GraphEventHandler(OnGraphChanged);
-            GraphMergedHandler = new GraphEventHandler(OnGraphMerged);
-            GraphClearedHandler = new GraphEventHandler(OnGraphCleared);
+            GraphAddedHandler = OnGraphAdded;
+            GraphRemovedHandler = OnGraphRemoved;
+            GraphChangedHandler = OnGraphChanged;
+            GraphMergedHandler = OnGraphMerged;
+            GraphClearedHandler = OnGraphCleared;
 
             // Attach Handlers to the Graph Collection
             _graphs.GraphAdded += GraphAddedHandler;
@@ -165,11 +164,22 @@ namespace VDS.RDF
         /// Removes a Graph from the Triple Store.
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to Remove.</param>
+        [Obsolete("Replaced by Remove(IRefNode)")]
         public virtual bool Remove(Uri graphUri)
         {
-            return _graphs.Remove(graphUri);
+            return _graphs.Remove(graphUri == null ? null : new UriNode(graphUri));
         }
 
+
+        /// <summary>
+        /// Removes a graph from the triple store.
+        /// </summary>
+        /// <param name="graphName">The name of the graph to remove.</param>
+        /// <returns>True if the operation removed a graph, false if no matching graph was found to remove.</returns>
+        public virtual bool Remove(IRefNode graphName)
+        {
+            return _graphs.Remove(graphName);
+        }
         #endregion
 
         #region Graph Retrieval
@@ -179,9 +189,21 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph Uri.</param>
         /// <returns>True if the Graph exists in the Triple Store.</returns>
+        [Obsolete("Replaced by HasGraph(IRefNode)")]
         public bool HasGraph(Uri graphUri)
         {
-            return _graphs.Contains(graphUri);
+            return _graphs.Contains(graphUri == null ? null : new UriNode(graphUri));
+        }
+
+        /// <summary>
+        /// Checks whether the graph with the given name is in this triple store.
+        /// </summary>
+        /// <param name="graphName">The name of the graph to check for.</param>
+        /// <returns>True if this store contains a graph with the specified name, false otherwise.</returns>
+        /// <remarks>Pass null for<paramref name="graphName"/> to check for the default (unnamed) graph.</remarks>
+        public bool HasGraph(IRefNode graphName)
+        {
+            return _graphs.Contains(graphName);
         }
 
         /// <summary>
@@ -189,13 +211,21 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by this[IRefNode]")]
         public IGraph this[Uri graphUri]
         {
             get
             {
-                return _graphs[graphUri];
+                return _graphs[graphUri == null ? null : new UriNode(graphUri)];
             }
         }
+
+        /// <summary>
+        /// Gets a graph from the triple store.
+        /// </summary>
+        /// <param name="graphName">The name of the graph to be retrieved. May be null to retrieve the default (unnamed) graph.</param>
+        /// <returns></returns>
+        public IGraph this[IRefNode graphName] => _graphs[graphName];
 
         #endregion
 

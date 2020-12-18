@@ -38,8 +38,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class ModifyImpl : UpdateImpl, IModify
     {
 
-        public ModifyImpl(INode node, SpinProcessor graph)
-            : base(node, graph)
+        public ModifyImpl(INode node, IGraph graph, SpinProcessor processor)
+            : base(node, graph, processor)
         {
         }
 

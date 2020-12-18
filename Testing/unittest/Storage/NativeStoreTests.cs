@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing;
 using Xunit;
@@ -43,7 +44,8 @@ namespace VDS.RDF.Storage
         {
             //Load in our Test Graph
             var ttlparser = new TurtleParser();
-            var g = new Graph();
+            var testGraphName  =new UriNode(new Uri("http://example.org/testGraph"));
+            var g = new Graph(testGraphName);
             ttlparser.Load(g, "resources\\Turtle.ttl");
 
             Assert.False(g.IsEmpty, "Test Graph should be non-empty");
@@ -63,7 +65,7 @@ namespace VDS.RDF.Storage
             //Load Back from each Manager
             foreach (IStorageProvider manager in managers)
             {
-                var native = new StoreGraphPersistenceWrapper(manager, g.BaseUri);
+                var native = new StoreGraphPersistenceWrapper(manager, g.Name);
                 Assert.False(native.IsEmpty, "Retrieved Graph should contain Triples");
                 Assert.Equal(g.Triples.Count, native.Triples.Count);
                 native.Dispose();

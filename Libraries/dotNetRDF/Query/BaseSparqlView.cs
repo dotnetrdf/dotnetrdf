@@ -57,14 +57,16 @@ namespace VDS.RDF.Query
         protected ITripleStore _store;
 
         private bool _requiresInvalidate ;
-        private object _lock = new object();
+        private readonly object _lock = new object();
 
         /// <summary>
         /// Creates a new SPARQL View.
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        protected BaseSparqlView(string sparqlQuery, ITripleStore store)
+        /// <param name="name">The graph name to assign to the view.</param>
+        protected BaseSparqlView(string sparqlQuery, ITripleStore store, IRefNode name = null)
+            : base(name)
         {
             var parser = new SparqlQueryParser();
             _q = parser.ParseFromString(sparqlQuery);
@@ -77,15 +79,18 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        protected BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store)
-            : this(sparqlQuery.ToString(), store) { }
+        /// <param name="name">The graph name to assign to the view.</param>
+        protected BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store, IRefNode name = null)
+            : this(sparqlQuery.ToString(), store, name) { }
 
         /// <summary>
         /// Creates a new SPARQL View.
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <param name="store">Triple Store to query.</param>
-        protected BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store)
+        /// <param name="name">The graph name to assign to the view.</param>
+        protected BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store, IRefNode name = null)
+            : base(name)
         {
             _q = sparqlQuery;
             _store = store;

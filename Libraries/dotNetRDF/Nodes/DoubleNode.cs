@@ -43,11 +43,10 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new double valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Double value.</param>
         /// <param name="lexicalValue">Lexical value.</param>
-        public DoubleNode(IGraph g, double value, string lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), SparqlNumericType.Double)
+        public DoubleNode(double value, string lexicalValue)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), SparqlNumericType.Double)
         {
             _value = value;
         }
@@ -55,10 +54,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new double valued node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Double value.</param>
-        public DoubleNode(IGraph g, double value)
-            : this(g, value, value.ToString(CultureInfo.InvariantCulture)) { }
+        public DoubleNode(double value)
+            : this(value, value.ToString(CultureInfo.InvariantCulture)) { }
 
         /// <summary>
         /// Gets the integer value of the double.

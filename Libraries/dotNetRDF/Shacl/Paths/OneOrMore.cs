@@ -34,8 +34,8 @@ namespace VDS.RDF.Shacl.Paths
     internal class OneOrMore : Unary
     {
         [DebuggerStepThrough]
-        internal OneOrMore(INode node)
-            : base(node)
+        internal OneOrMore(INode node, IGraph shapesGraph)
+            : base(node, shapesGraph)
         {
         }
 
@@ -52,7 +52,7 @@ namespace VDS.RDF.Shacl.Paths
             get
             {
                 return
-                    new Triple(this, Vocabulary.OneOrMorePath.CopyNode(Graph), Argument).AsEnumerable()
+                    new Triple(this, Vocabulary.OneOrMorePath, Argument).AsEnumerable()
                     .Union(
                     Argument.AsTriples);
             }

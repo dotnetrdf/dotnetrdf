@@ -49,10 +49,7 @@ namespace VDS.RDF.Writing
         {
             var store = new TripleStore();
             store.Add(new Graph());
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/graph")
-            };
+            var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
             store.Add(g);
 
             var results = ExecuteQuery(store, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
@@ -89,10 +86,7 @@ namespace VDS.RDF.Writing
         {
             var store = new TripleStore();
             store.Add(new Graph());
-            var g = new Graph
-            {
-                BaseUri = new Uri("http://example.org/graph")
-            };
+            var g = new Graph(new UriNode(new Uri("http://example.org/graph")));
             INode subj = g.CreateBlankNode();
             INode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
             INode obj1 = g.CreateLiteralNode("with & ampersand");

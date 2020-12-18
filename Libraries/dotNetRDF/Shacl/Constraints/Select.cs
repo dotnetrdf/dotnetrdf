@@ -60,7 +60,7 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
+        protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report, SparqlQuery query)
         {
             var propertyShape = Shape as Shapes.Property;
 
@@ -69,7 +69,7 @@ namespace VDS.RDF.Shacl.Constraints
                 BindPath(query.RootGraphPattern, propertyShape.Path.SparqlPath);
             }
 
-            var solutions = (SparqlResultSet)focusNode.Graph.ExecuteQuery(query);
+            var solutions = (SparqlResultSet)dataGraph.ExecuteQuery(query);
 
             if (solutions.IsEmpty)
             {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Shacl.Constraints
 
                 if (solution.TryGetBoundValue("path", out INode pathValue) && pathValue.NodeType == NodeType.Uri)
                 {
-                    result.ResultPath = new Predicate(pathValue);
+                    result.ResultPath = new Predicate(pathValue, result.Graph);
                 }
                 else
                 {

@@ -399,7 +399,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveComment(ILiteralNode comment)
         {
-            return RemoveLiteralProperty(OntologyHelper.PropertyComment, (ILiteralNode)comment.CopyNode(_graph), true);
+            return RemoveLiteralProperty(OntologyHelper.PropertyComment, (ILiteralNode)comment, true);
         }
 
         /// <summary>
@@ -430,7 +430,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddDifferentFrom(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertyDifferentFrom, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyDifferentFrom, resource, true);
         }
 
         /// <summary>
@@ -477,7 +477,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveDifferentFrom(INode resource)
         {
-            return RemoveResourceProperty(OntologyHelper.PropertyDifferentFrom, resource.CopyNode(_graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyDifferentFrom, resource, true);
         }
 
         /// <summary>
@@ -512,7 +512,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddIsDefinedBy(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertyIsDefinedBy, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyIsDefinedBy, resource, true);
         }
 
         /// <summary>
@@ -551,7 +551,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveIsDefinedBy(INode resource)
         {
-            return RemoveResourceProperty(OntologyHelper.PropertyIsDefinedBy, resource.CopyNode(_graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyIsDefinedBy, resource, true);
         }
 
         /// <summary>
@@ -611,7 +611,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveLabel(ILiteralNode label)
         {
-            return RemoveLiteralProperty(OntologyHelper.PropertyLabel, (ILiteralNode)label.CopyNode(_graph), true);
+            return RemoveLiteralProperty(OntologyHelper.PropertyLabel, (ILiteralNode)label, true);
         }
 
         /// <summary>
@@ -642,7 +642,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSameAs(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertySameAs, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertySameAs, resource, true);
         }
 
         /// <summary>
@@ -689,7 +689,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSameAs(INode resource)
         {
-            return RemoveResourceProperty(OntologyHelper.PropertySameAs, resource.CopyNode(_graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertySameAs, resource, true);
         }
 
         /// <summary>
@@ -724,7 +724,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSeeAlso(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertySeeAlso, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertySeeAlso, resource, true);
         }
 
         /// <summary>
@@ -763,7 +763,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSeeAlso(INode resource)
         {
-            return RemoveResourceProperty(OntologyHelper.PropertySeeAlso, resource.CopyNode(_graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertySeeAlso, resource, true);
         }
 
         /// <summary>
@@ -793,7 +793,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddType(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertyType, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyType, resource, true);
         }
 
         /// <summary>
@@ -832,7 +832,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveType(INode resource)
         {
-            return RemoveResourceProperty(OntologyHelper.PropertyType, resource.CopyNode(_graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyType, resource, true);
         }
 
         /// <summary>
@@ -881,7 +881,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveVersionInfo(ILiteralNode info)
         {
-            return RemoveLiteralProperty(OntologyHelper.PropertyVersionInfo, (ILiteralNode)info.CopyNode(_graph), true);
+            return RemoveLiteralProperty(OntologyHelper.PropertyVersionInfo, (ILiteralNode)info, true);
         }
 
         /// <summary>

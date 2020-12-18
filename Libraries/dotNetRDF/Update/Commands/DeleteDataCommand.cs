@@ -126,6 +126,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public override bool AffectsGraph(Uri graphUri)
         {
             var affectedUris = new List<string>();
@@ -146,6 +147,35 @@ namespace VDS.RDF.Update.Commands
             if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
             return affectedUris.Contains(graphUri.ToSafeString());
+        }
+
+        /// <summary>
+        /// Gets whether the Command affects a given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public override bool AffectsGraph(IRefNode graphName)
+        {
+            var affectedUris = new List<string>();
+            if (_pattern.IsGraph)
+            {
+                affectedUris.Add(_pattern.GraphSpecifier.Value);
+            }
+            else
+            {
+                affectedUris.Add(string.Empty);
+            }
+
+            if (_pattern.HasChildGraphPatterns)
+            {
+                affectedUris.AddRange(from p in _pattern.ChildGraphPatterns
+                    where p.IsGraph
+                    select p.GraphSpecifier.Value);
+            }
+
+            if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
+
+            return affectedUris.Contains(graphName.ToSafeString());
         }
 
         /// <summary>

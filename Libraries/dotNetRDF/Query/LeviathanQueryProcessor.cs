@@ -76,7 +76,7 @@ namespace VDS.RDF.Query
 
             if (!_dataset.UsesUnionDefaultGraph)
             {
-                if (!_dataset.HasGraph(null))
+                if (!_dataset.HasGraph((IRefNode)null))
                 {
                     // Create the Default unnamed Graph if it doesn't exist and then Flush() the change
                     _dataset.AddGraph(new Graph());

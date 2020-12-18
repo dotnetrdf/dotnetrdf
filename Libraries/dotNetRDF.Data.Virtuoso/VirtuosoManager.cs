@@ -51,7 +51,7 @@ namespace VDS.RDF.Storage
     /// This class implements <see cref="IStorageProvider">IStorageProvider</see> allowing it to be used with any of the general classes that support this interface as well as the Virtuoso specific classes.
     /// </para>
     /// <para>
-    /// Although this class takes a Database Name to ensure compatability with any Virtuoso installation (i.e. this allows for the Native Quad Store to be in a non-standard database) generally you should always specify <strong>DB</strong> as the Database Name parameter.
+    /// Although this class takes a Database Name to ensure compatibility with any Virtuoso installation (i.e. this allows for the Native Quad Store to be in a non-standard database) generally you should always specify <strong>DB</strong> as the Database Name parameter.
     /// </para>
     /// <para>
     /// Virtuoso automatically assigns IDs to Blank Nodes input into it, these IDs are <strong>not</strong> based on the actual Blank Node ID so inputting a Blank Node with the same ID multiple times will result in multiple Nodes being created in Virtuoso.  This means that data containing Blank Nodes which is stored to Virtuoso and then retrieved will have different Blank Node IDs to those input.  In addition there is no guarentee that when you save a Graph containing Blank Nodes into Virtuoso that retrieving it will give the same Blank Node IDs even if the Graph being saved was originally retrieved from Virtuoso.  Finally please see the remarks on the <see cref="VirtuosoManager.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> method which deal with how insertion and deletion of triples containing blank nodes into existing graphs operates.
@@ -183,7 +183,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="connectionString">Connection String.</param>
         /// <remarks>
-        /// Allows the end user to specify a customised connection string.
+        /// Allows the end user to specify a customized connection string.
         /// </remarks>
         public VirtuosoManager(string connectionString)
         {
@@ -430,7 +430,8 @@ namespace VDS.RDF.Storage
                     return dateTimeOffset.ToLiteral(factory);
                 }
                 default:
-                    throw new RdfStorageException("Unexpected Object Type '" + n.GetType().ToString() + "' returned from SPASQL SELECT query to the Virtuoso Quad Store");
+                    throw new RdfStorageException(
+                        $"Unexpected Object Type '{n.GetType()}' returned from SPARQL SELECT query to the Virtuoso Quad Store");
             }
             return temp;
         }
@@ -444,6 +445,21 @@ namespace VDS.RDF.Storage
                 u = new Uri(VirtuosoRelativeBase, u);
             }
             return u;
+        }
+
+        private string UnmarshalName(IRefNode name)
+        {
+            if (name.NodeType == NodeType.Uri)
+            {
+                return UnmarshalUri(((IUriNode)name).Uri);
+            }
+
+            if (name.NodeType == NodeType.Blank)
+            {
+                return ((IBlankNode)name).InternalID;
+            }
+
+            throw new ArgumentException("Unexpected node type", nameof(name));
         }
 
         private string UnmarshalUri(Uri u)
@@ -475,28 +491,29 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public override void SaveGraph(IGraph g)
         {
-            if (g.BaseUri == null) throw new RdfStorageException("Cannot save a Graph without a Base URI to Virtuoso");
+            if (g.Name == null) throw new RdfStorageException("Cannot save a Graph without a name to Virtuoso");
 
             try
             {
                 Open(false);
 
                 //Delete the existing Graph (if it exists)
-                ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + UnmarshalUri(g.BaseUri) + "')");
+                ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + UnmarshalName(g.Name) + "')");
 
                 //Make a call to the TTLP() Virtuoso function
                 var cmd = new VirtuosoCommand();
                 cmd.CommandTimeout = _timeout > 0 ? _timeout : cmd.CommandTimeout;
                 cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
                 cmd.Parameters.Add("data", VirtDbType.VarChar);
-                cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
-                var baseUri = UnmarshalUri(g.BaseUri);
+                cmd.Parameters["data"].Value = Writing.StringWriter.Write(g, new NTriplesWriter());
+                //var baseUri = UnmarshalUri(g.BaseUri);
+                var baseUri = UnmarshalName(g.Name);
                 cmd.Parameters.Add("base", VirtDbType.VarChar);
                 cmd.Parameters.Add("graph", VirtDbType.VarChar);
                 cmd.Parameters["base"].Value = baseUri;
                 cmd.Parameters["graph"].Value = baseUri;
                 cmd.Connection = _db;
-                var result = cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
 
                 Close(false);
             }
@@ -1252,6 +1269,7 @@ namespace VDS.RDF.Storage
         /// Lists the Graphs in the store.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Replaced by ListGraphNames")]
         public override IEnumerable<Uri> ListGraphs()
         {
             try
@@ -1286,48 +1304,44 @@ namespace VDS.RDF.Storage
             {
                 Close(false);
             }
-            /*
+        }
+
+        /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public override IEnumerable<string> ListGraphNames()
+        {
             try
             {
-                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-                if (results is SparqlResultSet)
+                Open(false);
+                var results = new DataTable();
+                VirtuosoCommand cmd = _db.CreateCommand();
+                cmd.CommandTimeout = _timeout > 0 ? _timeout : cmd.CommandTimeout;
+                cmd.CommandText = "DB.DBA.SPARQL_SELECT_KNOWN_GRAPHS()";
+                var adapter = new VirtuosoDataAdapter(cmd);
+                adapter.Fill(results);
+                var graphs = new List<string>();
+                foreach (DataRow row in results.Rows)
                 {
-                    var graphs = new List<Uri>();
-                    foreach (SparqlResult r in ((SparqlResultSet) results))
-                    {
-                        if (r.HasValue("g"))
-                        {
-                            INode temp = r["g"];
-                            try
-                            {
-                                if (temp.NodeType == NodeType.Uri)
-                                {
-                                    graphs.Add(((IUriNode) temp).Uri);
-                                }
-                                else if (temp.NodeType == NodeType.Literal)
-                                {
-                                    //HACK: Virtuoso wrongly returns Literals instead of URIs in the results for the above query prior to Virtuoso 6.1.3
-                                    graphs.Add(UriFactory.Create(((ILiteralNode) temp).Value));
-                                }
-                            }
-                            catch
-                            {
-                                //HACK: Virtuoso has some special Graphs which have non-URI names so ignore these
-                                continue;
-                            }
-                        }
-                    }
-                    return graphs;
+                    graphs.Add(row[0].ToString());
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+
+                return graphs;
             }
             catch (Exception ex)
             {
                 throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
-            }*/
+            }
+            finally
+            {
+                Close(false);
+            }
         }
 
         /// <summary>

@@ -38,8 +38,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class AggregationImpl : AbstractSPINResource, IAggregation
     {
 
-        public AggregationImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public AggregationImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Spin.Model
             Triple exprS = getProperty(SP.PropertyExpression);
             if (exprS != null && !(exprS.Object is ILiteralNode))
             {
-                IResource r = Resource.Get(exprS.Object, getModel());
+                IResource r = Resource.Get(exprS.Object, Graph, getModel());
                 IResource expr = SPINFactory.asExpression(r);
                 if (expr is IPrintable)
                 {

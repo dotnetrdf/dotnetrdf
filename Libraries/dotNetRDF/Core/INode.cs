@@ -35,9 +35,9 @@ namespace VDS.RDF
     /// </summary>
     public interface INode 
         : IComparable<INode>, IComparable<IBlankNode>, IComparable<IGraphLiteralNode>, IComparable<ILiteralNode>,
-          IComparable<IUriNode>, IComparable<IVariableNode>,
+          IComparable<IUriNode>, IComparable<IVariableNode>, IComparable<IRefNode>,
           IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
-          IEquatable<IUriNode>, IEquatable<IVariableNode>
+          IEquatable<IUriNode>, IEquatable<IVariableNode>, IEquatable<IRefNode>
     {
         /// <summary>
         /// Nodes have a Type.
@@ -46,23 +46,6 @@ namespace VDS.RDF
         NodeType NodeType
         {
             get;
-        }
-
-        /// <summary>
-        /// Gets the Graph the Node belongs to.
-        /// </summary>
-        IGraph Graph
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Graph URI associated with a Node.
-        /// </summary>
-        Uri GraphUri
-        {
-            get;
-            set;
         }
 
         /// <summary>

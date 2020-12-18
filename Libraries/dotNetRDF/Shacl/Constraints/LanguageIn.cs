@@ -52,19 +52,19 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             IEnumerable<INode> items = Graph.GetListItems(this);
 
             IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
-                where !items.Any(item => LangMatches(valueNode, item))
+                where !items.Any(item => LangMatches(dataGraph, valueNode, item))
                 select valueNode;
 
             return ReportValueNodes(focusNode, invalidValues, report);
         }
 
-        private static bool LangMatches(INode node, INode item)
+        private static bool LangMatches(IGraph dataGraph, INode node, INode item)
         {
             var query = new SparqlParameterizedString(@"
 ASK {
@@ -74,7 +74,7 @@ ASK {
             query.SetVariable("value", node);
             query.SetVariable("language", item);
 
-            var result = (SparqlResultSet)node.Graph.ExecuteQuery(query);
+            var result = (SparqlResultSet)dataGraph.ExecuteQuery(query);
 
             return result.Result;
         }

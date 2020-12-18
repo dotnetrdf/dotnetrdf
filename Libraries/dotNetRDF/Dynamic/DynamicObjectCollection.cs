@@ -86,7 +86,7 @@ namespace VDS.RDF.Dynamic
                 return
                     from triple
                     in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
-                    select triple.Object.AsObject(subject.BaseUri);
+                    select triple.Object.AsObject(subject.Graph, subject.BaseUri);
             }
         }
 

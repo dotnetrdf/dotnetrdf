@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
             IValuedNode result = _expr.Evaluate(context, bindingID);
             if (result != null)
             {
-                if (_expressions.Count == 0) return new BooleanNode(null, false);
+                if (_expressions.Count == 0) return new BooleanNode(false);
 
                 // Have to use SPARQL Value Equality here
                 // If any expressions error and nothing in the set matches then an error is thrown
@@ -66,7 +66,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
                     try
                     {
                         IValuedNode temp = expr.Evaluate(context, bindingID);
-                        if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(null, true);
+                        if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(true);
                     }
                     catch
                     {
@@ -80,12 +80,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
                 }
                 else
                 {
-                    return new BooleanNode(null, false);
+                    return new BooleanNode(false);
                 }
             }
             else
             {
-                return new BooleanNode(null, false);
+                return new BooleanNode(false);
             }
         }
 

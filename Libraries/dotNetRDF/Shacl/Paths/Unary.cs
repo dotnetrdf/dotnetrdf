@@ -32,8 +32,8 @@ namespace VDS.RDF.Shacl.Paths
     internal abstract class Unary : Path
     {
         [DebuggerStepThrough]
-        protected Unary(INode node)
-            : base(node)
+        protected Unary(INode node, IGraph shapesGraph)
+            : base(node, shapesGraph)
         {
         }
 
@@ -44,7 +44,7 @@ namespace VDS.RDF.Shacl.Paths
                 return
                     Graph.GetTriplesWithSubject(this)
                     .Select(t => t.Object)
-                    .Select(Path.Parse)
+                    .Select(x=>Path.Parse(x, Graph))
                     .Single();
             }
         }

@@ -42,8 +42,8 @@ namespace VDS.RDF.Query.Spin.Model
         public const String INDENTATION = " ";
 
 
-        public AbstractSPINResource(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public AbstractSPINResource(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 
@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Spin.Model
 
         private String getPrefix(Uri ns, ISparqlPrinter context)
         {
-            var prefix = getSource().Graph.NamespaceMap.GetPrefix(ns);
+            var prefix = Graph.NamespaceMap.GetPrefix(ns);
             if (prefix == null && context.getUseExtraPrefixes())
             {
                 INamespaceMapper extras = ExtraPrefixes.getExtraPrefixes();

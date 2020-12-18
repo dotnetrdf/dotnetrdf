@@ -47,9 +47,9 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            return new Shapes.Property(this).Validate(focusNode, valueNodes, report);
+            return new Shapes.Property(this, this.Graph).Validate(dataGraph, focusNode, valueNodes, report);
         }
     }
 }

@@ -35,8 +35,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class InsertDataImpl : UpdateImpl, IInsertData
     {
 
-        public InsertDataImpl(INode node, SpinProcessor graph)
-            : base(node, graph)
+        public InsertDataImpl(INode node, IGraph graph, SpinProcessor processor)
+            : base(node, graph, processor)
         {
 
         }

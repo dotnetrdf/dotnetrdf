@@ -55,23 +55,23 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 if (arg.Value.Equals(string.Empty))
                 {
                     // The Empty String ends with the Empty String
-                    return new BooleanNode(null, true);
+                    return new BooleanNode(true);
                 }
                 else
                 {
                     // Empty String doesn't end with a non-empty string
-                    return new BooleanNode(null, false);
+                    return new BooleanNode(false);
                 }
             }
             else if (arg.Value.Equals(string.Empty))
             {
                 // Any non-empty string ends with the empty string
-                return new BooleanNode(null, true);
+                return new BooleanNode(true);
             }
             else
             {
                 // Otherwise evalute the EndsWith
-                return new BooleanNode(null, stringLit.Value.EndsWith(arg.Value));
+                return new BooleanNode(stringLit.Value.EndsWith(arg.Value));
             }
         }
 

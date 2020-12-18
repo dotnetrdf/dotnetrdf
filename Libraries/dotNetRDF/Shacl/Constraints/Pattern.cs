@@ -59,7 +59,7 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             var query = new SparqlParameterizedString(@"
 ASK {
@@ -77,7 +77,7 @@ ASK {
                 }
 
                 query.SetVariable("value", node);
-                return !((SparqlResultSet)node.Graph.ExecuteQuery(query)).Result;
+                return !((SparqlResultSet)dataGraph.ExecuteQuery(query)).Result;
             }
 
             IEnumerable<INode> invalidValues = valueNodes.Where(isInvalid);

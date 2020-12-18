@@ -33,11 +33,11 @@ using VDS.RDF.Shacl.Validation;
 
 namespace VDS.RDF.Shacl
 {
-    internal abstract class Constraint : WrapperNode
+    internal abstract class Constraint : GraphWrapperNode
     {
         [DebuggerStepThrough]
         protected Constraint(Shape shape, INode value)
-            : base(value)
+            : base(value, shape.Graph)
         {
             Shape = shape;
         }
@@ -106,7 +106,7 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        internal abstract bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report);
+        internal abstract bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report);
 
         protected bool ReportValueNodes(INode focusNode, IEnumerable<INode> invalidValues, Report report)
         {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Shacl
                 if (Shape is Shapes.Property propertyShape)
                 {
                     result.ResultPath = propertyShape.Path;
-                    report.Graph.Assert(propertyShape.Path.AsTriples.Select(t => t.CopyTriple(report.Graph)));
+                    report.Graph.Assert(propertyShape.Path.AsTriples);
                 }
 
                 result.ResultValue = invalidValue;
@@ -167,8 +167,8 @@ namespace VDS.RDF.Shacl
                 result.Message = Message;
                 result.SourceShape = Shape;
                 result.FocusNode = invalidValue.Subject;
-                result.ResultPath = Path.Parse(invalidValue.Predicate);
-                report.Graph.Assert(result.ResultPath.AsTriples.Select(t => t.CopyTriple(report.Graph)));
+                result.ResultPath = Path.Parse(invalidValue.Predicate, Graph);
+                report.Graph.Assert(result.ResultPath.AsTriples);
                 result.ResultValue = invalidValue.Object;
 
                 report.Results.Add(result);
@@ -201,7 +201,7 @@ namespace VDS.RDF.Shacl
             if (Shape is Shapes.Property propertyShape)
             {
                 result.ResultPath = propertyShape.Path;
-                report.Graph.Assert(propertyShape.Path.AsTriples.Select(t => t.CopyTriple(report.Graph)));
+                report.Graph.Assert(propertyShape.Path.AsTriples);
             }
 
             report.Results.Add(result);
@@ -235,7 +235,7 @@ namespace VDS.RDF.Shacl
                 if (Shape is Shapes.Property propertyShape)
                 {
                     result.ResultPath = propertyShape.Path;
-                    report.Graph.Assert(propertyShape.Path.AsTriples.Select(t => t.CopyTriple(report.Graph)));
+                    report.Graph.Assert(propertyShape.Path.AsTriples);
                 }
 
                 report.Results.Add(result);

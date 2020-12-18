@@ -37,7 +37,8 @@ namespace VDS.RDF.Skos
         /// Creates a new concept schemes for the given resource.
         /// </summary>
         /// <param name="resource">Resource representing the concept scheme.</param>
-        public SkosConceptScheme(INode resource) : base(resource) { }
+        /// <param name="graph">The graph containing the concept scheme.</param>
+        public SkosConceptScheme(INode resource, IGraph graph) : base(resource, graph) { }
 
         /// <summary>
         /// Gets the top concepts of the concept scheme.

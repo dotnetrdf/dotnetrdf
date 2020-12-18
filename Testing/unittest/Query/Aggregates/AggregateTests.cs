@@ -192,9 +192,10 @@ WHERE
 
             Assert.False(graph.IsEmpty, "CONSTRUCTed graph should not be empty");
 
-            // here a graph name is given to the result graph            
-            graph.BaseUri = new Uri("http://semanticsage.home.lc/files/LearningStyles.rdf#maxValues");
-            store.Add(graph, true);
+            // here a graph name is given to the result graph
+            var graph2 = new Graph(new UriNode(new Uri("http://semanticsage.home.lc/files/LearningStyles.rdf#maxValues")));
+            graph2.Assert(graph.Triples);
+            store.Add(graph2, true);
 
             var actualResults = ExecuteQuery(store, @"
                     PREFIX sage: <http://www.semanticsage.home.lc/LearningStyles.owl#>

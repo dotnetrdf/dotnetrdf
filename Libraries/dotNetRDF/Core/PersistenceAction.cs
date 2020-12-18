@@ -33,49 +33,40 @@ namespace VDS.RDF
     /// </summary>
     public class TriplePersistenceAction
     {
-        private bool _delete = false;
-        private Triple _t;
-
         /// <summary>
         /// Creates a new Triple Persistence Action (an insertion/deletion).
         /// </summary>
         /// <param name="t">Triple to persist.</param>
+        /// <param name="graphName">The name of the modified graph.</param>
         /// <param name="toDelete">Whether the Triple is to be deleted.</param>
-        public TriplePersistenceAction(Triple t, bool toDelete)
+        public TriplePersistenceAction(Triple t, IRefNode graphName, bool toDelete)
         {
-            if (t == null) throw new ArgumentNullException("t");
-            _t = t;
-            _delete = toDelete;
+            Triple = t ?? throw new ArgumentNullException(nameof(t));
+            Graph = graphName;
+            IsDelete = toDelete;
         }
 
         /// <summary>
         /// Creates a new Triple Persistence Action (an insertion).
         /// </summary>
         /// <param name="t">Triple to persist.</param>
-        public TriplePersistenceAction(Triple t)
-            : this(t, false) { }
+        public TriplePersistenceAction(Triple t, IRefNode graphName)
+            : this(t, graphName, false) { }
 
         /// <summary>
         /// Gets the Triple to persist.
         /// </summary>
-        public Triple Triple
-        {
-            get
-            {
-                return _t;
-            }
-        }
+        public Triple Triple { get; }
+
+        /// <summary>
+        /// Gets the name of the graph modified by this action.
+        /// </summary>
+        public IRefNode Graph { get; }
 
         /// <summary>
         /// Gets whether the action is a Delete Action.
         /// </summary>
-        public bool IsDelete
-        {
-            get
-            {
-                return _delete;
-            }
-        }
+        public bool IsDelete { get; }
     }
 
     /// <summary>

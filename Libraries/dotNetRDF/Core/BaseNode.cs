@@ -24,10 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Schema;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -39,32 +35,17 @@ namespace VDS.RDF
     public abstract class BaseNode : INode
     {
         /// <summary>
-        /// Reference to the Graph that the Node belongs to.
-        /// </summary>
-        protected IGraph _graph;
-        /// <summary>
-        /// Uri of the Graph that the Node belongs to.
-        /// </summary>
-        protected Uri _graphUri;
-        /// <summary>
         /// Node Type for the Node.
         /// </summary>
-        protected NodeType _nodetype = NodeType.Literal;
-        /// <summary>
-        /// Stores the computed Hash Code for this Node.
-        /// </summary>
-        protected int _hashcode;
+        protected NodeType _nodeType;
 
         /// <summary>
         /// Base Constructor which instantiates the Graph reference, Graph Uri and Node Type of the Node.
         /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
         /// <param name="type">Node Type.</param>
-        public BaseNode(IGraph g, NodeType type)
+        protected BaseNode(NodeType type)
         {
-            _graph = g;
-            if (_graph != null) _graphUri = _graph.BaseUri;
-            _nodetype = type;
+            _nodeType = type;
         }
 
         /// <summary>
@@ -74,35 +55,13 @@ namespace VDS.RDF
         {
             get
             {
-                return _nodetype;
+                return _nodeType;
             }
         }
 
-        /// <summary>
-        /// Nodes belong to a Graph.
-        /// </summary>
-        public IGraph Graph
-        {
-            get
-            {
-                return _graph;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Graph Uri of the Node.
-        /// </summary>
-        public Uri GraphUri
-        {
-            get
-            {
-                return _graphUri;
-            }
-            set
-            {
-                _graphUri = value;
-            }
-        }
+        /// <summary>Serves as the default hash function.</summary>
+        /// <returns>A hash code for the current object.</returns>
+        public abstract override int GetHashCode();
 
         /// <summary>
         /// Nodes must implement an Equals method.
@@ -147,23 +106,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets a Hash Code for a Node.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// Implemented by getting the Hash Code of the result of ToString for a Node prefixed with its Node Type, this is pre-computed for efficiency when a Node is created since Nodes are immutable.  See remarks on ToString for more detail.
-        /// </para>
-        /// <para>
-        /// Since Hash Codes are based on a String representation there is no guarantee of uniqueness though the same Node will always give the same Hash Code (on a given Platform - see the MSDN Documentation for <see cref="string.GetHashCode">string.GetHashCode()</see> for further details).
-        /// </para>
-        /// </remarks>
-        public override int GetHashCode()
-        {
-            return _hashcode;
-        }
-
-        /// <summary>
         /// The Equality operator is defined for Nodes.
         /// </summary>
         /// <param name="a">First Node.</param>
@@ -172,15 +114,12 @@ namespace VDS.RDF
         /// <remarks>Uses the Equals method to evaluate the result.</remarks>
         public static bool operator ==(BaseNode a, BaseNode b)
         {
-            if (((object)a) == null)
+            if (a is null)
             {
-                if (((object)b) == null) return true;
-                return false;
+                return b is null;
             }
-            else
-            {
-                return a.Equals(b);
-            }
+
+            return a.Equals(b);
         }
 
         /// <summary>
@@ -192,15 +131,12 @@ namespace VDS.RDF
         /// <remarks>Uses the Equals method to evaluate the result.</remarks>
         public static bool operator !=(BaseNode a, BaseNode b)
         {
-            if (((object)a) == null)
+            if (a is null)
             {
-                if (((object)b) == null) return false;
-                return true;
+                return !(b is null);
             }
-            else
-            {
-                return !a.Equals(b);
-            }
+
+            return !a.Equals(b);
         }
 
         /// <summary>
@@ -264,6 +200,16 @@ namespace VDS.RDF
         public abstract int CompareTo(IVariableNode other);
 
         /// <summary>
+        /// Nodes must implement a CompareTo method to allow them to be Sorted.
+        /// </summary>
+        /// <param name="other">Node to compare self to.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Implementations should use the SPARQL Term Sort Order for ordering nodes (as opposed to value sort order).  Standard implementations of Node type specific comparisons can be found in <see cref="ComparisonHelper">ComparisonHelper</see>.
+        /// </remarks>
+        public abstract int CompareTo(IRefNode other);
+
+        /// <summary>
         /// Nodes must implement an Equals method so we can do type specific equality.
         /// </summary>
         /// <param name="other">Node to check for equality.</param>
@@ -322,6 +268,16 @@ namespace VDS.RDF
         /// Nodes implementations are also required to implement an override of the non-generic Equals method.  Standard implementations of some equality comparisons can be found in <see cref="EqualityHelper">EqualityHelper</see>.
         /// </remarks>
         public abstract bool Equals(IVariableNode other);
+
+        /// <summary>
+        /// Nodes must implement an Equals method so we can do type specific equality.
+        /// </summary>
+        /// <param name="other">Node to check for equality.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Nodes implementations are also required to implement an override of the non-generic Equals method.  Standard implementations of some equality comparisons can be found in <see cref="EqualityHelper">EqualityHelper</see>.
+        /// </remarks>
+        public abstract bool Equals(IRefNode other);
 
     }
 }

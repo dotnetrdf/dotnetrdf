@@ -60,12 +60,12 @@ namespace VDS.RDF.Query
         {
             var query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
+            query.CommandText = "SELECT ?subj WHERE { { ?subj a ex:Car } UNION { ?subj a ex:Plane } } ORDER BY ?subj";
 
             var bindingsQuery = new SparqlParameterizedString
             {
                 Namespaces = query.Namespaces,
-                CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?type { ex:Car ex:Plane }"
+                CommandText = "SELECT ?subj WHERE { ?subj a ?type } ORDER BY ?subj VALUES ?type { ex:Car ex:Plane }"
             };
 
             TestBindings(GetTestData(), bindingsQuery, query);
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query
         {
             var query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
+            query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car } VALUES ?subj {ex:FordFiesta}";
 
             var bindingsQuery = new SparqlParameterizedString
             {

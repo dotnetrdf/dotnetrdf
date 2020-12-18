@@ -32,7 +32,7 @@ namespace VDS.RDF
     /// Interface for URI Nodes.
     /// </summary>
     public interface IUriNode
-        : INode
+        : IRefNode
     {
         /// <summary>
         /// Gets the URI the Node represents.

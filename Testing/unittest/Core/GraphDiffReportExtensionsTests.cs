@@ -78,14 +78,10 @@ _:s <urn:p> <urn:o> .
         [Fact]
         public void Supports_named_graph_in_with_clause()
         {
-            var older = new Graph
-            {
-                BaseUri = new Uri("urn:g")
-            };
-
+            var older = new Graph(new UriNode(new Uri("urn:g")));
             var newer = GraphFrom("<urn:s> <urn:p> <urn:o> .");
 
-            var result = ExecuteDiff(older, newer, older.BaseUri);
+            var result = ExecuteDiff(older, newer, older.Name);
 
             Assert.Equal(newer, result);
         }
@@ -126,10 +122,10 @@ _:s <urn:p> <urn:o> .
             return g;
         }
 
-        private IGraph ExecuteDiff(IGraph older, IGraph newer, Uri graphUri = null)
+        private IGraph ExecuteDiff(IGraph older, IGraph newer, IRefNode graphUri = null)
         {
             var diff = new GraphDiff().Difference(older, newer);
-            var update = diff.AsUpdate(graphUri);
+            var update = diff.AsUpdate((graphUri as IUriNode)?.Uri);
             var sparql = update.ToString();
 
             output.WriteLine(sparql);

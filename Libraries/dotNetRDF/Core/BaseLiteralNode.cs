@@ -25,9 +25,7 @@
 */
 
 using System;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Xml;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
 
@@ -40,38 +38,31 @@ namespace VDS.RDF
     public abstract class BaseLiteralNode 
         : BaseNode, ILiteralNode, IEquatable<BaseLiteralNode>, IComparable<BaseLiteralNode>
     {
+        private readonly int _hashCode;
+
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal BaseLiteralNode(IGraph g, string literal, bool normalize)
-            : base(g, NodeType.Literal)
+        protected internal BaseLiteralNode(string literal, bool normalize)
+            : base(NodeType.Literal)
         {
             Value = normalize ? literal.Normalize() : literal;
             DataType = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
-            _hashcode = ComputeHashCode();
+            _hashCode = ComputeHashCode();
         }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal BaseLiteralNode(IGraph g, string literal, string langspec, bool normalize)
-            : base(g, NodeType.Literal)
+        protected internal BaseLiteralNode(string literal, string langspec, bool normalize)
+            : base(NodeType.Literal)
         {
-            if (normalize)
-            {
-                Value = literal.Normalize();
-            }
-            else
-            {
-                Value = literal;
-            }
+            Value = normalize ? literal.Normalize() : literal;
             Language = langspec != null ? langspec.ToLowerInvariant() : string.Empty;
 
             // Compute Hash Code
@@ -79,30 +70,29 @@ namespace VDS.RDF
             {
                 // Empty Language Specifier equivalent to a string literal
                 DataType = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
-                _hashcode = ComputeHashCode();
+                _hashCode = ComputeHashCode();
             }
             else
             {
                 DataType = UriFactory.Create(RdfSpecsHelper.RdfLangString);
-                _hashcode = ComputeHashCode();
+                _hashCode = ComputeHashCode();
             }
         }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="datatype">Uri for the Literals Data Type.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal BaseLiteralNode(IGraph g, string literal, Uri datatype, bool normalize)
-            : base(g, NodeType.Literal)
+        protected internal BaseLiteralNode(string literal, Uri datatype, bool normalize)
+            : base(NodeType.Literal)
         {
             Value = normalize ? literal.Normalize() : literal;
             DataType = datatype;
 
             // Compute Hash Code
-            _hashcode = ComputeHashCode();
+            _hashCode = ComputeHashCode();
         }
 
         /// <summary>
@@ -146,7 +136,7 @@ namespace VDS.RDF
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return _hashCode;
         }
 
         private int ComputeHashCode()
@@ -170,7 +160,7 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Equals(INode other)
         {
-            if ((object)other == null) return false;
+            if (other == null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -178,11 +168,19 @@ namespace VDS.RDF
             {
                 return Equals((ILiteralNode)other);
             }
-            else
-            {
-                // Can only be equal to a LiteralNode
-                return false;
-            }
+
+            // Can only be equal to a LiteralNode
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether this Node is equal to a Ref Node (should always be false).
+        /// </summary>
+        /// <param name="other">Ref Node.</param>
+        /// <returns></returns>
+        public override bool Equals(IRefNode other)
+        {
+            return false;
         }
 
         /// <summary>
@@ -212,9 +210,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
-            if (other == null) return false;
-
-            return EqualityHelper.AreLiteralsEqual(this, other);
+            return other != null && EqualityHelper.AreLiteralsEqual(this, other);
         }
 
         /// <summary>
@@ -276,9 +272,15 @@ namespace VDS.RDF
         /// <param name="other">Node to Compare To.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Literal Nodes are greater than Blank Nodes, Uri Nodes and Nulls, they are less than Graph Literal Nodes.
-        /// <br /><br />
-        /// Two Literal Nodes are initially compared based upon Data Type, untyped literals are less than typed literals.  Two untyped literals are compared purely on lexical value, Language Specifier has no effect on the ordering.  This means Literal Nodes are only partially ordered, for example "hello"@en and "hello"@en-us are considered to be the same for ordering purposes though they are different for equality purposes.  Datatyped Literals can only be properly ordered if they are one of a small subset of types (Integers, Booleans, Date Times, Strings and URIs).  If the datatypes for two Literals are non-matching they are ordered on Datatype Uri, this ensures that each range of Literal Nodes is sorted to some degree.  Again this also means that Literals are partially ordered since unknown datatypes will only be sorted based on lexical value and not on actual value.
+        /// <para>Literal Nodes are greater than Blank Nodes, Uri Nodes and Nulls, they are less than Graph Literal Nodes.</para>
+        /// <para>
+        /// Two Literal Nodes are initially compared based upon Data Type, untyped literals are less than typed literals.
+        /// Two untyped literals are compared purely on lexical value, Language Specifier has no effect on the ordering.
+        /// This means Literal Nodes are only partially ordered, for example "hello"@en and "hello"@en-us are considered to be the same for ordering purposes though they are different for equality purposes.
+        /// Data-typed Literals can only be properly ordered if they are one of a small subset of types (Integers, Booleans, Date Times, Strings and URIs).
+        /// If the datatypes for two Literals are non-matching they are ordered on Datatype Uri, this ensures that each range of Literal Nodes is sorted to some degree.
+        /// Again this also means that Literals are partially ordered since unknown datatypes will only be sorted based on lexical value and not on actual value.
+        /// </para>
         /// </remarks>
         public override int CompareTo(INode other)
         {
@@ -306,6 +308,17 @@ namespace VDS.RDF
                 // Return -1 to indicate this
                 return -1;
             }
+        }
+
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
+        /// </summary>
+        /// <param name="other">Node to test against.</param>
+        /// <returns></returns>
+        public override int CompareTo(IRefNode other)
+        {
+            // We are always greater than nulls, blank nodes or URI nodes
+            return 1;
         }
 
         /// <summary>

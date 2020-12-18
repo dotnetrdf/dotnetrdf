@@ -39,26 +39,32 @@ namespace VDS.RDF.Skos
         /// </summary>
         public INode Resource { get; private set; }
 
-        internal SkosResource(INode resource)
+        /// <summary>
+        /// Gets the graph containing the SKOS resource.
+        /// </summary>
+        public IGraph Graph { get; }
+
+        internal SkosResource(INode resource, IGraph graph)
         {
             Resource = resource ?? throw new RdfSkosException("Cannot create a SKOS Resource for a null Resource");
+            Graph = graph ?? throw new RdfSkosException("Cannot create a SKOS resource for a null graph");
         }
 
         internal IEnumerable<SkosConcept> GetConcepts(string predicateUri)
         {
             return 
                 GetObjects(predicateUri)
-                .Select(o => new SkosConcept(o));
+                .Select(o => new SkosConcept(o, Graph));
         }
 
         internal IEnumerable<INode> GetObjects(string predicateUri)
         {
-            IUriNode predicate = Resource.Graph
+            IUriNode predicate = Graph
                 .CreateUriNode(
                     UriFactory.Create(
                         predicateUri));
 
-            return Resource.Graph
+            return Graph
                 .GetTriplesWithSubjectPredicate(Resource, predicate)
                 .Select(t => t.Object);
         }

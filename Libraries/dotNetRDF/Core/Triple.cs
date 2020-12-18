@@ -55,24 +55,13 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
         public Triple(INode subj, INode pred, INode obj)
         {
-            // Require that all Nodes belong to the same Graph
-            if (!ReferenceEquals(subj.Graph, pred.Graph) || !ReferenceEquals(pred.Graph, obj.Graph))
-            {
-                throw new RdfException("Subject, Predicate and Object Nodes must all come from the same Graph/Node Factory - use Tools.CopyNode() to transfer nodes between Graphs");
-            }
-            else
-            {
-                // Set the Graph property from the Subject
-                Graph = subj.Graph;
-
-                // Store the Three Nodes of the Triple
+           // Store the Three Nodes of the Triple
                 Subject = subj;
                 Predicate = pred;
                 Object = obj;
 
                 // Compute Hash Code
-                _hashcode = (Subject.GetHashCode().ToString() + Predicate.GetHashCode().ToString() + Object.GetHashCode().ToString()).GetHashCode();
-            }
+                _hashcode = Tools.CombineHashCodes(Subject, Predicate, Object);
         }
 
         /// <summary>
@@ -223,7 +212,7 @@ namespace VDS.RDF
         /// <returns>True if the Triple has a UriNode with the given Uri.</returns>
         public bool Involves(Uri uri)
         {
-            IUriNode temp = new UriNode(null, uri);
+            IUriNode temp = new UriNode(uri);
 
             // Does the Subject involve this Uri?
             if (Subject.Equals(temp)) return true;

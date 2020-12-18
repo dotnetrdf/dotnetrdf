@@ -220,11 +220,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 var text = textNode.AsString();
                 if (_regex != null)
                 {
-                    return new BooleanNode(null, _regex.IsMatch(text));
+                    return new BooleanNode(_regex.IsMatch(text));
                 }
                 else
                 {
-                    return new BooleanNode(null, Regex.IsMatch(text, _pattern, _options));
+                    return new BooleanNode(Regex.IsMatch(text, _pattern, _options));
                 }
             }
             else

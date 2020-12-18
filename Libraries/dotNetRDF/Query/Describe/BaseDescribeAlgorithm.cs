@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Describe
         private List<INode> GetNodes(INodeFactory factory, SparqlEvaluationContext context)
         {
             INamespaceMapper nsmap = (context.Query != null ? context.Query.NamespaceMap : new NamespaceMapper(true));
-            Uri baseUri = (context.Query != null ? context.Query.BaseUri : null);
+            Uri baseUri = context.Query?.BaseUri;
 
             // Build a list of INodes to describe
             var nodes = new List<INode>();
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Describe
                         break;
 
                     default:
-                        throw new RdfQueryException("Unexpected Token '" + t.GetType().ToString() + "' in DESCRIBE Variables list");
+                        throw new RdfQueryException($"Unexpected Token '{t.GetType()}' in DESCRIBE Variables list");
                 }
             }
             return nodes;
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query.Describe
 
             if (t.Subject.NodeType == NodeType.Blank)
             {
-                id = t.Subject.GetHashCode() + "-" + t.Graph.GetHashCode();
+                id = t.Subject.GetHashCode().ToString();
                 if (mapping.ContainsKey(id))
                 {
                     s = mapping[id];
@@ -176,12 +176,12 @@ namespace VDS.RDF.Query.Describe
             }
             else
             {
-                s = Tools.CopyNode(t.Subject, factory);
+                s = t.Subject;
             }
 
             if (t.Predicate.NodeType == NodeType.Blank)
             {
-                id = t.Predicate.GetHashCode() + "-" + t.Graph.GetHashCode();
+                id = t.Predicate.GetHashCode().ToString();
                 if (mapping.ContainsKey(id))
                 {
                     p = mapping[id];
@@ -194,12 +194,12 @@ namespace VDS.RDF.Query.Describe
             }
             else
             {
-                p = Tools.CopyNode(t.Predicate, factory);
+                p = t.Predicate;
             }
 
             if (t.Object.NodeType == NodeType.Blank)
             {
-                id = t.Object.GetHashCode() + "-" + t.Graph.GetHashCode();
+                id = t.Object.GetHashCode().ToString();
                 if (mapping.ContainsKey(id))
                 {
                     o = mapping[id];
@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Describe
             }
             else
             {
-                o = Tools.CopyNode(t.Object, factory);
+                o = t.Object;
             }
 
             return new Triple(s, p, o);

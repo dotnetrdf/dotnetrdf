@@ -133,7 +133,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddDomain(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertyDomain, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyDomain, resource, true);
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveDomain(INode resource)
         {
-            return RemoveResourceProperty(OntologyHelper.PropertyDomain, resource.CopyNode(_graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyDomain, resource, true);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddRange(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertyRange, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyRange, resource, true);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddEquivalentProperty(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertyEquivalentProperty, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyEquivalentProperty, resource, true);
         }
 
         /// <summary>
@@ -328,7 +328,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveEquivalentProperty(INode resource)
         {
-            return RemoveResourceProperty(OntologyHelper.PropertyEquivalentProperty, resource.CopyNode(_graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyEquivalentProperty, resource, true);
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddInverseProperty(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertyInverseOf, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertyInverseOf, resource, true);
         }
 
         /// <summary>
@@ -430,7 +430,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveInverseProperty(INode resource)
         {
-            return RemoveResourceProperty(OntologyHelper.PropertyInverseOf, resource.CopyNode(_graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertyInverseOf, resource, true);
         }
 
         /// <summary>
@@ -475,7 +475,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSubProperty(INode resource)
         {
-            return AddResourceProperty(PropertyDerivedProperty, resource.CopyNode(_graph), false);
+            return AddResourceProperty(PropertyDerivedProperty, resource, false);
         }
 
         /// <summary>
@@ -530,7 +530,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSubProperty(INode resource)
         {
-            return RemoveResourceProperty(PropertyDerivedProperty, resource.CopyNode(_graph), false);
+            return RemoveResourceProperty(PropertyDerivedProperty, resource, false);
         }
 
         /// <summary>
@@ -575,7 +575,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSuperProperty(INode resource)
         {
-            return AddResourceProperty(OntologyHelper.PropertySubPropertyOf, resource.CopyNode(_graph), true);
+            return AddResourceProperty(OntologyHelper.PropertySubPropertyOf, resource, true);
         }
 
         /// <summary>
@@ -630,7 +630,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSuperProperty(INode resource)
         {
-            return RemoveResourceProperty(OntologyHelper.PropertySubPropertyOf, resource.CopyNode(_graph), true);
+            return RemoveResourceProperty(OntologyHelper.PropertySubPropertyOf, resource, true);
         }
 
         /// <summary>

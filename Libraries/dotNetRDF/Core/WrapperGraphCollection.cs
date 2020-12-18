@@ -43,17 +43,16 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a decorator around a default <see cref="GraphCollection"/> instance.
         /// </summary>
-        public WrapperGraphCollection()
+        protected WrapperGraphCollection()
             : this(new GraphCollection()) { }
 
         /// <summary>
         /// Creates a decorator around the given graph collection.
         /// </summary>
         /// <param name="graphCollection">Graph Collection.</param>
-        public WrapperGraphCollection(BaseGraphCollection graphCollection)
+        protected WrapperGraphCollection(BaseGraphCollection graphCollection)
         {
-            if (graphCollection == null) throw new ArgumentNullException("graphCollection");
-            _graphs = graphCollection;
+            _graphs = graphCollection ?? throw new ArgumentNullException(nameof(graphCollection));
             _graphs.GraphAdded += HandleGraphAdded;
             _graphs.GraphRemoved += HandleGraphRemoved;
         }
@@ -84,9 +83,21 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri"></param>
         /// <returns></returns>
+        [Obsolete("Replaced by Contains(IRefNode)")]
         public override bool Contains(Uri graphUri)
         {
             return _graphs.Contains(graphUri);
+        }
+
+        /// <summary>
+        /// Checks whether the graph with the given name exists in this graph collection.
+        /// </summary>
+        /// <param name="graphName">Graph name to test for.</param>
+        /// <returns>True if a graph with the specified name is in the collection, false otherwise.</returns>
+        /// <remarks>The null value is used to reference the default (unnamed) graph.</remarks>
+        public override bool Contains(IRefNode graphName)
+        {
+            return _graphs.Contains(graphName);
         }
 
         /// <summary>
@@ -120,6 +131,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the URIs of the Graphs in the collection.
         /// </summary>
+        [Obsolete("Replaced by GraphNames")]
         public override IEnumerable<Uri> GraphUris
         {
             get 
@@ -129,13 +141,31 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Provides an enumeration of the names of all of teh graphs in the collection.
+        /// </summary>
+        public override IEnumerable<IRefNode> GraphNames => _graphs.GraphNames;
+
+        /// <summary>
         /// Removes a Graph from the collection.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by Remove(IRefNode)")]
         protected internal override bool Remove(Uri graphUri)
         {
             return _graphs.Remove(graphUri);
+        }
+
+        /// <summary>
+        /// Removes a graph from the collection.
+        /// </summary>
+        /// <param name="graphName">Name of the Graph to remove.</param>
+        /// <remarks>
+        /// The null value is used to reference the Default Graph.
+        /// </remarks>
+        protected internal override bool Remove(IRefNode graphName)
+        {
+            return _graphs.Remove(graphName);
         }
 
         /// <summary>
@@ -143,6 +173,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by this[IRefNode]")]
         public override IGraph this[Uri graphUri]
         {
             get
@@ -150,5 +181,13 @@ namespace VDS.RDF
                 return _graphs[graphUri];
             }
         }
+
+        /// <summary>
+        /// Gets a graph from the collection.
+        /// </summary>
+        /// <param name="graphName">The name of the graph to retrieve.</param>
+        /// <returns></returns>
+        /// <remarks>The null value is used to reference the default graph.</remarks>
+        public override IGraph this[IRefNode graphName] => _graphs[graphName];
     }
 }

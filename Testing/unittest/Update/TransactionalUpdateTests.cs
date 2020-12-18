@@ -55,10 +55,7 @@ namespace VDS.RDF.Update
         {
             var dataset = new InMemoryDataset();
 
-            var g = new Graph
-            {
-                BaseUri = TestGraphUri
-            };
+            var g = new Graph(new UriNode(TestGraphUri));
             dataset.AddGraph(g);
 
             return dataset;
@@ -276,16 +273,7 @@ namespace VDS.RDF.Update
             SparqlUpdateCommandSet cmds = _parser.ParseFromString(updates);
 
             var processor = new LeviathanUpdateProcessor(dataset);
-            try
-            {
-                processor.ProcessCommandSet(cmds);
-                Assert.True(false, "Expected SPARQL Update Exception was not thrown");
-            }
-            catch (SparqlUpdateException upEx)
-            {
-                TestTools.ReportError("Update Exception", upEx);
-            }
-
+            Assert.Throws<SparqlUpdateException>(() => processor.ProcessCommandSet(cmds));
             Assert.True(dataset.HasGraph(TestGraphUri), "Graph should not exist");
         }
 

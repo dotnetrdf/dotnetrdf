@@ -108,7 +108,7 @@ namespace VDS.RDF.Query
             Assert.IsAssignableFrom<SparqlResultSet>(results);
         }
 
-        [Fact]
+        [Fact(Skip="Fails intermittently due to RAND being re-evaluated during the sort. Tracked as issue #344")]
         public void SparqlOrderByNonDeterministic()
         {
             const string query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";

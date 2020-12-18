@@ -33,8 +33,8 @@ namespace VDS.RDF.Shacl.Paths
     internal class ZeroOrOne : Unary
     {
         [DebuggerStepThrough]
-        internal ZeroOrOne(INode node)
-            : base(node)
+        internal ZeroOrOne(INode node, IGraph shapesGraph)
+            : base(node, shapesGraph)
         {
         }
 
@@ -50,7 +50,7 @@ namespace VDS.RDF.Shacl.Paths
         {
             get
             {
-                return new Triple(this, Vocabulary.ZeroOrOnePath.CopyNode(Graph), Argument).AsEnumerable();
+                return new Triple(this, Vocabulary.ZeroOrOnePath, Argument).AsEnumerable();
             }
         }
     }

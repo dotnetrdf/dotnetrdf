@@ -25,9 +25,6 @@
 */
 
 using System;
-using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Serialization;
 
 namespace VDS.RDF
 {
@@ -40,21 +37,9 @@ namespace VDS.RDF
         /// <summary>
         /// Internal Only Constructor for URI Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
         /// <param name="uri">URI for the Node.</param>
-        protected internal UriNode(IGraph g, Uri uri)
-            : base(g, uri) { }
-
-        /// <summary>
-        /// Internal Only Constructor for URI Nodes.
-        /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
-        /// <param name="qname">QName for the Node.</param>
-        /// <remarks>
-        /// This Constructor tries to resolve the QName using the NamespaceMapper and Base Uri of the Graph it is in.  Exceptions may occur if we cannot resolve the QName correctly.
-        /// </remarks>
-        protected internal UriNode(IGraph g, string qname)
-            : base(g, qname) { }
+        protected internal UriNode(Uri uri)
+            : base(uri) { }
 
         /// <summary>
         /// Implementation of Compare To for URI Nodes.

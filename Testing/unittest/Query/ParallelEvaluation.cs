@@ -66,7 +66,7 @@ namespace VDS.RDF.Query
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
                 if (g.Triples.Count > TripleLimit) g.Retract(g.Triples.Skip(TripleLimit).ToList());
                 _dataset.AddGraph(g);
-                _dataset.SetDefaultGraph(g.BaseUri);
+                _dataset.SetDefaultGraph(g.Name);
 
                 _processor = new LeviathanQueryProcessor(_dataset);
             }

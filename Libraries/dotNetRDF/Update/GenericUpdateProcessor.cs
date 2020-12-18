@@ -157,24 +157,21 @@ namespace VDS.RDF.Update
                     {
                         case ClearMode.Default:
                         case ClearMode.Graph:
-                            if (cmd.TargetUri == null && (_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("Unable to clear the default graph as the underlying store does not support an explicit default graph");
-                            if (cmd.TargetUri != null && (_manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("Unable to clear a named graph as the underlying store does not support named graphs");
+                            if (cmd.TargetGraphName == null && (_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("Unable to clear the default graph as the underlying store does not support an explicit default graph");
+                            if (cmd.TargetGraphName != null && (_manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("Unable to clear a named graph as the underlying store does not support named graphs");
 
-                            if ((cmd.TargetUri == null && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (cmd.TargetUri != null && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
+                            if ((cmd.TargetGraphName == null && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (cmd.TargetGraphName != null && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
                             {
                                 // Can approximate by saving an empty Graph over the existing Graph
-                                g = new Graph
-                                {
-                                    BaseUri = cmd.TargetUri,
-                                };
+                                g = new Graph(cmd.TargetGraphName);
                                 _manager.SaveGraph(g);
                             }
                             else if (_manager.UpdateSupported && (_manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
                             {
                                 // Can approximate by loading the Graph and then deleting all Triples from it
                                 g = new NonIndexedGraph();
-                                _manager.LoadGraph(g, cmd.TargetUri);
-                                _manager.UpdateGraph(cmd.TargetUri, null, g.Triples);
+                                _manager.LoadGraph(g, cmd.TargetGraphName?.ToString());
+                                _manager.UpdateGraph(cmd.TargetGraphName?.ToString(), null, g.Triples);
                             }
                             else
                             {

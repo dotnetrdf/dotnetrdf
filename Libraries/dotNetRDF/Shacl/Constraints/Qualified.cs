@@ -46,22 +46,22 @@ namespace VDS.RDF.Shacl.Constraints
             {
                 return (
                     from shape in Vocabulary.QualifiedValueShape.ObjectsOf(Shape)
-                    select Shape.Parse(shape))
+                    select Shape.Parse(shape, Graph))
                     .SingleOrDefault();
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             if (QualifiedValueShape is null)
             {
                 return true;
             }
 
-            return ValidateInternal(focusNode, valueNodes, report);
+            return ValidateInternal(dataGraph, focusNode, valueNodes, report);
         }
 
-        protected IEnumerable<INode> QualifiedValueNodes(INode focusNode, IEnumerable<INode> valueNodes)
+        protected IEnumerable<INode> QualifiedValueNodes(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes)
         {
             Shape currentShape = Shape;
 
@@ -69,10 +69,10 @@ namespace VDS.RDF.Shacl.Constraints
             {
                 return
                     from parent in Vocabulary.Property.SubjectsOf(currentShape)
-                    from property in Vocabulary.Property.ObjectsOf(parent)
-                    from qulifiedShape in Vocabulary.QualifiedValueShape.ObjectsOf(property)
-                    where !QualifiedValueShape.Equals(qulifiedShape)
-                    select Shape.Parse(qulifiedShape);
+                    from property in Vocabulary.Property.ObjectsOf(parent, currentShape.Graph)
+                    from qualifiedShape in Vocabulary.QualifiedValueShape.ObjectsOf(property, currentShape.Graph)
+                    where !QualifiedValueShape.Equals(qualifiedShape)
+                    select Shape.Parse(qualifiedShape, currentShape.Graph);
             }
 
             var isDisjoint = (
@@ -85,15 +85,15 @@ namespace VDS.RDF.Shacl.Constraints
 
             return
                 from qualified in Vocabulary.QualifiedValueShape.ObjectsOf(Shape)
-                let qualifiedShape = Shape.Parse(qualified)
+                let qualifiedShape = Shape.Parse(qualified, Graph)
                 from valueNode in valueNodes
                 let v = valueNode.AsEnumerable()
-                let conformsToQualifiedShape = qualifiedShape.Validate(focusNode, v)
-                let doesNotConformToSiblingShapes = !siblingShapes.Any(siblingShape => siblingShape.Validate(focusNode, v))
+                let conformsToQualifiedShape = qualifiedShape.Validate(dataGraph, focusNode, v)
+                let doesNotConformToSiblingShapes = !siblingShapes.Any(siblingShape => siblingShape.Validate(dataGraph, focusNode, v))
                 where conformsToQualifiedShape && doesNotConformToSiblingShapes
                 select valueNode;
         }
 
-        protected abstract bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report);
+        protected abstract bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report);
     }
 }

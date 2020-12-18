@@ -299,7 +299,7 @@ namespace VDS.RDF.Query.Expressions
                     case False:
                         if (args.Count == 0)
                         {
-                            xpathFunc = new ConstantTerm(new BooleanNode(null, false));
+                            xpathFunc = new ConstantTerm(new BooleanNode(false));
                         }
                         else
                         {
@@ -535,7 +535,7 @@ namespace VDS.RDF.Query.Expressions
                     case True:
                         if (args.Count == 0)
                         {
-                            xpathFunc = new ConstantTerm(new BooleanNode(null, true));
+                            xpathFunc = new ConstantTerm(new BooleanNode(true));
                         }
                         else
                         {

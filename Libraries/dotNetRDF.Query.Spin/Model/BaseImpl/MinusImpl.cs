@@ -31,8 +31,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class MinusImpl : ElementImpl, IMinus
     {
 
-        public MinusImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public MinusImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

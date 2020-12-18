@@ -30,7 +30,7 @@ namespace VDS.RDF
     /// Interface for Blank Nodes.
     /// </summary>
     public interface IBlankNode 
-        : INode
+        : IRefNode
     {
         /// <summary>
         /// Gets the Internal ID of the Blank Node.

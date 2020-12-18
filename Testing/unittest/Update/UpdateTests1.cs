@@ -34,12 +34,15 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Update
 {
 
     public class UpdateTests1
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
         public const String InsertPatterns1 = @"ex:IndividualA rdf:type          tpl:MyIndividualClass .
 _:template        rdf:type          tpl:MyTemplate .
 _:template        tpl:ObjectRole    rdl:MyTypeClass .
@@ -51,6 +54,14 @@ _:template        rdf:type          tpl:MyTemplate .
 _:template        tpl:ObjectRole    rdl:MyTypeClass .
 _:template        tpl:PossessorRole ex:IndividualB .
 _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
+
+        public readonly IUriNode SourceGraph = new UriNode(new Uri("http://example.org/source"));
+        public readonly IUriNode DestinationGraph = new UriNode(new Uri("http://example.org/destination"));
+
+        public UpdateTests1(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
 
         [Fact]
         public void SparqlUpdateInsertDataWithBNodes()
@@ -101,13 +112,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         [Fact]
         public void SparqlUpdateAddCommand()
         {
-            IGraph g = new Graph();
+            IGraph g = new Graph(SourceGraph);
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/source");
 
-            IGraph h = new Graph();
+            IGraph h = new Graph(DestinationGraph);
             FileLoader.Load(h, "resources\\Turtle.ttl");
-            h.BaseUri = new Uri("http://example.org/destination");
 
             var store = new TripleStore();
             store.Add(g);
@@ -121,8 +130,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store[new Uri("http://example.org/source")];
-            h = store[new Uri("http://example.org/destination")];
+            g = store[SourceGraph];
+            h = store[DestinationGraph];
             Assert.False(g.IsEmpty, "Source Graph should not be empty");
             Assert.False(h.IsEmpty, "Destination Graph should not be empty");
             Assert.True(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
@@ -131,9 +140,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         [Fact]
         public void SparqlUpdateAddCommand2()
         {
-            IGraph g = new Graph();
+            IGraph g = new Graph(SourceGraph);
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/source");
 
             IGraph h = new Graph();
             FileLoader.Load(h, "resources\\Turtle.ttl");
@@ -151,8 +159,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store[new Uri("http://example.org/source")];
-            h = store[null];
+            g = store[SourceGraph];
+            h = store[(IRefNode)null];
             Assert.False(g.IsEmpty, "Source Graph should not be empty");
             Assert.False(h.IsEmpty, "Destination Graph should not be empty");
             Assert.True(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
@@ -163,11 +171,9 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             IGraph g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = null;
 
-            IGraph h = new Graph();
+            IGraph h = new Graph(DestinationGraph);
             FileLoader.Load(h, "resources\\Turtle.ttl");
-            h.BaseUri = new Uri("http://example.org/destination");
 
             var store = new TripleStore();
             store.Add(g);
@@ -181,8 +187,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store[null];
-            h = store[new Uri("http://example.org/destination")];
+            g = store[(IRefNode)null];
+            h = store[DestinationGraph];
             Assert.False(g.IsEmpty, "Source Graph should not be empty");
             Assert.False(h.IsEmpty, "Destination Graph should not be empty");
             Assert.True(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
@@ -191,13 +197,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         [Fact]
         public void SparqlUpdateCopyCommand()
         {
-            IGraph g = new Graph();
+            IGraph g = new Graph(SourceGraph);
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/source");
 
-            IGraph h = new Graph();
+            IGraph h = new Graph(DestinationGraph);
             FileLoader.Load(h, "resources\\Turtle.ttl");
-            h.BaseUri = new Uri("http://example.org/destination");
 
             var store = new TripleStore();
             store.Add(g);
@@ -211,8 +215,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store[new Uri("http://example.org/source")];
-            h = store[new Uri("http://example.org/destination")];
+            g = store[SourceGraph];
+            h = store[DestinationGraph];
             Assert.False(g.IsEmpty, "Source Graph should not be empty");
             Assert.False(h.IsEmpty, "Destination Graph should not be empty");
             Assert.Equal(g, h);
@@ -221,9 +225,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         [Fact]
         public void SparqlUpdateCopyCommand2()
         {
-            IGraph g = new Graph();
+            IGraph g = new Graph(SourceGraph);
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/source");
 
             IGraph h = new Graph();
             FileLoader.Load(h, "resources\\Turtle.ttl");
@@ -241,8 +244,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store[new Uri("http://example.org/source")];
-            h = store[null];
+            g = store[SourceGraph];
+            h = store[(IRefNode)null];
             Assert.False(g.IsEmpty, "Source Graph should not be empty");
             Assert.False(h.IsEmpty, "Destination Graph should not be empty");
             Assert.Equal(g, h);
@@ -253,11 +256,9 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             IGraph g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = null;
 
-            IGraph h = new Graph();
+            IGraph h = new Graph(DestinationGraph);
             FileLoader.Load(h, "resources\\Turtle.ttl");
-            h.BaseUri = new Uri("http://example.org/destination");
 
             var store = new TripleStore();
             store.Add(g);
@@ -271,8 +272,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store[null];
-            h = store[new Uri("http://example.org/destination")];
+            g = store[(IRefNode)null];
+            h = store[DestinationGraph];
             Assert.False(g.IsEmpty, "Source Graph should not be empty");
             Assert.False(h.IsEmpty, "Destination Graph should not be empty");
             Assert.Equal(g, h);
@@ -281,13 +282,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         [Fact]
         public void SparqlUpdateMoveCommand()
         {
-            IGraph g = new Graph();
+            IGraph g = new Graph(SourceGraph);
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/source");
 
-            IGraph h = new Graph();
+            IGraph h = new Graph(DestinationGraph);
             FileLoader.Load(h, "resources\\Turtle.ttl");
-            h.BaseUri = new Uri("http://example.org/destination");
 
             var store = new TripleStore();
             store.Add(g);
@@ -301,8 +300,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.HasGraph(new Uri("http://example.org/source")) ? store[new Uri("http://example.org/source")] : null;
-            h = store[new Uri("http://example.org/destination")];
+            g = store.HasGraph(SourceGraph) ? store[SourceGraph] : null;
+            h = store[DestinationGraph];
             Assert.False(h.IsEmpty, "Destination Graph should not be empty");
             Assert.True(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
@@ -314,13 +313,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         [Fact]
         public void SparqlUpdateMoveCommand2()
         {
-            IGraph g = new Graph();
+            IGraph g = new Graph(SourceGraph);
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/source");
 
             IGraph h = new Graph();
             FileLoader.Load(h, "resources\\Turtle.ttl");
-            h.BaseUri = null;
 
             var store = new TripleStore();
             store.Add(g);
@@ -334,8 +331,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.HasGraph(new Uri("http://example.org/source")) ? store[new Uri("http://example.org/source")] : null;
-            h = store[null];
+            g = store.HasGraph(SourceGraph) ? store[SourceGraph] : null;
+            h = store[(IRefNode)null];
             Assert.False(h.IsEmpty, "Destination Graph should not be empty");
             Assert.True(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
@@ -351,9 +348,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             g.BaseUri = null;
 
-            IGraph h = new Graph();
+            IGraph h = new Graph(DestinationGraph);
             FileLoader.Load(h, "resources\\Turtle.ttl");
-            h.BaseUri = new Uri("http://example.org/destination");
 
             var store = new TripleStore();
             store.Add(g);
@@ -367,8 +363,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.HasGraph(null) ? store[null] : null;
-            h = store[new Uri("http://example.org/destination")];
+            g = store.HasGraph((IRefNode)null) ? store[(IRefNode)null] : null;
+            h = store[DestinationGraph];
             Assert.False(h.IsEmpty, "Destination Graph should not be empty");
             Assert.False(g == null, "Default Graph should still exist");
             Assert.True(g.IsEmpty, "Source Graph (the Default Graph) should be Empty");
@@ -433,9 +429,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             command.CommandText += "INSERT { ?s rdf:type rdf:Property } USING <http://example.org/temp> WHERE { ?s rdfs:subPropertyOf ?property };";
 
             var store = new TripleStore();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/temp")));
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/temp");
             store.Add(g);
             var origTriples = g.Triples.Count;
 
@@ -446,10 +441,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             Assert.Equal(origTriples, g.Triples.Count);
 
-            IGraph def = store[null];
+            IGraph def = store[(IRefNode)null];
 
-            TestTools.ShowGraph(def);
-            Console.WriteLine();
+            TestTools.ShowGraph(def, _testOutputHelper);
+            _testOutputHelper.WriteLine();
 
             //Apply a RDFS reasoner over the original input and output it into another graph
             //Should be equivalent to the default Graph
@@ -457,12 +452,12 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var reasoner = new RdfsReasoner();
             reasoner.Apply(g, h);
 
-            TestTools.ShowGraph(h);
+            TestTools.ShowGraph(h, _testOutputHelper);
 
             GraphDiffReport report = h.Difference(def);
             if (!report.AreEqual)
             {
-                TestTools.ShowDifferences(report);
+                TestTools.ShowDifferences(report, _testOutputHelper);
 
                 Assert.True(report.RemovedTriples.Count() == 1, "Should have only 1 missing Triple (due to rdfs:domain inference which is hard to encode in an INSERT command)");
             }
@@ -480,19 +475,18 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             command.CommandText += "INSERT { ?s rdf:type rdf:Property } USING NAMED <http://example.org/temp> WHERE { ?s rdfs:subPropertyOf ?property };";
 
             var store = new TripleStore();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/temp")));
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/temp");
             store.Add(g);
 
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
             var dataset = new InMemoryDataset(store);
             var processor = new LeviathanUpdateProcessor(dataset);
-            dataset.SetDefaultGraph((Uri)null);
+            dataset.SetDefaultGraph((IRefNode)null);
             processor.ProcessCommandSet(cmds);
 
-            IGraph def = store[null];
+            IGraph def = store[(IRefNode)null];
             TestTools.ShowGraph(def);
             Assert.True(def.IsEmpty, "Graph should be empty as the commands only used USING NAMED (so shouldn't have changed the dataset) and the Active Graph for the dataset was empty so there should have been nothing matched to generate insertions from");
         }
@@ -509,19 +503,18 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             command.CommandText += "INSERT { ?s rdf:type rdf:Property } USING NAMED <http://example.org/temp> WHERE { GRAPH ?g { ?s rdfs:subPropertyOf ?property } };";
 
             var store = new TripleStore();
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/temp")));
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/temp");
             store.Add(g);
 
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
             var dataset = new InMemoryDataset(store);
             var processor = new LeviathanUpdateProcessor(dataset);
-            dataset.SetDefaultGraph((Uri)null);
+            dataset.SetDefaultGraph((IRefNode)null);
             processor.ProcessCommandSet(cmds);
 
-            IGraph def = store[null];
+            IGraph def = store[(IRefNode)null];
             TestTools.ShowGraph(def);
 
             //Apply a RDFS reasoner over the original input and output it into another graph
@@ -550,7 +543,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             var delete = (DeleteCommand)cmds[0];
 
-            Assert.Equal(new Uri("http://example.org/"), delete.GraphUri);
+            Assert.Equal(new UriNode(new Uri("http://example.org/")), delete.TargetGraph);
         }
 
         [Fact]
@@ -564,8 +557,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
 
             Assert.False(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
-            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(null)), "Commands should report that they affect the Default Graph");
-            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(new Uri("http://example.org/graph"))), "Commands should report that they affect the named Graph");
+            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph((IRefNode)null)), "Commands should report that they affect the Default Graph");
+            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(new UriNode(new Uri("http://example.org/graph")))), "Commands should report that they affect the named Graph");
 
             var dataset = new InMemoryDataset();
             var processor = new LeviathanUpdateProcessor(dataset);
@@ -575,11 +568,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             g.NamespaceMap.Import(command.Namespaces);
             var t = new Triple(g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"), g.CreateUriNode("ex:c"));
 
-            IGraph def = dataset[null];
+            IGraph def = dataset[(IRefNode)null];
             Assert.Equal(1, def.Triples.Count);
             Assert.True(def.ContainsTriple(t), "Should have the inserted Triple in the Default Graph");
 
-            IGraph ex = dataset[new Uri("http://example.org/graph")];
+            IGraph ex = dataset[new UriNode(new Uri("http://example.org/graph"))];
             Assert.Equal(1, ex.Triples.Count);
             Assert.True(ex.ContainsTriple(t), "Should have the inserted Triple in the Named Graph");
 
@@ -596,18 +589,15 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
 
             Assert.False(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
-            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(null)), "Commands should report that they affect the Default Graph");
-            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(new Uri("http://example.org/graph"))), "Commands should report that they affect the named Graph");
+            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph((IRefNode)null)), "Commands should report that they affect the Default Graph");
+            Assert.True(cmds.Commands.All(cmd => cmd.AffectsGraph(new UriNode(new Uri("http://example.org/graph")))), "Commands should report that they affect the named Graph");
 
             var dataset = new InMemoryDataset();
             IGraph def = new Graph();
             def.NamespaceMap.Import(command.Namespaces);
             def.Assert(new Triple(def.CreateUriNode("ex:a"), def.CreateUriNode("ex:b"), def.CreateUriNode("ex:c")));
             dataset.AddGraph(def);
-            IGraph ex = new Graph
-            {
-                BaseUri = new Uri("http://example.org/graph")
-            };
+            IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
             ex.NamespaceMap.Import(command.Namespaces);
             ex.Assert(new Triple(ex.CreateUriNode("ex:a"), ex.CreateUriNode("ex:b"), ex.CreateUriNode("ex:c")));
             dataset.AddGraph(ex);
@@ -619,11 +609,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             g.NamespaceMap.Import(command.Namespaces);
             var t = new Triple(g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"), g.CreateUriNode("ex:c"));
 
-            def = dataset[null];
+            def = dataset[(IRefNode)null];
             Assert.Equal(0, def.Triples.Count);
             Assert.False(def.ContainsTriple(t), "Should not have the deleted Triple in the Default Graph");
 
-            ex = dataset[new Uri("http://example.org/graph")];
+            ex = dataset[new UriNode(new Uri("http://example.org/graph"))];
             Assert.Equal(0, ex.Triples.Count);
             Assert.False(ex.ContainsTriple(t), "Should not have the deleted Triple in the Named Graph");
 
@@ -646,7 +636,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
 
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
@@ -671,7 +661,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
 
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
@@ -696,7 +686,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
 
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
@@ -721,12 +711,12 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             var parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
 
-            var dataset = new InMemoryDataset(store, g.BaseUri);
+            var dataset = new InMemoryDataset(store, g.Name);
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(cmds);
 
             Assert.NotEqual(origTriples, g.Triples.Count);
-            Assert.False(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Where(t => t.Object.ToString().Contains("dotnetrdf.org")).Any(), "Expected triples to have been deleted");
+            Assert.False(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Any(t => t.Object.ToString().Contains("dotnetrdf.org")), "Expected triples to have been deleted");
         }
     }
 }

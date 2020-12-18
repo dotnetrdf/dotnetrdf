@@ -36,7 +36,7 @@ namespace VDS.RDF.Query
     /// Class for representing Sparql Result Sets.
     /// </summary>
     public sealed class SparqlResultSet 
-        : IEnumerable<SparqlResult>, IDisposable
+        : IEnumerable<SparqlResult>, IDisposable, IEquatable<SparqlResultSet>
     {
         /// <summary>
         /// Lists of Variables in the Result Set.
@@ -45,7 +45,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Boolean Result.
         /// </summary>
-        private bool _result = false;
+        private bool _result;
 
         /// <summary>
         /// Creates an Empty Sparql Result Set.
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public SparqlResultSet(SparqlEvaluationContext context)
         {
-            ResultsType = (context.Query.QueryType == SparqlQueryType.Ask) ? SparqlResultsType.Boolean : SparqlResultsType.VariableBindings;
+            ResultsType = context.Query.QueryType == SparqlQueryType.Ask ? SparqlResultsType.Boolean : SparqlResultsType.VariableBindings;
             if (context.OutputMultiset is NullMultiset)
             {
                 _result = false;
@@ -266,83 +266,77 @@ namespace VDS.RDF.Query
         #endregion
 
         /// <summary>
-        /// Determines whether two Result Sets are equal.
+        /// Determines whether two results sets are equal.
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Experimental and not yet complete.
-        /// </remarks>
-        public override bool Equals(object obj)
+        /// <param name="results">The other result set to compare with this one.</param>
+        /// <returns>True if the result sets contain the same set of results (using graph comparison where blank nodes are involved), false otherwise.</returns>
+        public bool Equals(SparqlResultSet results)
         {
-            if (obj == null) return false;
+            if (results == null) return false;
 
-            if (obj is SparqlResultSet results)
+            // Must contain same number of Results to be equal
+            if (Count != results.Count) return false;
+
+            // Must have same Boolean result to be equal
+            if (Result != results.Result) return false;
+
+            // Must contain the same set of variables
+            if (Variables.Count() != results.Variables.Count()) return false;
+            if (!Variables.All(v => results.Variables.Contains(v))) return false;
+            if (results.Variables.Any(v => !_variables.Contains(v))) return false;
+
+            // If both have no results then they are equal
+            if (Count == 0 && results.Count == 0) return true;
+
+            // All Ground Results from the Result Set must appear in the Other Result Set
+            var otherResults = results.OrderByDescending(r => r.Variables.Count()).ToList();
+            var localResults = new List<SparqlResult>();
+            var grCount = 0;
+            foreach (SparqlResult result in Results.OrderByDescending(r => r.Variables.Count()))
             {
-                // Must contain same number of Results to be equal
-                if (Count != results.Count) return false;
-
-                // Must have same Boolean result to be equal
-                if (Result != results.Result) return false;
-
-                // Must contain the same set of variables
-                if (Variables.Count() != results.Variables.Count()) return false;
-                if (!Variables.All(v => results.Variables.Contains(v))) return false;
-                if (results.Variables.Any(v => !_variables.Contains(v))) return false;
-
-                // If both have no results then they are equal
-                if (Count == 0 && results.Count == 0) return true;
-
-                // All Ground Results from the Result Set must appear in the Other Result Set
-                var otherResults = results.OrderByDescending(r => r.Variables.Count()).ToList();
-                var localResults = new List<SparqlResult>();
-                var grCount = 0;
-                foreach (SparqlResult result in Results.OrderByDescending(r => r.Variables.Count()))
+                if (result.IsGroundResult)
                 {
-                    if (result.IsGroundResult)
-                    {
-                        // If a Ground Result in this Result Set is not in the other Result Set we're not equal
-                        if (!otherResults.Remove(result)) return false;
-                        grCount++;
-                    }
-                    else
-                    {
-                        localResults.Add(result);
-                    }
+                    // If a Ground Result in this Result Set is not in the other Result Set we're not equal
+                    if (!otherResults.Remove(result)) return false;
+                    grCount++;
                 }
-
-                // If all the Results were ground results and we've emptied all the Results from the other Result Set
-                // then we were equal
-                if (Count == grCount && otherResults.Count == 0) return true;
-
-                // If the Other Results still contains Ground Results we're not equal
-                if (otherResults.Any(r => r.IsGroundResult)) return false;
-
-                // Create Graphs of the two sets of non-Ground Results
-                var local = new SparqlResultSet();
-                var other = new SparqlResultSet();
-                foreach (var var in _variables)
+                else
                 {
-                    local.AddVariable(var);
-                    other.AddVariable(var);
+                    localResults.Add(result);
                 }
-                foreach (SparqlResult r in localResults) 
-                {
-                    local.AddResult(r);
-                }
-                foreach (SparqlResult r in otherResults)
-                {
-                    other.AddResult(r);
-                }
-
-                // Compare the two Graphs for equality
-                var writer = new SparqlRdfWriter();
-                IGraph g = writer.GenerateOutput(local);
-                IGraph h = writer.GenerateOutput(other);
-                return g.Equals(h);
             }
 
-            return false;
+            // If all the Results were ground results and we've emptied all the Results from the other Result Set
+            // then we were equal
+            if (Count == grCount && otherResults.Count == 0) return true;
+
+            // If the Other Results still contains Ground Results we're not equal
+            if (otherResults.Any(r => r.IsGroundResult)) return false;
+
+            // Create Graphs of the two sets of non-Ground Results
+            var local = new SparqlResultSet();
+            var other = new SparqlResultSet();
+            foreach (var var in _variables)
+            {
+                local.AddVariable(var);
+                other.AddVariable(var);
+            }
+
+            foreach (SparqlResult r in localResults)
+            {
+                local.AddResult(r);
+            }
+
+            foreach (SparqlResult r in otherResults)
+            {
+                other.AddResult(r);
+            }
+
+            // Compare the two Graphs for equality
+            var writer = new SparqlRdfWriter();
+            IGraph g = writer.GenerateOutput(local);
+            IGraph h = writer.GenerateOutput(other);
+            return g.Equals(h);
         }
 
         /// <summary>
@@ -383,7 +377,7 @@ namespace VDS.RDF.Query
                     if (r[subjVar] == null || r[predVar] == null || r[objVar] == null) continue;
 
                     // If this is all OK we can generate a Triple
-                    tripleCollection.Add(new Triple(r[subjVar].CopyNode(g), r[predVar].CopyNode(g), r[objVar].CopyNode(g)));
+                    tripleCollection.Add(new Triple(r[subjVar], r[predVar], r[objVar]));
                 }
             }
 

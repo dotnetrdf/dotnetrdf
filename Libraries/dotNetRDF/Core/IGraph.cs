@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 
 namespace VDS.RDF
 {
@@ -41,6 +40,15 @@ namespace VDS.RDF
     public interface IGraph : INodeFactory, IDisposable
     {
         #region Properties
+
+        /// <summary>
+        /// Gets the name of the graph.
+        /// </summary>
+        /// <remarks>The graph name May be NULL for an unnamed (default) graph.</remarks>
+        IRefNode Name
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets/Sets the Base Uri for the Graph.
@@ -413,22 +421,5 @@ namespace VDS.RDF
         event GraphEventHandler Merged;
 
         #endregion
-    }
-
-    /// <summary>
-    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be Flushed (committed) or Discard (rolled back) as desired.
-    /// </summary>
-    public interface ITransactionalGraph
-        : IGraph
-    {
-        /// <summary>
-        /// Flushes any changes to the Graph.
-        /// </summary>
-        void Flush();
-
-        /// <summary>
-        /// Discards any changes to the Graph.
-        /// </summary>
-        void Discard();
     }
 }

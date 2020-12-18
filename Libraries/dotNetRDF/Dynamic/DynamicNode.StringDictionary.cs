@@ -49,7 +49,7 @@ namespace VDS.RDF.Dynamic
             {
                 return PredicateNodes
                     .ToDictionary(
-                        predicate => predicate.AsName(BaseUri),
+                        predicate => predicate.AsName(BaseUri, Graph.NamespaceMap),
                         predicate => this[predicate]);
             }
         }

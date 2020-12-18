@@ -47,6 +47,7 @@ namespace VDS.RDF
         private Type _rdfParserType, _rdfDatasetParserType, _sparqlResultsParserType;
         private Type _rdfWriterType, _rdfDatasetWriterType, _sparqlResultsWriterType;
         private Dictionary<Type, Type> _objectParserTypes = new Dictionary<Type, Type>();
+        private decimal _preference = 1.0m;
 
         /// <summary>
         /// Creates a new MIME Type Definition.
@@ -91,7 +92,8 @@ namespace VDS.RDF
         /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable).</param>
         /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable).</param>
         /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable).</param>
-        public MimeTypeDefinition(string syntaxName, IEnumerable<string> mimeTypes, IEnumerable<string> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
+        /// <param name="preference">The preference level to specify for this mime type in Accept headers.</param>
+        public MimeTypeDefinition(string syntaxName, IEnumerable<string> mimeTypes, IEnumerable<string> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType, decimal preference=1.0m)
             : this(syntaxName, mimeTypes, fileExtensions)
         {
             RdfParserType = rdfParserType;
@@ -100,6 +102,7 @@ namespace VDS.RDF
             RdfWriterType = rdfWriterType;
             RdfDatasetWriterType = rdfDatasetWriterType;
             SparqlResultsWriterType = sparqlResultsWriterType;
+            Preference = preference;
         }
 
         /// <summary>
@@ -162,6 +165,19 @@ namespace VDS.RDF
             set
             {
                 _encoding = value;
+            }
+        }
+
+        /// <summary>
+        /// Get or set the preference for this content type when specified in Accept headers. Value must be between 0.0 and 1.0.
+        /// </summary>
+        public decimal Preference
+        {
+            get => _preference;
+            set
+            {
+                if (value < 0.0m || value > 1.0m) throw new ArgumentOutOfRangeException(nameof(value), "Preference value must be between 0.0 and 1.0 inclusive.");
+                _preference = value;
             }
         }
 

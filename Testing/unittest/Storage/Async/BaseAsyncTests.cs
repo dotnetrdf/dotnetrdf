@@ -68,11 +68,11 @@ namespace VDS.RDF.Storage.Async
         protected void TestAsyncSaveLoad(IGraph g)
         {
             IAsyncStorageProvider provider = GetAsyncProvider();
+            Uri graphName = (g.Name as IUriNode)?.Uri;
             try
             {
                 var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
-                g.BaseUri = UriFactory.Create(SaveGraphUri);
                 provider.SaveGraph(g, (_, args, state) =>
                     {
                         resArgs = args;
@@ -90,7 +90,7 @@ namespace VDS.RDF.Storage.Async
                     resArgs = null;
                     signal.Reset();
                     var h = new Graph();
-                    provider.LoadGraph(h, SaveGraphUri, (_, args, state) =>
+                    provider.LoadGraph(h, graphName, (_, args, state) =>
                         {
                             resArgs = args;
                             signal.Set();
@@ -207,6 +207,7 @@ namespace VDS.RDF.Storage.Async
         protected void TestAsyncDeleteTriples(IGraph g)
         {
             IAsyncStorageProvider provider = GetAsyncProvider();
+            Uri graphName = (g.Name as IUriNode)?.Uri;
             if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0)
             {
                 Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -216,7 +217,6 @@ namespace VDS.RDF.Storage.Async
             {
                 var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
-                g.BaseUri = UriFactory.Create(RemoveTriplesUri);
                 provider.SaveGraph(g, (_, args, state) =>
                 {
                     resArgs = args;
@@ -233,7 +233,7 @@ namespace VDS.RDF.Storage.Async
                     var ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).ToList();
                     resArgs = null;
                     signal.Reset();
-                    provider.UpdateGraph(RemoveTriplesUri, null, ts, (_, args, state) =>
+                    provider.UpdateGraph(graphName, null, ts, (_, args, state) =>
                     {
                         resArgs = args;
                         signal.Set();
@@ -250,7 +250,7 @@ namespace VDS.RDF.Storage.Async
                         resArgs = null;
                         signal.Reset();
                         var h = new Graph();
-                        provider.LoadGraph(h, RemoveTriplesUri, (_, args, state) =>
+                        provider.LoadGraph(h, graphName, (_, args, state) =>
                         {
                             resArgs = args;
                             signal.Set();
@@ -292,6 +292,7 @@ namespace VDS.RDF.Storage.Async
         protected void TestAsyncAddTriples(IGraph g)
         {
             IAsyncStorageProvider provider = GetAsyncProvider();
+            var graphUri = (g.Name as IUriNode)?.Uri;
             if (!provider.UpdateSupported || (provider.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0)
             {
                 Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
@@ -301,7 +302,6 @@ namespace VDS.RDF.Storage.Async
             {
                 var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
-                g.BaseUri = UriFactory.Create(AddTripleUri);
                 provider.SaveGraph(g, (_, args, state) =>
                 {
                     resArgs = args;
@@ -318,7 +318,7 @@ namespace VDS.RDF.Storage.Async
                     var ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Select(t => new Triple(t.Subject, t.Predicate, g.CreateUriNode(UriFactory.Create("http://example.org/Test")))).ToList();
                     resArgs = null;
                     signal.Reset();
-                    provider.UpdateGraph(AddTripleUri, ts, null, (_, args, state) =>
+                    provider.UpdateGraph(graphUri, ts, null, (_, args, state) =>
                     {
                         resArgs = args;
                         signal.Set();
@@ -335,7 +335,7 @@ namespace VDS.RDF.Storage.Async
                         resArgs = null;
                         signal.Reset();
                         var h = new Graph();
-                        provider.LoadGraph(h, AddTripleUri, (_, args, state) =>
+                        provider.LoadGraph(h, graphUri, (_, args, state) =>
                         {
                             resArgs = args;
                             signal.Set();
@@ -482,7 +482,7 @@ namespace VDS.RDF.Storage.Async
         [SkippableFact]
         public void StorageAsyncSaveLoad()
         {
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri(SaveGraphUri)));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncSaveLoad(g);
         }
@@ -498,7 +498,7 @@ namespace VDS.RDF.Storage.Async
         [SkippableFact]
         public void StorageAsyncRemoveTriples()
         {
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri(RemoveTriplesUri)));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncDeleteTriples(g);
         }
@@ -506,7 +506,7 @@ namespace VDS.RDF.Storage.Async
         [SkippableFact]
         public void StorageAsyncAddTriples()
         {
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri(AddTripleUri)));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncAddTriples(g);
         }
@@ -534,10 +534,9 @@ namespace VDS.RDF.Storage.Async
             IAsyncStorageProvider provider = GetAsyncProvider();
             try
             {
-                g.BaseUri = UriFactory.Create(SaveGraphUri);
                 await provider.SaveGraphAsync(g, CancellationToken.None);
                 var h = new Graph();
-                await provider.LoadGraphAsync(h, SaveGraphUri, CancellationToken.None);
+                await provider.LoadGraphAsync(h, g.Name?.ToString(), CancellationToken.None);
                 GraphDiffReport diff = g.Difference(h);
                 if (!diff.AreEqual)
                 {
@@ -591,9 +590,9 @@ namespace VDS.RDF.Storage.Async
                 g.BaseUri = UriFactory.Create(RemoveTriplesUri);
                 await provider.SaveGraphAsync(g, CancellationToken.None);
                 var ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).ToList();
-                await provider.UpdateGraphAsync(RemoveTriplesUri, null, ts, CancellationToken.None);
+                await provider.UpdateGraphAsync(g.Name?.ToString(), null, ts, CancellationToken.None);
                 var h = new Graph();
-                await provider.LoadGraphAsync(h, RemoveTriplesUri, CancellationToken.None);
+                await provider.LoadGraphAsync(h, g.Name?.ToString(), CancellationToken.None);
 
                 foreach (Triple t in ts)
                 {
@@ -618,7 +617,7 @@ namespace VDS.RDF.Storage.Async
 
             try
             {
-                var emptyGraph = new Graph {BaseUri = UriFactory.Create(AddTripleUri)};
+                var emptyGraph = new Graph(new UriNode(UriFactory.Create(AddTripleUri)));
                 await provider.SaveGraphAsync(emptyGraph, CancellationToken.None);
                 var ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Select(t =>
                         new Triple(t.Subject, t.Predicate,
@@ -651,7 +650,7 @@ namespace VDS.RDF.Storage.Async
 
             try
             {
-                var emptyGraph = new Graph {BaseUri = UriFactory.Create(ListGraphsUri)};
+                var emptyGraph = new Graph(new UriNode(UriFactory.Create(ListGraphsUri)));
                 await provider.SaveGraphAsync(emptyGraph, CancellationToken.None);
                 IEnumerable<string> graphs = await provider.ListGraphsAsync(CancellationToken.None);
                 Assert.Contains(ListGraphsUri, graphs);
@@ -695,7 +694,7 @@ namespace VDS.RDF.Storage.Async
         [SkippableFact]
         public async Task StorageSaveLoadAsync()
         {
-            var g = new Graph();
+            var g = new Graph(new UriNode(UriFactory.Create(SaveGraphUri)));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             await TestSaveLoadAsync(g);
         }
@@ -711,7 +710,7 @@ namespace VDS.RDF.Storage.Async
         [SkippableFact]
         public async Task StorageDeleteTriplesAsync()
         {
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri(RemoveTriplesUri)));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             await TestDeleteTriplesAsync(g);
         }

@@ -37,9 +37,9 @@ namespace VDS.RDF.Query.Datasets
     /// An abstract dataset wrapper that can be used to wrap another dataset and just modify some functionality i.e. provides a decorator over an existing dataset.
     /// </summary>
     public abstract class WrapperDataset
-        : ISparqlDataset, IConfigurationSerializable, IThreadSafeDataset
+        : IConfigurationSerializable, IThreadSafeDataset
     {
-        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Underlying Dataset.
@@ -52,8 +52,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="dataset">Dataset.</param>
         public WrapperDataset(ISparqlDataset dataset)
         {
-            if (dataset == null) throw new ArgumentNullException("dataset");
-            _dataset = dataset;
+            _dataset = dataset ?? throw new ArgumentNullException(nameof(dataset));
         }
 
         /// <summary>
@@ -63,14 +62,12 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                if (_dataset is IThreadSafeDataset)
+                if (_dataset is IThreadSafeDataset threadSafeDataset)
                 {
-                    return ((IThreadSafeDataset)_dataset).Lock;
+                    return threadSafeDataset.Lock;
                 }
-                else
-                {
-                    return _lock;
-                }
+
+                return _lock;
             }
         }
 
@@ -91,6 +88,7 @@ namespace VDS.RDF.Query.Datasets
         /// Sets the Active Graph for the dataset.
         /// </summary>
         /// <param name="graphUris">Graph URIs.</param>
+        [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)")]
         public virtual void SetActiveGraph(IEnumerable<Uri> graphUris)
         {
             _dataset.SetActiveGraph(graphUris);
@@ -100,15 +98,35 @@ namespace VDS.RDF.Query.Datasets
         /// Sets the Active Graph for the dataset.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
+        [Obsolete("Replaced by SetActiveGraph(IRefNode)")]
         public virtual void SetActiveGraph(Uri graphUri)
         {
             _dataset.SetActiveGraph(graphUri);
         }
 
         /// <summary>
+        /// Sets the active graph to be the graph with the given name.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        public virtual void SetActiveGraph(IRefNode graphName)
+        {
+            _dataset.SetActiveGraph(graphName);
+        }
+
+        /// <summary>
+        /// Sets the active graph to be the union of the graphs with the given names.
+        /// </summary>
+        /// <param name="graphNames"></param>
+        public virtual void SetActiveGraph(IList<IRefNode> graphNames)
+        {
+            _dataset.SetActiveGraph(graphNames);
+        }
+
+        /// <summary>
         /// Sets the Default Graph for the dataset.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
+        [Obsolete("Replaced by SetDefaultGraph(IRefNode)")]
         public virtual void SetDefaultGraph(Uri graphUri)
         {
             _dataset.SetDefaultGraph(graphUri);
@@ -118,9 +136,27 @@ namespace VDS.RDF.Query.Datasets
         /// Sets the Default Graph for the dataset.
         /// </summary>
         /// <param name="graphUris">Graph URIs.</param>
+        [Obsolete("Replaced by SetDefaultGraph(IList<IRefNode>)")]
         public virtual void SetDefaultGraph(IEnumerable<Uri> graphUris)
         {
             _dataset.SetDefaultGraph(graphUris);
+        }
+
+        /// <summary>
+        /// Sets the default graph to be the graph with the given name.
+        /// </summary>
+        /// <param name="graphName"></param>
+        public virtual void SetDefaultGraph(IRefNode graphName)
+        {
+            _dataset.SetDefaultGraph(graphName);
+        }
+        /// <summary>
+        /// Sets the default graph to be the union of the graphs with the given names.
+        /// </summary>
+        /// <param name="graphNames">Graph names.</param>
+        public virtual void SetDefaultGraph(IList<IRefNode> graphNames)
+        {
+            _dataset.SetDefaultGraph(graphNames);
         }
 
         /// <summary>
@@ -142,6 +178,7 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets the Default Graph URIs.
         /// </summary>
+        [Obsolete("Replaced by DefaultGraphNames")]
         public virtual IEnumerable<Uri> DefaultGraphUris
         {
             get
@@ -153,6 +190,7 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets the Active Graph URIs.
         /// </summary>
+        [Obsolete("Replaced by ActiveGraphNames")]
         public virtual IEnumerable<Uri> ActiveGraphUris
         {
             get
@@ -161,6 +199,15 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the enumeration of the names of the graphs that currently make up the default graph.
+        /// </summary>
+        public virtual IEnumerable<IRefNode> DefaultGraphNames => _dataset.DefaultGraphNames;
+
+        /// <summary>
+        /// Gets the enumeration of the names of the graphs that currently make up the active graph.
+        /// </summary>
+        public virtual IEnumerable<IRefNode> ActiveGraphNames => _dataset.ActiveGraphNames;
         /// <summary>
         /// Gets whether the default graph is the union of all graphs.
         /// </summary>
@@ -185,9 +232,20 @@ namespace VDS.RDF.Query.Datasets
         /// Removes a Graph from the dataset.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
+        [Obsolete("Replaced by RemoveGraph(IRefNode)")]
         public virtual bool RemoveGraph(Uri graphUri)
         {
             return _dataset.RemoveGraph(graphUri);
+        }
+
+        /// <summary>
+        /// Removes a Graph from the Dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported.</exception>
+        public virtual bool RemoveGraph(IRefNode graphName)
+        {
+            return _dataset.RemoveGraph(graphName);
         }
 
         /// <summary>
@@ -195,9 +253,20 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by HasGraph(IRefNode)")]
         public virtual bool HasGraph(Uri graphUri)
         {
             return _dataset.HasGraph(graphUri);
+        }
+
+        /// <summary>
+        /// Gets whether a Graph with the given name is the Dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public virtual bool HasGraph(IRefNode graphName)
+        {
+            return _dataset.HasGraph(graphName);
         }
 
         /// <summary>
@@ -214,6 +283,7 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets the URIs of Graphs in the dataset.
         /// </summary>
+        [Obsolete("Replaced by GraphNames")]
         public virtual IEnumerable<Uri> GraphUris
         {
             get 
@@ -223,10 +293,16 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
+        /// Gets an enumeration of the names of all graphs in the dataset.
+        /// </summary>
+        public virtual IEnumerable<IRefNode> GraphNames => _dataset.GraphNames;
+
+        /// <summary>
         /// Gets a Graph from the dataset.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by this[IRefNode]")]
         public virtual IGraph this[Uri graphUri]
         {
             get
@@ -236,13 +312,42 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
+        /// Gets the graph with the given name from the dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph(IRefNode)">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage.
+        /// </para>
+        /// </remarks>
+        public virtual IGraph this[IRefNode graphName] => _dataset[graphName];
+
+        /// <summary>
         /// Gets a modifiable graph from the dataset.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetModifiableGraph(IRefNode)")]
         public virtual IGraph GetModifiableGraph(Uri graphUri)
         {
             return _dataset.GetModifiableGraph(graphUri);
+        }
+
+        /// <summary>
+        /// Gets the Graph with the given name from the Dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported.</exception>
+        /// <remarks>
+        /// <para>
+        /// Graphs returned from this method must be modifiable and the Dataset must guarantee that when it is Flushed or Disposed of that any changes to the Graph are persisted.
+        /// </para>
+        /// </remarks>
+        public virtual IGraph GetModifiableGraph(IRefNode graphName)
+        {
+            return _dataset.GetModifiableGraph(graphName);
         }
 
         /// <summary>

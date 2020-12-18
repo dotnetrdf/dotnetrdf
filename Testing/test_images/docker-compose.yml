@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+
+    4store:
+        build:
+            context: 4store
+        ports:
+            - 8080:8080
+
+    allegrograph:
+        build:
+            context: allegrograph
+        shm_size: 1g
+        ports:
+            - 10000-10035:10000-10035
+            
+    fuseki:
+        build:
+            context: fuseki
+        ports:
+            - 127.0.0.1:3030:3030
+        entrypoint: [ "/usr/bin/java", "-jar", "fuseki-server.jar", "--mem", "/ds" ]
+        
+    rdf4j:
+        build:
+            context: rdf4j
+        ports:
+            - 8081:8080
+
+    virtuoso:
+#        build:
+#            context: virtuoso
+        image: virtuoso:latest
+        ports:
+            - 8890:8890
+            - 1111:1111

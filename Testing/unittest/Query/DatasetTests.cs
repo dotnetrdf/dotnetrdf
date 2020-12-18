@@ -37,24 +37,24 @@ namespace VDS.RDF.Query
 
     public class DatasetTests
     {
-        private const String data = @"<ex:default> <ex:default> <ex:default>.
+        private const string Data = @"<ex:default> <ex:default> <ex:default>.
 <ex:from> <ex:from> <ex:from> <ex:from> .
 <ex:named>  <ex:named> <ex:named> <ex:named> .
 <ex:other>  <ex:other> <ex:other> <ex:other> .";
 
-        private ISparqlDataset _dataset;
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private ISparqlQueryProcessor _processor;
+        private readonly ISparqlDataset _dataset;
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly ISparqlQueryProcessor _processor;
 
         public DatasetTests()
         {
             var store = new TripleStore();
-            store.LoadFromString(data);
+            store.LoadFromString(Data);
             _dataset = new InMemoryQuadDataset(store, false);
             _processor = new LeviathanQueryProcessor(_dataset);
         }
 
-        private void RunTest(String query, String[] expected, int expectedCount)
+        private void RunTest(string query, string[] expected, int expectedCount)
         {
             //Parse the query
             SparqlQuery q = _parser.ParseFromString(query);
@@ -64,7 +64,7 @@ namespace VDS.RDF.Query
             var results = _processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
 
-            var found = new List<String>();
+            var found = new List<string>();
             var count = 0;
             foreach (SparqlResult r in results)
             {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        private void Dump(int expectedCount, int actualCount, String[] expected, List<String> actual)
+        private void Dump(int expectedCount, int actualCount, string[] expected, List<string> actual)
         {
             if (expectedCount != actualCount)
             {
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with URI of an existing graph which is in the FROM NAMED list
 
             //Yields triples from <ex:named>
-            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:named> { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
+            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:named> { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
         }
 
         [Fact]
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with URI of an existing graph which is NOT in the FROM NAMED list
 
             //Yields no triples, tries to access a named graph not in the named graph list
-            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:other> { ?s ?p ?o } }", new String[] { }, 0);
+            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:other> { ?s ?p ?o } }", new string[] { }, 0);
         }
 
         [Fact]
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with URI of an existing graph which is in the FROM NAMED list
 
             //Yields no triples
-            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:missing> { ?s ?p ?o } }", new String[] { }, 0);
+            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH <ex:missing> { ?s ?p ?o } }", new string[] { }, 0);
         }
 
         [Fact]
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with variable
 
             //Yields triples from <ex:named>
-            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH ?g { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
+            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
         }
 
         [Fact]
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with variable
 
             //Yields triples from <ex:named>
-            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> FROM NAMED <ex:other> { GRAPH ?g { ?s ?p ?o } }", new String[] { "ex:named", "ex:other" }, 2);
+            RunTest("SELECT * FROM <ex:from> FROM NAMED <ex:named> FROM NAMED <ex:other> { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:named", "ex:other" }, 2);
         }
 
         /*
@@ -189,7 +189,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with URI of an existing graph
 
             //Yields no triples
-            RunTest("SELECT * FROM <ex:from> { GRAPH <ex:named> { ?s ?p ?o } }", new String[] { }, 0);
+            RunTest("SELECT * FROM <ex:from> { GRAPH <ex:named> { ?s ?p ?o } }", new string[] { }, 0);
         }
 
         [Fact]
@@ -200,7 +200,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with URI of an existing graph
 
             //Yields no triples
-            RunTest("SELECT * FROM <ex:from> { GRAPH <ex:missing> { ?s ?p ?o } }", new String[] { }, 0);
+            RunTest("SELECT * FROM <ex:from> { GRAPH <ex:missing> { ?s ?p ?o } }", new string[] { }, 0);
         }
 
         [Fact]
@@ -211,7 +211,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with variable
 
             //Yields no triples
-            RunTest("SELECT * FROM <ex:from> { GRAPH ?g { ?s ?p ?o } }", new String[] { }, 0);
+            RunTest("SELECT * FROM <ex:from> { GRAPH ?g { ?s ?p ?o } }", new string[] { }, 0);
         }
 
         /**
@@ -226,7 +226,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with variable
 
             //Yields triples in <ex:named>
-            RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH ?g { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
+            RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
         }
 
         [Fact]
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with variable
 
             //Yields triples in <ex:named> and <ex:other>
-            RunTest("SELECT * FROM NAMED <ex:named> FROM NAMED <ex:other> WHERE { GRAPH ?g { ?s ?p ?o } }", new String[] { "ex:named", "ex:other" }, 2);
+            RunTest("SELECT * FROM NAMED <ex:named> FROM NAMED <ex:other> WHERE { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:named", "ex:other" }, 2);
         }
 
         [Fact]
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with URI of existing graph
 
             //Yields triples in <ex:named>
-            RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH <ex:named> { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
+            RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH <ex:named> { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
         }
 
         [Fact]
@@ -259,7 +259,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with URI of non-existent graph
 
             //Yields triples in <ex:named>
-            RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH <ex:missing> { ?s ?p ?o } }", new String[] { }, 0);
+            RunTest("SELECT * FROM NAMED <ex:named> WHERE { GRAPH <ex:missing> { ?s ?p ?o } }", new string[] { }, 0);
         }
 
         /**
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query
             //No GRAPH clause
 
             //Yields triples from <ex:from>
-            RunTest("SELECT * FROM <ex:from> WHERE { ?s ?p ?o }", new String[] { "ex:from" }, 1);
+            RunTest("SELECT * FROM <ex:from> WHERE { ?s ?p ?o }", new string[] { "ex:from" }, 1);
         }
 
         /**
@@ -289,7 +289,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with variable
 
             //Yields triples in all named graphs
-            RunTest("SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }", new String[] { "ex:from", "ex:named", "ex:other" }, 3);
+            RunTest("SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }", new string[] { "ex:from", "ex:named", "ex:other" }, 3);
         }
 
         [Fact]
@@ -300,7 +300,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with URI of an existing graph
 
             //Yields triples in the specific named graph
-            RunTest("SELECT * WHERE { GRAPH <ex:named> { ?s ?p ?o } }", new String[] { "ex:named" }, 1);
+            RunTest("SELECT * WHERE { GRAPH <ex:named> { ?s ?p ?o } }", new string[] { "ex:named" }, 1);
         }
 
         [Fact]
@@ -311,7 +311,7 @@ namespace VDS.RDF.Query
             //GRAPH clause with URI of a non-existent graph
 
             //Yields no triples
-            RunTest("SELECT * WHERE { GRAPH <ex:missing> { ?s ?p ?o } }", new String[] { }, 0);
+            RunTest("SELECT * WHERE { GRAPH <ex:missing> { ?s ?p ?o } }", new string[] { }, 0);
         }
 
         /**
@@ -326,7 +326,7 @@ namespace VDS.RDF.Query
             //No GRAPH clause
 
             //Yields only triples in the default graph
-            RunTest("SELECT * WHERE { ?s ?p ?o }", new String[] { "ex:default" }, 1);
+            RunTest("SELECT * WHERE { ?s ?p ?o }", new string[] { "ex:default" }, 1);
         }
     }
 }

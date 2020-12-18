@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.FullText
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                                     select t.Subject).ToList();
             var factory = new NodeFactory();
-            expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
+            expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(n, factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             Assert.True(expected.Any());
 
             RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class }", expected);
@@ -150,7 +150,7 @@ namespace VDS.RDF.Query.FullText
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                                     select t.Subject).ToList();
             var factory = new NodeFactory();
-            expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
+            expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(n, factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             Assert.True(expected.Any());
 
             RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match a rdfs:Class . { ?match pf:textMatch 'http' } }", expected);
@@ -164,7 +164,7 @@ namespace VDS.RDF.Query.FullText
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                                     select t.Subject).ToList();
             var factory = new NodeFactory();
-            expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
+            expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(n, factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             expected.RemoveAll(n => !_dataset.GetTriplesWithPredicateObject(factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain")), n).Any());
             Assert.True(expected.Any());
 
@@ -179,7 +179,7 @@ namespace VDS.RDF.Query.FullText
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                                     select t.Subject).ToList();
             var factory = new NodeFactory();
-            expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
+            expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(n, factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             expected.RemoveAll(n => !_dataset.GetTriplesWithPredicateObject(factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain")), n).Any());
 
 

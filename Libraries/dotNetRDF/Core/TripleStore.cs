@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Update;
@@ -52,9 +51,7 @@ namespace VDS.RDF
         /// <summary>
         /// Graph Uri for the special Graph used to store inferred information.
         /// </summary>
-        protected Uri _inferenceGraphUri = UriFactory.Create("dotNetRDF:inference-graph");
-
-        private LeviathanQueryProcessor _processor;
+        protected UriNode _inferenceGraphUri = new UriNode(UriFactory.Create("dotNetRDF:inference-graph"));
 
         /// <summary>
         /// Creates a new Triple Store using a new empty Graph collection.
@@ -90,7 +87,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriples(Uri uri)
         {
-            return GetTriples(new UriNode(null, uri));
+            return GetTriples(new UriNode(uri));
         }
 
         /// <summary>
@@ -100,9 +97,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriples(INode n)
         {
-            return (from g in _graphs
-                    from t in g.GetTriples(n)
-                    select t);
+            return from g in _graphs
+                from t in g.GetTriples(n)
+                select t;
         }
 
         /// <summary>
@@ -112,7 +109,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
-            return GetTriplesWithObject(new UriNode(null, u));
+            return GetTriplesWithObject(new UriNode(u));
         }
 
         /// <summary>
@@ -122,9 +119,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(INode n)
         {
-            return (from g in _graphs
-                    from t in g.GetTriplesWithObject(n)
-                    select t);
+            return from g in _graphs
+                from t in g.GetTriplesWithObject(n)
+                select t;
         }
 
         /// <summary>
@@ -134,9 +131,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(INode n)
         {
-            return (from g in _graphs
-                    from t in g.GetTriplesWithPredicate(n)
-                    select t);
+            return from g in _graphs
+                from t in g.GetTriplesWithPredicate(n)
+                select t;
         }
 
         /// <summary>
@@ -146,7 +143,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
-            return GetTriplesWithPredicate(new UriNode(null, u));
+            return GetTriplesWithPredicate(new UriNode(u));
         }
 
         /// <summary>
@@ -156,9 +153,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(INode n)
         {
-            return (from g in _graphs
-                    from t in g.GetTriplesWithSubject(n)
-                    select t);
+            return from g in _graphs
+                from t in g.GetTriplesWithSubject(n)
+                select t;
         }
 
         /// <summary>
@@ -168,33 +165,33 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
-            return GetTriplesWithSubject(new UriNode(null, u));
+            return GetTriplesWithSubject(new UriNode(u));
         }
 
         /// <summary>
         /// Selects all the Triples with the given Subject-Predicate pair from all the Query Triples.
         /// </summary>
         /// <param name="subj">Subject.</param>
-        /// <param name="pred">Predicate.</param>
+        /// <param name="predicate">Predicate.</param>
         /// <returns></returns>
-        public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
+        public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode predicate)
         {
-            return (from g in _graphs
-                    from t in g.GetTriplesWithSubjectPredicate(subj, pred)
-                    select t);
+            return from g in _graphs
+                from t in g.GetTriplesWithSubjectPredicate(subj, predicate)
+                select t;
         }
 
         /// <summary>
         /// Selects all the Triples with the given Predicate-Object pair from all the Query Triples.
         /// </summary>
-        /// <param name="pred">Predicate.</param>
+        /// <param name="predicate">Predicate.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
+        public IEnumerable<Triple> GetTriplesWithPredicateObject(INode predicate, INode obj)
         {
-            return (from g in _graphs
-                    from t in g.GetTriplesWithPredicateObject(pred, obj)
-                    select t);
+            return from g in _graphs
+                from t in g.GetTriplesWithPredicateObject(predicate, obj)
+                select t;
         }
 
         /// <summary>
@@ -205,9 +202,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            return (from g in _graphs
-                    from t in g.GetTriplesWithSubjectObject(subj, obj)
-                    select t);
+            return from g in _graphs
+                from t in g.GetTriplesWithSubjectObject(subj, obj)
+                select t;
         }
 
         #endregion
@@ -220,9 +217,10 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
         /// <param name="uri">Uri.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetTriples(List<IRefNode>, Uri)")]
         public IEnumerable<Triple> GetTriples(List<Uri> graphUris, Uri uri)
         {
-            return GetTriples(new UriNode(null, uri));
+            return GetTriples(graphUris, new UriNode(uri));
         }
 
         /// <summary>
@@ -231,14 +229,36 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
         /// <param name="n">Node.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetTriples(List<IRefNode>, INode)")]
         public IEnumerable<Triple> GetTriples(List<Uri> graphUris, INode n)
         {
-            IEnumerable<Triple> ts = from g in _graphs
-                                     where graphUris.Contains(g.BaseUri)
-                                     from t in g.GetTriples(n)
-                                     select t;
+            var graphNames = graphUris.Select(u => u == null ? null : new UriNode(u) as IRefNode).ToList();
+            return GetTriples(graphNames, n);
+        }
 
-            return ts;
+        /// <summary>
+        /// Selects all Triples which have a Uri Node with the given Uri from a Subset of Graphs in the Triple Store.
+        /// </summary>
+        /// <param name="graphNames">List of the names of Graphs you want to select over.</param>
+        /// <param name="uri">Uri.</param>
+        /// <returns></returns>
+        public IEnumerable<Triple> GetTriples(List<IRefNode> graphNames, Uri uri)
+        {
+            return GetTriples(graphNames, new UriNode(uri));
+        }
+
+        /// <summary>
+        /// Selects all Triples which contain the given Node from a Subset of Graphs in the Triple Store.
+        /// </summary>
+        /// <param name="graphNames">List of the names of Graphs you want to select over.</param>
+        /// <param name="n">Node.</param>
+        /// <returns></returns>
+        public IEnumerable<Triple> GetTriples(List<IRefNode> graphNames, INode n)
+        {
+            return from g in _graphs
+                where graphNames.Contains(g.Name)
+                from t in g.GetTriples(n)
+                select t;
         }
 
         /// <summary>
@@ -247,9 +267,10 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
         /// <param name="u">Uri.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, Uri)")]
         public IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, Uri u)
         {
-            return GetTriplesWithObject(graphUris, new UriNode(null, u));
+            return GetTriplesWithObject(graphUris, new UriNode(u));
         }
 
         /// <summary>
@@ -258,30 +279,48 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
         /// <param name="n">Node.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetTriplesWithObject(List<IRefNode>, INode)")]
         public IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, INode n)
         {
-            IEnumerable<Triple> ts = from g in _graphs
-                                     where graphUris.Contains(g.BaseUri)
-                                     from t in g.GetTriplesWithObject(n)
-                                     select t;
-
-            return ts;
+            var graphNames = graphUris.Select(x => x == null ? null : new UriNode(x) as IRefNode).ToList();
+            return GetTriplesWithObject(graphNames, n);
         }
 
+        /// <summary>
+        /// Selects all Triples where the Object is a Uri Node with the given Uri from a Subset of Graphs in the Triple Store.
+        /// </summary>
+        /// <param name="graphNames">List of the names of Graphs you want to select over.</param>
+        /// <param name="u">Uri.</param>
+        /// <returns></returns>
+        public IEnumerable<Triple> GetTriplesWithObject(List<IRefNode> graphNames, Uri u)
+        {
+            return GetTriplesWithObject(graphNames, new UriNode(u));
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Object is a given Node from a Subset of Graphs in the Triple Store.
+        /// </summary>
+        /// <param name="graphNames">List of the names of Graphs you want to select over.</param>
+        /// <param name="n">Node.</param>
+        /// <returns></returns>
+        public IEnumerable<Triple> GetTriplesWithObject(List<IRefNode> graphNames, INode n)
+        {
+            return from g in _graphs
+                where graphNames.Contains(g.Name)
+                from t in g.GetTriplesWithObject(n)
+                select t;
+        }
         /// <summary>
         /// Selects all Triples where the Predicate is a given Node from a Subset of Graphs in the Triple Store.
         /// </summary>
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
         /// <param name="n">Node.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, INode)")]
         public IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, INode n)
         {
-            IEnumerable<Triple> ts = from g in _graphs
-                                     where graphUris.Contains(g.BaseUri)
-                                     from t in g.GetTriplesWithPredicate(n)
-                                     select t;
-
-            return ts;
+            var graphNames = graphUris.Select(x => x == null ? null : new UriNode(x) as IRefNode).ToList();
+            return GetTriplesWithPredicate(graphNames, n);
         }
 
         /// <summary>
@@ -290,9 +329,35 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
         /// <param name="u">Uri.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetTriplesWithPredicate(List<IRefNode>, Uri)")]
         public IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, Uri u)
         {
-            return GetTriplesWithPredicate(graphUris, new UriNode(null, u));
+            return GetTriplesWithPredicate(graphUris, new UriNode(u));
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Predicate is a Uri Node with the given Uri from a Subset of Graphs in the Triple Store.
+        /// </summary>
+        /// <param name="graphNames">List of the names of Graphs you want to select over.</param>
+        /// <param name="u">Uri.</param>
+        /// <returns></returns>
+        public IEnumerable<Triple> GetTriplesWithPredicate(List<IRefNode> graphNames, Uri u)
+        {
+            return GetTriplesWithPredicate(graphNames, new UriNode(u));
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Predicate is a given Node from a Subset of Graphs in the Triple Store.
+        /// </summary>
+        /// <param name="graphNames">List of the names of Graphs you want to select over.</param>
+        /// <param name="n">Node.</param>
+        /// <returns></returns>
+        public IEnumerable<Triple> GetTriplesWithPredicate(List<IRefNode> graphNames, INode n)
+        {
+            return from g in _graphs
+                   where graphNames.Contains(g.Name)
+                   from t in g.GetTriplesWithPredicate(n)
+                   select t;
         }
 
         /// <summary>
@@ -301,6 +366,7 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
         /// <param name="n">Node.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, INode)")]
         public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, INode n)
         {
             IEnumerable<Triple> ts = from g in _graphs
@@ -317,106 +383,38 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over.</param>
         /// <param name="u">Uri.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetTriplesWithSubject(List<IRefNode>, Uri)")]
         public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, Uri u)
         {
-            return GetTriplesWithSubject(graphUris, new UriNode(null, u));
+            return GetTriplesWithSubject(graphUris, new UriNode(u));
         }
 
+        /// <summary>
+        /// Selects all Triples where the Subject is a Uri Node with the given Uri from a Subset of Graphs in the Triple Store.
+        /// </summary>
+        /// <param name="graphNames">List of the names of Graphs you want to select over.</param>
+        /// <param name="u">Uri.</param>
+        /// <returns></returns>
+        public IEnumerable<Triple> GetTriplesWithSubject(List<IRefNode> graphNames, Uri u)
+        {
+            return GetTriplesWithSubject(graphNames, new UriNode(u));
+        }
+
+        /// <summary>
+        /// Selects all Triples where the Subject is a given Node from a Subset of Graphs in the Triple Store.
+        /// </summary>
+        /// <param name="graphNames">List of the names of Graphs you want to select over.</param>
+        /// <param name="n">Node.</param>
+        /// <returns></returns>
+        public IEnumerable<Triple> GetTriplesWithSubject(List<IRefNode> graphNames, INode n)
+        {
+            return from g in _graphs
+                where graphNames.Contains(g.Name)
+                from t in g.GetTriplesWithSubject(n)
+                select t;
+        }
         #endregion
 
-        #region SPARQL Selection
-
-        /// <summary>
-        /// Executes a SPARQL Query on the Triple Store.
-        /// </summary>
-        /// <param name="query">SPARQL Query as unparsed String.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// This method of making queries often leads to no results because of misconceptions about what data is being queries.  dotNetRDF's SPARQL engine only queries the default unnamed graph of the triple store (the graph added with a null URI) by default unless your query uses FROM clauses to change the default graph or you use GRAPH clauses to access named graphs in the store.  Therefore a common mistake is to add a single graph to the store and then query the store which typically results in no results because usually the added graph is named and so is not queried.
-        /// </para>
-        /// <para>
-        /// We recommend using a <see cref="ISparqlQueryProcessor"/> instead for making queries over in-memory data since using our standard implementation (<see cref="LeviathanQueryProcessor"/>) affords you much more explicit control over which graphs are queried.
-        /// </para>
-        /// </remarks>
-        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        public virtual object ExecuteQuery(string query)
-        {
-            // Parse the Query
-            var sparqlparser = new SparqlQueryParser();
-            SparqlQuery q = sparqlparser.ParseFromString(query);
-
-            // Invoke other execute method
-            return ExecuteQuery(q);
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on the Triple Store.
-        /// </summary>
-        /// <param name="query">SPARQL Query as a <see cref="SparqlQuery">SparqlQuery</see> instance.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// This method of making queries often leads to no results because of misconceptions about what data is being queries.  dotNetRDF's SPARQL engine only queries the default unnamed graph of the triple store (the graph added with a null URI) by default unless your query uses FROM clauses to change the default graph or you use GRAPH clauses to access named graphs in the store.  Therefore a common mistake is to add a single graph to the store and then query the store which typically results in no results because usually the added graph is named and so is not queried.
-        /// </para>
-        /// <para>
-        /// We recommend using a <see cref="ISparqlQueryProcessor"/> instead for making queries over in-memory data since using our standard implementation (<see cref="LeviathanQueryProcessor"/>) affords you much more explicit control over which graphs are queried.
-        /// </para>
-        /// </remarks>
-        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        public virtual object ExecuteQuery(SparqlQuery query)
-        {
-            if (_processor == null) _processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(this));
-            return _processor.ProcessQuery(query);
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">Results Handler.</param>
-        /// <param name="query">SPARQL Query as unparsed String.</param>
-        /// <remarks>
-        /// <para>
-        /// This method of making queries often leads to no results because of misconceptions about what data is being queries.  dotNetRDF's SPARQL engine only queries the default unnamed graph of the triple store (the graph added with a null URI) by default unless your query uses FROM clauses to change the default graph or you use GRAPH clauses to access named graphs in the store.  Therefore a common mistake is to add a single graph to the store and then query the store which typically results in no results because usually the added graph is named and so is not queried.
-        /// </para>
-        /// <para>
-        /// We recommend using a <see cref="ISparqlQueryProcessor"/> instead for making queries over in-memory data since using our standard implementation (<see cref="LeviathanQueryProcessor"/>) affords you much more explicit control over which graphs are queried.
-        /// </para>
-        /// </remarks>
-        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
-        {
-            // Parse the Query
-            var sparqlparser = new SparqlQueryParser();
-            SparqlQuery q = sparqlparser.ParseFromString(query);
-
-            // Invoke other execute method
-            ExecuteQuery(rdfHandler, resultsHandler, q);
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">Results Handler.</param>
-        /// <param name="query">SPARQL Query as unparsed String.</param>
-        /// <remarks>
-        /// <para>
-        /// This method of making queries often leads to no results because of misconceptions about what data is being queries.  dotNetRDF's SPARQL engine only queries the default unnamed graph of the triple store (the graph added with a null URI) by default unless your query uses FROM clauses to change the default graph or you use GRAPH clauses to access named graphs in the store.  Therefore a common mistake is to add a single graph to the store and then query the store which typically results in no results because usually the added graph is named and so is not queried.
-        /// </para>
-        /// <para>
-        /// We recommend using a <see cref="ISparqlQueryProcessor"/> instead for making queries over in-memory data since using our standard implementation (<see cref="LeviathanQueryProcessor"/>) affords you much more explicit control over which graphs are queried.
-        /// </para>
-        /// </remarks>
-        [Obsolete("This method of making queries is often error prone due to misconceptions about what data is being queries and we recommend using an ISparqlQueryProcessor instead, see remarks for more discussion", true)]
-        public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
-        {
-            if (_processor == null) _processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(this));
-            _processor.ProcessQuery(rdfHandler, resultsHandler, query);
-        }
-
-        #endregion
 
         #endregion
 
@@ -436,8 +434,7 @@ namespace VDS.RDF
                 {
                     if (!_graphs.Contains(_inferenceGraphUri))
                     {
-                        IGraph i = new ThreadSafeGraph();
-                        i.BaseUri = _inferenceGraphUri;
+                        IGraph i = new ThreadSafeGraph(_inferenceGraphUri) {BaseUri = _inferenceGraphUri.Uri};
                         _graphs.Add(i, true);
                     }
                 }
@@ -563,32 +560,5 @@ namespace VDS.RDF
             base.OnGraphAdded(sender, args);
             ApplyInference(args.Graph);
         }
-    }
-
-    /// <summary>
-    /// A thread safe variant of <see cref="TripleStore"/>, simply a <see cref="TripleStore"/> instance with a <see cref="ThreadSafeGraphCollection"/> decorator around it's underlying <see cref="BaseGraphCollection"/>.
-    /// </summary>
-    public class ThreadSafeTripleStore
-        : TripleStore
-    {
-        /// <summary>
-        /// Creates a new Thread Safe triple store.
-        /// </summary>
-        public ThreadSafeTripleStore()
-            : base(new ThreadSafeGraphCollection()) { }
-
-        /// <summary>
-        /// Creates a new Thread safe triple store using the given Thread safe graph collection.
-        /// </summary>
-        /// <param name="collection">Collection.</param>
-        public ThreadSafeTripleStore(ThreadSafeGraphCollection collection)
-            : base(collection) { }
-
-        /// <summary>
-        /// Creates a new Thread safe triple store using a thread safe decorator around the given graph collection.
-        /// </summary>
-        /// <param name="collection">Collection.</param>
-        public ThreadSafeTripleStore(BaseGraphCollection collection)
-            : this(new ThreadSafeGraphCollection(collection)) { }
     }
 }

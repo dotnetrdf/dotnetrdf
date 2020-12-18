@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                return new BlankNode(context.Graph, _id);
+                return new BlankNode(_id);
             }
         }
 

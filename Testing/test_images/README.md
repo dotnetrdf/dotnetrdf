@@ -18,7 +18,7 @@ Exposes a store at http://localhost:8080
 
 ### Sesame/RDF4J
 
-    docker run --rm -p 8080:8080 --name rdf4j rdf4j
+    docker run --rm -p 8081:8080 --name rdf4j rdf4j
     
 Exposes an RDF4J server at http://localhost:8080/rdf4j-server with a single in-memory repository named `unit-test`
 

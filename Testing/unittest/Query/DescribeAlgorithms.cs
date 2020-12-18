@@ -90,9 +90,8 @@ namespace VDS.RDF.Query
         {
             var dataset = new InMemoryDataset();
 
-            IGraph g = new Graph();
+            IGraph g = new Graph(new UriNode(new Uri("http://graph")));
             g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
-            g.BaseUri = UriFactory.Create("http://graph");
             dataset.AddGraph(g);
 
             var processor = new LeviathanQueryProcessor(dataset);
@@ -106,9 +105,8 @@ namespace VDS.RDF.Query
         {
             var dataset = new InMemoryDataset();
 
-            IGraph g = new Graph();
+            IGraph g = new Graph(new UriNode(UriFactory.Create("http://graph")));
             g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
-            g.BaseUri = UriFactory.Create("http://graph");
             dataset.AddGraph(g);
 
             var processor = new LeviathanQueryProcessor(dataset);
@@ -122,9 +120,8 @@ namespace VDS.RDF.Query
         {
             var dataset = new InMemoryDataset();
 
-            IGraph g = new Graph();
+            IGraph g = new Graph(new UriNode(UriFactory.Create("http://graph")));
             g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
-            g.BaseUri = UriFactory.Create("http://graph");
             dataset.AddGraph(g);
 
             var processor = new LeviathanQueryProcessor(dataset);
@@ -138,9 +135,8 @@ namespace VDS.RDF.Query
         {
             var dataset = new InMemoryDataset();
 
-            IGraph g = new Graph();
+            IGraph g = new Graph(new UriNode(UriFactory.Create("http://graph")));
             g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
-            g.BaseUri = UriFactory.Create("http://graph");
             dataset.AddGraph(g);
 
             var processor = new LeviathanQueryProcessor(dataset);

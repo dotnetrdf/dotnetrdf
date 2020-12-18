@@ -40,8 +40,6 @@ namespace VDS.RDF.Update.Commands
     public class InsertDataCommand
         : SparqlUpdateCommand
     {
-        private readonly GraphPattern _pattern;
-
         /// <summary>
         /// Creates a new INSERT DATA command.
         /// </summary>
@@ -50,7 +48,7 @@ namespace VDS.RDF.Update.Commands
             : base(SparqlUpdateCommandType.InsertData) 
         {
             if (!IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or a GRAPH clause has nested Graph Patterns");
-            _pattern = pattern;
+            DataPattern = pattern;
         }
 
         /// <summary>
@@ -80,13 +78,7 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the Data Pattern containing Triples to insert.
         /// </summary>
-        public GraphPattern DataPattern
-        {
-            get
-            {
-                return _pattern;
-            }
-        }
+        public GraphPattern DataPattern { get; }
 
         /// <summary>
         /// Gets whether the Command affects a single Graph.
@@ -95,13 +87,13 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                if (!_pattern.HasChildGraphPatterns)
+                if (!DataPattern.HasChildGraphPatterns)
                 {
                     return true;
                 }
-                var affectedUris = new List<string>();
-                affectedUris.Add(_pattern.IsGraph ? _pattern.GraphSpecifier.Value : null);
-                affectedUris.AddRange(from p in _pattern.ChildGraphPatterns
+
+                var affectedUris = new List<string> {DataPattern.IsGraph ? DataPattern.GraphSpecifier.Value : null};
+                affectedUris.AddRange(from p in DataPattern.ChildGraphPatterns
                     where p.IsGraph
                     select p.GraphSpecifier.Value);
 
@@ -114,19 +106,38 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public override bool AffectsGraph(Uri graphUri)
         {
-            var affectedUris = new List<string>();
-            affectedUris.Add(_pattern.IsGraph ? _pattern.GraphSpecifier.Value : string.Empty);
-            if (_pattern.HasChildGraphPatterns)
+            var affectedUris = new List<string> {DataPattern.IsGraph ? DataPattern.GraphSpecifier.Value : string.Empty};
+            if (DataPattern.HasChildGraphPatterns)
             {
-                affectedUris.AddRange(from p in _pattern.ChildGraphPatterns
+                affectedUris.AddRange(from p in DataPattern.ChildGraphPatterns
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
             if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
 
             return affectedUris.Contains(graphUri.ToSafeString());
+        }
+
+        /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public override bool AffectsGraph(IRefNode graphName)
+        {
+            var affectedUris = new List<string> { DataPattern.IsGraph ? DataPattern.GraphSpecifier.Value : string.Empty };
+            if (DataPattern.HasChildGraphPatterns)
+            {
+                affectedUris.AddRange(from p in DataPattern.ChildGraphPatterns
+                    where p.IsGraph
+                    select p.GraphSpecifier.Value);
+            }
+            if (affectedUris.Any(u => u != null)) affectedUris.Add(string.Empty);
+
+            return affectedUris.Contains(graphName.ToSafeString());
         }
 
         /// <summary>
@@ -137,18 +148,18 @@ namespace VDS.RDF.Update.Commands
         {
             // Split the Pattern into the set of Graph Patterns
             var patterns = new List<GraphPattern>();
-            if (_pattern.IsGraph)
+            if (DataPattern.IsGraph)
             {
-                patterns.Add(_pattern);
+                patterns.Add(DataPattern);
             }
-            else if (_pattern.TriplePatterns.Count > 0 || _pattern.HasChildGraphPatterns)
+            else if (DataPattern.TriplePatterns.Count > 0 || DataPattern.HasChildGraphPatterns)
             {
-                if (_pattern.TriplePatterns.Count > 0)
+                if (DataPattern.TriplePatterns.Count > 0)
                 {
                     patterns.Add(new GraphPattern());
-                    _pattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
+                    DataPattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
                 }
-                _pattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
+                DataPattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
             }
             else
             {
@@ -163,7 +174,7 @@ namespace VDS.RDF.Update.Commands
 
                 // Get the Target Graph
                 IGraph target;
-                Uri graphUri;
+                IRefNode graphName;
                 if (pattern.IsGraph)
                 {
                     switch (pattern.GraphSpecifier.TokenType)
@@ -171,7 +182,7 @@ namespace VDS.RDF.Update.Commands
                         case Token.QNAME:
                             throw new NotSupportedException("Graph Specifiers as QNames for INSERT DATA Commands are not supported - please specify an absolute URI instead");
                         case Token.URI:
-                            graphUri = UriFactory.Create(pattern.GraphSpecifier.Value);
+                            graphName = new UriNode(UriFactory.Create(pattern.GraphSpecifier.Value));
                             break;
                         default:
                             throw new SparqlUpdateException("Cannot evaluate an INSERT DATA Command as the Graph Specifier is not a QName/URI");
@@ -179,17 +190,16 @@ namespace VDS.RDF.Update.Commands
                 }
                 else
                 {
-                    graphUri = null;
+                    graphName = null;
                 }
-                if (context.Data.HasGraph(graphUri))
+                if (context.Data.HasGraph(graphName))
                 {
-                    target = context.Data.GetModifiableGraph(graphUri);
+                    target = context.Data.GetModifiableGraph(graphName);
                 }
                 else
                 {
                     // If the Graph does not exist then it must be created
-                    target = new Graph();
-                    target.BaseUri = graphUri;
+                    target = new Graph(graphName);
                     context.Data.AddGraph(target);
                 }
 
@@ -200,7 +210,7 @@ namespace VDS.RDF.Update.Commands
                     INode pred = p.Predicate.Construct(constructContext);
                     INode obj = p.Object.Construct(constructContext);
 
-                    target.Assert(new Triple(subj, pred, obj, graphUri));
+                    target.Assert(new Triple(subj, pred, obj));
                 }
             }
         }
@@ -222,9 +232,9 @@ namespace VDS.RDF.Update.Commands
         {
             var output = new StringBuilder();
             output.AppendLine("INSERT DATA");
-            if (_pattern.IsGraph) output.AppendLine("{");
-            output.AppendLine(_pattern.ToString());
-            if (_pattern.IsGraph) output.AppendLine("}");
+            if (DataPattern.IsGraph) output.AppendLine("{");
+            output.AppendLine(DataPattern.ToString());
+            if (DataPattern.IsGraph) output.AppendLine("}");
             return output.ToString();
         }
     }

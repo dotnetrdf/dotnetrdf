@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 
             if (temp.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot apply a numeric function to a non-numeric argument");
 
-            return new DoubleNode(null, Math.PI * (temp.AsDouble() / 180d));
+            return new DoubleNode(Math.PI * (temp.AsDouble() / 180d));
         }
 
         /// <summary>

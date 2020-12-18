@@ -43,30 +43,27 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new Time span node.
         /// </summary>
-        /// <param name="g">Graph.</param>
         /// <param name="value">Time Span.</param>
-        public TimeSpanNode(IGraph g, TimeSpan value)
-            : this(g, value, XmlConvert.ToString(value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+        public TimeSpanNode(TimeSpan value)
+            : this(value, XmlConvert.ToString(value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         /// <summary>
         /// Creates a new Time span node. 
         /// </summary>
-        /// <param name="g">Graph.</param>
         /// <param name="value">Time Span.</param>
         /// <param name="lexicalValue">Lexical value.</param>
-        public TimeSpanNode(IGraph g, TimeSpan value, string lexicalValue)
-            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+        public TimeSpanNode(TimeSpan value, string lexicalValue)
+            : this(value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         /// <summary>
         /// Creates a new Time span node.
         /// </summary>
-        /// <param name="g">Graph.</param>
         /// <param name="value">Time Span.</param>
         /// <param name="lexicalValue">Lexical value.</param>
         /// <param name="dtUri">Data type URI.</param>
         /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
-        public TimeSpanNode(IGraph g, TimeSpan value, string lexicalValue, Uri dtUri, bool normalizeLiteralValue = false)
-            : base(g, lexicalValue, dtUri, normalizeLiteralValue)
+        public TimeSpanNode(TimeSpan value, string lexicalValue, Uri dtUri, bool normalizeLiteralValue = false)
+            : base(lexicalValue, dtUri, normalizeLiteralValue)
         {
             _value = value;
         }

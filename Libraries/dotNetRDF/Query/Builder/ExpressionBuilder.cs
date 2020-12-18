@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Builder
 
         public RdfTermExpression Constant(Uri value)
         {
-            return new RdfTermExpression(new ConstantTerm(new UriNode(null, value)));
+            return new RdfTermExpression(new ConstantTerm(new UriNode(value)));
         }
 
         public SparqlCastBuilder Cast(SparqlExpression castedExpression)

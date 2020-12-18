@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
         /// </summary>
         /// <param name="expr">Expression.</param>
         public StringJoinAggregate(ISparqlExpression expr)
-            : this(expr, new ConstantTerm(new LiteralNode(null, string.Empty, false)))
+            : this(expr, new ConstantTerm(new LiteralNode(string.Empty, false)))
         {
             _customSep = false;
         }
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Aggregates.XPath
                 }
             }
 
-            return new StringNode(null, output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new StringNode(output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>

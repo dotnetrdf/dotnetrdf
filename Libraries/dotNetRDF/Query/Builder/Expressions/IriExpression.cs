@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         /// </summary>
         /// <param name="iri"></param>
         public IriExpression(Uri iri) 
-            : base(new ConstantTerm(new UriNode(null, iri)))
+            : base(new ConstantTerm(new UriNode(iri)))
         {
         }
 

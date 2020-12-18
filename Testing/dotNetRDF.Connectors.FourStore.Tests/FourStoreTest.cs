@@ -26,10 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Web;
-using System.Net;
-using System.Net.Http;
 using Xunit;
 using VDS.RDF.Parsing;
 
@@ -52,9 +48,8 @@ namespace VDS.RDF.Storage
 
         public void StorageFourStoreSaveGraph()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri("http://example.org/4storeTest"));
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/4storeTest");
 
             FourStoreConnector fourstore = GetConnection();
             fourstore.SaveGraph(g);
@@ -70,9 +65,8 @@ namespace VDS.RDF.Storage
         {
             StorageFourStoreSaveGraph();
 
-            var g = new Graph();
+            var g = new Graph(new Uri("http://example.org/4storeTest"));
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/4storeTest");
 
             FourStoreConnector fourstore = GetConnection();
 
@@ -118,10 +112,8 @@ namespace VDS.RDF.Storage
         public void StorageFourStoreRemoveTriples()
         {
             //StorageFourStoreAddTriples();
-
-            var g = new Graph();
-            //FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/4storeRemoveTriples");
+            var nodeFactory = new NodeFactory();
+            var g = new Graph(nodeFactory.CreateUriNode(new Uri("http://example.org/4storeRemoveTriples")));
 
             FourStoreConnector fourstore = GetConnection();
             fourstore.DeleteGraph("http://example.org/4storeRemoveTriples");

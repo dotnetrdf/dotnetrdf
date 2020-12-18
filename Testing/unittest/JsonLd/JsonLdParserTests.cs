@@ -76,9 +76,9 @@ namespace VDS.RDF.JsonLd
                 jsonLdParser.Load(tripleStore, reader);
             }
 
-            var defaultGraph = tripleStore.Graphs.FirstOrDefault(g => g.BaseUri == null);
+            IGraph defaultGraph = tripleStore.Graphs.FirstOrDefault(g=>g.Name == null);
             Assert.True(defaultGraph == null || defaultGraph.IsEmpty);
-            var contentGraph = tripleStore.Graphs[new Uri("urn:graph:1")];
+            IGraph contentGraph = tripleStore.Graphs[new UriNode(new Uri("urn:graph:1"))];
             Assert.NotNull(contentGraph);
             Assert.Equal(5, contentGraph.Triples.Count);
         }

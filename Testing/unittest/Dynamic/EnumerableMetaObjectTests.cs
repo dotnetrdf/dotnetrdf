@@ -39,7 +39,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             var s = g.CreateBlankNode();
             var p = g.CreateBlankNode();
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             dynamic objects = new DynamicObjectCollection(d, p);
 
             Assert.Throws<InvalidOperationException>(() =>
@@ -57,7 +57,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             dynamic objects = new DynamicObjectCollection(d, p);
 
             Assert.Equal(o, objects.Single());
@@ -73,7 +73,7 @@ namespace VDS.RDF.Dynamic
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             dynamic objects = new DynamicObjectCollection(d, p);
 
             Func<object, object> selector = n => n.ToString();
@@ -94,7 +94,7 @@ namespace VDS.RDF.Dynamic
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             dynamic objects = new DynamicObjectCollection(d, p);
 
             Func<object, string> keySelector = n => ((ILiteralNode)n).Language;
@@ -132,7 +132,7 @@ namespace VDS.RDF.Dynamic
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             dynamic objects = new DynamicObjectCollection(d, p);
 
             objects.Clear();

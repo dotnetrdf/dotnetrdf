@@ -29,13 +29,20 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
 
     public class NegationTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
         private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+
+        public NegationTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
 
         private static ISparqlDataset GetTestData()
         {
@@ -155,14 +162,14 @@ namespace VDS.RDF.Query
             var processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(g));
 
             var lhs = processor.ProcessQuery(lhsQuery) as SparqlResultSet;
-            Console.WriteLine("LHS Intermediate Results");
-            TestTools.ShowResults(lhs);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("LHS Intermediate Results");
+            TestTools.ShowResults(lhs, _testOutputHelper);
+            _testOutputHelper.WriteLine();
 
             var rhs = processor.ProcessQuery(rhsQuery) as SparqlResultSet;
-            Console.WriteLine("RHS Intermediate Results");
-            TestTools.ShowResults(rhs);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("RHS Intermediate Results");
+            TestTools.ShowResults(rhs, _testOutputHelper);
+            _testOutputHelper.WriteLine();
 
             var actual = processor.ProcessQuery(query) as SparqlResultSet;
             if (actual == null) Assert.True(false, "Null results");
@@ -170,10 +177,10 @@ namespace VDS.RDF.Query
             var parser = new SparqlXmlParser();
             parser.Load(expected, "resources\\full-minuend.srx");
 
-            Console.WriteLine("Actual Results:");
-            TestTools.ShowResults(actual);
-            Console.WriteLine();
-            Console.WriteLine("Expected Results:");
+            _testOutputHelper.WriteLine("Actual Results:");
+            TestTools.ShowResults(actual, _testOutputHelper);
+            _testOutputHelper.WriteLine();
+            _testOutputHelper.WriteLine("Expected Results:");
             TestTools.ShowResults(expected);
 
             Assert.Equal(expected, actual);
@@ -298,11 +305,7 @@ WHERE
 
         private static void Test(string query, bool isNamedGraph, int expectedCount)
         {
-            IGraph graph = new Graph();
-            if (isNamedGraph)
-            {
-                graph.BaseUri = new Uri("http://g");
-            }
+            IGraph graph = isNamedGraph ? new Graph(new UriNode(new Uri("http://g"))) : new Graph();
             new TurtleParser().Load(graph, new StringReader(TestData));
 
             IInMemoryQueryableStore store = new TripleStore();

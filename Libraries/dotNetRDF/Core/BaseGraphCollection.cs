@@ -45,7 +45,16 @@ namespace VDS.RDF
         /// <remarks>
         /// The null URI is used to reference the Default Graph.
         /// </remarks>
+        [Obsolete("Replaced by Contains(IRefNode)")]
         public abstract bool Contains(Uri graphUri);
+
+        /// <summary>
+        /// Checks whether the graph with the given name exists in this graph collection.
+        /// </summary>
+        /// <param name="graphName">Graph name to test for.</param>
+        /// <returns>True if a graph with the specified name is in the collection, false otherwise.</returns>
+        /// <remarks>The null value is used to reference the default (unnamed) graph.</remarks>
+        public abstract bool Contains(IRefNode graphName);
 
         /// <summary>
         /// Adds a Graph to the Collection.
@@ -61,7 +70,17 @@ namespace VDS.RDF
         /// <remarks>
         /// The null URI is used to reference the Default Graph.
         /// </remarks>
+        [Obsolete("Replaced by Remove(IRefNode)")]
         protected abstract internal bool Remove(Uri graphUri);
+
+        /// <summary>
+        /// Removes a graph from the collection.
+        /// </summary>
+        /// <param name="graphName">Name of the Graph to remove.</param>
+        /// <remarks>
+        /// The null value is used to reference the Default Graph.
+        /// </remarks>
+        protected abstract internal bool Remove(IRefNode graphName);
 
         /// <summary>
         /// Gets the number of Graphs in the Collection.
@@ -74,10 +93,16 @@ namespace VDS.RDF
         /// <summary>
         /// Provides access to the Graph URIs of Graphs in the Collection.
         /// </summary>
+        [Obsolete("Replaced by GraphNames")]
         public abstract IEnumerable<Uri> GraphUris
         {
             get;
         }
+
+        /// <summary>
+        /// Provides an enumeration of the names of all of teh graphs in the collection.
+        /// </summary>
+        public abstract IEnumerable<IRefNode> GraphNames { get; }
 
         /// <summary>
         /// Gets a Graph from the Collection.
@@ -87,10 +112,19 @@ namespace VDS.RDF
         /// <remarks>
         /// The null URI is used to reference the Default Graph.
         /// </remarks>
+        [Obsolete("Replaced by this[IRefNode]")]
         public abstract IGraph this[Uri graphUri] 
         {
             get;
         }
+
+        /// <summary>
+        /// Gets a graph from the collection.
+        /// </summary>
+        /// <param name="graphName">The name of the graph to retrieve.</param>
+        /// <returns></returns>
+        /// <remarks>The null value is used to reference the default graph.</remarks>
+        public abstract IGraph this[IRefNode graphName] { get; }
 
         /// <summary>
         /// Disposes of the Graph Collection.

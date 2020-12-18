@@ -49,14 +49,15 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            IEnumerable<INode> invalidValues =
-                from valueNode in valueNodes
-                let isInstance = this.IsShaclInstance(valueNode)
-                group isInstance by valueNode into valid
-                where !valid.Any(isValid => isValid)
-                select valid.Key;
+            //IEnumerable<INode> invalidValues =
+            //    from valueNode in valueNodes
+            //    let isInstance = this.IsShaclInstance(valueNode, dataGraph)
+            //    group isInstance by valueNode into valid
+            //    where !valid.Any(isValid => isValid)
+            //    select valid.Key;
+            IEnumerable<INode> invalidValues = valueNodes.Where(v => !this.IsShaclInstance(v, dataGraph)).ToList();
 
             return ReportValueNodes(focusNode, invalidValues, report);
         }

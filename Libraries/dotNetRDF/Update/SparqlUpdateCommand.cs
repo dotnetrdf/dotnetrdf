@@ -93,27 +93,19 @@ namespace VDS.RDF.Update
     /// </summary>
     public abstract class SparqlUpdateCommand
     {
-        private SparqlUpdateCommandType _type = SparqlUpdateCommandType.Unknown;
-
         /// <summary>
         /// Creates a new SPARQL Update Command.
         /// </summary>
         /// <param name="type">Command Type.</param>
-        public SparqlUpdateCommand(SparqlUpdateCommandType type)
+        protected SparqlUpdateCommand(SparqlUpdateCommandType type)
         {
-            _type = type;
+            CommandType = type;
         }
 
         /// <summary>
         /// Gets the Type of this Command.
         /// </summary>
-        public SparqlUpdateCommandType CommandType
-        {
-            get
-            {
-                return _type;
-            }
-        }
+        public SparqlUpdateCommandType CommandType { get; }
 
         /// <summary>
         /// Gets whether the Command will only affect a single Graph.
@@ -131,7 +123,18 @@ namespace VDS.RDF.Update
         /// <remarks>
         /// A return value of <strong>true</strong> does not guarantee that the Graph will be affected.  Some Commands (e.g. DROP ALL) affect all Graphs in the Dataset but the command itself doesn't know whether a Graph with the given URI is actually present in the dataset to which it is applied.
         /// </remarks>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public abstract bool AffectsGraph(Uri graphUri);
+
+        /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// A return value of <strong>true</strong> does not guarantee that the Graph will be affected.  Some Commands (e.g. DROP ALL) affect all Graphs in the Dataset but the command itself doesn't know whether a Graph with the given URI is actually present in the dataset to which it is applied.
+        /// </remarks>
+        public abstract bool AffectsGraph(IRefNode graphName);
 
         /// <summary>
         /// Optimises the Command.

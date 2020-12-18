@@ -34,8 +34,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class AskImpl : QueryImpl, IAsk
     {
 
-        public AskImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public AskImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

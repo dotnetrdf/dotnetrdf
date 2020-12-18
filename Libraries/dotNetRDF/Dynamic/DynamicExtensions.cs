@@ -53,11 +53,12 @@ namespace VDS.RDF.Dynamic
         /// Dynamically wraps a node.
         /// </summary>
         /// <param name="node">The node to wrap dynamically.</param>
+        /// <param name="graph">The graph context of th dynamic node.</param>
         /// <param name="baseUri">The Uri to use for resolving relative predicate references.</param>
         /// <returns>A dynamic node that wraps <paramref name="node"/>.</returns>
-        public static dynamic AsDynamic(this INode node, Uri baseUri = null)
+        public static dynamic AsDynamic(this INode node, IGraph graph, Uri baseUri = null)
         {
-            return new DynamicNode(node, baseUri);
+            return new DynamicNode(node, graph, baseUri);
         }
 
         /// <summary>
@@ -80,13 +81,13 @@ namespace VDS.RDF.Dynamic
             return new DynamicSparqlResult(result);
         }
 
-        internal static object AsObject(this INode node, Uri baseUri)
+        internal static object AsObject(this INode node, IGraph graph, Uri baseUri)
         {
             switch (node.AsValuedNode())
             {
                 case IUriNode _:
                 case IBlankNode _:
-                    return node.AsDynamic(baseUri);
+                    return node.AsDynamic(graph, baseUri);
 
                 default:
                     return node.AsObject();
@@ -177,46 +178,46 @@ namespace VDS.RDF.Dynamic
             switch (value)
             {
                 case INode nodeValue:
-                    return nodeValue.CopyNode(graph);
+                    return nodeValue;
 
                 case Uri uriValue:
                     return ((INodeFactory)graph ?? new NodeFactory()).CreateUriNode(uriValue);
 
                 case bool boolValue:
-                    return new BooleanNode(graph, boolValue);
+                    return new BooleanNode(boolValue);
 
                 case byte byteValue:
-                    return new ByteNode(graph, byteValue);
+                    return new ByteNode(byteValue);
 
                 case DateTime dateTimeValue:
-                    return new DateTimeNode(graph, dateTimeValue);
+                    return new DateTimeNode(dateTimeValue);
 
                 case DateTimeOffset dateTimeOffsetValue:
-                    return new DateTimeNode(graph, dateTimeOffsetValue);
+                    return new DateTimeNode(dateTimeOffsetValue);
 
                 case decimal decimalValue:
-                    return new DecimalNode(graph, decimalValue);
+                    return new DecimalNode(decimalValue);
 
                 case double doubleValue:
-                    return new DoubleNode(graph, doubleValue);
+                    return new DoubleNode(doubleValue);
 
                 case float floatValue:
-                    return new FloatNode(graph, floatValue);
+                    return new FloatNode(floatValue);
 
                 case long longValue:
-                    return new LongNode(graph, longValue);
+                    return new LongNode(longValue);
 
                 case int intValue:
-                    return new LongNode(graph, intValue);
+                    return new LongNode(intValue);
 
                 case string stringValue:
-                    return new StringNode(graph, stringValue);
+                    return new StringNode(stringValue);
 
                 case char charValue:
-                    return new StringNode(graph, charValue.ToString());
+                    return new StringNode(charValue.ToString());
 
                 case TimeSpan timeSpanValue:
-                    return new TimeSpanNode(graph, timeSpanValue);
+                    return new TimeSpanNode(timeSpanValue);
 
                 default:
                     throw new InvalidOperationException($"Can't convert type {value.GetType()}");
@@ -238,11 +239,11 @@ namespace VDS.RDF.Dynamic
             }
         }
 
-        internal static string AsName(this IUriNode node, Uri baseUri)
+        internal static string AsName(this IUriNode node, Uri baseUri, INamespaceMapper nsMapper)
         {
             Uri nodeUri = node.Uri;
 
-            if (node.Graph.NamespaceMap.ReduceToQName(nodeUri.AbsoluteUri, out var qname))
+            if (nsMapper.ReduceToQName(nodeUri.AbsoluteUri, out var qname))
             {
                 return qname;
             }

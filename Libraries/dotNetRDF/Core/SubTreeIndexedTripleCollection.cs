@@ -51,9 +51,9 @@ namespace VDS.RDF
                                                                               _o = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer());
 
         // Placeholder Variables for compound lookups
-        private VariableNode _subjVar = new VariableNode(null, "s"),
-                             _predVar = new VariableNode(null, "p"),
-                             _objVar = new VariableNode(null, "o");
+        private VariableNode _subjVar = new VariableNode("s"),
+                             _predVar = new VariableNode("p"),
+                             _objVar = new VariableNode("o");
 
         // Hash Functions
         private Func<Triple, int> _sHash = (t => Tools.CombineHashCodes(t.Subject, t.Predicate)),
@@ -278,7 +278,7 @@ namespace VDS.RDF
         {
             if (_p.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(new Triple(_subjVar.CopyNode(pred.Graph), pred, obj.CopyNode(pred.Graph)), out HashSet<Triple> ts))
+                if (subtree.TryGetValue(new Triple(_subjVar, pred, obj), out HashSet<Triple> ts))
                 {
                     return (ts ?? Enumerable.Empty<Triple>());
                 }
@@ -297,7 +297,7 @@ namespace VDS.RDF
         {
             if (_o.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(new Triple(subj, _predVar.CopyNode(subj.Graph), obj.CopyNode(subj.Graph)), out HashSet<Triple> ts))
+                if (subtree.TryGetValue(new Triple(subj, _predVar, obj), out HashSet<Triple> ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
@@ -316,7 +316,7 @@ namespace VDS.RDF
         {
             if (_s.TryGetValue(subj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(new Triple(subj, pred.CopyNode(subj.Graph), _objVar.CopyNode(subj.Graph)), out HashSet<Triple> ts))
+                if (subtree.TryGetValue(new Triple(subj, pred, _objVar), out HashSet<Triple> ts))
                 {
                     return ts ?? Enumerable.Empty<Triple>();
                 }

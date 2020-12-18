@@ -34,8 +34,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class AttributeImpl : AbstractAttributeImpl, IAttribute
     {
 
-        public AttributeImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public AttributeImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
         }
 

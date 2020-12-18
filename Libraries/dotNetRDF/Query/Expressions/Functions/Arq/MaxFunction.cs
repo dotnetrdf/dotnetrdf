@@ -59,15 +59,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             switch (type)
             {
                 case SparqlNumericType.Integer:
-                    return new LongNode(null, Math.Max(a.AsInteger(), b.AsInteger()));
+                    return new LongNode(Math.Max(a.AsInteger(), b.AsInteger()));
                 case SparqlNumericType.Decimal:
-                    return new DecimalNode(null, Math.Max(a.AsDecimal(), b.AsDecimal()));
+                    return new DecimalNode(Math.Max(a.AsDecimal(), b.AsDecimal()));
                 case SparqlNumericType.Float:
-                    return new FloatNode(null, Math.Max(a.AsFloat(), b.AsFloat()));
+                    return new FloatNode(Math.Max(a.AsFloat(), b.AsFloat()));
                 case SparqlNumericType.Double:
-                    return new DoubleNode(null, Math.Max(a.AsDouble(), b.AsDouble()));
+                    return new DoubleNode(Math.Max(a.AsDouble(), b.AsDouble()));
                 default:
-                    throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
+                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
             }
         }
 

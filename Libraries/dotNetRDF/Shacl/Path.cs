@@ -38,15 +38,16 @@ namespace VDS.RDF.Shacl
     /// <summary>
     /// Represents a SHACL property path.
     /// </summary>
-    public abstract class Path : WrapperNode
+    public abstract class Path : GraphWrapperNode
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Path"/> class.
         /// </summary>
         /// <param name="node"></param>
+        /// <param name="shapesGraph">The graph containing the SHACL path.</param>
         [DebuggerStepThrough]
-        protected Path(INode node)
-            : base(node)
+        protected Path(INode node, IGraph shapesGraph)
+            : base(node, shapesGraph)
         {
         }
 
@@ -54,39 +55,38 @@ namespace VDS.RDF.Shacl
 
         internal abstract IEnumerable<Triple> AsTriples { get; }
 
-        internal static Path Parse(INode value)
+        internal static Path Parse(INode value, IGraph graph)
         {
             if (value.NodeType == NodeType.Uri)
             {
-                return new Predicate(value);
+                return new Predicate(value, graph);
             }
 
-            if (value.IsListRoot(value.Graph))
+            if (value.IsListRoot(graph))
             {
-                return new Sequence(value);
+                return new Sequence(value, graph);
             }
 
-            INode predicate = value.Graph.GetTriplesWithSubject(value).Single().Predicate;
+            INode predicate = graph.GetTriplesWithSubject(value).Single().Predicate;
 
             switch (predicate)
             {
-                case INode t when t.Equals(Vocabulary.ZeroOrMorePath): return new ZeroOrMore(value);
-                case INode t when t.Equals(Vocabulary.OneOrMorePath): return new OneOrMore(value);
-                case INode t when t.Equals(Vocabulary.AlternativePath): return new Alternative(value);
-                case INode t when t.Equals(Vocabulary.InversePath): return new Inverse(value);
-                case INode t when t.Equals(Vocabulary.ZeroOrOnePath): return new ZeroOrOne(value);
+                case INode t when t.Equals(Vocabulary.ZeroOrMorePath): return new ZeroOrMore(value, graph);
+                case INode t when t.Equals(Vocabulary.OneOrMorePath): return new OneOrMore(value, graph);
+                case INode t when t.Equals(Vocabulary.AlternativePath): return new Alternative(value, graph);
+                case INode t when t.Equals(Vocabulary.InversePath): return new Inverse(value, graph);
+                case INode t when t.Equals(Vocabulary.ZeroOrOnePath): return new ZeroOrOne(value, graph);
 
                 default: throw new Exception();
             }
         }
 
-        internal IEnumerable<INode> SelectValueNodes(INode focusNode)
+        internal IEnumerable<INode> SelectValueNodes(IGraph dataGraph, INode focusNode)
         {
             const string value = "value";
             SparqlQuery query = QueryBuilder.Select(value).Distinct().Where(new PropertyPathPattern(new NodeMatchPattern(focusNode), SparqlPath, new VariablePattern(value))).BuildQuery();
-            var results = focusNode.Graph.ExecuteQuery(query);
-
-            return ((SparqlResultSet)results).Select(result => result[value]);
+            var results = dataGraph.ExecuteQuery(query) as SparqlResultSet;
+            return results?.Select(result => result[value]);
         }
     }
 }

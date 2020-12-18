@@ -24,26 +24,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
-using VDS.RDF.Writing;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Writing
 {
 
     public class SparqlTsvTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
         private InMemoryDataset _dataset;
         private LeviathanQueryProcessor _processor;
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private SparqlTsvParser _tsvParser = new SparqlTsvParser();
-        private SparqlTsvWriter _tsvWriter = new SparqlTsvWriter();
+        private readonly SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly SparqlTsvParser _tsvParser = new SparqlTsvParser();
+        private readonly SparqlTsvWriter _tsvWriter = new SparqlTsvWriter();
+
+        public SparqlTsvTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
 
         private void EnsureTestData()
         {
@@ -67,7 +70,7 @@ namespace VDS.RDF.Writing
         [InlineData("SELECT * WHERE { ?s <http://example.org/noSuchThing> ?o }")]
         [InlineData("SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } ?s ?p ?o }")]
         [InlineData("SELECT ?s (ISLITERAL(?o) AS ?LiteralObject) WHERE { ?s ?p ?o }")]
-        public void TestTsvRoundTrip(String query)
+        public void TestTsvRoundTrip(string query)
         {
             EnsureTestData();
 
@@ -78,20 +81,21 @@ namespace VDS.RDF.Writing
             var original = _processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(original);
 
-            Console.WriteLine("Original Results:");
-            TestTools.ShowResults(original);
+            _testOutputHelper.WriteLine("Original Results:");
+            TestTools.ShowResults(original, _testOutputHelper);
 
             var writer = new System.IO.StringWriter();
             _tsvWriter.Save(original, writer);
-            Console.WriteLine("Serialized TSV Results:");
-            Console.WriteLine(writer.ToString());
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("Serialized TSV Results:");
+            _testOutputHelper.WriteLine(writer.ToString());
+            _testOutputHelper.WriteLine();
 
             var results = new SparqlResultSet();
             _tsvParser.Load(results, new StringReader(writer.ToString()));
-            Console.WriteLine("Parsed Results:");
-            TestTools.ShowResults(results);
+            _testOutputHelper.WriteLine("Parsed Results:");
+            TestTools.ShowResults(results, _testOutputHelper);
 
+            Assert.True(original.Equals(results));
             Assert.Equal(original, results);
             
         }

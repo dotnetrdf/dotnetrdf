@@ -37,31 +37,28 @@ namespace VDS.RDF
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal LiteralNode(IGraph g, string literal, bool normalize)
-            : base(g, literal, normalize) { }
+        protected internal LiteralNode(string literal, bool normalize)
+            : base(literal, normalize) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
-        /// <param name="langspec">String value for the Language Specifier for the Literal.</param>
+        /// <param name="langSpec">String value for the Language Specifier for the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal LiteralNode(IGraph g, string literal, string langspec, bool normalize)
-            : base(g, literal, langspec, normalize) { }
+        protected internal LiteralNode(string literal, string langSpec, bool normalize)
+            : base(literal, langSpec, normalize) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes.
         /// </summary>
-        /// <param name="g">Graph this Node is in.</param>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="datatype">Uri for the Literals Data Type.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal LiteralNode(IGraph g, string literal, Uri datatype, bool normalize)
-            : base(g, literal, datatype, normalize) { }
+        protected internal LiteralNode(string literal, Uri datatype, bool normalize)
+            : base(literal, datatype, normalize) { }
 
         /// <summary>
         /// Implementation of Compare To for Literal Nodes.

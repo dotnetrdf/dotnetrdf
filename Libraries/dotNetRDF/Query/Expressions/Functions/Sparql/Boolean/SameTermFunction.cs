@@ -58,16 +58,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 if (b == null)
                 {
-                    return new BooleanNode(null, true);
+                    return new BooleanNode(true);
                 }
                 else
                 {
-                    return new BooleanNode(null, false);
+                    return new BooleanNode(false);
                 }
             }
             else
             {
-                return new BooleanNode(null, a.Equals(b));
+                return new BooleanNode(a.Equals(b));
             }
         }
 

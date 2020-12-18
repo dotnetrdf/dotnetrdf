@@ -256,7 +256,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 // Execute
                 var text = textNode.AsString();
                 var output = Regex.Replace(text, _find, _replace, _options);
-                return new StringNode(null, output, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                return new StringNode(output, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
             else
             {

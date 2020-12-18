@@ -42,7 +42,7 @@ namespace VDS.RDF.Dynamic
 
             var g = new Graph();
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var test = new Test(s, g);
 
             test.PrimitiveProperty.Add("o");
 
@@ -60,7 +60,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var test = new Test(s, g);
 
             Assert.Contains("s", test.PrimitiveProperty);
             Assert.Contains("p", test.PrimitiveProperty);
@@ -78,7 +78,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var test = new Test(s, g);
 
             var objects = new string[5]; // +2 for padding on each side
             test.PrimitiveProperty.CopyTo(objects, 1); // start at the second item at destination
@@ -97,7 +97,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var test = new Test(s, g);
 
             var expected = new[] { s }.GetEnumerator();
             using (var actual = test.ComplexProperty.GetEnumerator())
@@ -128,7 +128,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var test = new Test(s, g);
 
             test.PrimitiveProperty.Remove("o");
 
@@ -139,8 +139,8 @@ namespace VDS.RDF.Dynamic
 
         internal class Test : DynamicNode
         {
-            public Test(INode node)
-                : base(node, new Uri("urn:"))
+            public Test(INode node, IGraph graph)
+                : base(node, graph, new Uri("urn:"))
             {
             }
 

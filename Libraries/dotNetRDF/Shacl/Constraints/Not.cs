@@ -49,12 +49,12 @@ namespace VDS.RDF.Shacl.Constraints
             }
         }
 
-        internal override bool Validate(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        internal override bool Validate(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
             IEnumerable<INode> invalidValues =
                 from valueNode in valueNodes
                 let shape = Shape.Parse(this)
-                where shape.Validate(valueNode)
+                where shape.Validate(dataGraph, valueNode)
                 select valueNode;
 
             return ReportValueNodes(focusNode, invalidValues, report);

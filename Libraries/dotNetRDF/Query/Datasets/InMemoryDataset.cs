@@ -39,7 +39,6 @@ namespace VDS.RDF.Query.Datasets
         , IThreadSafeDataset
     {
         private IInMemoryQueryableStore _store;
-        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage.
@@ -59,7 +58,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="g">Graph.</param>
         public InMemoryDataset(IGraph g)
-            : this(g.AsTripleStore(), g.BaseUri) { }
+            : this(g.AsTripleStore(), g.Name) { }
 
         /// <summary>
         /// Creates a new In-Memory dataset.
@@ -76,10 +75,9 @@ namespace VDS.RDF.Query.Datasets
         public InMemoryDataset(IInMemoryQueryableStore store, bool unionDefaultGraph)
             : base(unionDefaultGraph)
         {
-            if (store == null) throw new ArgumentNullException("store");
-            _store = store;
+            _store = store ?? throw new ArgumentNullException(nameof(store));
 
-            if (!_store.HasGraph(null))
+            if (!_store.HasGraph((IRefNode)null))
             {
                 _store.Add(new Graph());
             }
@@ -89,17 +87,15 @@ namespace VDS.RDF.Query.Datasets
         /// Creates a new In-Memory dataset.
         /// </summary>
         /// <param name="store">In-Memory queryable store.</param>
-        /// <param name="defaultGraphUri">Default Graph URI.</param>
-        public InMemoryDataset(IInMemoryQueryableStore store, Uri defaultGraphUri)
-            : base(defaultGraphUri)
+        /// <param name="defaultGraphName">Default Graph URI.</param>
+        public InMemoryDataset(IInMemoryQueryableStore store, IRefNode defaultGraphName)
+            : base(defaultGraphName)
         {
-            if (store == null) throw new ArgumentNullException("store");
-            _store = store;
+            _store = store ?? throw new ArgumentNullException(nameof(store));
 
-            if (!_store.HasGraph(defaultGraphUri))
+            if (!_store.HasGraph(defaultGraphName))
             {
-                var g = new Graph();
-                g.BaseUri = defaultGraphUri;
+                var g = new Graph(defaultGraphName);
                 _store.Add(g);
             }
         }
@@ -107,13 +103,7 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets the Lock used to ensure MRSW concurrency on the dataset when available.
         /// </summary>
-        public ReaderWriterLockSlim Lock
-        {
-            get
-            {
-                return _lock;
-            }
-        }
+        public ReaderWriterLockSlim Lock { get; } = new ReaderWriterLockSlim();
 
         #region Graph Existence and Retrieval
 
@@ -129,32 +119,30 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Removes a Graph from the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        protected override bool RemoveGraphInternal(Uri graphUri)
+        /// <param name="graphName">Graph name.</param>
+        protected override bool RemoveGraphInternal(IRefNode graphName)
         {
-            if (graphUri == null)
+            if (graphName == null)
             {
-                if (_store.HasGraph(null))
+                if (_store.HasGraph((IRefNode)null))
                 {
-                    _store.Graphs[null].Clear();
+                    _store.Graphs[(IRefNode)null].Clear();
                     return true;
                 }
                 return false;
             }
-            else
-            {
-                return _store.Remove(graphUri);
-            }
+
+            return _store.Remove(graphName);
         }
 
         /// <summary>
         /// Gets whether a Graph with the given URI is the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="graphName">Graph name.</param>
         /// <returns></returns>
-        protected override bool HasGraphInternal(Uri graphUri)
+        protected override bool HasGraphInternal(IRefNode graphName)
         {
-            return _store.HasGraph(graphUri);
+            return _store.HasGraph(graphName);
         }
 
         /// <summary>
@@ -171,38 +159,54 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets all the URIs of Graphs in the Dataset.
         /// </summary>
+        [Obsolete("Replaced by GraphNames")]
         public override IEnumerable<Uri> GraphUris
         {
             get 
             {
-                return (from g in _store.Graphs
-                        select g.BaseUri);
+                foreach (IRefNode n in GraphNames)
+                {
+                    switch (n)
+                    {
+                        case null: 
+                            yield return null;
+                            break;
+                        case IUriNode node: 
+                            yield return node.Uri;
+                            break;
+                    }
+                }
             }
         }
 
         /// <summary>
+        /// Gets an enumeration of the names of all graphs in the dataset.
+        /// </summary>
+        public override IEnumerable<IRefNode> GraphNames => _store.Graphs.GraphNames;
+
+        /// <summary>
         /// Gets the Graph with the given URI from the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="graphName">Graph URI.</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// For In-Memory datasets the Graph returned from this property is no different from the Graph returned by the <see cref="InMemoryDataset.GetModifiableGraphInternal(Uri)">GetModifiableGraphInternal()</see> method.
+        /// For In-Memory datasets the Graph returned from this property is no different from the Graph returned by the <see cref="InMemoryDataset.GetModifiableGraphInternal(IRefNode)">GetModifiableGraphInternal()</see> method.
         /// </para>
         /// </remarks>
-        protected override IGraph GetGraphInternal(Uri graphUri)
+        protected override IGraph GetGraphInternal(IRefNode graphName)
         {
-            return _store[graphUri];
+            return _store[graphName];
         }
 
         /// <summary>
         /// Gets a Modifiable wrapper around a Graph in the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="graphName">Graph URI.</param>
         /// <returns></returns>
-        protected override ITransactionalGraph GetModifiableGraphInternal(Uri graphUri)
+        protected override ITransactionalGraph GetModifiableGraphInternal(IRefNode graphName)
         {
-            return new GraphPersistenceWrapper(this[graphUri]);
+            return new GraphPersistenceWrapper(this[graphName]);
         }
 
         #endregion
@@ -235,21 +239,21 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetTriplesWithSubjectInternal(INode subj)
         {
-            return (from g in Graphs
-                    from t in g.GetTriplesWithSubject(subj)
-                    select t);
+            return from g in Graphs
+                from t in g.GetTriplesWithSubject(subj)
+                select t;
         }
 
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Predicate.
         /// </summary>
-        /// <param name="pred">Predicate.</param>
+        /// <param name="predicate">Predicate.</param>
         /// <returns></returns>
-        protected override IEnumerable<Triple> GetTriplesWithPredicateInternal(INode pred)
+        protected override IEnumerable<Triple> GetTriplesWithPredicateInternal(INode predicate)
         {
-            return (from g in Graphs
-                    from t in g.GetTriplesWithPredicate(pred)
-                    select t);
+            return from g in Graphs
+                from t in g.GetTriplesWithPredicate(predicate)
+                select t;
         }
 
         /// <summary>
@@ -268,12 +272,12 @@ namespace VDS.RDF.Query.Datasets
         /// Gets all the Triples in the Dataset with the given Subject and Predicate.
         /// </summary>
         /// <param name="subj">Subject.</param>
-        /// <param name="pred">Predicate.</param>
+        /// <param name="predicate">Predicate.</param>
         /// <returns></returns>
-        protected override IEnumerable<Triple> GetTriplesWithSubjectPredicateInternal(INode subj, INode pred)
+        protected override IEnumerable<Triple> GetTriplesWithSubjectPredicateInternal(INode subj, INode predicate)
         {
             return (from g in Graphs
-                    from t in g.GetTriplesWithSubjectPredicate(subj, pred)
+                    from t in g.GetTriplesWithSubjectPredicate(subj, predicate)
                     select t);
         }
 

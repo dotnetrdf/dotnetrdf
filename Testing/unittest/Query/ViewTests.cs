@@ -28,36 +28,41 @@ using System.Threading;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
     public class ViewTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public ViewTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void SparqlViewConstruct1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH ?g { ?s ?p ?o . FILTER(IsLiteral(?o)) } }", store)
-            {
-                BaseUri = new Uri("http://example.org/view")
-            };
+            var view = new SparqlView("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH ?g { ?s ?p ?o . FILTER(IsLiteral(?o)) } }",
+                store, new UriNode(new Uri("http://example.org/view")));
             store.Add(view);
 
-            Console.WriteLine("SPARQL View Empty");
-            TestTools.ShowGraph(view);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("SPARQL View Empty");
+            TestTools.ShowGraph(view, _testOutputHelper);
+            _testOutputHelper.WriteLine();
 
             //Load a Graph into the Store to cause the SPARQL View to update
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/data")));
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/data");
             store.Add(g);
 
             Thread.Sleep(1000);
             if (view.Triples.Count == 0) view.UpdateView();
 
-            Console.WriteLine("SPARQL View Populated");
-            TestTools.ShowGraph(view);
+            _testOutputHelper.WriteLine("SPARQL View Populated");
+            TestTools.ShowGraph(view, _testOutputHelper);
 
             Assert.True(view.Triples.Count > 0, "View should have updated to contain some Triples");
         }
@@ -76,27 +81,24 @@ namespace VDS.RDF.Query
         public void SparqlViewDescribe1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store)
-            {
-                BaseUri = new Uri("http://example.org/view")
-            };
+            var view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store,
+                new UriNode(new Uri("http://example.org/view")));
             store.Add(view);
 
-            Console.WriteLine("SPARQL View Empty");
-            TestTools.ShowGraph(view);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("SPARQL View Empty");
+            TestTools.ShowGraph(view, _testOutputHelper);
+            _testOutputHelper.WriteLine();
 
             //Load a Graph into the Store to cause the SPARQL View to update
             var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = null;
             store.Add(g, true);
 
             Thread.Sleep(500);
             if (view.Triples.Count == 0) view.UpdateView();
 
-            Console.WriteLine("SPARQL View Populated");
-            TestTools.ShowGraph(view);
+            _testOutputHelper.WriteLine("SPARQL View Populated");
+            TestTools.ShowGraph(view, _testOutputHelper);
 
             Assert.True(view.Triples.Count > 0, "View should have updated to contain some Triples");
         }
@@ -115,27 +117,25 @@ namespace VDS.RDF.Query
         public void SparqlViewSelect1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("SELECT ?s (<http://example.org/vehicles/TurbochargedSpeed>) AS ?p (?speed * 1.25) AS ?o  WHERE { GRAPH ?g { ?s <http://example.org/vehicles/Speed> ?speed } }", store)
-            {
-                BaseUri = new Uri("http://example.org/view")
-            };
+            var view = new SparqlView(
+                "SELECT ?s (<http://example.org/vehicles/TurbochargedSpeed>) AS ?p (?speed * 1.25) AS ?o  WHERE { GRAPH ?g { ?s <http://example.org/vehicles/Speed> ?speed } }",
+                store, new UriNode(new Uri("http://example.org/view")));
             store.Add(view);
 
-            Console.WriteLine("SPARQL View Empty");
-            TestTools.ShowGraph(view);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("SPARQL View Empty");
+            TestTools.ShowGraph(view, _testOutputHelper);
+            _testOutputHelper.WriteLine();
 
             //Load a Graph into the Store to cause the SPARQL View to update
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/data")));
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/data");
             store.Add(g);
 
             Thread.Sleep(500);
             if (view.Triples.Count == 0) view.UpdateView();
 
-            Console.WriteLine("SPARQL View Populated");
-            TestTools.ShowGraph(view);
+            _testOutputHelper.WriteLine("SPARQL View Populated");
+            TestTools.ShowGraph(view, _testOutputHelper);
 
             Assert.True(view.Triples.Count > 0, "View should have updated to contain some Triples");
         }
@@ -154,28 +154,25 @@ namespace VDS.RDF.Query
         public void SparqlViewAndReasonerInteraction1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { GRAPH ?g { ?s a ?type } }", store)
-            {
-                BaseUri = new Uri("http://example.org/view")
-            };
+            var view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { GRAPH ?g { ?s a ?type } }", store,
+                new UriNode(new Uri("http://example.org/view")));
             store.Add(view);
 
-            Console.WriteLine("SPARQL View Empty");
-            TestTools.ShowGraph(view);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("SPARQL View Empty");
+            TestTools.ShowGraph(view, _testOutputHelper);
+            _testOutputHelper.WriteLine();
 
             //Load a Graph into the Store to cause the SPARQL View to update
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/data")));
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/data");
             store.Add(g);
 
             Thread.Sleep(500);
             if (view.Triples.Count == 0) view.UpdateView();
 
-            Console.WriteLine("SPARQL View Populated");
-            TestTools.ShowGraph(view);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("SPARQL View Populated");
+            TestTools.ShowGraph(view, _testOutputHelper);
+            _testOutputHelper.WriteLine();
 
             Assert.True(view.Triples.Count > 0, "View should have updated to contain some Triples");
             var lastCount = view.Triples.Count;
@@ -187,7 +184,7 @@ namespace VDS.RDF.Query
 
             Thread.Sleep(200);
             if (view.Triples.Count == lastCount) view.UpdateView();
-            Console.WriteLine("SPARQL View Populated after Reasoner added");
+            _testOutputHelper.WriteLine("SPARQL View Populated after Reasoner added");
             TestTools.ShowGraph(view);
         }
 
@@ -195,18 +192,16 @@ namespace VDS.RDF.Query
         public void SparqlViewGraphScope1()
         {
             var store = new TripleStore();
-            var view = new SparqlView("CONSTRUCT { ?s ?p ?o } FROM <http://example.org/data> WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store)
-            {
-                BaseUri = new Uri("http://example.org/view")
-            };
+            var view = new SparqlView(
+                "CONSTRUCT { ?s ?p ?o } FROM <http://example.org/data> WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }",
+                store, new UriNode(new Uri("http://example.org/view")));
             store.Add(view);
 
             Assert.Empty(view.Triples);
 
             //Load a Graph into the Store to cause the SPARQL View to update
-            var g = new Graph();
+            var g = new Graph(new UriNode(new Uri("http://example.org/data")));
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/data");
             store.Add(g);
 
             Thread.Sleep(500);
@@ -216,10 +211,7 @@ namespace VDS.RDF.Query
             Assert.True(view.Triples.Count > 0, "View should have updated to contain some Triples");
 
             //Load another Graph with a different URI into the Store
-            var h = new Graph
-            {
-                BaseUri = new Uri("http://example.org/2")
-            };
+            var h = new Graph(new UriNode(new Uri("http://example.org/2")));
             FileLoader.Load(h, "resources\\Turtle.ttl");
             store.Add(h);
 
@@ -229,7 +221,7 @@ namespace VDS.RDF.Query
             Assert.True(view.Triples.Count == lastCount, "View should not have changed since the added Graph is not in the set of Graphs over which the query operates");
 
             //Remove this Graph and check the View still doesn't change
-            store.Remove(h.BaseUri);
+            store.Remove(h.Name);
 
             Thread.Sleep(500);
             view.UpdateView();

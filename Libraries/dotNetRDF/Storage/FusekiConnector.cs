@@ -50,14 +50,11 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class FusekiConnector 
-        : SparqlHttpProtocolConnector, IAsyncUpdateableStorage, IConfigurationSerializable
-        , IUpdateableStorage
+        : SparqlHttpProtocolConnector, IAsyncUpdateableStorage, IUpdateableStorage
     {
         private readonly SparqlFormatter _formatter = new SparqlFormatter();
         private readonly string _updateUri;
         private readonly string _queryUri;
-
-        private const string FusekiDefaultGraphUri = "?default";
 
         /// <summary>
         /// Creates a new connection to a Fuseki Server.
@@ -75,7 +72,7 @@ namespace VDS.RDF.Storage
         public FusekiConnector(string serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
             : base(serviceUri, writerMimeTypeDefinition) 
         {
-            if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
+            if (!serviceUri.EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
 
             _updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
             _queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
@@ -137,6 +134,7 @@ namespace VDS.RDF.Storage
         /// Gets the List of Graphs from the store.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Replaced by ListGraphNames")]
         public override IEnumerable<Uri> ListGraphs()
         {
             try
@@ -162,6 +160,59 @@ namespace VDS.RDF.Storage
                 {
                     throw new RdfStorageException("Tried to list graphs from Fuseki but failed to get a SPARQL Result Set as expected");
                 }
+            }
+            catch (RdfStorageException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "listing Graphs from");
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public override IEnumerable<string> ListGraphNames()
+        {
+            try
+            {
+                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }") as SparqlResultSet;
+                if (results == null)
+                {
+                    throw new RdfStorageException(
+                        "Tried to list graphs from Fuseki but failed to get a SPARQL Result Set as expected");
+                }
+
+                var graphNames = new List<string>();
+                foreach (SparqlResult r in results)
+                {
+                    if (r.HasValue("g"))
+                    {
+                        INode n = r["g"];
+                        if (n != null)
+                        {
+                            switch (n.NodeType)
+                            {
+                                case NodeType.Uri:
+                                    graphNames.Add(((IUriNode)n).Uri.AbsoluteUri);
+                                    break;
+                                case NodeType.Blank:
+                                    graphNames.Add(((IBlankNode)n).InternalID);
+                                    break;
+                            }
+                        }
+                    }
+                }
+                return graphNames;
+
             }
             catch (RdfStorageException)
             {

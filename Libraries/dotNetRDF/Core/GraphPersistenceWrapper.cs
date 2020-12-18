@@ -59,7 +59,7 @@ namespace VDS.RDF
         /// </summary>
         protected readonly IGraph _g;
         private readonly List<TriplePersistenceAction> _actions = new List<TriplePersistenceAction>();
-        private bool _alwaysQueueActions = false;
+        private readonly bool _alwaysQueueActions = false;
         private readonly TripleEventHandler _tripleAddedHandler;
         private readonly TripleEventHandler _tripleRemovedHandler;
 
@@ -77,7 +77,7 @@ namespace VDS.RDF
         /// The <paramref name="alwaysQueueActions">alwaysQueueActions</paramref> setting when enabled will cause the wrapper to queue Asserts and Retracts for persistence regardless of whether the relevant Triples already exist (i.e. normally if a Triple exists is cannot be asserted again and if it doesn't exist it cannot be retracted).  This is useful for creating derived wrappers which operate in write-only mode i.e. append mode for an existing graph that may be too large to reasonably load into memory.
         /// </remarks>
         public GraphPersistenceWrapper(bool alwaysQueueActions)
-            : this(new Graph(), alwaysQueueActions) { }
+            : this(new Graph()) { }
 
         /// <summary>
         /// Creates a new Graph Persistence Wrapper around the given Graph.
@@ -127,6 +127,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets the name of the graph.
+        /// </summary>
+        public IRefNode Name { get => _g.Name; }
+
+        /// <summary>
         /// Gets whether the Graph is empty.
         /// </summary>
         public bool IsEmpty => _g.IsEmpty;
@@ -155,9 +160,8 @@ namespace VDS.RDF
         {
             if (_alwaysQueueActions || !_g.Triples.Contains(t))
             {
-                t = t.CopyTriple(_g);
                 _g.Assert(t);
-                _actions.Add(new TriplePersistenceAction(t));
+                _actions.Add(new TriplePersistenceAction(t, _g.Name));
                 return true;
             }
             return false;
@@ -186,7 +190,7 @@ namespace VDS.RDF
             if (_alwaysQueueActions || _g.Triples.Contains(t))
             {
                 _g.Retract(t);
-                _actions.Add(new TriplePersistenceAction(t, true));
+                _actions.Add(new TriplePersistenceAction(t, _g.Name, true));
                 return true;
             }
             return false;
@@ -213,7 +217,7 @@ namespace VDS.RDF
         {
             foreach (Triple t in _g.Triples)
             {
-                _actions.Add(new TriplePersistenceAction(t, true));
+                _actions.Add(new TriplePersistenceAction(t, _g.Name, true));
             }
             _g.Clear();
         }
@@ -561,10 +565,7 @@ namespace VDS.RDF
             if (IsEmpty)
             {
                 // Empty Graph so do a quick copy
-                foreach (Triple t in g.Triples)
-                {
-                    Assert(new Triple(Tools.CopyNode(t.Subject, _g, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, _g, keepOriginalGraphUri), Tools.CopyNode(t.Object, _g, keepOriginalGraphUri)));
-                }
+                Assert(g.Triples);
             }
             else
             {   //Prepare a mapping of Blank Nodes to Blank Nodes
@@ -572,56 +573,27 @@ namespace VDS.RDF
 
                 foreach (Triple t in g.Triples)
                 {
-                    INode s, p, o;
-                    if (t.Subject.NodeType == NodeType.Blank)
-                    {
-                        if (!mapping.ContainsKey(t.Subject))
-                        {
-                            IBlankNode temp = CreateBlankNode();
-                            if (keepOriginalGraphUri) temp.GraphUri = t.Subject.GraphUri;
-                            mapping.Add(t.Subject, temp);
-                        }
-                        s = mapping[t.Subject];
-                    }
-                    else
-                    {
-                        s = Tools.CopyNode(t.Subject, _g, keepOriginalGraphUri);
-                    }
-
-                    if (t.Predicate.NodeType == NodeType.Blank)
-                    {
-                        if (!mapping.ContainsKey(t.Predicate))
-                        {
-                            IBlankNode temp = CreateBlankNode();
-                            if (keepOriginalGraphUri) temp.GraphUri = t.Predicate.GraphUri;
-                            mapping.Add(t.Predicate, temp);
-                        }
-                        p = mapping[t.Predicate];
-                    }
-                    else
-                    {
-                        p = Tools.CopyNode(t.Predicate, _g, keepOriginalGraphUri);
-                    }
-
-                    if (t.Object.NodeType == NodeType.Blank)
-                    {
-                        if (!mapping.ContainsKey(t.Object))
-                        {
-                            IBlankNode temp = CreateBlankNode();
-                            if (keepOriginalGraphUri) temp.GraphUri = t.Object.GraphUri;
-                            mapping.Add(t.Object, temp);
-                        }
-                        o = mapping[t.Object];
-                    }
-                    else
-                    {
-                        o = Tools.CopyNode(t.Object, _g, keepOriginalGraphUri);
-                    }
-
+                    INode s = MapBlankNode(t.Subject, mapping);
+                    INode p = MapBlankNode(t.Predicate, mapping);
+                    INode o = MapBlankNode(t.Object, mapping);
                     Assert(new Triple(s, p, o));
                 }
             }
         }
+
+        private INode MapBlankNode(INode node, IDictionary<INode, IBlankNode> mapping)
+        {
+            if (node.NodeType != NodeType.Blank)
+            {
+                return node;
+            }
+            if (mapping.TryGetValue(node, out IBlankNode mapped)) return mapped;
+            IBlankNode tmp = CreateBlankNode();
+            mapping.Add(node, tmp);
+            return tmp;
+        }
+
+
 
         /// <summary>
         /// Determines whether a Graph is equal to another Object.

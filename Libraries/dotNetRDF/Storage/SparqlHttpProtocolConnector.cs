@@ -427,7 +427,22 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotSupportedException">Thrown since SPARQL Graph Store HTTP Protocol does not support listing graphs.</exception>
+        [Obsolete("Replaced by ListGraphNames")]
         public virtual IEnumerable<Uri> ListGraphs()
+        {
+            throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
+        }
+
+        /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public virtual IEnumerable<string> ListGraphNames()
         {
             throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
         }
@@ -505,9 +520,9 @@ namespace VDS.RDF.Storage
         private HttpRequestMessage MakeSaveGraphRequestMessage(IGraph g)
         {
             var saveUri = _serviceUri;
-            if (g.BaseUri != null)
+            if (g.Name != null)
             {
-                saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.AbsoluteUri);
+                saveUri += "?graph=" + Uri.EscapeDataString(g.Name.ToString());
             }
             else
             {

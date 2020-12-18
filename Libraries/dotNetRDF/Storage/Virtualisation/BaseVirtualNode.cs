@@ -31,7 +31,7 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Storage.Virtualisation
 {
     /// <summary>
-    /// Abstract Base implementation of a Virtual Node which is a Node that is represented only by some ID until such time as its value actually needs materialising.
+    /// Abstract Base implementation of a Virtual Node which is a Node that is represented only by some ID until such time as its value actually needs materializing.
     /// </summary>
     /// <typeparam name="TNodeID">Node ID Type.</typeparam>
     /// <typeparam name="TGraphID">Graph ID Type.</typeparam>
@@ -40,7 +40,7 @@ namespace VDS.RDF.Storage.Virtualisation
     /// As far as possible equality checks are carried out using these IDs and limited comparisons may also be done this way.  More specific implementations may wish to derive from this class in order to override the default comparison implementation to further reduce the number of places where value materialisation is done.
     /// </para>
     /// <para>
-    /// Note that this class does not implement any of the specialised Node interfaces and instead relies on the casting of its materialised value to an appropriately typed node to provide the true values to code that needs it.
+    /// Note that this class does not implement any of the specialized Node interfaces and instead relies on the casting of its materialized value to an appropriately typed node to provide the true values to code that needs it.
     /// </para>
     /// </remarks>
     public abstract class BaseVirtualNode<TNodeID, TGraphID> 
@@ -52,6 +52,7 @@ namespace VDS.RDF.Storage.Virtualisation
         private TNodeID _id;
         private IVirtualRdfProvider<TNodeID, TGraphID> _provider;
         private NodeType _type;
+
         /// <summary>
         /// The materialized value of the Virtual Node.
         /// </summary>
@@ -85,7 +86,7 @@ namespace VDS.RDF.Storage.Virtualisation
             : this(g, type, id, provider)
         {
             _value = value;
-            if (_value.NodeType != _type) throw new RdfException("Cannot create a pre-materialised Virtual Node where the materialised value is a Node of the wrong type! Expected " + _type.ToString() + " but got " + _value.NodeType.ToString());
+            if (_value.NodeType != _type) throw new RdfException("Cannot create a pre-materialized Virtual Node where the materialized value is a Node of the wrong type! Expected " + _type.ToString() + " but got " + _value.NodeType.ToString());
             OnMaterialise();
         }
 
@@ -98,7 +99,7 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 // Materialise the value
                 _value = _provider.GetValue(_g, _id);
-                if (_value.NodeType != _type) throw new RdfException("The Virtual RDF Provider materialised a Node of the wrong type! Expected " + _type.ToString() + " but got " + _value.NodeType.ToString());
+                if (_value.NodeType != _type) throw new RdfException("The Virtual RDF Provider materialized a Node of the wrong type! Expected " + _type.ToString() + " but got " + _value.NodeType.ToString());
                 OnMaterialise();
             }
         }
@@ -136,7 +137,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets whether the Nodes value has been materialised.
+        /// Gets whether the Nodes value has been materialized.
         /// </summary>
         public bool IsMaterialised
         {
@@ -147,7 +148,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the materialised value of the Node forcing it to be materialised if it hasn't already.
+        /// Gets the materialized value of the Node forcing it to be materialized if it hasn't already.
         /// </summary>
         public INode MaterialisedValue
         {
@@ -230,7 +231,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Virtual Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
         /// </remarks>
         public int CompareTo(IVirtualNode<TNodeID, TGraphID> other)
         {
@@ -254,7 +255,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Virtual Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
         /// </remarks>
         public int CompareTo(BaseVirtualNode<TNodeID, TGraphID> other)
         {
@@ -267,7 +268,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
         /// </remarks>
         public int CompareTo(INode other)
         {
@@ -360,12 +361,25 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
+        /// Compares this Node to another Ref Node.
+        /// </summary>
+        /// <param name="other">Other Ref Node.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
+        /// </remarks>
+        public virtual int CompareTo(IRefNode other)
+        {
+            return CompareTo((INode)other);
+        }
+
+        /// <summary>
         /// Compares this Node to another Blank Node.
         /// </summary>
         /// <param name="other">Other Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
         /// </remarks>
         public virtual int CompareTo(IBlankNode other)
         {
@@ -378,7 +392,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Graph Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
         /// </remarks>
         public virtual int CompareTo(IGraphLiteralNode other)
         {
@@ -391,7 +405,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
         /// </remarks>
         public virtual int CompareTo(ILiteralNode other)
         {
@@ -404,7 +418,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other URI Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
         /// </remarks>
         public virtual int CompareTo(IUriNode other)
         {
@@ -417,7 +431,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Variable Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform comparison.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
         /// </remarks>
         public virtual int CompareTo(IVariableNode other)
         {
@@ -434,7 +448,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="obj">Other Object.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
         /// </remarks>
         public sealed override bool Equals(object obj)
         {
@@ -457,7 +471,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Virtual Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
         /// </remarks>
         public bool Equals(IVirtualNode<TNodeID, TGraphID> other)
         {
@@ -473,7 +487,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Virtual Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
         /// </remarks>
         public bool Equals(BaseVirtualNode<TNodeID, TGraphID> other)
         {
@@ -486,7 +500,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
         /// </remarks>
         public bool Equals(INode other)
         {
@@ -563,13 +577,27 @@ namespace VDS.RDF.Storage.Virtualisation
             }
         }
 
+
+        /// <summary>
+        /// Checks this Node for equality against another Ref Node.
+        /// </summary>
+        /// <param name="other">Other Ref Node.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
+        /// </remarks>
+        public virtual bool Equals(IRefNode other)
+        {
+            return TypedEquality(other);
+        }
+
         /// <summary>
         /// Checks this Node for equality against another Blank Node.
         /// </summary>
         /// <param name="other">Other Blank Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
         /// </remarks>
         public virtual bool Equals(IBlankNode other)
         {
@@ -582,7 +610,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Graph Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
         /// </remarks>
         public virtual bool Equals(IGraphLiteralNode other)
         {
@@ -595,7 +623,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Literal Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
         /// </remarks>
         public virtual bool Equals(ILiteralNode other)
         {
@@ -608,7 +636,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other URI Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
         /// </remarks>
         public virtual bool Equals(IUriNode other)
         {
@@ -621,7 +649,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="other">Other Variable Node.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialised in order to perform the equality check.
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
         /// </remarks>
         public virtual bool Equals(IVariableNode other)
         {

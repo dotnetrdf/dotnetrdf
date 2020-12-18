@@ -54,12 +54,13 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         private readonly ThreadIsolatedReference<Stack<IGraph>> _activeGraphs;
 
-        private readonly ThreadIsolatedReference<Stack<IEnumerable<Uri>>> _defaultGraphUris;
+        private readonly ThreadIsolatedReference<Stack<IEnumerable<IRefNode>>> _defaultGraphUris;
 
-        private readonly ThreadIsolatedReference<Stack<IEnumerable<Uri>>> _activeGraphUris;
+        private readonly ThreadIsolatedReference<Stack<IEnumerable<IRefNode>>> _activeGraphUris;
 
         private readonly bool _unionDefaultGraph = true;
-        private readonly Uri _defaultGraphUri;
+        //private readonly Uri _defaultGraphUri;
+        private readonly IRefNode _defaultGraphName;
 
         /// <summary>
         /// Creates a new Dataset.
@@ -70,8 +71,8 @@ namespace VDS.RDF.Query.Datasets
             _defaultGraph = new ThreadIsolatedReference<IGraph>(InitDefaultGraph);
             _defaultGraphs = new ThreadIsolatedReference<Stack<IGraph>>(InitGraphStack);
             _activeGraphs = new ThreadIsolatedReference<Stack<IGraph>>(InitGraphStack);
-            _defaultGraphUris = new ThreadIsolatedReference<Stack<IEnumerable<Uri>>>(InitDefaultGraphUriStack);
-            _activeGraphUris = new ThreadIsolatedReference<Stack<IEnumerable<Uri>>>(InitGraphUriStack);
+            _defaultGraphUris = new ThreadIsolatedReference<Stack<IEnumerable<IRefNode>>>(InitDefaultGraphUriStack);
+            _activeGraphUris = new ThreadIsolatedReference<Stack<IEnumerable<IRefNode>>>(InitGraphUriStack);
         }
 
         /// <summary>
@@ -88,11 +89,24 @@ namespace VDS.RDF.Query.Datasets
         /// Creates a new Dataset with a fixed Default Graph and without a Union Default Graph.
         /// </summary>
         /// <param name="defaultGraphUri"></param>
+        [Obsolete("Replaced by BaseDataset(IRefNode)")]
         public BaseDataset(Uri defaultGraphUri)
             : this()
         {
             _unionDefaultGraph = false;
-            _defaultGraphUri = defaultGraphUri;
+            //_defaultGraphUri = defaultGraphUri;
+            _defaultGraphName = new UriNode(defaultGraphUri);
+        }
+
+        /// <summary>
+        /// Creates a new dataset with a fixed default graph and without a union default graph.
+        /// </summary>
+        /// <param name="defaultGraphName">Name to assign to the default graph.</param>
+        public BaseDataset(IRefNode defaultGraphName)
+            :this()
+        {
+            _unionDefaultGraph = false;
+            _defaultGraphName = defaultGraphName;
         }
 
         private IGraph InitDefaultGraph()
@@ -103,7 +117,7 @@ namespace VDS.RDF.Query.Datasets
             }
             else
             {
-                return GetGraphInternal(_defaultGraphUri);
+                return GetGraphInternal(_defaultGraphName);
             }
         }
 
@@ -112,19 +126,19 @@ namespace VDS.RDF.Query.Datasets
             return new Stack<IGraph>();
         }
 
-        private Stack<IEnumerable<Uri>> InitDefaultGraphUriStack()
+        private Stack<IEnumerable<IRefNode>> InitDefaultGraphUriStack()
         {
-            var s = new Stack<IEnumerable<Uri>>();
+            var s = new Stack<IEnumerable<IRefNode>>();
             if (!_unionDefaultGraph)
             {
-                s.Push(new Uri[] { _defaultGraphUri });
+                s.Push(new[] { _defaultGraphName });
             }
             return s;
         }
 
-        private Stack<IEnumerable<Uri>> InitGraphUriStack()
+        private Stack<IEnumerable<IRefNode>> InitGraphUriStack()
         {
-            return new Stack<IEnumerable<Uri>>();
+            return new Stack<IEnumerable<IRefNode>>();
         }
 
         #region Active and Default Graph Management
@@ -154,17 +168,27 @@ namespace VDS.RDF.Query.Datasets
         /// Sets the Default Graph.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
+        [Obsolete("Replaced by SetDefaultGraph(IRefNode)")]
         public void SetDefaultGraph(Uri graphUri)
         {
-            if (HasGraph(graphUri))
+            SetDefaultGraph(new UriNode(graphUri));
+        }
+
+        /// <summary>
+        /// Sets the default graph to be the graph with the given name.
+        /// </summary>
+        /// <param name="graphName"></param>
+        public void SetDefaultGraph(IRefNode graphName)
+        {
+            if (HasGraph(graphName))
             {
-                SetDefaultGraphInternal(this[graphUri]);
-                _defaultGraphUris.Value.Push(new Uri[] { graphUri });
+                SetDefaultGraphInternal(this[graphName]);
+                _defaultGraphUris.Value.Push(new [] { graphName });
             }
             else
             {
                 SetDefaultGraphInternal(new Graph());
-                _defaultGraphUris.Value.Push(Enumerable.Empty<Uri>());
+                _defaultGraphUris.Value.Push(Enumerable.Empty<IRefNode>());
             }
         }
 
@@ -172,31 +196,41 @@ namespace VDS.RDF.Query.Datasets
         /// Sets the Default Graph.
         /// </summary>
         /// <param name="graphUris">Graph URIs.</param>
+        [Obsolete("Replaced by SetDefaultGraph(IEnumerable<IRefNode>)")]
         public void SetDefaultGraph(IEnumerable<Uri> graphUris)
         {
-            if (!graphUris.Any())
+            SetDefaultGraph(graphUris.Select(x=>x == null ? null : new UriNode(x) as IRefNode).ToList());
+        }
+
+        /// <summary>
+        /// Sets the default graph to be the union of the graphs with the given names.
+        /// </summary>
+        /// <param name="graphNames">Graph names.</param>
+        public void SetDefaultGraph(IList<IRefNode> graphNames)
+        {
+            if (!graphNames.Any())
             {
                 SetDefaultGraphInternal(new Graph());
-                _defaultGraphUris.Value.Push(Enumerable.Empty<Uri>());
+                _defaultGraphUris.Value.Push(Enumerable.Empty<IRefNode>());
             }
-            else if (graphUris.Count() == 1)
+            else if (graphNames.Count == 1)
             {
-                SetDefaultGraph(graphUris.First());
+                SetDefaultGraph(graphNames.First());
             }
             else
             {
                 // Multiple Graph URIs
                 // Build a merged Graph of all the Graph URIs
                 var g = new Graph();
-                foreach (Uri u in graphUris)
+                foreach (IRefNode graphName in graphNames)
                 {
-                    if (HasGraph(u))
+                    if (HasGraph(graphName))
                     {
-                        g.Merge(this[u], true);
+                        g.Merge(this[graphName], true);
                     }
                 }
                 SetDefaultGraphInternal(g);
-                _defaultGraphUris.Value.Push(graphUris.ToList());
+                _defaultGraphUris.Value.Push(graphNames.ToList());
             }
         }
 
@@ -217,61 +251,84 @@ namespace VDS.RDF.Query.Datasets
         /// <remarks>
         /// Helper function used primarily in the execution of GRAPH Clauses.
         /// </remarks>
+        [Obsolete("Replaced by SetActiveGraph(IRefNode)")]
         public void SetActiveGraph(Uri graphUri)
         {
-            if (graphUri == null)
+            SetActiveGraph(graphUri == null ? null : new UriNode(graphUri));
+        }
+
+        /// <summary>
+        /// Sets the active graph to be the graph with the given name.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        public void SetActiveGraph(IRefNode graphName)
+        {
+            if (graphName == null)
             {
                 // Change the Active Graph so that the query operates over the default graph
                 // If the default graph is null then it operates over the entire dataset
                 _activeGraphs.Value.Push(_activeGraph.Value);
                 _activeGraph.Value = _defaultGraph.Value;
-                _activeGraphUris.Value.Push(_defaultGraphUris.Value.Count > 0 ? _defaultGraphUris.Value.Peek() : Enumerable.Empty<Uri>());
+                _activeGraphUris.Value.Push(_defaultGraphUris.Value.Count > 0 ? _defaultGraphUris.Value.Peek() : Enumerable.Empty<IRefNode>());
             }
-            else if (HasGraph(graphUri))
+            else if (HasGraph(graphName))
             {
-                SetActiveGraphInternal(this[graphUri]);
-                _activeGraphUris.Value.Push(new Uri[] { graphUri });
+                SetActiveGraphInternal(this[graphName]);
+                _activeGraphUris.Value.Push(new[] { graphName });
             }
             else
             {
                 // Active Graph is an empty Graph in the case where the Graph is not present in the Dataset
                 SetActiveGraphInternal(new Graph());
-                _activeGraphUris.Value.Push(Enumerable.Empty<Uri>());
+                _activeGraphUris.Value.Push(Enumerable.Empty<IRefNode>());
             }
         }
+
 
         /// <summary>
         /// Sets the Active Graph for the SPARQL query.
         /// </summary>
         /// <param name="graphUris">URIs of the Graphs which form the Active Graph.</param>
         /// <remarks>Helper function used primarily in the execution of GRAPH Clauses.</remarks>
+        [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)")]
         public void SetActiveGraph(IEnumerable<Uri> graphUris)
         {
-            if (!graphUris.Any())
+            SetActiveGraph(graphUris.Select(x=>x == null ? null : new UriNode(x) as IRefNode).ToList());
+        }
+
+        /// <summary>
+        /// Sets the active graph to be the union of the graphs with the given names.
+        /// </summary>
+        /// <param name="graphNames"></param>
+        public void SetActiveGraph(IList<IRefNode> graphNames)
+        {
+            if (!graphNames.Any())
             {
-                SetActiveGraph((Uri)null);
+                SetActiveGraph((UriNode)null);
             }
-            else if (graphUris.Count() == 1)
+            else if (graphNames.Count == 1)
             {
                 // If only 1 Graph Uri call the simpler SetActiveGraph method which will be quicker
-                SetActiveGraph(graphUris.First());
+                SetActiveGraph(graphNames.First());
             }
             else
             {
                 // Multiple Graph URIs
                 // Build a merged Graph of all the Graph URIs
                 var g = new Graph();
-                foreach (Uri u in graphUris)
+                foreach (IRefNode graphName in graphNames)
                 {
-                    if (HasGraph(u))
+                    if (HasGraph(graphName))
                     {
-                        g.Merge(this[u], true);
+                        g.Merge(this[graphName], true);
                     }
                 }
                 SetActiveGraphInternal(g);
-                _activeGraphUris.Value.Push(graphUris.ToList());
+                _activeGraphUris.Value.Push(graphNames.ToList());
             }
         }
+
+
 
         /// <summary>
         /// Sets the Active Graph for the SPARQL query to be the previous Active Graph.
@@ -308,36 +365,58 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets the Default Graph URIs.
         /// </summary>
+        [Obsolete("Replaced by DefaultGraphNames. This property does not return the names of graphs that are named with a blank node.")]
         public IEnumerable<Uri> DefaultGraphUris
         {
             get
             {
-                if (_defaultGraphUris.Value.Count > 0)
+                foreach (IRefNode refNode in DefaultGraphNames)
                 {
-                    return _defaultGraphUris.Value.Peek();
+                    if (refNode is null) yield return null;
+                    if (refNode is IUriNode uriNode) yield return uriNode.Uri;
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of the names of the graphs that currently make up the default graph.
+        /// </summary>
+        public IEnumerable<IRefNode> DefaultGraphNames
+        {
+            get
+            {
+                return _defaultGraphUris.Value.Count > 0
+                    ? _defaultGraphUris.Value.Peek()
+                    : Enumerable.Empty<IRefNode>();
             }
         }
 
         /// <summary>
         /// Gets the Active Graph URIs.
         /// </summary>
+        [Obsolete("Replaced by ActiveGraphNames. This property does not return the names of any graphs named with a blank node.")]
         public IEnumerable<Uri> ActiveGraphUris
         {
             get
             {
-                if (_activeGraphUris.Value.Count > 0)
+                foreach (IRefNode n in ActiveGraphNames)
                 {
-                    return _activeGraphUris.Value.Peek();
+                    if (n == null) yield return null;
+                    if (n is IUriNode uriNode) yield return uriNode.Uri;
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumeration of the names of the graphs that currently make up the active graph.
+        /// </summary>
+        public IEnumerable<IRefNode> ActiveGraphNames
+        {
+            get
+            {
+                return _activeGraphUris.Value.Count > 0
+                    ? _activeGraphUris.Value.Peek()
+                    : Enumerable.Empty<IRefNode>();
             }
         }
 
@@ -366,23 +445,35 @@ namespace VDS.RDF.Query.Datasets
         /// Removes a Graph from the Dataset.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
+        [Obsolete("Replaced by RemoveGraph(IRefNode)")]
         public virtual bool RemoveGraph(Uri graphUri)
         {
-            if (graphUri == null)
+            return RemoveGraph(graphUri == null ? null : new UriNode(graphUri));
+        }
+
+        /// <summary>
+        /// Removes a Graph from the Dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported.</exception>
+        public virtual bool RemoveGraph(IRefNode graphName)
+        {
+            if (graphName == null)
             {
                 if (_defaultGraph != null)
                 {
                     _defaultGraph.Value.Clear();
                     return true;
                 }
-                else if (HasGraph(graphUri))
+
+                if (HasGraph((IRefNode) null))
                 {
-                    return RemoveGraphInternal(graphUri);
+                    return RemoveGraphInternal(null);
                 }
             }
-            else if (HasGraph(graphUri))
+            else if (HasGraph(graphName))
             {
-                return RemoveGraphInternal(graphUri);
+                return RemoveGraphInternal(graphName);
             }
             return false;
         }
@@ -390,39 +481,41 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Removes a Graph from the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        protected abstract bool RemoveGraphInternal(Uri graphUri);
+        /// <param name="graphName">Graph URI.</param>
+        protected abstract bool RemoveGraphInternal(IRefNode graphName);
 
         /// <summary>
         /// Gets whether a Graph with the given URI is the Dataset.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by HasGraph(IRefNode)")]
         public bool HasGraph(Uri graphUri)
         {
-            if (graphUri == null)
+            return HasGraph(graphUri == null ? null : new UriNode(graphUri));
+        }
+
+        /// <summary>
+        /// Gets whether a Graph with the given name is the Dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public bool HasGraph(IRefNode graphName)
+        {
+            if (graphName == null)
             {
-                if (_defaultGraph != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return HasGraphInternal(null);
-                }
+                return _defaultGraph != null || HasGraphInternal(null);
             }
-            else
-            {
-                return HasGraphInternal(graphUri);
-            }
+
+            return HasGraphInternal(graphName);
         }
 
         /// <summary>
         /// Determines whether a given Graph exists in the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="graphName">Graph name.</param>
         /// <returns></returns>
-        protected abstract bool HasGraphInternal(Uri graphUri);
+        protected abstract bool HasGraphInternal(IRefNode graphName);
 
         /// <summary>
         /// Gets all the Graphs in the Dataset.
@@ -435,10 +528,30 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets all the URIs of Graphs in the Dataset.
         /// </summary>
-        public abstract IEnumerable<Uri> GraphUris
+        [Obsolete("Replaced by GraphNames")]
+        public virtual IEnumerable<Uri> GraphUris
         {
-            get;
+            get
+            {
+                foreach (IRefNode graphName in GraphNames)
+                {
+                    switch (graphName)
+                    {
+                        case null:
+                            yield return null;
+                            break;
+                        case IUriNode uriNode:
+                            yield return uriNode.Uri;
+                            break;
+                    }
+                }
+            }
         }
+
+        /// <summary>
+        /// Gets an enumeration of the names of all graphs in the dataset.
+        /// </summary>
+        public abstract IEnumerable<IRefNode> GraphNames { get; }
 
         /// <summary>
         /// Gets the Graph with the given URI from the Dataset.
@@ -447,49 +560,81 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage.
+        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph(IRefNode)">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage.
         /// </para>
         /// </remarks>
+        [Obsolete("Replaced by this[IRefNode]")]
         public virtual IGraph this[Uri graphUri]
         {
             get
             {
                 if (graphUri == null)
                 {
-                    if (_defaultGraph != null)
-                    {
-                        return _defaultGraph.Value;
-                    }
-                    else
-                    {
-                        return GetGraphInternal(null);
-                    }
+                    return _defaultGraph != null ? _defaultGraph.Value : GetGraphInternal(null);
                 }
-                else
+
+                return GetGraphInternal(new UriNode(graphUri));
+            }
+        }
+
+        /// <summary>
+        /// Gets the graph with the given name from the dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph(IRefNode)">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage.
+        /// </para>
+        /// </remarks>
+        public virtual IGraph this[IRefNode graphName]
+        {
+            get
+            {
+                if (graphName == null)
                 {
-                    return GetGraphInternal(graphUri);
+                    return _defaultGraph != null ? _defaultGraph.Value : GetGraphInternal(null);
                 }
+
+                return GetGraphInternal(graphName);
             }
         }
 
         /// <summary>
         /// Gets the given Graph from the Dataset.
         /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="graphName">Graph name.</param>
         /// <returns></returns>
-        protected abstract IGraph GetGraphInternal(Uri graphUri);
+        protected abstract IGraph GetGraphInternal(IRefNode graphName);
 
         /// <summary>
         /// Gets the Graph with the given URI from the Dataset.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported.</exception>        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable.</exception>
         /// <remarks>
         /// <para>
         /// Graphs returned from this method must be modifiable and the Dataset must guarantee that when it is Flushed or Disposed of that any changes to the Graph are persisted.
         /// </para>
         /// </remarks>
-        public abstract IGraph GetModifiableGraph(Uri graphUri);
+        [Obsolete("Replaced by GetModifiableGraph(IRefNode)")]
+        public IGraph GetModifiableGraph(Uri graphUri)
+        {
+            return GetModifiableGraph(graphUri == null ? null : new UriNode(graphUri));
+        }
+
+        /// <summary>
+        /// Gets the Graph with the given URI from the Dataset.
+        /// </summary>
+        /// <param name="graphName">Graph URI.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Graphs returned from this method must be modifiable and the Dataset must guarantee that when it is Flushed or Disposed of that any changes to the Graph are persisted.
+        /// </para>
+        /// </remarks>
+        public abstract IGraph GetModifiableGraph(IRefNode graphName);
 
         /// <summary>
         /// Gets whether the Dataset has any Triples.
@@ -625,9 +770,9 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Predicate.
         /// </summary>
-        /// <param name="pred">Predicate.</param>
+        /// <param name="predicate">Predicate.</param>
         /// <returns></returns>
-        protected abstract IEnumerable<Triple> GetTriplesWithPredicateInternal(INode pred);
+        protected abstract IEnumerable<Triple> GetTriplesWithPredicateInternal(INode predicate);
 
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Object.
@@ -689,9 +834,9 @@ namespace VDS.RDF.Query.Datasets
         /// Gets all the Triples in the Dataset with the given Subject and Predicate.
         /// </summary>
         /// <param name="subj">Subject.</param>
-        /// <param name="pred">Predicate.</param>
+        /// <param name="predicate">Predicate.</param>
         /// <returns></returns>
-        protected abstract IEnumerable<Triple> GetTriplesWithSubjectPredicateInternal(INode subj, INode pred);
+        protected abstract IEnumerable<Triple> GetTriplesWithSubjectPredicateInternal(INode subj, INode predicate);
 
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Subject and Object.
@@ -770,322 +915,5 @@ namespace VDS.RDF.Query.Datasets
         /// Ensures that any changes to the Dataset (if any) are discarded.
         /// </summary>
         public abstract void Discard();
-    }
-
-    /// <summary>
-    /// Abstract Base Class for Immutable Datasets.
-    /// </summary>
-    public abstract class BaseImmutableDataset
-        : BaseDataset
-    {
-        /// <summary>
-        /// Throws an exception since Immutable Datasets cannot be altered.
-        /// </summary>
-        /// <param name="g">Graph to add.</param>
-        public override bool AddGraph(IGraph g)
-        {
-            throw new NotSupportedException("Cannot add a Graph to an immutable Dataset");
-        }
-
-        /// <summary>
-        /// Throws an exception since Immutable Datasets cannot be altered.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        public override bool RemoveGraph(Uri graphUri)
-        {
-            throw new NotSupportedException("Cannot remove a Graph from an immutable Dataset");
-        }
-
-        /// <summary>
-        /// Throws an exception since Immutable Datasets cannot be altered.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        public override IGraph GetModifiableGraph(Uri graphUri)
-        {
-            throw new NotSupportedException("Cannot retrieve a Modifiable Graph from an immutable Dataset");
-        }
-
-        /// <summary>
-        /// Ensures that any changes to the Dataset (if any) are flushed to the underlying Storage.
-        /// </summary>
-        public sealed override void Flush()
-        {
-            // Does Nothing
-        }
-
-        /// <summary>
-        /// Ensures that any changes to the Dataset (if any) are discarded.
-        /// </summary>
-        public sealed override void Discard()
-        {
-            // Does Nothing
-        }
-    }
-
-    /// <summary>
-    /// Abstract Base Class for Mutable Datasets that support Transactions.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The Transaction implementation of dotNetRDF is based upon a MRSW concurrency model, since only one writer may be active changes are immediately pushed to the dataset and visible within the transaction and they are committed or rolled back when <see cref="BaseTransactionalDataset.Flush()">Flush()</see> or <see cref="BaseTransactionalDataset.Discard()">Discard()</see> are called.
-    /// </para>
-    /// <para>
-    /// So in practical terms it is perfectly OK for the storage to be updated during a transaction because if the transaction fails the changes will be rolled back because all changes are stored in-memory until the end of the transaction.  This may not be an ideal transaction model for all scenarios so you may wish to implement your own version of transactions or code your implementations of the abstract methods accordingly to limit actual persistence to the end of a transaction.
-    /// </para>
-    /// </remarks>
-    public abstract class BaseTransactionalDataset
-        : BaseDataset
-    {
-        private List<GraphPersistenceAction> _actions = new List<GraphPersistenceAction>();
-        private TripleStore _modifiableGraphs = new TripleStore();
-
-        /// <summary>
-        /// Creates a new Transactional Dataset.
-        /// </summary>
-        public BaseTransactionalDataset()
-            : base() { }
-
-        /// <summary>
-        /// Creates a new Transactional Dataset with the given Union Default Graph setting.
-        /// </summary>
-        /// <param name="unionDefaultGraph">Whether to use a Union Default Graph.</param>
-        public BaseTransactionalDataset(bool unionDefaultGraph)
-            : base(unionDefaultGraph) { }
-
-        /// <summary>
-        /// Creates a new Transactional Dataset with a fixed Default Graph and no Union Default Graph.
-        /// </summary>
-        /// <param name="defaultGraphUri">Default Graph URI.</param>
-        public BaseTransactionalDataset(Uri defaultGraphUri)
-            : base(defaultGraphUri) { }
-
-        /// <summary>
-        /// Adds a Graph to the Dataset.
-        /// </summary>
-        /// <param name="g">Graph to add.</param>
-        public sealed override bool AddGraph(IGraph g)
-        {
-            if (HasGraph(g.BaseUri))
-            {
-                var existing = (ITransactionalGraph)GetModifiableGraph(g.BaseUri);
-                _actions.Add(new GraphPersistenceAction(existing, GraphPersistenceActionType.Modified));
-            }
-            else
-            {
-                _actions.Add(new GraphPersistenceAction(g, GraphPersistenceActionType.Added));
-            }
-            return AddGraphInternal(g);
-        }
-
-        /// <summary>
-        /// Adds a Graph to the Dataset.
-        /// </summary>
-        /// <param name="g">Graph to add.</param>
-        protected abstract bool AddGraphInternal(IGraph g);
-
-        /// <summary>
-        /// Removes a Graph from the Dataset.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        public sealed override bool RemoveGraph(Uri graphUri)
-        {
-            if (graphUri == null)
-            {
-                if (InternalDefaultGraph != null)
-                {
-                    var wrapper = new GraphPersistenceWrapper(InternalDefaultGraph);
-                    wrapper.Clear();
-                    _actions.Add(new GraphPersistenceAction(wrapper, GraphPersistenceActionType.Modified));
-                    return true;
-                }
-                else if (HasGraph(graphUri))
-                {
-                    _actions.Add(new GraphPersistenceAction(this[graphUri], GraphPersistenceActionType.Deleted));
-                    return RemoveGraphInternal(graphUri);
-                }
-            }
-            else if (HasGraph(graphUri))
-            {
-                _actions.Add(new GraphPersistenceAction(this[graphUri], GraphPersistenceActionType.Deleted));
-                return RemoveGraphInternal(graphUri);
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Gets a Graph from the Dataset.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the Graph has been modified during the active Transaction the modified version is returned rather than the original version.
-        /// </remarks>
-        public sealed override IGraph this[Uri graphUri]
-        {
-            get
-            {
-                if (graphUri == null)
-                {
-                    if (InternalDefaultGraph != null)
-                    {
-                        return InternalDefaultGraph;
-                    }
-                    else if (_modifiableGraphs.HasGraph(graphUri))
-                    {
-                        return _modifiableGraphs[graphUri];
-                    }
-                    else
-                    {
-                        return GetGraphInternal(null);
-                    }
-                }
-                else if (_modifiableGraphs.HasGraph(graphUri))
-                {
-                    return _modifiableGraphs[graphUri];
-                }
-                else
-                {
-                    return GetGraphInternal(graphUri);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets a Graph from the Dataset that can be modified.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <returns></returns>
-        public sealed override IGraph GetModifiableGraph(Uri graphUri)
-        {
-            if (!_modifiableGraphs.HasGraph(graphUri))
-            {
-                IGraph current = GetModifiableGraphInternal(graphUri);
-                if (!_modifiableGraphs.HasGraph(current.BaseUri))
-                {
-                    _modifiableGraphs.Add(current);
-                }
-                graphUri = current.BaseUri;
-            }
-            var existing = (ITransactionalGraph)_modifiableGraphs[graphUri];
-            _actions.Add(new GraphPersistenceAction(existing, GraphPersistenceActionType.Modified));
-            return existing;
-        }
-
-        /// <summary>
-        /// Gets a Graph from the Dataset that can be modified transactionally.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <returns></returns>
-        protected abstract ITransactionalGraph GetModifiableGraphInternal(Uri graphUri);
-
-        /// <summary>
-        /// Ensures that any changes to the Dataset (if any) are flushed to the underlying Storage.
-        /// </summary>
-        /// <remarks>
-        /// Commits the Active Transaction.
-        /// </remarks>
-        public sealed override void Flush()
-        {
-            var i = 0;
-            while (i < _actions.Count)
-            {
-                GraphPersistenceAction action = _actions[i];
-                switch (action.Action)
-                {
-                    case GraphPersistenceActionType.Added:
-                        // If Graph was added ensure any changes were flushed
-                        action.Graph.Flush();
-                        break;
-                    case GraphPersistenceActionType.Deleted:
-                        // If Graph was deleted can discard any changes
-                        action.Graph.Discard();
-                        break;
-                    case GraphPersistenceActionType.Modified:
-                        // If Graph was modified ensure any changes were flushed
-                        action.Graph.Flush();
-                        break;
-                }
-                i++;
-            }
-            _actions.Clear();
-            // Ensure any Modifiable Graphs we've looked at have been Flushed()
-            foreach (ITransactionalGraph g in _modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
-            {
-                g.Flush();
-            }
-            _modifiableGraphs = new TripleStore();
-
-            FlushInternal();
-        }
-
-        /// <summary>
-        /// Ensures that any changes to the Dataset (if any) are discarded.
-        /// </summary>
-        /// <remarks>
-        /// Rollsback the Active Transaction.
-        /// </remarks>
-        public sealed override void Discard()
-        {
-            var i = _actions.Count - 1;
-            var total = _actions.Count;
-            while (i >= 0)
-            {
-                GraphPersistenceAction action = _actions[i];
-                switch (action.Action)
-                {
-                    case GraphPersistenceActionType.Added:
-                        // If a Graph was added we must now remove it
-                        if (HasGraphInternal(action.Graph.BaseUri))
-                        {
-                            RemoveGraphInternal(action.Graph.BaseUri);
-                        }
-                        break;
-                    case GraphPersistenceActionType.Deleted:
-                        // If a Graph was deleted we must now add it back again
-                        // Don't add the full Graph only an empty Graph with the given URI
-                        var g = new Graph();
-                        g.BaseUri = action.Graph.BaseUri;
-                        AddGraphInternal(g);
-                        break;
-                    case GraphPersistenceActionType.Modified:
-                        // If a Graph was modified we must discard the changes
-                        action.Graph.Discard();
-                        break;
-                }
-                i--;
-            }
-            if (total == _actions.Count)
-            {
-                _actions.Clear();
-            }
-            else
-            {
-                _actions.RemoveRange(0, total);
-            }
-            // Ensure any modifiable Graphs we've looked at have been Discarded
-            foreach (ITransactionalGraph g in _modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
-            {
-                g.Discard();
-            }
-            _modifiableGraphs = new TripleStore();
-
-            DiscardInternal();
-        }
-
-        /// <summary>
-        /// Allows the derived dataset to take any post-Flush() actions required.
-        /// </summary>
-        protected virtual void FlushInternal()
-        {
-            // No actions by default
-        }
-
-        /// <summary>
-        /// Allows the derived dataset to take any post-Discard() actions required.
-        /// </summary>
-        protected virtual void DiscardInternal()
-        {
-            // No actions by default
-        }
     }
 }

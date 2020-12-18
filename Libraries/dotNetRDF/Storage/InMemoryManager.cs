@@ -97,9 +97,10 @@ namespace VDS.RDF.Storage
         public override void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             IGraph g = null;
-            if (_dataset.HasGraph(graphUri))
+            IRefNode graphName = graphUri == null ? null : new UriNode(graphUri);
+            if (_dataset.HasGraph(graphName))
             {
-                g = _dataset[graphUri];
+                g = _dataset[graphName];
             }
             handler.Apply(g);
         }
@@ -144,9 +145,9 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph.</param>
         public override void SaveGraph(IGraph g)
         {
-            if (_dataset.HasGraph(g.BaseUri))
+            if (_dataset.HasGraph(g.Name))
             {
-                _dataset.RemoveGraph(g.BaseUri);
+                _dataset.RemoveGraph(g.Name);
             }
             _dataset.AddGraph(g);
             _dataset.Flush();
@@ -171,15 +172,15 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed.</param>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (!_dataset.HasGraph(graphUri))
+            IRefNode graphName = graphUri == null ? null : new UriNode(graphUri);
+            if (!_dataset.HasGraph(graphName))
             {
-                var temp = new Graph {BaseUri = graphUri};
-                _dataset.AddGraph(temp);
+                _dataset.AddGraph(new Graph(graphName));
             }
 
             if ((additions != null && additions.Any()) || (removals != null && removals.Any()))
             {
-                IGraph g = _dataset.GetModifiableGraph(graphUri);
+                IGraph g = _dataset.GetModifiableGraph(graphName);
                 if (additions != null && additions.Any()) g.Assert(additions.ToList());
                 if (removals != null && removals.Any()) g.Retract(removals.ToList());
             }
@@ -228,13 +229,13 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null)
             {
-                IGraph g = _dataset.GetModifiableGraph(graphUri);
+                IGraph g = _dataset.GetModifiableGraph((IRefNode)null);
                 g.Clear();
                 g.Dispose();
             }
             else
             {
-                _dataset.RemoveGraph(graphUri);
+                _dataset.RemoveGraph(new UriNode(graphUri));
             }
             _dataset.Flush();
         }
@@ -274,9 +275,42 @@ namespace VDS.RDF.Storage
         /// Lists the URIs of Graphs in the Store.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Replaced by ListGraphNames")]
         public override IEnumerable<Uri> ListGraphs()
         {
             return _dataset.GraphUris;
+        }
+
+        /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public override IEnumerable<string> ListGraphNames()
+        {
+            foreach (IRefNode name in _dataset.GraphNames)
+            {
+                if (name == null)
+                {
+                    yield return null;
+                }
+                else
+                {
+                    switch (name.NodeType)
+                    {
+                        case NodeType.Blank:
+                            yield return "_:" + ((IBlankNode)name).InternalID;
+                            break;
+                        case NodeType.Uri:
+                            yield return ((IUriNode)name).Uri.AbsoluteUri;
+                            break;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -319,10 +353,10 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public object Query(string sparqlQuery)
         {
-            if (_queryParser == null) _queryParser = new SparqlQueryParser();
+            _queryParser ??= new SparqlQueryParser();
             SparqlQuery q = _queryParser.ParseFromString(sparqlQuery);
 
-            if (_queryProcessor == null) _queryProcessor = new LeviathanQueryProcessor(_dataset);
+            _queryProcessor ??= new LeviathanQueryProcessor(_dataset);
             return _queryProcessor.ProcessQuery(q);
         }
 
@@ -335,10 +369,10 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            if (_queryParser == null) _queryParser = new SparqlQueryParser();
+            _queryParser ??= new SparqlQueryParser();
             SparqlQuery q = _queryParser.ParseFromString(sparqlQuery);
 
-            if (_queryProcessor == null) _queryProcessor = new LeviathanQueryProcessor(_dataset);
+            _queryProcessor ??= new LeviathanQueryProcessor(_dataset);
             _queryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
         }
 
@@ -348,11 +382,11 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdate">SPARQL Update.</param>
         public void Update(string sparqlUpdate)
         {
-            if (_updateParser == null) _updateParser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = _updateParser.ParseFromString(sparqlUpdate);
+            _updateParser ??= new SparqlUpdateParser();
+            SparqlUpdateCommandSet commandSet = _updateParser.ParseFromString(sparqlUpdate);
 
-            if (_updateProcessor == null) _updateProcessor = new LeviathanUpdateProcessor(_dataset);
-            _updateProcessor.ProcessCommandSet(cmds);
+            _updateProcessor ??= new LeviathanUpdateProcessor(_dataset);
+            _updateProcessor.ProcessCommandSet(commandSet);
         }
 
         #endregion

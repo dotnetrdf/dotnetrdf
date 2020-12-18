@@ -52,7 +52,7 @@ namespace VDS.RDF.Query
         {
             if (store.Graphs.Count == 1)
             {
-                return new InMemoryDataset(store, store.Graphs.First().BaseUri);
+                return new InMemoryDataset(store, store.Graphs.First().Name);
             }
             else
             {

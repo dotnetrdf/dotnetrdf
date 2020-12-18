@@ -35,8 +35,8 @@ namespace VDS.RDF.Shacl.Shapes
     internal class Property : Shape
     {
         [DebuggerStepThrough]
-        internal Property(INode node)
-            : base(node)
+        internal Property(INode node, IGraph graph)
+            : base(node, graph)
         {
         }
 
@@ -46,19 +46,19 @@ namespace VDS.RDF.Shacl.Shapes
             {
                 return
                     Vocabulary.Path.ObjectsOf(this)
-                    .Select(Path.Parse)
+                    .Select(x=>Path.Parse(x, Graph))
                     .Single();
             }
         }
 
-        internal IEnumerable<INode> SelectValueNodes(INode focusNode)
+        internal IEnumerable<INode> SelectValueNodes(IGraph dataGraph, INode focusNode)
         {
-            return Path.SelectValueNodes(focusNode);
+            return Path.SelectValueNodes(dataGraph, focusNode);
         }
 
-        protected override bool ValidateInternal(INode focusNode, IEnumerable<INode> valueNodes, Report report)
+        protected override bool ValidateInternal(IGraph dataGraph, INode focusNode, IEnumerable<INode> valueNodes, Report report)
         {
-            return valueNodes.All(valueNode => base.ValidateInternal(valueNode, SelectValueNodes(valueNode), report));
+            return valueNodes.All(valueNode => base.ValidateInternal(dataGraph, valueNode, SelectValueNodes(dataGraph, valueNode), report));
         }
     }
 }

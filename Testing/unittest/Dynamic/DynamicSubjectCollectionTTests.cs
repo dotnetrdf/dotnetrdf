@@ -41,8 +41,8 @@ namespace VDS.RDF.Dynamic
 ");
 
             var g = new Graph();
-            var s = new Test(g.CreateUriNode(UriFactory.Create("urn:s")));
-            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")));
+            var s = new Test(g.CreateUriNode(UriFactory.Create("urn:s")), g);
+            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")), g);
 
             o.P.Add(s);
 
@@ -59,9 +59,9 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:p> <urn:o> .
 ");
 
-            var s = new Test(g.CreateUriNode(UriFactory.Create("urn:s")));
-            var p = new Test(g.CreateUriNode(UriFactory.Create("urn:p")));
-            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")));
+            var s = new Test(g.CreateUriNode(UriFactory.Create("urn:s")), g);
+            var p = new Test(g.CreateUriNode(UriFactory.Create("urn:p")), g);
+            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")), g);
 
             Assert.Contains(s, o.P);
             Assert.Contains(p, o.P);
@@ -81,7 +81,7 @@ namespace VDS.RDF.Dynamic
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
             var p = g.CreateUriNode(UriFactory.Create("urn:p"));
             var o = g.CreateUriNode(UriFactory.Create("urn:o"));
-            var testO = new Test(o);
+            var testO = new Test(o, g);
 
             var subjects = new Test[5]; // +2 for padding on each side
             testO.P.CopyTo(subjects, 1); // start at the second item at destination
@@ -100,7 +100,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var test = new Test(s);
+            var test = new Test(s, g);
 
             var expected = new[] { s }.GetEnumerator();
             using (var actual = test.P.GetEnumerator())
@@ -130,7 +130,7 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:p> <urn:o> .
 ");
 
-            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")));
+            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")), g);
 
             o.P.Remove(o);
 
@@ -141,8 +141,8 @@ namespace VDS.RDF.Dynamic
 
         internal class Test : DynamicNode
         {
-            public Test(INode node)
-                : base(node, new Uri("urn:"))
+            public Test(INode node, IGraph graph)
+                : base(node, graph, new Uri("urn:"))
             {
             }
 

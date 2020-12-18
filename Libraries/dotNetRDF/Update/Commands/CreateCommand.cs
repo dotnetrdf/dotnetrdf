@@ -26,6 +26,7 @@
 
 using System;
 using System.Text;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Update.Commands
 {
@@ -34,20 +35,14 @@ namespace VDS.RDF.Update.Commands
     /// </summary>
     public class CreateCommand : SparqlUpdateCommand
     {
-        private Uri _graphUri;
-        private bool _silent = false;
-
         /// <summary>
         /// Creates a new CREATE command.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to create.</param>
-        /// <param name="silent">Whether the create should be done silenty.</param>
+        /// <param name="silent">Whether the create should be done silently.</param>
         public CreateCommand(Uri graphUri, bool silent)
-            : base(SparqlUpdateCommandType.Create) 
+            : this(graphUri == null ? null : new UriNode(graphUri), silent) 
         {
-            if (graphUri == null) throw new ArgumentNullException("graphUri");
-            _graphUri = graphUri;
-            _silent = silent;
         }
 
         /// <summary>
@@ -55,7 +50,18 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">URI of the Graph to create.</param>
         public CreateCommand(Uri graphUri)
-            : this(graphUri, false) { }
+            : this(graphUri == null ? null : new UriNode(graphUri), false) { }
+
+        /// <summary>
+        /// Creates a new CREATE command.
+        /// </summary>
+        /// <param name="graphName">Name of the graph to create.</param>
+        /// <param name="silent">Whether the create should be done silently.</param>
+        public CreateCommand(IRefNode graphName, bool silent = false) : base(SparqlUpdateCommandType.Create)
+        {
+            TargetGraphName = graphName ?? throw new ArgumentNullException(nameof(graphName));
+            Silent = silent;
+        }
 
         /// <summary>
         /// Gets whether the Command affects a Single Graph.
@@ -73,39 +79,37 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public override bool AffectsGraph(Uri graphUri)
         {
-            if (_graphUri == null)
-            {
-                return true;
-            }
-            else
-            {
-                return _graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
-            }
+            return AffectsGraph(graphUri == null ? (IRefNode)null : new UriNode(graphUri));
+        }
+
+        /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public override bool AffectsGraph(IRefNode graphName)
+        {
+            return TargetGraphName == null || TargetGraphName.Equals(graphName);
         }
 
         /// <summary>
         /// Gets the URI of the Graph to be created.
         /// </summary>
-        public Uri TargetUri
-        {
-            get
-            {
-                return _graphUri;
-            }
-        }
+        [Obsolete("Replaced by TargetGraphName")]
+        public Uri TargetUri { get { return ((IUriNode)TargetGraphName)?.Uri; } }
+
+        /// <summary>
+        /// Gets the name of the graph to be created.
+        /// </summary>
+        public IRefNode TargetGraphName { get; }
 
         /// <summary>
         /// Gets whether the Create should be done silently.
         /// </summary>
-        public bool Silent
-        {
-            get
-            {
-                return _silent;
-            }
-        }
+        public bool Silent { get; }
 
         /// <summary>
         /// Evaluates the Command in the given Context.
@@ -113,14 +117,16 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Update Evaluation Context.</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            if (context.Data.HasGraph(_graphUri))
+            if (context.Data.HasGraph(TargetGraphName))
             {
-                if (!_silent) throw new SparqlUpdateException("Cannot create a Named Graph with URI '" + _graphUri.AbsoluteUri + "' since a Graph with this URI already exists in the Store");
+                if (!Silent)
+                {
+                    throw new SparqlUpdateException("Cannot create a Named Graph with URI '" + TargetUri.AbsoluteUri + "' since a Graph with this URI already exists in the Store");
+                }
             }
             else
             {
-                var g = new Graph();
-                g.BaseUri = _graphUri;
+                var g = new Graph(TargetGraphName);
                 context.Data.AddGraph(g);
             }
         }
@@ -141,11 +147,11 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             var output = new StringBuilder();
+            var formatter = new SparqlFormatter();
             output.Append("CREATE ");
-            if (_silent) output.Append("SILENT ");
-            output.Append("GRAPH <");
-            output.Append(_graphUri.AbsoluteUri.Replace(">", "\\>"));
-            output.Append('>');
+            if (Silent) output.Append("SILENT ");
+            output.Append("GRAPH ");
+            formatter.Format(TargetGraphName);
             return output.ToString();
         }
     }

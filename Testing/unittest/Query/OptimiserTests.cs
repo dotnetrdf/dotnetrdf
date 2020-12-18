@@ -221,15 +221,15 @@ SELECT * WHERE
             query.AddVariable(new SparqlVariable("s", true));
             query.RootGraphPattern = new GraphPattern();
             var subj = new VariablePattern("s");
-            var rdfType = new NodeMatchPattern(new UriNode(null, new Uri(RdfSpecsHelper.RdfType)));
+            var rdfType = new NodeMatchPattern(new UriNode(new Uri(RdfSpecsHelper.RdfType)));
             var type = new VariablePattern("type");
             var triplePattern = new TriplePattern(subj, rdfType, type);
             query.RootGraphPattern.AddTriplePattern(triplePattern);
             query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(new InFunction(new VariableTerm("type"), new[]
                 {
-                    new ConstantTerm(new UriNode(null, new Uri("http://example.com/Type1"))), 
-                    new ConstantTerm(new UriNode(null, new Uri("http://example.com/Type2"))), 
-                    new ConstantTerm(new UriNode(null, new Uri("http://example.com/Type3")))
+                    new ConstantTerm(new UriNode(new Uri("http://example.com/Type1"))), 
+                    new ConstantTerm(new UriNode(new Uri("http://example.com/Type2"))), 
+                    new ConstantTerm(new UriNode(new Uri("http://example.com/Type3")))
                 })));
 
             // when

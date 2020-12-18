@@ -55,6 +55,8 @@ namespace VDS.RDF.Query.Spin.Model
             get;
         }
 
+        IGraph Graph { get; }
+
         bool canAs(INode cls);
         IResource As(Type cls);
 

@@ -31,11 +31,11 @@ using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Shacl
 {
-    internal class PrefixDeclaration : WrapperNode
+    internal class PrefixDeclaration : GraphWrapperNode
     {
         [DebuggerStepThrough]
-        internal PrefixDeclaration(INode node)
-            : base(node)
+        internal PrefixDeclaration(INode node, IGraph graph)
+            : base(node, graph)
         {
         }
 

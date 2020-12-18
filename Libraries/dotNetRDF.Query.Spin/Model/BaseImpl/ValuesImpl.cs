@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class ValuesImpl : ElementImpl, IValues
     {
 
-        public ValuesImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public ValuesImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
 
         }
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Spin.Model
                     }
                     else
                     {
-                        TupleImpl.print(getModel(), Resource.Get(value, getModel()), p);
+                        TupleImpl.print(getModel(), Resource.Get(value, Graph, getModel()), p);
                     }
                     if (vit.MoveNext())
                     {

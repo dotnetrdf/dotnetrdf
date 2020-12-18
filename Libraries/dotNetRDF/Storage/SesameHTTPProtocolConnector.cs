@@ -698,6 +698,46 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public virtual IEnumerable<string> ListGraphNames()
+        {
+            try
+            {
+                if (Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }") is SparqlResultSet resultSet)
+                {
+                    var graphs = new List<string>();
+                    foreach (SparqlResult r in resultSet)
+                    {
+                        if (r.HasValue("g"))
+                        {
+                            INode temp = r["g"];
+                            if (temp.NodeType == NodeType.Uri)
+                            {
+                                graphs.Add(((IUriNode)temp).Uri.AbsoluteUri);
+                            } else if (temp.NodeType == NodeType.Blank)
+                            {
+                                graphs.Add("_:" + ((IBlankNode)temp).InternalID);
+                            }
+                        }
+                    }
+                    return graphs;
+                }
+
+                return Enumerable.Empty<string>();
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "listing Graphs from");
+            }
+        }
         /// <inheritdoc />
         public override async Task<IEnumerable<string>> ListGraphsAsync(CancellationToken cancellationToken)
         {
@@ -773,15 +813,15 @@ namespace VDS.RDF.Storage
             HttpRequestMessage request;
             var serviceParams = new Dictionary<string, string>();
 
-            if (g.BaseUri != null)
+            if (g.Name != null)
             {
                 if (_fullContextEncoding)
                 {
-                    serviceParams.Add("context", "<" + g.BaseUri.AbsoluteUri + ">");
+                    serviceParams.Add("context", g.Name.ToString(new SparqlFormatter()));
                 }
                 else
                 {
-                    serviceParams.Add("context", g.BaseUri.AbsoluteUri);
+                    serviceParams.Add("context", g.Name.ToString());
                 }
 
                 request = CreateRequest(_repositoriesPrefix + _store + "/statements", "*/*", HttpMethod.Put, serviceParams);

@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Spin.Core
             }
             if (model != null)
             {
-                function = (IFunction)Resource.Get(RDFUtil.CreateUriNode(uri), model).As(typeof(FunctionImpl));
+                function = (IFunction)Resource.Get(RDFUtil.CreateUriNode(uri), null, model).As(typeof(FunctionImpl));
                 if (function.hasProperty(RDF.PropertyType, SPIN.ClassFunction))
                 {
                     return function;
@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Spin.Core
         {
             if (model != null)
             {
-                IResource r = Resource.Get(RDFUtil.CreateUriNode(uri), model);
+                IResource r = Resource.Get(RDFUtil.CreateUriNode(uri), null, model);
                 if (r.hasProperty(RDF.PropertyType, SPIN.ClassTemplate))
                 {
                     return (ITemplate)r.As(typeof(TemplateImpl));
@@ -315,7 +315,7 @@ namespace VDS.RDF.Query.Spin.Core
             foreach (IResource resource in model.GetAllInstances(SPIN.ClassFunction))
             {
                 IFunction function = SPINFactory.asFunction(resource);
-                register(function, function.getSource().Graph, true);
+                register(function, function.Graph, true);
             }
         }
 

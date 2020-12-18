@@ -26,6 +26,7 @@
 
 using System;
 using System.Text;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Update.Commands
 {
@@ -35,17 +36,9 @@ namespace VDS.RDF.Update.Commands
     public abstract class BaseTransferCommand : SparqlUpdateCommand
     {
         /// <summary>
-        /// Source Graph URI.
-        /// </summary>
-        protected Uri _sourceUri;
-        /// <summary>
-        /// Destination Graph URI.
-        /// </summary>
-        protected Uri _destUri;
-        /// <summary>
         /// Whether errors should be suppressed.
         /// </summary>
-        protected bool _silent = false;
+        protected bool _silent;
 
         /// <summary>
         /// Creates a new Transfer Command.
@@ -54,10 +47,11 @@ namespace VDS.RDF.Update.Commands
         /// <param name="sourceUri">Source Graph URI.</param>
         /// <param name="destUri">Destination Graph URI.</param>
         /// <param name="silent">Whether errors should be suppressed.</param>
-        public BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri, bool silent)
-            : this(type, sourceUri, destUri)
+        [Obsolete("Replaced by BaseTransferCommand(SparqlUpdateCommandType, IRefNode, IRefNode, bool)")]
+        protected BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri, bool silent)
+            : this(type, sourceUri == null ? null : new UriNode(sourceUri),
+                destUri == null ? null : new UriNode(destUri), silent)
         {
-            _silent = silent;
         }
 
         /// <summary>
@@ -66,23 +60,44 @@ namespace VDS.RDF.Update.Commands
         /// <param name="type">Command Type.</param>
         /// <param name="sourceUri">Source Graph URI.</param>
         /// <param name="destUri">Destination Graph URI.</param>
-        public BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri)
-            : base(type)
+        [Obsolete("Replaced by BaseTransferCommand(SparqlUpdateCommandType, IRefNode, IRefNode, bool)")]
+        protected BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri)
+            : this(type, sourceUri == null ? null : new UriNode(sourceUri),
+                destUri == null ? null : new UriNode(destUri))
         {
-            _sourceUri = sourceUri;
-            _destUri = destUri;
+        }
+
+        /// <summary>
+        /// Creates a new Transfer Command.
+        /// </summary>
+        /// <param name="type">Command Type.</param>
+        /// <param name="sourceGraphName">Source Graph name.</param>
+        /// <param name="destGraphName">Destination Graph name.</param>
+        /// <param name="silent">Whether errors should be suppressed.</param>
+        protected BaseTransferCommand(SparqlUpdateCommandType type, IRefNode sourceGraphName, IRefNode destGraphName, bool silent = false)
+        : base(type)
+        {
+            SourceGraphName = sourceGraphName;
+            DestinationGraphName = destGraphName;
+            _silent = silent;
         }
 
         /// <summary>
         /// URI of the Source Graph.
         /// </summary>
+        [Obsolete("Replaced by SourceGraphName")]
         public Uri SourceUri
         {
             get
             {
-                return _sourceUri;
+                return ((IUriNode) SourceGraphName)?.Uri;
             }
         }
+
+        /// <summary>
+        /// Name of the source graph.
+        /// </summary>
+        public IRefNode SourceGraphName { get; }
 
         /// <summary>
         /// URI of the Destination Graph.
@@ -91,9 +106,14 @@ namespace VDS.RDF.Update.Commands
         {
             get
             {
-                return _destUri;
+                return ((IUriNode)DestinationGraphName)?.Uri;
             }
         }
+
+        /// <summary>
+        /// Name of the destination graph.
+        /// </summary>
+        public IRefNode DestinationGraphName { get; }
 
         /// <summary>
         /// Whether errors during evaluation should be suppressed.
@@ -122,16 +142,21 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public override bool AffectsGraph(Uri graphUri)
         {
-            if (graphUri == null)
-            {
-                return (_destUri == null || _sourceUri == null);
-            }
-            else
-            {
-                return graphUri.AbsoluteUri.Equals(_sourceUri.ToSafeString()) || graphUri.AbsoluteUri.Equals(_destUri.ToSafeString());
-            }
+            return AffectsGraph(graphUri == null ? (IRefNode)null : new UriNode(graphUri));
+        }
+
+        /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public override bool AffectsGraph(IRefNode graphName)
+        {
+            if (graphName == null) return SourceGraphName == null || DestinationGraphName == null;
+            return graphName.Equals(SourceGraphName) || graphName.Equals(DestinationGraphName);
         }
 
         /// <summary>
@@ -141,6 +166,7 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             var output = new StringBuilder();
+            var formatter = new SparqlFormatter();
             switch (CommandType)
             {
                 case SparqlUpdateCommandType.Add:
@@ -158,22 +184,24 @@ namespace VDS.RDF.Update.Commands
 
             if (_silent) output.Append(" SILENT");
 
-            if (_sourceUri == null)
+            if (SourceGraphName == null)
             {
                 output.Append(" DEFAULT");
             }
             else
             {
-                output.Append(" GRAPH <" + _sourceUri.AbsoluteUri.Replace(">", "\\>") + ">");
+                output.Append(" GRAPH ");
+                output.Append(formatter.Format(SourceGraphName));
             }
             output.Append(" TO ");
-            if (_destUri == null)
+            if (DestinationGraphName == null)
             {
                 output.Append(" DEFAULT");
             }
             else
             {
-                output.Append(" GRAPH <" + _destUri.AbsoluteUri.Replace(">", "\\>") + ">");
+                output.Append(" GRAPH ");
+                output.Append(formatter.Format(DestinationGraphName));
             }
 
             return output.ToString();

@@ -35,8 +35,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class DeleteDataImpl : UpdateImpl, IDeleteData
     {
 
-        public DeleteDataImpl(INode node, SpinProcessor graph)
-            :base(node, graph)
+        public DeleteDataImpl(INode node, IGraph graph, SpinProcessor processor)
+            :base(node, graph, processor)
         {
             
         }

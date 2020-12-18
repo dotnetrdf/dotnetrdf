@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Algebra
             foreach (Uri graphUri in context.Data.GraphUris)
             {
                 var s = new Set();
-                s.Add(var, graphUri == null ? null : new UriNode(null, graphUri));
+                s.Add(var, graphUri == null ? null : new UriNode(graphUri));
                 context.OutputMultiset.Add(s);
             }
 

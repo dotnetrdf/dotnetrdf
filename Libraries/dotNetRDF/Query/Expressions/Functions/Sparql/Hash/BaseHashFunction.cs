@@ -37,14 +37,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
     public abstract class BaseHashFunction 
         : BaseUnaryExpression
     {
-        private HashAlgorithm _crypto;
+        private readonly HashAlgorithm _crypto;
 
         /// <summary>
         /// Creates a new Hash function.
         /// </summary>
         /// <param name="expr">Expression.</param>
         /// <param name="hash">Hash Algorithm to use.</param>
-        public BaseHashFunction(ISparqlExpression expr, HashAlgorithm hash)
+        protected BaseHashFunction(ISparqlExpression expr, HashAlgorithm hash)
             : base(expr)
         {
             _crypto = hash;
@@ -59,25 +59,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                switch (temp.NodeType)
-                {
-                    case NodeType.Blank:
-                        throw new RdfQueryException("Cannot calculate the Hash of a Blank Node");
-                    case NodeType.GraphLiteral:
-                        throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
-                    case NodeType.Literal:
-                        return new StringNode(null, Hash(((ILiteralNode)temp).Value));
-                    case NodeType.Uri:
-                        return new StringNode(null, Hash(temp.AsString()));
-                    default:
-                        throw new RdfQueryException("Cannot calculate the Hash of an Unknown Node Type");
-                }
-            }
-            else
+            if (temp == null)
             {
                 throw new RdfQueryException("Cannot calculate the Hash of a null");
+            }
+
+            switch (temp.NodeType)
+            {
+                case NodeType.Blank:
+                    throw new RdfQueryException("Cannot calculate the Hash of a Blank Node");
+                case NodeType.GraphLiteral:
+                    throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
+                case NodeType.Literal:
+                    return new StringNode(Hash(((ILiteralNode)temp).Value));
+                case NodeType.Uri:
+                    return new StringNode(Hash(temp.AsString()));
+                default:
+                    throw new RdfQueryException("Cannot calculate the Hash of an Unknown Node Type");
             }
         }
 

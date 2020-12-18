@@ -26,10 +26,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
@@ -45,7 +43,7 @@ namespace VDS.RDF.Storage
     public class ReadOnlyConnector 
         : IStorageProvider, IConfigurationSerializable
     {
-        private IStorageProvider _manager;
+        private readonly IStorageProvider _manager;
 
         /// <summary>
         /// Creates a new Read-Only connection which is a read-only wrapper around another store.
@@ -185,6 +183,7 @@ namespace VDS.RDF.Storage
             throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
+        
         /// <summary>
         /// Returns that deleting graphs is not supported.
         /// </summary>
@@ -200,9 +199,24 @@ namespace VDS.RDF.Storage
         /// Gets the list of graphs in the underlying store.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Replaced by ListGraphNames")]
         public virtual IEnumerable<Uri> ListGraphs()
         {
             return _manager.ListGraphs();
+        }
+
+        /// <summary>
+        /// Gets an enumeration of the names of the graphs in the store.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        public virtual IEnumerable<string> ListGraphNames()
+        {
+            return _manager.ListGraphNames();
         }
 
         /// <summary>
@@ -259,7 +273,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Read Only]" + _manager.ToString();
+            return "[Read Only]" + _manager;
         }
 
         /// <summary>
@@ -278,117 +292,16 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(GetType().ToString()));
             context.Graph.Assert(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString()));
 
-            if (_manager is IConfigurationSerializable)
+            if (_manager is IConfigurationSerializable serializable)
             {
                 INode managerObj = context.Graph.CreateBlankNode();
                 context.NextSubject = managerObj;
-                ((IConfigurationSerializable)_manager).SerializeConfiguration(context);
+                serializable.SerializeConfiguration(context);
                 context.Graph.Assert(manager, storageProvider, managerObj);
             }
             else
             {
                 throw new DotNetRdfConfigurationException("Unable to serialize configuration as the underlying IStorageProvider is not serializable");
-            }
-        }
-    }
-
-    /// <summary>
-    /// Provides a Read-Only wrapper that can be placed around another <see cref="IQueryableStorage">IQueryableStorage</see> instance.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This is useful if you want to allow some code read-only access to a mutable store and ensure that it cannot modify the store via the manager instance.
-    /// </para>
-    /// </remarks>
-    public class QueryableReadOnlyConnector
-        : ReadOnlyConnector, IQueryableStorage
-    {
-        private IQueryableStorage _queryManager;
-
-        /// <summary>
-        /// Creates a new Queryable Read-Only connection which is a read-only wrapper around another store.
-        /// </summary>
-        /// <param name="manager">Manager for the Store you want to wrap as read-only.</param>
-        public QueryableReadOnlyConnector(IQueryableStorage manager)
-            : base(manager)
-        {
-            _queryManager = manager;
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on the underlying Store.
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <returns></returns>
-        public object Query(string sparqlQuery)
-        {
-            return _queryManager.Query(sparqlQuery);
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on the underlying Store processing the results with an appropriate handler from those provided.
-        /// </summary>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">Results Handler.</param>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <returns></returns>
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
-        {
-            _queryManager.Query(rdfHandler, resultsHandler, sparqlQuery);
-        }
-
-        /// <summary>
-        /// Lists the Graphs in the Store.
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerable<Uri> ListGraphs()
-        {
-            if (base.ListGraphsSupported)
-            {
-                // Use the base classes ListGraphs method if it provides one
-                return base.ListGraphs();
-            }
-            else
-            {
-                try
-                {
-                    var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-                    if (results is SparqlResultSet)
-                    {
-                        var graphs = new List<Uri>();
-                        foreach (SparqlResult r in ((SparqlResultSet)results))
-                        {
-                            if (r.HasValue("g"))
-                            {
-                                INode temp = r["g"];
-                                if (temp.NodeType == NodeType.Uri)
-                                {
-                                    graphs.Add(((IUriNode)temp).Uri);
-                                }
-                            }
-                        }
-                        return graphs;
-                    }
-                    else
-                    {
-                        return Enumerable.Empty<Uri>();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Returns that listing Graphs is supported.
-        /// </summary>
-        public override bool ListGraphsSupported
-        {
-            get
-            {
-                return true;
             }
         }
     }

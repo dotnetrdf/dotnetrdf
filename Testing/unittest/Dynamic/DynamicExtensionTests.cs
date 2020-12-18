@@ -54,7 +54,7 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p> <urn:o> .
 ");
             var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var d = s.AsDynamic();
+            var d = s.AsDynamic(g);
 
             Assert.Equal<INode>(s, d);
             Assert.IsType<DynamicNode>(d);
@@ -136,7 +136,7 @@ WHERE {
 
             var s = g.CreateUriNode(":s");
             var p = g.CreateUriNode(":p");
-            var d = new DynamicNode(s);
+            var d = new DynamicNode(s, g);
             var objects = new DynamicObjectCollection(d, p);
 
             Assert.Collection(

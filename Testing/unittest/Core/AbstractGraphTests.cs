@@ -199,7 +199,7 @@ namespace VDS.RDF
             // given
             var graph = GetInstance();
             var uri = new Uri("http://example.com/subj");
-            var node = new DifferentUriNode(graph, uri);
+            var node = new DifferentUriNode(uri);
             graph.Assert(
                 graph.CreateBlankNode(),
                 graph.CreateUriNode(new Uri("http://example.com/pred")),
@@ -267,7 +267,7 @@ namespace VDS.RDF
             // given
             var graph = GetInstance();
             var nodeId = "xyz";
-            var node = new DifferentBlankNode(graph, nodeId);
+            var node = new DifferentBlankNode(nodeId);
             graph.Assert(
                 graph.CreateBlankNode(),
                 graph.CreateUriNode(new Uri("http://example.com/pred")),
@@ -358,7 +358,7 @@ namespace VDS.RDF
             // given
             var graph = GetInstance();
             var literal = "test";
-            var node = new DifferentLiteralNode(graph, literal);
+            var node = new DifferentLiteralNode(literal);
             graph.Assert(
                 graph.CreateBlankNode(),
                 graph.CreateUriNode(new Uri("http://example.com/pred")),
@@ -373,24 +373,24 @@ namespace VDS.RDF
 
         private class DifferentUriNode : BaseUriNode
         {
-            internal DifferentUriNode(IGraph g, Uri uri)
-                : base(g, uri)
+            internal DifferentUriNode(Uri uri)
+                : base(uri)
             {
             }
         }
 
         private class DifferentLiteralNode : BaseLiteralNode
         {
-            internal DifferentLiteralNode(IGraph g, string literal)
-                : base(g, literal, false)
+            internal DifferentLiteralNode(string literal)
+                : base(literal, false)
             {
             }
         }
 
         private class DifferentBlankNode : BaseBlankNode
         {
-            internal DifferentBlankNode(IGraph g, string nodeId)
-                : base(g, nodeId)
+            internal DifferentBlankNode(string nodeId)
+                : base(nodeId)
             {
             }
         }

@@ -26,6 +26,7 @@
 
 using System;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Update.Commands
 {
@@ -40,17 +41,30 @@ namespace VDS.RDF.Update.Commands
         /// Creates a new LOAD command.
         /// </summary>
         /// <param name="sourceUri">Source URI to load data from.</param>
-        /// <param name="graphUri">Target URI for the Graph to store data in.</param>
+        /// <param name="graphName">Name of the graph to store data in. If null or omitted, the target is the default graph.</param>
         /// <param name="silent">Whether errors loading should be suppressed.</param>
         /// <param name="loader">The loader to use for retrieving and parsing data.</param>
-        public LoadCommand(Uri sourceUri, Uri graphUri, bool silent, Loader loader = null)
-            : base(SparqlUpdateCommandType.Load) 
+        public LoadCommand(Uri sourceUri, IRefNode graphName = null, bool silent = false, Loader loader = null)
+            : base(SparqlUpdateCommandType.Load)
         {
             if (sourceUri == null) throw new ArgumentNullException(nameof(sourceUri));
             SourceUri = sourceUri;
-            TargetUri = graphUri;
+            TargetGraphName = graphName;
             Silent = silent;
             _loader = loader ?? new Loader();
+
+        }
+        /// <summary>
+        /// Creates a new LOAD command.
+        /// </summary>
+        /// <param name="sourceUri">Source URI to load data from.</param>
+        /// <param name="graphUri">Target URI for the Graph to store data in.</param>
+        /// <param name="silent">Whether errors loading should be suppressed.</param>
+        /// <param name="loader">The loader to use for retrieving and parsing data.</param>
+        [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)")]
+        public LoadCommand(Uri sourceUri, Uri graphUri, bool silent, Loader loader = null)
+            : this(sourceUri, graphUri == null ? null : new UriNode(graphUri), silent, loader)
+        {
         }
 
         /// <summary>
@@ -58,14 +72,16 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="sourceUri">Source URI to load data from.</param>
         /// <param name="silent">Whether errors loading should be suppressed.</param>
+        [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)")]
         public LoadCommand(Uri sourceUri, bool silent)
-            : this(sourceUri, null, silent) { }
+            : this(sourceUri, (IRefNode)null, silent) { }
 
         /// <summary>
         /// Creates a new LOAD command.
         /// </summary>
         /// <param name="sourceUri">Source URI to load data from.</param>
         /// <param name="targetUri">Target URI for the Graph to store data in.</param>
+        [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)")]
         public LoadCommand(Uri sourceUri, Uri targetUri)
             : this(sourceUri, targetUri, false) { }
 
@@ -73,6 +89,7 @@ namespace VDS.RDF.Update.Commands
         /// Creates a new LOAD command which operates on the Default Graph.
         /// </summary>
         /// <param name="sourceUri">Source URI to load data from.</param>
+        [Obsolete("Replaced by LoadCommand(Uri, IRefNode, bool Loader)")]
         public LoadCommand(Uri sourceUri)
             : this(sourceUri, null) { }
 
@@ -86,13 +103,20 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public override bool AffectsGraph(Uri graphUri)
         {
-            if (TargetUri == null)
-            {
-                return true;
-            }
-            return TargetUri.AbsoluteUri.Equals(graphUri.ToSafeString());
+            return AffectsGraph(graphUri == null ? null : new UriNode(graphUri));
+        }
+
+        /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public override bool AffectsGraph(IRefNode graphName)
+        {
+            return TargetGraphName == null || TargetGraphName.Equals(graphName);
         }
 
         /// <summary>
@@ -103,7 +127,13 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the URI of the Graph to load data into.
         /// </summary>
-        public Uri TargetUri { get; }
+        [Obsolete("Replaced by TargetGraphName")]
+        public Uri TargetUri => ((IUriNode)TargetGraphName)?.Uri;
+
+        /// <summary>
+        /// Get the name of the graph to load data into.
+        /// </summary>
+        public IRefNode TargetGraphName { get; }
 
         /// <summary>
         /// Gets whether errors loading the data are suppressed.
@@ -130,18 +160,16 @@ namespace VDS.RDF.Update.Commands
             try
             {
                 // Load from the URI
-                var g = new Graph();
+                var g = new Graph(TargetGraphName);
                 _loader.LoadGraph(g, SourceUri);
-
-                if (context.Data.HasGraph(TargetUri))
+                if (context.Data.HasGraph(TargetGraphName))
                 {
                     // Merge the Data into the existing Graph
-                    context.Data.GetModifiableGraph(TargetUri).Merge(g);
+                    context.Data.GetModifiableGraph(TargetGraphName).Merge(g);
                 }
                 else
                 {
                     // Add New Graph to the Dataset
-                    g.BaseUri = TargetUri;
                     context.Data.AddGraph(g);
                 }
             }
@@ -167,14 +195,10 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             var silent = Silent ? "SILENT " : string.Empty;
-            if (TargetUri == null)
-            {
-                return "LOAD " + silent + "<" + SourceUri.AbsoluteUri.Replace(">", "\\>") + ">";
-            }
-            else
-            {
-                return "LOAD " + silent + "<" + SourceUri.AbsoluteUri.Replace(">", "\\>") + "> INTO <" + TargetUri.AbsoluteUri.Replace(">", "\\>") + ">";
-            }
+            var formatter = new SparqlFormatter();
+            return TargetGraphName == null
+                ? $"LOAD {silent}<{formatter.FormatUri(SourceUri)}>"
+                : $"LOAD {silent}<{formatter.FormatUri(SourceUri)}> INTO {formatter.Format(TargetGraphName)}";
         }
     }
 }

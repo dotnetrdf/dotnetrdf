@@ -24,12 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
@@ -47,7 +44,7 @@ namespace VDS.RDF.Query
         {
             if (store.Graphs.Count == 1)
             {
-                return new InMemoryDataset(store, store.Graphs.First().BaseUri);
+                return new InMemoryDataset(store, store.Graphs.First().Name);
             }
             else
             {
@@ -111,8 +108,8 @@ namespace VDS.RDF.Query
             var processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(cmds);
 
-            Assert.True(store.HasGraph(null), "Store should have a default unnamed Graph");
-            IGraph result = store[null];
+            Assert.True(store.HasGraph((IRefNode)null), "Store should have a default unnamed Graph");
+            IGraph result = store[(IRefNode)null];
             
             var formatter = new NTriplesFormatter();
             Console.WriteLine("Result Data");
@@ -150,9 +147,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlUpdateInsertWithOptional()
         {
-            var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/vehicles/");
+            IGraph g = GetNamedTestGraph();
 
             var expected = new Graph();
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("rdf:type")));
@@ -163,12 +158,17 @@ namespace VDS.RDF.Query
             TestUpdate(g, expected, update);
         }
 
+        private IGraph GetNamedTestGraph()
+        {
+            var g = new Graph(new UriNode(new Uri("http://example.org/vehicles/")));
+            g.LoadFromFile("resources\\InferenceTest.ttl");
+            return g;
+        }
+
         [Fact]
         public void SparqlUpdateDeleteWithOptional()
         {
-            var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/vehicles/");
+            IGraph g = GetNamedTestGraph();
 
             var def = new Graph();
             def.Merge(g);
@@ -191,9 +191,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlUpdateModifyWithOptional()
         {
-            var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/vehicles/");
+            var g = GetNamedTestGraph();
 
             var expected = new Graph();
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("rdf:type")));
@@ -207,9 +205,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlUpdateModifyWithOptional2()
         {
-            var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/vehicles/");
+            var g = GetNamedTestGraph();
 
             var def = new Graph();
             def.Merge(g);

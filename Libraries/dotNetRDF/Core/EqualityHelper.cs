@@ -90,17 +90,31 @@ namespace VDS.RDF
         public static bool AreUrisEqual(IUriNode a, IUriNode b)
         {
             if (ReferenceEquals(a, b)) return true;
-            if (a == null)
+            if (a == null || b == null) return false;
+            return AreUrisEqual(a.Uri, b.Uri);
+        }
+
+        /// <summary>
+        /// Determines whether two reference nodes are equal.
+        /// </summary>
+        /// <param name="a">First reference node.</param>
+        /// <param name="b">Second reference node.</param>
+        /// <returns></returns>
+        public static bool AreRefNodesEqual(IRefNode a, IRefNode b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b == null) return false;
+            if (a is IUriNode uriNodeA && b is IUriNode uriNodeB)
             {
-                if (b == null) return true;
-                return false;
-            }
-            else if (b == null)
-            {
-                return false;
+                return AreUrisEqual(uriNodeA, uriNodeB);
             }
 
-            return AreUrisEqual(a.Uri, b.Uri);
+            if (a is IBlankNode blankNodeA && b is IBlankNode blankNodeB)
+            {
+                return AreBlankNodesEqual(blankNodeA, blankNodeB);
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -112,15 +126,7 @@ namespace VDS.RDF
         public static bool AreLiteralsEqual(ILiteralNode a, ILiteralNode b)
         {
             if (ReferenceEquals(a, b)) return true;
-            if (a == null)
-            {
-                if (b == null) return true;
-                return false;
-            }
-            else if (b == null)
-            {
-                return false;
-            }
+            if (a == null || b == null) return false;
 
             // Language Tags must be equal (if present)
             // If they don't have language tags then they'll both be set to String.Empty which will give true
@@ -132,43 +138,55 @@ namespace VDS.RDF
                 if (a.DataType == null && b.DataType == null)
                 {
                     // Use String equality to get the result
-                    return a.Value.Equals(b.Value, StringComparison.Ordinal);
+                    return AreStringsEqual(a.Value, b.Value);
                 }
-                else if (a.DataType == null)
+
+                if (a.DataType == null)
                 {
                     // We have a Null DataType but the other Node doesn't so can't be equal
                     return false;
                 }
-                else if (b.DataType == null)
+
+                if (b.DataType == null)
                 {
                     // The other Node has a Null DataType but we don't so can't be equal
                     return false;
                 }
-                else if (AreUrisEqual(a.DataType, b.DataType))
+
+                if (AreUrisEqual(a.DataType, b.DataType))
                 {
                     // We have equal DataTypes so use String Equality to evaluate
                     if (LiteralEqualityMode == LiteralEqualityMode.Strict)
                     {
                         // Strict Equality Mode uses Ordinal Lexical Comparison for Equality as per W3C RDF Spec
-                        return a.Value.Equals(b.Value, StringComparison.Ordinal);
+                        return AreStringsEqual(a.Value, b.Value);
                     }
-                    else
-                    {
-                        // Loose Equality Mode uses Value Based Comparison for Equality of Typed Nodes
-                        return (a.CompareTo(b) == 0);
-                    }
+
+                    // Loose Equality Mode uses Value Based Comparison for Equality of Typed Nodes
+                    return a.CompareTo(b) == 0;
                 }
-                else
-                {
-                    // Data Types didn't match
-                    return false;
-                }
-            }
-            else
-            {
-                // Language Tags didn't match
+
+                // Data Types didn't match
                 return false;
             }
+
+            // Language Tags didn't match
+            return false;
+        }
+
+        /// <summary>
+        /// Determines whether two strings are equal.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="comparisonMode"></param>
+        /// <returns>True if both <paramref name="a"/> and <paramref name="b"/> are null, or if <paramref name="a"/> and <paramref name="b"/> compare as equal under the given <paramref name="comparisonMode"/>, false otherwise.</returns>
+        public static bool AreStringsEqual(string a, string b,
+            StringComparison comparisonMode = StringComparison.Ordinal)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a == null || b == null) return false;
+            return a.Equals(b, comparisonMode);
         }
 
         /// <summary>
@@ -180,17 +198,11 @@ namespace VDS.RDF
         public static bool AreBlankNodesEqual(IBlankNode a, IBlankNode b)
         {
             if (ReferenceEquals(a, b)) return true;
-            if (a == null)
-            {
-                if (b == null) return true;
-                return false;
-            }
-            else if (b == null)
+            if (a == null || b == null)
             {
                 return false;
             }
-
-            return a.InternalID.Equals(b.InternalID) && ReferenceEquals(a.Graph, b.Graph);
+            return a.InternalID.Equals(b.InternalID);
         }
 
         /// <summary>
@@ -202,16 +214,10 @@ namespace VDS.RDF
         public static bool AreGraphLiteralsEqual(IGraphLiteralNode a, IGraphLiteralNode b)
         {
             if (ReferenceEquals(a, b)) return true;
-            if (a == null)
-            {
-                if (b == null) return true;
-                return false;
-            }
-            else if (b == null)
+            if (a == null || b == null)
             {
                 return false;
             }
-
             return a.SubGraph.Equals(b.SubGraph);
         }
 
@@ -224,16 +230,10 @@ namespace VDS.RDF
         public static bool AreVariablesEqual(IVariableNode a, IVariableNode b)
         {
             if (ReferenceEquals(a, b)) return true;
-            if (a == null)
-            {
-                if (b == null) return true;
-                return false;
-            }
-            else if (b == null)
+            if (a == null || b == null)
             {
                 return false;
             }
-
             return a.VariableName.Equals(b.VariableName, StringComparison.Ordinal);
         }
     }

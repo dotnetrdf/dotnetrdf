@@ -137,7 +137,7 @@ namespace VDS.RDF.Writing
                 // Queue the Graphs to be written
                 foreach (IGraph g in context.Store.Graphs)
                 {
-                    context.Add(g.BaseUri);
+                    context.Add(g.Name);
                 }
 
                 // Start making the async calls
@@ -218,26 +218,11 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         private string GenerateGraphOutput(TriGWriterContext globalContext, TurtleWriterContext context)
         {
-            if (context.Graph.BaseUri != null)
+            if (context.Graph.Name != null)
             {
                 // Named Graph
-                string gname;
                 var sep = (globalContext.N3CompatabilityMode) ? " = " : " ";
-                if (globalContext.CompressionLevel > WriterCompressionLevel.None && globalContext.QNameMapper.ReduceToQName(context.Graph.BaseUri.AbsoluteUri, out gname))
-                {
-                    if (TurtleSpecsHelper.IsValidQName(gname))
-                    {
-                        context.Output.WriteLine(gname + sep + "{");
-                    }
-                    else
-                    {
-                        context.Output.WriteLine("<" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + ">" + sep + "{");
-                    }
-                }
-                else
-                {
-                    context.Output.WriteLine("<" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + ">" + sep + "{");
-                }
+                context.Output.WriteLine(context.NodeFormatter.Format(context.Graph.Name) + sep + "{");
             }
             else
             {
@@ -393,8 +378,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                Uri u = null;
-                while (globalContext.TryGetNextUri(out u))
+                while (globalContext.TryGetNextGraphName(out IRefNode u))
                 {
                     // Get the Graph from the Store
                     IGraph g = globalContext.Store.Graphs[u];

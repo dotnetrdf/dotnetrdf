@@ -46,28 +46,28 @@ namespace VDS.RDF.Query
         {
             _numArgs = new List<IValuedNode>()
             {
-                new LongNode(null, 12345),
-                new DecimalNode(null, 123.45m),
-                new FloatNode(null, 123.45f),
-                new DoubleNode(null, 123.45d)
+                new LongNode(12345),
+                new DecimalNode(123.45m),
+                new FloatNode(123.45f),
+                new DoubleNode(123.45d)
             };
             _someNullArgs = new List<IValuedNode>()
             {
-                new LongNode(null, 12345),
+                new LongNode(12345),
                 null,
-                new BooleanNode(null, false),
+                new BooleanNode(false),
                 null
             };
             _dtArgs = new List<IValuedNode>()
             {
-                new DateTimeNode(null, DateTimeOffset.Now),
-                new TimeSpanNode(null, new TimeSpan(0, 1, 30))
+                new DateTimeNode(DateTimeOffset.Now),
+                new TimeSpanNode(new TimeSpan(0, 1, 30))
             };
             _tsArgs = new List<IValuedNode>()
             {
-                new TimeSpanNode(null, new TimeSpan(1, 0, 0)),
-                new TimeSpanNode(null, new TimeSpan(0, 30, 0)),
-                new TimeSpanNode(null, new TimeSpan(0, 0, 15))
+                new TimeSpanNode(new TimeSpan(1, 0, 0)),
+                new TimeSpanNode(new TimeSpan(0, 30, 0)),
+                new TimeSpanNode(new TimeSpan(0, 0, 15))
             };
         }
 
@@ -188,10 +188,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new LongNode(null, 2)
+                new LongNode(1),
+                new LongNode(2)
             };
-            IValuedNode expected = new LongNode(null, 3);
+            IValuedNode expected = new LongNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -200,10 +200,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new DecimalNode(null, 2)
+                new LongNode(1),
+                new DecimalNode(2)
             };
-            IValuedNode expected = new DecimalNode(null, 3);
+            IValuedNode expected = new DecimalNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -212,10 +212,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new FloatNode(null, 2)
+                new LongNode(1),
+                new FloatNode(2)
             };
-            IValuedNode expected = new FloatNode(null, 3);
+            IValuedNode expected = new FloatNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -224,10 +224,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new DoubleNode(null, 2)
+                new LongNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, 3);
+            IValuedNode expected = new DoubleNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -236,10 +236,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 1),
-                new DecimalNode(null, 2)
+                new DecimalNode(1),
+                new DecimalNode(2)
             };
-            IValuedNode expected = new DecimalNode(null, 3);
+            IValuedNode expected = new DecimalNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -248,10 +248,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new FloatNode(null, 1),
-                new DecimalNode(null, 2)
+                new FloatNode(1),
+                new DecimalNode(2)
             };
-            IValuedNode expected = new FloatNode(null, 3);
+            IValuedNode expected = new FloatNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -260,10 +260,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DoubleNode(null, 1),
-                new DecimalNode(null, 2)
+                new DoubleNode(1),
+                new DecimalNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, 3);
+            IValuedNode expected = new DoubleNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -272,10 +272,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new FloatNode(null, 1),
-                new FloatNode(null, 2)
+                new FloatNode(1),
+                new FloatNode(2)
             };
-            IValuedNode expected = new FloatNode(null, 3);
+            IValuedNode expected = new FloatNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -284,10 +284,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new FloatNode(null, 1),
-                new DoubleNode(null, 2)
+                new FloatNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, 3);
+            IValuedNode expected = new DoubleNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -296,10 +296,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DoubleNode(null, 1),
-                new DoubleNode(null, 2)
+                new DoubleNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, 3);
+            IValuedNode expected = new DoubleNode(3);
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
         }
 
@@ -308,10 +308,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new LongNode(null, 2)
+                new LongNode(1),
+                new LongNode(2)
             };
-            IValuedNode expected = new LongNode(null, -1);
+            IValuedNode expected = new LongNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -320,10 +320,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 1),
-                new LongNode(null, 2)
+                new DecimalNode(1),
+                new LongNode(2)
             };
-            IValuedNode expected = new DecimalNode(null, -1);
+            IValuedNode expected = new DecimalNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -332,10 +332,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new FloatNode(null, 2)
+                new LongNode(1),
+                new FloatNode(2)
             };
-            IValuedNode expected = new FloatNode(null, -1);
+            IValuedNode expected = new FloatNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -344,10 +344,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new DoubleNode(null, 2)
+                new LongNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, -1);
+            IValuedNode expected = new DoubleNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -356,10 +356,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 1),
-                new DecimalNode(null, 2)
+                new DecimalNode(1),
+                new DecimalNode(2)
             };
-            IValuedNode expected = new DecimalNode(null, -1);
+            IValuedNode expected = new DecimalNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -368,10 +368,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 1),
-                new FloatNode(null, 2)
+                new DecimalNode(1),
+                new FloatNode(2)
             };
-            IValuedNode expected = new FloatNode(null, -1);
+            IValuedNode expected = new FloatNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -380,10 +380,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 1),
-                new DoubleNode(null, 2)
+                new DecimalNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, -1);
+            IValuedNode expected = new DoubleNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -392,10 +392,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new FloatNode(null, 1),
-                new FloatNode(null, 2)
+                new FloatNode(1),
+                new FloatNode(2)
             };
-            IValuedNode expected = new FloatNode(null, -1);
+            IValuedNode expected = new FloatNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -404,10 +404,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new FloatNode(null, 1),
-                new DoubleNode(null, 2)
+                new FloatNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, -1);
+            IValuedNode expected = new DoubleNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -416,10 +416,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DoubleNode(null, 1),
-                new DoubleNode(null, 2)
+                new DoubleNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, -1);
+            IValuedNode expected = new DoubleNode(-1);
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
         }
 
@@ -428,10 +428,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new LongNode(null, 2)
+                new LongNode(1),
+                new LongNode(2)
             };
-            IValuedNode expected = new DecimalNode(null, 0.5m);
+            IValuedNode expected = new DecimalNode(0.5m);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -440,10 +440,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new DecimalNode(null, 2)
+                new LongNode(1),
+                new DecimalNode(2)
             };
-            IValuedNode expected = new DecimalNode(null, 0.5m);
+            IValuedNode expected = new DecimalNode(0.5m);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -452,10 +452,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new FloatNode(null, 2)
+                new LongNode(1),
+                new FloatNode(2)
             };
-            IValuedNode expected = new FloatNode(null, 0.5f);
+            IValuedNode expected = new FloatNode(0.5f);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -464,10 +464,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 1),
-                new DoubleNode(null, 2)
+                new LongNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, 0.5d);
+            IValuedNode expected = new DoubleNode(0.5d);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -476,10 +476,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 1),
-                new DecimalNode(null, 2)
+                new DecimalNode(1),
+                new DecimalNode(2)
             };
-            IValuedNode expected = new DecimalNode(null, 0.5m);
+            IValuedNode expected = new DecimalNode(0.5m);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -488,10 +488,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 1),
-                new FloatNode(null, 2)
+                new DecimalNode(1),
+                new FloatNode(2)
             };
-            IValuedNode expected = new FloatNode(null, 0.5f);
+            IValuedNode expected = new FloatNode(0.5f);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -500,10 +500,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 1),
-                new DoubleNode(null, 2)
+                new DecimalNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, 0.5d);
+            IValuedNode expected = new DoubleNode(0.5d);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -512,10 +512,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new FloatNode(null, 1),
-                new FloatNode(null, 2)
+                new FloatNode(1),
+                new FloatNode(2)
             };
-            IValuedNode expected = new FloatNode(null, 0.5f);
+            IValuedNode expected = new FloatNode(0.5f);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -524,10 +524,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new FloatNode(null, 1),
-                new DoubleNode(null, 2)
+                new FloatNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, 0.5d);
+            IValuedNode expected = new DoubleNode(0.5d);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -536,10 +536,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DoubleNode(null, 1),
-                new DoubleNode(null, 2)
+                new DoubleNode(1),
+                new DoubleNode(2)
             };
-            IValuedNode expected = new DoubleNode(null, 0.5d);
+            IValuedNode expected = new DoubleNode(0.5d);
             TestApplication(SparqlOperatorType.Divide, false, ns, expected, false);
         }
 
@@ -548,10 +548,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 3),
-                new LongNode(null, 6)
+                new LongNode(3),
+                new LongNode(6)
             };
-            IValuedNode expected = new LongNode(null, 18);
+            IValuedNode expected = new LongNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -560,10 +560,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 3),
-                new DecimalNode(null, 6)
+                new LongNode(3),
+                new DecimalNode(6)
             };
-            IValuedNode expected = new DecimalNode(null, 18);
+            IValuedNode expected = new DecimalNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -572,10 +572,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 3),
-                new FloatNode(null, 6)
+                new LongNode(3),
+                new FloatNode(6)
             };
-            IValuedNode expected = new FloatNode(null, 18);
+            IValuedNode expected = new FloatNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -584,10 +584,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new LongNode(null, 3),
-                new DoubleNode(null, 6)
+                new LongNode(3),
+                new DoubleNode(6)
             };
-            IValuedNode expected = new DoubleNode(null, 18);
+            IValuedNode expected = new DoubleNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -596,10 +596,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 3),
-                new DecimalNode(null, 6)
+                new DecimalNode(3),
+                new DecimalNode(6)
             };
-            IValuedNode expected = new DecimalNode(null, 18);
+            IValuedNode expected = new DecimalNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -608,10 +608,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 3),
-                new FloatNode(null, 6)
+                new DecimalNode(3),
+                new FloatNode(6)
             };
-            IValuedNode expected = new FloatNode(null, 18);
+            IValuedNode expected = new FloatNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -620,10 +620,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DecimalNode(null, 3),
-                new DoubleNode(null, 6)
+                new DecimalNode(3),
+                new DoubleNode(6)
             };
-            IValuedNode expected = new DoubleNode(null, 18);
+            IValuedNode expected = new DoubleNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -632,10 +632,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new FloatNode(null, 3),
-                new FloatNode(null, 6)
+                new FloatNode(3),
+                new FloatNode(6)
             };
-            IValuedNode expected = new FloatNode(null, 18);
+            IValuedNode expected = new FloatNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -644,10 +644,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new FloatNode(null, 3),
-                new DoubleNode(null, 6)
+                new FloatNode(3),
+                new DoubleNode(6)
             };
-            IValuedNode expected = new DoubleNode(null, 18);
+            IValuedNode expected = new DoubleNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -656,10 +656,10 @@ namespace VDS.RDF.Query
         {
             var ns = new List<IValuedNode>()
             {
-                new DoubleNode(null, 3),
-                new DoubleNode(null, 6)
+                new DoubleNode(3),
+                new DoubleNode(6)
             };
-            IValuedNode expected = new DoubleNode(null, 18);
+            IValuedNode expected = new DoubleNode(18);
             TestApplication(SparqlOperatorType.Multiply, false, ns, expected, false);
         }
 
@@ -669,10 +669,10 @@ namespace VDS.RDF.Query
             DateTimeOffset now = DateTimeOffset.Now;
             var ns = new List<IValuedNode>()
             {
-                new DateTimeNode(null, now),
-                new TimeSpanNode(null, new TimeSpan(1, 0, 0))
+                new DateTimeNode(now),
+                new TimeSpanNode(new TimeSpan(1, 0, 0))
             };
-            IValuedNode expected = new DateTimeNode(null, now.AddHours(1));
+            IValuedNode expected = new DateTimeNode(now.AddHours(1));
             TestApplication(SparqlOperatorType.Add, false, ns, expected, false);
             TestStrictApplication(SparqlOperatorType.Add, ns, expected, true);
         }
@@ -683,10 +683,10 @@ namespace VDS.RDF.Query
             DateTimeOffset now = DateTimeOffset.Now;
             var ns = new List<IValuedNode>()
             {
-                new DateTimeNode(null, now),
-                new TimeSpanNode(null, new TimeSpan(1, 0, 0))
+                new DateTimeNode(now),
+                new TimeSpanNode(new TimeSpan(1, 0, 0))
             };
-            IValuedNode expected = new DateTimeNode(null, now.AddHours(-1));
+            IValuedNode expected = new DateTimeNode(now.AddHours(-1));
             TestApplication(SparqlOperatorType.Subtract, false, ns, expected, false);
             TestStrictApplication(SparqlOperatorType.Subtract, ns, expected, true);
         }

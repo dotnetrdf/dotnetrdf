@@ -34,11 +34,20 @@ namespace VDS.RDF.Update.Commands
     public class MoveCommand : BaseTransferCommand
     {
         /// <summary>
+        /// Creates a command which moves data from one graph to another, overwriting the destination graph and deleting the source graph.
+        /// </summary>
+        /// <param name="sourceGraphName">Name of the source graph.</param>
+        /// <param name="destinationGraphName">Name of the destination graph.</param>
+        /// <param name="silent">Whether errors should be suppressed.</param>
+        public MoveCommand(IRefNode sourceGraphName, IRefNode destinationGraphName, bool silent = false):base(SparqlUpdateCommandType.Move, sourceGraphName, destinationGraphName, silent){}
+
+        /// <summary>
         /// Creates a Command which Moves data from one Graph to another overwriting the destination Graph and deleting the source Graph.
         /// </summary>
         /// <param name="sourceUri">Source Graph URI.</param>
         /// <param name="destUri">Destination Graph URI.</param>
         /// <param name="silent">Whether errors should be suppressed.</param>
+        [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)")]
         public MoveCommand(Uri sourceUri, Uri destUri, bool silent)
             : base(SparqlUpdateCommandType.Move, sourceUri, destUri, silent) { }
 
@@ -47,6 +56,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="sourceUri">Source Graph URI.</param>
         /// <param name="destUri">Destination Graph URI.</param>
+        [Obsolete("Replaced by MoveCommand(IRefNode, IRefNode, bool)")]
         public MoveCommand(Uri sourceUri, Uri destUri)
             : base(SparqlUpdateCommandType.Move, sourceUri, destUri) { }
 
@@ -59,35 +69,33 @@ namespace VDS.RDF.Update.Commands
             try
             {
                 // If Source and Destination are same this is a no-op
-                if (EqualityHelper.AreUrisEqual(_sourceUri, _destUri)) return;
+                if (EqualityHelper.AreRefNodesEqual(SourceGraphName, DestinationGraphName)) return;
 
-                if (context.Data.HasGraph(_sourceUri))
+                if (context.Data.HasGraph(SourceGraphName))
                 {
                     // Get the Source Graph
-                    IGraph source = context.Data.GetModifiableGraph(_sourceUri);
+                    IGraph source = context.Data.GetModifiableGraph(SourceGraphName);
 
                     // Create/Delete/Clear the Destination Graph
                     IGraph dest;
-                    if (context.Data.HasGraph(_destUri))
+                    if (context.Data.HasGraph(DestinationGraphName))
                     {
-                        if (_destUri == null)
+                        if (DestinationGraphName == null)
                         {
-                            dest = context.Data.GetModifiableGraph(_destUri);
+                            dest = context.Data.GetModifiableGraph(DestinationGraphName);
                             dest.Clear();
                         }
                         else
                         {
-                            context.Data.RemoveGraph(_destUri);
-                            dest = new Graph();
-                            dest.BaseUri = _destUri;
+                            context.Data.RemoveGraph(DestinationGraphName);
+                            dest = new Graph(DestinationGraphName);
                             context.Data.AddGraph(dest);
-                            dest = context.Data.GetModifiableGraph(_destUri);
+                            dest = context.Data.GetModifiableGraph(DestinationGraphName);
                         }
                     }
                     else
                     {
-                        dest = new Graph();
-                        dest.BaseUri = _destUri;
+                        dest = new Graph(DestinationGraphName);
                         context.Data.AddGraph(dest);
                     }
 
@@ -95,13 +103,13 @@ namespace VDS.RDF.Update.Commands
                     dest.Merge(source);
 
                     // Delete/Clear the Source Graph
-                    if (_sourceUri == null)
+                    if (SourceGraphName == null)
                     {
                         source.Clear();
                     }
                     else
                     {
-                        context.Data.RemoveGraph(_sourceUri);
+                        context.Data.RemoveGraph(SourceGraphName);
                     }
                 }
                 else
@@ -109,9 +117,9 @@ namespace VDS.RDF.Update.Commands
                     // Only show error if not Silent
                     if (!_silent)
                     {
-                        if (_sourceUri != null)
+                        if (SourceGraphName != null)
                         {
-                            throw new SparqlUpdateException("Cannot MOVE from Graph <" + _sourceUri.AbsoluteUri + "> as it does not exist");
+                            throw new SparqlUpdateException("Cannot MOVE from Graph " + SourceGraphName + " as it does not exist");
                         }
                         else
                         {

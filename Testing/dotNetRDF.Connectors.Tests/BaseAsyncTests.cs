@@ -428,7 +428,6 @@ namespace VDS.RDF.Storage
             {
                 var signal = new ManualResetEvent(false);
                 AsyncStorageCallbackArgs resArgs = null;
-                g.BaseUri = UriFactory.Create(QueryGraphUri);
                 provider.SaveGraph(g, (_, args, state) =>
                 {
                     resArgs = args;
@@ -445,7 +444,7 @@ namespace VDS.RDF.Storage
 
                     resArgs = null;
                     signal.Reset();
-                    ((IAsyncQueryableStorage)provider).Query("SELECT * WHERE { GRAPh <" + QueryGraphUri + "> { ?s a ?type } }", (_, args, state) =>
+                    ((IAsyncQueryableStorage)provider).Query("SELECT * WHERE { GRAPh <" + g.Name + "> { ?s a ?type } }", (_, args, state) =>
                     {
                         resArgs = args;
                         signal.Set();
@@ -484,7 +483,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageAsyncSaveLoad()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri(SaveGraphUri));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncSaveLoad(g);
         }
@@ -492,7 +491,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageAsyncDeleteGraph()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri(DeleteGraphUri));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncDelete(g);
         }
@@ -500,7 +499,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageAsyncRemoveTriples()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri(RemoveTriplesUri));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncDeleteTriples(g);
         }
@@ -508,7 +507,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageAsyncAddTriples()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri(AddTripleUri));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncAddTriples(g);
         }
@@ -522,7 +521,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageAsyncQuery()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri(QueryGraphUri));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncQuery(g);
         }
@@ -537,7 +536,6 @@ namespace VDS.RDF.Storage
             IAsyncStorageProvider provider = GetAsyncProvider();
             try
             {
-                g.BaseUri = UriFactory.Create(SaveGraphUri2);
                 await provider.SaveGraphAsync(g, CancellationToken.None);
                 var h = new Graph();
                 await provider.LoadGraphAsync(h, SaveGraphUri2, CancellationToken.None);
@@ -561,9 +559,7 @@ namespace VDS.RDF.Storage
 
             try
             {
-                g.BaseUri = UriFactory.Create(DeleteGraphUri);
                 await provider.SaveGraphAsync(g, CancellationToken.None);
-
                 await provider.DeleteGraphAsync(DeleteGraphUri, CancellationToken.None);
 
                 var h = new Graph();
@@ -617,7 +613,7 @@ namespace VDS.RDF.Storage
 
             try
             {
-                var emptyGraph = new Graph { BaseUri = UriFactory.Create(AddTripleUri) };
+                var emptyGraph = new Graph(new Uri(AddTripleUri));
                 await provider.SaveGraphAsync(emptyGraph, CancellationToken.None);
                 var ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Select(t =>
                         new Triple(t.Subject, t.Predicate,
@@ -694,7 +690,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public async Task StorageSaveLoadAsync()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri(SaveGraphUri2));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             await TestSaveLoadAsync(g);
         }
@@ -702,7 +698,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public async Task StorageDeleteGraphAsync()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri(DeleteGraphUri));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             await TestDeleteGraphAsync(g);
         }
@@ -710,7 +706,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public async Task StorageDeleteTriplesAsync()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri(RemoveTriplesUri));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             await TestDeleteTriplesAsync(g);
         }
@@ -726,7 +722,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public async Task StorageListGraphsAsync()
         {
-            var g = new Graph();
+            var g = new Graph(new Uri(ListGraphsUri));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             await TestListGraphsAsync(g);
         }

@@ -74,7 +74,7 @@ namespace VDS.RDF.Configuration
                             }
                             else if (defaultGraph != null)
                             {
-                                obj = new InMemoryDataset((IInMemoryQueryableStore)temp, defaultGraph);
+                                obj = new InMemoryDataset((IInMemoryQueryableStore)temp, new UriNode(defaultGraph));
                             }
                             else
                             {

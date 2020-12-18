@@ -34,8 +34,8 @@ namespace VDS.RDF.Query.Spin.Model
     internal class ServiceImpl : ElementImpl, IService
     {
 
-        public ServiceImpl(INode node, SpinProcessor spinModel)
-            : base(node, spinModel)
+        public ServiceImpl(INode node, IGraph graph, SpinProcessor spinModel)
+            : base(node, graph, spinModel)
         {
 
         }
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Spin.Model
                 if (uri != null)
                 {
                     p.print(" ");
-                    p.printURIResource(Resource.Get(RDFUtil.CreateUriNode(uri), getModel()));
+                    p.printURIResource(Resource.Get(RDFUtil.CreateUriNode(uri), Graph, getModel()));
                 }
             }
             printNestedElementList(p);

@@ -56,38 +56,59 @@ namespace VDS.RDF.Update.Commands
     /// </summary>
     public class ClearCommand : SparqlUpdateCommand
     {
-        private Uri _graphUri;
-        private ClearMode _mode = ClearMode.Graph;
-        private bool _silent = false;
 
         /// <summary>
         /// Creates a Command which clears the given Graph or Graphs depending on the Clear Mode specified.
         /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="graphName">Graph URI.</param>
         /// <param name="mode">Clear Mode.</param>
         /// <param name="silent">Whether errors should be suppressed.</param>
-        public ClearCommand(Uri graphUri, ClearMode mode, bool silent)
+        public ClearCommand(IRefNode graphName, ClearMode mode, bool silent)
             : base(SparqlUpdateCommandType.Clear)
         {
-            _graphUri = graphUri;
-            _mode = mode;
-            if (_graphUri == null && _mode == ClearMode.Graph) _mode = ClearMode.Default;
-            if (_mode == ClearMode.Default) _graphUri = null;
-            _silent = silent;
+            TargetGraphName = graphName;
+            Mode = mode;
+            if (TargetGraphName == null && Mode == ClearMode.Graph) Mode = ClearMode.Default;
+            if (Mode == ClearMode.Default) TargetGraphName = null;
+            Silent = silent;
+        }
+
+        /// <summary>
+        /// Creates a Command which clears the given Graph or Graphs depending on the Clear Mode specified.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="mode">Clear Mode.</param>
+        /// <param name="silent">Whether errors should be suppressed.</param>
+        [Obsolete("Replaced by ClearCommand(IRefNode, ClearMode, bool)")]
+        public ClearCommand(Uri graphName, ClearMode mode, bool silent) : this(graphName == null ? null : new UriNode(graphName), mode, silent)
+        {
+
         }
 
         /// <summary>
         /// Creates a Command which clears the given Graph.
         /// </summary>
         /// <param name="graphUri">URI of the Graph to clear.</param>
-        public ClearCommand(Uri graphUri)
+        public ClearCommand(IRefNode graphUri)
             : this(graphUri, ClearMode.Graph, false) { }
+
+
+        /// <summary>
+        /// Creates a Command which clears the given Graph.
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to clear.</param>
+        [Obsolete("Replaced by ClearCommand(IRefNode)")]
+        public ClearCommand(Uri graphUri)
+            : this(graphUri == null ? null : new UriNode(graphUri), ClearMode.Graph, false)
+        {
+        }
+
 
         /// <summary>
         /// Creates a Command which clears the Default Graph (if any).
         /// </summary>
         public ClearCommand()
-            : this(null, ClearMode.Default, false) { }
+            : this((IRefNode)null, ClearMode.Default, false) { }
 
         /// <summary>
         /// Creates a Command which performs the specified type of clear.
@@ -95,7 +116,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="mode">Clear Mode.</param>
         /// <param name="silent">Whether errors should be suppressed.</param>
         public ClearCommand(ClearMode mode, bool silent)
-            : this(null, mode, silent) { }
+            : this((IRefNode)null, mode, silent) { }
 
         /// <summary>
         /// Creates a Command which performs the specified type of clear.
@@ -111,7 +132,7 @@ namespace VDS.RDF.Update.Commands
         {
             get 
             {
-                return _mode == ClearMode.Graph || _mode == ClearMode.Default;
+                return Mode == ClearMode.Graph || Mode == ClearMode.Default;
             }
         }
 
@@ -120,9 +141,10 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by AffectsGraph(IRefNode)")]
         public override bool AffectsGraph(Uri graphUri)
         {
-            switch (_mode)
+            switch (Mode)
             {
                 case ClearMode.All:
                     return true;
@@ -131,14 +153,37 @@ namespace VDS.RDF.Update.Commands
                 case ClearMode.Named:
                     return graphUri != null;
                 case ClearMode.Graph:
-                    if (_graphUri == null)
+                    if (TargetGraphName == null)
                     {
                         return true;
                     }
                     else
                     {
-                        return _graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
+                        return EqualityHelper.AreUrisEqual((TargetGraphName as IUriNode)?.Uri, graphUri);
                     }
+                default:
+                    // No Other Clear Modes but have to keep the compiler happy
+                    return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
+        public override bool AffectsGraph(IRefNode graphName)
+        {
+            switch (Mode)
+            {
+                case ClearMode.All:
+                    return true;
+                case ClearMode.Default:
+                    return graphName == null;
+                case ClearMode.Named:
+                    return graphName != null;
+                case ClearMode.Graph:
+                    return TargetGraphName == null || EqualityHelper.AreRefNodesEqual(TargetGraphName, graphName);
                 default:
                     // No Other Clear Modes but have to keep the compiler happy
                     return true;
@@ -148,35 +193,23 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the URI of the Graph to be cleared (or null if the default graph should be cleared).
         /// </summary>
-        public Uri TargetUri
-        {
-            get
-            {
-                return _graphUri;
-            }
-        }
+        [Obsolete("Replaced by TargetGraphName")]
+        public Uri TargetUri => ((IUriNode)TargetGraphName).Uri;
+
+        /// <summary>
+        /// Gets the name of the graph to be cleared (or null if the default graph should be cleared).
+        /// </summary>
+        public IRefNode TargetGraphName { get; }
 
         /// <summary>
         /// Gets whether errors should be suppressed.
         /// </summary>
-        public bool Silent
-        {
-            get
-            {
-                return _silent;
-            }
-        }
+        public bool Silent { get; }
 
         /// <summary>
         /// Gets the Mode by which Graphs are to be cleared.
         /// </summary>
-        public ClearMode Mode
-        {
-            get
-            {
-                return _mode;
-            }
-        }
+        public ClearMode Mode { get; }
 
         /// <summary>
         /// Evaluates the Command in the given Context.
@@ -186,17 +219,17 @@ namespace VDS.RDF.Update.Commands
         {
             try
             {
-                switch (_mode)
+                switch (Mode)
                 {
                     case ClearMode.Graph:
                     case ClearMode.Default:
-                        if (context.Data.HasGraph(_graphUri))
+                        if (context.Data.HasGraph(TargetGraphName))
                         {
-                            context.Data.GetModifiableGraph(_graphUri).Clear();
+                            context.Data.GetModifiableGraph(TargetGraphName).Clear();
                         }
                         break;
                     case ClearMode.Named:
-                        foreach (Uri u in context.Data.GraphUris)
+                        foreach (IRefNode u in context.Data.GraphNames)
                         {
                             if (u != null)
                             {
@@ -205,7 +238,7 @@ namespace VDS.RDF.Update.Commands
                         }
                         break;
                     case ClearMode.All:
-                        foreach (Uri u in context.Data.GraphUris)
+                        foreach (IRefNode u in context.Data.GraphNames)
                         {
                                 context.Data.GetModifiableGraph(u).Clear();
                         }
@@ -214,7 +247,7 @@ namespace VDS.RDF.Update.Commands
             }
             catch
             {
-                if (!_silent) throw;
+                if (!Silent) throw;
             }
         }
 
@@ -233,15 +266,15 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            var silent = (_silent) ? "SILENT " : string.Empty;
-            switch (_mode)
+            var silent = (Silent) ? "SILENT " : string.Empty;
+            switch (Mode)
             {
                 case ClearMode.All:
                     return "CLEAR " + silent + "ALL";
                 case ClearMode.Default:
                     return "CLEAR " + silent + "DEFAULT";
                 case ClearMode.Graph:
-                    return "CLEAR " + silent + "GRAPH <" + _graphUri.AbsoluteUri.Replace(">", "\\>") + ">";
+                    return "CLEAR " + silent + "GRAPH <" + TargetUri.AbsoluteUri.Replace(">", "\\>") + ">";
                 case ClearMode.Named:
                     return "CLEAR " + silent + "NAMED";
                 default:

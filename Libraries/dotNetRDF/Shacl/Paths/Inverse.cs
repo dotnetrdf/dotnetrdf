@@ -34,8 +34,8 @@ namespace VDS.RDF.Shacl.Paths
     internal class Inverse : Unary
     {
         [DebuggerStepThrough]
-        internal Inverse(INode node)
-            : base(node)
+        internal Inverse(INode node, IGraph shapesGraph)
+            : base(node, shapesGraph)
         {
         }
 
@@ -52,7 +52,7 @@ namespace VDS.RDF.Shacl.Paths
             get
             {
                 return
-                    new Triple(this, Vocabulary.InversePath.CopyNode(Graph), Argument).AsEnumerable()
+                    new Triple(this, Vocabulary.InversePath, Argument).AsEnumerable()
                     .Union(
                     Argument.AsTriples);
             }

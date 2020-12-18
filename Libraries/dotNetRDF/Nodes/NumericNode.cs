@@ -46,8 +46,8 @@ namespace VDS.RDF.Nodes
         /// <param name="datatype">Datatype URI.</param>
         /// <param name="numType">SPARQL Numeric Type.</param>
         /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="value"/>.</param>
-        protected NumericNode(IGraph g, string value, Uri datatype, SparqlNumericType numType, bool normalizeLiteralValue = false)
-            : base(g, value, datatype, normalizeLiteralValue) 
+        protected NumericNode(string value, Uri datatype, SparqlNumericType numType, bool normalizeLiteralValue = false)
+            : base(value, datatype, normalizeLiteralValue) 
         {
             _numType = numType;
         }

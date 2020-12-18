@@ -96,7 +96,7 @@ namespace VDS.RDF.Writing
             foreach (IGraph graph in store.Graphs)
             {
                 // 5.1 - If graph is the default graph, set name to @default, otherwise to the graph name associated with graph.
-                var name = graph.BaseUri == null ? "@default" : graph.BaseUri.ToString();
+                var name = graph.Name == null ? "@default" : graph.Name.ToString();
 
                 // 5.2 - If graph map has no name entry, create one and set its value to an empty map.
                 if (!graphMap.ContainsKey(name))

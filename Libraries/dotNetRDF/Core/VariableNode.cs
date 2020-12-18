@@ -37,10 +37,9 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Variable Node.
         /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="varname">Variable Name.</param>
-        protected internal VariableNode(IGraph g, string varname)
-            : base(g, varname) { }
+        /// <param name="varName">Variable Name.</param>
+        protected internal VariableNode(string varName)
+            : base(varName) { }
 
         /// <summary>
         /// Compares this Node to another Variable Node.
