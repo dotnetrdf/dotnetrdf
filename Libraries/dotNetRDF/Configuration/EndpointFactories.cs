@@ -36,6 +36,7 @@ namespace VDS.RDF.Configuration
     /// <summary>
     /// Factory class for producing SPARQL Endpoints from Configuration Graphs.
     /// </summary>
+    [Obsolete("This class is obsolete and will be removed in a future release. Replaced by VDS.RDF.Configuration.SparqlClientFactory")]
     public class SparqlEndpointFactory 
         : IObjectFactory
     {

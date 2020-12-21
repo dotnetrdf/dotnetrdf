@@ -35,6 +35,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
@@ -341,6 +342,34 @@ namespace VDS.RDF.Query
                     Headers = { {HttpRequestHeader.Accept.ToString(), acceptHeader}},
                 };
                 return await _httpClient.SendAsync(requestMessage, cancellationToken);
+            }
+        }
+
+        /// <summary>
+        /// Serializes the Endpoint's Configuration.
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context.</param>
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            INode endpoint = context.NextSubject;
+            INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlQueryClient));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
+            INode defGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
+            INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
+
+            context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
+            context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            context.Graph.Assert(new Triple(endpoint, endpointUri, context.Graph.CreateUriNode(EndpointUri)));
+
+            foreach (var u in DefaultGraphs)
+            {
+                context.Graph.Assert(new Triple(endpoint, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
+            }
+            foreach (var u in NamedGraphs)
+            {
+                context.Graph.Assert(new Triple(endpoint, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
             }
         }
     }

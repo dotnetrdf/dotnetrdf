@@ -31,6 +31,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Query
@@ -431,6 +433,32 @@ namespace VDS.RDF.Query
             }
             handler.EndResults(cont);
 
+        }
+
+        /// <summary>
+        /// Serializes the Endpoint's Configuration.
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context.</param>
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            INode endpoint = context.NextSubject;
+            INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassFederatedSparqlQueryClient));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode endpointProp = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
+
+            context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
+            context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
+            foreach (SparqlQueryClient ep in _endpoints)
+            {
+                // Serialize the child endpoint configuration
+                INode epObj = context.Graph.CreateBlankNode();
+                context.NextSubject = epObj;
+                ep.SerializeConfiguration(context);
+
+                // Link that serialization to this serialization
+                context.Graph.Assert(new Triple(endpoint, endpointProp, epObj));
+            }
         }
     }
 }
