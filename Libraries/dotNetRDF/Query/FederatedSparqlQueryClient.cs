@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF.Configuration;
@@ -48,7 +47,7 @@ namespace VDS.RDF.Query
     /// it just naively merges the data.
     /// </para>
     /// </remarks>
-    public class FederatedSparqlQueryClient : ISparqlQueryClient
+    public class FederatedSparqlQueryClient : ISparqlQueryClient, IConfigurationSerializable
     {
         private readonly HttpClient _httpClient;
         private readonly List<SparqlQueryClient> _endpoints = new List<SparqlQueryClient>();

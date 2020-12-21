@@ -27,6 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 
@@ -45,8 +47,7 @@ namespace VDS.RDF.Configuration
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
-            var clientName = ConfigurationLoader.GetConfigurationString(g, objNode,
-                g.CreateUriNode(ConfigurationLoader.PropertyHttpClientName)) ?? "default";
+            HttpClient httpClient = CreateClient(g, objNode);
             switch (targetType.FullName)
             {
                 case SparqlQueryClient:
@@ -58,8 +59,7 @@ namespace VDS.RDF.Configuration
                         select n.ToString();
                     IEnumerable<string> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                         select n.ToString();
-                    var client = new SparqlQueryClient(ConfigurationLoader.HttpClientFactory.CreateClient(clientName),
-                        new Uri(queryEndpointUri));
+                    var client = new SparqlQueryClient(httpClient, new Uri(queryEndpointUri));
                     client.DefaultGraphs.AddRange(defaultGraphs);
                     client.NamedGraphs.AddRange(namedGraphs);
                     obj = client;
@@ -67,8 +67,7 @@ namespace VDS.RDF.Configuration
                 case SparqlUpdateClient:
                     var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
                     if (updateEndpointUri == null) return false;
-                    var updateClient = new SparqlUpdateClient(ConfigurationLoader.HttpClientFactory.CreateClient(clientName),
-                        new Uri(updateEndpointUri));
+                    var updateClient = new SparqlUpdateClient(httpClient, new Uri(updateEndpointUri));
                     obj = updateClient;
                     break;
                 case FederatedSparqlQueryClient:
@@ -78,10 +77,10 @@ namespace VDS.RDF.Configuration
                             ConfigurationLoader.GetConfigurationData(g, objNode,
                                 g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))));
                     var federatedClient =
-                        new FederatedSparqlQueryClient(ConfigurationLoader.HttpClientFactory.CreateClient(clientName));
+                        new FederatedSparqlQueryClient(httpClient);
                     foreach (INode endpointConfigurationNode in endpoints)
                     {
-                        var temp = ConfigurationLoader.LoadObject(g, endpointConfigurationNode);
+                        object temp = ConfigurationLoader.LoadObject(g, endpointConfigurationNode);
                         switch (temp)
                         {
                             case SparqlQueryClient queryClient:
@@ -97,6 +96,44 @@ namespace VDS.RDF.Configuration
             }
 
             return obj != null;
+        }
+
+        private static HttpClient CreateClient(IGraph g, INode objNode)
+        {
+            ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out var user, out var pwd);
+            INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+                g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy)));
+            IWebProxy webProxy = null;
+            var useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode,
+                g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);
+
+            if (proxyNode != null)
+            {
+                object proxy = ConfigurationLoader.LoadObject(g, proxyNode);
+                webProxy = proxy as IWebProxy;
+            }
+
+            if ((user != null && pwd != null) || webProxy != null)
+            {
+                var messageHandler = new HttpClientHandler();
+                if (user != null && pwd != null)
+                {
+                    var credentials = new NetworkCredential(user, pwd);
+                    if (useCredentialsForProxy)
+                    {
+                        if (webProxy != null) webProxy.Credentials = credentials;
+                    }
+                    else
+                    {
+                        messageHandler.Credentials = credentials;
+                    }
+                }
+
+                if (webProxy != null) messageHandler.Proxy = webProxy;
+                return new HttpClient(messageHandler);
+            }
+
+            return new HttpClient();
         }
 
         /// <inheritdoc/>

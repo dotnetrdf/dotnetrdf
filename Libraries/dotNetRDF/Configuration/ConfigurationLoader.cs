@@ -24,13 +24,11 @@
 // </copyright>
 */
 
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Reflection;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -292,9 +290,6 @@ namespace VDS.RDF.Configuration
 #if NET40
             SettingsProvider = new ConfigurationManagerSettingsProvider();
 #endif
-            IServiceProvider serviceProvider = new ServiceCollection().AddHttpClient().BuildServiceProvider();
-            HttpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
-
         }
 
         #region Graph Loading and Auto-Configuration
@@ -1566,11 +1561,6 @@ namespace VDS.RDF.Configuration
                 _resolver = value;
             }
         }
-        
-        /// <summary>
-        /// Get or set the factory to use when creating HTTP client instances.
-        /// </summary>
-        public static IHttpClientFactory HttpClientFactory { get; set; }
 
         /// <summary>
         /// Resolves a Path using the in-use path-resolver.
