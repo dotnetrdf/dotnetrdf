@@ -103,25 +103,26 @@ namespace VDS.RDF.Update
                 try
                 {
                     // If Source and Destination are equal this is a no-op
-                    if (EqualityHelper.AreUrisEqual(cmd.SourceUri, cmd.DestinationUri)) return;
+                    if (EqualityHelper.AreRefNodesEqual(cmd.SourceGraphName, cmd.DestinationGraphName)) return;
 
                     // Firstly check that appropriate IO Behaviour is provided
-                    if (cmd.SourceUri == null || cmd.DestinationUri == null)
+                    if (cmd.SourceGraphName == null || cmd.DestinationGraphName == null)
                     {
-                        if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
+                        if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0)
+                        {
+                            throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
+                        }
                     }
-                    IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                    IOBehaviour desired = cmd.DestinationGraphName == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
                     if ((_manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
                     // Load Source Graph
-                    var source = new Graph();
-                    _manager.LoadGraph(source, cmd.SourceUri);
-                    source.BaseUri = cmd.SourceUri;
+                    var source = new Graph(cmd.SourceGraphName);
+                    _manager.LoadGraph(source, cmd.SourceGraphName?.ToString());
 
                     // Load Destination Graph
-                    var dest = new Graph();
-                    _manager.LoadGraph(dest, cmd.DestinationUri);
-                    dest.BaseUri = cmd.DestinationUri;
+                    var dest = new Graph(cmd.DestinationGraphName);
+                    _manager.LoadGraph(dest, cmd.DestinationGraphName?.ToString());
 
                     // Transfer the data and update the Destination Graph
                     dest.Merge(source);
@@ -185,13 +186,15 @@ namespace VDS.RDF.Update
 
                             if (_manager.ListGraphsSupported)
                             {
-                                var graphs = _manager.ListGraphs().ToList();
-                                foreach (Uri u in graphs)
+                                var graphs = _manager.ListGraphNames().ToList();
+                                foreach (var u in graphs)
                                 {
                                     if ((u == null && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (u != null && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
                                     {
                                         // Can approximate by saving an empty Graph over the existing Graph
-                                        g = new Graph {BaseUri = u};
+                                        g = new Graph(u == null ? null : u.StartsWith("_:")
+                                            ? new BlankNode(u)
+                                            : new UriNode(new Uri(u)));
                                         _manager.SaveGraph(g);
                                     }
                                     else if (_manager.UpdateSupported && (_manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
@@ -236,26 +239,28 @@ namespace VDS.RDF.Update
                 try
                 {
                     // If Source and Destination are equal this is a no-op
-                    if (EqualityHelper.AreUrisEqual(cmd.SourceUri, cmd.DestinationUri)) return;
+                    if (EqualityHelper.AreRefNodesEqual(cmd.SourceGraphName, cmd.DestinationGraphName)) return;
 
                     // Firstly check that appropriate IO Behaviour is provided
-                    if (cmd.SourceUri == null || cmd.DestinationUri == null)
+                    if (cmd.SourceGraphName == null || cmd.DestinationGraphName == null)
                     {
-                        if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
+                        if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0)
+                        {
+                            throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
+                        }
                     }
-                    IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                    IOBehaviour desired = cmd.DestinationGraphName == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
                     if ((_manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
-                    var source = new Graph();
-                    _manager.LoadGraph(source, cmd.SourceUri);
-                    source.BaseUri = cmd.SourceUri;
+                    var source = new Graph(cmd.SourceGraphName);
+                    _manager.LoadGraph(source, cmd.SourceGraphName?.ToString());
 
                     // If the Manager supports delete ensure the Destination Graph is deleted
                     if (_manager.DeleteSupported)
                     {
                         try
                         {
-                            _manager.DeleteGraph(cmd.DestinationUri);
+                            _manager.DeleteGraph(cmd.DestinationGraphName?.ToString());
                         }
                         catch (Exception ex)
                         {
@@ -264,9 +269,8 @@ namespace VDS.RDF.Update
                     }
 
                     // Load Destination Graph and ensure it is empty
-                    var dest = new Graph();
-                    _manager.LoadGraph(dest, cmd.DestinationUri);
-                    dest.BaseUri = cmd.DestinationUri;
+                    var dest = new Graph(cmd.DestinationGraphName);
+                    _manager.LoadGraph(dest, cmd.DestinationGraphName?.ToString());
                     dest.Clear();
 
                     // Transfer the data and update both the Graphs
@@ -294,18 +298,21 @@ namespace VDS.RDF.Update
         /// </remarks>
         public void ProcessCreateCommand(CreateCommand cmd)
         {
-            if (_manager is IUpdateableStorage)
+            if (_manager is IUpdateableStorage updateableStorage)
             {
-                ((IUpdateableStorage)_manager).Update(cmd.ToString());
+                updateableStorage.Update(cmd.ToString());
             }
             else
             {
-                var g = new Graph {BaseUri = cmd.TargetUri};
+                var g = new Graph(cmd.TargetGraphName);
 
                 try
                 {
-                    // As Khalil Ahmed pointed out the behaviour when the store doesn't support empty graphs the behaviour should be to act as if the operation succeeded
-                    if ((_manager.IOBehaviour & IOBehaviour.ExplicitEmptyGraphs) == 0) return;
+                    // When the store doesn't support empty graphs the behaviour should be to act as if the operation succeeded
+                    if ((_manager.IOBehaviour & IOBehaviour.ExplicitEmptyGraphs) == 0)
+                    {
+                        return;
+                    }
 
                     _manager.SaveGraph(g);
                 }
@@ -327,9 +334,9 @@ namespace VDS.RDF.Update
         /// </remarks>
         public virtual void ProcessCommand(SparqlUpdateCommand cmd)
         {
-            if (_manager is IUpdateableStorage)
+            if (_manager is IUpdateableStorage updateableStorage)
             {
-                ((IUpdateableStorage)_manager).Update(cmd.ToString());
+                updateableStorage.Update(cmd.ToString());
             }
             else
             {
@@ -450,17 +457,17 @@ namespace VDS.RDF.Update
                     }
 
                     // First build and make the query to get a Result Set
-                    var queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
+                    var queryText = "SELECT * WHERE " + cmd.WherePattern;
                     var parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
-                    if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
+                    if (cmd.WithGraphName != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.WithGraphName);
                     foreach (Uri u in cmd.UsingUris)
                     {
-                        query.AddDefaultGraph(u);
+                        query.AddDefaultGraph(new UriNode(u));
                     }
                     foreach (Uri u in cmd.UsingNamedUris)
                     {
-                        query.AddNamedGraph(u);
+                        query.AddNamedGraph(new UriNode(u));
                     }
 
                     var results = ((IQueryableStorage)_manager).Query(query.ToString());
@@ -567,7 +574,7 @@ namespace VDS.RDF.Update
                         // Now decide how to apply the update
                         if (_manager.UpdateSupported)
                         {
-                            _manager.UpdateGraph(cmd.GraphUri, Enumerable.Empty<Triple>(), deletedTriples);
+                            _manager.UpdateGraph(cmd.WithGraphName?.ToString(), Enumerable.Empty<Triple>(), deletedTriples);
                             foreach (KeyValuePair<string, List<Triple>> graphDeletion in deletedGraphTriples)
                             {
                                 _manager.UpdateGraph(graphDeletion.Key, Enumerable.Empty<Triple>(), graphDeletion.Value);
@@ -576,7 +583,7 @@ namespace VDS.RDF.Update
                         else
                         {
                             var g = new Graph();
-                            _manager.LoadGraph(g, cmd.GraphUri);
+                            _manager.LoadGraph(g, cmd.WithGraphName?.ToString());
                             g.Retract(deletedTriples);
                             _manager.SaveGraph(g);
 
@@ -607,9 +614,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">DELETE Data Command.</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
-            if (_manager is IUpdateableStorage)
+            if (_manager is IUpdateableStorage updateableStorage)
             {
-                ((IUpdateableStorage)_manager).Update(cmd.ToString());
+                updateableStorage.Update(cmd.ToString());
             }
             else
             {
@@ -740,20 +747,20 @@ namespace VDS.RDF.Update
                             if (_manager.DeleteSupported)
                             {
                                 // If available use DeleteGraph()
-                                _manager.DeleteGraph(cmd.TargetUri);
+                                _manager.DeleteGraph(cmd.TargetGraphName?.ToString());
                             }
-                            else if ((cmd.TargetUri == null && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (cmd.TargetUri != null && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
+                            else if ((cmd.TargetGraphName == null && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (cmd.TargetGraphName != null && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
                             {
                                 // Can approximate by saving an empty Graph over the existing Graph
-                                g = new Graph {BaseUri = cmd.TargetUri};
+                                g = new Graph(cmd.TargetGraphName);
                                 _manager.SaveGraph(g);
                             }
                             else if (_manager.UpdateSupported && (_manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
                             {
                                 // Can approximate by loading the Graph and then deleting all Triples from it
                                 g = new NonIndexedGraph();
-                                _manager.LoadGraph(g, cmd.TargetUri);
-                                _manager.UpdateGraph(cmd.TargetUri, null, g.Triples);
+                                _manager.LoadGraph(g, cmd.TargetGraphName?.ToString());
+                                _manager.UpdateGraph(cmd.TargetGraphName?.ToString(), null, g.Triples);
                             }
                             else
                             {
@@ -765,8 +772,8 @@ namespace VDS.RDF.Update
                         case ClearMode.Named:
                             if (_manager.ListGraphsSupported)
                             {
-                                var graphs = _manager.ListGraphs().ToList();
-                                foreach (Uri u in graphs)
+                                var graphs = _manager.ListGraphNames().ToList();
+                                foreach (var u in graphs)
                                 {
                                     if (_manager.DeleteSupported)
                                     {
@@ -776,7 +783,8 @@ namespace VDS.RDF.Update
                                     else if ((u == null && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (u != null && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
                                     {
                                         // Can approximate by saving an empty Graph over the existing Graph
-                                        g = new Graph {BaseUri = u};
+                                        g = new Graph(u == null ? null :
+                                            u.StartsWith("_:") ? new BlankNode(u) : new UriNode(new Uri(u)));
                                         _manager.SaveGraph(g);
                                     }
                                     else if (_manager.UpdateSupported && (_manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
@@ -817,13 +825,13 @@ namespace VDS.RDF.Update
         /// </remarks>
         public void ProcessInsertCommand(InsertCommand cmd)
         {
-            if (_manager is IUpdateableStorage)
+            if (_manager is IUpdateableStorage updateableStorage)
             {
-                ((IUpdateableStorage)_manager).Update(cmd.ToString());
+                updateableStorage.Update(cmd.ToString());
             }
             else
             {
-                if (_manager is IQueryableStorage)
+                if (_manager is IQueryableStorage queryableStorage)
                 {
                     // Check IO Behaviour
                     // For a insert we either need the ability to Update Add Triples or to Overwrite Graphs
@@ -831,38 +839,38 @@ namespace VDS.RDF.Update
                     if (cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>().Any())
                     {
                         // Must support notion of default graph
-                        if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
                         // Must allow either OverwriteDefault or CanUpdateAddTriples
-                        if ((_manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (queryableStorage.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
                     }
                     // Then check behaviour persuant to named graphs if applicable
                     if (cmd.InsertPattern.HasChildGraphPatterns)
                     {
                         // Must support named graphs
-                        if ((_manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
                         // Must allow either CanUpdateAddTriples or OverwriteNamed
-                        if ((_manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (queryableStorage.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
                     }
 
                     // First build and make the query to get a Result Set
-                    var queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
+                    var queryText = "SELECT * WHERE " + cmd.WherePattern;
                     var parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
-                    if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
+                    if (cmd.WithGraphName != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.WithGraphName);
                     foreach (Uri u in cmd.UsingUris)
                     {
-                        query.AddDefaultGraph(u);
+                        query.AddDefaultGraph(new UriNode(u));
                     }
                     foreach (Uri u in cmd.UsingNamedUris)
                     {
-                        query.AddNamedGraph(u);
+                        query.AddNamedGraph(new UriNode(u));
                     }
 
-                    var results = ((IQueryableStorage)_manager).Query(query.ToString());
-                    if (results is SparqlResultSet)
+                    object results = queryableStorage.Query(query.ToString());
+                    if (results is SparqlResultSet resultSet)
                     {
                         // Now need to transform the Result Set back to a Multiset
-                        var mset = new Multiset((SparqlResultSet)results);
+                        var mset = new Multiset(resultSet);
 
                         // Generate the Triples for each Solution
                         var insertedTriples = new List<Triple>();
@@ -960,27 +968,27 @@ namespace VDS.RDF.Update
                         }
 
                         // Now decide how to apply the update
-                        if (_manager.UpdateSupported)
+                        if (queryableStorage.UpdateSupported)
                         {
-                            _manager.UpdateGraph(cmd.GraphUri, insertedTriples, Enumerable.Empty<Triple>());
+                            queryableStorage.UpdateGraph(cmd.WithGraphName?.ToString(), insertedTriples, Enumerable.Empty<Triple>());
                             foreach (KeyValuePair<string, List<Triple>> graphInsertion in insertedGraphTriples)
                             {
-                                _manager.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
+                                queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
                             }
                         }
                         else
                         {
                             var g = new Graph();
-                            _manager.LoadGraph(g, cmd.GraphUri);
+                            queryableStorage.LoadGraph(g, cmd.WithGraphName?.ToString());
                             g.Assert(insertedTriples);
-                            _manager.SaveGraph(g);
+                            queryableStorage.SaveGraph(g);
 
                             foreach (KeyValuePair<string, List<Triple>> graphInsertion in insertedGraphTriples)
                             {
                                 g = new Graph();
-                                _manager.LoadGraph(g, graphInsertion.Key);
+                                queryableStorage.LoadGraph(g, graphInsertion.Key);
                                 g.Assert(graphInsertion.Value);
-                                _manager.SaveGraph(g);
+                                queryableStorage.SaveGraph(g);
                             }
                         }
                     }
@@ -1002,9 +1010,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Data Command.</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
-            if (_manager is IUpdateableStorage)
+            if (_manager is IUpdateableStorage updateableStorage)
             {
-                ((IUpdateableStorage)_manager).Update(cmd.ToString());
+                updateableStorage.Update(cmd.ToString());
             }
             else
             {
@@ -1110,7 +1118,7 @@ namespace VDS.RDF.Update
                 {
                     // Check IO Behaviour
                     // For a load which is essentially an insert we either need the ability to Update Add Triples or to Overwrite Graphs
-                    if (cmd.TargetUri == null)
+                    if (cmd.TargetGraphName == null)
                     {
                         // Must support notion of default graph
                         if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
@@ -1125,13 +1133,12 @@ namespace VDS.RDF.Update
                         if ((_manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
                     }
 
-                    var g = new Graph();
-                    if (!_manager.UpdateSupported) _manager.LoadGraph(g, cmd.TargetUri);
+                    var g = new Graph(cmd.TargetGraphName);
+                    if (!_manager.UpdateSupported) _manager.LoadGraph(g, cmd.TargetGraphName?.ToString());
                     Loader.LoadGraph(g, cmd.SourceUri);
-                    g.BaseUri = cmd.TargetUri;
                     if (_manager.UpdateSupported)
                     {
-                        _manager.UpdateGraph(cmd.TargetUri, g.Triples, Enumerable.Empty<Triple>());
+                        _manager.UpdateGraph(cmd.TargetGraphName?.ToString(), g.Triples, Enumerable.Empty<Triple>());
                     }
                     else
                     {
@@ -1151,13 +1158,13 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert/Delete Command.</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
-            if (_manager is IUpdateableStorage)
+            if (_manager is IUpdateableStorage updateableStorage)
             {
-                ((IUpdateableStorage)_manager).Update(cmd.ToString());
+                updateableStorage.Update(cmd.ToString());
             }
             else
             {
-                if (_manager is IQueryableStorage)
+                if (_manager is IQueryableStorage queryableStorage)
                 {
                     // Check IO Behaviour
                     // For a delete we either need the ability to Update Delete Triples or to Overwrite Graphs
@@ -1165,17 +1172,17 @@ namespace VDS.RDF.Update
                     if (cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>().Any())
                     {
                         // Must support notion of default graph
-                        if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
                         // Must allow either OverwriteDefault or CanUpdateDeleteTriples
-                        if ((_manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (queryableStorage.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
                     }
                     // Then check behaviour persuant to named graphs if applicable
                     if (cmd.DeletePattern.HasChildGraphPatterns)
                     {
                         // Must support named graphs
-                        if ((_manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
                         // Must allow either CanUpdateDeleteTriples or OverwriteNamed
-                        if ((_manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (queryableStorage.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
                     }
                     // Check IO Behaviour
                     // For a insert we either need the ability to Update Add Triples or to Overwrite Graphs
@@ -1183,38 +1190,38 @@ namespace VDS.RDF.Update
                     if (cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>().Any())
                     {
                         // Must support notion of default graph
-                        if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
                         // Must allow either OverwriteDefault or CanUpdateAddTriples
-                        if ((_manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (queryableStorage.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
                     }
                     // Then check behaviour persuant to named graphs if applicable
                     if (cmd.InsertPattern.HasChildGraphPatterns)
                     {
                         // Must support named graphs
-                        if ((_manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
                         // Must allow either CanUpdateAddTriples or OverwriteNamed
-                        if ((_manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                        if ((queryableStorage.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (queryableStorage.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
                     }
 
                     // First build and make the query to get a Result Set
-                    var queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
+                    var queryText = "SELECT * WHERE " + cmd.WherePattern;
                     var parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
-                    if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
+                    if (cmd.WithGraphName != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.WithGraphName);
                     foreach (Uri u in cmd.UsingUris)
                     {
-                        query.AddDefaultGraph(u);
+                        query.AddDefaultGraph(new UriNode(u));
                     }
                     foreach (Uri u in cmd.UsingNamedUris)
                     {
-                        query.AddNamedGraph(u);
+                        query.AddNamedGraph(new UriNode(u));
                     }
 
-                    var results = ((IQueryableStorage)_manager).Query(query.ToString());
-                    if (results is SparqlResultSet)
+                    var results = queryableStorage.Query(query.ToString());
+                    if (results is SparqlResultSet resultSet)
                     {
                         // Now need to transform the Result Set back to a Multiset
-                        var mset = new Multiset((SparqlResultSet)results);
+                        var mset = new Multiset(resultSet);
 
                         // Generate the Triples for each Solution
                         var deletedTriples = new List<Triple>();
@@ -1407,35 +1414,35 @@ namespace VDS.RDF.Update
                         }
 
                         // Now decide how to apply the update
-                        if (_manager.UpdateSupported)
+                        if (queryableStorage.UpdateSupported)
                         {
-                            _manager.UpdateGraph(cmd.GraphUri, insertedTriples, deletedTriples);
+                            queryableStorage.UpdateGraph(cmd.WithGraphName?.ToString(), insertedTriples, deletedTriples);
                             // We do these two operations sequentially even if in some cases they could be combined to ensure that the underlying
                             // Manager doesn't do any optimisations which would have the result of our updates not being properly applied
                             // e.g. ignoring Triples which are both asserted and retracted in one update
                             foreach (KeyValuePair<string, List<Triple>> graphDeletion in deletedGraphTriples)
                             {
-                                _manager.UpdateGraph(graphDeletion.Key, Enumerable.Empty<Triple>(), graphDeletion.Value);
+                                queryableStorage.UpdateGraph(graphDeletion.Key, Enumerable.Empty<Triple>(), graphDeletion.Value);
                             }
                             foreach (KeyValuePair<string, List<Triple>> graphInsertion in insertedGraphTriples)
                             {
-                                _manager.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
+                                queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
                             }
                         }
                         else
                         {
                             var g = new Graph();
-                            _manager.LoadGraph(g, cmd.GraphUri);
+                            queryableStorage.LoadGraph(g, cmd.WithGraphName?.ToString());
                             g.Retract(deletedTriples);
-                            _manager.SaveGraph(g);
+                            queryableStorage.SaveGraph(g);
 
                             foreach (var graphUri in deletedGraphTriples.Keys.Concat(insertedGraphTriples.Keys).Distinct())
                             {
                                 g = new Graph();
-                                _manager.LoadGraph(g, graphUri);
+                                queryableStorage.LoadGraph(g, graphUri);
                                 if (deletedGraphTriples.ContainsKey(graphUri)) g.Retract(deletedGraphTriples[graphUri]);
                                 if (insertedGraphTriples.ContainsKey(graphUri)) g.Assert(insertedGraphTriples[graphUri]);
-                                _manager.SaveGraph(g);
+                                queryableStorage.SaveGraph(g);
                             }
                         }
                     }
@@ -1466,26 +1473,25 @@ namespace VDS.RDF.Update
                 try
                 {
                     // If Source and Destination are equal this is a no-op
-                    if (EqualityHelper.AreUrisEqual(cmd.SourceUri, cmd.DestinationUri)) return;
+                    if (EqualityHelper.AreRefNodesEqual(cmd.SourceGraphName, cmd.DestinationGraphName)) return;
 
                     // Firstly check that appropriate IO Behaviour is provided
-                    if (cmd.SourceUri == null || cmd.DestinationUri == null)
+                    if (cmd.SourceGraphName == null || cmd.DestinationGraphName == null)
                     {
                         if ((_manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
                     }
-                    IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                    IOBehaviour desired = cmd.DestinationGraphName == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
                     if ((_manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
-                    var source = new Graph();
-                    _manager.LoadGraph(source, cmd.SourceUri);
-                    source.BaseUri = cmd.SourceUri;
+                    var source = new Graph(cmd.SourceGraphName);
+                    _manager.LoadGraph(source, cmd.SourceGraphName?.ToString());
 
                     // If the Manager supports delete ensure the Destination Graph is deleted
                     if (_manager.DeleteSupported)
                     {
                         try
                         {
-                            _manager.DeleteGraph(cmd.DestinationUri);
+                            _manager.DeleteGraph(cmd.DestinationGraphName?.ToString());
                         }
                         catch (Exception ex)
                         {
@@ -1494,9 +1500,8 @@ namespace VDS.RDF.Update
                     }
 
                     // Load Destination Graph and ensure it is empty
-                    var dest = new Graph();
-                    _manager.LoadGraph(dest, cmd.DestinationUri);
-                    dest.BaseUri = cmd.DestinationUri;
+                    var dest = new Graph(cmd.DestinationGraphName);
+                    _manager.LoadGraph(dest, cmd.DestinationGraphName?.ToString());
                     dest.Clear();
 
                     // Transfer the data and update both the Graphs
@@ -1509,7 +1514,7 @@ namespace VDS.RDF.Update
                     {
                         try
                         {
-                            _manager.DeleteGraph(cmd.SourceUri);
+                            _manager.DeleteGraph(cmd.SourceGraphName?.ToString());
                         }
                         catch (Exception ex)
                         {
@@ -1539,7 +1544,7 @@ namespace VDS.RDF.Update
             if (p.IsGraph)
             {
                 // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
-                return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables);
+                return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern ctp && ctp.HasNoExplicitVariables);
             }
             else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
             {
@@ -1551,7 +1556,7 @@ namespace VDS.RDF.Update
                 // For other patterns all Triple patterns must be constructable with no explicit variables
                 // If top level then any Child Graph Patterns must be valid
                 // Otherwise must have no Child Graph Patterns
-                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
+                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern ctp && ctp.HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
             }
         }
     }

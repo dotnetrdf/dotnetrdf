@@ -102,6 +102,7 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// URI of the Destination Graph.
         /// </summary>
+        [Obsolete("Replaced by DestinationGraphName")]
         public Uri DestinationUri
         {
             get
