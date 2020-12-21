@@ -102,7 +102,7 @@ namespace VDS.RDF
         /// Creates a new instance of a named using the given triple collection.
         /// </summary>
         /// <param name="name">The graph name.</param>
-        /// <param name="tripleCollection">The triple collection that will be the content of the new graph</param>
+        /// <param name="tripleCollection">The triple collection that will be the content of the new graph.</param>
         public Graph(IRefNode name, BaseTripleCollection tripleCollection) 
             : base(tripleCollection, name) { }
 
