@@ -141,22 +141,20 @@ namespace VDS.RDF.Configuration
                 }
             }
 
-            IEnumerable<object> connections;
-
             // Load from Stores
             IEnumerable<INode> stores = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromStore)));
             stores.All(s => !ConfigurationLoader.CheckCircularReference(objNode, s, "dnr:fromStore"));
-            connections = stores.Select(s => ConfigurationLoader.LoadObject(g, s));
+            IEnumerable<object> connections = stores.Select(s => ConfigurationLoader.LoadObject(g, s));
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyWithUri)));
-            foreach (var store in connections)
+            foreach (object store in connections)
             {
-                if (store is IStorageProvider)
+                if (store is IStorageProvider storageProvider)
                 {
                     foreach (INode source in sources)
                     {
                         if (source.NodeType == NodeType.Uri || source.NodeType == NodeType.Literal)
                         {
-                            ((IStorageProvider)store).LoadGraph(output, source.ToString());
+                            storageProvider.LoadGraph(output, source.ToString());
                         } 
                         else 
                         {
@@ -164,17 +162,17 @@ namespace VDS.RDF.Configuration
                         }
                     }
                 }
-                else if (store is ITripleStore)
+                else if (store is ITripleStore tripleStore)
                 {
                     foreach (INode source in sources)
                     {
                         if (source.NodeType == NodeType.Uri)
                         {
-                            output.Merge(((ITripleStore)store)[((IUriNode)source).Uri]);
+                            output.Merge(tripleStore[(IUriNode)source]);
                         }
                         else if (source.NodeType == NodeType.Literal)
                         {
-                            output.Merge(((ITripleStore)store)[UriFactory.Create(((ILiteralNode)source).Value)]);
+                            output.Merge(tripleStore[new UriNode(UriFactory.Create(((ILiteralNode)source).Value))]);
                         }
                         else
                         {
@@ -193,23 +191,22 @@ namespace VDS.RDF.Configuration
             ds.All(d => !ConfigurationLoader.CheckCircularReference(objNode, d, ConfigurationLoader.PropertyFromDataset));
             IEnumerable<object> datasets = ds.Select(d => ConfigurationLoader.LoadObject(g, d));
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyWithUri)));
-            foreach (var dataset in datasets)
+            foreach (object dataset in datasets)
             {
-                if (dataset is ISparqlDataset)
+                if (dataset is ISparqlDataset sparqlDataset)
                 {
                     foreach (INode source in sources)
                     {
-                        if (source.NodeType == NodeType.Uri)
+                        switch (source.NodeType)
                         {
-                            output.Merge(((ISparqlDataset)dataset)[((IUriNode)sources).Uri]);
-                        }
-                        else if (source.NodeType == NodeType.Literal)
-                        {
-                            output.Merge(((ISparqlDataset)dataset)[UriFactory.Create(((ILiteralNode)source).Value)]);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load data from a Dataset for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:withUri property is not a URI/Literal Node as required");
+                            case NodeType.Uri:
+                                output.Merge(sparqlDataset[(IUriNode)sources]);
+                                break;
+                            case NodeType.Literal:
+                                output.Merge(sparqlDataset[new UriNode(UriFactory.Create(((ILiteralNode)source).Value))]);
+                                break;
+                            default:
+                                throw new DotNetRdfConfigurationException("Unable to load data from a Dataset for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:withUri property is not a URI/Literal Node as required");
                         }
                     }
                 }
@@ -224,17 +221,16 @@ namespace VDS.RDF.Configuration
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromUri)));
             foreach (INode source in sources)
             {
-                if (source.NodeType == NodeType.Uri)
+                switch (source.NodeType)
                 {
-                    ConfigurationLoader.Loader.LoadGraph(output, ((IUriNode)source).Uri);
-                }
-                else if (source.NodeType == NodeType.Literal)
-                {
-                    ConfigurationLoader.Loader.LoadGraph(output, UriFactory.Create(((ILiteralNode) source).Value));
-                }
-                else
-                {
-                    throw new DotNetRdfConfigurationException("Unable to load data from a URI for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromUri property is not a URI/Literal Node as required");
+                    case NodeType.Uri:
+                        ConfigurationLoader.Loader.LoadGraph(output, ((IUriNode)source).Uri);
+                        break;
+                    case NodeType.Literal:
+                        ConfigurationLoader.Loader.LoadGraph(output, UriFactory.Create(((ILiteralNode) source).Value));
+                        break;
+                    default:
+                        throw new DotNetRdfConfigurationException("Unable to load data from a URI for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromUri property is not a URI/Literal Node as required");
                 }
             }
             
@@ -242,17 +238,16 @@ namespace VDS.RDF.Configuration
             INode baseUri = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAssignUri)));
             if (baseUri != null)
             {
-                if (baseUri.NodeType == NodeType.Uri)
+                switch (baseUri.NodeType)
                 {
-                    output.BaseUri = ((IUriNode)baseUri).Uri;
-                }
-                else if (baseUri.NodeType == NodeType.Literal)
-                {
-                    output.BaseUri = UriFactory.Create(((ILiteralNode)baseUri).Value);
-                }
-                else
-                {
-                    throw new DotNetRdfConfigurationException("Unable to assign a new Base URI for the Graph identified by the Node '" + objNode.ToString() + "' as the value for the dnr:assignUri property is not a URI/Literal Node as required");
+                    case NodeType.Uri:
+                        output.BaseUri = ((IUriNode)baseUri).Uri;
+                        break;
+                    case NodeType.Literal:
+                        output.BaseUri = UriFactory.Create(((ILiteralNode)baseUri).Value);
+                        break;
+                    default:
+                        throw new DotNetRdfConfigurationException("Unable to assign a new Base URI for the Graph identified by the Node '" + objNode.ToString() + "' as the value for the dnr:assignUri property is not a URI/Literal Node as required");
                 }
             }
 
@@ -260,10 +255,10 @@ namespace VDS.RDF.Configuration
             IEnumerable<INode> reasoners = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyReasoner)));
             foreach (INode reasoner in reasoners)
             {
-                var temp = ConfigurationLoader.LoadObject(g, reasoner);
-                if (temp is IInferenceEngine)
+                object temp = ConfigurationLoader.LoadObject(g, reasoner);
+                if (temp is IInferenceEngine inferenceEngine)
                 {
-                    ((IInferenceEngine)temp).Apply(output);
+                    inferenceEngine.Apply(output);
                 }
                 else
                 {
