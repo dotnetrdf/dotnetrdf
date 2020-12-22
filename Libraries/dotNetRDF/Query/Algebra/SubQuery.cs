@@ -75,9 +75,9 @@ namespace VDS.RDF.Query.Algebra
                 // Add any Named Graphs to the subquery
                 if (context.Query != null)
                 {
-                    foreach (Uri u in context.Query.NamedGraphs)
+                    foreach (IRefNode graphName in context.Query.NamedGraphNames)
                     {
-                        _subquery.AddNamedGraph(u);
+                        _subquery.AddNamedGraph(graphName);
                     }
                 }
 

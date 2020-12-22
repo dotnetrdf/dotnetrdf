@@ -108,16 +108,16 @@ namespace VDS.RDF.Query
             }
 
             // Does this Query operate over specific Graphs?
-            if (_q.DefaultGraphs.Any() || _q.NamedGraphs.Any())
+            if (_q.DefaultGraphNames.Any() || _q.NamedGraphNames.Any())
             {
                 _graphs = new HashSet<string>();
-                foreach (Uri u in _q.DefaultGraphs)
+                foreach (IRefNode graphName in _q.DefaultGraphNames)
                 {
-                    _graphs.Add(u.ToSafeString());
+                    _graphs.Add(graphName.ToSafeString());
                 }
-                foreach (Uri u in _q.NamedGraphs)
+                foreach (IRefNode graphName in _q.NamedGraphNames)
                 {
-                    _graphs.Add(u.ToSafeString());
+                    _graphs.Add(graphName.ToSafeString());
                 }
             }
 

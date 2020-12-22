@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Datasets
         {
             try
             {
-                g = new Graph();
+                g = new Graph(new UriNode(graphUri));
                 g.LoadFromUri(graphUri);
                 return true;
             }
