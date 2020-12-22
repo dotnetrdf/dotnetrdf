@@ -39,14 +39,39 @@ namespace VDS.RDF
         : TripleStore
     {
         /// <summary>
+        /// Creates a web demand triple store.
+        /// </summary>
+        /// <param name="defaultGraphName">The name of the default graph which should be loaded from the web. The graph name MUST be a non-null <see cref="IUriNode"/> instance.</param>
+        /// <exception cref="RdfException">Raised if the graph referenced by <paramref name="defaultGraphName"/> could not be loaded from the web.</exception>
+        public WebDemandTripleStore(IUriNode defaultGraphName) : this()
+        {
+            if (defaultGraphName == null)
+            {
+                throw new ArgumentNullException(nameof(defaultGraphName),
+                    "The default graph URI reference must not be null.");
+            }
+
+            if (!_graphs.Contains(defaultGraphName))
+            {
+                throw new RdfException($"Cannot load the requested default graph from {defaultGraphName.Uri}");
+            }
+        }
+
+        /// <summary>
         /// Creates an Web Demand Triple Store.
         /// </summary>
         /// <param name="defaultGraphUri">A Uri for the Default Graph which should be loaded from the Web as the initial Graph.</param>
+        /// <exception cref="RdfException">Raised if the graph referenced by <paramref name="defaultGraphUri"/> could not be loaded from the web.</exception>
         public WebDemandTripleStore(Uri defaultGraphUri)
             : this()
         {
+            if (defaultGraphUri == null)
+            {
+                throw new ArgumentNullException(nameof(defaultGraphUri),
+                    "The default graph URI reference must not be null.");
+            }
             // Call Contains() which will try to load the Graph if it exists in the Store
-            if (!_graphs.Contains(defaultGraphUri))
+            if (!_graphs.Contains(new UriNode(defaultGraphUri)))
             {
                 throw new RdfException("Cannot load the requested Default Graph since a valid Graph with that URI could not be retrieved from the Web");
             }
