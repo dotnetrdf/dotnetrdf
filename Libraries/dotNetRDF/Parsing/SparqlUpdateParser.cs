@@ -346,7 +346,7 @@ namespace VDS.RDF.Parsing
                     next = context.Tokens.Dequeue();
                     if (next.TokenType != Token.SEMICOLON && next.TokenType != Token.EOF)
                     {
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a semicolon separator or EOF after a command", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a semicolon separator or EOF after a command", next);
                     }
 
                     commandParsed = false;
@@ -424,10 +424,9 @@ namespace VDS.RDF.Parsing
             }
 
             // Then get the Source and Destination URIs
-            Uri sourceUri, destUri;
-            TryParseTransferUris(context, out sourceUri, out destUri);
+            TryParseTransferUris(context, out IRefNode sourceGraph, out IRefNode destGraph);
 
-            context.CommandSet.AddCommand(new AddCommand(sourceUri, destUri, silent));
+            context.CommandSet.AddCommand(new AddCommand(sourceGraph, destGraph, silent));
         }
 
         private void TryParseClearCommand(SparqlUpdateParserContext context)
@@ -445,7 +444,7 @@ namespace VDS.RDF.Parsing
             // Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
             if (next.TokenType == Token.GRAPH)
             {
-                Uri u = TryParseGraphRef(context);
+                IRefNode u = TryParseGraphRef(context);
                 var cmd = new ClearCommand(u, ClearMode.Graph, silent);
                 context.CommandSet.AddCommand(cmd);
             }
@@ -463,7 +462,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to CLEAR or one of the DEFAULT/NAMED/ALL keywords", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a GRAPH <URI> to specify the Graph to CLEAR or one of the DEFAULT/NAMED/ALL keywords", next);
             }
         }
 
@@ -479,10 +478,9 @@ namespace VDS.RDF.Parsing
             }
 
             // Then get the Source and Destination URIs
-            Uri sourceUri, destUri;
-            TryParseTransferUris(context, out sourceUri, out destUri);
+            TryParseTransferUris(context, out IRefNode sourceGraph, out IRefNode destGraph);
 
-            context.CommandSet.AddCommand(new CopyCommand(sourceUri, destUri, silent));
+            context.CommandSet.AddCommand(new CopyCommand(sourceGraph, destGraph, silent));
         }
 
         private void TryParseCreateCommand(SparqlUpdateParserContext context)
@@ -500,11 +498,11 @@ namespace VDS.RDF.Parsing
             // Followed by a mandatory GRAPH Keyword
             if (next.TokenType != Token.GRAPH)
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the CREATE command", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a GRAPH Keyword as part of the CREATE command", next);
             }
 
             // Then MUST have a URI
-            Uri u = TryParseGraphRef(context);
+            IRefNode u = TryParseGraphRef(context);
             var cmd = new CreateCommand(u, silent);
             context.CommandSet.AddCommand(cmd);
         }
@@ -579,7 +577,7 @@ namespace VDS.RDF.Parsing
                 insertCmd.UsingNamedUris.ToList().ForEach(u => cmd.AddUsingNamedUri(u));
                 return cmd;
             }
-            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a DELETE command", next);
+            throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a WHERE keyword as part of a DELETE command", next);
         }
 
         private SparqlUpdateCommand TryParseDeleteDataCommand(SparqlUpdateParserContext context)
@@ -657,7 +655,7 @@ namespace VDS.RDF.Parsing
             // Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
             if (next.TokenType == Token.GRAPH)
             {
-                Uri u = TryParseGraphRef(context);
+                IRefNode u = TryParseGraphRef(context);
                 var cmd = new DropCommand(u, ClearMode.Graph, silent);
                 context.CommandSet.AddCommand(cmd);
             }
@@ -675,7 +673,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to DROP or one of the DEFAULT/NAMED/ALL keywords", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a GRAPH <URI> to specify the Graph to DROP or one of the DEFAULT/NAMED/ALL keywords", next);
             }
         }
         
@@ -714,7 +712,7 @@ namespace VDS.RDF.Parsing
                 }
                 next = context.Tokens.Dequeue();
             }
-            if (next.TokenType != Token.WHERE) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
+            if (next.TokenType != Token.WHERE) throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
             
             // Now parse the WHERE pattern
             var subContext = new SparqlQueryParserContext(context.Tokens);
@@ -846,22 +844,22 @@ namespace VDS.RDF.Parsing
                     next = context.Tokens.Dequeue();
                     if (next.TokenType == Token.GRAPH)
                     {
-                        Uri destUri = TryParseGraphRef(context);
+                        IRefNode destUri = TryParseGraphRef(context);
                         cmd = new LoadCommand(sourceUri, destUri, silent);
                     }
                     else
                     {
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH keyword after the INTO keyword for a LOAD command", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a GRAPH keyword after the INTO keyword for a LOAD command", next);
                     }
                 }
                 else
                 {
-                    cmd = new LoadCommand(sourceUri, silent);
+                    cmd = new LoadCommand(sourceUri, (IRefNode)null, silent);
                 }
             }
             else
             {
-                cmd = new LoadCommand(sourceUri, silent);
+                cmd = new LoadCommand(sourceUri, (IRefNode)null, silent);
             }
             context.CommandSet.AddCommand(cmd);
         }
@@ -876,7 +874,7 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.INSERT)
             {
                 var insertCmd = (InsertCommand)TryParseInsertCommand(context, false);
-                insertCmd.GraphUri = u;
+                insertCmd.WithGraphName = new UriNode(u);
                 context.CommandSet.AddCommand(insertCmd);
             }
             else if (next.TokenType == Token.DELETE)
@@ -889,11 +887,11 @@ namespace VDS.RDF.Parsing
                     {
                         throw new RdfParseException("The DELETE WHERE { } shorthand syntax cannot be used in conjunction with a WITH clause");
                     }
-                    delete.GraphUri = u;
+                    delete.WithGraphName = new UriNode(u);
                 }
                 else if (deleteCmd is BaseModificationCommand)
                 {
-                    ((BaseModificationCommand) deleteCmd).GraphUri = u;
+                    ((BaseModificationCommand) deleteCmd).WithGraphName = new UriNode(u);
                 }
                 else
                 {
@@ -903,7 +901,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an INSERT/DELETE keyword", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected an INSERT/DELETE keyword", next);
             }
         }
 
@@ -962,10 +960,9 @@ namespace VDS.RDF.Parsing
             }
 
             // Then get the Source and Destination URIs
-            Uri sourceUri, destUri;
-            TryParseTransferUris(context, out sourceUri, out destUri);
+            TryParseTransferUris(context, out IRefNode sourceGraph, out IRefNode destGraph);
 
-            context.CommandSet.AddCommand(new MoveCommand(sourceUri, destUri, silent));
+            context.CommandSet.AddCommand(new MoveCommand(sourceGraph, destGraph, silent));
         }
 
         private void TryParseUsings(SparqlUpdateParserContext context, BaseModificationCommand cmd)
@@ -988,7 +985,6 @@ namespace VDS.RDF.Parsing
         {
             if (context.Tokens.Count > 0)
             {
-                var baseUri = (context.BaseUri == null) ? string.Empty : context.BaseUri.AbsoluteUri;
                 IToken next = context.Tokens.Peek();
                 var named = false;
 
@@ -1012,24 +1008,21 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI as part of a USING statement", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a URI as part of a USING statement", next);
                     }
 
                     // Peek at the next thing in case it's a further USING
                     next = context.Tokens.Peek();
                 } while (next.TokenType == Token.USING);
             }
-            else
-            {
-                yield break;
-            }
         }
 
-        private void TryParseTransferUris(SparqlUpdateParserContext context, out Uri sourceUri, out Uri destUri)
+        private void TryParseTransferUris(SparqlUpdateParserContext context, out IRefNode sourceGraphName, out IRefNode destGraphName)
         {
             IToken next = context.Tokens.Peek();
-            sourceUri = destUri = null;
-
+            sourceGraphName = destGraphName = null;
+            Uri sourceUri = null, destUri = null;
+            
             // Parse the Source Graph URI
             if (next.TokenType == Token.GRAPH)
             {
@@ -1093,11 +1086,14 @@ namespace VDS.RDF.Parsing
             {
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a GRAPH/DEFAULT keyword to indicate the Destination Graph for a Transfer (ADD/COPY/MOVE) Command", next);
             }
+
+            sourceGraphName = sourceUri == null ? null : new UriNode(sourceUri);
+            destGraphName = destUri == null ? null : new UriNode(destUri);
         }
 
-        private Uri TryParseGraphRef(SparqlUpdateParserContext context)
+        private IRefNode TryParseGraphRef(SparqlUpdateParserContext context)
         {
-            return TryParseIriRef(context, "after a GRAPH keyword");
+            return new UriNode(TryParseIriRef(context, "after a GRAPH keyword"));
         }
 
         private Uri TryParseIriRef(SparqlUpdateParserContext context, string expected)
@@ -1110,7 +1106,7 @@ namespace VDS.RDF.Parsing
                 case Token.QNAME:
                     return UriFactory.Create(Tools.ResolveQName(next.Value, context.NamespaceMap, context.BaseUri));
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName Token " + expected, next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a URI/QName Token " + expected, next);
             }
         }
 
