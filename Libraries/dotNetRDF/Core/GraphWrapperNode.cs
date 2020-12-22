@@ -25,6 +25,9 @@
 */
 namespace VDS.RDF
 {
+    /// <summary>
+    /// A node wrapper that preserves a reference to a graph along with the node itself.
+    /// </summary>
     public class GraphWrapperNode : WrapperNode
     {
         /// <summary>
@@ -38,7 +41,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Get the graph context for this wrappper node.
+        /// Get the graph context for this wrapper node.
         /// </summary>
         public IGraph Graph { get; }
     }
