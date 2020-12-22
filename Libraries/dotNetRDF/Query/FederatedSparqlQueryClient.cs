@@ -49,8 +49,7 @@ namespace VDS.RDF.Query
     /// </remarks>
     public class FederatedSparqlQueryClient : ISparqlQueryClient, IConfigurationSerializable
     {
-        private readonly HttpClient _httpClient;
-        private readonly List<SparqlQueryClient> _endpoints = new List<SparqlQueryClient>();
+        private readonly List<SparqlQueryClient> _endpoints = new();
 
         /// <summary>
         /// Get or set whether a failed request on one endpoint should cause the entire request to fail.
@@ -69,28 +68,31 @@ namespace VDS.RDF.Query
         public int Timeout { get; set; } = 30000;
 
         /// <summary>
+        /// Create a new federated client that connects to a number of remote SPARQL endpoints.
+        /// </summary>
+        /// <param name="endpointClients">The remote endpoint clients to be federated.</param>
+        public FederatedSparqlQueryClient(params SparqlQueryClient[] endpointClients)
+        {
+            _endpoints.AddRange(endpointClients);
+        }
+
+        /// <summary>
+        /// Create a new federated client that connects to a number of remote SPARQL endpoints.
+        /// </summary>
+        /// <param name="endpointClients">The remote endpoint clients to be federated.</param>
+        public FederatedSparqlQueryClient(IEnumerable<SparqlQueryClient> endpointClients)
+        {
+            _endpoints.AddRange(endpointClients);
+        }
+
+        /// <summary>
         /// Create a new federated client connecting to a number of remote SPARQL endpoints.
         /// </summary>
         /// <param name="httpClient">The HTTP client to use for all connections.</param>
         /// <param name="endpointUris">The URIs to connect to.</param>
-        /// <remarks>The HttpClient instance specified in the <paramref name="httpClient"/> parameter
-        /// will be used as the default client for all endpoints subsequently added using the <see cref="AddEndpoint(Uri)"/> method.
-        /// </remarks>
         public FederatedSparqlQueryClient(HttpClient httpClient, params Uri[] endpointUris)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _endpoints.AddRange(endpointUris.Select(x=>new SparqlQueryClient(httpClient, x)));
-        }
-
-        /// <summary>
-        /// Add a remote endpoint.
-        /// </summary>
-        /// <param name="endpointUri">The URI of the remote endpoint to be added.</param>
-        /// <remarks>The connection to this endpoint will be made using the <see cref="HttpClient"/> instance provided
-        /// in the constructor of this class.</remarks>
-        public void AddEndpoint(Uri endpointUri)
-        {
-            _endpoints.Add(new SparqlQueryClient(_httpClient, endpointUri));
         }
 
         /// <summary>
@@ -110,6 +112,15 @@ namespace VDS.RDF.Query
         public void RemoveEndpoint(Uri endpointUri)
         {
             _endpoints.RemoveAll(x => x.EndpointUri.Equals(endpointUri));
+        }
+
+        /// <summary>
+        /// Remove a remote endpoint.
+        /// </summary>
+        /// <param name="endpointClient">The endpoint client to be removed from the federation.</param>
+        public void RemoveEndpoint(SparqlQueryClient endpointClient)
+        {
+            _endpoints.Remove(endpointClient);
         }
 
         /// <summary>

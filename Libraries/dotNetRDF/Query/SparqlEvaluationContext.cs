@@ -27,7 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
+using System.Net.Http;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 
@@ -38,8 +38,9 @@ namespace VDS.RDF.Query
     /// </summary>
     public class SparqlEvaluationContext
     {
-        private Stopwatch _timer = new Stopwatch();
-        private Dictionary<string, object> _functionContexts = new Dictionary<string, object>();
+        private readonly Stopwatch _timer = new Stopwatch();
+        private readonly Dictionary<string, object> _functionContexts = new Dictionary<string, object>();
+        private HttpClient _defaultHttpClient;
 
         /// <summary>
         /// Creates a new Evaluation Context for the given Query over the given Dataset.
@@ -259,6 +260,16 @@ namespace VDS.RDF.Query
         public BaseMultiset Evaluate(ISparqlAlgebra algebra)
         {
             return Processor == null ? algebra.Evaluate(this) : Processor.ProcessAlgebra(algebra, this);
+        }
+
+        /// <summary>
+        /// Return an HttpClient instance to use when connecting to a specific URI endpoint.
+        /// </summary>
+        /// <param name="endpointUri">The endpoint to connect to.</param>
+        /// <returns>An HttpClient instance to use for connections to the specified endpoint.</returns>
+        public HttpClient GetHttpClient(Uri endpointUri)
+        {
+            return _defaultHttpClient ??= new HttpClient();
         }
     }
 }

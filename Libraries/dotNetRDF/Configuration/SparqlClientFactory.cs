@@ -87,7 +87,7 @@ namespace VDS.RDF.Configuration
                                 federatedClient.AddEndpoint(queryClient);
                                 break;
                             case Uri endpointUri:
-                                federatedClient.AddEndpoint(endpointUri);
+                                federatedClient.AddEndpoint(new SparqlQueryClient(httpClient, endpointUri));
                                 break;
                         }
                     }
