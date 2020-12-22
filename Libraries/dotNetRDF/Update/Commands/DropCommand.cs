@@ -100,7 +100,6 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="mode">Clear Mode.</param>
         /// <param name="silent">Whether errors should be suppressed.</param>
-        [Obsolete("Replaced by DropCommand(IRefNode, ClearMode, bool)")]
         public DropCommand(ClearMode mode, bool silent)
             : this((IRefNode)null, mode, silent) { }
 
