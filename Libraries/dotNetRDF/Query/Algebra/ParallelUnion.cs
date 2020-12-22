@@ -69,8 +69,8 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            var activeGraphs = context.Data.ActiveGraphUris.ToList();
-            var defaultGraphs = context.Data.DefaultGraphUris.ToList();
+            var activeGraphs = context.Data.ActiveGraphNames.ToList();
+            var defaultGraphs = context.Data.ActiveGraphNames.ToList();
 
             Task<BaseMultiset> lhsTask = Task.Factory.StartNew(() => ParallelEvaluate(Lhs, context, activeGraphs, defaultGraphs));
             Task<BaseMultiset> rhsTask = Task.Factory.StartNew(() => ParallelEvaluate(Rhs, context2, activeGraphs, defaultGraphs));
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
-        private static BaseMultiset ParallelEvaluate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IEnumerable<Uri> activeGraphs, IEnumerable<Uri> defGraphs)
+        private static BaseMultiset ParallelEvaluate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IList<IRefNode> activeGraphs, IList<IRefNode> defGraphs)
         {
             bool activeGraphOk = false, defaultGraphOk = false;
             try
