@@ -52,10 +52,16 @@ namespace VDS.RDF.Query.FullText.Search
         /// <summary>
         /// Gets the Graph URI for this result.
         /// </summary>
+        [Obsolete("Replaced by GraphName")]
         Uri GraphUri
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the name of the graph that contains this result.
+        /// </summary>
+        IRefNode GraphName { get; }
     }
 
     /// <summary>
@@ -67,12 +73,12 @@ namespace VDS.RDF.Query.FullText.Search
         /// <summary>
         /// Creates a new Full Text Search Result.
         /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
+        /// <param name="graphName">Graph name.</param>
         /// <param name="n">Node.</param>
         /// <param name="score">Score.</param>
-        public FullTextSearchResult(Uri graphUri, INode n, double score)
+        public FullTextSearchResult(IRefNode graphName, INode n, double score)
         {
-            GraphUri = graphUri;
+            GraphName = graphName;
             Node = n;
             Score = score;
         }
@@ -106,10 +112,11 @@ namespace VDS.RDF.Query.FullText.Search
         /// <summary>
         /// Gets the Graph URI of the result.
         /// </summary>
-        public Uri GraphUri
-        {
-            get;
-            private set;
-        }
+        public Uri GraphUri => (GraphName as IUriNode)?.Uri;
+
+        /// <summary>
+        /// Gets the name of the graph that contains the result.
+        /// </summary>
+        public IRefNode GraphName { get; }
     }
 }

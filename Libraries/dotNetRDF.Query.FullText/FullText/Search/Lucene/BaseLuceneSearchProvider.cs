@@ -169,6 +169,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="scoreThreshold">Score Threshold.</param>
         /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double, int)")]
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold, int limit)
         {
             EnsureCurrent();
@@ -189,6 +190,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="text">Search Query.</param>
         /// <param name="scoreThreshold">Score Threshold.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, double)")]
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold)
         {
             EnsureCurrent();
@@ -207,6 +209,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="text">Search Query.</param>
         /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string, int)")]
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, int limit)
         {
             EnsureCurrent();
@@ -225,6 +228,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="graphUris">Graph URIs.</param>
         /// <param name="text">Search Query.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by Match(IEnumerable<IRefNode>, string)")]
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text)
         {
             EnsureCurrent();
@@ -237,11 +241,84 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
+        /// Searches for matches for specific text.
+        /// </summary>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
+        /// <param name="limit">Result Limit.</param>
+        /// <returns></returns>
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold, int limit)
+        {
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector();
+            _searcher.Search(q, collector);
+
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                where doc.Value > scoreThreshold
+                select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
+            return FilterByGraph(graphUris, results).Take(limit);
+        }
+
+        /// <summary>
+        /// Searches for matches for specific text.
+        /// </summary>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="scoreThreshold">Score Threshold.</param>
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold)
+        {
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector(scoreThreshold);
+            _searcher.Search(q, collector);
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
+            return FilterByGraph(graphUris, results);
+        }
+
+        /// <summary>
+        /// Searches for matches for specific text.
+        /// </summary>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        /// <param name="limit">Result Limit.</param>
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, int limit)
+        {
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector();
+            _searcher.Search(q, collector);
+
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
+            return FilterByGraph(graphUris, results).Take(limit);
+        }
+
+        /// <summary>
+        /// Searches for matches for specific text.
+        /// </summary>
+        /// <param name="graphUris">Graph URIs.</param>
+        /// <param name="text">Search Query.</param>
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text)
+        {
+            EnsureCurrent();
+            LucSearch.Query q = _parser.Parse(text);
+            var collector = new DocCollector();
+            _searcher.Search(q, collector);
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
+            return FilterByGraph(graphUris, results);
+        }
+
+        /// <summary>
         /// Filters a set of results to ensure they occur in the given Graph(s).
         /// </summary>
         /// <param name="graphUris">Graph URIs.</param>
         /// <param name="results">Results.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by FilterByGraph(IEnumerable<IRefNode>, IEnumerable<IFullTextSearchResult>")]
         private IEnumerable<IFullTextSearchResult> FilterByGraph(IEnumerable<Uri> graphUris, IEnumerable<IFullTextSearchResult> results)
         {
             if (graphUris == null)
@@ -254,6 +331,15 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
                 if (uris.Count == 0) return results;
                 return results.Where(r => uris.Contains(r.GraphUri));
             }
+        }
+
+        private IEnumerable<IFullTextSearchResult> FilterByGraph(IEnumerable<IRefNode> graphNames,
+            IEnumerable<IFullTextSearchResult> results)
+        {
+            if (graphNames == null) return results;
+            var names = new HashSet<IRefNode>(graphNames, new FastNodeComparer());
+            if (names.Count == 0) return results;
+            return results.Where(r => names.Contains(r.GraphName));
         }
 
         /// <summary>

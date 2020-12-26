@@ -121,7 +121,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public virtual string Format(SparqlQuery query)
         {
-            if (query == null) throw new ArgumentNullException("Cannot format a null SPARQL Query as a String");
+            if (query == null) throw new ArgumentNullException(nameof(query), "Cannot format a null SPARQL Query as a String");
 
             try
             {

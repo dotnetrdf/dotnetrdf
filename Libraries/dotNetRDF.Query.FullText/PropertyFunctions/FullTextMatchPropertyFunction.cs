@@ -195,7 +195,7 @@ namespace VDS.RDF.Query.PropertyFunctions
             var search = ((ILiteralNode)searchNode).Value;
 
             //Determine which graphs we are operating over
-            IEnumerable<Uri> graphUris = context.Data.ActiveGraphUris;
+            IEnumerable<IRefNode> graphUris = context.Data.ActiveGraphNames;
 
             //Now we can use the full text search provider to start getting results
             context.OutputMultiset = new Multiset();
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <param name="provider">Search Provider.</param>
         /// <param name="search">Search Query.</param>
         /// <returns></returns>
-        protected IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<Uri> graphUris, IFullTextSearchProvider provider, string search)
+        protected IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<IRefNode> graphUris, IFullTextSearchProvider provider, string search)
         {
             if (_threshold.HasValue)
             {
@@ -265,7 +265,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <param name="search">Search Query.</param>
         /// <param name="limit">Result Limit.</param>
         /// <returns></returns>
-        protected virtual IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<Uri> graphUris, IFullTextSearchProvider provider, string search, int limit)
+        protected virtual IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<IRefNode> graphUris, IFullTextSearchProvider provider, string search, int limit)
         {
             if (_threshold.HasValue)
             {

@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -314,16 +315,13 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageVirtuosoNativeQueryAndUpdate()
         {
-            var formatter = new NTriplesFormatter();
             VirtuosoManager manager = VirtuosoTest.GetConnection();
             try
             {
                 Assert.NotNull(manager);
 
-                Object result = null;
-
                 //Try an ASK query
-                result = manager.Query("ASK {?s ?p ?o}");
+                object result = manager.Query("ASK {?s ?p ?o}");
                 CheckQueryResult(result, true);
 
                 //Try a CONSTRUCT
@@ -543,7 +541,7 @@ namespace VDS.RDF.Storage
         }
 
         [SkippableFact]
-        public void StorageVirtuosoQueryRegex()
+        public async void StorageVirtuosoQueryRegexAsync()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
 
@@ -573,8 +571,8 @@ namespace VDS.RDF.Storage
                 if (results == null) Assert.True(false, "Did not get a Result Set as expected");
                 Assert.Equal(1, results.Count);
 
-                var endpoint = new SparqlRemoteEndpoint(new Uri("http://localhost:8890/sparql"));
-                SparqlResultSet results2 = endpoint.QueryWithResultSet(query);
+                var queryClient = new SparqlQueryClient(new HttpClient(), new Uri("http://localhost:8890/sparql"));
+                SparqlResultSet results2 = await queryClient.QueryWithResultSetAsync(query);
                 Assert.Equal(1, results2.Count);
 
             }

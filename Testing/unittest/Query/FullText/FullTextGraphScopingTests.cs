@@ -26,14 +26,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Store;
 using LucUtil = Lucene.Net.Util;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.FullText.Indexing.Lucene;
 using VDS.RDF.Query.FullText.Search.Lucene;
@@ -88,7 +85,7 @@ namespace VDS.RDF.Query.FullText
             //With Graph scope to g1 only one result should be returned
             using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
-                IEnumerable<IFullTextSearchResult> results = searcher.Match(new Uri[] { new Uri("http://g1") }, "sample");
+                IEnumerable<IFullTextSearchResult> results = searcher.Match(new [] { new UriNode(new  Uri("http://g1")) }, "sample");
                 Assert.Single(results);
                 Assert.Equal(new Uri("http://x"), ((IUriNode)results.First().Node).Uri);
             }
@@ -101,7 +98,7 @@ namespace VDS.RDF.Query.FullText
             //With Graph scope to g2 only two results should be returned
             using (var searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, _index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
             {
-                IEnumerable<IFullTextSearchResult> results = searcher.Match(new Uri[] { new Uri("http://g2") }, "sample");
+                IEnumerable<IFullTextSearchResult> results = searcher.Match(new [] { new UriNode(new Uri("http://g2")) }, "sample");
                 Assert.Equal(2, results.Count());
                 Assert.True(results.All(r => EqualityHelper.AreUrisEqual(new Uri("http://y"), ((IUriNode)r.Node).Uri)));
             }
