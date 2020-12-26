@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Algebra
                     }
 
                     // Strip out any Named Graphs from the subquery
-                    if (_subquery.NamedGraphs.Any())
+                    if (_subquery.NamedGraphNames.Any())
                     {
                         _subquery.ClearNamedGraphs();
                     }

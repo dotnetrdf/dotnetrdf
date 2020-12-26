@@ -272,6 +272,7 @@ namespace VDS.RDF.Update.Protocol
         {
             // Work out the Graph URI we want to patch
             Uri graphUri = ResolveGraphUri(context);
+            IRefNode graphName = graphUri == null ? null : new UriNode(graphUri);
 
             // If the Request has the SPARQL Update MIME Type then we can process it
             if (context.Request.ContentLength > 0)
@@ -291,7 +292,7 @@ namespace VDS.RDF.Update.Protocol
 
                     // Assuming that we've got here i.e. the SPARQL Updates are parseable then
                     // we need to check that they actually affect the relevant Graph
-                    if (cmds.Commands.All(c => c.AffectsSingleGraph && c.AffectsGraph(graphUri)))
+                    if (cmds.Commands.All(c => c.AffectsSingleGraph && c.AffectsGraph(graphName)))
                     {
                         var processor = new GenericUpdateProcessor(_manager);
                         processor.ProcessCommandSet(cmds);

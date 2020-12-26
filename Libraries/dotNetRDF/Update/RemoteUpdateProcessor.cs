@@ -25,21 +25,24 @@
 */
 
 using System;
+using System.Threading.Tasks;
 using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// SPARQL Update Processor which processes updates by sending them to a remote SPARQL Update endpoint represented by a <see cref="SparqlRemoteUpdateEndpoint">SparqlRemoteUpdateEndpoint</see> instance.
+    /// SPARQL Update Processor which processes updates by sending them to a remote SPARQL Update endpoint using a <see cref="SparqlUpdateClient"/> instance.
     /// </summary>
     public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     {
-        private SparqlRemoteUpdateEndpoint _endpoint;
+        private readonly SparqlRemoteUpdateEndpoint _endpoint;
+        private readonly SparqlUpdateClient _client;
 
         /// <summary>
         /// Creates a new Remote Update Processor.
         /// </summary>
         /// <param name="endpointUri">Endpoint URI.</param>
+        [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)")]
         public RemoteUpdateProcessor(string endpointUri)
             : this(new SparqlRemoteUpdateEndpoint(endpointUri)) { }
 
@@ -47,6 +50,7 @@ namespace VDS.RDF.Update
         /// Creates a new Remote Update Processor.
         /// </summary>
         /// <param name="endpointUri">Endpoint URI.</param>
+        [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)")]
         public RemoteUpdateProcessor(Uri endpointUri)
             : this(new SparqlRemoteUpdateEndpoint(endpointUri)) { }
 
@@ -54,9 +58,19 @@ namespace VDS.RDF.Update
         /// Creates a new Remote Update Processor.
         /// </summary>
         /// <param name="endpoint">SPARQL Remote Update Endpoint.</param>
+        [Obsolete("Replaced by RemoteUpdateProcessor(SparqlUpdateClient)")]
         public RemoteUpdateProcessor(SparqlRemoteUpdateEndpoint endpoint)
         {
             _endpoint = endpoint;
+        }
+
+        /// <summary>
+        /// Creates a new remote update processor.
+        /// </summary>
+        /// <param name="updateClient">The SPARQL update client to delegate processing of commands to.</param>
+        public RemoteUpdateProcessor(SparqlUpdateClient updateClient)
+        {
+            _client = updateClient;
         }
 
         /// <summary>
@@ -72,7 +86,7 @@ namespace VDS.RDF.Update
         /// </summary>
         public void Flush()
         {
-            // No flush actions requied
+            // No flush actions required
         }
 
         /// <summary>
@@ -117,7 +131,14 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Command.</param>
         public void ProcessCommand(SparqlUpdateCommand cmd)
         {
-            _endpoint.Update(cmd.ToString());
+            if (_client != null)
+            {
+                Task.Run(()=>_client.UpdateAsync(cmd.ToString())).Wait();
+            }
+            else
+            {
+                _endpoint.Update(cmd.ToString());
+            }
         }
 
         /// <summary>
@@ -130,7 +151,14 @@ namespace VDS.RDF.Update
             commands.UpdateExecutionTime = null;
             try
             {
-                _endpoint.Update(commands.ToString());
+                if (_client != null)
+                {
+                    Task.Run(() => _client.UpdateAsync(commands.ToString())).Wait();
+                }
+                else
+                {
+                    _endpoint.Update(commands.ToString());
+                }
             }
             finally
             {

@@ -103,7 +103,7 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Gets the next name for a graph that is waiting to be written
+        /// Gets the next name for a graph that is waiting to be written.
         /// </summary>
         /// <param name="graphName">Name of next graph to be written.</param>
         /// <returns></returns>

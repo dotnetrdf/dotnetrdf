@@ -48,6 +48,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="t">Triple.</param>
+        [Obsolete("Replaced by AddQuad(IRefNode, Triple)")]
         protected internal override bool AddQuad(Uri graphUri, Triple t)
         {
             throw new NotSupportedException("This dataset is immutable");
@@ -67,6 +68,7 @@ namespace VDS.RDF.Query.Datasets
         /// Throws an error as this dataset is immutable.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
+        [Obsolete("Replaced by RemoveGraph(IRefNode)")]
         public sealed override bool RemoveGraph(Uri graphUri)
         {
             throw new NotSupportedException("This dataset is immutable");
@@ -87,6 +89,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="t">Triple.</param>
+        [Obsolete("Replacecd by RemoveQuad(IRefNode, Triple)")]
         protected internal override bool RemoveQuad(Uri graphUri, Triple t)
         {
             throw new NotSupportedException("This dataset is immutable");

@@ -211,7 +211,7 @@ namespace VDS.RDF.Update.Commands
 
                 // Get the Target Graph
                 IGraph target;
-                Uri graphUri;
+                IRefNode graphName;
                 if (pattern.IsGraph)
                 {
                     switch (pattern.GraphSpecifier.TokenType)
@@ -219,7 +219,7 @@ namespace VDS.RDF.Update.Commands
                         case Token.QNAME:
                             throw new NotSupportedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
                         case Token.URI:
-                            graphUri = UriFactory.Create(pattern.GraphSpecifier.Value);
+                            graphName = new UriNode(UriFactory.Create(pattern.GraphSpecifier.Value));
                             break;
                         default:
                             throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command as the Graph Specifier is not a QName/URI");
@@ -227,12 +227,12 @@ namespace VDS.RDF.Update.Commands
                 }
                 else
                 {
-                    graphUri = null;
+                    graphName = null;
                 }
 
                 // If the Pattern affects a non-existent Graph then nothing to DELETE
-                if (!context.Data.HasGraph(graphUri)) continue;
-                target = context.Data.GetModifiableGraph(graphUri);
+                if (!context.Data.HasGraph(graphName)) continue;
+                target = context.Data.GetModifiableGraph(graphName);
 
                 // Delete the actual Triples
                 INode subj, pred, obj;

@@ -25,6 +25,7 @@
 */
 
 using System;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Update.Commands
 {
@@ -266,7 +267,7 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            var silent = (Silent) ? "SILENT " : string.Empty;
+            var silent = Silent ? "SILENT " : string.Empty;
             switch (Mode)
             {
                 case ClearMode.All:
@@ -274,7 +275,8 @@ namespace VDS.RDF.Update.Commands
                 case ClearMode.Default:
                     return "CLEAR " + silent + "DEFAULT";
                 case ClearMode.Graph:
-                    return "CLEAR " + silent + "GRAPH <" + TargetUri.AbsoluteUri.Replace(">", "\\>") + ">";
+                    var formatter = new SparqlFormatter();
+                    return "CLEAR " + silent + "GRAPH " + formatter.Format(TargetGraphName);
                 case ClearMode.Named:
                     return "CLEAR " + silent + "NAMED";
                 default:

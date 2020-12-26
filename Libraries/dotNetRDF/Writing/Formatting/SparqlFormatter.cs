@@ -203,13 +203,13 @@ namespace VDS.RDF.Writing.Formatting
                 // Then add in FROM and FROM NAMED if not a sub-query
                 if (!query.IsSubQuery)
                 {
-                    foreach (Uri u in query.DefaultGraphs)
+                    foreach (IRefNode defaultGraphName in query.DefaultGraphNames)
                     {
-                        output.AppendLine("FROM <" + FormatUri(u) + ">");
+                        output.AppendLine("FROM " + Format(defaultGraphName));
                     }
-                    foreach (Uri u in query.NamedGraphs)
+                    foreach (IRefNode namedGraphName in query.NamedGraphNames)
                     {
-                        output.AppendLine("FROM NAMED <" + FormatUri(u) + ">");
+                        output.AppendLine("FROM NAMED " + Format(namedGraphName));
                     }
                 }
 

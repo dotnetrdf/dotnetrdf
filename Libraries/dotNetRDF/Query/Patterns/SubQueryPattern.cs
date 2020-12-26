@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Patterns
                 // Add any Named Graphs to the subquery
                 if (context.Query != null)
                 {
-                    foreach (Uri u in context.Query.NamedGraphs)
+                    foreach (IRefNode u in context.Query.NamedGraphNames)
                     {
                         _subquery.AddNamedGraph(u);
                     }
@@ -137,7 +137,7 @@ namespace VDS.RDF.Query.Patterns
                     }
 
                     // Strip out any Named Graphs from the subquery
-                    if (_subquery.NamedGraphs.Any())
+                    if (_subquery.NamedGraphNames.Any())
                     {
                         _subquery.ClearNamedGraphs();
                     }
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return "{" + _subquery.ToString() + "}";
+            return "{" + _subquery + "}";
         }
     }
 }

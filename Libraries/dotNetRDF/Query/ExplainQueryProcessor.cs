@@ -175,13 +175,13 @@ namespace VDS.RDF.Query
                     // Print the type of Join to be performed
                     if (i > 0 && (ps[i].PatternType == TriplePatternType.Match || ps[i].PatternType == TriplePatternType.SubQuery || ps[i].PatternType == TriplePatternType.Path))
                     {
-                        if (vars.IsDisjoint<String>(ps[i].Variables))
+                        if (vars.IsDisjoint(ps[i].Variables))
                         {
                             output.Append("Cross Product with ");
                         }
                         else
                         {
-                            var joinVars = vars.Intersect<String>(ps[i].Variables).ToList();
+                            var joinVars = vars.Intersect(ps[i].Variables).ToList();
                             output.Append("Join on {");
                             joinVars.ForEach(v => output.Append(" ?" + v + ","));
                             output.Remove(output.Length - 1, 1);
@@ -214,7 +214,7 @@ namespace VDS.RDF.Query
         {
             if (!HasFlag(ExplanationLevel.AnalyseJoins)) return;
 
-            var joinVars = new HashSet<string>(join.Lhs.Variables.Intersect<String>(join.Rhs.Variables));
+            var joinVars = new HashSet<string>(join.Lhs.Variables.Intersect(join.Rhs.Variables));
             var vars = new StringBuilder();
             vars.Append("{");
             foreach (var var in joinVars)
@@ -289,13 +289,13 @@ namespace VDS.RDF.Query
                         }
 
                         // Nothing yet bound to the Graph Variable so the Query is over all the named Graphs
-                        if (context.Query != null && context.Query.NamedGraphs.Any())
+                        if (context.Query != null && context.Query.NamedGraphNames.Any())
                         {
                             // Query specifies one/more named Graphs
                             PrintExplanations("Graph clause uses variable ?" + gvar + " which is restricted to graphs specified by the queries FROM NAMED clause(s)");
-                            activeGraphs.AddRange(context.Query.NamedGraphs.Select(u => u.AbsoluteUri));
+                            activeGraphs.AddRange(context.Query.NamedGraphNames.Select(u => u.ToSafeString()));
                         }
-                        else if (context.Query != null && context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any())
+                        else if (context.Query != null && context.Query.DefaultGraphNames.Any() && !context.Query.NamedGraphNames.Any())
                         {
                             // Gives null since the query dataset does not include any named graphs
                             PrintExplanations("Graph clause uses variable ?" + gvar + " which will match no graphs because the queries dataset description does not include any named graphs i.e. there where FROM clauses but no FROM NAMED clauses");
@@ -499,7 +499,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessAsk(Ask ask, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Ask>(ask, context, base.ProcessAsk);
+            return ExplainAndEvaluate(ask, context, base.ProcessAsk);
         }
 
         /// <summary>
@@ -509,7 +509,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessBgp(IBgp bgp, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<IBgp>(bgp, context, base.ProcessBgp);
+            return ExplainAndEvaluate(bgp, context, base.ProcessBgp);
         }
 
         /// <summary>
@@ -519,7 +519,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessBindings(Bindings b, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Bindings>(b, context, base.ProcessBindings);
+            return ExplainAndEvaluate(b, context, base.ProcessBindings);
         }
 
         /// <summary>
@@ -529,7 +529,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessDistinct(Distinct distinct, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Distinct>(distinct, context, base.ProcessDistinct);
+            return ExplainAndEvaluate(distinct, context, base.ProcessDistinct);
         }
 
         /// <summary>
@@ -539,7 +539,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessExistsJoin(IExistsJoin existsJoin, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<IExistsJoin>(existsJoin, context, base.ProcessExistsJoin);
+            return ExplainAndEvaluate(existsJoin, context, base.ProcessExistsJoin);
         }
 
         /// <summary>
@@ -549,7 +549,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessExtend(Extend extend, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Extend>(extend, context, base.ProcessExtend);
+            return ExplainAndEvaluate(extend, context, base.ProcessExtend);
         }
 
         /// <summary>
@@ -559,7 +559,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessFilter(IFilter filter, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<IFilter>(filter, context, base.ProcessFilter);
+            return ExplainAndEvaluate(filter, context, base.ProcessFilter);
         }
 
         /// <summary>
@@ -569,7 +569,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessGraph(Algebra.Graph graph, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Algebra.Graph>(graph, context, base.ProcessGraph);
+            return ExplainAndEvaluate(graph, context, base.ProcessGraph);
         }
 
         /// <summary>
@@ -579,7 +579,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessGroupBy(GroupBy groupBy, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<GroupBy>(groupBy, context, base.ProcessGroupBy);
+            return ExplainAndEvaluate(groupBy, context, base.ProcessGroupBy);
         }
 
         /// <summary>
@@ -589,7 +589,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessHaving(Having having, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Having>(having, context, base.ProcessHaving);
+            return ExplainAndEvaluate(having, context, base.ProcessHaving);
         }
 
         /// <summary>
@@ -599,7 +599,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessJoin(IJoin join, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<IJoin>(join, context, base.ProcessJoin);
+            return ExplainAndEvaluate(join, context, base.ProcessJoin);
         }
 
         /// <summary>
@@ -609,7 +609,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessLeftJoin(ILeftJoin leftJoin, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<ILeftJoin>(leftJoin, context, base.ProcessLeftJoin);
+            return ExplainAndEvaluate(leftJoin, context, base.ProcessLeftJoin);
         }
 
         /// <summary>
@@ -619,7 +619,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessMinus(IMinus minus, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<IMinus>(minus, context, base.ProcessMinus);
+            return ExplainAndEvaluate(minus, context, base.ProcessMinus);
         }
 
         /// <summary>
@@ -630,7 +630,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessNegatedPropertySet(NegatedPropertySet negPropSet, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<NegatedPropertySet>(negPropSet, context, base.ProcessNegatedPropertySet);
+            return ExplainAndEvaluate(negPropSet, context, base.ProcessNegatedPropertySet);
         }
 
         /// <summary>
@@ -641,7 +641,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessNullOperator(NullOperator nullOp, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<NullOperator>(nullOp, context, base.ProcessNullOperator);
+            return ExplainAndEvaluate(nullOp, context, base.ProcessNullOperator);
         }
 
         /// <summary>
@@ -652,7 +652,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessOneOrMorePath(OneOrMorePath path, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<OneOrMorePath>(path, context, base.ProcessOneOrMorePath);
+            return ExplainAndEvaluate(path, context, base.ProcessOneOrMorePath);
         }
 
         /// <summary>
@@ -662,7 +662,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessOrderBy(OrderBy orderBy, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<OrderBy>(orderBy, context, base.ProcessOrderBy);
+            return ExplainAndEvaluate(orderBy, context, base.ProcessOrderBy);
         }
 
         /// <summary>
@@ -673,7 +673,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessPropertyPath(PropertyPath path, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<PropertyPath>(path, context, base.ProcessPropertyPath);
+            return ExplainAndEvaluate(path, context, base.ProcessPropertyPath);
         }
 
         /// <summary>
@@ -683,7 +683,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessReduced(Reduced reduced, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Reduced>(reduced, context, base.ProcessReduced);
+            return ExplainAndEvaluate(reduced, context, base.ProcessReduced);
         }
 
         /// <summary>
@@ -693,7 +693,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessSelect(Select select, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Select>(select, context, base.ProcessSelect);
+            return ExplainAndEvaluate(select, context, base.ProcessSelect);
         }
 
         /// <summary>
@@ -703,7 +703,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<SelectDistinctGraphs>(selDistGraphs, context, base.ProcessSelectDistinctGraphs);
+            return ExplainAndEvaluate(selDistGraphs, context, base.ProcessSelectDistinctGraphs);
         }
 
         /// <summary>
@@ -713,7 +713,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessService(Service service, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Service>(service, context, base.ProcessService);
+            return ExplainAndEvaluate(service, context, base.ProcessService);
         }
 
         /// <summary>
@@ -723,7 +723,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessSlice(Slice slice, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<Slice>(slice, context, base.ProcessSlice);
+            return ExplainAndEvaluate(slice, context, base.ProcessSlice);
         }
 
         /// <summary>
@@ -734,7 +734,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessSubQuery(SubQuery subquery, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<SubQuery>(subquery, context, base.ProcessSubQuery);
+            return ExplainAndEvaluate(subquery, context, base.ProcessSubQuery);
         }
 
         /// <summary>
@@ -744,7 +744,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessUnion(IUnion union, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<IUnion>(union, context, base.ProcessUnion);
+            return ExplainAndEvaluate(union, context, base.ProcessUnion);
         }
 
         /// <summary>
@@ -754,7 +754,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public override BaseMultiset ProcessUnknownOperator(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<ISparqlAlgebra>(algebra, context, base.ProcessUnknownOperator);
+            return ExplainAndEvaluate(algebra, context, base.ProcessUnknownOperator);
         }
 
         /// <summary>
@@ -765,7 +765,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessZeroLengthPath(ZeroLengthPath path, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<ZeroLengthPath>(path, context, base.ProcessZeroLengthPath);
+            return ExplainAndEvaluate(path, context, base.ProcessZeroLengthPath);
         }
 
         /// <summary>
@@ -776,7 +776,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath path, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate<ZeroOrMorePath>(path, context, base.ProcessZeroOrMorePath);
+            return ExplainAndEvaluate(path, context, base.ProcessZeroOrMorePath);
         }
     }
 }

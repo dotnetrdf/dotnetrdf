@@ -121,7 +121,7 @@ namespace VDS.RDF.Update.Commands
             {
                 if (!Silent)
                 {
-                    throw new SparqlUpdateException("Cannot create a Named Graph with URI '" + TargetUri.AbsoluteUri + "' since a Graph with this URI already exists in the Store");
+                    throw new SparqlUpdateException("Cannot create a Named Graph with name '" + TargetGraphName + "' since a Graph with this URI already exists in the Store");
                 }
             }
             else
