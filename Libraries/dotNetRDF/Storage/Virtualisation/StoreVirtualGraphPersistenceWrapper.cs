@@ -63,10 +63,31 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph.
         /// </para>
         /// </remarks>
+        [Obsolete("Replaced by StoreVirtualGraphPersistenceWrapper(IStorageProvider, IVirtualRdfProvider, IGraph, bool)")]
         public StoreVirtualGraphPersistenceWrapper(IStorageProvider manager, IVirtualRdfProvider<TNodeID, TGraphID> provider, IGraph g, Uri graphUri, bool writeOnly)
             : base(manager, g, graphUri, writeOnly)
         {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider), "Cannot persist virtual nodes without a virtual RDF provider");
+        }
+
+        /// <summary>
+        /// Creates a new Store Graph Persistence Wrapper for Virtualized Nodes.
+        /// </summary>
+        /// <param name="manager">Generic IO Manager.</param>
+        /// <param name="provider">Virtual RDF Provider.</param>
+        /// <param name="g">Graph with virtualized Nodes to wrap.</param>
+        /// <param name="writeOnly">Whether to operate in write-only mode.</param>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageCapabilities.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph.
+        /// </para>
+        /// </remarks>
+        protected StoreVirtualGraphPersistenceWrapper(IStorageProvider manager,
+            IVirtualRdfProvider<TNodeID, TGraphID> provider, IGraph g, bool writeOnly) :
+            base(manager, g, writeOnly)
+        {
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider),
+                "Cannot persist virtual nodes without a virtual RDF provider");
         }
 
         /// <summary>

@@ -134,7 +134,6 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new signed byte node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Signed Byte value.</param>
         /// <param name="lexicalValue">Lexical value.</param>
         public SignedByteNode(sbyte value, string lexicalValue)
@@ -146,7 +145,6 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new signed byte node.
         /// </summary>
-        /// <param name="g">Graph the node belongs to.</param>
         /// <param name="value">Signed Byte value.</param>
         public SignedByteNode(sbyte value)
             : this(value, value.ToString()) { }

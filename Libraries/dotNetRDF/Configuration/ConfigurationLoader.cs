@@ -107,6 +107,7 @@ namespace VDS.RDF.Configuration
                             PropertyWithUri = ConfigurationNamespace + "withUri",
                             PropertyAssignUri = ConfigurationNamespace + "assignUri",
                             // Properties for Endpoints
+                            PropertyHttpClientName = ConfigurationNamespace + "httpClientName",
                             PropertyEndpoint = ConfigurationNamespace + "endpoint",
                             PropertyEndpointUri = ConfigurationNamespace + "endpointUri",
                             PropertyQueryEndpointUri = ConfigurationNamespace + "queryEndpointUri",
@@ -175,6 +176,9 @@ namespace VDS.RDF.Configuration
                             ClassHttpHandler = ConfigurationNamespace + "HttpHandler",
                             // Classes for SPARQL features
                             ClassSparqlEndpoint = ConfigurationNamespace + "SparqlEndpoint",
+                            ClassSparqlQueryClient = ConfigurationNamespace + "SparqlQueryClient",
+                            ClassSparqlUpdateClient = ConfigurationNamespace + "SparqlUpdateClient",
+                            ClassFederatedSparqlQueryClient = ConfigurationNamespace  + "FederatedSparqlQueryClient",
                             ClassSparqlQueryEndpoint = ConfigurationNamespace + "SparqlQueryEndpoint",
                             ClassSparqlUpdateEndpoint = ConfigurationNamespace + "SparqlUpdateEndpoint",
                             ClassSparqlQueryProcessor = ConfigurationNamespace + "SparqlQueryProcessor",
@@ -236,7 +240,11 @@ namespace VDS.RDF.Configuration
             new StorageFactory(),
             new DatasetFactory(),
             // Endpoint Factories
+            new SparqlClientFactory(),
+#pragma warning disable 618
+            // To be removed when deprecated classes are removed
             new SparqlEndpointFactory(),
+#pragma warning restore 618
             // Processor Factories
             new QueryProcessorFactory(),
             new UpdateProcessorFactory(),

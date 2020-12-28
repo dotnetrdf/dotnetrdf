@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Datasets
             {
                 if (mergeIfExists)
                 {
-                    IGraph temp = _dataset.GetModifiableGraph(g.BaseUri);
+                    IGraph temp = _dataset.GetModifiableGraph(g.Name);
                     temp.Merge(g);
                     temp.Dispose();
                     _dataset.Flush();
@@ -133,20 +133,18 @@ namespace VDS.RDF.Query.Datasets
         /// </remarks>
         protected internal override bool Remove(IRefNode graphName)
         {
-            if (graphName is IBlankNode) return false;
-            var graphUriNode = graphName as IUriNode;
-            Uri graphUri = graphUriNode?.Uri;
-            if (_dataset.HasGraph(graphUri))
+            if (!_dataset.HasGraph(graphName))
             {
-                IGraph temp = _dataset[graphUri];
-                var removed = _dataset.RemoveGraph(graphUri);
-                _dataset.Flush();
-                RaiseGraphRemoved(temp);
-                temp.Dispose();
-                return removed;
+                return false;
             }
 
-            return false;
+            IGraph temp = _dataset[graphName];
+            var removed = _dataset.RemoveGraph(graphName);
+            _dataset.Flush();
+            RaiseGraphRemoved(temp);
+            temp.Dispose();
+            return removed;
+
         }
 
         /// <summary>
@@ -156,7 +154,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return _dataset.GraphUris.Count(); 
+                return _dataset.GraphNames.Count(); 
             }
         }
 
@@ -164,25 +162,12 @@ namespace VDS.RDF.Query.Datasets
         /// Gets the URIs of Graphs in the Collection.
         /// </summary>
         [Obsolete("Replaced by GraphNames")]
-        public override IEnumerable<Uri> GraphUris
-        {
-            get 
-            {
-                return _dataset.GraphUris;
-            }
-        }
+        public override IEnumerable<Uri> GraphUris => _dataset.GraphUris;
 
         /// <summary>
         /// Provides an enumeration of the names of all of teh graphs in the collection.
         /// </summary>
-        public override IEnumerable<IRefNode> GraphNames
-        {
-            get
-            {
-                var factory = new NodeFactory();
-                return _dataset.GraphUris.Select(g => g == null ? null : factory.CreateUriNode(g));
-            }
-        }
+        public override IEnumerable<IRefNode> GraphNames => _dataset.GraphNames;
 
         /// <summary>
         /// Gets the Graph with the given URI.

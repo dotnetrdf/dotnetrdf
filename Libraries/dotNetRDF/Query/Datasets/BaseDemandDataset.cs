@@ -46,6 +46,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by HasGraph(IRefNode)")]
         public override bool HasGraph(Uri graphUri)
         {
             if (!_dataset.HasGraph(graphUri))
@@ -67,6 +68,26 @@ namespace VDS.RDF.Query.Datasets
             {
                 return true;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="graphName"></param>
+        /// <returns></returns>
+        public override bool HasGraph(IRefNode graphName)
+        {
+            if (_dataset.HasGraph(graphName)) return true;
+            // If the underlying dataset doesn't have the Graph can we load it on demand
+            if (graphName.NodeType == NodeType.Uri)
+            {
+                if (TryLoadGraph((graphName as IUriNode).Uri, out IGraph g))
+                {
+                    AddGraph(g);
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

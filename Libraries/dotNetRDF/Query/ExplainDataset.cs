@@ -25,42 +25,50 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query.Datasets
+namespace VDS.RDF.Query
 {
-    /// <summary>
-    /// Implementation of a dataset wrapper which can load additional graphs from the web on demand.
-    /// </summary>
-    public class WebDemandDataset
-        : BaseDemandDataset
+    class ExplainDataset 
+        : WrapperDataset
     {
-        /// <summary>
-        /// Creates a new Web Demand Dataset.
-        /// </summary>
-        /// <param name="dataset">Underlying Dataset.</param>
-        public WebDemandDataset(ISparqlDataset dataset)
-            : base(dataset) { }
+        public ExplainDataset(ISparqlDataset dataset) 
+            : base(dataset) {}
 
-        /// <summary>
-        /// Tries to load graphs from the web.
-        /// </summary>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <param name="g">Graph.</param>
-        /// <returns></returns>
-        protected override bool TryLoadGraph(Uri graphUri, out IGraph g)
+        public ExplainQueryProcessor Processor { get; set; }
+
+        [Obsolete("Replaced by SetActiveGraph(IRefNode)")]
+        public override void SetActiveGraph(Uri graphUri)
         {
-            try
+            if (Processor != null)
             {
-                g = new Graph(new UriNode(graphUri));
-                g.LoadFromUri(graphUri);
-                return true;
+                if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
+                {
+                    Processor.PrintExplanations("Switching to named graph " + graphUri.ToSafeString());
+                }
             }
-            catch
+            base.SetActiveGraph(graphUri);
+        }
+
+        [Obsolete("Replaced by SetActiveGraph(IList<IRefNode>)")]
+        public override void SetActiveGraph(IEnumerable<Uri> graphUris)
+        {
+            IList<Uri> gs = graphUris as IList<Uri> ?? graphUris.ToList();
+            if (Processor != null)
             {
-                // Any error means we couldn't load on demand
-                g = null;
-                return false;
+                if (Processor.HasFlag(ExplanationLevel.AnalyseNamedGraphs))
+                {
+                    Processor.PrintExplanations("Switching to named graph as merge of the following graphs:");
+                    foreach (Uri graphUri in gs)
+                    {
+                        Processor.PrintExplanations(graphUri.ToSafeString());
+                        
+                    }
+                }
             }
+            base.SetActiveGraph(gs);
         }
     }
 }

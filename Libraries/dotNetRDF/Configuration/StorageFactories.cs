@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
@@ -287,9 +288,16 @@ namespace VDS.RDF.Configuration
                         INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))});
                         if (endpointObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
-                        if (temp is SparqlRemoteEndpoint)
+                        
+#pragma warning disable 618
+                        if (temp is SparqlRemoteEndpoint remoteEndpoint)
                         {
-                            storageProvider = new SparqlConnector((SparqlRemoteEndpoint) temp, loadMode);
+                            storageProvider = new SparqlConnector(remoteEndpoint, loadMode);
+                        }
+#pragma warning restore 618
+                        else if (temp is SparqlQueryClient queryClient)
+                        {
+                            storageProvider = new SparqlConnector(queryClient, loadMode);
                         }
                         else
                         {
@@ -305,96 +313,150 @@ namespace VDS.RDF.Configuration
                         IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                                                        where named.NodeType == NodeType.Uri
                                                        select ((IUriNode) named).Uri;
-                        if (defGraphs.Any() || namedGraphs.Any())
-                        {
-                            storageProvider = new SparqlConnector(new SparqlRemoteEndpoint(UriFactory.Create(server), defGraphs, namedGraphs), loadMode);
-                        }
-                        else
-                        {
-                            storageProvider = new SparqlConnector(UriFactory.Create(server), loadMode);
-                        }
+                        var queryClient = new SparqlQueryClient(new HttpClient(), UriFactory.Create(server));
+                        queryClient.DefaultGraphs.AddRange(defGraphs.Select(u=>u.AbsoluteUri));
+                        queryClient.NamedGraphs.AddRange(namedGraphs.Select(u=>u.AbsoluteUri));
+                        storageProvider = new SparqlConnector(queryClient);
                     }
                     break;
 
                 case ReadWriteSparql:
-                    SparqlRemoteEndpoint queryEndpoint;
-                    SparqlRemoteUpdateEndpoint updateEndpoint;
+                {
+#pragma warning disable 618
+                    SparqlRemoteEndpoint queryEndpoint = null;
+                    SparqlRemoteUpdateEndpoint updateEndpoint = null;
+#pragma warning restore 618
+                    SparqlQueryClient queryClient = null;
+                    SparqlUpdateClient updateClient = null;
 
                     // Get the Query Endpoint URI or the Endpoint
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))});
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode,
+                        new INode[]
+                        {
+                            g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)),
+                            g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)),
+                        });
 
                     // What's the load mode?
-                    loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
+                    loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode,
+                        g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
                     loadMode = SparqlConnectorLoadMethod.Construct;
                     if (loadModeRaw != null)
                     {
                         try
                         {
-                            loadMode = (SparqlConnectorLoadMethod) Enum.Parse(typeof (SparqlConnectorLoadMethod), loadModeRaw);
+                            loadMode = (SparqlConnectorLoadMethod)Enum.Parse(typeof(SparqlConnectorLoadMethod),
+                                loadModeRaw);
                         }
                         catch
                         {
-                            throw new DotNetRdfConfigurationException("Unable to load the ReadWriteSparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:loadMode is not valid");
+                            throw new DotNetRdfConfigurationException(
+                                "Unable to load the ReadWriteSparqlConnector identified by the Node '" +
+                                objNode.ToString() + "' as the value given for the property dnr:loadMode is not valid");
                         }
                     }
 
                     if (server == null)
                     {
-                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))});
+                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode,
+                            new INode[]
+                            {
+                                g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)),
+                                g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)),
+                            });
                         if (endpointObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
-                        if (temp is SparqlRemoteEndpoint)
+                        switch (temp)
                         {
-                            queryEndpoint = (SparqlRemoteEndpoint) temp;
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the ReadWriteSparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:queryEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteEndpoint");
+#pragma warning disable 618
+                            case SparqlRemoteEndpoint remoteEndpoint:
+#pragma warning restore 618
+                                queryEndpoint = remoteEndpoint;
+                                break;
+                            case SparqlQueryClient qc:
+                                queryClient = qc;
+                                break;
+                            default:
+                                throw new DotNetRdfConfigurationException(
+                                    "Unable to load the ReadWriteSparqlConnector identified by the Node '" +
+                                    objNode.ToString() +
+                                    "' as the value given for the property dnr:queryEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteEndpoint");
                         }
                     }
                     else
                     {
                         // Are there any Named/Default Graph URIs
-                        IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
-                                                     where def.NodeType == NodeType.Uri
-                                                     select ((IUriNode) def).Uri;
-                        IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
-                                                       where named.NodeType == NodeType.Uri
-                                                       select ((IUriNode) named).Uri;
-                        if (defGraphs.Any() || namedGraphs.Any())
-                        {
-                            queryEndpoint = new SparqlRemoteEndpoint(UriFactory.Create(server), defGraphs, namedGraphs);
-                            ;
-                        }
-                        else
-                        {
-                            queryEndpoint = new SparqlRemoteEndpoint(UriFactory.Create(server));
-                        }
+                        IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode,
+                                g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
+                            where def.NodeType == NodeType.Uri
+                            select ((IUriNode)def).Uri;
+                        IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g,
+                                objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
+                            where named.NodeType == NodeType.Uri
+                            select ((IUriNode)named).Uri;
+                        queryClient = new SparqlQueryClient(new HttpClient(), UriFactory.Create(server));
+                        queryClient.DefaultGraphs.AddRange(defGraphs.Select(g => g.AbsoluteUri));
+                        queryClient.NamedGraphs.AddRange(namedGraphs.Select(u => u.AbsoluteUri));
                     }
 
                     // Find the Update Endpoint or Endpoint URI
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri))});
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode,
+                        new INode[]
+                        {
+                            g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)),
+                            g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)),
+                        });
 
                     if (server == null)
                     {
-                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, new INode[] {g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))});
+                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode,
+                            new INode[]
+                            {
+                                g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint)),
+                                g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)),
+                            });
                         if (endpointObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
-                        if (temp is SparqlRemoteUpdateEndpoint)
+                        switch (temp)
                         {
-                            updateEndpoint = (SparqlRemoteUpdateEndpoint) temp;
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the ReadWriteSparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:updateEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteUpdateEndpoint");
+#pragma warning disable 618
+                            case SparqlRemoteUpdateEndpoint ue:
+#pragma warning restore 618
+                                updateEndpoint = ue;
+                                break;
+                            case SparqlUpdateClient uc:
+                                updateClient = uc;
+                                break;
+                            default:
+                                throw new DotNetRdfConfigurationException(
+                                    "Unable to load the ReadWriteSparqlConnector identified by the Node '" +
+                                    objNode.ToString() +
+                                    "' as the value given for the property dnr:updateEndpoint/dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteUpdateEndpoint");
                         }
                     }
                     else
                     {
-                        updateEndpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(server));
+                        updateClient = new SparqlUpdateClient(new HttpClient(), UriFactory.Create(server));
                     }
-                    storageProvider = new ReadWriteSparqlConnector(queryEndpoint, updateEndpoint, loadMode);
+
+                    if (queryClient != null && updateClient != null)
+                    {
+                        storageProvider = new ReadWriteSparqlConnector(queryClient, updateClient, loadMode);
+                    }
+                    else if (queryEndpoint != null && updateEndpoint != null)
+                    {
+#pragma warning disable 618
+                        storageProvider = new ReadWriteSparqlConnector(queryEndpoint, updateEndpoint, loadMode);
+#pragma warning restore 618
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException(
+                            $"Unable to load the ReadWriteSparqlConnector identified by the node '{objNode}' as the query and update endpoints are of incompatible types.");
+                    }
+
                     break;
+                }
 
                 case SparqlHttpProtocol:
                     // Get the Service URI

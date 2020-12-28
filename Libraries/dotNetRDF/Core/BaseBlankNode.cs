@@ -137,7 +137,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Determines whether this node is equal to another IRefNode
+        /// Determines whether this node is equal to another IRefNode.
         /// </summary>
         /// <param name="other">Other node.</param>
         /// <returns></returns>

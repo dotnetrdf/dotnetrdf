@@ -340,6 +340,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("Replaced with ListGraphsAsync(CancellationToken)")]
         public void ListGraphs(AsyncStorageCallback callback, object state)
         {
             this.AsyncListGraphs(callback, state);

@@ -198,6 +198,26 @@ SELECT DISTINCT ?result ?isWebSite WHERE {
             throw new NotImplementedException();
         }
 
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, int limit)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsAutoSynced
         {
             get

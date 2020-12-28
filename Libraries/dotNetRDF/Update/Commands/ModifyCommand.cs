@@ -271,17 +271,17 @@ namespace VDS.RDF.Update.Commands
                 var query = new SparqlQuery();
                 foreach (Uri u in UsingUris)
                 {
-                    query.AddDefaultGraph(u);
+                    query.AddDefaultGraph(new UriNode(u));
                 }
                 foreach (Uri u in UsingNamedUris)
                 {
-                    query.AddNamedGraph(u);
+                    query.AddNamedGraph(new UriNode(u));
                 }
                 var queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor, context.Options);
                 if (UsingUris.Any())
                 {
                     // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
-                    context.Data.SetActiveGraph(_usingUris);
+                    context.Data.SetActiveGraph(_usingUris.Select<Uri, IRefNode>(u=>new UriNode(u)).ToList());
                     datasetOk = true;
                 }
                 BaseMultiset results = queryContext.Evaluate(where);

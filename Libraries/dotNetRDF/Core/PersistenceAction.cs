@@ -50,6 +50,7 @@ namespace VDS.RDF
         /// Creates a new Triple Persistence Action (an insertion).
         /// </summary>
         /// <param name="t">Triple to persist.</param>
+        /// <param name="graphName">The name of the modified graph.</param>
         public TriplePersistenceAction(Triple t, IRefNode graphName)
             : this(t, graphName, false) { }
 

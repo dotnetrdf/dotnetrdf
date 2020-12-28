@@ -74,21 +74,20 @@ namespace VDS.RDF.Query.Algebra
                     {
                         case Token.URI:
                         case Token.QNAME:
-                            Uri activeGraphUri = UriFactory.Create(Tools.ResolveUriOrQName(_graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
-                            if (context.Data.HasGraph(activeGraphUri))
+                            IRefNode activeGraphName = new UriNode(UriFactory.Create(Tools.ResolveUriOrQName(_graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri)));
+                            if (context.Data.HasGraph(activeGraphName))
                             {
                                 // If the Graph is explicitly specified and there are FROM/FROM NAMED present then the Graph 
                                 // URI must be in the graphs specified by a FROM/FROM NAMED or the result is null
                                 if (context.Query == null ||
-                                    ((!context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any())
-                                     || context.Query.NamedGraphs.Any(u => EqualityHelper.AreUrisEqual(activeGraphUri, u)))
-                                    )
+                                    (!context.Query.DefaultGraphNames.Any() && !context.Query.NamedGraphNames.Any()) || 
+                                    context.Query.NamedGraphNames.Contains(activeGraphName))
                                 {
                                     // Either there was no Query 
                                     // OR there were no Default/Named Graphs (hence any Graph URI is permitted) 
                                     // OR the specified URI was a Named Graph URI
                                     // In any case we can go ahead and set the active Graph
-                                    activeGraphs.Add(activeGraphUri.AbsoluteUri);
+                                    activeGraphs.Add(activeGraphName.ToSafeString());
                                 }
                                 else
                                 {
@@ -105,7 +104,7 @@ namespace VDS.RDF.Query.Algebra
                             }
                             break;
                         default:
-                            throw new RdfQueryException("Cannot use a '" + _graphSpecifier.GetType().ToString() + "' Token to specify the Graph for a GRAPH clause");
+                            throw new RdfQueryException("Cannot use a '" + _graphSpecifier.GetType() + "' Token to specify the Graph for a GRAPH clause");
                     }
                 }
                 else
@@ -130,12 +129,12 @@ namespace VDS.RDF.Query.Algebra
                     else
                     {
                         // Nothing yet bound to the Graph Variable so the Query is over all the named Graphs
-                        if (context.Query != null && context.Query.NamedGraphs.Any())
+                        if (context.Query != null && context.Query.NamedGraphNames.Any())
                         {
                             // Query specifies one/more named Graphs
-                            activeGraphs.AddRange(context.Query.NamedGraphs.Select(u => u.AbsoluteUri));
+                            activeGraphs.AddRange(context.Query.NamedGraphNames.Select(u => u.ToSafeString()));
                         }
-                        else if (context.Query != null && context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any())
+                        else if (context.Query != null && context.Query.DefaultGraphNames.Any() && !context.Query.NamedGraphNames.Any())
                         {
                             // Gives null since the query dataset does not include any named graphs
                             context.OutputMultiset = new NullMultiset();
@@ -156,26 +155,27 @@ namespace VDS.RDF.Query.Algebra
                 BaseMultiset initialInput = context.InputMultiset;
                 BaseMultiset finalResult = new Multiset();
 
-                // Evalute for each Graph URI and union the results
+                // Evaluate for each Graph URI and union the results
                 foreach (var uri in activeGraphs)
                 {
                     // Always use the same Input for each Graph URI and set that Graph to be the Active Graph
                     // Be sure to translate String.Empty back to the null URI to select the default graph
                     // correctly
                     context.InputMultiset = initialInput;
-                    Uri currGraphUri = (uri.Equals(string.Empty)) ? null : UriFactory.Create(uri);
+                    IRefNode currGraphName = (uri.Equals(string.Empty)) ? null : 
+                        uri.StartsWith("_:") ? new BlankNode(uri) : new UriNode(UriFactory.Create(uri));
 
                     // Set Active Graph
-                    if (currGraphUri == null)
+                    if (currGraphName == null)
                     {
                         // GRAPH operates over named graphs only so default graph gets skipped
                         continue;
                     }
                     // The result of the HasGraph() call is ignored we just make it so datasets with any kind of 
                     // load on demand behaviour work properly
-                    context.Data.HasGraph(currGraphUri);
+                    context.Data.HasGraph(currGraphName);
                     // All we actually care about is setting the active graph
-                    context.Data.SetActiveGraph(currGraphUri);
+                    context.Data.SetActiveGraph(currGraphName);
                     datasetOk = true;
 
                     // Evaluate for the current Active Graph
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Algebra
                         if (_graphSpecifier.TokenType == Token.VARIABLE)
                         {
                             // Include graph variable if not yet bound
-                            INode currGraph = new UriNode(currGraphUri);
+                            INode currGraph = currGraphName;
                             var s = new Set();
                             s.Add(_graphSpecifier.Value.Substring(1), currGraph);
                             finalResult.Add(s);
@@ -209,16 +209,15 @@ namespace VDS.RDF.Query.Algebra
                         if (_graphSpecifier.TokenType == Token.VARIABLE)
                         {
                             var gvar = _graphSpecifier.Value.Substring(1);
-                            INode currGraph = new UriNode(currGraphUri);
                             foreach (var id in result.SetIDs.ToList())
                             {
                                 ISet s = result[id];
                                 if (s[gvar] == null)
                                 {
                                     // If Graph Variable is not yet bound for solution bind it
-                                    s.Add(gvar, currGraph);
+                                    s.Add(gvar, currGraphName);
                                 }
-                                else if (!s[gvar].Equals(currGraph))
+                                else if (!s[gvar].Equals(currGraphName))
                                 {
                                     // If Graph Variable is bound for solution and doesn't match
                                     // current Graph then we have to remove the solution
@@ -270,7 +269,7 @@ namespace VDS.RDF.Query.Algebra
                 if (_graphSpecifier.TokenType != Token.VARIABLE) return _pattern.FloatingVariables;
 
                 // May need to add graph variable to floating variables if it isn't fixed
-                // Stricly speaking the graph variable should always be fixed but non-standard implementations may treat the default graph as a named graph with a null URI
+                // Strictly speaking the graph variable should always be fixed but non-standard implementations may treat the default graph as a named graph with a null URI
                 var graphVar = ((VariableToken) _graphSpecifier).Value.Substring(1);
                 var fixedVars = new HashSet<string>(FixedVariables);
                 return fixedVars.Contains(graphVar) ? _pattern.FloatingVariables : _pattern.FloatingVariables.Concat(graphVar.AsEnumerable()).Distinct();
@@ -307,7 +306,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Graph(" + _graphSpecifier.Value + ", " + _pattern.ToString() + ")";
+            return $"Graph({_graphSpecifier.Value}, {_pattern})";
         }
 
         /// <summary>
@@ -316,8 +315,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
+            var q = new SparqlQuery {RootGraphPattern = ToGraphPattern()};
             q.Optimise();
             return q;
         }
@@ -360,7 +358,7 @@ namespace VDS.RDF.Query.Algebra
             var other = (Graph) algebra;
             if (other.GraphSpecifier.TokenType == graphSpecifier.TokenType && other.GraphSpecifier.Value.Equals(graphSpecifier.Value))
             {
-                // We already have the appropriate graph specifier applied to us so reapplying it is unecessary
+                // We already have the appropriate graph specifier applied to us so reapplying it is unnecessary
                 return algebra;
             }
             return new Graph(algebra, graphSpecifier);

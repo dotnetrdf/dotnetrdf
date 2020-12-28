@@ -34,30 +34,21 @@ namespace VDS.RDF.Parsing.Handlers
     public class StoreHandler
         : BaseRdfHandler
     {
-        private ITripleStore _store;
-        private INamespaceMapper _nsmap = new NamespaceMapper();
+        private readonly INamespaceMapper _nsmap = new NamespaceMapper();
 
         /// <summary>
         /// Creates a new Store Handler.
         /// </summary>
         /// <param name="store">Triple Store.</param>
         public StoreHandler(ITripleStore store)
-            : base()
         {
-            if (store == null) throw new ArgumentNullException("store");
-            _store = store;
+            Store = store ?? throw new ArgumentNullException(nameof(store));
         }
 
         /// <summary>
         /// Gets the Triple Store that this Handler is populating.
         /// </summary>
-        protected ITripleStore Store
-        {
-            get
-            {
-                return _store;
-            }
-        }
+        protected ITripleStore Store { get; }
 
         #region IRdfHandler Members
 
@@ -80,12 +71,13 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (!_store.HasGraph(t.GraphUri))
+            IRefNode targetGraphName = t.GraphUri == null ? null : new UriNode(t.GraphUri);
+            if (!Store.HasGraph(targetGraphName))
             {
                 var g = new Graph(t.GraphUri == null ? null : new UriNode(t.GraphUri));
-                _store.Add(g);
+                Store.Add(g);
             }
-            IGraph target = _store[t.GraphUri];
+            IGraph target = Store[targetGraphName];
             target.Assert(t);
             return true;
         }
@@ -99,13 +91,13 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Ends RDF handling and propogates all discovered namespaces to all discovered graphs.
+        /// Ends RDF handling and propagates all discovered namespaces to all discovered graphs.
         /// </summary>
         /// <param name="ok">Whether parsing completed successfully.</param>
         protected override void EndRdfInternal(bool ok)
         {
             // Propogate discovered namespaces to all graphs
-            foreach (IGraph g in _store.Graphs)
+            foreach (IGraph g in Store.Graphs)
             {
                 g.NamespaceMap.Import(_nsmap);
             }

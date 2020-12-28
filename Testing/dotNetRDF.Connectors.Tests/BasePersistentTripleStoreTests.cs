@@ -90,9 +90,9 @@ namespace VDS.RDF.Storage
 
             var store = new PersistentTripleStore(manager);
             var nodeFactory = new NodeFactory();
-            var testGraph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
-            var testGraph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
-            var testGraph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            IUriNode testGraph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            IUriNode testGraph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
+            IUriNode testGraph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
             try
             {
                 Assert.True(store.HasGraph(testGraph1), "URI 1 should return true for HasGraph()");
@@ -102,7 +102,7 @@ namespace VDS.RDF.Storage
                 Assert.True(store.HasGraph(testGraph3), "URI 3 should return true for HasGraph()");
                 Assert.True(store.Graphs.Contains(testGraph3), "URI 3 should return true for Graphs.Contains()");
 
-                var noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
+                IUriNode noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
                 Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
                 Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
 
@@ -163,7 +163,7 @@ namespace VDS.RDF.Storage
         private void TestAddTriplesFlushed(IStorageProvider manager)
         {
             var nodeFactory = new NodeFactory();
-            var testGraphName = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            IUriNode testGraphName = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
             EnsureGraphDeleted(manager, testGraphName);
             EnsureTestDataset(manager);
 
@@ -196,7 +196,7 @@ namespace VDS.RDF.Storage
         private void TestAddTriplesDiscarded(IStorageProvider manager)
         {
             var nodeFactory = new NodeFactory();
-            var testGraphName = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            IUriNode testGraphName = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
             EnsureGraphDeleted(manager, testGraphName);
             EnsureTestDataset(manager);
 
@@ -372,7 +372,7 @@ namespace VDS.RDF.Storage
             var nodeFactory = new NodeFactory();
             try
             {
-                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+                IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);
@@ -405,7 +405,7 @@ namespace VDS.RDF.Storage
             var nodeFactory = new NodeFactory();
             try
             {
-                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+                IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);
@@ -503,7 +503,7 @@ namespace VDS.RDF.Storage
             var nodeFactory = new NodeFactory();
             try
             {
-                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+                IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 IGraph g = store[toRemove];
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
@@ -534,7 +534,7 @@ namespace VDS.RDF.Storage
             var nodeFactory = new NodeFactory();
             try
             {
-                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+                IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 IGraph g = store[toRemove];
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
@@ -681,7 +681,7 @@ namespace VDS.RDF.Storage
         {
             EnsureTestDataset(manager);
             var nodeFactory = new NodeFactory();
-            var updateUri = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/update/temp"));
+            IUriNode updateUri = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/update/temp"));
             EnsureGraphDeleted(manager, updateUri);
 
             var store = new PersistentTripleStore(manager);
@@ -739,17 +739,21 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
+            var nodeFactory = new NodeFactory();
             try
             {
                 // First prime the persistent store by loading a bunch of stuff
-                Assert.True(store.HasGraph(new Uri(TestGraphUri1)), "URI 1 should return true for HasGraph()");
-                Assert.True(store.Graphs.Contains(new Uri(TestGraphUri1)), "URI 1 should return true for Graphs.Contains()");
-                Assert.True(store.HasGraph(new Uri(TestGraphUri2)), "URI 2 should return true for HasGraph()");
-                Assert.True(store.Graphs.Contains(new Uri(TestGraphUri2)), "URI 2 should return true for Graphs.Contains()");
-                Assert.True(store.HasGraph(new Uri(TestGraphUri3)), "URI 3 should return true for HasGraph()");
-                Assert.True(store.Graphs.Contains(new Uri(TestGraphUri3)), "URI 3 should return true for Graphs.Contains()");
+                IUriNode testGraphName1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+                IUriNode testGraphName2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
+                IUriNode testGraphName3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri3));
+                Assert.True(store.HasGraph(testGraphName1), "URI 1 should return true for HasGraph()");
+                Assert.True(store.Graphs.Contains(testGraphName1), "URI 1 should return true for Graphs.Contains()");
+                Assert.True(store.HasGraph(testGraphName2), "URI 2 should return true for HasGraph()");
+                Assert.True(store.Graphs.Contains(testGraphName2), "URI 2 should return true for Graphs.Contains()");
+                Assert.True(store.HasGraph(testGraphName3), "URI 3 should return true for HasGraph()");
+                Assert.True(store.Graphs.Contains(testGraphName3), "URI 3 should return true for Graphs.Contains()");
 
-                var noSuchThing = new Uri("http://example.org/persistence/graphs/noSuchGraph");
+                IRefNode noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
                 Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
                 Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
 

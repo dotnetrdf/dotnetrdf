@@ -36,8 +36,8 @@ namespace VDS.RDF.Query.Datasets
     public class FullTextIndexedDataset
         : WrapperDataset
     {
-        private IFullTextIndexer _indexer;
-        private bool _indexNow = false;
+        private readonly IFullTextIndexer _indexer;
+        private readonly bool _indexNow = false;
 
         /// <summary>
         /// Creates a new Full Text Indexed Dataset.
@@ -118,14 +118,28 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by GetModifiableGraph(IRefNode)")]
         public override IGraph GetModifiableGraph(Uri graphUri)
         {
             //Use Events to pick up Triple Level changes in the Modifiable Graph
             //because writing a Graph wrapper for this seems like overkill when
             //there are just events we can hook into
             IGraph g = base.GetModifiableGraph(graphUri);
-            g.TripleAsserted += new TripleEventHandler(HandleTripleAdded);
-            g.TripleRetracted += new TripleEventHandler(HandleTripleRemoved);
+            g.TripleAsserted += HandleTripleAdded;
+            g.TripleRetracted += HandleTripleRemoved;
+            return g;
+        }
+
+        /// <summary>
+        /// Gets a modifiable graph from teh store, ensuring that modifications will update the full text index.
+        /// </summary>
+        /// <param name="graphName"></param>
+        /// <returns></returns>
+        public override IGraph GetModifiableGraph(IRefNode graphName)
+        {
+            IGraph g  = base.GetModifiableGraph(graphName);
+            g.TripleAsserted += HandleTripleAdded;
+            g.TripleRetracted += HandleTripleRemoved;
             return g;
         }
 

@@ -45,6 +45,7 @@ namespace VDS.RDF.Query
     /// Queries are federated by executing multiple requesting simultaneously and asynchronously against the endpoints in question with the data then merged locally.  The merging process does not attempt to remove duplicate data it just naively merges the data.
     /// </para>
     /// </remarks>
+    [Obsolete("Replaced by VDS.RDF.Query.FederatedSparqlQueryClient")]
     public class FederatedSparqlRemoteEndpoint 
         : SparqlRemoteEndpoint
     {

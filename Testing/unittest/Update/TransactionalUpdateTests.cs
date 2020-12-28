@@ -24,13 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
-using VDS.RDF.Update;
 
 namespace VDS.RDF.Update
 {
@@ -43,8 +39,8 @@ namespace VDS.RDF.Update
 
     public class TransactionalUpdateTests
     {
-        protected readonly Uri TestGraphUri = new Uri("http://example.org/graph");
-        private SparqlUpdateParser _parser = new SparqlUpdateParser();
+        protected readonly IRefNode TestGraphUri = new UriNode(new Uri("http://example.org/graph"));
+        private readonly SparqlUpdateParser _parser = new SparqlUpdateParser();
 
         protected virtual ISparqlDataset GetEmptyDataset()
         {
@@ -55,7 +51,7 @@ namespace VDS.RDF.Update
         {
             var dataset = new InMemoryDataset();
 
-            var g = new Graph(new UriNode(TestGraphUri));
+            var g = new Graph(TestGraphUri);
             dataset.AddGraph(g);
 
             return dataset;

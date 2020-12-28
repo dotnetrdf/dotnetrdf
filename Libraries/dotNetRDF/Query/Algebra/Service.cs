@@ -27,6 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Patterns;
 
@@ -40,7 +42,7 @@ namespace VDS.RDF.Query.Algebra
     {
         private readonly IToken _endpointSpecifier;
         private readonly GraphPattern _pattern;
-        private readonly bool _silent = false;
+        private readonly bool _silent;
 
         /// <summary>
         /// Creates a new Service clause with the given Endpoint Specifier and Graph Pattern.
@@ -73,8 +75,7 @@ namespace VDS.RDF.Query.Algebra
             var bypassSilent = false;
             try
             {
-                SparqlRemoteEndpoint endpoint;
-                Uri endpointUri;
+                ISparqlQueryClient endpoint;
                 var baseUri = (context.Query.BaseUri == null) ? string.Empty : context.Query.BaseUri.AbsoluteUri;
                 var sparqlQuery = new SparqlParameterizedString("SELECT * WHERE ");
 
@@ -95,8 +96,8 @@ namespace VDS.RDF.Query.Algebra
                 // Select which service to use
                 if (_endpointSpecifier.TokenType == Token.URI)
                 {
-                    endpointUri = UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
-                    endpoint = new SparqlRemoteEndpoint(endpointUri);
+                    Uri endpointUri = UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
+                    endpoint = new SparqlQueryClient(context.GetHttpClient(endpointUri), endpointUri);
                 }
                 else if (_endpointSpecifier.TokenType == Token.VARIABLE)
                 {
@@ -117,16 +118,16 @@ namespace VDS.RDF.Query.Algebra
                     services = services.Distinct().ToList();
 
                     // Now generate a Federated Remote Endpoint
-                    var serviceEndpoints = new List<SparqlRemoteEndpoint>();
-                    services.ForEach(u => serviceEndpoints.Add(new SparqlRemoteEndpoint(u.Uri)));
-                    endpoint = new FederatedSparqlRemoteEndpoint(serviceEndpoints);
+                    var serviceEndpoints = new List<SparqlQueryClient>();
+                    services.ForEach(u => serviceEndpoints.Add(new SparqlQueryClient(context.GetHttpClient(u.Uri), u.Uri)));
+                    endpoint = new FederatedSparqlQueryClient(serviceEndpoints);
                 }
                 else
                 {
                     // Note that we must bypass the SILENT operator in this case as this is not an evaluation failure
                     // but a query syntax error
                     bypassSilent = true;
-                    throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + _endpointSpecifier.GetType().ToString() + " Token was provided");
+                    throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + _endpointSpecifier.GetType() + " Token was provided");
                 }
 
                 // Where possible do substitution and execution to get accurate and correct SERVICE results
@@ -174,7 +175,12 @@ namespace VDS.RDF.Query.Algebra
                         {
                             sparqlQuery.SetVariable(var, s[var]);
                         }
-                        SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
+
+                        SparqlResultSet results = Task.Run(() =>
+                        {
+                            var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(context.RemainingTimeout));
+                            return endpoint.QueryWithResultSetAsync(sparqlQuery.ToString(), cts.Token).Result;
+                        }).Result;
                         context.CheckTimeout();
 
                         foreach (SparqlResult r in results)
@@ -195,7 +201,15 @@ namespace VDS.RDF.Query.Algebra
                     // No pre-bound variables/BINDINGS clause so just execute the query
 
                     // Try and get a Result Set from the Service
-                    SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
+                    SparqlResultSet results = Task.Run(() =>
+                        {
+                            var cts = new CancellationTokenSource();
+                            cts.CancelAfter(TimeSpan.FromMilliseconds(context.RemainingTimeout));
+                            return endpoint.QueryWithResultSetAsync(sparqlQuery.ToString(), cts.Token);
+                        }
+                    ).Result;
+                    
+                    context.CheckTimeout();
 
                     // Transform this Result Set back into a Multiset
                     foreach (SparqlResult r in results.Results)
@@ -295,7 +309,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Service(" + _endpointSpecifier.Value + ", " + _pattern.ToString() + ")";
+            return "Service(" + _endpointSpecifier.Value + ", " + _pattern + ")";
         }
 
         /// <summary>
@@ -304,8 +318,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
+            var q = new SparqlQuery {RootGraphPattern = ToGraphPattern()};
             q.Optimise();
             return q;
         }
@@ -325,9 +338,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                var parent = new GraphPattern();
-                parent.IsService = true;
-                parent.GraphSpecifier = _endpointSpecifier;
+                var parent = new GraphPattern {IsService = true, GraphSpecifier = _endpointSpecifier};
                 parent.AddGraphPattern(p);
                 return parent;
             }

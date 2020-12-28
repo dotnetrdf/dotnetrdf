@@ -227,6 +227,7 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IRefNode> DefaultGraphNames
         {
             get
@@ -322,7 +323,7 @@ namespace VDS.RDF.Query.Datasets
             var added = false;
             foreach (Triple t in g.Triples)
             {
-                added = AddQuad(g.BaseUri, t) || added;
+                added = AddQuad(g.Name, t) || added;
             }
             return added;
         }
@@ -446,7 +447,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage.
+        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph(IRefNode)">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage.
         /// </para>
         /// </remarks>
         [Obsolete("Replaced by this[IRefNode]")]
@@ -478,12 +479,12 @@ namespace VDS.RDF.Query.Datasets
                     {
                         if (DefaultGraphNames.Count() == 1)
                         {
-                            return new Graph(new QuadDatasetTripleCollection(this, DefaultGraphUris.First()));
+                            return new Graph(new QuadDatasetTripleCollection(this, DefaultGraphNames.First()));
                         }
                         else
                         {
                             IEnumerable<IGraph> gs = (from u in DefaultGraphNames
-                                select new Graph(new QuadDatasetTripleCollection(this, u))).OfType<IGraph>();
+                                select new Graph(new QuadDatasetTripleCollection(this, u)));
                             return new UnionGraph(gs.First(), gs.Skip(1));
                         }
                     }

@@ -30,14 +30,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
+using System.Net.Http;
+using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
-using VDS.RDF.Update;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
@@ -58,7 +57,10 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Underlying SPARQL query endpoint.
         /// </summary>
+#pragma warning disable 618
         protected SparqlRemoteEndpoint _endpoint;
+#pragma warning restore 618
+
         /// <summary>
         /// Method for loading graphs.
         /// </summary>
@@ -76,10 +78,10 @@ namespace VDS.RDF.Storage
         /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint.
         /// </summary>
         /// <param name="endpoint">Endpoint.</param>
+        [Obsolete("Replaced by SparqlConnector(SparqlQueryClient)")]
         public SparqlConnector(SparqlRemoteEndpoint endpoint)
         {
-            if (endpoint == null) throw new ArgumentNullException("endpoint", "A valid Endpoint must be specified");
-            _endpoint = endpoint;
+            _endpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint), "A valid Endpoint must be specified");
             _timeout = endpoint.Timeout;
         }
 
@@ -88,6 +90,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="endpoint">Endpoint.</param>
         /// <param name="mode">Load Method to use.</param>
+        [Obsolete("Replaced by SparqlConnector(SparqlQueryClient, SparqlConnectorLoadMethod)")]
         public SparqlConnector(SparqlRemoteEndpoint endpoint, SparqlConnectorLoadMethod mode)
             : this(endpoint)
         {
@@ -95,9 +98,30 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Creates a new SPARQL connector which uses the given SPARQL query client.
+        /// </summary>
+        /// <param name="client"></param>
+        public SparqlConnector(SparqlQueryClient client)
+        {
+            QueryClient = client ??
+                           throw new ArgumentNullException(nameof(client), "A valid query client must be specified");
+        }
+
+        /// <summary>
+        /// Creates a new SPARQL connector which uses the given SPARQL query client.
+        /// </summary>
+        /// <param name="client">Query client to use.</param>
+        /// <param name="mode">Load method to use.</param>
+        public SparqlConnector(SparqlQueryClient client, SparqlConnectorLoadMethod mode) : this(client)
+        {
+            _mode = mode;
+        }
+        
+        /// <summary>
         /// Creates a new SPARQL Connector which uses the given SPARQL Endpoint.
         /// </summary>
         /// <param name="endpointUri">Endpoint URI.</param>
+        [Obsolete("Replaced by SparqlConnector(SparqlQueryClient)")]
         public SparqlConnector(Uri endpointUri)
             : this(new SparqlRemoteEndpoint(endpointUri)) { }
 
@@ -106,6 +130,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="endpointUri">Endpoint URI.</param>
         /// <param name="mode">Load Method to use.</param>
+        [Obsolete("Replaced by SparqlConnector(SparqlQueryClient, SparqlConnectorLoadMethod)")]
         public SparqlConnector(Uri endpointUri, SparqlConnectorLoadMethod mode)
             : this(new SparqlRemoteEndpoint(endpointUri), mode) { }
 
@@ -142,6 +167,8 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint.
         /// </summary>
+        /// <remarks>This property is only used when using the obsolete <see cref="SparqlRemoteEndpoint"/>-backed implementation. When using the replacement <see cref="SparqlQueryClient"/>-backed implementation, timeout is controlled by the <see cref="HttpClient"/> used by the SparqlQueryClient.</remarks>
+        [Obsolete("This property is only used by the obsolete SparqlRemoteEndpoint-backed implementation.")]
         public virtual int Timeout
         {
             get 
@@ -159,6 +186,7 @@ namespace VDS.RDF.Storage
         /// Gets the underlying <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> which this class is a wrapper around.
         /// </summary>
         [Description("The Remote Endpoint to which queries are sent using HTTP."),TypeConverter(typeof(ExpandableObjectConverter))]
+        [Obsolete]
         public SparqlRemoteEndpoint Endpoint 
         {
             get 
@@ -166,6 +194,11 @@ namespace VDS.RDF.Storage
                 return _endpoint;
             }
         }
+        
+        /// <summary>
+        /// Gets the underlying <see cref="SparqlQueryClient"/> which this class is a wrapper around.
+        /// </summary>
+        public SparqlQueryClient QueryClient { get; }
 
         /// <summary>
         /// Makes a Query against the SPARQL Endpoint.
@@ -196,6 +229,56 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlQuery">SPARQL Query.</param>
         /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
+        {
+            if (QueryClient != null)
+            {
+                QueryWithQueryClient(rdfHandler, resultsHandler, sparqlQuery);
+            }
+            else
+            {
+                QueryWithRemoteEndpoint(rdfHandler, resultsHandler, sparqlQuery);
+            }
+        }
+        
+        private void QueryWithQueryClient(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
+        {
+            if (!_skipLocalParsing)
+            {
+                var queryParser = new SparqlQueryParser();
+                SparqlQuery q = queryParser.ParseFromString(sparqlQuery);
+                switch (q.QueryType)
+                {
+                    case SparqlQueryType.Ask:
+                    case SparqlQueryType.Select:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                    case SparqlQueryType.SelectDistinct:
+                    case SparqlQueryType.SelectReduced:
+                        // Some kind of Sparql Result Set
+                        QueryClient.QueryWithResultSetAsync(sparqlQuery, resultsHandler).Wait();
+                        break;
+                    case SparqlQueryType.Construct:
+                    case SparqlQueryType.Describe:
+                    case SparqlQueryType.DescribeAll:
+                        // Some kind of Graph
+                        QueryClient.QueryWithResultGraphAsync(sparqlQuery, rdfHandler).Wait();
+                        break;
+
+                    case SparqlQueryType.Unknown:
+                    default:
+                        // Error
+                        throw new RdfQueryException(
+                            "Unknown Query Type was used, unable to determine how to process the response");
+                }
+            }
+            else
+            {
+                QueryClient.QueryAsync(sparqlQuery, rdfHandler, resultsHandler, CancellationToken.None).Wait();
+            }
+        }
+
+        private void QueryWithRemoteEndpoint(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             if (!_skipLocalParsing)
             {
@@ -228,7 +311,8 @@ namespace VDS.RDF.Storage
                     case SparqlQueryType.Unknown:
                     default:
                         // Error
-                        throw new RdfQueryException("Unknown Query Type was used, unable to determine how to process the response");
+                        throw new RdfQueryException(
+                            "Unknown Query Type was used, unable to determine how to process the response");
                 }
             }
             else
@@ -324,7 +408,7 @@ namespace VDS.RDF.Storage
                 }
             }
 
-            _endpoint.QueryWithResultGraph(handler, query);
+            Query(handler, null, query);
         }
 
         /// <summary>
@@ -417,17 +501,18 @@ namespace VDS.RDF.Storage
         /// Lists the Graphs in the Store.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Replaced by ListGraphNames()")]
         public virtual IEnumerable<Uri> ListGraphs()
         {
             try
             {
                 // Technically the ?s ?p ?o is unecessary here but we may not get the right results if we don't include this because some stores
                 // won't interpret GRAPH ?g { } correctly
-                var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-                if (results is SparqlResultSet)
+                object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                if (results is SparqlResultSet resultSet)
                 {
                     var graphs = new List<Uri>();
-                    foreach (SparqlResult r in ((SparqlResultSet)results))
+                    foreach (SparqlResult r in resultSet)
                     {
                         if (r.HasValue("g"))
                         {
@@ -451,6 +536,7 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <inheritdoc/>
         public virtual IEnumerable<string> ListGraphNames()
         {
             try
@@ -458,10 +544,10 @@ namespace VDS.RDF.Storage
                 // Technically the ?s ?p ?o is unecessary here but we may not get the right results if we don't include this because some stores
                 // won't interpret GRAPH ?g { } correctly
                 var results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-                if (results is SparqlResultSet)
+                if (results is SparqlResultSet resultSet)
                 {
                     var graphs = new List<string>();
-                    foreach (SparqlResult r in ((SparqlResultSet)results))
+                    foreach (SparqlResult r in resultSet)
                     {
                         if (r.HasValue("g"))
                         {
@@ -560,7 +646,7 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, skipParsing, _skipLocalParsing.ToLiteral(context.Graph)));
 
             // Query Endpoint
-            if (_endpoint is IConfigurationSerializable)
+            if (_endpoint != null)
             {
                 // Use the indirect serialization method
 
@@ -573,349 +659,15 @@ namespace VDS.RDF.Storage
                 // Link that serialization to our serialization
                 context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
             }
-            else
-            {
-                // Use the direct serialization method
-                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
-                INode defGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
-                INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
-                
-                context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(_endpoint.Uri.AbsoluteUri)));
-                foreach (var u in _endpoint.DefaultGraphs)
-                {
-                    context.Graph.Assert(new Triple(manager, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
-                }
-                foreach (var u in _endpoint.NamedGraphs)
-                {
-                    context.Graph.Assert(new Triple(manager, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Class for connecting to any SPARQL server that provides both a query and update endpoint.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This class is a wrapper around a <see cref="SparqlRemoteEndpoint"/> and a <see cref="SparqlRemoteUpdateEndpoint"/>.  The former is used for the query functionality while the latter is used for the update functionality.  As updates happen via SPARQL the behaviour with respects to adding and removing blank nodes will be somewhat up to the underlying SPARQL implementation.  This connector is <strong>not</strong> able to carry out <see cref="IStorageProvider.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})"/> operations which attempt to delete blank nodes and cannot guarantee that added blank nodes bear any relation to existing blank nodes in the store.
-    /// </para>
-    /// <para>
-    /// Unlike other HTTP based connectors this connector does not derive from <see cref="BaseAsyncHttpConnector">BaseHttpConnector</see> - if you need to specify proxy information you should do so on the SPARQL Endpoint you are wrapping either by providing endpoint instance pre-configured with the proxy settings or by accessing the endpoint via the <see cref="ReadWriteSparqlConnector">Endpoint</see> and <see cref="ReadWriteSparqlConnector.UpdateEndpoint">UpdateEndpoint</see> properties and programmatically adding the settings.
-    /// </para>
-    /// </remarks>
-    public class ReadWriteSparqlConnector
-        : SparqlConnector, IUpdateableStorage
-    {
-        private readonly SparqlFormatter _formatter = new SparqlFormatter();
-        private readonly SparqlRemoteUpdateEndpoint _updateEndpoint;
-
-        /// <summary>
-        /// Creates a new connection.
-        /// </summary>
-        /// <param name="queryEndpoint">Query Endpoint.</param>
-        /// <param name="updateEndpoint">Update Endpoint.</param>
-        /// <param name="mode">Method for loading graphs.</param>
-        public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint, SparqlConnectorLoadMethod mode)
-            : base(queryEndpoint, mode)
-        {
-            _updateEndpoint = updateEndpoint ?? throw new ArgumentNullException(nameof(updateEndpoint), "Update Endpoint cannot be null, if you require a read-only SPARQL connector use the base class SparqlConnector instead");
-        }
-
-        /// <summary>
-        /// Creates a new connection.
-        /// </summary>
-        /// <param name="queryEndpoint">Query Endpoint.</param>
-        /// <param name="updateEndpoint">Update Endpoint.</param>
-        public ReadWriteSparqlConnector(SparqlRemoteEndpoint queryEndpoint, SparqlRemoteUpdateEndpoint updateEndpoint)
-            : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
-
-        /// <summary>
-        /// Creates a new connection.
-        /// </summary>
-        /// <param name="queryEndpoint">Query Endpoint.</param>
-        /// <param name="updateEndpoint">Update Endpoint.</param>
-        /// <param name="mode">Method for loading graphs.</param>
-        public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint, SparqlConnectorLoadMethod mode)
-            : this(new SparqlRemoteEndpoint(queryEndpoint), new SparqlRemoteUpdateEndpoint(updateEndpoint), mode) { }
-
-        /// <summary>
-        /// Creates a new connection.
-        /// </summary>
-        /// <param name="queryEndpoint">Query Endpoint.</param>
-        /// <param name="updateEndpoint">Update Endpoint.</param>
-        public ReadWriteSparqlConnector(Uri queryEndpoint, Uri updateEndpoint)
-            : this(queryEndpoint, updateEndpoint, SparqlConnectorLoadMethod.Construct) { }
-
-        /// <summary>
-        /// Gets the underlying <see cref="SparqlRemoteUpdateEndpoint">SparqlRemoteUpdateEndpoint</see> which this class is a wrapper around.
-        /// </summary>
-        [Description("The Remote Update Endpoint to which queries are sent using HTTP."), TypeConverter(typeof(ExpandableObjectConverter))]
-        public SparqlRemoteUpdateEndpoint UpdateEndpoint
-        {
-            get
-            {
-                return _updateEndpoint;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the HTTP Timeout in milliseconds used for communicating with the SPARQL Endpoint.
-        /// </summary>
-        public override int Timeout
-        {
-            get
-            {
-                return _timeout;
-            }
-            set
-            {
-                _timeout = value;
-                _endpoint.Timeout = value;
-                _updateEndpoint.Timeout = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets that deleting graphs is supported.
-        /// </summary>
-        public override bool DeleteSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Gets that the store is not read-only.
-        /// </summary>
-        public override bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Gets the IO behaviour for the store.
-        /// </summary>
-        public override IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.CanUpdateTriples | IOBehaviour.OverwriteTriples | IOBehaviour.OverwriteDefault | IOBehaviour.OverwriteNamed;
-            }
-        }
-
-        /// <summary>
-        /// Gets that triple level updates are supported, see the remarks section of the <see cref="ReadWriteSparqlConnector"/> for exactly what is and isn't supported.
-        /// </summary>
-        public override bool UpdateSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Deletes a graph from the store.
-        /// </summary>
-        /// <param name="graphUri">URI of the graph to delete.</param>
-        public override void DeleteGraph(string graphUri)
-        {
-            DeleteGraph(graphUri.ToSafeUri());
-        }
-
-        /// <summary>
-        /// Deletes a graph from the store.
-        /// </summary>
-        /// <param name="graphUri">URI of the graph to delete.</param>
-        public override void DeleteGraph(Uri graphUri)
-        {
-            if (graphUri == null)
-            {
-                Update("DROP DEFAULT");
-            }
-            else
-            {
-                Update("DROP GRAPH <" + _formatter.FormatUri(graphUri) + ">");
-            }
-        }
-
-        /// <summary>
-        /// Saves a graph to the store.
-        /// </summary>
-        /// <param name="g">Graph to save.</param>
-        public override void SaveGraph(IGraph g)
-        {
-            var updates = new StringBuilder();
-
-            // Saving a Graph ovewrites a previous graph so start with a CLEAR SILENT GRAPH
-            if (g.BaseUri == null)
-            {
-                updates.AppendLine("CLEAR SILENT DEFAULT;");
-            }
-            else
-            {
-                updates.AppendLine("CLEAR SILENT GRAPH <" + _formatter.FormatUri(g.BaseUri) + ">;");
-            }
-
-            // Insert preamble
-            // Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
-            if (g.BaseUri != null)
-            {
-                updates.AppendLine("WITH <" + _formatter.FormatUri(g.BaseUri) + ">");
-            }
-            updates.AppendLine("INSERT");
-            updates.AppendLine("{");
-
-            // Serialize triples
-            foreach (Triple t in g.Triples)
-            {
-                updates.AppendLine(" " + _formatter.Format(t));
-            }
-
-            // End
-            updates.AppendLine("} WHERE { }");
-
-            // Save the graph
-            Update(updates.ToString());
-        }
-
-        /// <summary>
-        /// Updates a graph in the store.
-        /// </summary>
-        /// <param name="graphUri">URI of the graph to update.</param>
-        /// <param name="additions">Triples to add.</param>
-        /// <param name="removals">Triples to remove.</param>
-        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
-        {
-            UpdateGraph(graphUri.ToSafeUri(), additions, removals);
-        }
-
-        /// <summary>
-        /// Updates a graph in the store.
-        /// </summary>
-        /// <param name="graphUri">URI of the graph to update.</param>
-        /// <param name="additions">Triples to add.</param>
-        /// <param name="removals">Triples to remove.</param>
-        public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
-        {
-            var updates = new StringBuilder();
-
-            if (additions != null)
-            {
-                if (additions.Any())
-                {
-                    // Insert preamble
-                    // Note that we use INSERT { } WHERE { } rather than INSERT DATA { } so we can insert blank nodes
-                    if (graphUri != null)
-                    {
-                        updates.AppendLine("WITH <" + _formatter.FormatUri(graphUri) + ">");
-                    }
-                    updates.AppendLine("INSERT");
-                    updates.AppendLine("{");
-
-                    // Serialize triples
-                    foreach (Triple t in additions)
-                    {
-                        updates.AppendLine(" " + _formatter.Format(t));
-                    }
-
-                    // End
-                    updates.AppendLine("} WHERE { }");
-                    if (removals != null && removals.Any()) updates.AppendLine(";");
-                }
-            }
-            if (removals != null)
-            {
-                if (removals.Any())
-                {
-                    // Insert preamble
-                    // Note that we use DELETE DATA { } for deletes so we don't support deleting blank nodes
-                    updates.AppendLine("DELETE DATA");
-                    updates.AppendLine("{");
-
-                    if (graphUri != null)
-                    {
-                        updates.AppendLine("GRAPH <" + _formatter.FormatUri(graphUri) + "> {");
-                    }
-
-                    // Serialize triples
-                    foreach (Triple t in removals)
-                    {
-                        if (!t.IsGroundTriple) throw new RdfStorageException("The ReadWriteSparqlConnector does not support the deletion of blank node containing triples");
-                        updates.AppendLine("  " + _formatter.Format(t));
-                    }
-
-                    // End
-                    if (graphUri != null) updates.AppendLine(" }");
-                    updates.AppendLine("}");
-                }
-            }
-
-            // Make an update if necessary
-            if (updates.Length > 0)
-            {
-                Update(updates.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Makes a SPARQL Update against the store.
-        /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update.</param>
-        public void Update(string sparqlUpdate)
-        {
-            if (!_skipLocalParsing)
-            {
-                // Parse the update locally to validate it
-                // This also saves us wasting a HttpWebRequest on a malformed update
-                var uparser = new SparqlUpdateParser();
-                uparser.ParseFromString(sparqlUpdate);
-
-                _updateEndpoint.Update(sparqlUpdate);
-            }
-            else
-            {
-                // If we're skipping local parsing then we'll need to just make a raw update
-                _updateEndpoint.Update(sparqlUpdate);
-            }
-        }
-
-        /// <summary>
-        /// Gets a String which gives details of the Connection.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "[SPARQL Query & Update] Query: " + _endpoint.Uri.AbsoluteUri + " Update: " + _updateEndpoint.Uri.AbsoluteUri;
-        }
-
-        /// <summary>
-        /// Serializes the connection's configuration.
-        /// </summary>
-        /// <param name="context">Configuration Serialization Context.</param>
-        public override void SerializeConfiguration(ConfigurationSerializationContext context)
-        {
-            // Call base SerializeConfiguration() first
-            INode manager = context.NextSubject;
-            context.NextSubject = manager;
-            base.SerializeConfiguration(context);
-            context.NextSubject = manager;
-
-            if (_updateEndpoint is IConfigurationSerializable)
+            else if (QueryClient != null)
             {
                 // Use the indirect serialization method
 
                 // Serialize the Endpoints Configuration
-                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
+                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint));
                 INode endpointObj = context.Graph.CreateBlankNode();
                 context.NextSubject = endpointObj;
-                ((IConfigurationSerializable)_updateEndpoint).SerializeConfiguration(context);
+                ((IConfigurationSerializable)QueryClient).SerializeConfiguration(context);
 
                 // Link that serialization to our serialization
                 context.Graph.Assert(new Triple(manager, endpoint, endpointObj));
@@ -923,9 +675,33 @@ namespace VDS.RDF.Storage
             else
             {
                 // Use the direct serialization method
-                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
+                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
+                INode defGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
+                INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
 
-                context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(_endpoint.Uri.AbsoluteUri)));
+                if (_endpoint != null)
+                {
+                    context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(_endpoint.Uri.AbsoluteUri)));
+                    foreach (var u in _endpoint.DefaultGraphs)
+                    {
+                        context.Graph.Assert(new Triple(manager, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
+                    }
+                    foreach (var u in _endpoint.NamedGraphs)
+                    {
+                        context.Graph.Assert(new Triple(manager, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
+                    }
+                } else if (QueryClient != null)
+                {
+                    context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(QueryClient.EndpointUri.AbsoluteUri)));
+                    foreach (var u in QueryClient.DefaultGraphs)
+                    {
+                        context.Graph.Assert(new Triple(manager, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
+                    }
+                    foreach (var u in QueryClient.NamedGraphs)
+                    {
+                        context.Graph.Assert(new Triple(manager, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
+                    }
+                }
             }
         }
     }

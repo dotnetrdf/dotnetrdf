@@ -27,7 +27,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VDS.RDF.Parsing.Events;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
@@ -84,14 +83,14 @@ namespace VDS.RDF.Query
                     case SparqlQueryType.SelectDistinct:
                     case SparqlQueryType.SelectReduced:
                         temp = _client != null
-                            ? _client.QueryWithResultSetAsync(_formatter.Format(query), CancellationToken.None).Result
+                            ? Task.Run(()=>_client.QueryWithResultSetAsync(_formatter.Format(query), CancellationToken.None)).Result
                             : _endpoint.QueryWithResultSet(_formatter.Format(query));
                         break;
                     case SparqlQueryType.Construct:
                     case SparqlQueryType.Describe:
                     case SparqlQueryType.DescribeAll:
                         temp = _client != null
-                            ? _client.QueryWithResultGraphAsync(_formatter.Format(query), CancellationToken.None).Result
+                            ? Task.Run(()=>_client.QueryWithResultGraphAsync(_formatter.Format(query), CancellationToken.None)).Result
                             : _endpoint.QueryWithResultGraph(_formatter.Format(query));
                         break;
                     default:

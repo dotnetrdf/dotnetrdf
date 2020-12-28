@@ -123,9 +123,9 @@ namespace VDS.RDF.Update.Commands
             get
             {
                 var affectedUris = new List<string>();
-                if (TargetUri != null)
+                if (TargetGraph != null)
                 {
-                    affectedUris.Add(TargetUri.AbsoluteUri);
+                    affectedUris.Add(TargetGraph.ToString());
                 }
                 if (DeletePattern.IsGraph) affectedUris.Add(DeletePattern.GraphSpecifier.Value);
                 if (DeletePattern.HasChildGraphPatterns)
@@ -275,17 +275,18 @@ namespace VDS.RDF.Update.Commands
                 var query = new SparqlQuery();
                 foreach (Uri u in UsingUris)
                 {
-                    query.AddDefaultGraph(u);
+                    query.AddDefaultGraph(new UriNode(u));
                 }
                 foreach (Uri u in UsingNamedUris)
                 {
-                    query.AddNamedGraph(u);
+                    query.AddNamedGraph(new UriNode(u));
                 }
                 var queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor, context.Options);
                 if (UsingUris.Any())
                 {
                     // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
-                    context.Data.SetActiveGraph(_usingUris);
+                    IList<IRefNode> activeGraphs = _usingUris.Select<Uri, IRefNode>(u => new UriNode(u)).ToList();
+                    context.Data.SetActiveGraph(activeGraphs);
                     datasetOk = true;
                 }
                 BaseMultiset results = queryContext.Evaluate(where);
@@ -350,11 +351,11 @@ namespace VDS.RDF.Update.Commands
                         deletedTriples.Clear();
                         try
                         {
-                            string graphUri;
+                            IRefNode graphName;
                             switch (gp.GraphSpecifier.TokenType)
                             {
                                 case Token.URI:
-                                    graphUri = gp.GraphSpecifier.Value;
+                                    graphName = new UriNode(UriFactory.Create(gp.GraphSpecifier.Value));
                                     break;
                                 case Token.VARIABLE:
                                     var graphVar = gp.GraphSpecifier.Value.Substring(1);
@@ -368,7 +369,11 @@ namespace VDS.RDF.Update.Commands
                                         }
                                         else if (temp.NodeType == NodeType.Uri)
                                         {
-                                            graphUri = temp.ToSafeString();
+                                            graphName = temp as IUriNode;
+                                        }
+                                        else if (temp.NodeType == NodeType.Blank)
+                                        {
+                                            graphName = temp as IBlankNode;
                                         }
                                         else
                                         {
@@ -388,10 +393,10 @@ namespace VDS.RDF.Update.Commands
                             }
                             
                             // If the Dataset doesn't contain the Graph then no need to do the Deletions
-                            if (!context.Data.HasGraph(UriFactory.Create(graphUri))) continue;
+                            if (!context.Data.HasGraph(graphName)) continue;
 
                             // Do the actual Deletions
-                            IGraph h = context.Data.GetModifiableGraph(UriFactory.Create(graphUri));
+                            IGraph h = context.Data.GetModifiableGraph(graphName);
                             var constructContext = new ConstructContext(h, s, true);
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {

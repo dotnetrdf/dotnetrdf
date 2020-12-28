@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace VDS.RDF.Storage
@@ -152,7 +153,13 @@ namespace VDS.RDF.Storage
 
         private static IEnumerable<Uri> ListGraphs(IStorageProvider storage)
         {
-            return storage.ListGraphs();
+            foreach (var graphName in storage.ListGraphNames())
+            {
+                if (Uri.TryCreate(graphName, UriKind.Absolute, out Uri u))
+                {
+                    yield return u;
+                }
+            }
         }
 
         /// <summary>

@@ -38,8 +38,8 @@ namespace VDS.RDF.Query.Datasets
         : BaseTransactionalQuadDataset
         , IThreadSafeDataset
     {
-        private IInMemoryQueryableStore _store;
-        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private readonly IInMemoryQueryableStore _store;
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage.
@@ -232,6 +232,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="t">Triple.</param>
+        [Obsolete("Replaced by AddQuad(IRefNode, Triple)")]
         protected internal override bool AddQuad(Uri graphUri, Triple t)
         {
             if (!_store.HasGraph(graphUri))
@@ -243,6 +244,11 @@ namespace VDS.RDF.Query.Datasets
             return _store[graphUri].Assert(t);
         }
 
+        /// <summary>
+        /// Adds a Quad to the Dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="t">Triple.</param>
         protected internal override bool AddQuad(IRefNode graphName, Triple t)
         {
             if (!_store.HasGraph(graphName))
@@ -403,6 +409,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="t">Triple.</param>
+        [Obsolete("Replacecd by RemoveQuad(IRefNode, Triple)")]
         protected internal override bool RemoveQuad(Uri graphUri, Triple t)
         {
             if (_store.HasGraph(graphUri))
@@ -412,6 +419,12 @@ namespace VDS.RDF.Query.Datasets
             return false;
         }
 
+        /// <summary>
+        /// Removes a quad from the dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="t">Triple to remove.</param>
+        /// <returns></returns>
         protected internal override bool RemoveQuad(IRefNode graphName, Triple t)
         {
             if (_store.HasGraph(graphName))
@@ -429,9 +442,9 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected override void FlushInternal()
         {
-            if (_store is ITransactionalStore)
+            if (_store is ITransactionalStore store)
             {
-                ((ITransactionalStore)_store).Flush();
+                store.Flush();
             }
         }
     }

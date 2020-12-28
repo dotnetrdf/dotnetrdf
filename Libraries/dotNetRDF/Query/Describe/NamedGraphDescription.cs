@@ -50,9 +50,9 @@ namespace VDS.RDF.Query.Describe
 
             foreach (INode n in nodes)
             {
-                if (n.NodeType == NodeType.Uri)
+                if (n.NodeType == NodeType.Uri || n.NodeType == NodeType.Blank)
                 {
-                    IGraph g = context.Data[((IUriNode)n).Uri];
+                    IGraph g = context.Data[(IRefNode)n];
                     foreach (Triple t in g.Triples.ToList())
                     {
                         if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();

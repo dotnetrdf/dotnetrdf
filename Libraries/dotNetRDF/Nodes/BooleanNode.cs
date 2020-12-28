@@ -42,7 +42,6 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new boolean valued node.
         /// </summary>
-        /// <param name="g">Graph the node belong to.</param>
         /// <param name="value">Boolean Value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="normalizeValue">Whether to normalize <paramref name="lexicalValue"/> on node creation.</param>

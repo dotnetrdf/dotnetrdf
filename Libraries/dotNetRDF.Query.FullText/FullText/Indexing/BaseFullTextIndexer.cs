@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <summary>
         /// Indexes a Triple.
         /// </summary>
-        /// <param name="g">Graph context of the triple to be indexed</param>
+        /// <param name="g">Graph context of the triple to be indexed.</param>
         /// <param name="t">Triple.</param>
         public virtual void Index(IGraph g, Triple t)
         {

@@ -25,7 +25,7 @@
 */
 
 using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -143,23 +143,23 @@ namespace VDS.RDF.Query
                 try
                 {
                     // Set up the Default and Active Graphs
-                    if (query.DefaultGraphs.Any())
+                    if (query.DefaultGraphNames.Any())
                     {
                         // Call HasGraph() on each Default Graph but ignore the results, we just do this
                         // in case a dataset has any kind of load on demand behaviour
-                        foreach (Uri defGraphUri in query.DefaultGraphs)
+                        foreach (IRefNode defaultGraphName in query.DefaultGraphNames)
                         {
-                            _dataset.HasGraph(defGraphUri);
+                            _dataset.HasGraph(defaultGraphName);
                         }
-                        _dataset.SetDefaultGraph(query.DefaultGraphs);
+                        _dataset.SetDefaultGraph(new List<IRefNode>(query.DefaultGraphNames));
                         defGraphOk = true;
                     }
-                    else if (query.NamedGraphs.Any())
+                    else if (query.NamedGraphNames.Any())
                     {
                         // No FROM Clauses but one/more FROM NAMED means the Default Graph is the empty graph
-                        _dataset.SetDefaultGraph(Enumerable.Empty<Uri>());
+                        _dataset.SetDefaultGraph(new List<IRefNode>(0));
                     }
-                    _dataset.SetActiveGraph(_dataset.DefaultGraphUris);
+                    _dataset.SetActiveGraph(_dataset.DefaultGraphNames.ToList());
                     datasetOk = true;
 
                     // Convert to Algebra and execute the Query

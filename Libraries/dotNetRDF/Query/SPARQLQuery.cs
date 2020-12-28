@@ -42,6 +42,7 @@ using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.PropertyFunctions;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -61,8 +62,8 @@ namespace VDS.RDF.Query
         : NodeFactory
     {
         private Uri _baseUri = null;
-        private List<Uri> _defaultGraphs;
-        private List<Uri> _namedGraphs;
+        private List<IRefNode> _defaultGraphs;
+        private List<IRefNode> _namedGraphs;
         private NamespaceMapper _nsmapper;
         private SparqlQueryType _type = SparqlQueryType.Unknown;
         private SparqlSpecialQueryType _specialType = SparqlSpecialQueryType.Unknown;
@@ -94,8 +95,8 @@ namespace VDS.RDF.Query
         {
             _vars = new List<SparqlVariable>();
             _nsmapper = new NamespaceMapper(true);
-            _defaultGraphs = new List<Uri>();
-            _namedGraphs = new List<Uri>();
+            _defaultGraphs = new List<IRefNode>();
+            _namedGraphs = new List<IRefNode>();
         }
 
         /// <summary>
@@ -115,8 +116,8 @@ namespace VDS.RDF.Query
         {
             var q = new SparqlQuery();
             q._baseUri = _baseUri;
-            q._defaultGraphs = new List<Uri>(_defaultGraphs);
-            q._namedGraphs = new List<Uri>(_namedGraphs);
+            q._defaultGraphs = new List<IRefNode>(_defaultGraphs);
+            q._namedGraphs = new List<IRefNode>(_namedGraphs);
             q._nsmapper = new NamespaceMapper(_nsmapper);
             q._type = _type;
             q._specialType = _specialType;
@@ -167,14 +168,25 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the Default Graph URIs for the Query.
         /// </summary>
-        public IEnumerable<Uri> DefaultGraphs => (from u in _defaultGraphs
-            select u);
+        [Obsolete("Replaced by DefaultGraphNames")]
+        public IEnumerable<Uri> DefaultGraphs => _defaultGraphs.Where(x=>x is null || x.NodeType == NodeType.Uri).Select(x=>(x as IUriNode)?.Uri);
+
+        /// <summary>
+        /// Gets the names of the default graphs for the query.
+        /// </summary>
+        public IEnumerable<IRefNode> DefaultGraphNames => _defaultGraphs.AsReadOnly();
 
         /// <summary>
         /// Gets the Named Graph URIs for the Query.
         /// </summary>
-        public IEnumerable<Uri> NamedGraphs => (from u in _namedGraphs
-            select u);
+        [Obsolete("Replaced by NamedGraphNames")]
+        public IEnumerable<Uri> NamedGraphs => _namedGraphs.Where(x => x is null || x.NodeType == NodeType.Uri)
+            .Select(x => (x as IUriNode)?.Uri);
+
+        /// <summary>
+        /// Gets the names of the named graphs for the query.
+        /// </summary>
+        public IEnumerable<IRefNode> NamedGraphNames => _namedGraphs.AsReadOnly();
 
         /// <summary>
         /// Gets the Variables used in the Query.
@@ -556,7 +568,7 @@ namespace VDS.RDF.Query
         /// <param name="var">Variable.</param>
         internal void AddVariable(SparqlVariable var)
         {
-            if (!_vars.Any(v => v.Name.Equals(var)))
+            if (!_vars.Any(v => v.Name.Equals(var.Name)))
             {
                 _vars.Add(var);
             }
@@ -579,26 +591,39 @@ namespace VDS.RDF.Query
         /// Adds a Default Graph URI.
         /// </summary>
         /// <param name="u">Graph URI.</param>
+        [Obsolete("Replaced by AddDefaultGraph(IRefNode)")]
         public void AddDefaultGraph(Uri u)
         {
-            if (!_defaultGraphs.Contains(u))
-            {
-                _defaultGraphs.Add(u);
-            }
+            AddDefaultGraph(new UriNode(u));
         }
 
         /// <summary>
         /// Adds a Named Graph URI.
         /// </summary>
         /// <param name="u">Graph URI.</param>
+        [Obsolete("Replaced by AddNamedGraph(IRefNode)")]
         public void AddNamedGraph(Uri u)
         {
-            if (!_namedGraphs.Contains(u))
-            {
-                _namedGraphs.Add(u);
-            }
+            AddNamedGraph(new UriNode(u));
         }
 
+        /// <summary>
+        /// Adds a graph to the default graph of the query.
+        /// </summary>
+        /// <param name="n"></param>
+        public void AddDefaultGraph(IRefNode n)
+        {
+            if (!_defaultGraphs.Contains(n)) _defaultGraphs.Add(n);
+        }
+        
+        /// <summary>
+        /// Adds a named graph to the query.
+        /// </summary>
+        /// <param name="n"></param>
+        public void AddNamedGraph(IRefNode n)
+        {
+            if (!_namedGraphs.Contains(n)) _namedGraphs.Add(n);
+        }
         /// <summary>
         /// Removes all Default Graph URIs.
         /// </summary>
@@ -661,6 +686,7 @@ namespace VDS.RDF.Query
         {
             var output = new StringBuilder();
             var from = new StringBuilder();
+            var formatter = new SparqlFormatter();
 
             // Output the Base and Prefix Directives if not a sub-query
             if (!_subquery)
@@ -680,13 +706,13 @@ namespace VDS.RDF.Query
 
                 // Build the String for the FROM clause
                 if (_defaultGraphs.Count > 0 || _namedGraphs.Count > 0) from.Append(' ');
-                foreach (Uri u in _defaultGraphs.Where(u => u != null))
+                foreach (IRefNode n in _defaultGraphs.Where(n => n != null))
                 {
-                    from.AppendLine("FROM <" + u.AbsoluteUri + ">");
+                    from.AppendLine("FROM " + formatter.Format(n));
                 }
-                foreach (Uri u in _namedGraphs.Where(u => u != null))
+                foreach (IRefNode n in _namedGraphs.Where(n => n != null))
                 {
-                    from.AppendLine("FROM NAMED <" + u.AbsoluteUri + ">");
+                    from.AppendLine("FROM NAMED " + formatter.Format(n));
                 }
             }
 
@@ -696,7 +722,7 @@ namespace VDS.RDF.Query
                     output.Append("ASK");
                     if (from.Length > 0)
                     {
-                        output.Append(from.ToString());
+                        output.Append(@from);
                     }
                     else
                     {
@@ -707,7 +733,7 @@ namespace VDS.RDF.Query
 
                 case SparqlQueryType.Construct:
                     output.Append("CONSTRUCT ");
-                    output.Append(_constructTemplate.ToString());
+                    output.Append(_constructTemplate);
                     if (_constructTemplate.TriplePatterns.Count > 1)
                     {
                         output.AppendLine();
@@ -716,7 +742,7 @@ namespace VDS.RDF.Query
                     {
                         output.Append(' ');
                     }
-                    output.Append(from.ToString());
+                    output.Append(@from);
                     output.AppendLine("WHERE ");
                     break;
 
@@ -736,7 +762,7 @@ namespace VDS.RDF.Query
                                 break;
                         }
                     }
-                    output.Append(from.ToString());
+                    output.Append(@from);
                     if (_rootGraphPattern != null)
                     {
                         output.AppendLine("WHERE");
@@ -745,7 +771,7 @@ namespace VDS.RDF.Query
 
                 case SparqlQueryType.DescribeAll:
                     output.Append("DESCRIBE * ");
-                    output.Append(from.ToString());
+                    output.Append(@from);
                     if (_rootGraphPattern != null)
                     {
                         output.Append("WHERE");
@@ -772,7 +798,7 @@ namespace VDS.RDF.Query
                         output.Append('*');
                         if (from.Length > 0) 
                         {
-                            output.Append(from.ToString());
+                            output.Append(@from);
                         } 
                         else 
                         {
@@ -786,7 +812,7 @@ namespace VDS.RDF.Query
                         {
                             if (var.IsResultVariable)
                             {
-                                output.Append(var.ToString());
+                                output.Append(var);
                                 output.Append(' ');
                             }
                         }
@@ -802,7 +828,7 @@ namespace VDS.RDF.Query
                 {
                     output.Remove(output.Length - 2, 2);
                     output.Append(" ");
-                    output.Append(_rootGraphPattern.ToString());
+                    output.Append(_rootGraphPattern);
                 }
                 else if (_rootGraphPattern.HasModifier)
                 {
@@ -819,7 +845,7 @@ namespace VDS.RDF.Query
             if (_groupBy != null)
             {
                 output.Append("GROUP BY ");
-                output.Append(_groupBy.ToString());
+                output.Append(_groupBy);
                 output.Append(' ');
             }
             if (_having != null)
@@ -833,7 +859,7 @@ namespace VDS.RDF.Query
             if (_orderBy != null)
             {
                 output.Append("ORDER BY ");
-                output.Append(_orderBy.ToString());
+                output.Append(_orderBy);
             }
 
             if (_limit > -1)
