@@ -194,7 +194,7 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
-        public IUriNode CreateUriNode(string qname)
+        public IUriNode CreateUriNode(string qName)
         {
             throw new NotImplementedException();
         }

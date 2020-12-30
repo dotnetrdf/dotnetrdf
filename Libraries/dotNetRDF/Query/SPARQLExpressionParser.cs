@@ -56,7 +56,7 @@ namespace VDS.RDF.Query
     /// </summary>
     class SparqlExpressionParser
     {
-        private NamespaceMapper _nsmapper;
+        private INamespaceMapper _nsmapper;
         private Uri _baseUri;
         private SparqlQueryParser _parser;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Sets the Namespace Map used to resolve QNames.
         /// </summary>
-        public NamespaceMapper NamespaceMap
+        public INamespaceMapper NamespaceMap
         {
             set => _nsmapper = value;
         }
@@ -819,9 +819,8 @@ namespace VDS.RDF.Query
                     } while (openbrackets > 0);
 
                     // Call back into the Query Parser to try and Parse the Graph Pattern for the Function
-                    var tempcontext = new SparqlQueryParserContext(temptokens);
+                    var tempcontext = new SparqlQueryParserContext(temptokens, _baseUri, new NamespaceMapper(true));
                     tempcontext.Query.NamespaceMap.Import(_nsmapper);
-                    tempcontext.Query.BaseUri = _baseUri;
                     return new ExistsFunction(_parser.TryParseGraphPattern(tempcontext, true), mustExist);
 
                 default:

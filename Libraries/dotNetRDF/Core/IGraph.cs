@@ -50,29 +50,13 @@ namespace VDS.RDF
             get;
         }
 
-        /// <summary>
-        /// Gets/Sets the Base Uri for the Graph.
-        /// </summary>
-        Uri BaseUri 
-        { 
-            get; 
-            set; 
-        }
-
+        
         /// <summary>
         /// Gets whether a Graph is Empty.
         /// </summary>
         bool IsEmpty 
         { 
             get; 
-        }
-
-        /// <summary>
-        /// Gets the Namespace Map for the Graph.
-        /// </summary>
-        INamespaceMapper NamespaceMap 
-        {
-            get;
         }
 
         /// <summary>
@@ -134,23 +118,6 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         void Clear();
-
-        #endregion
-
-        #region Node Creation
-
-        /// <summary>
-        /// Creates a URI Node that corresponds to the Base URI of the Graph.
-        /// </summary>
-        /// <returns></returns>
-        IUriNode CreateUriNode();
-
-        /// <summary>
-        /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName.
-        /// </summary>
-        /// <param name="qname">QName.</param>
-        /// <returns></returns>
-        IUriNode CreateUriNode(string qname);
 
         #endregion
 

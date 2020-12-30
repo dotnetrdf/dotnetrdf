@@ -67,7 +67,7 @@ namespace VDS.RDF
         public Graph(bool emptyNamespaceMap)
             : this()
         {
-            if (emptyNamespaceMap) _nsmapper.Clear();
+            if (emptyNamespaceMap) NamespaceMap.Clear();
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace VDS.RDF
         /// <param name="emptyNamespaceMap">Whether the namespace map should be empty.</param>
         public Graph(IRefNode name, bool emptyNamespaceMap) : base(name)
         {
-            if (emptyNamespaceMap) _nsmapper.Clear();
+            if (emptyNamespaceMap) NamespaceMap.Clear();
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace VDS.RDF
         public Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
             : base(tripleCollection)
         {
-            if (emptyNamespaceMap) _nsmapper.Clear();
+            if (emptyNamespaceMap) NamespaceMap.Clear();
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace VDS.RDF
         public Graph(IRefNode name, BaseTripleCollection tripleCollection, bool emptyNamespaceMap) : base(
             tripleCollection, name)
         {
-            if (emptyNamespaceMap) _nsmapper.Clear();
+            if (emptyNamespaceMap) NamespaceMap.Clear();
         }
 
         /// <summary>

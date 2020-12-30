@@ -259,11 +259,11 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new URI Node from a QName.
         /// </summary>
-        /// <param name="qname">QName.</param>
+        /// <param name="qName">QName.</param>
         /// <returns></returns>
-        public virtual IUriNode CreateUriNode(string qname)
+        public virtual IUriNode CreateUriNode(string qName)
         {
-            return _g.CreateUriNode(qname);
+            return _g.CreateUriNode(qName);
         }
 
         /// <summary>
