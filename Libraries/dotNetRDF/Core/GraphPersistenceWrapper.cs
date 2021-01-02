@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
@@ -52,14 +51,14 @@ namespace VDS.RDF
     /// </para>
     /// </remarks>
     public class GraphPersistenceWrapper 
-        : IGraph, ITransactionalGraph
+        : ITransactionalGraph
     {
         /// <summary>
         /// Underlying Graph this is a wrapper around.
         /// </summary>
         protected readonly IGraph _g;
-        private readonly List<TriplePersistenceAction> _actions = new List<TriplePersistenceAction>();
-        private readonly bool _alwaysQueueActions = false;
+        private readonly List<TriplePersistenceAction> _actions = new();
+        private readonly bool _alwaysQueueActions;
         private readonly TripleEventHandler _tripleAddedHandler;
         private readonly TripleEventHandler _tripleRemovedHandler;
 
@@ -77,7 +76,10 @@ namespace VDS.RDF
         /// The <paramref name="alwaysQueueActions">alwaysQueueActions</paramref> setting when enabled will cause the wrapper to queue Asserts and Retracts for persistence regardless of whether the relevant Triples already exist (i.e. normally if a Triple exists is cannot be asserted again and if it doesn't exist it cannot be retracted).  This is useful for creating derived wrappers which operate in write-only mode i.e. append mode for an existing graph that may be too large to reasonably load into memory.
         /// </remarks>
         public GraphPersistenceWrapper(bool alwaysQueueActions)
-            : this(new Graph()) { }
+            : this(new Graph())
+        {
+            _alwaysQueueActions = alwaysQueueActions;
+        }
 
         /// <summary>
         /// Creates a new Graph Persistence Wrapper around the given Graph.
@@ -88,8 +90,8 @@ namespace VDS.RDF
             _g = g ?? throw new ArgumentNullException(nameof(g), "Wrapped Graph cannot be null");
 
             // Create Event Handlers and attach to the Triple Collection
-            _tripleAddedHandler = new TripleEventHandler(OnTripleAsserted);
-            _tripleRemovedHandler = new TripleEventHandler(OnTripleRetracted);
+            _tripleAddedHandler = OnTripleAsserted;
+            _tripleRemovedHandler = OnTripleRetracted;
             AttachEventHandlers(_g.Triples);
         }
 
@@ -601,13 +603,9 @@ namespace VDS.RDF
         /// <param name="obj">Object to test.</param>
         /// <returns></returns>
         /// <remarks>
-        /// <para>
-        /// A Graph can only be equal to another Object which is an <see cref="IGraph">IGraph</see>.
-        /// </para>
-        /// <para>
-        /// Graph Equality is determined by a somewhat complex algorithm which is explained in the remarks of the other overload for Equals.
-        /// </para>
+        /// This override is deprecated as this class is not an immutable class. To compare two graphs for isomorphism (also known as graph equality) please use the <see cref="GraphMatcher"/> utility class instead.
         /// </remarks>
+        [Obsolete("The use of the Equals method for determining graph equality is deprecated and this override will be removed in a future release. To compare two graphs, please use the GraphMatcher class instead.")]
         public override bool Equals(object obj)
         {
             if (obj is IGraph graph)
@@ -1117,57 +1115,5 @@ namespace VDS.RDF
             Flush();
         }
 
-    }
-
-    /// <summary>
-    /// The File Graph Persistence Wrapper is a wrapper around antoher Graph that will be persisted to a file.
-    /// </summary>
-    public class FileGraphPersistenceWrapper 
-        : GraphPersistenceWrapper
-    {
-        private string _filename;
-
-        /// <summary>
-        /// Creates a new File Graph Persistence Wrapper around the given Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <param name="filename">File to persist to.</param>
-        public FileGraphPersistenceWrapper(IGraph g, string filename)
-            : base(g)
-        {
-            if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", "filename");
-            _filename = filename;
-        }
-
-        /// <summary>
-        /// Creates a new File Graph Persistence Wrapper around a new emtpy Graph.
-        /// </summary>
-        /// <param name="filename">File to persist to.</param>
-        /// <remarks>
-        /// If the given file already exists then the Graph will be loaded from that file.
-        /// </remarks>
-        public FileGraphPersistenceWrapper(string filename)
-            : base(new Graph())
-        {
-            if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", "filename");
-
-            if (File.Exists(filename))
-            {
-                _g.LoadFromFile(filename);
-            }
-        }
-
-        /// <summary>
-        /// Returns that Triple persistence is not supported.
-        /// </summary>
-        protected override bool SupportsTriplePersistence => false;
-
-        /// <summary>
-        /// Persists the entire Graph to a File.
-        /// </summary>
-        protected override void PersistGraph()
-        {
-            this.SaveToFile(_filename);
-        }
     }
 }
