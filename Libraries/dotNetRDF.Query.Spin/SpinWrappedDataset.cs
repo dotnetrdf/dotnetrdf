@@ -113,11 +113,11 @@ namespace VDS.RDF.Query.Spin
 
         internal void Initialise()
         {
-            IEnumerable<Uri> localGraphs = Storage.ListGraphs();
+            IList<string> localGraphs = Storage.ListGraphNames().ToList();
             foreach (IUriNode spinLibrary in Configuration.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology).Select(t => t.Subject))
             {
                 // TODO maybe clean this to use SPINImports instead
-                if (localGraphs.Contains(spinLibrary.Uri))
+                if (localGraphs.Contains(spinLibrary.Uri.AbsoluteUri))
                 {
                     IGraph library = new ThreadSafeGraph();
                     library.BaseUri = spinLibrary.Uri;
@@ -558,6 +558,11 @@ namespace VDS.RDF.Query.Spin
             return Configuration.HasGraph(graphUri);
         }
 
+        /// <summary>
+        /// Gets whether a Graph with the given name is the Dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <returns></returns>
         public bool HasGraph(IRefNode graphName)
         {
             return Configuration.HasGraph(graphName);
