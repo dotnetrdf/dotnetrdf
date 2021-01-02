@@ -77,7 +77,7 @@ namespace VDS.RDF.Query
             updateProcessor.ProcessCommandSet(updates);
 
             Assert.Equal(5, dataset.Graphs.Count());
-            Assert.Equal(2, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-graphs-test/")].Triples.Count());
+            Assert.Equal(2, dataset[new UriNode(UriFactory.Create("http://example.org/protocol-update-dataset-graphs-test/"))].Triples.Count());
 
             SparqlQuery query = _queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graphs.rq");
 
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query
             updateProcessor.ProcessCommandSet(updates);
 
             Assert.Equal(5, dataset.Graphs.Count());
-            Assert.Equal(2, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-named-graphs-test/")].Triples.Count());
+            Assert.Equal(2, dataset[new UriNode(UriFactory.Create("http://example.org/protocol-update-dataset-named-graphs-test/"))].Triples.Count());
 
             SparqlQuery query = _queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_named_graphs.rq");
 
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query
             Console.WriteLine(updates.ToString());
 
             Assert.Equal(5, dataset.Graphs.Count());
-            Assert.Equal(2, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-full-test/")].Triples.Count());
+            Assert.Equal(2, dataset[new UriNode(UriFactory.Create("http://example.org/protocol-update-dataset-full-test/"))].Triples.Count());
 
             SparqlQuery query = _queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_full.rq");
 

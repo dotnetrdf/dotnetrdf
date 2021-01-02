@@ -34,14 +34,30 @@ namespace VDS.RDF
     public class NodeFactory 
         : INodeFactory
     {
-        private BlankNodeMapper _bnodeMap = new BlankNodeMapper();
+        private readonly BlankNodeMapper _bnodeMap = new BlankNodeMapper();
 
+        /// <summary>
+        /// Get the namespace map for this node factory.
+        /// </summary>
+        public INamespaceMapper NamespaceMap { get; }
+
+        /// <summary>
+        /// Get or set the base URI used to resolve relative URI references.
+        /// </summary>
+        /// <remarks>If <see cref="BaseUri"/> is null, attempting to invoke <see cref="CreateUriNode(Uri)"/> with a relative URI or <see cref="CreateUriNode(string)"/> with a QName that resolves to a relative URI will result in a <see cref="RdfException"/> being raised.</remarks>
+        public Uri BaseUri { get; set; }
+
+       
         /// <summary>
         /// Creates a new Node Factory.
         /// </summary>
+        /// <param name="baseUri">The initial base URI to use for the resolution of relative URI references. Defaults to null.</param>
+        /// <param name="namespaceMap">The namespace map to use for the resolution of QNames. If not specified, a default <see cref="NamespaceMapper"/> instance will be created.</param>
         /// <param name="normalizeLiteralValues">Whether or not to normalize the value strings of literal nodes.</param>
-        public NodeFactory(bool normalizeLiteralValues = false)
+        public NodeFactory(Uri baseUri = null, INamespaceMapper namespaceMap = null, bool normalizeLiteralValues = false)
         {
+            BaseUri = baseUri;
+            NamespaceMap = namespaceMap ?? new NamespaceMapper();
             NormalizeLiteralValues = normalizeLiteralValues;
         }
 
@@ -50,6 +66,16 @@ namespace VDS.RDF
         /// <inheritdoc />
 #pragma warning disable CS0618 // Type or member is obsolete
         public bool NormalizeLiteralValues { get; set; } = Options.LiteralValueNormalization;
+
+        /// <summary>
+        /// Resolve a QName to a URI using this factory's <see cref="INodeFactory.NamespaceMap"/> and <see cref="INodeFactory.BaseUri"/>.
+        /// </summary>
+        /// <param name="qName"></param>
+        /// <returns></returns>
+        public Uri ResolveQName(string qName)
+        {
+            return UriFactory.Create(Tools.ResolveQName(qName, NamespaceMap, BaseUri));
+        }
 #pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
@@ -130,7 +156,45 @@ namespace VDS.RDF
         /// <returns></returns>
         public IUriNode CreateUriNode(Uri uri)
         {
+            if (uri == null) throw new ArgumentNullException(nameof(uri), "URI must not be null.");
+            if (!uri.IsAbsoluteUri)
+            {
+                if (BaseUri == null)
+                {
+                    throw new ArgumentException(
+                        "Cannot create a URI node from a relative URI as there is no base URI currently defined.");
+                }
+
+                uri = new Uri(BaseUri, uri);
+            }
             return new UriNode(uri);
+        }
+
+        /// <summary>
+        /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName.
+        /// </summary>
+        /// <param name="qName">QName.</param>
+        /// <returns>A new URI node.</returns>
+        public IUriNode CreateUriNode(string qName)
+        {
+            if (qName == null) throw new ArgumentNullException(nameof(qName), "QName must not be null");
+            return CreateUriNode(UriFactory.Create(Tools.ResolveQName(qName, NamespaceMap, BaseUri)));
+        }
+
+        /// <summary>
+        /// Creates a URI Node that corresponds to the current Base URI of the node factory.
+        /// </summary>
+        /// <returns>A new URI Node.</returns>
+        /// <exception cref="RdfException">Raised if <see cref="BaseUri"/> is currently null.</exception>
+        public IUriNode CreateUriNode()
+        {
+            if (BaseUri == null)
+            {
+                throw new RdfException(
+                    "Cannot create a URI node from the factory base URI because the base URI is not set.");
+            }
+
+            return CreateUriNode(BaseUri);
         }
 
         /// <summary>
@@ -261,6 +325,10 @@ namespace VDS.RDF
 
         #region INodeFactory Members
 
+        public Uri BaseUri { get; set; }
+
+        public INamespaceMapper NamespaceMap { get; } = new NamespaceMapper();
+
         public IBlankNode CreateBlankNode()
         {
             return _bnode;
@@ -301,6 +369,16 @@ namespace VDS.RDF
             return _uri;
         }
 
+        public IUriNode CreateUriNode(string qName)
+        {
+            return _uri;
+        }
+
+        public IUriNode CreateUriNode()
+        {
+            throw new NotImplementedException();
+        }
+
         public IVariableNode CreateVariableNode(string varname)
         {
             return _var;
@@ -316,6 +394,12 @@ namespace VDS.RDF
             get => false;
             set => throw new NotImplementedException("Not needed by the MockNodeFactory");
         }
+
+        public Uri ResolveQName(string qName)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

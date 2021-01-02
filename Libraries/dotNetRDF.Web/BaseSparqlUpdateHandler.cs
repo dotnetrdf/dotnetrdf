@@ -241,7 +241,7 @@ namespace VDS.RDF.Web
                         var modify = cmd as BaseModificationCommand;
                         if (modify != null)
                         {
-                            if (modify.GraphUri != null || modify.UsingUris.Any() || modify.UsingNamedUris.Any())
+                            if (modify.WithGraphName != null || modify.UsingUris.Any() || modify.UsingNamedUris.Any())
                             {
                                 // Invalid if a command already has a WITH/USING/USING NAMED
                                 throw new SparqlUpdateMalformedException("A command in your update request contains a WITH/USING/USING NAMED clause but you have also specified one/both of the using-graph-uri or using-named-graph-uri parameters which is not permitted by the SPARQL Protocol");

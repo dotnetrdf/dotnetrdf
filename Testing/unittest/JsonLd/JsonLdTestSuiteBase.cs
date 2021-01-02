@@ -23,7 +23,7 @@ namespace VDS.RDF.JsonLd
             string expectedOutputPath, JsonLdErrorCode expectErrorCode, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
-            var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+            JsonLdProcessorOptions processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays, rdfDirection);
             var inputJson = File.ReadAllText(inputPath);
             var inputElement = JToken.Parse(inputJson);
@@ -34,21 +34,21 @@ namespace VDS.RDF.JsonLd
             switch (testType)
             {
                 case JsonLdTestType.PositiveEvaluationTest:
-                    var actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
+                    JArray actualOutputElement = JsonLdProcessor.Expand(inputElement, processorOptions);
                     var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                     var expectedOutputElement = JToken.Parse(expectedOutputJson);
                     Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                         $"Error processing expand test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                     break;
                 case JsonLdTestType.NegativeEvaluationTest:
-                    var exception =
+                    JsonLdProcessorException exception =
                         Assert.Throws<JsonLdProcessorException>(
                             () => JsonLdProcessor.Expand(inputElement, processorOptions));
                     Assert.Equal(expectErrorCode, exception.ErrorCode);
                     break;
                 case JsonLdTestType.PositiveSyntaxTest:
                     // Expect test to run without throwing processing errors
-                    var _ = JsonLdProcessor.Expand(inputElement, processorOptions);
+                    JArray _ = JsonLdProcessor.Expand(inputElement, processorOptions);
                     break;
                 case JsonLdTestType.NegativeSyntaxTest:
                     Assert.ThrowsAny<JsonLdProcessorException>(() => JsonLdProcessor.Expand(inputElement, processorOptions));
@@ -61,23 +61,23 @@ namespace VDS.RDF.JsonLd
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
-            var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+            JsonLdProcessorOptions processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays, rdfDirection);
             var inputJson = File.ReadAllText(inputPath);
             var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
             var inputElement = JToken.Parse(inputJson);
-            var contextElement = contextJson == null ? new JObject() : JToken.Parse(contextJson);
+            JToken contextElement = contextJson == null ? new JObject() : JToken.Parse(contextJson);
             switch (testType)
             {
                 case JsonLdTestType.PositiveEvaluationTest:
                     var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                     var expectedOutputElement = JToken.Parse(expectedOutputJson);
-                    var actualOutputElement = JsonLdProcessor.Compact(inputElement, contextElement, processorOptions);
+                    JObject actualOutputElement = JsonLdProcessor.Compact(inputElement, contextElement, processorOptions);
                     Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                         $"Error processing compact test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                     break;
                 case JsonLdTestType.NegativeEvaluationTest:
-                    var exception = Assert.Throws<JsonLdProcessorException>(() =>
+                    JsonLdProcessorException exception = Assert.Throws<JsonLdProcessorException>(() =>
                         JsonLdProcessor.Compact(inputElement, contextElement, processorOptions));
                     Assert.Equal(expectedErrorCode, exception.ErrorCode);
                     break;
@@ -91,12 +91,12 @@ namespace VDS.RDF.JsonLd
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
-            var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+            JsonLdProcessorOptions processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays, rdfDirection);
             var inputJson = File.ReadAllText(inputPath);
             var contextJson = contextPath == null ? null : File.ReadAllText(contextPath);
             var inputElement = JToken.Parse(inputJson);
-            var contextElement = contextJson == null ? null : JToken.Parse(contextJson);
+            JToken contextElement = contextJson == null ? null : JToken.Parse(contextJson);
 
             switch (testType)
             {
@@ -104,12 +104,12 @@ namespace VDS.RDF.JsonLd
                     var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                     var expectedOutputElement = JToken.Parse(expectedOutputJson);
 
-                    var actualOutputElement = JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions);
+                    JToken actualOutputElement = JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions);
                     Assert.True(DeepEquals(actualOutputElement, expectedOutputElement),
                         $"Error processing flatten test {Path.GetFileName(inputPath)}.\nActual output does not match expected output.\nExpected:\n{expectedOutputElement}\n\nActual:\n{actualOutputElement}");
                     break;
                 case JsonLdTestType.NegativeEvaluationTest:
-                    var exception = Assert.Throws<JsonLdProcessorException>(() =>
+                    JsonLdProcessorException exception = Assert.Throws<JsonLdProcessorException>(() =>
                         JsonLdProcessor.Flatten(inputElement, contextElement, processorOptions));
                     Assert.Equal(expectedErrorCode, exception.ErrorCode);
                     break;
@@ -123,7 +123,7 @@ namespace VDS.RDF.JsonLd
             string expectedOutputPath, JsonLdErrorCode expectedErrorCode, string baseIri,
             string processorMode, string expandContextPath, bool compactArrays, string rdfDirection)
         {
-            var processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
+            JsonLdProcessorOptions processorOptions = MakeProcessorOptions(inputPath, baseIri, processorMode, expandContextPath,
                 compactArrays, rdfDirection);
             var jsonldParser = new JsonLdParser(processorOptions);
             var actualStore = new TripleStore();
@@ -144,7 +144,7 @@ namespace VDS.RDF.JsonLd
                     break;
 
                 case JsonLdTestType.NegativeEvaluationTest:
-                    var exception =
+                    JsonLdProcessorException exception =
                         Assert.Throws<JsonLdProcessorException>(() => jsonldParser.Load(actualStore, inputPath));
                     Assert.Equal(expectedErrorCode, exception.ErrorCode);
                     break;
@@ -162,26 +162,26 @@ namespace VDS.RDF.JsonLd
 
         private void AssertStoresEqual(ITripleStore expectedTripleStore, ITripleStore actualTripleStore, string testFile)
         {
-            foreach (var graphUri in expectedTripleStore.Graphs.GraphUris)
+            foreach (IRefNode graphName in expectedTripleStore.Graphs.GraphNames)
             {
-                if (graphUri == null)
+                if (graphName == null)
                 {
                     Assert.True(actualTripleStore.HasGraph((IRefNode)null), 
                         $"Test failed for input {testFile}.\r\nExpected a default graph to be present.");
                     AssertGraphsEqual(expectedTripleStore[(IRefNode)null], actualTripleStore[(IRefNode)null],
                         expectedTripleStore, actualTripleStore, testFile);
                 } 
-                else if (graphUri.ToString().StartsWith("nquads:bnode:"))
+                else if (graphName.ToString().StartsWith("nquads:bnode:"))
                 {
-                    Uri matchedGraph = null;
-                    foreach (var actualGraphUri in actualTripleStore.Graphs.GraphUris.Where(u =>
+                    IRefNode matchedGraph = null;
+                    foreach (IRefNode actualGraphName in actualTripleStore.Graphs.GraphNames.Where(u =>
                         u != null && u.ToString().StartsWith("nquads:bnode:")))
                     {
-                        var expectedGraph = expectedTripleStore[graphUri];
-                        var actualGraph = actualTripleStore[actualGraphUri];
+                        IGraph expectedGraph = expectedTripleStore[graphName];
+                        IGraph actualGraph = actualTripleStore[actualGraphName];
                         if (actualGraph.Equals(expectedGraph, out _))
                         {
-                            matchedGraph = actualGraphUri;
+                            matchedGraph = actualGraphName;
                             break;
                         }
                     }
@@ -191,7 +191,7 @@ namespace VDS.RDF.JsonLd
                         var expectedLines = MakeNQuadsList(expectedTripleStore);
                         var actualLines = MakeNQuadsList(actualTripleStore);
                         Assert.True(false,
-                            $"Test failed for input {testFile}.\r\nFailed to find a match for graph {graphUri}.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
+                            $"Test failed for input {testFile}.\r\nFailed to find a match for graph {graphName}.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
                     }
                     else
                     {
@@ -200,14 +200,14 @@ namespace VDS.RDF.JsonLd
                 }
                 else
                 {
-                    if (!actualTripleStore.Graphs.Contains(graphUri))
+                    if (!actualTripleStore.Graphs.Contains(graphName))
                     {
                         var expectedLines = MakeNQuadsList(expectedTripleStore);
                         var actualLines = MakeNQuadsList(actualTripleStore);
                         Assert.True(false,
-                            $"Test failed for input {testFile}.\r\nFailed to find a match for graph {graphUri}.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
+                            $"Test failed for input {testFile}.\r\nFailed to find a match for graph {graphName}.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
                     }
-                    AssertGraphsEqual(expectedTripleStore[graphUri], actualTripleStore[graphUri],
+                    AssertGraphsEqual(expectedTripleStore[graphName], actualTripleStore[graphName],
                         expectedTripleStore, actualTripleStore, testFile);
                 }
             }
@@ -255,7 +255,7 @@ namespace VDS.RDF.JsonLd
             {
                 case JsonLdTestType.PositiveEvaluationTest:
                 {
-                    var actualOutput = jsonLdWriter.SerializeStore(input);
+                    JArray actualOutput = jsonLdWriter.SerializeStore(input);
                     var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                     var expectedOutput = JToken.Parse(expectedOutputJson);
 
@@ -274,12 +274,12 @@ namespace VDS.RDF.JsonLd
                 }
                 case JsonLdTestType.NegativeEvaluationTest:
                 {
-                    var exception = Assert.Throws<JsonLdProcessorException>(() => jsonLdWriter.SerializeStore(input));
+                    JsonLdProcessorException exception = Assert.Throws<JsonLdProcessorException>(() => jsonLdWriter.SerializeStore(input));
                     Assert.Equal(expectErrorCode, exception.ErrorCode);
                     break;
                 }
                 case JsonLdTestType.PositiveSyntaxTest:
-                    var _ = jsonLdWriter.SerializeStore(input);
+                    JArray _ = jsonLdWriter.SerializeStore(input);
                     break;
                 case JsonLdTestType.NegativeSyntaxTest:
                     Assert.ThrowsAny<JsonLdProcessorException>(() => jsonLdWriter.SerializeStore(input));
@@ -293,7 +293,7 @@ namespace VDS.RDF.JsonLd
         {
             var inputJson = File.ReadAllText(inputPath);
             var frameJson = File.ReadAllText(framePath);
-            var jsonLdProcessingMode = "json-ld-1.0".Equals(processingMode)
+            JsonLdProcessingMode jsonLdProcessingMode = "json-ld-1.0".Equals(processingMode)
                 ? JsonLdProcessingMode.JsonLd10
                 : JsonLdProcessingMode.JsonLd11FrameExpansion;
             var options = new JsonLdProcessorOptions
@@ -311,12 +311,12 @@ namespace VDS.RDF.JsonLd
                 case JsonLdTestType.PositiveEvaluationTest:
                     var expectedOutputJson = File.ReadAllText(expectedOutputPath);
                     var expectedOutputElement = JToken.Parse(expectedOutputJson);
-                    var actualOutput = JsonLdProcessor.Frame(inputElement, frameElement, options);
+                    JObject actualOutput = JsonLdProcessor.Frame(inputElement, frameElement, options);
                     Assert.True(DeepEquals(expectedOutputElement, actualOutput),
                         $"Test failed for input {Path.GetFileName(inputPath)}\nExpected:\n{expectedOutputElement}\nActual:\n{actualOutput}");
                     break;
                 case JsonLdTestType.NegativeEvaluationTest:
-                    var exception = Assert.ThrowsAny<JsonLdProcessorException>(() =>
+                    JsonLdProcessorException exception = Assert.ThrowsAny<JsonLdProcessorException>(() =>
                         JsonLdProcessor.Frame(inputElement, frameElement, options));
                     Assert.Equal(expectErrorCode, exception.ErrorCode);
                     break;
@@ -358,7 +358,7 @@ namespace VDS.RDF.JsonLd
                 return !a1.Where((t, i) => !DeepEquals(t, a2[i], true)).Any();
             }
             var a2Clone = new JArray(a2);
-            foreach (var item in a1)
+            foreach (JToken item in a1)
             {
                 var matched = false;
                 for (var j = 0; j < a2Clone.Count; j++)
@@ -405,7 +405,7 @@ namespace VDS.RDF.JsonLd
             {
                 case JTokenType.Object:
                     if (!(token1 is JObject o1 && token2 is JObject o2)) return false;
-                    foreach (var p in o1.Properties())
+                    foreach (JProperty p in o1.Properties())
                     {
                         if (o2[p.Name] == null)
                         {
@@ -446,7 +446,7 @@ namespace VDS.RDF.JsonLd
                         return true;
                     }
                     var unmatchedItems = (token2 as JArray).ToList();
-                    foreach (var item1 in a1)
+                    foreach (JToken item1 in a1)
                     {
                         if (unmatchedItems.Count == 0)
                         {
@@ -482,12 +482,12 @@ namespace VDS.RDF.JsonLd
         private static void FixStringLiterals(ITripleStore store)
         {
             var xsdString = new Uri("http://www.w3.org/2001/XMLSchema#string");
-            foreach (var t in store.Triples.ToList())
+            foreach (Triple t in store.Triples.ToList())
             {
                 var literalNode = t.Object as ILiteralNode;
                 if (literalNode != null && String.IsNullOrEmpty(literalNode.Language) && literalNode.DataType == null)
                 {
-                    var graphToUpdate = t.Graph;
+                    IGraph graphToUpdate = t.Graph;
                     graphToUpdate.Retract(t);
                     graphToUpdate.Assert(
                         new Triple(t.Subject, t.Predicate,

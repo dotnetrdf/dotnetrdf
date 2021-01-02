@@ -111,9 +111,10 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to Save.</param>
         /// <remarks>
-        /// Uri of the Graph should be taken from the <see cref="IGraph.BaseUri">BaseUri</see> property
+        /// Graph name should be taken from the <see cref="IGraph.Name"/> property
         /// <br /><br />
-        /// Behaviour of this method with regards to whether it overwrites/updates/merges with existing Graphs of the same Uri is up to the implementor and may be dependent on the underlying store.  Implementors <strong>should</strong> state in the XML comments for their implementations what behaviour is implemented.
+        /// Behaviour of this method with regards to whether it overwrites/updates/merges with existing Graphs of the same name is up to the implementor and may be dependent on the underlying store.
+        /// Implementors <strong>should</strong> state in the XML comments for their implementations what behaviour is implemented.
         /// </remarks>
         void SaveGraph(IGraph g);
 

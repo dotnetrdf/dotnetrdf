@@ -217,72 +217,72 @@ namespace VDS.RDF.Query.Spin
                 case SparqlUpdateCommandType.Add:
                     g.Assert(root, RDF.PropertyType, SP.ClassAdd);
                     var add = (AddCommand)query;
-                    if (add.SourceUri == null)
+                    if (add.SourceGraphName == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(add.SourceUri));
+                        g.Assert(root, SP.PropertyGraphIRI, add.SourceGraphName);
                     }
-                    if (add.DestinationUri == null)
+                    if (add.DestinationGraphName == null)
                     {
                         g.Assert(root, SP.PropertyInto, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(add.DestinationUri));
+                        g.Assert(root, SP.PropertyInto, add.DestinationGraphName);
                     }
                     break;
                 case SparqlUpdateCommandType.Clear:
                     g.Assert(root, RDF.PropertyType, SP.ClassClear);
-                    if (((ClearCommand)query).TargetUri == null)
+                    if (((ClearCommand)query).TargetGraphName == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(((ClearCommand)query).TargetUri));
+                        g.Assert(root, SP.PropertyGraphIRI, ((ClearCommand)query).TargetGraphName);
                     }
                     break;
                 case SparqlUpdateCommandType.Copy:
                     g.Assert(root, RDF.PropertyType, SP.ClassCopy);
                     var copy = (CopyCommand)query;
-                    if (copy.SourceUri == null)
+                    if (copy.SourceGraphName == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(copy.SourceUri));
+                        g.Assert(root, SP.PropertyGraphIRI, copy.SourceGraphName);
                     }
-                    if (copy.DestinationUri == null)
+                    if (copy.DestinationGraphName == null)
                     {
                         g.Assert(root, SP.PropertyInto, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(copy.DestinationUri));
+                        g.Assert(root, SP.PropertyInto, copy.DestinationGraphName);
                     }                
                     break;
                 case SparqlUpdateCommandType.Create:
                     g.Assert(root, RDF.PropertyType, SP.ClassCreate);
                     var create = (CreateCommand)query;
-                    if (create.TargetUri== null)
+                    if (create.TargetGraphName== null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(create.TargetUri));
+                        g.Assert(root, SP.PropertyGraphIRI, create.TargetGraphName);
                     }
                     break;
                 case SparqlUpdateCommandType.Delete:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
                     var delete = (DeleteCommand)query;
-                    if (delete.GraphUri != null)
+                    if (delete.WithGraphName != null)
                     {
-                        g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(delete.GraphUri));
+                        g.Assert(root, SP.PropertyWith, delete.WithGraphName);
                     }
                     // TODO handle the usings
                     g.Assert(root, SP.PropertyDeletePattern, delete.DeletePattern.ToSpinRdf(g, varTable));
@@ -295,22 +295,22 @@ namespace VDS.RDF.Query.Spin
                 case SparqlUpdateCommandType.Drop:
                     g.Assert(root, RDF.PropertyType, SP.ClassDrop);
                     var drop = (DropCommand)query;
-                    if (drop.TargetUri == null)
+                    if (drop.TargetGraphName == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(drop.TargetUri));
+                        g.Assert(root, SP.PropertyGraphIRI, drop.TargetGraphName);
                     }
-                    g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(((DropCommand)query).TargetUri));
+                    g.Assert(root, SP.PropertyGraphIRI, ((DropCommand)query).TargetGraphName);
                     break;
                 case SparqlUpdateCommandType.Insert:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
                     var insert = (InsertCommand)query;
-                    if (insert.GraphUri != null)
+                    if (insert.WithGraphName != null)
                     {
-                        g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(insert.GraphUri));
+                        g.Assert(root, SP.PropertyWith, insert.WithGraphName);
                     }
                     g.Assert(root, SP.PropertyInsertPattern, insert.InsertPattern.ToSpinRdf(g, varTable));
                     g.Assert(root, SP.PropertyWhere, insert.WherePattern.ToSpinRdf(g, varTable));
@@ -330,21 +330,21 @@ namespace VDS.RDF.Query.Spin
                     {
                         g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(load.SourceUri));
                     }
-                    if (load.TargetUri == null)
+                    if (load.TargetGraphName == null)
                     {
                         g.Assert(root, SP.PropertyInto, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(load.TargetUri));
+                        g.Assert(root, SP.PropertyInto, load.TargetGraphName);
                     }                
                     break;
                 case SparqlUpdateCommandType.Modify:
                     g.Assert(root, RDF.PropertyType, SP.ClassModify);
                     var modify = (ModifyCommand)query;
-                    if (modify.GraphUri != null)
+                    if (modify.WithGraphName != null)
                     {
-                        g.Assert(root, SP.PropertyWith, RDFUtil.CreateUriNode(modify.GraphUri));
+                        g.Assert(root, SP.PropertyWith, modify.WithGraphName);
                     }
                     if (modify.DeletePattern != null)
                     {
@@ -359,25 +359,25 @@ namespace VDS.RDF.Query.Spin
                 case SparqlUpdateCommandType.Move:
                     g.Assert(root, RDF.PropertyType, SP.ClassMove);
                     var move = (MoveCommand)query;
-                    if (move.SourceUri == null)
+                    if (move.SourceGraphName == null)
                     {
                         g.Assert(root, SP.PropertyGraphIRI, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyGraphIRI, RDFUtil.CreateUriNode(move.SourceUri));
+                        g.Assert(root, SP.PropertyGraphIRI, move.SourceGraphName);
                     }
-                    if (move.DestinationUri == null)
+                    if (move.DestinationGraphName == null)
                     {
                         g.Assert(root, SP.PropertyInto, SP.PropertyDefault);
                     }
                     else
                     {
-                        g.Assert(root, SP.PropertyInto, RDFUtil.CreateUriNode(move.DestinationUri));
+                        g.Assert(root, SP.PropertyInto, move.DestinationGraphName);
                     }                
                     break;
                 case SparqlUpdateCommandType.Unknown:
-                    throw new NotSupportedException("Unkown SPARQL update query encountered " + query.ToString());
+                    throw new NotSupportedException("Unknown SPARQL update query encountered " + query);
             }
             return root;
         }

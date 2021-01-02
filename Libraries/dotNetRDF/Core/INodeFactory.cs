@@ -34,6 +34,16 @@ namespace VDS.RDF
     public interface INodeFactory
     {
         /// <summary>
+        /// Get or set the base URI used to resolve relative URI references.
+        /// </summary>
+        public Uri BaseUri { get; set; }
+
+        /// <summary>
+        /// Get the namespace map for this node factory.
+        /// </summary>
+        public INamespaceMapper NamespaceMap { get; }
+
+        /// <summary>
         /// Creates a Blank Node with a new automatically generated ID.
         /// </summary>
         /// <returns></returns>
@@ -90,6 +100,20 @@ namespace VDS.RDF
         IUriNode CreateUriNode(Uri uri);
 
         /// <summary>
+        /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName.
+        /// </summary>
+        /// <param name="qName">QName.</param>
+        /// <returns></returns>
+        IUriNode CreateUriNode(string qName);
+
+        /// <summary>
+        /// Creates a URI Node that corresponds to the current Base URI of the node factory.
+        /// </summary>
+        /// <returns></returns>
+        IUriNode CreateUriNode();
+
+
+        /// <summary>
         /// Creates a Variable Node for the given Variable Name.
         /// </summary>
         /// <param name="varname"></param>
@@ -106,5 +130,12 @@ namespace VDS.RDF
         /// Get or set the flag that controls whether the value strings of literal nodes should be normalized on creation.
         /// </summary>
         bool NormalizeLiteralValues { get; set; }
+
+        /// <summary>
+        /// Resolve a QName to a URI using this factory's <see cref="NamespaceMap"/> and <see cref="BaseUri"/>.
+        /// </summary>
+        /// <param name="qName"></param>
+        /// <returns></returns>
+        Uri ResolveQName(string qName);
     }
 }

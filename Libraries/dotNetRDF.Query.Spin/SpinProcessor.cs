@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Spin
 
         internal void Initialise(Uri spinGraphUri, IRdfReader rdfReader = null)
         {
-            if (_spinConfiguration.GraphUris.Contains(spinGraphUri))
+            if (_spinConfiguration.GraphNames.Any(x=>x.NodeType == NodeType.Uri && (x as IUriNode).Uri.Equals(spinGraphUri)))
             {
                 return;
             }
@@ -82,9 +82,9 @@ namespace VDS.RDF.Query.Spin
         /// <returns></returns>
         internal IGraph Initialise(IGraph spinGraph)
         {
-            if (_spinConfiguration.GraphUris.Contains(spinGraph.BaseUri))
+            if (_spinConfiguration.GraphNames.Contains(spinGraph.Name))
             {
-                _spinConfiguration.RemoveGraph(spinGraph.BaseUri);
+                _spinConfiguration.RemoveGraph(spinGraph.Name);
             }
             var ontQuery = "CONSTRUCT { ?graphUri a <" + SPIN.ClassLibraryOntology + ">} WHERE { {?s (<" + SPIN.PropertyImports + ">|<" + OWL.PropertyImports + ">) ?graphUri} UNION {?graphUri a <" + SPIN.ClassLibraryOntology + ">} }";
             IGraph imports = (Graph)spinGraph.ExecuteQuery(ontQuery);
@@ -92,8 +92,9 @@ namespace VDS.RDF.Query.Spin
             // Explore for subsequent imports
             foreach (Triple t in imports.GetTriplesWithPredicateObject(RDF.PropertyType, SPIN.ClassLibraryOntology))
             {
+                INode importGraphName = t.Subject;
                 Uri importUri = ((IUriNode)t.Subject).Uri;
-                if (!_spinConfiguration.GraphUris.Contains(importUri) && !RDFUtil.sameTerm(importUri, spinGraph.BaseUri))
+                if (!_spinConfiguration.GraphNames.Contains(importGraphName) && !RDFUtil.sameTerm(importGraphName, spinGraph.Name))
                 {
                     Initialise(importUri);
                 }

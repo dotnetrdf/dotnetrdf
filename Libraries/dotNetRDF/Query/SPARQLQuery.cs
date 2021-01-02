@@ -61,10 +61,8 @@ namespace VDS.RDF.Query
     public sealed class SparqlQuery
         : NodeFactory
     {
-        private Uri _baseUri = null;
         private List<IRefNode> _defaultGraphs;
         private List<IRefNode> _namedGraphs;
-        private NamespaceMapper _nsmapper;
         private SparqlQueryType _type = SparqlQueryType.Unknown;
         private SparqlSpecialQueryType _specialType = SparqlSpecialQueryType.Unknown;
         private List<SparqlVariable> _vars;
@@ -91,21 +89,21 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new SPARQL Query.
         /// </summary>
-        internal SparqlQuery()
+        internal SparqlQuery(Uri baseUri = null, INamespaceMapper namespaceMapper = null, bool subquery = false) : 
+            base(baseUri, namespaceMapper ?? new NamespaceMapper(true))
         {
             _vars = new List<SparqlVariable>();
-            _nsmapper = new NamespaceMapper(true);
             _defaultGraphs = new List<IRefNode>();
             _namedGraphs = new List<IRefNode>();
+            _subquery = subquery;
         }
 
         /// <summary>
         /// Creates a new SPARQL Query.
         /// </summary>
         /// <param name="subquery">Whether the Query is a Sub-query.</param>
-        internal SparqlQuery(bool subquery): this()
+        internal SparqlQuery(bool subquery): this(null, null, subquery)
         {
-            _subquery = subquery;
         }
 
         /// <summary>
@@ -114,11 +112,9 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public SparqlQuery Copy()
         {
-            var q = new SparqlQuery();
-            q._baseUri = _baseUri;
+            var q = new SparqlQuery(BaseUri, NamespaceMap, _subquery);
             q._defaultGraphs = new List<IRefNode>(_defaultGraphs);
             q._namedGraphs = new List<IRefNode>(_namedGraphs);
-            q._nsmapper = new NamespaceMapper(_nsmapper);
             q._type = _type;
             q._specialType = _specialType;
             q._vars = new List<SparqlVariable>(_vars);
@@ -143,27 +139,6 @@ namespace VDS.RDF.Query
         }
 
         #region Properties
-
-        /// <summary>
-        /// Gets the Namespace Map for the Query.
-        /// </summary>
-        public NamespaceMapper NamespaceMap
-        {
-            get => _nsmapper;
-            internal set
-            {
-                if (value != null) _nsmapper = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Base Uri for the Query.
-        /// </summary>
-        public Uri BaseUri
-        {
-            get => _baseUri;
-            set => _baseUri = value;
-        }
 
         /// <summary>
         /// Gets the Default Graph URIs for the Query.
@@ -691,13 +666,13 @@ namespace VDS.RDF.Query
             // Output the Base and Prefix Directives if not a sub-query
             if (!_subquery)
             {
-                if (_baseUri != null)
+                if (BaseUri != null)
                 {
-                    output.AppendLine("BASE <" + _baseUri.AbsoluteUri + ">");
+                    output.AppendLine("BASE <" + BaseUri.AbsoluteUri + ">");
                 }
-                foreach (var prefix in _nsmapper.Prefixes)
+                foreach (var prefix in NamespaceMap.Prefixes)
                 {
-                    output.AppendLine("PREFIX " + prefix + ": <" + _nsmapper.GetNamespaceUri(prefix).AbsoluteUri + ">");
+                    output.AppendLine("PREFIX " + prefix + ": <" + NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri + ">");
                 }
                 if (output.Length > 0)
                 {
@@ -877,11 +852,11 @@ namespace VDS.RDF.Query
             }
 
             var preOutput = output.ToString();
-            if (_nsmapper.Prefixes.Any())
+            if (NamespaceMap.Prefixes.Any())
             {
-                foreach (var prefix in _nsmapper.Prefixes)
+                foreach (var prefix in NamespaceMap.Prefixes)
                 {
-                    var uri = _nsmapper.GetNamespaceUri(prefix).AbsoluteUri;
+                    var uri = NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri;
                     if (preOutput.Contains("<" + uri))
                     {
                         preOutput = Regex.Replace(preOutput, "<" + uri + "([^/#>]+)>\\.", prefix + ":$1 .");

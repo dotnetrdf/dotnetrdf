@@ -35,11 +35,10 @@ namespace VDS.RDF
         : BaseUriNode, IEquatable<UriNode>, IComparable<UriNode>
     {
         /// <summary>
-        /// Internal Only Constructor for URI Nodes.
+        /// Constructor for URI Nodes.
         /// </summary>
         /// <param name="uri">URI for the Node.</param>
-        protected internal UriNode(Uri uri)
-            : base(uri) { }
+        public UriNode(Uri uri) : base(uri) { }
 
         /// <summary>
         /// Implementation of Compare To for URI Nodes.

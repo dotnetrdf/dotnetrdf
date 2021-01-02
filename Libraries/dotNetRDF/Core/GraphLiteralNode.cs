@@ -37,13 +37,13 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new graph literal node whose value is an empty sub-graph.
         /// </summary>
-        protected internal GraphLiteralNode() {}
+        public GraphLiteralNode() {}
 
         /// <summary>
         /// Creates a new Graph Literal Node whose value is the specified sub-graph.
         /// </summary>
         /// <param name="subGraph">Sub-graph this node represents.</param>
-        protected internal GraphLiteralNode(IGraph subGraph)
+        public GraphLiteralNode(IGraph subGraph)
             : base(subGraph) { }
 
         /// <summary>

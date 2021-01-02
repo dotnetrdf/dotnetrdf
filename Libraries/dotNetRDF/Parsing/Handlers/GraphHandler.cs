@@ -43,26 +43,7 @@ namespace VDS.RDF.Parsing.Handlers
         public GraphHandler(IGraph g)
             : base(g)
         {
-            if (g == null) throw new ArgumentNullException("graph");
-            _g = g;
-        }
-
-        /// <summary>
-        /// Gets the Base URI of the Graph currently being parsed into.
-        /// </summary>
-        public Uri BaseUri
-        {
-            get
-            {
-                if (_target != null)
-                {
-                    return _target.BaseUri;
-                }
-                else
-                {
-                    return _g.BaseUri;
-                }
-            }
+            _g = g ?? throw new ArgumentNullException("graph");
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using Xunit;
 
 namespace VDS.RDF.Query
 {
+    [Obsolete("Tests for obsolete classes")]
     public class SparqlFederatedEndpointTests : IClassFixture<FederatedEndpointFixture>
     {
         private readonly FederatedEndpointFixture _fixture;

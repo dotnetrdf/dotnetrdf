@@ -470,7 +470,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             var dataset = new InMemoryDataset(new TripleStore());
             var processor = new LeviathanUpdateProcessor(dataset);
 
-            Assert.True(dataset.GraphUris.Count() == 1, "Should be 1 Graph as the Update Processor should ensure a Default unnamed Graph exists");
+            Assert.True(dataset.GraphNames.Count() == 1, "Should be 1 Graph as the Update Processor should ensure a Default unnamed Graph exists");
         }
 
         [Fact]

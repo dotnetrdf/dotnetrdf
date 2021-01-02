@@ -554,9 +554,7 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.WHERE)
             {
                 // Now parse the WHERE pattern
-                var subContext = new SparqlQueryParserContext(context.Tokens);
-                subContext.Query.BaseUri = context.BaseUri;
-                subContext.Query.NamespaceMap = context.NamespaceMap;
+                var subContext = new SparqlQueryParserContext(context.Tokens, context.BaseUri, context.NamespaceMap);
                 subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
                 subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
                 subContext.ExpressionFactories = context.ExpressionFactories;
@@ -584,9 +582,7 @@ namespace VDS.RDF.Parsing
         {
             DeleteDataCommand cmd;
 
-            var subContext = new SparqlQueryParserContext(context.Tokens);
-            subContext.Query.BaseUri = context.BaseUri;
-            subContext.Query.NamespaceMap = context.NamespaceMap;
+            var subContext = new SparqlQueryParserContext(context.Tokens, context.BaseUri, context.NamespaceMap);
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
@@ -715,9 +711,7 @@ namespace VDS.RDF.Parsing
             if (next.TokenType != Token.WHERE) throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
             
             // Now parse the WHERE pattern
-            var subContext = new SparqlQueryParserContext(context.Tokens);
-            subContext.Query.BaseUri = context.BaseUri;
-            subContext.Query.NamespaceMap = context.NamespaceMap;
+            var subContext = new SparqlQueryParserContext(context.Tokens, context.BaseUri, context.NamespaceMap);
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
@@ -735,9 +729,7 @@ namespace VDS.RDF.Parsing
         {
             InsertDataCommand cmd;
 
-            var subContext = new SparqlQueryParserContext(context.Tokens);
-            subContext.Query.BaseUri = context.BaseUri;
-            subContext.Query.NamespaceMap = context.NamespaceMap;
+            var subContext = new SparqlQueryParserContext(context.Tokens, context.BaseUri, context.NamespaceMap);
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
@@ -907,9 +899,7 @@ namespace VDS.RDF.Parsing
 
         private GraphPattern TryParseModifyTemplate(SparqlUpdateParserContext context)
         {
-            var subContext = new SparqlQueryParserContext(context.Tokens);
-            subContext.Query.BaseUri = context.BaseUri;
-            subContext.Query.NamespaceMap = context.NamespaceMap;
+            var subContext = new SparqlQueryParserContext(context.Tokens, context.BaseUri, context.NamespaceMap);
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;

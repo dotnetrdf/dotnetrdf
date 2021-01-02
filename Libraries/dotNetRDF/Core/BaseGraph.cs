@@ -27,12 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
-using VDS.RDF.Parsing;
-using VDS.RDF.Writing.Serialization;
 
 namespace VDS.RDF
 {
@@ -49,14 +43,9 @@ namespace VDS.RDF
         protected BaseTripleCollection _triples;
 
         /// <summary>
-        /// Namespace Mapper.
+        /// The factory to use when creating nodes in this graph.
         /// </summary>
-        protected NamespaceMapper _nsmapper;
-
-        /// <summary>
-        /// Base Uri of the Graph.
-        /// </summary>
-        protected Uri _baseuri = null;
+        protected readonly INodeFactory NodeFactory;
 
         /// <summary>
         /// The name of the graph.
@@ -68,7 +57,8 @@ namespace VDS.RDF
         /// </summary>
         protected BlankNodeMapper _bnodemapper;
 
-        private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
+        private readonly TripleEventHandler TripleAddedHandler;
+        private readonly TripleEventHandler TripleRemovedHandler;
 
         #endregion
 
@@ -79,11 +69,12 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="tripleCollection">Triple Collection to use.</param>
         /// <param name="graphName">The name to assign to the graph.</param>
-        protected BaseGraph(BaseTripleCollection tripleCollection, IRefNode graphName = null)
+        /// <param name="nodeFactory">The factory to use when creating nodes in this graph.</param>
+        protected BaseGraph(BaseTripleCollection tripleCollection, IRefNode graphName = null, INodeFactory nodeFactory = null)
         {
             _triples = tripleCollection;
             _bnodemapper = new BlankNodeMapper();
-            _nsmapper = new NamespaceMapper();
+            NodeFactory = nodeFactory ?? new NodeFactory();
             _name = graphName;
 
             // Create Event Handlers and attach to the Triple Collection
@@ -122,7 +113,8 @@ namespace VDS.RDF
         /// Gets the Namespace Mapper for this Graph which contains all in use Namespace Prefixes and their URIs.
         /// </summary>
         /// <returns></returns>
-        public virtual INamespaceMapper NamespaceMap => _nsmapper;
+        public INamespaceMapper NamespaceMap => NodeFactory.NamespaceMap;
+
 
         /// <summary>
         /// Gets the current Base Uri for the Graph.
@@ -130,10 +122,10 @@ namespace VDS.RDF
         /// <remarks>
         /// This value may be changed during Graph population depending on whether the Concrete syntax allows the Base Uri to be changed and how the Parser handles this.
         /// </remarks>
-        public virtual Uri BaseUri
+        public Uri BaseUri
         {
-            get => _baseuri;
-            set => _baseuri = value;
+            get => NodeFactory.BaseUri;
+            set => NodeFactory.BaseUri = value;
         }
 
         /// <summary>
@@ -204,124 +196,119 @@ namespace VDS.RDF
 
         #endregion
 
-        #region Node Creation
+        #region NodeFactory methods
 
         /// <summary>
-        /// Creates a New Blank Node with an auto-generated Blank Node ID.
+        /// Creates a Blank Node with a new automatically generated ID.
         /// </summary>
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode()
         {
-            return new BlankNode(this);
+            return NodeFactory.CreateBlankNode();
         }
 
         /// <summary>
-        /// Creates a New Blank Node with a user-defined Blank Node ID.
+        /// Creates a Blank Node with the given Node ID.
         /// </summary>
-        /// <param name="nodeId">Node ID to use.</param>
+        /// <param name="nodeId">Node ID.</param>
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode(string nodeId)
         {
-            _bnodemapper.CheckID(ref nodeId);
-            return new BlankNode(nodeId);
+            return NodeFactory.CreateBlankNode(nodeId);
         }
 
         /// <summary>
-        /// Creates a New Literal Node with the given Value.
-        /// </summary>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal)
-        {
-            return new LiteralNode(literal, NormalizeLiteralValues);
-        }
-
-        /// <summary>
-        /// Creates a New Literal Node with the given Value and Language Specifier.
-        /// </summary>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="langspec">Language Specifier of the Literal.</param>
-        /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
-        {
-            return new LiteralNode(literal, langspec, NormalizeLiteralValues);
-        }
-
-        /// <summary>
-        /// Creates a new Literal Node with the given Value and Data Type.
-        /// </summary>
-        /// <param name="literal">String value of the Literal.</param>
-        /// <param name="datatype">URI of the Data Type.</param>
-        /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
-        {
-            return new LiteralNode(literal, datatype, NormalizeLiteralValues);
-        }
-
-        /// <summary>
-        /// Creates a new URI Node that refers to the Base Uri of the Graph.
-        /// </summary>
-        /// <returns></returns>
-        public virtual IUriNode CreateUriNode()
-        {
-            return new UriNode(UriFactory.Create(Tools.ResolveUri(string.Empty, _baseuri.ToSafeString())));
-        }
-
-        /// <summary>
-        /// Creates a new URI Node with the given URI.
-        /// </summary>
-        /// <param name="uri">URI for the Node.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Generally we expect to be passed an absolute URI, while relative URIs are permitted the behaviour is less well defined.  If there is a Base URI defined for the Graph then relative URIs will be automatically resolved against that Base, if the Base URI is not defined then relative URIs will be left as is.  In this case issues may occur when trying to serialize the data or when accurate round tripping is required.
-        /// </remarks>
-        public virtual IUriNode CreateUriNode(Uri uri)
-        {
-            if (!uri.IsAbsoluteUri && _baseuri != null) uri = Tools.ResolveUri(uri, _baseuri);
-            return new UriNode(uri);
-        }
-
-        /// <summary>
-        /// Creates a new URI Node with the given QName.
-        /// </summary>
-        /// <param name="qname">QName for the Node.</param>
-        /// <returns></returns>
-        /// <remarks>Internally the Graph will resolve the QName to a full URI, throws an RDF Exception when this is not possible.</remarks>
-        public virtual IUriNode CreateUriNode(string qname)
-        {
-            return new UriNode(ResolveQName(qname));
-        }
-
-        /// <summary>
-        /// Creates a new Variable Node.
-        /// </summary>
-        /// <param name="varname">Variable Name.</param>
-        /// <returns></returns>
-        public virtual IVariableNode CreateVariableNode(string varname)
-        {
-            return new VariableNode(varname);
-        }
-
-        /// <summary>
-        /// Creates a new Graph Literal Node with its value being an Empty Subgraph.
+        /// Creates a Graph Literal Node which represents the empty Subgraph.
         /// </summary>
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode()
         {
-            return new GraphLiteralNode();
+            return NodeFactory.CreateGraphLiteralNode();
         }
 
         /// <summary>
-        /// Creates a new Graph Literal Node with its value being the given Subgraph.
+        /// Creates a Graph Literal Node which represents the given Subgraph.
         /// </summary>
-        /// <param name="subgraph">Subgraph this Node represents.</param>
+        /// <param name="subgraph">Subgraph.</param>
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
-            return new GraphLiteralNode(subgraph);
+            return NodeFactory.CreateGraphLiteralNode(subgraph);
+        }
+
+        /// <summary>
+        /// Creates a Literal Node with the given Value and Data Type.
+        /// </summary>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <param name="datatype">Data Type URI of the Literal.</param>
+        /// <returns></returns>
+        public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
+        {
+            return NodeFactory.CreateLiteralNode(literal, datatype);
+        }
+
+        /// <summary>
+        /// Creates a Literal Node with the given Value.
+        /// </summary>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <returns></returns>
+        public virtual ILiteralNode CreateLiteralNode(string literal)
+        {
+            return NodeFactory.CreateLiteralNode(literal);
+        }
+
+        /// <summary>
+        /// Creates a Literal Node with the given Value and Language.
+        /// </summary>
+        /// <param name="literal">Value of the Literal.</param>
+        /// <param name="langspec">Language Specifier for the Literal.</param>
+        /// <returns></returns>
+        public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
+        {
+            return NodeFactory.CreateLiteralNode(literal, langspec);
+        }
+
+        /// <summary>
+        /// Creates a URI Node for the given URI.
+        /// </summary>
+        /// <param name="uri">URI.</param>
+        /// <returns></returns>
+        public virtual IUriNode CreateUriNode(Uri uri)
+        {
+            return NodeFactory.CreateUriNode(uri);
+        }
+
+        /// <summary>
+        /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName.
+        /// </summary>
+        /// <param name="qName">QName.</param>
+        /// <returns></returns>
+        public virtual IUriNode CreateUriNode(string qName)
+        {
+            return NodeFactory.CreateUriNode(qName);
+        }
+
+        /// <summary>
+        /// Creates a URI Node that corresponds to the current Base URI of the node factory.
+        /// </summary>
+        /// <returns></returns>
+        public virtual IUriNode CreateUriNode()
+        {
+            return NodeFactory.CreateUriNode();
+        }
+
+        /// <summary>
+        /// Creates a Variable Node for the given Variable Name.
+        /// </summary>
+        /// <param name="varname"></param>
+        /// <returns></returns>
+        public virtual IVariableNode CreateVariableNode(string varname)
+        {
+            return NodeFactory.CreateVariableNode(varname);
         }
 
         #endregion
+
 
         #region Node Selection
 
@@ -499,7 +486,7 @@ namespace VDS.RDF
             if (!RaiseMergeRequested()) return;
 
             // First copy and Prefixes across which aren't defined in this Graph
-            _nsmapper.Import(g.NamespaceMap);
+            NodeFactory.NamespaceMap.Import(g.NamespaceMap);
 
             if (IsEmpty)
             {
@@ -552,18 +539,18 @@ namespace VDS.RDF
         /// Graph Equality is determined by a somewhat complex algorithm which is explained in the remarks of the other overload for Equals.
         /// </para>
         /// </remarks>
+        [Obsolete("This override is potentially misleading as BaseGraph objects are mutable. Callers should instead use the GraphMatcher class to check for graph isomorphism. This override will be removed in a future release.")]
         public override bool Equals(object obj)
         {
-            // Graphs can't be equal to null
-            if (obj == null) return false;
-
-            if (obj is IGraph g)
+            return obj switch
             {
-                return Equals(g, out Dictionary<INode, INode> temp);
-            }
+                // Graphs can't be equal to null
+                null => false,
+                IGraph g => Equals(g, out _),
+                _ => false
+            };
 
             // Graphs can only be equal to other Graphs
-            return false;
         }
 
         /// <summary>
@@ -586,10 +573,8 @@ namespace VDS.RDF
                 mapping = matcher.Mapping;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         #endregion
@@ -681,7 +666,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual Uri ResolveQName(string qname)
         {
-            return UriFactory.Create(Tools.ResolveQName(qname, _nsmapper, _baseuri));
+            return NodeFactory.ResolveQName(qname);
         }
 
         /// <summary>
@@ -690,15 +675,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual string GetNextBlankNodeID()
         {
-            // try
-            // {
-            //    Monitor.Enter(this._bnodemapper);
             return _bnodemapper.GetNextID();
-            // }
-            // finally
-            // {
-            //    Monitor.Exit(this._bnodemapper);
-            // }
         }
 
         #endregion

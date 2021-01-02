@@ -323,6 +323,7 @@ SELECT * WHERE {
         }
 
         [Fact]
+        [Obsolete("Tests obsolete class")]
         public void SparqlEndpointWithExtensions()
         {
             //var endpoint = new SparqlConnector(new Uri(TestConfigManager.GetSetting(TestConfigManager.RemoteSparqlQuery)));

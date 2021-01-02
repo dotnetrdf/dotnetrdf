@@ -109,11 +109,13 @@ namespace VDS.RDF.Parsing.Contexts
         /// Creates a new Query Parser Context from the given Token Queue.
         /// </summary>
         /// <param name="tokens">Token Queue.</param>
-        protected internal SparqlQueryParserContext(ITokenQueue tokens)
+        /// <param name="baseUri">The base URI to use when resolving relative URIS in the query. May be null if there is no initial base URI.</param>
+        /// <param name="namespaceMap">The namespace map to use when resolving QNames in the query. If null, will default to a new empty namespace map.</param>
+        protected internal SparqlQueryParserContext(ITokenQueue tokens, Uri baseUri, INamespaceMapper namespaceMap)
             : base(new NullHandler(), null)
         {
             _queue = tokens;
-            _query = new SparqlQuery(true);
+            _query = new SparqlQuery(baseUri, namespaceMap, true);
         }
 
         /// <summary>

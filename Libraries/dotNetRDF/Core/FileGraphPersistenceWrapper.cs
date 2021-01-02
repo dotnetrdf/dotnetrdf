@@ -25,40 +25,58 @@
 */
 
 using System;
+using System.IO;
 
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class representing Variable Nodes (only used for N3).
+    /// The File Graph Persistence Wrapper is a wrapper around another Graph that will be persisted to a file.
     /// </summary>
-    public class VariableNode
-        : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+    public class FileGraphPersistenceWrapper 
+        : GraphPersistenceWrapper
     {
-        /// <summary>
-        /// Creates a new Variable Node.
-        /// </summary>
-        /// <param name="varName">Variable Name.</param>
-        public VariableNode(string varName)
-            : base(varName) { }
+        private readonly string _filename;
 
         /// <summary>
-        /// Compares this Node to another Variable Node.
+        /// Creates a new File Graph Persistence Wrapper around the given Graph.
         /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public int CompareTo(VariableNode other)
+        /// <param name="g">Graph.</param>
+        /// <param name="filename">File to persist to.</param>
+        public FileGraphPersistenceWrapper(IGraph g, string filename)
+            : base(g)
         {
-            return base.CompareTo((IVariableNode)other);
+            _filename = filename ?? throw new ArgumentException("Cannot persist to a null Filename", nameof(filename));
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node.
+        /// Creates a new File Graph Persistence Wrapper around a new emtpy Graph.
         /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public bool Equals(VariableNode other)
+        /// <param name="filename">File to persist to.</param>
+        /// <remarks>
+        /// If the given file already exists then the Graph will be loaded from that file.
+        /// </remarks>
+        public FileGraphPersistenceWrapper(string filename)
+            : base(new Graph())
         {
-            return base.Equals((IVariableNode)other);
+            if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", nameof(filename));
+
+            if (File.Exists(filename))
+            {
+                _g.LoadFromFile(filename);
+            }
+        }
+
+        /// <summary>
+        /// Returns that Triple persistence is not supported.
+        /// </summary>
+        protected override bool SupportsTriplePersistence => false;
+
+        /// <summary>
+        /// Persists the entire Graph to a File.
+        /// </summary>
+        protected override void PersistGraph()
+        {
+            this.SaveToFile(_filename);
         }
     }
 }

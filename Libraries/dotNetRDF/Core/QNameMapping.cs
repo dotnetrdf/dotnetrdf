@@ -29,36 +29,60 @@ using System;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class representing Variable Nodes (only used for N3).
+    /// Represents a mapping from a URI to a QName.
     /// </summary>
-    public class VariableNode
-        : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+    public class QNameMapping 
     {
         /// <summary>
-        /// Creates a new Variable Node.
+        /// Creates a new QName Mapping.
         /// </summary>
-        /// <param name="varName">Variable Name.</param>
-        public VariableNode(string varName)
-            : base(varName) { }
-
-        /// <summary>
-        /// Compares this Node to another Variable Node.
-        /// </summary>
-        /// <param name="other">Variable Node.</param>
-        /// <returns></returns>
-        public int CompareTo(VariableNode other)
+        /// <param name="u">URI.</param>
+        public QNameMapping(string u)
         {
-            return base.CompareTo((IVariableNode)other);
+            Uri = u;
         }
 
         /// <summary>
-        /// Determines whether this Node is equal to a Variable Node.
+        /// URI this is a mapping for.
         /// </summary>
-        /// <param name="other">Variable Node.</param>
+        public string Uri { get; }
+
+        /// <summary>
+        /// QName this URI maps to.
+        /// </summary>
+        public string QName { get; set; }
+
+        /// <summary>
+        /// Gets the String representation of the URI.
+        /// </summary>
         /// <returns></returns>
-        public bool Equals(VariableNode other)
+        public override string ToString()
         {
-            return base.Equals((IVariableNode)other);
+            return Uri;
+        }
+
+        /// <summary>
+        /// Checks whether this is equal to another Object.
+        /// </summary>
+        /// <param name="obj">Object to test against.</param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (obj is QNameMapping)
+            {
+                return ToString().Equals(obj.ToString(), StringComparison.Ordinal);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return Uri.GetHashCode();
         }
     }
 }

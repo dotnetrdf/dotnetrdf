@@ -35,10 +35,11 @@ namespace VDS.RDF
         : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
     {
         /// <summary>
-        /// Internal Only constructor for Blank Nodes.
+        /// Create a new blank node.
         /// </summary>
         /// <param name="id">Custom Node ID to use.</param>
-        protected internal BlankNode(string id)
+        /// <remarks>This constructor does not check for identifier collisions in a graph. When creating blank nodes to store in a <see cref="IGraph"/>, it is strongly recommended to only create blank nodes through the <see cref="INodeFactory"/> interface of the target graph so as to avoid the possibility of duplicating existing blank nodes.</remarks>
+        public BlankNode(string id)
             : base(id) { }
 
         /// <summary>

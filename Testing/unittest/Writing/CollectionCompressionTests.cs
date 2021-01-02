@@ -374,6 +374,7 @@ namespace VDS.RDF.Writing
         }
 
         [Fact]
+        [Obsolete("Test uses obsolete API")]
         public void WritingCollectionCompressionComplex1()
         {
             var connector = new SparqlConnector(new VDS.RDF.Query.SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql")));

@@ -42,13 +42,13 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="normalizeLiteralValues">Whether the string values of literal nodes should be normalized on creation.</param>
         protected BaseHandler(bool normalizeLiteralValues = false)
-            : this(new NodeFactory(normalizeLiteralValues)) { }
+            : this(new NodeFactory(normalizeLiteralValues:normalizeLiteralValues)) { }
 
         /// <summary>
         /// Creates a new Handler using the given Node Factory.
         /// </summary>
         /// <param name="factory">Node Factory.</param>
-        public BaseHandler(INodeFactory factory)
+        protected BaseHandler(INodeFactory factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
@@ -72,6 +72,30 @@ namespace VDS.RDF.Parsing.Handlers
             get => _factory.NormalizeLiteralValues;
             set => _factory.NormalizeLiteralValues = value;
         }
+
+        /// <summary>
+        /// Resolve a QName to a URI using the handler's underlying node factory to provide the <see cref="INodeFactory.NamespaceMap"/> and <see cref="INodeFactory.BaseUri"/>.
+        /// </summary>
+        /// <param name="qName"></param>
+        /// <returns></returns>
+        public Uri ResolveQName(string qName)
+        {
+            return _factory.ResolveQName(qName);
+        }
+
+        /// <summary>
+        /// Get or set the base URI used to resolve relative URI references.
+        /// </summary>
+        public Uri BaseUri
+        {
+            get => _factory.BaseUri;
+            set => _factory.BaseUri = value;
+        }
+
+        /// <summary>
+        /// Get the namespace map for this node factory.
+        /// </summary>
+        public INamespaceMapper NamespaceMap => _factory.NamespaceMap;
 
         /// <summary>
         /// Creates a Blank Node.
@@ -151,6 +175,25 @@ namespace VDS.RDF.Parsing.Handlers
         public virtual IUriNode CreateUriNode(Uri uri)
         {
             return _factory.CreateUriNode(uri);
+        }
+
+        /// <summary>
+        /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName.
+        /// </summary>
+        /// <param name="qName">QName.</param>
+        /// <returns></returns>
+        public IUriNode CreateUriNode(string qName)
+        {
+            return _factory.CreateUriNode(qName);
+        }
+
+        /// <summary>
+        /// Creates a URI Node that corresponds to the current Base URI of the node factory.
+        /// </summary>
+        /// <returns></returns>
+        public IUriNode CreateUriNode()
+        {
+            return _factory.CreateUriNode();
         }
 
         /// <summary>
