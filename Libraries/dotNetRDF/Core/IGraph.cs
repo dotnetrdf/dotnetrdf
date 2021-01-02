@@ -333,17 +333,6 @@ namespace VDS.RDF
 
         #endregion
 
-        #region Helper Functions
-
-        /// <summary>
-        /// Resolves a QName into a URI using the Namespace Map and Base URI of this Graph.
-        /// </summary>
-        /// <param name="qname">QName.</param>
-        /// <returns></returns>
-        Uri ResolveQName(string qname);
-
-        #endregion
-
         #region Events
 
         /// <summary>
