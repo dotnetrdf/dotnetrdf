@@ -38,7 +38,7 @@ namespace VDS.RDF
         /// Creates a new Variable Node.
         /// </summary>
         /// <param name="varName">Variable Name.</param>
-        protected internal VariableNode(string varName)
+        public VariableNode(string varName)
             : base(varName) { }
 
         /// <summary>

@@ -35,29 +35,29 @@ namespace VDS.RDF
         : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
     {
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
+        /// Constructor for Literal Nodes.
         /// </summary>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal LiteralNode(string literal, bool normalize)
+        public LiteralNode(string literal, bool normalize)
             : base(literal, normalize) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
+        /// Constructor for Literal Nodes.
         /// </summary>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="langSpec">String value for the Language Specifier for the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal LiteralNode(string literal, string langSpec, bool normalize)
+        public LiteralNode(string literal, string langSpec, bool normalize)
             : base(literal, langSpec, normalize) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes.
+        /// Constructor for Literal Nodes.
         /// </summary>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="datatype">Uri for the Literals Data Type.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        protected internal LiteralNode(string literal, Uri datatype, bool normalize)
+        public LiteralNode(string literal, Uri datatype, bool normalize)
             : base(literal, datatype, normalize) { }
 
         /// <summary>
