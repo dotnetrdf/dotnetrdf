@@ -84,3 +84,39 @@ We recommend instead using one of the supported RDF/SPARQL syntaxes to serialize
 ## The static UriLoader class has a new non-static replacement
 
 The new `VDS.RDF.Parsing.Loader` class provides similar functionality to the `VDS.RDF.Parsing.UriLoader` class but uses the more modern `System.Net.Http` library for its HTTP connections. Making the class non-static allows you to create multiple loader instances configured with different `HttpClient` instances. The main "missing" feature of the new `Loader` class is caching, which can (and should) be handled at the HttpClient layer.
+
+## Node construction changes
+
+There are some significant changes to the way that nodes can be created. At the heart of these changes is that nodes are no longer scoped to a specific graph. A node can be used to assert triples in many different graphs without having to be copied between the graphs. Much of this copying was handled internally by the implementations of the `INodeFactory` interface (an interface which was implemented by the `Graph` class amongst others).
+
+From dotNetRDF 3.0, nodes can be directly created using public constructors on the relevant classes. However the `INodeFactory` class remains as it provides a number of convenient functions:
+
+    * It allows the specification of a `BaseUri` that can be used to create `UriNode`s using relative URIs.
+    * It has an `INamespaceMapper` which can be used to resolve QNames to URIs when creating `UriNode`s.
+    * It can be used to create auto-assigned blank node identifiers.
+    
+The `Graph` class now has a `NodeFactory` property that allows the node factory for a graph to be accessed directly and it implements the `INodeFactory` interface by delegating all calls to the `NodeFactory` member. The `NodeFactory` property is read-only, but can be specified in the `Graph` constructor. 
+
+**NOTE**: the way that these changes have been implemented ensures that all existing code that creates nodes and triples in graphs will compile cleanly and continue to behave as expected. There is one significant exception though as noted in the section below.
+
+## BREAKING: Graph Names are now specified using the `Name` property, not `BaseUri`
+
+Prior to this release of dotNetRDF, the `BaseUri` property of an `Graph` served a dual purpose - it provided a base URI that could be used to resolve relative URI references (e.g. when creating new `UriNode`s in the graph); and it served as the name of the graph in an RDF dataset.
+
+With 3.0, the name of the graph can now be either an `IUriNode` or an `IBlankNode` (matching the definition of graph names in the 1.1 version of the RDF specification). This is accessed through the `Name` property of the `IGraph` interface. This property is *read-only* as a graph name should be immutable (especially when it is used to index that graph in collections such as an RDF dataset) - so it can only be set as a constructor parameter. The `BaseUri` property remains on the `IGraph` interface, but it is actually now inherited from the `INodeFactory` interface (which `IGraph` extends) and is used only to resolve relative URIs when creating a new `UriNode`. `BaseUri` is a read-write property as you can (and may want to) change the effective base URI depending on the sources of RDF you are parsing to load the graph with data.
+
+This is an important breaking change for code that deals with named graphs. The change is relatively simple but it does require having access to the graph name at the time that the graph is constructed. Old code that set the graph `BaseUri` to give the graph a name looked like this:
+
+    var graph = new Graph();
+    // ... maybe some intervening code
+    graph.BaseUri = new Uri("http://example.org/graph1");
+    
+From dotNetRDF 3.0, the code above **does not change the name of the graph**! To set the graph name, it must now be passed as an `IUriNode` or `IBlankNode` constructor parameter:
+
+    var graph = new Graph(new UriNode(new Uri("http://example.org/graph1")));
+    
+Of course if you want a URI to be both the name and the base URI of the graph, that is still possible too:
+
+    var graph = new Graph(new UriNode(new Uri("http://example.org/graph1"))) {
+       BaseUri = new Uri("http://example.org/graph1")
+    };
