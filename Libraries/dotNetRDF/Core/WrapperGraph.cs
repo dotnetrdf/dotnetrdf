@@ -505,24 +505,17 @@ namespace VDS.RDF
         /// <param name="obj">Object to test.</param>
         /// <returns></returns>
         /// <remarks>
-        /// <para>
-        /// A Graph can only be equal to another Object which is an <see cref="IGraph">IGraph</see>.
-        /// </para>
-        /// <para>
-        /// Graph Equality is determined by a somewhat complex algorithm which is explained in the remarks of the other overload for Equals.
-        /// </para>
+        /// This override is deprecated as this class is not an immutable class. To compare two graphs for isomorphism (also known as graph equality) please use the <see cref="GraphMatcher"/> utility class instead.
         /// </remarks>
+        [Obsolete("The use of the Equals method for determining graph equality is deprecated and this override will be removed in a future release. To compare two graphs, please use the GraphMatcher class instead.")]
         public override bool Equals(object obj)
         {
-            if (obj is IGraph)
+            if (obj is IGraph graph)
             {
-                Dictionary<INode, INode> temp;
-                return Equals((IGraph)obj, out temp);
+                return Equals(graph, out Dictionary<INode, INode> _);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
