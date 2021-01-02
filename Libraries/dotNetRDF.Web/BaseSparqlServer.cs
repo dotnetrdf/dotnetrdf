@@ -343,20 +343,21 @@ namespace VDS.RDF.Web
                 }
 
                 // Set the Default Graph URIs (if any)
+                var nodeFactory = new NodeFactory();
                 if (isProtocolDataset)
                 {
                     foreach (var userDefaultGraph in userDefaultGraphs)
                     {
-                        query.AddDefaultGraph(UriFactory.Create(userDefaultGraph));
+                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Create(userDefaultGraph)));
                     }
                 }
                 else if (!_config.DefaultGraphURI.Equals(String.Empty))
                 {
                     // Only applies if the Query doesn't specify any Default Graph and there wasn't a protocol defined
                     // dataset present
-                    if (!query.DefaultGraphs.Any())
+                    if (!query.DefaultGraphNames.Any())
                     {
-                        query.AddDefaultGraph(UriFactory.Create(_config.DefaultGraphURI));
+                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Create(_config.DefaultGraphURI)));
                     }
                 }
 
@@ -366,7 +367,7 @@ namespace VDS.RDF.Web
                     query.ClearNamedGraphs();
                     foreach (var userNamedGraph in userNamedGraphs)
                     {
-                        query.AddNamedGraph(UriFactory.Create(userNamedGraph));
+                        query.AddNamedGraph(nodeFactory.CreateUriNode(UriFactory.Create(userNamedGraph)));
                     }
                 }
 
@@ -608,7 +609,7 @@ namespace VDS.RDF.Web
                         var modify = cmd as BaseModificationCommand;
                         if (modify != null)
                         {
-                            if (modify.GraphUri != null || modify.UsingUris.Any() || modify.UsingNamedUris.Any())
+                            if (modify.WithGraphName != null || modify.UsingUris.Any() || modify.UsingNamedUris.Any())
                             {
                                 // Invalid if a command already has a WITH/USING/USING NAMED
                                 throw new SparqlUpdateMalformedException("A command in your update request contains a WITH/USING/USING NAMED clause but you have also specified one/both of the using-graph-uri or using-named-graph-uri parameters which is not permitted by the SPARQL Protocol");

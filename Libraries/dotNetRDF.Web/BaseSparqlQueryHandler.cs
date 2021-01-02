@@ -257,10 +257,12 @@ namespace VDS.RDF.Web
                 }
 
                 // Now we're going to parse the Query
-                var parser = new SparqlQueryParser(_config.Syntax);
-                parser.DefaultBaseUri = context.Request.Url;
-                parser.ExpressionFactories = _config.ExpressionFactories;
-                parser.QueryOptimiser = _config.QueryOptimiser;
+                var parser = new SparqlQueryParser(_config.Syntax)
+                {
+                    DefaultBaseUri = context.Request.Url,
+                    ExpressionFactories = _config.ExpressionFactories,
+                    QueryOptimiser = _config.QueryOptimiser
+                };
                 SparqlQuery query = parser.ParseFromString(queryText);
                 query.AlgebraOptimisers = _config.AlgebraOptimisers;
                 query.PropertyFunctionFactories = _config.PropertyFunctionFactories;
@@ -290,21 +292,22 @@ namespace VDS.RDF.Web
                     isProtocolDataset = true;
                 }
 
+                var nodeFactory = new NodeFactory();
                 // Set the Default Graph URIs (if any)
                 if (isProtocolDataset)
                 {
                     foreach (var userDefaultGraph in userDefaultGraphs)
                     {
-                        query.AddDefaultGraph(UriFactory.Create(userDefaultGraph));
+                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Create(userDefaultGraph)));
                     }
                 }
                 else if (!_config.DefaultGraphURI.Equals(String.Empty))
                 {
                     // Only applies if the Query doesn't specify any Default Graph and there wasn't a protocol defined
                     // dataset present
-                    if (!query.DefaultGraphs.Any())
+                    if (!query.DefaultGraphNames.Any())
                     {
-                        query.AddDefaultGraph(UriFactory.Create(_config.DefaultGraphURI));
+                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Create(_config.DefaultGraphURI)));
                     }
                 }
 
@@ -314,7 +317,7 @@ namespace VDS.RDF.Web
                     query.ClearNamedGraphs();
                     foreach (var userNamedGraph in userNamedGraphs)
                     {
-                        query.AddNamedGraph(UriFactory.Create(userNamedGraph));
+                        query.AddNamedGraph(nodeFactory.CreateUriNode(UriFactory.Create(userNamedGraph)));
                     }
                 }
 
