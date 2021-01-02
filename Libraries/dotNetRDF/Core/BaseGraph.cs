@@ -46,6 +46,7 @@ namespace VDS.RDF
         /// The factory to use when creating nodes in this graph.
         /// </summary>
         protected readonly INodeFactory NodeFactory;
+
         /// <summary>
         /// The name of the graph.
         /// </summary>
@@ -56,7 +57,8 @@ namespace VDS.RDF
         /// </summary>
         protected BlankNodeMapper _bnodemapper;
 
-        private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
+        private readonly TripleEventHandler TripleAddedHandler;
+        private readonly TripleEventHandler TripleRemovedHandler;
 
         #endregion
 
