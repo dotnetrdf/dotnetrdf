@@ -53,7 +53,6 @@ namespace VDS.RDF
             var g = new Graph();
             collection.Add(g, false);
             Assert.True(collection.Contains((IRefNode)null));
-            Assert.True(collection.Contains((Uri) null));
         }
 
         [Fact]
@@ -123,13 +122,13 @@ namespace VDS.RDF
         public void GraphCollectionWebDemand1()
         {
             var store = new TripleStore(new WebDemandGraphCollection());
-            var g = new Graph();
             var u = new Uri("http://www.dotnetrdf.org/configuration#");
+            var nodeFactory = new NodeFactory(u);
+            var g = new Graph(nodeFactory.CreateUriNode(u));
             g.LoadFromUri(u);
-            g.BaseUri = u; 
 
-            Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.Equal(g, store[g.BaseUri]);
+            Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
+            Assert.Equal(g, store[g.Name]);
         }
 
         [Fact(Skip = "Remote configuration file is not currently available")]
@@ -137,20 +136,17 @@ namespace VDS.RDF
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
             var store = new TripleStore(new WebDemandGraphCollection());
-
-            var g = new Graph();
+            var nodeFactory = new NodeFactory();
             var u = new Uri("http://www.dotnetrdf.org/configuration#");
+            var n = nodeFactory.CreateUriNode(u);
+            var g = new Graph(n);
             g.LoadFromUri(u);
-            g.BaseUri = u;
 
-            var empty = new Graph
-            {
-                BaseUri = g.BaseUri
-            };
+            var empty = new Graph(n);
             store.Add(empty);
 
-            Assert.True(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.NotEqual(g, store[g.BaseUri]);
+            Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
+            Assert.NotEqual(g, store[g.Name]);
         }
     }
 }

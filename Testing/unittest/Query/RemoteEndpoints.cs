@@ -35,6 +35,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
+    [Obsolete("Tests for obsolete classes")]
    public class RemoteEndpoints
     {
         const int AsyncTimeout = 45000;

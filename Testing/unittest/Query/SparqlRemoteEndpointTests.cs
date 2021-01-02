@@ -36,6 +36,7 @@ using Xunit;
 
 namespace VDS.RDF.Query
 {
+    [Obsolete("Tests for obsolete classes")]
     public class SparqlRemoteEndpointTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {
         private readonly MockRemoteSparqlEndpointFixture _fixture;

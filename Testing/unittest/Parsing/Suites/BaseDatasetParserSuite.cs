@@ -70,17 +70,17 @@ namespace VDS.RDF.Parsing.Suites
                 return false;
             }
 
-            foreach (Uri u in expected.Graphs.GraphUris)
+            foreach (IRefNode expectGraphName in expected.Graphs.GraphNames)
             {
-                if (!actual.HasGraph(u))
+                if (!actual.HasGraph(expectGraphName))
                 {
-                    Console.WriteLine("Expected Graph {0} missing", u.ToSafeString());
+                    Console.WriteLine("Expected Graph {0} missing", expectGraphName.ToSafeString());
                     return false;
                 }
-                GraphDiffReport diff = expected[u].Difference(actual[u]);
+                GraphDiffReport diff = expected[expectGraphName].Difference(actual[expectGraphName]);
                 if (!diff.AreEqual)
                 {
-                    Console.WriteLine("Expected Graph {0} not as expected", u.ToSafeString());
+                    Console.WriteLine("Expected Graph {0} not as expected", expectGraphName.ToSafeString());
                     TestTools.ShowDifferences(diff);
                     return false;
                 }

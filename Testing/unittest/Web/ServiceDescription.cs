@@ -108,7 +108,8 @@ namespace VDS.RDF.Web
             Console.WriteLine();
 
             var g = new Graph();
-            UriLoader.Load(g, new Uri(path));
+            var loader = new Loader();
+            loader.LoadGraph(g, new Uri(path));
             TestTools.ShowGraph(g);
 
             Assert.False(g.IsEmpty, "A non-empty Service Description Graph should have been returned");

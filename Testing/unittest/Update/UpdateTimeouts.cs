@@ -51,8 +51,10 @@ namespace VDS.RDF.Update
             var store = new TripleStore();
             var processor = new LeviathanUpdateProcessor(store);
             Assert.Throws<SparqlUpdateTimeoutException>(() => processor.ProcessCommandSet(cmds));
-            store.HasGraph(new Uri("http://example.org/1")).Should().BeFalse("Graph 1 should not exist");
-            store.HasGraph(new Uri("http://example.org/2")).Should().BeFalse("Graph 2 should not exist");
+
+            var nodeFactory = new NodeFactory();
+            store.HasGraph(nodeFactory.CreateUriNode(new Uri("http://example.org/1"))).Should().BeFalse("Graph 1 should not exist");
+            store.HasGraph(nodeFactory.CreateUriNode(new Uri("http://example.org/2"))).Should().BeFalse("Graph 2 should not exist");
         }
     }
 }

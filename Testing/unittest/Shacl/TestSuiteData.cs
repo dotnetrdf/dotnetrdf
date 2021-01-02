@@ -49,10 +49,10 @@ namespace VDS.RDF.Shacl
         {
             store = new DiskDemandTripleStore();
 
-            Populate(baseUri);
+            Populate(factory.CreateUriNode(baseUri));
 
             // Add proposed nodeValidator test missing from component manifest
-            Populate(new Uri(baseUri, "sparql/component/nodeValidator-001.ttl"));
+            Populate(factory.CreateUriNode(new Uri(baseUri, "sparql/component/nodeValidator-001.ttl")));
         }
 
         public static IEnumerable<object[]> CoreTests =>
@@ -89,13 +89,13 @@ namespace VDS.RDF.Shacl
 
         internal static void ExtractTestData(string name, out IGraph testGraph, out bool failure, out IGraph dataGraph, out IGraph shapesGraph)
         {
-            testGraph = store[new Uri(baseUri, name)];
+            testGraph = store[new UriNode(new Uri(baseUri, name))];
 
             var entries = testGraph.GetTriplesWithPredicate(mf_entries).Single().Object;
             var entry = testGraph.GetListItems(entries).Single();
             var action = testGraph.GetTriplesWithSubjectPredicate(entry, mf_action).Single().Object;
-            var dataGraphUri = ((IUriNode)testGraph.GetTriplesWithSubjectPredicate(action, sht_dataGraph).Single().Object).Uri;
-            var shapesGraphUri = ((IUriNode)testGraph.GetTriplesWithSubjectPredicate(action, sht_shapesGraph).Single().Object).Uri;
+            var dataGraphUri = (IUriNode)testGraph.GetTriplesWithSubjectPredicate(action, sht_dataGraph).Single().Object;
+            var shapesGraphUri = (IUriNode)testGraph.GetTriplesWithSubjectPredicate(action, sht_shapesGraph).Single().Object;
             var result = testGraph.GetTriplesWithSubjectPredicate(entry, mf_result).Single().Object;
             failure = result.Equals(sht_Failure);
 
@@ -117,14 +117,14 @@ namespace VDS.RDF.Shacl
             }
         }
 
-        private static void Populate(Uri u)
+        private static void Populate(IRefNode u)
         {
             if (store.HasGraph(u))
             {
                 var g = store[u];
                 foreach (var t in g.GetTriplesWithPredicate(mf_include).ToList())
                 {
-                    Populate(((IUriNode)t.Object).Uri);
+                    Populate(((IUriNode)t.Object));
                 }
             }
         }

@@ -58,6 +58,9 @@ namespace VDS.RDF.Update
             //Create a couple of Graphs using Create Commands
             var create1 = new CreateCommand(new Uri("http://example.org/1"));
             var create2 = new CreateCommand(new Uri("http://example.org/2"));
+            var nodeFactory = new NodeFactory();
+            IUriNode g1 = nodeFactory.CreateUriNode(new Uri("http://example.org/1"));
+            IUriNode g2 = nodeFactory.CreateUriNode(new Uri("http://example.org/2"));
 
             store.ExecuteUpdate(create1);
             store.ExecuteUpdate(create2);
@@ -88,7 +91,7 @@ namespace VDS.RDF.Update
                 Assert.True(false, "Executing a CREATE for an existing Graph with the SILENT modifier should not error");
             }
 
-            var drop1 = new DropCommand(new Uri("http://example.org/1"));
+            var drop1 = new DropCommand(g1);
             store.ExecuteUpdate(drop1);
             Assert.Equal(2, store.Graphs.Count);
 
@@ -102,7 +105,7 @@ namespace VDS.RDF.Update
                 Console.WriteLine("Trying to DROP a non-existent Graph produced an error as expected");
             }
 
-            var drop2 = new DropCommand(new Uri("http://example.org/1"), ClearMode.Graph, true);
+            var drop2 = new DropCommand(g1, ClearMode.Graph, true);
             try
             {
                 store.ExecuteUpdate(drop2);
@@ -118,9 +121,9 @@ namespace VDS.RDF.Update
         public void SparqlUpdateLoad()
         {
             var store = new TripleStore();
-
-            var loadLondon = new LoadCommand(_serverFixture.UriFor("/doap"));
-            var loadSouthampton = new LoadCommand(_serverFixture.UriFor("/resource/Southampton"), new Uri("http://example.org"));
+            var nodeFactory = new NodeFactory();
+            var loadLondon = new LoadCommand(_serverFixture.UriFor("/doap"), (IRefNode)null);
+            var loadSouthampton = new LoadCommand(_serverFixture.UriFor("/resource/Southampton"), nodeFactory.CreateUriNode(new Uri("http://example.org")));
 
             store.ExecuteUpdate(loadLondon);
             store.ExecuteUpdate(loadSouthampton);
@@ -378,10 +381,11 @@ INSERT { GRAPH :b { :s :p _:b } } WHERE { };
 INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
 
             var store = new TripleStore();
+            var nodeFactory = new NodeFactory();
             store.ExecuteUpdate(update);
 
             Assert.Equal(3, store.Graphs.Count);
-            Assert.Equal(2, store[new Uri("http://test/a")].Triples.Count);
+            Assert.Equal(2, store[nodeFactory.CreateUriNode(new Uri("http://test/a"))].Triples.Count);
 
         }
 
@@ -393,10 +397,11 @@ INSERT DATA { GRAPH :a { :s :p _:b } GRAPH :b { :s :p _:b } };
 INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
 
             var store = new TripleStore();
+            var nodeFactory = new NodeFactory();
             store.ExecuteUpdate(update);
 
             Assert.Equal(3, store.Graphs.Count);
-            Assert.Equal(1, store[new Uri("http://test/a")].Triples.Count);
+            Assert.Equal(1, store[nodeFactory.CreateUriNode(new Uri("http://test/a"))].Triples.Count);
 
         }
 
@@ -414,8 +419,8 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             var processor = new LeviathanUpdateProcessor(dataset);
             processor.ProcessCommandSet(commands);
 
-            Assert.Equal(2, dataset.GraphUris.Count());
-            Assert.True(dataset.HasGraph(UriFactory.Create("http://subject")));
+            Assert.Equal(2, dataset.GraphNames.Count());
+            Assert.True(dataset.HasGraph(g.CreateUriNode(UriFactory.Create("http://subject"))));
         }
 
         [Fact]
@@ -473,7 +478,8 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
         public void SparqlUpdateModifyCommandWithNoMatchingGraph()
         {
             var dataset = new InMemoryDataset();
-            var egGraph = new Uri("http://example.org/graph");
+            var nodeFactory = new NodeFactory();
+            IUriNode egGraph = nodeFactory.CreateUriNode(new Uri("http://example.org/graph"));
             dataset.HasGraph(egGraph).Should().BeFalse();
             var processor = new LeviathanUpdateProcessor(dataset);
             var cmdSet = new SparqlUpdateParser().ParseFromString(
@@ -491,7 +497,8 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
         public void SparqlUpdateInsertCommandWithNoMatchingGraph()
         {
             var dataset = new InMemoryDataset();
-            var egGraph = new Uri("http://example.org/graph");
+            var nodeFactory = new NodeFactory();
+            IUriNode egGraph = nodeFactory.CreateUriNode(new Uri("http://example.org/graph"));
             dataset.HasGraph(egGraph).Should().BeFalse();
             var processor = new LeviathanUpdateProcessor(dataset);
             var cmdSet = new SparqlUpdateParser().ParseFromString(
@@ -509,7 +516,8 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
         public void SparqlUpdateDeleteCommandWithNoMatchingGraph()
         {
             var dataset = new InMemoryDataset();
-            var egGraph = new Uri("http://example.org/graph");
+            var nodeFactory = new NodeFactory();
+            IUriNode egGraph = nodeFactory.CreateUriNode(new Uri("http://example.org/graph"));
             dataset.HasGraph(egGraph).Should().BeFalse();
             var processor = new LeviathanUpdateProcessor(dataset);
             var cmdSet = new SparqlUpdateParser().ParseFromString(
