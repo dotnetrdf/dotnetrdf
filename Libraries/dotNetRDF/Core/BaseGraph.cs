@@ -77,13 +77,13 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Base Graph using the given Triple Collection.
         /// </summary>
-        /// <param name="tripleCollection">Triple Collection to use.</param>
+        /// <param name="tripleCollection">Triple Collection to use. If null, a new <see cref="TreeIndexedTripleCollection"/> will be used.</param>
         /// <param name="graphName">The name to assign to the graph.</param>
         /// <param name="nodeFactory">The factory to use when creating nodes in this graph.</param>
         /// <param name="uriFactory">The factory to use when creating URIs in this graph. If not specified or null, defaults to the <see cref="VDS.RDF.UriFactory.Root">root UriFactory</see>.</param>
         protected BaseGraph(BaseTripleCollection tripleCollection, IRefNode graphName = null, INodeFactory nodeFactory = null, IUriFactory uriFactory = null)
         {
-            _triples = tripleCollection;
+            _triples = tripleCollection ?? new TreeIndexedTripleCollection();
             _bnodemapper = new BlankNodeMapper();
             NodeFactory = nodeFactory ?? new NodeFactory(uriFactory:uriFactory);
             UriFactory = uriFactory ?? VDS.RDF.UriFactory.Root;

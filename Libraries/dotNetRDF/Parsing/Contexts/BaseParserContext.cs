@@ -62,7 +62,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="g">Graph to parse into.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         public BaseParserContext(IGraph g, bool traceParsing)
-            : this(new GraphHandler(g), traceParsing) { }
+            : this(new GraphHandler(g), traceParsing, g.UriFactory) { }
 
         /// <summary>
         /// Creates a new Base Parser Context.
@@ -307,9 +307,9 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        /// <param name="uriFactory">The factory to use when creating URIs during the parse.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs during the parse. If null the root URI factory will be used.</param>
         public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
-            : base(handler, traceParsing, uriFactory)
+            : base(handler, traceParsing, uriFactory ?? RDF.UriFactory.Root)
         {
             switch (queueMode)
             {

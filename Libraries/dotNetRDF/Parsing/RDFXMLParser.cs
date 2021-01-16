@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -173,8 +173,20 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input Stream.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Reads RDF/XML syntax from some Stream using a RDF Handler.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input Stream.</param>
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
@@ -182,7 +194,7 @@ namespace VDS.RDF.Parsing
                 RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
             }
 
-            Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input, uriFactory);
         }
 
         /// <summary>
@@ -192,8 +204,19 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to read from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Reads RDF/XML syntax from some Input using a RDF Handler.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             try
             {
@@ -205,12 +228,12 @@ namespace VDS.RDF.Parsing
                     doc.Load(input);
 
                     // Create a new Parser Context and Parse
-                    var context = new RdfXmlParserContext(handler, doc, _traceparsing);
+                    var context = new RdfXmlParserContext(handler, doc, _traceparsing, uriFactory);
                     Parse(context);
                 }
                 else
                 {
-                    var context = new RdfXmlParserContext(handler, input);
+                    var context = new RdfXmlParserContext(handler, input, uriFactory);
                     Parse(context);
                 }
             }
@@ -321,8 +344,8 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Define XML namespace
-                context.Handler.HandleNamespace("xml", UriFactory.Create(XmlSpecsHelper.NamespaceXml));
-                context.Namespaces.AddNamespace("xml", UriFactory.Create(XmlSpecsHelper.NamespaceXml));
+                context.Handler.HandleNamespace("xml", context.UriFactory.Create(XmlSpecsHelper.NamespaceXml));
+                context.Namespaces.AddNamespace("xml", context.UriFactory.Create(XmlSpecsHelper.NamespaceXml));
 
                 // Process the Queue
                 ProcessEventQueue(context);
@@ -332,7 +355,7 @@ namespace VDS.RDF.Parsing
             catch (RdfParsingTerminatedException)
             {
                 context.Handler.EndRdf(true);
-                // Discard this - it justs means the Handler told us to stop
+                // Discard this - it just means the Handler told us to stop
             }
             catch
             {
@@ -358,7 +381,7 @@ namespace VDS.RDF.Parsing
                 GrammarProductionDoc(context, (RootEvent)first);
                 if (setBaseUri && !((RootEvent)first).BaseUri.Equals(string.Empty))
                 {
-                    baseUri = UriFactory.Create(Tools.ResolveUri(((RootEvent)first).BaseUri, string.Empty));
+                    baseUri = context.UriFactory.Create(Tools.ResolveUri(((RootEvent)first).BaseUri, string.Empty));
                     context.BaseUri = baseUri;
                     if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
@@ -368,7 +391,7 @@ namespace VDS.RDF.Parsing
                 GrammarProductionRDF(context, (ElementEvent)first);
                 if (setBaseUri && !((ElementEvent)first).BaseUri.Equals(string.Empty))
                 {
-                    baseUri = UriFactory.Create(Tools.ResolveUri(((ElementEvent)first).BaseUri, string.Empty));
+                    baseUri = context.UriFactory.Create(Tools.ResolveUri(((ElementEvent)first).BaseUri, string.Empty));
                     context.BaseUri = baseUri;
                     if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
@@ -648,7 +671,7 @@ namespace VDS.RDF.Parsing
             if (!ElementHasName(element, "Description", NamespaceMapper.RDF, context))
             {
                 // Assert a Triple regarding Type
-                pred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                pred = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
                 obj = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
                 if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
             }
@@ -662,7 +685,7 @@ namespace VDS.RDF.Parsing
                     //if (attr.QName.Equals("rdf:type"))
                     {
                         // Generate a Type Triple
-                        pred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                        pred = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
 
                         // Resolve URIRef into a Uri Node
                         var uriref = new UriReferenceEvent(attr.Value, attr.SourceXml);
@@ -673,7 +696,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         // Generate a Property Triple
-                        pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(attr.QName, context.Namespaces, null)));
+                        pred = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(attr.QName, context.Namespaces, null)));
 
                         // Add Language to Literal if necessary
                         if (element.Language.Equals(string.Empty))
@@ -1171,7 +1194,7 @@ namespace VDS.RDF.Parsing
             // At the moment we're just going to ensure that we normalize it to Unicode Normal Form C
             var xmllit = tlit.Value;
             xmllit = xmllit.Normalize();
-            obj = context.Handler.CreateLiteralNode(xmllit, UriFactory.Create(tlit.DataType));
+            obj = context.Handler.CreateLiteralNode(xmllit, context.UriFactory.Create(tlit.DataType));
 
             // Assert the Triple
             if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
@@ -1467,11 +1490,11 @@ namespace VDS.RDF.Parsing
 
                 // Set the first element in the list
                 subj = b1;
-                firstPred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+                firstPred = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
                 if (!context.Handler.HandleTriple(new Triple(subj, firstPred, node.SubjectNode))) ParserHelper.Stop();
 
                 // Middle elements of the list
-                restPred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+                restPred = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListRest));
                 while (seqNodes.Count >= 1)
                 {
                     node = seqNodes.Dequeue();
@@ -1487,14 +1510,14 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Set last element of the list to have its rest as nil
-                if (!context.Handler.HandleTriple(new Triple(b1, restPred, context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil))))) ParserHelper.Stop();
+                if (!context.Handler.HandleTriple(new Triple(b1, restPred, context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil))))) ParserHelper.Stop();
             }
             else
             {
                 // Empty list
 
                 // Object is therefore rdf:nil
-                obj = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+                obj = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil));
 
                 // Assert
                 if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
@@ -1695,7 +1718,7 @@ namespace VDS.RDF.Parsing
 
                         // Assert a Type Triple
                         var type = new UriReferenceEvent(a.Value, a.SourceXml);
-                        pred = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                        pred = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
                         obj = Resolve(context, type, element.BaseUri);
 
                         if (!context.Handler.HandleTriple(new Triple(parentEl.SubjectNode, pred, obj))) ParserHelper.Stop();
@@ -1712,7 +1735,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             // Create the Predicate from the Attribute QName
-                            pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(a.QName, context.Namespaces, null)));
+                            pred = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(a.QName, context.Namespaces, null)));
 
                             // Create the Object from the Attribute Value
                             if (element.Language.Equals(string.Empty))
@@ -1757,7 +1780,7 @@ namespace VDS.RDF.Parsing
             context.Namespaces.IncrementNesting();
             if (!evt.BaseUri.Equals(string.Empty))
             {
-                Uri baseUri = UriFactory.Create(Tools.ResolveUri(evt.BaseUri, context.BaseUri.ToSafeString()));
+                Uri baseUri = context.UriFactory.Create(Tools.ResolveUri(evt.BaseUri, context.BaseUri.ToSafeString()));
                 context.BaseUri = baseUri;
                 if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
             }
@@ -1765,8 +1788,8 @@ namespace VDS.RDF.Parsing
             {
                 if (!context.Namespaces.HasNamespace(ns.Prefix) || !context.Namespaces.GetNamespaceUri(ns.Prefix).AbsoluteUri.Equals(ns.Uri))
                 {
-                    context.Namespaces.AddNamespace(ns.Prefix, UriFactory.Create(ns.Uri));
-                    if (!context.Handler.HandleNamespace(ns.Prefix, UriFactory.Create(ns.Uri))) ParserHelper.Stop();
+                    context.Namespaces.AddNamespace(ns.Prefix, context.UriFactory.Create(ns.Uri));
+                    if (!context.Handler.HandleNamespace(ns.Prefix, context.UriFactory.Create(ns.Uri))) ParserHelper.Stop();
                 }
             }
         }
@@ -1789,8 +1812,8 @@ namespace VDS.RDF.Parsing
             {
                 if (baseUri.Equals(string.Empty)) baseUri = context.BaseUri.ToSafeString();
                 if (string.Empty.Equals(uriref.Identifier))
-                    baseUri = Tools.StripUriFragment(UriFactory.Create(baseUri)).ToSafeString();
-                IUriNode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(uriref.Identifier, baseUri)));
+                    baseUri = Tools.StripUriFragment(context.UriFactory.Create(baseUri)).ToSafeString();
+                IUriNode u = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(uriref.Identifier, baseUri)));
                 return u;
             }
             catch (Exception ex)
@@ -1805,7 +1828,7 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                IUriNode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(el.QName, context.Namespaces, null)));
+                IUriNode u = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(el.QName, context.Namespaces, null)));
                 return u;
             }
             catch (Exception ex)
@@ -1824,10 +1847,10 @@ namespace VDS.RDF.Parsing
         /// <param name="obj">Object of the Triple.</param>
         private void Reify(RdfXmlParserContext context, IUriNode uriref, INode subj, INode pred, INode obj)
         {
-            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfSubject)), subj))) ParserHelper.Stop();
-            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfPredicate)), pred))) ParserHelper.Stop();
-            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfObject)), obj))) ParserHelper.Stop();
-            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfStatement))))) ParserHelper.Stop();
+            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfSubject)), subj))) ParserHelper.Stop();
+            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfPredicate)), pred))) ParserHelper.Stop();
+            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfObject)), obj))) ParserHelper.Stop();
+            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType)), context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfStatement))))) ParserHelper.Stop();
         }
 
         /// <summary>
