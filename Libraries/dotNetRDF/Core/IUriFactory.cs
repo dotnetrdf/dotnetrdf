@@ -37,6 +37,14 @@ namespace VDS.RDF
         public bool InternUris { get; set; }
 
         /// <summary>
+        /// Return the interned URI instance if available.
+        /// </summary>
+        /// <param name="uri">The string URI to return an interned URI instance for.</param>
+        /// <param name="value">Receives the interned <see cref="Uri"/> instance if it is available, null otherwise.</param>
+        /// <returns>True if an interned <see cref="Uri"/> instance was found in this factory or its parent, false otherwise.</returns>
+        public bool TryGetUri(string uri, out Uri value);
+
+        /// <summary>
         /// Clears all interned URIs.
         /// </summary>
         public void Clear();

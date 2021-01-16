@@ -11,6 +11,21 @@ namespace VDS.RDF
     public class CachingUriFactory : IUriFactory
     {
         private readonly ITrie<string, char, Uri> _uris = new SparseStringTrie<Uri>();
+        private readonly IUriFactory _parent;
+
+        /// <summary>
+        /// Creates a new factory instance as a child of the root UriFactory as specified by <see cref="UriFactory.Root"/>.
+        /// </summary>
+        public CachingUriFactory() : this(UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new factory instances as a child of the specified parent factory.
+        /// </summary>
+        /// <param name="parent">The parent factory instance. May be null.</param>
+        public CachingUriFactory(IUriFactory parent)
+        {
+            _parent = parent;
+        }
 
         /// <summary>
         /// Get / set the flag that controls the caching of Uri instances constructed by this factory.
@@ -33,11 +48,20 @@ namespace VDS.RDF
                 return new Uri(uri);
             }
 
+            // First see if the value is in our cache
             ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
             if (node.HasValue)
             {
                 return node.Value;
             }
+
+            // If we have a parent factory see if that has the value cached.
+            if (_parent != null && _parent.TryGetUri(uri, out Uri value))
+            {
+                return value;
+            }
+
+            // IF the value is not found in our cache or our parent's then add it to our cache
             var u = new Uri(uri);
             node.Value = u;
             return node.Value;
@@ -54,12 +78,40 @@ namespace VDS.RDF
         /// </remarks>
         public Uri Create(Uri baseUri, string relativeUri)
         {
-            if (!InternUris) return new Uri(baseUri, relativeUri);
+            if (!InternUris)
+            {
+                return new Uri(baseUri, relativeUri);
+            }
             // We have to create a temporary Uri instance to do the URI resolution
             var u = new Uri(baseUri, relativeUri);
-            ITrieNode<char, Uri> node = _uris.MoveToNode(u.ToString());
-            if (!node.HasValue) node.Value = u;
-            return node.Value;
+            return Create(u.ToString());
+        }
+
+        /// <inheritdoc/>
+        public bool TryGetUri(string uri, out Uri value)
+        {
+            if (!InternUris)
+            {
+                // When interning is disabled, ignore the cache and always return false.
+                value = null;
+                return false;
+            }
+
+            ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
+            if (node.HasValue)
+            {
+                value = node.Value;
+                return true;
+            }
+
+            if (_parent != null)
+            {
+                return _parent.TryGetUri(uri, out value);
+            }
+
+            // If we get here there is no parent and we don't have the value cached.
+            value = null;
+            return false;
         }
 
         /// <summary>
