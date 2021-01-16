@@ -48,6 +48,16 @@ namespace VDS.RDF
         protected readonly INodeFactory NodeFactory;
 
         /// <summary>
+        /// The factory to use when creating URIs in this graph.
+        /// </summary>
+        /// <remarks>This property delegates to the <see cref="INodeFactory.UriFactory"/> property of <see cref="NodeFactory"/>.</remarks>
+        public IUriFactory UriFactory
+        {
+            get => NodeFactory.UriFactory; 
+            set => NodeFactory.UriFactory = value;
+        }
+
+        /// <summary>
         /// The name of the graph.
         /// </summary>
         protected readonly IRefNode _name;
@@ -70,11 +80,13 @@ namespace VDS.RDF
         /// <param name="tripleCollection">Triple Collection to use.</param>
         /// <param name="graphName">The name to assign to the graph.</param>
         /// <param name="nodeFactory">The factory to use when creating nodes in this graph.</param>
-        protected BaseGraph(BaseTripleCollection tripleCollection, IRefNode graphName = null, INodeFactory nodeFactory = null)
+        /// <param name="uriFactory">The factory to use when creating URIs in this graph. If not specified or null, defaults to the <see cref="VDS.RDF.UriFactory.Root">root UriFactory</see>.</param>
+        protected BaseGraph(BaseTripleCollection tripleCollection, IRefNode graphName = null, INodeFactory nodeFactory = null, IUriFactory uriFactory = null)
         {
             _triples = tripleCollection;
             _bnodemapper = new BlankNodeMapper();
-            NodeFactory = nodeFactory ?? new NodeFactory();
+            NodeFactory = nodeFactory ?? new NodeFactory(uriFactory:uriFactory);
+            UriFactory = uriFactory ?? VDS.RDF.UriFactory.Root;
             _name = graphName;
 
             // Create Event Handlers and attach to the Triple Collection

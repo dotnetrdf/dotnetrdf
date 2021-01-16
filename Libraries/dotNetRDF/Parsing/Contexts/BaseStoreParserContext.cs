@@ -41,7 +41,6 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         protected bool _traceParsing = false;
 
-        private IRdfHandler _handler;
         private NamespaceMapper _nsmap = new NamespaceMapper(true);
         private Uri _baseUri;
 
@@ -50,11 +49,23 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
-        public BaseStoreParserContext(IRdfHandler handler, bool traceParsing)
+        /// <param name="uriFactory">URI factory to use.</param>
+        public BaseStoreParserContext(IRdfHandler handler, bool traceParsing, IUriFactory uriFactory)
         {
-            if (handler == null) throw new ArgumentNullException("handler", "RDF Handler cannot be null");
-            _handler = handler;
+            Handler = handler ?? throw new ArgumentNullException(nameof(handler), "RDF Handler cannot be null");
+            UriFactory = uriFactory ??
+                         throw new ArgumentNullException(nameof(uriFactory), "URI Factory must not be null");
             _traceParsing = traceParsing;
+        }
+
+        /// <summary>
+        /// Creates a new Store Parser Context.
+        /// </summary>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        public BaseStoreParserContext(IRdfHandler handler, bool traceParsing)
+            : this(handler, traceParsing, RDF.UriFactory.Root)
+        {
         }
 
         /// <summary>
@@ -97,13 +108,12 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the RDF Handler that is in-use.
         /// </summary>
-        public IRdfHandler Handler
-        {
-            get
-            {
-                return _handler;
-            }
-        }
+        public IRdfHandler Handler { get; }
+
+        /// <summary>
+        /// Gets the URI factory for the handler.
+        /// </summary>
+        public IUriFactory UriFactory { get; }
 
         /// <summary>
         /// Gets the Namespace Map for the parser context.

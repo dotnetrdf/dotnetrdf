@@ -104,6 +104,15 @@ namespace VDS.RDF
         /// </summary>
         public virtual INamespaceMapper NamespaceMap => _g.NamespaceMap;
 
+        /// <summary>
+        /// Get or set the factory to use when creating URIs.
+        /// </summary>
+        public IUriFactory UriFactory
+        {
+            get => _g.UriFactory;
+            set => _g.UriFactory = value;
+        }
+
         /// <inheritdoc />
         public virtual IEnumerable<INode> Nodes => _g.Nodes;
 

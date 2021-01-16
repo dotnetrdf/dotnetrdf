@@ -35,6 +35,7 @@ namespace VDS.RDF
         : INodeFactory
     {
         private readonly BlankNodeMapper _bnodeMap = new BlankNodeMapper();
+        private IUriFactory _uriFactory;
 
         /// <summary>
         /// Get the namespace map for this node factory.
@@ -47,18 +48,32 @@ namespace VDS.RDF
         /// <remarks>If <see cref="BaseUri"/> is null, attempting to invoke <see cref="CreateUriNode(Uri)"/> with a relative URI or <see cref="CreateUriNode(string)"/> with a QName that resolves to a relative URI will result in a <see cref="RdfException"/> being raised.</remarks>
         public Uri BaseUri { get; set; }
 
-       
+        /// <summary>
+        /// Get or set the factory to use when creating URIs.
+        /// </summary>
+        public IUriFactory UriFactory { 
+            get => _uriFactory;
+            set
+            {
+                _uriFactory = value ??
+                              throw new ArgumentNullException(nameof(value),
+                                  "The UriFactory property cannot be set to null.");
+            }
+        }
+        
         /// <summary>
         /// Creates a new Node Factory.
         /// </summary>
         /// <param name="baseUri">The initial base URI to use for the resolution of relative URI references. Defaults to null.</param>
         /// <param name="namespaceMap">The namespace map to use for the resolution of QNames. If not specified, a default <see cref="NamespaceMapper"/> instance will be created.</param>
         /// <param name="normalizeLiteralValues">Whether or not to normalize the value strings of literal nodes.</param>
-        public NodeFactory(Uri baseUri = null, INamespaceMapper namespaceMap = null, bool normalizeLiteralValues = false)
+        /// <param name="uriFactory">The factory to use to create URIs. Defaults to <see cref="VDS.RDF.UriFactory.Root">the root UriFactory instance</see>.</param>
+        public NodeFactory(Uri baseUri = null, INamespaceMapper namespaceMap = null, bool normalizeLiteralValues = false, IUriFactory uriFactory = null)
         {
             BaseUri = baseUri;
             NamespaceMap = namespaceMap ?? new NamespaceMapper();
             NormalizeLiteralValues = normalizeLiteralValues;
+            UriFactory = uriFactory ?? VDS.RDF.UriFactory.Root;
         }
 
         #region INodeFactory Members
@@ -320,7 +335,7 @@ namespace VDS.RDF
         private IBlankNode _bnode = new BlankNode("mock");
         private IGraphLiteralNode _glit = new GraphLiteralNode();
         private ILiteralNode _lit = new LiteralNode("mock", false);
-        private IUriNode _uri = new UriNode(UriFactory.Create("dotnetrdf:mock"));
+        private IUriNode _uri = new UriNode(RDF.UriFactory.Create("dotnetrdf:mock"));
         private IVariableNode _var = new VariableNode("mock");
 
         #region INodeFactory Members
@@ -328,6 +343,8 @@ namespace VDS.RDF
         public Uri BaseUri { get; set; }
 
         public INamespaceMapper NamespaceMap { get; } = new NamespaceMapper();
+
+        public IUriFactory UriFactory { get; set; } = new CachingUriFactory(null);
 
         public IBlankNode CreateBlankNode()
         {

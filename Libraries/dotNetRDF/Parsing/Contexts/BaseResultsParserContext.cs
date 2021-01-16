@@ -38,7 +38,6 @@ namespace VDS.RDF.Parsing.Contexts
     public class BaseResultsParserContext 
         : IResultsParserContext
     {
-        private ISparqlResultsHandler _handler;
         private List<string> _variables = new List<string>();
         /// <summary>
         /// Controls parser tracing behaviour.
@@ -66,10 +65,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">Results Handler.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         public BaseResultsParserContext(ISparqlResultsHandler handler, bool traceParsing)
+            : this(handler, traceParsing, RDF.UriFactory.Root)
         {
-            if (handler == null) throw new ArgumentNullException("handler");
-            _handler = handler;
-            _traceParsing = traceParsing;
         }
 
         /// <summary>
@@ -79,16 +76,21 @@ namespace VDS.RDF.Parsing.Contexts
         public BaseResultsParserContext(ISparqlResultsHandler handler)
             : this(handler, false) { }
 
+        public BaseResultsParserContext(ISparqlResultsHandler handler, bool traceParsing, IUriFactory uriFactory)
+        {
+            Handler = handler ?? throw new ArgumentNullException(nameof(handler));
+            UriFactory = uriFactory ?? throw new ArgumentNullException(nameof(uriFactory));
+        }
+
         /// <summary>
         /// Gets the Results Handler to be used.
         /// </summary>
-        public ISparqlResultsHandler Handler
-        {
-            get
-            {
-                return _handler;
-            }
-        }
+        public ISparqlResultsHandler Handler { get; }
+
+        /// <summary>
+        /// Gets the URI factory to use.
+        /// </summary>
+        public IUriFactory UriFactory { get; }
 
         /// <summary>
         /// Gets the Variables that have been seen.
