@@ -186,9 +186,15 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
+
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
             // Check for incorrect stream encoding and issue warning if appropriate
             if (input is StreamReader)
             {
@@ -196,20 +202,31 @@ namespace VDS.RDF.Parsing
                 {
                     case NQuadsSyntax.Original:
                         // Issue a Warning if the Encoding of the Stream is not ASCII
-                        if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.ASCII))
+                        if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.ASCII))
                         {
-                            RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                            RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " +
+                                         ((StreamReader)input).CurrentEncoding.EncodingName +
+                                         " - Please be aware that parsing errors may occur as a result");
                         }
+
                         break;
                     default:
-                        if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.UTF8))
+                        if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.UTF8))
                         {
-                            RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                            RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " +
+                                         ((StreamReader)input).CurrentEncoding.EncodingName +
+                                         " - Please be aware that parsing errors may occur as a result");
                         }
+
                         break;
                 }
             }
 
+            LoadInternal(handler, input, uriFactory);
+        }
+
+        private void LoadInternal(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
             try
             {
                 // Setup Token Queue and Tokeniser
@@ -233,7 +250,7 @@ namespace VDS.RDF.Parsing
                 tokens.InitialiseBuffer();
 
                 // Invoke the Parser
-                Parse(handler, tokens);
+                Parse(handler, uriFactory, tokens);
             }
             finally
             {
@@ -264,7 +281,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void Parse(IRdfHandler handler, ITokenQueue tokens)
+        private void Parse(IRdfHandler handler, IUriFactory uriFactory, ITokenQueue tokens)
         {
             IToken next;
             IToken s, p, o;
@@ -290,7 +307,7 @@ namespace VDS.RDF.Parsing
                     o = TryParseObject(tokens);
                     Uri context = TryParseContext(handler, tokens);
 
-                    TryParseTriple(handler, s, p, o, context);
+                    TryParseTriple(handler, uriFactory, s, p, o, context);
 
                     next = tokens.Peek();
                 } while (next.TokenType != Token.EOF);
@@ -437,7 +454,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseTriple(IRdfHandler handler, IToken s, IToken p, IToken o, Uri graphUri)
+        private void TryParseTriple(IRdfHandler handler, IUriFactory uriFactory, IToken s, IToken p, IToken o, Uri graphUri)
         {
             INode subj, pred, obj;
 
@@ -456,7 +473,7 @@ namespace VDS.RDF.Parsing
             switch (p.TokenType)
             {
                 case Token.URI:
-                    pred = ParserHelper.TryResolveUri(handler, p);
+                    pred = ParserHelper.TryResolveUri(handler, p, uriFactory);
                     break;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + p.GetType().ToString() + "' encountered, expected a URI as the Predicate of a Triple", p);
