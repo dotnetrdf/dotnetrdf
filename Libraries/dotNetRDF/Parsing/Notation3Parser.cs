@@ -115,7 +115,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -151,16 +151,30 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Stream to read from.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Stream to read from.</param>
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
             {
-                RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " +
+                             input.CurrentEncoding.EncodingName +
+                             " - Please be aware that parsing errors may occur as a result");
             }
 
-            Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input, uriFactory);
         }
 
         /// <summary>
@@ -170,12 +184,26 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to read from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads RDF using a RDF handler by reading Notation 3 syntax from the given input.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
+
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             try
             {
-                var context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), TokenQueueMode, _traceParsing, _traceTokeniser);
+                var context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), TokenQueueMode,
+                    _traceParsing, _traceTokeniser, uriFactory);
                 Parse(context);
 
                 input.Close();
@@ -190,6 +218,7 @@ namespace VDS.RDF.Parsing
                 {
                     // No catch actions, just trying to clean up
                 }
+
                 throw;
             }
         }
@@ -510,7 +539,7 @@ namespace VDS.RDF.Parsing
                     {
                         // An Empty Collection => rdf:nil
                         context.Tokens.Dequeue();
-                        subj = context.Handler.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "nil"));
+                        subj = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "nil"));
                     }
                     else
                     {
@@ -624,7 +653,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.EQUALS:
                         // = Keyword
-                        pred = context.Handler.CreateUriNode(UriFactory.Create(SameAsUri));
+                        pred = context.Handler.CreateUriNode(context.UriFactory.Create(SameAsUri));
                         break;
 
                     case Token.EXCLAMATION:
@@ -636,18 +665,18 @@ namespace VDS.RDF.Parsing
 
                     case Token.IMPLIEDBY:
                         // <= keyword
-                        pred = context.Handler.CreateUriNode(UriFactory.Create(ImpliesUri));
+                        pred = context.Handler.CreateUriNode(context.UriFactory.Create(ImpliesUri));
                         reverse = true;
                         break;
 
                     case Token.IMPLIES:
                         // => keyword
-                        pred = context.Handler.CreateUriNode(UriFactory.Create(ImpliesUri));
+                        pred = context.Handler.CreateUriNode(context.UriFactory.Create(ImpliesUri));
                         break;
 
                     case Token.KEYWORDA:
                         // 'a' Keyword
-                        pred = context.Handler.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "type"));
+                        pred = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "type"));
                         break;
 
                     case Token.LEFTBRACKET:
@@ -657,7 +686,7 @@ namespace VDS.RDF.Parsing
                         {
                             // An Empty Collection => rdf:nil
                             context.Tokens.Dequeue();
-                            pred = context.Handler.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "nil"));
+                            pred = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "nil"));
                         }
                         else
                         {
@@ -827,7 +856,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Empty Collection => rdf:nil
                             context.Tokens.Dequeue();
-                            obj = context.Handler.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "nil"));
+                            obj = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "nil"));
                         }
                         else
                         {
@@ -985,9 +1014,9 @@ namespace VDS.RDF.Parsing
             IToken next, temp;
             INode subj = firstSubj;
             INode obj = null, nextSubj;
-            INode rdfFirst = context.Handler.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "first"));
-            INode rdfRest = context.Handler.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "rest"));
-            INode rdfNil = context.Handler.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "nil"));
+            INode rdfFirst = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "first"));
+            INode rdfRest = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "rest"));
+            INode rdfNil = context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "nil"));
 
             do
             {
@@ -1193,7 +1222,7 @@ namespace VDS.RDF.Parsing
                 switch (next.TokenType)
                 {
                     case Token.QNAME:
-                        secondItem = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri, true)));
+                        secondItem = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri, true)));
                         break;
                     case Token.LITERAL:
                     case Token.LONGLITERAL:
@@ -1202,7 +1231,7 @@ namespace VDS.RDF.Parsing
                         secondItem = TryParseLiteral(context, next);
                         break;
                     case Token.URI:
-                        secondItem = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString())));
+                        secondItem = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString())));
                         break;
 
                     default:
@@ -1270,12 +1299,12 @@ namespace VDS.RDF.Parsing
                                 if (next.Value.StartsWith("<"))
                                 {
                                     dturi = next.Value.Substring(1, next.Value.Length - 2);
-                                    return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                                    return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
                                 }
                                 else
                                 {
                                     dturi = Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri, true);
-                                    return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(dturi));
+                                    return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(dturi));
                                 }
                             }
                             catch (RdfException rdfEx)
@@ -1301,12 +1330,12 @@ namespace VDS.RDF.Parsing
                         if (litdt.DataType.StartsWith("<"))
                         {
                             dturi = litdt.DataType.Substring(1, litdt.DataType.Length - 2);
-                            return context.Handler.CreateLiteralNode(litdt.Value, UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                            return context.Handler.CreateLiteralNode(litdt.Value, context.UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
                         }
                         else
                         {
                             dturi = Tools.ResolveQName(litdt.DataType, context.Namespaces, context.BaseUri, true);
-                            return context.Handler.CreateLiteralNode(litdt.Value, UriFactory.Create(dturi));
+                            return context.Handler.CreateLiteralNode(litdt.Value, context.UriFactory.Create(dturi));
                         }
                     }
                     catch (RdfException rdfEx)
@@ -1324,19 +1353,19 @@ namespace VDS.RDF.Parsing
                     {
                         if (TurtleSpecsHelper.IsValidDouble(lit.Value))
                         {
-                            return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
+                            return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
                         }
                         else if (TurtleSpecsHelper.IsValidInteger(lit.Value))
                         {
-                            return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+                            return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
                         }
                         else if (TurtleSpecsHelper.IsValidDecimal(lit.Value))
                         {
-                            return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
+                            return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
                         }
                         else
                         {
-                            return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+                            return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
                         }
                     }
                     else
