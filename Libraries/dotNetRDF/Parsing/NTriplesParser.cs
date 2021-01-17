@@ -455,7 +455,7 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                IUriNode n = context.Handler.CreateUriNode(UriFactory.Create(uri));
+                IUriNode n = context.Handler.CreateUriNode(context.UriFactory.Create(uri));
                 if (!n.Uri.IsAbsoluteUri)
                     throw new RdfParseException("NTriples does not permit relative URIs");
                 return n;
