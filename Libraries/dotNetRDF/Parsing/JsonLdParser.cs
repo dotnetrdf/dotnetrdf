@@ -94,19 +94,37 @@ namespace VDS.RDF.Parsing
         /// <inheritdoc/>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <inheritdoc />
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filename == null) throw new ArgumentNullException(nameof(filename));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
             using (StreamReader reader = File.OpenText(filename))
             {
-                Load(handler, reader);
+                Load(handler, reader, uriFactory);
             }
         }
 
         /// <inheritdoc/>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <inheritdoc />
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory) {
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
+
             handler.StartRdf();
-            IUriNode rdfTypeNode = handler.CreateUriNode(new Uri(RdfNs + "type"));
+            IUriNode rdfTypeNode = handler.CreateUriNode(uriFactory.Create(RdfNs + "type"));
             try
             {
                 JToken element;
@@ -131,7 +149,7 @@ namespace VDS.RDF.Parsing
                     {
                         if (IsBlankNodeIdentifier(graphName))
                         {
-                            graphIri = new Uri("nquads:bnode:" + graphName.Substring(2));
+                            graphIri = uriFactory.Create("nquads:bnode:" + graphName.Substring(2));
                         } 
                         else if (!(Uri.TryCreate(graphName, UriKind.Absolute, out graphIri) && graphIri.IsWellFormedOriginalString()))
                         {

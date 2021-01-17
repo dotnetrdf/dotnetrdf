@@ -51,8 +51,7 @@ namespace VDS.RDF.Parsing
         /// <param name="parser">The underlying parser to use.</param>
         public BaseGZipDatasetParser(IStoreReader parser)
         {
-            if (parser == null) throw new ArgumentNullException("parser");
-            _parser = parser;
+            _parser = parser ?? throw new ArgumentNullException(nameof(parser));
             _parser.Warning += RaiseWarning;
         }
 
@@ -86,8 +85,21 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using an RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
+            Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)), uriFactory);
         }
 
         /// <summary>
@@ -97,20 +109,32 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using and RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="input">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
-            if (input is StreamReader)
+            if (input is StreamReader reader)
             {
-                var reader = (StreamReader)input;
                 if (reader.BaseStream is GZipStream)
                 {
-                    _parser.Load(handler, input);
+                    _parser.Load(handler, reader);
                 }
                 else
                 {
                     // Force the inner stream to be GZipped
-                    _parser.Load(handler, new StreamReader(new GZipStream(reader.BaseStream, CompressionMode.Decompress)));
+                    _parser.Load(handler,
+                        new StreamReader(new GZipStream(reader.BaseStream, CompressionMode.Decompress)));
                 }
             }
             else

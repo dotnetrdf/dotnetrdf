@@ -49,7 +49,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            Load(new GraphHandler(g), filename);
+            Load(new GraphHandler(g), filename, g.UriFactory);
         }
 
         /// <summary>
@@ -83,8 +83,23 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Stream to read from.</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">The reader to read input from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+        public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             // Issue a Warning if the Encoding of the Stream is not UTF-8
             if (!input.CurrentEncoding.Equals(Encoding.UTF8))
@@ -92,7 +107,7 @@ namespace VDS.RDF.Parsing
                 RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
             }
 
-            Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input, uriFactory);
         }
 
         /// <summary>
@@ -102,16 +117,27 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to read from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">The reader to read input from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             try
             {
                 Parse(handler, input);
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -134,9 +160,24 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to read from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">The Filename of the File to read from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), uriFactory);
         }
 
         /// <summary>

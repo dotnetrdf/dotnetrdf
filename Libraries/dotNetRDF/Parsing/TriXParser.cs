@@ -87,11 +87,22 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(handler, filename, UriFactory.Root);
         }
 
-        private void TryParseGraphset(XmlReader reader, IRdfHandler handler)
+        /// <summary>
+        /// Loads an RDF dataset using an RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), uriFactory);
+        }
+
+        private void TryParseGraphset(XmlReader reader, IRdfHandler handler, IUriFactory uriFactory)
         {
             try
             {
@@ -144,7 +155,7 @@ namespace VDS.RDF.Parsing
                     if (reader.NodeType == XmlNodeType.Element)
                     {
                         // For elements we recurse to try and parse a Graph
-                        TryParseGraph(reader, handler);
+                        TryParseGraph(reader, handler, uriFactory);
                     }
                     else if (reader.NodeType == XmlNodeType.EndElement)
                     {
@@ -181,7 +192,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseGraph(XmlReader reader, IRdfHandler handler)
+        private void TryParseGraph(XmlReader reader, IRdfHandler handler, IUriFactory uriFactory)
         {
             ValidateNamespace(reader);
             // Ensure Node Name is correct
@@ -240,7 +251,7 @@ namespace VDS.RDF.Parsing
                     // Remember to ignore anything that isn't an element i.e. comments and processing instructions
                     if (reader.NodeType == XmlNodeType.Element)
                     {
-                        TryParseTriple(reader, handler, graphUri);
+                        TryParseTriple(reader, handler, graphUri, uriFactory);
                     }
                     reader.Read();
                 } while (reader.NodeType != XmlNodeType.EndElement);
@@ -260,7 +271,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseTriple(XmlReader reader, IRdfHandler handler, Uri graphUri)
+        private void TryParseTriple(XmlReader reader, IRdfHandler handler, Uri graphUri, IUriFactory uriFactory)
         {
             ValidateNamespace(reader);
             // Verify Node Name
@@ -270,9 +281,9 @@ namespace VDS.RDF.Parsing
             }
 
             // Parse XML Nodes into RDF Nodes
-            INode subj = TryParseNode(reader, handler, TripleSegment.Subject);
-            INode pred = TryParseNode(reader, handler, TripleSegment.Predicate);
-            INode obj = TryParseNode(reader, handler, TripleSegment.Object);
+            INode subj = TryParseNode(reader, handler, TripleSegment.Subject, uriFactory);
+            INode pred = TryParseNode(reader, handler, TripleSegment.Predicate, uriFactory);
+            INode obj = TryParseNode(reader, handler, TripleSegment.Object, uriFactory);
 
             if (reader.NodeType != XmlNodeType.EndElement)
             {
@@ -288,7 +299,7 @@ namespace VDS.RDF.Parsing
             if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) ParserHelper.Stop();
         }
 
-        private INode TryParseNode(XmlReader reader, IRdfHandler handler, TripleSegment segment)
+        private INode TryParseNode(XmlReader reader, IRdfHandler handler, TripleSegment segment, IUriFactory uriFactory)
         {
             // Only need to Read() if getting the Subject
             // The previous calls will have resulted in us already reading to the start element for this node
@@ -303,7 +314,7 @@ namespace VDS.RDF.Parsing
 
             if (reader.LocalName.Equals("uri"))
             {
-                return handler.CreateUriNode(new Uri(reader.ReadInnerXml()));
+                return handler.CreateUriNode(uriFactory.Create(reader.ReadInnerXml()));
             }
 
             if (reader.LocalName.Equals("id"))
@@ -345,7 +356,7 @@ namespace VDS.RDF.Parsing
                     for (var i = 0; i < reader.AttributeCount; i++)
                     {
                         reader.MoveToNextAttribute();
-                        if (reader.Name.Equals("datatype")) dtUri = new Uri(reader.Value);
+                        if (reader.Name.Equals("datatype")) dtUri = uriFactory.Create(reader.Value);
                     }
                     if (dtUri == null) throw Error("<typedLiteral> element does not have the required datatype attribute", reader);
 
@@ -376,6 +387,12 @@ namespace VDS.RDF.Parsing
         /// <inheritdoc />
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <inheritdoc />
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
             if (handler == null)
             {
                 throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
@@ -386,19 +403,23 @@ namespace VDS.RDF.Parsing
                 throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
             }
 
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
             try
             {
                 // Load source XML
                 using (var xmlReader = XmlReader.Create(input, GetSettings()))
                 {
                     var source = XDocument.Load(xmlReader);
-                    foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>().Where(pi => pi.Target.Equals("xml-stylesheet")))
+                    foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>()
+                        .Where(pi => pi.Target.Equals("xml-stylesheet")))
                     {
                         source = ApplyTransform(source, pi);
                     }
+
                     using (XmlReader transformedXmlReader = source.CreateReader())
                     {
-                        TryParseGraphset(transformedXmlReader, handler);
+                        TryParseGraphset(transformedXmlReader, handler, uriFactory);
                     }
                 }
             }

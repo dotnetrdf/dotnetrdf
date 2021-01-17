@@ -117,6 +117,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+        /// <param name="uriFactory">The URI Factory to use.</param>
         public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
             : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser, uriFactory ?? RDF.UriFactory.Root) { }
 

@@ -50,8 +50,7 @@ namespace VDS.RDF.Parsing
         /// <param name="parser">Underlying parser.</param>
         public BaseGZipParser(IRdfReader parser)
         {
-            if (parser == null) throw new ArgumentNullException("parser");
-            _parser = parser;
+            _parser = parser ?? throw new ArgumentNullException(nameof(parser));
             _parser.Warning += RaiseWarning;
         }
 
@@ -63,7 +62,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -74,7 +73,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -85,7 +84,7 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, string filename)
         {
             if (g == null) throw new RdfParseException("Cannot parse RDF into a null Graph");
-            Load(new GraphHandler(g), filename);
+            Load(new GraphHandler(g), filename, g.UriFactory);
         }
 
         /// <summary>
@@ -97,6 +96,23 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new RdfParseException("Cannot parse RDF using a null Handler");
             if (input == null) throw new RdfParseException("Cannot parse RDF from a null input");
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">The reader to read input from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+        public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
+        {
+            if (handler == null) throw new RdfParseException("Cannot parse RDF using a null Handler");
+            if (input == null) throw new RdfParseException("Cannot parse RDF from a null input");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             if (input.BaseStream is GZipStream)
             {
@@ -117,9 +133,30 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Reader to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
-            if (input is StreamReader)
+            if (input is StreamReader reader)
             {
-                Load(handler, (StreamReader)input);
+                Load(handler, reader);
+            }
+            else
+            {
+                throw new RdfParseException("GZipped input can only be parsed from StreamReader instances");
+            }
+        }
+
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">The reader to read input from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
+            if (input is StreamReader reader)
+            {
+                Load(handler, reader, uriFactory);
             }
             else
             {
@@ -134,8 +171,23 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">The Filename of the File to read from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        { 
             if (filename == null) throw new RdfParseException("Cannot parse RDF from a null file");
-            Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)), uriFactory);
         }
 
         /// <summary>

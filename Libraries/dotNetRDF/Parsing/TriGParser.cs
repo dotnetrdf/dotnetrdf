@@ -128,8 +128,19 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using an RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), uriFactory);
         }
 
         /// <summary>
@@ -139,19 +150,28 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using and RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="input">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             try
             {
                 // Create the Parser Context and Invoke the Parser
-                var context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), TokenQueueMode, false, _tracetokeniser);
+                var context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), TokenQueueMode, false,
+                    _tracetokeniser, uriFactory);
                 context.Syntax = _syntax;
                 Parse(context);
-            }
-            catch
-            {
-                throw;
             }
             finally
             {

@@ -230,11 +230,26 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to read from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">The Filename of the File to read from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
             using (var reader = new StreamReader(File.OpenRead(filename), Encoding.UTF8))
             {
-                Load(handler, reader);
+                Load(handler, reader, uriFactory);
             }
         }
 

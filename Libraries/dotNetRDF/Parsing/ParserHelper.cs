@@ -234,42 +234,6 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails.
         /// </summary>
-        /// <param name="handler">Results Handler.</param>
-        /// <param name="t">Token to resolve.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// It is <strong>not</strong> recommended to use this overload since an <see cref="IRdfHandler">IRdfHandler</see> cannot resolve QNames.
-        /// </remarks>
-        internal static INode TryResolveUri(ISparqlResultsHandler handler, IToken t)
-        {
-            switch (t.TokenType)
-            {
-                case Token.QNAME:
-                    throw new RdfException("Unable to resolve the QName since a Results Handler does not have a Namespace Map that can be used to resolve QNames");
-
-                case Token.URI:
-                    try
-                    {
-                        var uri = Tools.ResolveUri(t.Value, string.Empty);
-                        return handler.CreateUriNode(UriFactory.Create(uri));
-                    }
-                    catch (UriFormatException formatEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
-                    }
-
-                default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
-            }
-        }
-
-        /// <summary>
-        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails.
-        /// </summary>
         /// <param name="g">Graph.</param>
         /// <param name="t">Token to resolve.</param>
         /// <returns></returns>
@@ -284,30 +248,40 @@ namespace VDS.RDF.Parsing
                     }
                     catch (UriFormatException formatEx)
                     {
-                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
+                        throw new RdfParseException(
+                            "Unable to resolve the QName '" + t.Value + "' due to the following error:\n" +
+                            formatEx.Message, t, formatEx);
                     }
                     catch (RdfException rdfEx)
                     {
-                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                        throw new RdfParseException(
+                            "Unable to resolve the QName '" + t.Value + "' due to the following error:\n" +
+                            rdfEx.Message, t, rdfEx);
                     }
 
                 case Token.URI:
                     try
                     {
                         var uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
-                        return g.CreateUriNode(UriFactory.Create(uri));
-                     }
+                        return g.CreateUriNode(g.UriFactory.Create(uri));
+                    }
                     catch (UriFormatException formatEx)
                     {
-                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
+                        throw new RdfParseException(
+                            "Unable to resolve the URI '" + t.Value + "' due to the following error:\n" +
+                            formatEx.Message, t, formatEx);
                     }
                     catch (RdfException rdfEx)
                     {
-                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                        throw new RdfParseException(
+                            "Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message,
+                            t, rdfEx);
                     }
 
                 default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+                    throw Error(
+                        "Unexpected Token '" + t.GetType().ToString() +
+                        "' encountered, expected a URI/QName Token to resolve into a URI", t);
             }
         }
 

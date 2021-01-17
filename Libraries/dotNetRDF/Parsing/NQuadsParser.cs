@@ -159,7 +159,19 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using an RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        { 
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             // Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
             // However if we are parsing RDF 1.1 NTriples then we use UTF-8 anyway so that doesn't matter
@@ -189,6 +201,12 @@ namespace VDS.RDF.Parsing
             Load(handler, input, UriFactory.Root);
         }
 
+        /// <summary>
+        /// Loads an RDF dataset using and RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="input">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
         public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
         {
 
