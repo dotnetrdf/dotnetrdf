@@ -155,11 +155,12 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="t">Token to resolve.</param>
+        /// <param name="uriFactory">The URI Factory to use when creating the resolved URI.</param>
         /// <returns></returns>
         /// <remarks>
         /// It is <strong>not</strong> recommended to use this overload since an <see cref="IRdfHandler">IRdfHandler</see> cannot resolve QNames.
         /// </remarks>
-        internal static INode TryResolveUri(IRdfHandler handler, IToken t)
+        internal static INode TryResolveUri(IRdfHandler handler, IToken t, IUriFactory uriFactory)
         {
             switch (t.TokenType)
             {
@@ -170,7 +171,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         var uri = Tools.ResolveUri(t.Value, string.Empty);
-                        return handler.CreateUriNode(UriFactory.Create(uri));
+                        return handler.CreateUriNode(uriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
                     {
