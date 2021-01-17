@@ -137,7 +137,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
 
-            Load(new StoreHandler(store), filename);
+            Load(new StoreHandler(store), filename, store.UriFactory);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            Load(new StoreHandler(store), input);
+            Load(new StoreHandler(store), input, store.UriFactory);
         }
 
         /// <summary>

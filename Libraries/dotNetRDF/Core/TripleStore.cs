@@ -48,23 +48,40 @@ namespace VDS.RDF
         /// Controls whether inferred information is stored in a special Graph or in the original Graph.
         /// </summary>
         protected bool _storeInferencesExternally = false;
+
         /// <summary>
         /// Graph Uri for the special Graph used to store inferred information.
         /// </summary>
-        protected UriNode _inferenceGraphUri = new UriNode(UriFactory.Create("dotNetRDF:inference-graph"));
+        protected readonly UriNode _inferenceGraphUri;
 
         /// <summary>
         /// Creates a new Triple Store using a new empty Graph collection.
         /// </summary>
         public TripleStore()
-            : this(new GraphCollection()) { }
+            : this(new GraphCollection(), RDF.UriFactory.Root) { }
 
         /// <summary>
         /// Creates a new Triple Store using the given Graph collection which may be non-empty.
         /// </summary>
         /// <param name="graphCollection">Graph Collection.</param>
         public TripleStore(BaseGraphCollection graphCollection)
-            : base(graphCollection) { }
+            : this(graphCollection, RDF.UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a mew triple store using the given graph collection which may be non-empty.
+        /// </summary>
+        /// <param name="graphCollection">The graph collection.</param>
+        /// <param name="uriFactory">The preferred URI factory to use when creating URIs in this triple store.</param>
+        public TripleStore(BaseGraphCollection graphCollection, IUriFactory uriFactory) : base(graphCollection)
+        {
+            UriFactory = uriFactory;
+            _inferenceGraphUri = new UriNode(uriFactory.Create("dotNetRDF:inference-graph"));
+        }
+
+        /// <summary>
+        /// Get the preferred URI factory to use when creating URIs in this store.
+        /// </summary>
+        public override IUriFactory UriFactory { get; }
 
         #region Selection
 

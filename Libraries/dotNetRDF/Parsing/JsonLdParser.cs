@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new ArgumentNullException(nameof(filename));
             using (StreamReader reader = File.OpenText(filename))
             {
-                Load(new StoreHandler(store), reader);
+                Load(new StoreHandler(store), reader, store.UriFactory);
             }
         }
 
@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new ArgumentNullException(nameof(store));
             if (input == null) throw new ArgumentNullException(nameof(input));
-            Load(new StoreHandler(store), input);
+            Load(new StoreHandler(store), input, store.UriFactory);
         }
 
         /// <inheritdoc/>

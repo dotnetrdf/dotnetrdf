@@ -81,9 +81,23 @@ namespace VDS.RDF
         /// Please see the remarks for this class for notes on exact behaviour of this class.
         /// </remarks>
         public PersistentTripleStore(IStorageProvider manager)
-            : base(new PersistentGraphCollection(manager))
+            : this(manager, RDF.UriFactory.Root)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new in-memory view of some underlying store represented by the <see cref="IStorageProvider">IStorageProvider</see> instance.
+        /// </summary>
+        /// <param name="manager">IO Manager.</param>
+        /// <param name="uriFactory">The preferred URI factory to use when creating URIs for this store.</param>
+        /// <remarks>
+        /// Please see the remarks for this class for notes on exact behaviour of this class.
+        /// </remarks>
+        public PersistentTripleStore(IStorageProvider manager, IUriFactory uriFactory) : base(
+            new PersistentGraphCollection(manager))
         {
             _manager = manager;
+            UriFactory = uriFactory;
         }
 
         /// <summary>
@@ -96,6 +110,11 @@ namespace VDS.RDF
         {
             Dispose(false);
         }
+
+        /// <summary>
+        /// Get the preferred URI factory to use when creating URIs in this store.
+        /// </summary>
+        public override  IUriFactory UriFactory { get; }
 
         /// <summary>
         /// Gets the underlying store.

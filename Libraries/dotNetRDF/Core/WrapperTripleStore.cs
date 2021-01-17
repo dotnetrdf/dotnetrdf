@@ -107,6 +107,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Get the preferred URI factory to use when creating URIs in this store.
+        /// </summary>
+        public virtual IUriFactory UriFactory => _store.UriFactory;
+
+        /// <summary>
         /// Adds a Graph to the store.
         /// </summary>
         /// <param name="g">Graph.</param>
