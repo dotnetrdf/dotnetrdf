@@ -62,7 +62,7 @@ namespace VDS.RDF.Ontology
             IntialiseProperty(OntologyHelper.PropertyDisjointWith, false);
 
             // Find derived classes
-            IUriNode subClassOf = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf));
+            IUriNode subClassOf = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySubClassOf));
             _resourceProperties.Add(PropertyDerivedClass, new HashSet<INode>());
             _resourceProperties.Add(PropertyDirectSubClass, new HashSet<INode>());
             foreach (Triple t in _graph.GetTriplesWithPredicateObject(subClassOf, _resource))
@@ -158,7 +158,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearSubClasses()
         {
-            _graph.Retract(_graph.GetTriplesWithPredicateObject(_graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf)), _resource).ToList());
+            _graph.Retract(_graph.GetTriplesWithPredicateObject(_graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySubClassOf)), _resource).ToList());
             return ClearResourceProperty(PropertyDerivedClass, false);
         }
 
@@ -258,7 +258,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearSuperClasses()
         {
-            _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf))).ToList());
+            _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertySubClassOf))).ToList());
             return ClearResourceProperty(OntologyHelper.PropertySubClassOf, true);
         }
 
@@ -358,7 +358,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearEquivalentClasses()
         {
-            INode equivClass = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyEquivalentClass));
+            INode equivClass = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyEquivalentClass));
             _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, equivClass).ToList());
             _graph.Retract(_graph.GetTriplesWithPredicateObject(equivClass, _resource).ToList());
             return ClearResourceProperty(OntologyHelper.PropertyEquivalentClass, true);
@@ -457,7 +457,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearDisjointClasses()
         {
-            INode disjointClass = _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDisjointWith));
+            INode disjointClass = _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyDisjointWith));
             _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, disjointClass).ToList());
             _graph.Retract(_graph.GetTriplesWithPredicateObject(disjointClass, _resource).ToList());
             return ClearResourceProperty(OntologyHelper.PropertyDisjointWith, true);
@@ -621,7 +621,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return (from t in _graph.GetTriplesWithPredicateObject(_graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType)), _resource)
+                return (from t in _graph.GetTriplesWithPredicateObject(_graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyType)), _resource)
                         select new OntologyResource(t.Subject, _graph));
             }
         }
@@ -633,7 +633,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                INode domain = _graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "domain"));
+                INode domain = _graph.CreateUriNode(_graph.UriFactory.Create(NamespaceMapper.RDFS + "domain"));
                 return (from t in _graph.GetTriplesWithPredicateObject(domain, _resource)
                         select new OntologyProperty(t.Subject, _graph));
             }
@@ -646,7 +646,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                INode range = _graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"));
+                INode range = _graph.CreateUriNode(_graph.UriFactory.Create(NamespaceMapper.RDFS + "range"));
                 return (from t in _graph.GetTriplesWithPredicateObject(range, _resource)
                         select new OntologyProperty(t.Subject, _graph));
             }

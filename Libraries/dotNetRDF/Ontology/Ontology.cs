@@ -49,7 +49,9 @@ namespace VDS.RDF.Ontology
             : base(resource, graph)
         {
             // Assert the rdf:type owl:Ontology triple
-            _graph.Assert(new Triple(resource, _graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType)), _graph.CreateUriNode(UriFactory.Create(OntologyHelper.OwlOntology))));
+            _graph.Assert(new Triple(resource, 
+                _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.PropertyType)), 
+                _graph.CreateUriNode(_graph.UriFactory.Create(OntologyHelper.OwlOntology))));
 
             IntialiseProperty(OntologyHelper.PropertyBackwardCompatibleWith, false);
             IntialiseProperty(OntologyHelper.PropertyIncompatibleWith, false);
