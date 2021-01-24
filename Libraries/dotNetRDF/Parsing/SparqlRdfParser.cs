@@ -190,8 +190,8 @@ namespace VDS.RDF.Parsing
                 context.Handler.StartResults();
 
                 // Create relevant Nodes
-                context.Graph.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
-                context.Graph.NamespaceMap.AddNamespace("rs", UriFactory.Create(SparqlSpecsHelper.SparqlRdfResultsNamespace));
+                context.Graph.NamespaceMap.AddNamespace("rdf", UriFactory.Root.Create(NamespaceMapper.RDF));
+                context.Graph.NamespaceMap.AddNamespace("rs", UriFactory.Root.Create(SparqlSpecsHelper.SparqlRdfResultsNamespace));
                 IUriNode rdfType = context.Graph.CreateUriNode("rdf:type");
                 IUriNode resultSetClass = context.Graph.CreateUriNode("rs:ResultSet");
                 IUriNode resultVariable = context.Graph.CreateUriNode("rs:resultVariable");
