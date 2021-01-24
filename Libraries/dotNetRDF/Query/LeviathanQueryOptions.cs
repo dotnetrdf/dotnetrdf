@@ -107,5 +107,11 @@ namespace VDS.RDF.Query
 #pragma warning disable CS0618 // Type or member is obsolete
         public bool RigorousEvaluation { get; set; } = Options.RigorousEvaluation; // = false;
 #pragma warning restore CS0618 // Type or member is obsolete
+
+        /// <summary>
+        /// Gets/Sets the URI factory to use during query evaluation.
+        /// </summary>
+        /// <remarks>When querying an in-memory dataset, using the same URI factory as the graphs being queried, or a child of the URI factor of the graphs being queried will save memory.</remarks>
+        public IUriFactory UriFactory { get; set; } = RDF.UriFactory.Root;
     }
 }

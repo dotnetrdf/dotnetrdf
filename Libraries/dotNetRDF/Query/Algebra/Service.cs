@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Algebra
                 // Select which service to use
                 if (_endpointSpecifier.TokenType == Token.URI)
                 {
-                    Uri endpointUri = UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
+                    Uri endpointUri = context.UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
                     endpoint = new SparqlQueryClient(context.GetHttpClient(endpointUri), endpointUri);
                 }
                 else if (_endpointSpecifier.TokenType == Token.VARIABLE)

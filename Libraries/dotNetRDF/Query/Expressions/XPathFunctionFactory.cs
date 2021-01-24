@@ -582,7 +582,7 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return (from u in FunctionUris
-                        select UriFactory.Create(XPathFunctionsNamespace + u));
+                        select UriFactory.Root.Create(XPathFunctionsNamespace + u));
             }
         }
 
@@ -594,7 +594,7 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return (from u in AggregateUris
-                        select UriFactory.Create(XPathFunctionsNamespace + u));
+                        select UriFactory.Root.Create(XPathFunctionsNamespace + u));
             }
         }
     }

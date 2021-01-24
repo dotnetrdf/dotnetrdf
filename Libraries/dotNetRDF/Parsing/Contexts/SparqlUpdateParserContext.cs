@@ -52,6 +52,17 @@ namespace VDS.RDF.Parsing.Contexts
             : base(new NullHandler(), tokeniser) { }
 
         /// <summary>
+        /// Creates a new SPARQL Update parser context.
+        /// </summary>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="uriFactory">URI Factory to use during the parse.</param>
+        public SparqlUpdateParserContext(ITokeniser tokeniser, IUriFactory uriFactory)
+            : base(new NullHandler(), tokeniser, uriFactory)
+        {
+            QueryParser = new SparqlQueryParser(uriFactory);
+        }
+
+        /// <summary>
         /// Creates a new SPARQL Update Parser Context with custom settings.
         /// </summary>
         /// <param name="tokeniser">Tokeniser to use.</param>

@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                             }
                             else
                             {
-                                return new UriNode(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                                return new UriNode(context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                             }
                         }
                         else
@@ -164,11 +164,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                         {
                             if (!lit.Language.Equals(string.Empty))
                             {
-                                return new UriNode(UriFactory.Create(RdfSpecsHelper.RdfLangString));
+                                return new UriNode(context.UriFactory.Create(RdfSpecsHelper.RdfLangString));
                             }
                             else
                             {
-                                return new UriNode(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                                return new UriNode(context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                             }
                         }
                         else

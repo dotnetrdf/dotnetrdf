@@ -93,6 +93,17 @@ namespace VDS.RDF.Parsing
             : this(TokenQueueMode.QueueAllBeforeParsing) { }
 
         /// <summary>
+        /// Creates a new instance of the SPARQL query parser.
+        /// </summary>
+        /// <param name="uriFactory">The URI factory to use.</param>
+        public SparqlQueryParser(IUriFactory uriFactory) 
+            : this(TokenQueueMode.QueueAllBeforeParsing,
+#pragma warning disable CS0618 // Type or member is obsolete
+                Options.QueryDefaultSyntax, //SparqlQuerySyntax.Sparql_1_1
+#pragma warning restore CS0618 // Type or member is obsolete
+                uriFactory) { }
+
+        /// <summary>
         /// Creates a new instance of the SPARQL Query Parser which supports the given SPARQL Syntax.
         /// </summary>
         /// <param name="syntax">SPARQL Syntax.</param>
@@ -121,6 +132,12 @@ namespace VDS.RDF.Parsing
         {
         }
 
+        /// <summary>
+        /// Creates a new instance of the SPARQL query parser.
+        /// </summary>
+        /// <param name="queueMode">Token queue mode.</param>
+        /// <param name="syntax">SPARQL syntax to parse.</param>
+        /// <param name="uriFactory">URI factory to use during the parse.</param>
         public SparqlQueryParser(TokenQueueMode queueMode, SparqlQuerySyntax syntax, IUriFactory uriFactory)
         {
             _queuemode = queueMode;

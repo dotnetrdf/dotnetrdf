@@ -760,7 +760,7 @@ namespace VDS.RDF
         {
             // Due to change in default graph behaviour ensure that we associate this graph as the default graph of the dataset
             var ds = new InMemoryDataset(g);
-            var processor = new LeviathanQueryProcessor(ds);
+            var processor = new LeviathanQueryProcessor(ds, options=>options.UriFactory = new CachingUriFactory(g.UriFactory));
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(sparqlQuery);
             return processor.ProcessQuery(q);
@@ -776,7 +776,7 @@ namespace VDS.RDF
         public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             var ds = new InMemoryDataset(g);
-            var processor = new LeviathanQueryProcessor(ds);
+            var processor = new LeviathanQueryProcessor(ds, options=>options.UriFactory = new CachingUriFactory(g.UriFactory));
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(sparqlQuery);
             processor.ProcessQuery(rdfHandler, resultsHandler, q);
@@ -814,7 +814,7 @@ namespace VDS.RDF
         public static object ExecuteQuery(this IGraph g, SparqlQuery query)
         {
             var ds = new InMemoryDataset(g);
-            var processor = new LeviathanQueryProcessor(ds);
+            var processor = new LeviathanQueryProcessor(ds, options=>options.UriFactory = new CachingUriFactory(g.UriFactory));
             return processor.ProcessQuery(query);
         }
 
@@ -828,7 +828,7 @@ namespace VDS.RDF
         public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             var ds = new InMemoryDataset(g);
-            var processor = new LeviathanQueryProcessor(ds);
+            var processor = new LeviathanQueryProcessor(ds, options=>options.UriFactory = new CachingUriFactory(g.UriFactory));
             processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
 

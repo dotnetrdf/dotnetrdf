@@ -46,11 +46,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal.
         /// </summary>
+        /// <param name="context"></param>
         /// <param name="stringLit">Simple/String typed Literal.</param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
         {
-            return new StringNode(HttpUtility.UrlEncode(stringLit.Value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new StringNode(HttpUtility.UrlEncode(stringLit.Value), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>

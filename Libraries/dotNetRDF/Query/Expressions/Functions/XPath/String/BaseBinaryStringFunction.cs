@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 // Once we've got to here we've established that the First argument is an appropriately typed/untyped Literal
                 if (_arg == null)
                 {
-                    return ValueInternal((ILiteralNode)temp);
+                    return ValueInternal(context, (ILiteralNode)temp);
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                             var litArg = (ILiteralNode)tempArg;
                             if (_argumentTypeValidator(litArg.DataType))
                             {
-                                return ValueInternal((ILiteralNode)temp, litArg);
+                                return ValueInternal(context, (ILiteralNode)temp, litArg);
                             }
                             else
                             {
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     else if (_allowNullArgument)
                     {
                         // Null argument permitted so just invoke the non-argument version of the function
-                        return ValueInternal((ILiteralNode)temp);
+                        return ValueInternal(context, (ILiteralNode)temp);
                     }
                     else
                     {
@@ -143,9 +143,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal.
         /// </summary>
+        /// <param name="context">The evaluation context.</param>
         /// <param name="stringLit">Simple/String typed Literal.</param>
         /// <returns></returns>
-        public virtual IValuedNode ValueInternal(ILiteralNode stringLit)
+        public virtual IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
         {
             if (!_allowNullArgument)
             {
@@ -160,10 +161,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal and Argument.
         /// </summary>
+        /// <param name="context">The evaluation context.</param>
         /// <param name="stringLit">Simple/String typed Literal.</param>
         /// <param name="arg">Argument.</param>
         /// <returns></returns>
-        public abstract IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg);
+        public abstract IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg);
 
         /// <summary>
         /// Gets the Variables used in the function.

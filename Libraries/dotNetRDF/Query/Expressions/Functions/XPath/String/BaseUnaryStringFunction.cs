@@ -68,16 +68,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     {
                         if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                         {
-                            return ValueInternal(lit);
+                            return ValueInternal(context, lit);
                         }
                         else
                         {
-                            throw new RdfQueryException("Unable to evalaute an XPath String function on a non-string typed Literal");
+                            throw new RdfQueryException("Unable to evaluate an XPath String function on a non-string typed Literal");
                         }
                     }
                     else
                     {
-                        return ValueInternal(lit);
+                        return ValueInternal(context, lit);
                     }
                 }
                 else
@@ -94,9 +94,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal.
         /// </summary>
+        /// <param name="context"></param>
         /// <param name="stringLit">Simple/String typed Literal.</param>
         /// <returns></returns>
-        protected abstract IValuedNode ValueInternal(ILiteralNode stringLit);
+        protected abstract IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit);
 
         /// <summary>
         /// Gets the Variables used in the function.

@@ -44,9 +44,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <summary>
         /// Determines the Length of the given String Literal.
         /// </summary>
+        /// <param name="context"></param>
         /// <param name="stringLit">String Literal.</param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
         {
             return new LongNode(stringLit.Value.Length);
         }

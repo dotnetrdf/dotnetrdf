@@ -45,10 +45,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal and Argument.
         /// </summary>
+        /// <param name="context">Evaluation context.</param>
         /// <param name="stringLit">Simple/String typed Literal.</param>
         /// <param name="arg">Argument.</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg)
+        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg)
         {
             if (stringLit.Value.Equals(string.Empty))
             {
@@ -70,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             }
             else
             {
-                // Otherwise evalute the EndsWith
+                // Otherwise evaluate the EndsWith
                 return new BooleanNode(stringLit.Value.EndsWith(arg.Value));
             }
         }
