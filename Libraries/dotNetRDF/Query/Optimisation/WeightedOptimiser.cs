@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Optimisation
         {
             if (g == null) return;
 
-            g.NamespaceMap.AddNamespace("opt", UriFactory.Create(SparqlOptimiser.OptimiserStatsNamespace));
+            g.NamespaceMap.AddNamespace("opt", g.UriFactory.Create(SparqlOptimiser.OptimiserStatsNamespace));
 
             INode optSubjCount = g.CreateUriNode("opt:subjectCount");
             INode optPredCount = g.CreateUriNode("opt:predicateCount");

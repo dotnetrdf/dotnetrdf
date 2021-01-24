@@ -64,13 +64,20 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new SPARQL Expression Parser.
         /// </summary>
-        public SparqlExpressionParser() : this(SparqlQuerySyntax.Sparql_1_1)
+        public SparqlExpressionParser() : this(RDF.UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new SPARQL Expression Parser.
+        /// </summary>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public SparqlExpressionParser(IUriFactory uriFactory) : this(SparqlQuerySyntax.Sparql_1_1, uriFactory)
         {
         }
 
-        public SparqlExpressionParser(SparqlQuerySyntax syntax)
+        public SparqlExpressionParser(SparqlQuerySyntax syntax, IUriFactory uriFactory)
         {
             SyntaxMode = syntax;
+            UriFactory = uriFactory;
         }
 
         /// <summary>
@@ -80,12 +87,6 @@ namespace VDS.RDF.Query
         public SparqlExpressionParser(SparqlQueryParser parser)
             : this(parser, false) { }
 
-        /// <summary>
-        /// Creates a new SPARQL Expression Parser.
-        /// </summary>
-        /// <param name="allowAggregates">Whether Aggregates are allowed in Expressions.</param>
-        public SparqlExpressionParser(bool allowAggregates)
-            : this(null, allowAggregates) { }
 
         /// <summary>
         /// Creates a new SPARQL Expression Parser which has a reference back to a Query Parser.
@@ -97,6 +98,7 @@ namespace VDS.RDF.Query
             _parser = parser;
             AllowAggregates = allowAggregates;
             SyntaxMode = parser.SyntaxMode;
+            UriFactory = parser.UriFactory;
         }
 
         /// <summary>
@@ -157,6 +159,11 @@ namespace VDS.RDF.Query
                 }
             }
         }
+
+        /// <summary>
+        /// Gets/Sets the factory to use when parsing URIs.
+        /// </summary>
+        public IUriFactory UriFactory { get; set; }
 
         /// <summary>
         /// Parses a SPARQL Expression.

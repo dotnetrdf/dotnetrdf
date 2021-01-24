@@ -41,7 +41,6 @@ namespace VDS.RDF.Parsing.Contexts
     public class SparqlUpdateParserContext
         : TokenisingParserContext
     {
-        private SparqlUpdateCommandSet _commandSet = new SparqlUpdateCommandSet();
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
         /// <summary>
@@ -49,7 +48,10 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="tokeniser">Tokeniser.</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser)
-            : base(new NullHandler(), tokeniser) { }
+            : base(new NullHandler(), tokeniser)
+        {
+            ExpressionParser = new SparqlExpressionParser(UriFactory);
+        }
 
         /// <summary>
         /// Creates a new SPARQL Update parser context.
@@ -60,6 +62,7 @@ namespace VDS.RDF.Parsing.Contexts
             : base(new NullHandler(), tokeniser, uriFactory)
         {
             QueryParser = new SparqlQueryParser(uriFactory);
+            ExpressionParser = new SparqlExpressionParser(UriFactory);
         }
 
         /// <summary>
@@ -68,7 +71,10 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use.</param>
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(new NullHandler(), tokeniser, queueMode) { }
+            : base(new NullHandler(), tokeniser, queueMode)
+        {
+            ExpressionParser = new SparqlExpressionParser(UriFactory);
+        }
 
         /// <summary>
         /// Creates a new SPARQL Update Parser Context with custom settings.
@@ -77,7 +83,10 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : base(new NullHandler(), tokeniser, traceParsing, traceTokeniser) { }
+            : base(new NullHandler(), tokeniser, traceParsing, traceTokeniser)
+        {
+            ExpressionParser = new SparqlExpressionParser(UriFactory);
+        }
 
         /// <summary>
         /// Creates a new SPARQL Update Parser Context with custom settings.
@@ -86,24 +95,22 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public SparqlUpdateParserContext(ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(new NullHandler(), tokeniser, queueMode, traceParsing, traceTokeniser) { }
+        public SparqlUpdateParserContext(ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing,
+            bool traceTokeniser)
+            : base(new NullHandler(), tokeniser, queueMode, traceParsing, traceTokeniser)
+        {
+            ExpressionParser = new SparqlExpressionParser(UriFactory);
+        }
 
         /// <summary>
         /// Gets the Update Command Set that is being populated.
         /// </summary>
-        public SparqlUpdateCommandSet CommandSet
-        {
-            get
-            {
-                return _commandSet;
-            }
-        }
+        public SparqlUpdateCommandSet CommandSet { get; } = new SparqlUpdateCommandSet();
 
         /// <summary>
         /// Gets the Expression Parser.
         /// </summary>
-        internal SparqlExpressionParser ExpressionParser { get; } = new SparqlExpressionParser();
+        internal SparqlExpressionParser ExpressionParser { get; }
 
         /// <summary>
         /// Gets the Path Parser.
@@ -118,7 +125,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Namespace Map.
         /// </summary>
-        public NamespaceMapper NamespaceMap => _commandSet.NamespaceMap;
+        public NamespaceMapper NamespaceMap => CommandSet.NamespaceMap;
 
         /// <summary>
         /// Gets/Sets the locally scoped custom expression factories.
