@@ -34,129 +34,60 @@ namespace VDS.RDF.Parsing.Contexts
     /// </summary>
     public class RdfAEvaluationContext
     {
-        private Uri _baseUri;
-        private INode _parentSubj, _parentObj;
-        private NamespaceMapper _nsmapper = new NamespaceMapper(true);
-        private List<IncompleteTriple> _incompleteTriples = new List<IncompleteTriple>();
-        private string _lang = string.Empty;
-        private IRdfAVocabulary _localVocabularly;
-
         /// <summary>
         /// Creates a new RDFa Evaluation Context.
         /// </summary>
         /// <param name="baseUri">Base URI.</param>
         public RdfAEvaluationContext(Uri baseUri)
         {
-            _baseUri = baseUri;
-            _nsmapper.AddNamespace(string.Empty, UriFactory.Create(RdfAParser.XHtmlVocabNamespace));
+            BaseUri = baseUri;
+            NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create(RdfAParser.XHtmlVocabNamespace));
         }
 
         /// <summary>
         /// Creates a new RDFa Evaluation Context.
         /// </summary>
         /// <param name="baseUri">Base URI.</param>
-        /// <param name="nsmap">Namepace Map.</param>
+        /// <param name="nsmap">Namespace Map.</param>
         public RdfAEvaluationContext(Uri baseUri, NamespaceMapper nsmap)
             : this(baseUri)
         {
-            _nsmapper = nsmap;
+            NamespaceMap = nsmap;
         }
 
         /// <summary>
         /// Gets/Sets the Base URI.
         /// </summary>
-        public Uri BaseUri
-        {
-            get
-            {
-                return _baseUri;
-            }
-            set
-            {
-                _baseUri = value;
-            }
-        }
+        public Uri BaseUri { get; set; }
 
         /// <summary>
         /// Gets/Sets the Parent Subject.
         /// </summary>
-        public INode ParentSubject
-        {
-            get
-            {
-                return _parentSubj;
-            }
-            set
-            {
-                _parentSubj = value;
-            }
-        }
+        public INode ParentSubject { get; set; }
 
         /// <summary>
         /// Gets/Sets the Parent Object.
         /// </summary>
-        public INode ParentObject
-        {
-            get
-            {
-                return _parentObj;
-            }
-            set
-            {
-                _parentObj = value;
-            }
-        }
+        public INode ParentObject { get; set; }
 
         /// <summary>
         /// Gets the Namespace Map.
         /// </summary>
-        public NamespaceMapper NamespaceMap
-        {
-            get
-            {
-                return _nsmapper;
-            }
-        }
+        public NamespaceMapper NamespaceMap { get; } = new NamespaceMapper(true);
 
         /// <summary>
         /// Gets/Sets the Language.
         /// </summary>
-        public string Language
-        {
-            get
-            {
-                return _lang;
-            }
-            set
-            {
-                _lang = value;
-            }
-        }
+        public string Language { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the list of incomplete Triples.
         /// </summary>
-        public List<IncompleteTriple> IncompleteTriples
-        {
-            get
-            {
-                return _incompleteTriples;
-            }
-        }
+        public List<IncompleteTriple> IncompleteTriples { get; } = new List<IncompleteTriple>();
 
         /// <summary>
         /// Gets/Sets the Local Vocabulary.
         /// </summary>
-        public IRdfAVocabulary LocalVocabulary
-        {
-            get
-            {
-                return _localVocabularly;
-            }
-            set
-            {
-                _localVocabularly = value;
-            }
-        }
+        public IRdfAVocabulary LocalVocabulary { get; set; }
     }
 }
