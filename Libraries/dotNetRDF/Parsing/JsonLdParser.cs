@@ -291,24 +291,24 @@ namespace VDS.RDF.Parsing
                     // Otherwise direction mode is CompoundLiteral
                     IBlankNode literalNode = handler.CreateBlankNode();
                     Uri xsdString =
-                        UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+                        UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
                     handler.HandleTriple(new Triple(
                         literalNode,
-                        handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfValue)),
+                        handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfValue)),
                         handler.CreateLiteralNode(literalValue, xsdString),
                         graphIri));
                     if (!string.IsNullOrEmpty(language))
                     {
                         handler.HandleTriple(new Triple(
                             literalNode,
-                            handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfLanguage)),
+                            handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfLanguage)),
                             handler.CreateLiteralNode(language, xsdString),
                             graphIri));
                     }
 
                     handler.HandleTriple(new Triple(
                         literalNode,
-                        handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfDirection)),
+                        handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfDirection)),
                         handler.CreateLiteralNode(direction, xsdString),
                         graphIri));
 
