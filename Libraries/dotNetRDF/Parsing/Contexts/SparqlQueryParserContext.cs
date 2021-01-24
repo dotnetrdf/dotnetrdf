@@ -84,8 +84,9 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public SparqlQueryParserContext(ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(new NullHandler(), tokeniser, queueMode, traceParsing, traceTokeniser) { }
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public SparqlQueryParserContext(ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
+            : base(new NullHandler(), tokeniser, queueMode, traceParsing, traceTokeniser, uriFactory??RDF.UriFactory.Root) { }
 
         /// <summary>
         /// Creates a new SPARQL Query Parser Context for parsing sub-queries.
