@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Inference
         /// <param name="g">Rules Graph.</param>
         public void Initialise(IGraph g)
         {
-            INode implies = g.CreateUriNode(UriFactory.Create("http://www.w3.org/2000/10/swap/log#implies"));
+            INode implies = g.CreateUriNode(g.UriFactory.Create("http://www.w3.org/2000/10/swap/log#implies"));
 
             foreach (Triple t in g.GetTriplesWithPredicate(implies))
             {

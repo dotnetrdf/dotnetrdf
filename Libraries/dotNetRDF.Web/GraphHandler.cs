@@ -88,7 +88,7 @@ namespace VDS.RDF.Web
 
             // Then check there is configuration associated with the expected URI
             var objUri = "dotnetrdf:" + context.Request.Path;
-            INode objNode = g.GetUriNode(UriFactory.Create(objUri));
+            INode objNode = g.GetUriNode(g.UriFactory.Create(objUri));
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Graph Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
             var config = new GraphHandlerConfiguration(new WebContext(context), g, objNode);
 

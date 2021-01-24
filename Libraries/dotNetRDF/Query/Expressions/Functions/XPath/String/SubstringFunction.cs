@@ -142,14 +142,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                             throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a typed literal with an invalid type");
                         }
                     }
-                    else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
+                    else if (argumentTypeValidator(context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
                     {
                         // Untyped Literals are treated as Strings and may be returned when the argument allows strings
                         return temp;
                     }
                     else
                     {
-                        throw new RdfQueryException("Unable to evalaute an XPath substring as one of the argument expressions returned an untyped literal");
+                        throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned an untyped literal");
                     }
                 }
                 else

@@ -946,12 +946,12 @@ namespace VDS.RDF.Query
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode endpoint = context.NextSubject;
-            INode endpointClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlQueryEndpoint));
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
-            INode defGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
-            INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
+            INode endpointClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlQueryEndpoint));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
+            INode defGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
+            INode namedGraphUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
 
             context.Graph.Assert(new Triple(endpoint, rdfType, endpointClass));
             context.Graph.Assert(new Triple(endpoint, dnrType, context.Graph.CreateLiteralNode(GetType().FullName)));
@@ -959,11 +959,11 @@ namespace VDS.RDF.Query
 
             foreach (var u in _defaultGraphUris)
             {
-                context.Graph.Assert(new Triple(endpoint, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
+                context.Graph.Assert(new Triple(endpoint, defGraphUri, context.Graph.CreateUriNode(context.UriFactory.Create(u))));
             }
             foreach (var u in _namedGraphUris)
             {
-                context.Graph.Assert(new Triple(endpoint, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
+                context.Graph.Assert(new Triple(endpoint, namedGraphUri, context.Graph.CreateUriNode(context.UriFactory.Create(u))));
             }
 
             context.NextSubject = endpoint;

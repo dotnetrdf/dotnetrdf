@@ -44,7 +44,7 @@ namespace VDS.RDF.Configuration
         public ConfigurationSerializationContext()
         {
             _g = new Graph();
-            _g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            _g.NamespaceMap.AddNamespace("dnr", _g.UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
         }
 
         /// <summary>
@@ -66,6 +66,11 @@ namespace VDS.RDF.Configuration
                 return _g;
             }
         }
+
+        /// <summary>
+        /// Gets the URI factory to use when populating the graph.
+        /// </summary>
+        public IUriFactory UriFactory { get => _g.UriFactory; }
 
         /// <summary>
         /// Gets/Sets the next subject to be used.

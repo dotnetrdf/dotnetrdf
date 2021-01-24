@@ -205,7 +205,7 @@ namespace VDS.RDF.Storage
             Uri origUri = g.BaseUri;
             if (origUri == null && g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
             {
-                origUri = UriFactory.Create(graphUri);
+                origUri = g.UriFactory.Create(graphUri);
             }
             LoadGraph(new GraphHandler(g), graphUri);
             g.BaseUri = origUri;
@@ -459,7 +459,7 @@ namespace VDS.RDF.Storage
             Uri origUri = g.BaseUri;
             if (origUri == null && g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
             {
-                origUri = UriFactory.Create(graphUri);
+                origUri = g.UriFactory.Create(graphUri);
             }
             LoadGraph(new GraphHandler(g), graphUri, (sender, args, st) =>
                 {
@@ -671,11 +671,11 @@ namespace VDS.RDF.Storage
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-            INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+            INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));

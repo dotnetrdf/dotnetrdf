@@ -275,7 +275,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                LoadGraph(g, UriFactory.Create(graphUri));
+                LoadGraph(g, g.UriFactory.Create(graphUri));
             }
         }
 
@@ -292,7 +292,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                LoadGraph(handler, UriFactory.Create(graphUri));
+                LoadGraph(handler, UriFactory.Root.Create(graphUri));
             }
         }
 
@@ -683,7 +683,7 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed.</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            Uri u = graphUri.Equals(string.Empty) ? null : UriFactory.Create(graphUri);
+            Uri u = graphUri.Equals(string.Empty) ? null : UriFactory.Root.Create(graphUri);
             UpdateGraph(u, additions, removals);
         }
 
@@ -1511,12 +1511,12 @@ namespace VDS.RDF.Storage
             context.EnsureObjectFactory(typeof (VirtuosoObjectFactory));
 
             //Then serialize the actual configuration
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
             INode manager = context.NextSubject;
-            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
-            INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-            INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
+            INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+            INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+            INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
@@ -1525,23 +1525,23 @@ namespace VDS.RDF.Storage
 
             if (_dbport != DefaultPort)
             {
-                INode port = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPort));
+                INode port = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPort));
                 context.Graph.Assert(new Triple(manager, port, _dbport.ToLiteral(context.Graph)));
             }
             if (!_dbname.Equals(DefaultDB))
             {
-                INode db = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDatabase));
+                INode db = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyDatabase));
                 context.Graph.Assert(new Triple(manager, db, context.Graph.CreateLiteralNode(_dbname)));
             }
             if (_timeout > 0)
             {
-                INode timeout = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout));
+                INode timeout = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyTimeout));
                 context.Graph.Assert(new Triple(manager, timeout, _timeout.ToLiteral(context.Graph)));
             }
             if (_dbuser != null && _dbpwd != null)
             {
-                INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
-                INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+                INode username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
+                INode pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
                 context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_dbuser)));
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_dbpwd)));
             }

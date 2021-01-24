@@ -129,7 +129,7 @@ namespace VDS.RDF.Web.Configuration
         public BaseHandlerConfiguration(IGraph g, INode objNode)
         {
             // Are there any User Groups associated with this Handler?
-            IEnumerable<INode> groups = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUserGroup)));
+            IEnumerable<INode> groups = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUserGroup)));
             foreach (INode group in groups)
             {
                 var temp = ConfigurationLoader.LoadObject(g, group);
@@ -144,8 +144,8 @@ namespace VDS.RDF.Web.Configuration
             }
 
             // General Handler Settings
-            _showErrors = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowErrors)), _showErrors);
-            var introFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyIntroFile)));
+            _showErrors = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyShowErrors)), _showErrors);
+            var introFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyIntroFile)));
             if (introFile != null)
             {
                 introFile = ConfigurationLoader.ResolvePath(introFile);
@@ -158,17 +158,17 @@ namespace VDS.RDF.Web.Configuration
                     }
                 }
             }
-            _stylesheet = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStylesheet)))?.ToString() ?? string.Empty;
-            _corsEnabled = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEnableCors)), true);
+            _stylesheet = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStylesheet)))?.ToString() ?? string.Empty;
+            _corsEnabled = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEnableCors)), true);
 
             // Cache Settings
-            _cacheDuration = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCacheDuration)), _cacheDuration);
+            _cacheDuration = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyCacheDuration)), _cacheDuration);
             if (_cacheDuration < MinimumCacheDuration) _cacheDuration = MinimumCacheDuration;
             if (_cacheDuration > MaximumCacheDuration) _cacheDuration = MaximumCacheDuration;
-            _cacheSliding = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCacheSliding)), _cacheSliding);
+            _cacheSliding = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyCacheSliding)), _cacheSliding);
 
             // SPARQL Expression Factories
-            IEnumerable<INode> factories = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyExpressionFactory)));
+            IEnumerable<INode> factories = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyExpressionFactory)));
             foreach (INode factory in factories)
             {
                 var temp = ConfigurationLoader.LoadObject(g, factory);
@@ -183,7 +183,7 @@ namespace VDS.RDF.Web.Configuration
             }
 
             // SPARQL Property Function Factories
-            factories = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFunctionFactory)));
+            factories = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFunctionFactory)));
             foreach (INode factory in factories)
             {
                 var temp = ConfigurationLoader.LoadObject(g, factory);
@@ -198,15 +198,15 @@ namespace VDS.RDF.Web.Configuration
             }
 
             // Writer Properties
-            _writerCompressionLevel = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCompressionLevel)), _writerCompressionLevel);
-            _writerDtds = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDtdWriting)), _writerDtds);
-            _writerHighSpeed = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyHighSpeedWriting)), _writerHighSpeed);
-            _writerMultiThreading = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyMultiThreadedWriting)), _writerMultiThreading);
-            _writerPrettyPrinting = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPrettyPrinting)), _writerPrettyPrinting);
-            _writerAttributes = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAttributeWriting)), _writerAttributes);
+            _writerCompressionLevel = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyCompressionLevel)), _writerCompressionLevel);
+            _writerDtds = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDtdWriting)), _writerDtds);
+            _writerHighSpeed = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyHighSpeedWriting)), _writerHighSpeed);
+            _writerMultiThreading = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyMultiThreadedWriting)), _writerMultiThreading);
+            _writerPrettyPrinting = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyPrettyPrinting)), _writerPrettyPrinting);
+            _writerAttributes = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAttributeWriting)), _writerAttributes);
 
             // Load in the Default Namespaces if specified
-            INode nsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyImportNamespacesFrom)));
+            INode nsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyImportNamespacesFrom)));
             if (nsNode != null)
             {
                 var nsTemp = ConfigurationLoader.LoadObject(g, nsNode);

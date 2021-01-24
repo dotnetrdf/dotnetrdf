@@ -161,7 +161,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                LoadGraph(g, UriFactory.Create(graphUri));
+                LoadGraph(g, g.UriFactory.Create(graphUri));
             }
         }
 
@@ -178,7 +178,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                LoadGraph(handler, UriFactory.Create(graphUri));
+                LoadGraph(handler, UriFactory.Root.Create(graphUri));
             }
         }
 
@@ -366,11 +366,11 @@ namespace VDS.RDF.Storage
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-            INode file = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode genericManager = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+            INode file = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyFromFile));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));

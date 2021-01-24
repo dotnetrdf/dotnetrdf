@@ -278,7 +278,7 @@ namespace VDS.RDF.Query
             if (!rset.Result)
             {
                 INode factory = context.Graph.CreateBlankNode();
-                context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
+                context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
                 context.Graph.Assert(new Triple(factory, dnrType, context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assm)));
             }
         }

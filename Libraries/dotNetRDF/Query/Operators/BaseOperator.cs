@@ -68,10 +68,10 @@ namespace VDS.RDF.Query.Operators
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode op = context.NextSubject;
-            INode opClass = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassSparqlOperator));
+            INode opClass = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassSparqlOperator));
 
-            context.Graph.Assert(op, context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), opClass);
-            context.Graph.Assert(op, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().AssemblyQualifiedName));
+            context.Graph.Assert(op, context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType)), opClass);
+            context.Graph.Assert(op, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().AssemblyQualifiedName));
         }
     }
 }

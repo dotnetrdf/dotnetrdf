@@ -84,12 +84,12 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             IGraph g = new Graph();
 
             // Add relevant namespaces
-            g.NamespaceMap.AddNamespace("rep", UriFactory.Create(RepositoryNamespace));
-            g.NamespaceMap.AddNamespace("sr", UriFactory.Create(RepositorySailNamespace));
-            g.NamespaceMap.AddNamespace("hr", UriFactory.Create(RepositoryHttpNamespace));
-            g.NamespaceMap.AddNamespace("sail", UriFactory.Create(SailNamespace));
-            g.NamespaceMap.AddNamespace("ms", UriFactory.Create(SailMemoryNamespace));
-            g.NamespaceMap.AddNamespace("ns", UriFactory.Create(SailNativeNamespace));
+            g.NamespaceMap.AddNamespace("rep", g.UriFactory.Create(RepositoryNamespace));
+            g.NamespaceMap.AddNamespace("sr", g.UriFactory.Create(RepositorySailNamespace));
+            g.NamespaceMap.AddNamespace("hr", g.UriFactory.Create(RepositoryHttpNamespace));
+            g.NamespaceMap.AddNamespace("sail", g.UriFactory.Create(SailNamespace));
+            g.NamespaceMap.AddNamespace("ms", g.UriFactory.Create(SailMemoryNamespace));
+            g.NamespaceMap.AddNamespace("ns", g.UriFactory.Create(SailNativeNamespace));
 
             // Create a unique blank node to represent the Repository Context
             var uuid = Guid.NewGuid();

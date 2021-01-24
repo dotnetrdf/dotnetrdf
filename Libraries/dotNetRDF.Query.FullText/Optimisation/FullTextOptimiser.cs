@@ -99,15 +99,15 @@ namespace VDS.RDF.Query.Optimisation
 
             INode optObj = context.NextSubject;
 
-            context.Graph.Assert(optObj, context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassAlgebraOptimiser)));
-            context.Graph.Assert(optObj, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
+            context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType)), context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassAlgebraOptimiser)));
+            context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
 
             if (_provider is IConfigurationSerializable)
             {
                 INode searcherObj = context.Graph.CreateBlankNode();
                 context.NextSubject = searcherObj;
                 ((IConfigurationSerializable)_provider).SerializeConfiguration(context);
-                context.Graph.Assert(optObj, context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertySearcher)), searcherObj);
+                context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertySearcher)), searcherObj);
             }
             else
             {

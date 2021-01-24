@@ -53,8 +53,8 @@ namespace VDS.RDF.Configuration
             int p = -1, timeout = 0;
 
             //Create the URI Nodes we're going to use to search for things
-            INode propServer = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)),
-                  propDb = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDatabase));
+            INode propServer = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyServer)),
+                  propDb = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDatabase));
 
             //Get Server and Database details
             server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
@@ -63,11 +63,11 @@ namespace VDS.RDF.Configuration
             if (db == null) db = VirtuosoManager.DefaultDB;
 
             //Get Port
-            port = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPort)));
+            port = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyPort)));
             if (!Int32.TryParse(port, out p)) p = VirtuosoManager.DefaultPort;
 
             //Get timeout
-            timeout = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyTimeout)), timeout);
+            timeout = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyTimeout)), timeout);
 
             //Get user credentials
             ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);

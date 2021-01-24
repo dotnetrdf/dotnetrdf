@@ -497,7 +497,7 @@ namespace VDS.RDF.Storage
         {
             if (g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
             {
-                g.BaseUri = UriFactory.Create(graphUri);
+                g.BaseUri = g.UriFactory.Create(graphUri);
             }
             LoadGraph(new GraphHandler(g), graphUri);
         }
@@ -2667,14 +2667,14 @@ namespace VDS.RDF.Storage
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
+            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
             INode genericManager =
-                context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
-            INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
-            INode store = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore));
-            INode loadMode = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
+                context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+            INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
+            INode store = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyStore));
+            INode loadMode = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyLoadMode));
 
             // Add Core config
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
@@ -2691,8 +2691,8 @@ namespace VDS.RDF.Storage
             // Add User Credentials
             if (_username != null && _pwd != null)
             {
-                INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
-                INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+                INode username = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
+                INode pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
                 context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(_username)));
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(_pwd)));
             }

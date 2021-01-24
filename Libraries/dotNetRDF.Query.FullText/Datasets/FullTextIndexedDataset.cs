@@ -204,8 +204,8 @@ namespace VDS.RDF.Query.Datasets
                 {
                     INode indexer = context.NextSubject;
                     context.NextSubject = indexer;
-                    context.Graph.Assert(dataset, context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndexer)), indexer);
-                    context.Graph.Assert(dataset, context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndexNow)), _indexNow.ToLiteral(context.Graph));
+                    context.Graph.Assert(dataset, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndexer)), indexer);
+                    context.Graph.Assert(dataset, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyIndexNow)), _indexNow.ToLiteral(context.Graph));
                     ((IConfigurationSerializable)_indexer).SerializeConfiguration(context);
                 }
                 else

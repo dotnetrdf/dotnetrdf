@@ -98,7 +98,7 @@ namespace VDS.RDF.Web.Configuration
             {
                 var path = String.Join(String.Empty, requestUri.Segments, 0, s) + "*";
                 var objUri = "dotnetrdf:" + path;
-                INode temp = g.GetUriNode(UriFactory.Create(objUri));
+                INode temp = g.GetUriNode(g.UriFactory.Create(objUri));
                 if (temp != null)
                 {
                     matchedPath = path;

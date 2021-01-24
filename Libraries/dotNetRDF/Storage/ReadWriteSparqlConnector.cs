@@ -394,7 +394,7 @@ namespace VDS.RDF.Storage
                 // Use the indirect serialization method
 
                 // Serialize the Endpoints Configuration
-                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
+                INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
                 INode endpointObj = context.Graph.CreateBlankNode();
                 context.NextSubject = endpointObj;
                 UpdateClient.SerializeConfiguration(context);
@@ -407,7 +407,7 @@ namespace VDS.RDF.Storage
                 // Use the indirect serialization method
 
                 // Serialize the Endpoints Configuration
-                INode endpoint = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
+                INode endpoint = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpoint));
                 INode endpointObj = context.Graph.CreateBlankNode();
                 context.NextSubject = endpointObj;
                 ((IConfigurationSerializable)_updateEndpoint).SerializeConfiguration(context);
@@ -418,7 +418,7 @@ namespace VDS.RDF.Storage
             else
             {
                 // Use the direct serialization method
-                INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
+                INode endpointUri = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri));
 
                 context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(_endpoint.Uri.AbsoluteUri)));
             }
