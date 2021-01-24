@@ -49,37 +49,37 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
         public const String PREFIX = "spl";
 
 
-        public readonly static IUriNode ClassArgument = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Argument"));
+        public readonly static IUriNode ClassArgument = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "Argument"));
 
-        public readonly static IUriNode ClassAttribute = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Attribute"));
+        public readonly static IUriNode ClassAttribute = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "Attribute"));
 
-        public readonly static IUriNode ClassInferDefaultValue = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "InferDefaultValue"));
+        public readonly static IUriNode ClassInferDefaultValue = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "InferDefaultValue"));
 
-        public readonly static IUriNode ClassObjectCountPropertyConstraint = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "ObjectCountPropertyConstraint"));
+        public readonly static IUriNode ClassObjectCountPropertyConstraint = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "ObjectCountPropertyConstraint"));
 
-        public readonly static IUriNode ClassRunTestCases = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "RunTestCases"));
+        public readonly static IUriNode ClassRunTestCases = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "RunTestCases"));
 
-        public readonly static IUriNode ClassSPINOverview = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "SPINOverview"));
+        public readonly static IUriNode ClassSPINOverview = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "SPINOverview"));
 
-        public readonly static IUriNode ClassTestCase = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "TestCase"));
-
-
-        public readonly static IUriNode PropertyObjectCount = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "objectCount"));
+        public readonly static IUriNode ClassTestCase = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "TestCase"));
 
 
-        public readonly static IUriNode PropertyDefaultValue = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "defaultValue"));
+        public readonly static IUriNode PropertyObjectCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "objectCount"));
 
-        public readonly static IUriNode PropertyHasValue = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "hasValue"));
 
-        public readonly static IUriNode PropertyMaxCount = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "maxCount"));
+        public readonly static IUriNode PropertyDefaultValue = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "defaultValue"));
 
-        public readonly static IUriNode PropertyMinCount = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "minCount"));
+        public readonly static IUriNode PropertyHasValue = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "hasValue"));
 
-        public readonly static IUriNode PropertyOptional = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "optional"));
+        public readonly static IUriNode PropertyMaxCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "maxCount"));
 
-        public readonly static IUriNode PropertyPredicate = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "predicate"));
+        public readonly static IUriNode PropertyMinCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "minCount"));
 
-        public readonly static IUriNode PropertyValueType = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "valueType"));
+        public readonly static IUriNode PropertyOptional = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "optional"));
+
+        public readonly static IUriNode PropertyPredicate = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "predicate"));
+
+        public readonly static IUriNode PropertyValueType = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "valueType"));
 
         private static Graph model;
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -88,8 +88,8 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
             if (model == null)
             {
                 model = new Graph();
-                model.BaseUri = UriFactory.Create(BASE_URI);
-                model.LoadFromUri(UriFactory.Create(BASE_URI), new VDS.RDF.Parsing.RdfXmlParser());
+                model.BaseUri = UriFactory.Root.Create(BASE_URI);
+                model.LoadFromUri(UriFactory.Root.Create(BASE_URI), new VDS.RDF.Parsing.RdfXmlParser());
             }
             return model;
         }

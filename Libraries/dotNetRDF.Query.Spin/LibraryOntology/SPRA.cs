@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
         public const String PREFIX = "spra";
 
 
-        public static readonly IUriNode ClassTable = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "Table"));
+        public static readonly IUriNode ClassTable = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "Table"));
 
     }
 }

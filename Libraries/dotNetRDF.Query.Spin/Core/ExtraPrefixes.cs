@@ -47,12 +47,12 @@ namespace VDS.RDF.Query.Spin.Core
 
         static ExtraPrefixes()
         {
-            map.AddNamespace("afn", UriFactory.Create("http://jena.hpl.hp.com/ARQ/function#"));
-            map.AddNamespace("fn", UriFactory.Create("http://www.w3.org/2005/xpath-functions#"));
-            map.AddNamespace("jfn", UriFactory.Create("java:com.hp.hpl.jena.sparql.function.library."));
-            map.AddNamespace("pf", UriFactory.Create("http://jena.hpl.hp.com/ARQ/property#"));
-            map.AddNamespace("smf", UriFactory.Create("http://topbraid.org/sparqlmotionfunctions#"));
-            map.AddNamespace("tops", UriFactory.Create("http://www.topbraid.org/tops#"));
+            map.AddNamespace("afn", UriFactory.Root.Create("http://jena.hpl.hp.com/ARQ/function#"));
+            map.AddNamespace("fn", UriFactory.Root.Create("http://www.w3.org/2005/xpath-functions#"));
+            map.AddNamespace("jfn", UriFactory.Root.Create("java:com.hp.hpl.jena.sparql.function.library."));
+            map.AddNamespace("pf", UriFactory.Root.Create("http://jena.hpl.hp.com/ARQ/property#"));
+            map.AddNamespace("smf", UriFactory.Root.Create("http://topbraid.org/sparqlmotionfunctions#"));
+            map.AddNamespace("tops", UriFactory.Root.Create("http://www.topbraid.org/tops#"));
         }
 
 
@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Spin.Core
         {
             if (!map.HasNamespace(prefix))
             {
-                map.AddNamespace(prefix, UriFactory.Create(namespaceUri));
+                map.AddNamespace(prefix, UriFactory.Root.Create(namespaceUri));
             }
         }
 

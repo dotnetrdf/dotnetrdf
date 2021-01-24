@@ -56,8 +56,8 @@ namespace VDS.RDF.Query.Spin
         public static IGraph ToSpinRdf(this SparqlQuery query)
         {
             var g = new Graph();
-            g.NamespaceMap.AddNamespace("spin", UriFactory.Create(SPIN.NS_URI));
-            g.NamespaceMap.AddNamespace("sp", UriFactory.Create(SP.NS_URI));
+            g.NamespaceMap.AddNamespace("spin", UriFactory.Root.Create(SPIN.NS_URI));
+            g.NamespaceMap.AddNamespace("sp", UriFactory.Root.Create(SP.NS_URI));
             query.ToSpinRdf(g);
             return g;
         }
@@ -200,8 +200,8 @@ namespace VDS.RDF.Query.Spin
         public static IGraph ToSpinRdf(this SparqlUpdateCommand query)
         {
             var g = new Graph();
-            g.NamespaceMap.AddNamespace("spin", UriFactory.Create(SPIN.NS_URI));
-            g.NamespaceMap.AddNamespace("sp", UriFactory.Create(SP.NS_URI));
+            g.NamespaceMap.AddNamespace("spin", UriFactory.Root.Create(SPIN.NS_URI));
+            g.NamespaceMap.AddNamespace("sp", UriFactory.Root.Create(SP.NS_URI));
             query.ToSpinRdf(g);
             return g;
         }

@@ -45,10 +45,10 @@ namespace VDS.RDF.Query.Spin.LibraryOntology
         public const String PREFIX = "arg";
 
 
-        public readonly static IUriNode PropertyProperty = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "property"));
+        public readonly static IUriNode PropertyProperty = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "property"));
 
-        public readonly static IUriNode PropertyMaxCount = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "maxCount"));
+        public readonly static IUriNode PropertyMaxCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "maxCount"));
 
-        public readonly static IUriNode PropertyMinCount = RDFUtil.CreateUriNode(UriFactory.Create(NS_URI + "minCount"));
+        public readonly static IUriNode PropertyMinCount = RDFUtil.CreateUriNode(UriFactory.Root.Create(NS_URI + "minCount"));
     }
 }
