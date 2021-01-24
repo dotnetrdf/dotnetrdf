@@ -49,7 +49,7 @@ namespace VDS.RDF
             : base(NodeType.Literal)
         {
             Value = normalize ? literal.Normalize() : literal;
-            DataType = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+            DataType = UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
             _hashCode = ComputeHashCode();
         }
 
@@ -69,12 +69,12 @@ namespace VDS.RDF
             if (Language.Equals(string.Empty))
             {
                 // Empty Language Specifier equivalent to a string literal
-                DataType = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+                DataType = UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
                 _hashCode = ComputeHashCode();
             }
             else
             {
-                DataType = UriFactory.Create(RdfSpecsHelper.RdfLangString);
+                DataType = UriFactory.Root.Create(RdfSpecsHelper.RdfLangString);
                 _hashCode = ComputeHashCode();
             }
         }
