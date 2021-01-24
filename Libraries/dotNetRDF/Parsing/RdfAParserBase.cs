@@ -357,9 +357,9 @@ namespace VDS.RDF.Parsing
 
                 // Setup the basic evaluation context and start processing
                 var evalContext = new RdfAEvaluationContext(context.BaseUri);
-                evalContext.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create(XHtmlVocabNamespace));
+                evalContext.NamespaceMap.AddNamespace(string.Empty, context.UriFactory.Create(XHtmlVocabNamespace));
 
-                // Set the Default and Local Vocabularly
+                // Set the Default and Local Vocabulary
                 context.DefaultVocabulary = new XHtmlRdfAVocabulary();
                 evalContext.LocalVocabulary = new TermMappings();
 
@@ -372,15 +372,15 @@ namespace VDS.RDF.Parsing
                     {
                         if (uri.Contains("?"))
                         {
-                            evalContext.BaseUri = UriFactory.Create(uri.Substring(0, uri.IndexOf('?')));
+                            evalContext.BaseUri = context.UriFactory.Create(uri.Substring(0, uri.IndexOf('?')));
                         }
                         else if (uri.Contains("#"))
                         {
-                            evalContext.BaseUri = UriFactory.Create(uri.Substring(0, uri.IndexOf('#')));
+                            evalContext.BaseUri = context.UriFactory.Create(uri.Substring(0, uri.IndexOf('#')));
                         }
                         else
                         {
-                            evalContext.BaseUri = UriFactory.Create(GetAttribute(baseEl, "href"));
+                            evalContext.BaseUri = context.UriFactory.Create(GetAttribute(baseEl, "href"));
                         }
                     }
                 }
@@ -501,7 +501,7 @@ namespace VDS.RDF.Parsing
                         if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
                         hiddenPrefixes.Add(prefix, evalContext.NamespaceMap.GetNamespaceUri(prefix));
                     }
-                    evalContext.NamespaceMap.AddNamespace(prefix, UriFactory.Create(uri));
+                    evalContext.NamespaceMap.AddNamespace(prefix, context.UriFactory.Create(uri));
                     inScopePrefixes.Add(prefix);
                 }
                 else
@@ -526,7 +526,7 @@ namespace VDS.RDF.Parsing
                                 if (!(baseUri.EndsWith("/") || baseUri.EndsWith("#"))) baseUri += "#";
                                 oldBase = evalContext.BaseUri;
                                 baseChanged = true;
-                                evalContext.BaseUri = UriFactory.Create(baseUri);
+                                evalContext.BaseUri = context.UriFactory.Create(baseUri);
                             }
                             break;
                         case "xmlns":
@@ -538,7 +538,7 @@ namespace VDS.RDF.Parsing
                                 if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
                                 hiddenPrefixes.Add(string.Empty, evalContext.NamespaceMap.GetNamespaceUri(string.Empty));
                             }
-                            evalContext.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create(uri));
+                            evalContext.NamespaceMap.AddNamespace(string.Empty, context.UriFactory.Create(uri));
                             inScopePrefixes.Add(string.Empty);
                             noDefaultNamespace = true;
                             break;
@@ -601,7 +601,7 @@ namespace VDS.RDF.Parsing
                                             if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
                                             hiddenPrefixes.Add(ns.Key, evalContext.NamespaceMap.GetNamespaceUri(ns.Key));
                                         }
-                                        evalContext.NamespaceMap.AddNamespace(ns.Key, UriFactory.Create(uri));
+                                        evalContext.NamespaceMap.AddNamespace(ns.Key, context.UriFactory.Create(uri));
                                         inScopePrefixes.Add(ns.Key);
                                     }
                                 }
@@ -644,7 +644,7 @@ namespace VDS.RDF.Parsing
                 else if (src)
                 {
                     // New Subject is the URI
-                    newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
+                    newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
                 }
                 else if (resource && !GetAttribute(currElement, "resource").Equals("[]"))
                 {
@@ -654,14 +654,14 @@ namespace VDS.RDF.Parsing
                 else if (href)
                 {
                     // New Subject is the URI
-                    newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
+                    newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
                 }
                 else if (GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
                 {
                     // New Subject is the Base URI
                     try
                     {
-                        newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
+                        newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
                     }
                     catch (RdfException)
                     {
@@ -701,14 +701,14 @@ namespace VDS.RDF.Parsing
                 else if (src)
                 {
                     // New Subject is the URI
-                    newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
+                    newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
                 }
                 else if (GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
                 {
                     // New Subject is the Base URI
                     try
                     {
-                        newSubj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
+                        newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
                     }
                     catch (RdfException)
                     {
@@ -743,7 +743,7 @@ namespace VDS.RDF.Parsing
                 else if (href)
                 {
                     // New Object is the URI
-                    currObj = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
+                    currObj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
                 }
             }
 
@@ -754,7 +754,7 @@ namespace VDS.RDF.Parsing
             // If the Subject is not a null then we'll generate type triples if there's any @typeof attributes
             if (newSubj != null)
             {
-                INode rdfType = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode rdfType = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
                 if (type)
                 {
                     foreach (INode dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "typeof")))
@@ -913,7 +913,7 @@ namespace VDS.RDF.Parsing
                         {
                             ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
                         }
-                        currLiteral = context.Handler.CreateLiteralNode(GetInnerHtml(currElement), UriFactory.Create(RdfSpecsHelper.RdfXmlLiteral));
+                        currLiteral = context.Handler.CreateLiteralNode(GetInnerHtml(currElement), context.UriFactory.Create(RdfSpecsHelper.RdfXmlLiteral));
                     }
                 }
 
@@ -965,7 +965,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        Uri newBase = (baseUri.Equals(string.Empty)) ? null : UriFactory.Create(baseUri);
+                        Uri newBase = (baseUri.Equals(string.Empty)) ? null : context.UriFactory.Create(baseUri);
                         newEvalContext = new RdfAEvaluationContext(newBase, evalContext.NamespaceMap);
                         // Set the Parent Subject for the new Context
                         if (newSubj != null)
@@ -1061,11 +1061,11 @@ namespace VDS.RDF.Parsing
                     // RDFa 1.0
                     if (curie.StartsWith(":"))
                     {
-                        return context.Handler.CreateUriNode(UriFactory.Create(XHtmlVocabNamespace + curie.Substring(1)));
+                        return context.Handler.CreateUriNode(context.UriFactory.Create(XHtmlVocabNamespace + curie.Substring(1)));
                     }
                     else if (curie.Contains(":"))
                     {
-                        return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
+                        return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
                     }
                     else
                     {
@@ -1075,7 +1075,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     // RDFa 1.1
-                    return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
+                    return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
                 }
             }
         }
@@ -1105,7 +1105,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     // URI
-                    return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(uriref, evalContext.BaseUri.ToSafeString())));
+                    return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(uriref, evalContext.BaseUri.ToSafeString())));
                 }
             }
             catch (RdfException)
@@ -1130,7 +1130,7 @@ namespace VDS.RDF.Parsing
                 var vocab = new XHtmlRdfAVocabulary();
                 if (curie.StartsWith(":"))
                 {
-                    return context.Handler.CreateUriNode(UriFactory.Create(vocab.ResolveTerm(curie.Substring(1))));
+                    return context.Handler.CreateUriNode(context.UriFactory.Create(vocab.ResolveTerm(curie.Substring(1))));
                 }
                 else if (curie.Contains(":"))
                 {
@@ -1140,7 +1140,7 @@ namespace VDS.RDF.Parsing
                 {
                     if (vocab.HasTerm(curie))
                     {
-                        return context.Handler.CreateUriNode(UriFactory.Create(vocab.ResolveTerm(curie)));
+                        return context.Handler.CreateUriNode(context.UriFactory.Create(vocab.ResolveTerm(curie)));
                     }
                     else
                     {
@@ -1157,11 +1157,11 @@ namespace VDS.RDF.Parsing
                     {
                         if (evalContext.LocalVocabulary.HasTerm(curie.Substring(1)) || !evalContext.LocalVocabulary.VocabularyUri.Equals(string.Empty))
                         {
-                            return context.Handler.CreateUriNode(UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie.Substring(1))));
+                            return context.Handler.CreateUriNode(context.UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie.Substring(1))));
                         }
                         else if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie.Substring(1)))
                         {
-                            return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie.Substring(1))));
+                            return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie.Substring(1))));
                         }
                         else
                         {
@@ -1170,7 +1170,7 @@ namespace VDS.RDF.Parsing
                     }
                     else if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie.Substring(1)))
                     {
-                        return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie.Substring(1))));
+                        return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie.Substring(1))));
                     }
                     else
                     {
@@ -1183,11 +1183,11 @@ namespace VDS.RDF.Parsing
                     {
                         if (evalContext.LocalVocabulary.HasTerm(curie) || !evalContext.LocalVocabulary.VocabularyUri.Equals(string.Empty))
                         {
-                            return context.Handler.CreateUriNode(UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie)));
+                            return context.Handler.CreateUriNode(context.UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie)));
                         }
                         else if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie))
                         {
-                            return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
+                            return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
                         }
                         else
                         {
@@ -1196,7 +1196,7 @@ namespace VDS.RDF.Parsing
                     }
                     else if (context.DefaultVocabulary != null)
                     {
-                        return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
+                        return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
                     }
                     else
                     {
@@ -1218,7 +1218,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(value, evalContext.BaseUri.ToSafeString())));
+                return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(value, evalContext.BaseUri.ToSafeString())));
             }
         }
 
@@ -1377,9 +1377,9 @@ namespace VDS.RDF.Parsing
                 if (evalContext.NamespaceMap.HasNamespace(prefix))
                 {
                     if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
-                    hiddenPrefixes.Add(prefix, UriFactory.Create(uri));
+                    hiddenPrefixes.Add(prefix, context.UriFactory.Create(uri));
                 }
-                evalContext.NamespaceMap.AddNamespace(prefix, UriFactory.Create(uri));
+                evalContext.NamespaceMap.AddNamespace(prefix, context.UriFactory.Create(uri));
                 inScopePrefixes.Add(prefix);
             } while (!canExit);
         }
@@ -1415,7 +1415,7 @@ namespace VDS.RDF.Parsing
                     {
                         try
                         {
-                            loader.LoadGraph(g, UriFactory.Create(profile));
+                            loader.LoadGraph(g, context.UriFactory.Create(profile));
                         }
                         catch
                         {
