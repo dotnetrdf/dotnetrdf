@@ -41,6 +41,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfAEvaluationContext(Uri baseUri)
         {
             BaseUri = baseUri;
+            NamespaceMap = new NamespaceMapper(true);
             NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create(RdfAParser.XHtmlVocabNamespace));
         }
 
@@ -50,8 +51,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="baseUri">Base URI.</param>
         /// <param name="nsmap">Namespace Map.</param>
         public RdfAEvaluationContext(Uri baseUri, NamespaceMapper nsmap)
-            : this(baseUri)
         {
+            BaseUri = baseUri;
             NamespaceMap = nsmap;
         }
 
@@ -73,7 +74,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Namespace Map.
         /// </summary>
-        public NamespaceMapper NamespaceMap { get; } = new NamespaceMapper(true);
+        public NamespaceMapper NamespaceMap { get; }
 
         /// <summary>
         /// Gets/Sets the Language.

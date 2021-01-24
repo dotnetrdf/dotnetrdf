@@ -71,30 +71,43 @@ namespace VDS.RDF
         protected Dictionary<int, string> _prefixes;
 
         /// <summary>
+        /// URI factory to use.
+        /// </summary>
+        protected readonly IUriFactory _uriFactory;
+
+        /// <summary>
         /// Constructs a new Namespace Map.
         /// </summary>
         /// <remarks>The Prefixes rdf, rdfs and xsd are automatically defined.</remarks>
         public NamespaceMapper()
-            : this(false) { }
+            : this(UriFactory.Root, false) { }
 
         /// <summary>
         /// Constructs a new Namespace Map which is optionally empty.
         /// </summary>
         /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined.</param>
-        public NamespaceMapper(bool empty)
+        public NamespaceMapper(bool empty) 
+            : this(UriFactory.Root, empty) { }
+
+        /// <summary>
+        /// Constructs a new namespace map with the specified URI factory.
+        /// </summary>
+        /// <param name="uriFactory">The URI factory for the namespace map to use.</param>
+        /// <param name="empty">Whether the namespace map should be empty. If set to false, the prefixes rdf, rdfs and xsd are automatically defined.</param>
+        public NamespaceMapper(IUriFactory uriFactory, bool empty = false)
         {
+            _uriFactory = uriFactory;
             _uris = new Dictionary<string, Uri>();
             _prefixes = new Dictionary<int, string>();
 
             if (!empty)
             {
                 // Add Standard Namespaces
-                AddNamespace("rdf", UriFactory.Create(RDF));
-                AddNamespace("rdfs", UriFactory.Create(RDFS));
-                AddNamespace("xsd", UriFactory.Create(XMLSCHEMA));
+                AddNamespace("rdf", _uriFactory.Create(RDF));
+                AddNamespace("rdfs", _uriFactory.Create(RDFS));
+                AddNamespace("xsd", _uriFactory.Create(XMLSCHEMA));
             }
         }
-
         /// <summary>
         /// Constructs a new Namespace Map which is based on an existing map.
         /// </summary>
@@ -539,7 +552,7 @@ namespace VDS.RDF
             }
 
             // Add to Namespace Map
-            AddNamespace(nsPrefix, UriFactory.Create(nsUri));
+            AddNamespace(nsPrefix, _uriFactory.Create(nsUri));
 
             // Cache mapping and return
             mapping.QName = nsPrefix + ":" + uri.Replace(nsUri, string.Empty);

@@ -44,23 +44,30 @@ namespace VDS.RDF
         /// </summary>
         /// <remarks>The Prefixes rdf, rdfs and xsd are automatically defined.</remarks>
         public NestedNamespaceMapper()
-            : this(false) { }
+            : this(UriFactory.Root, false) { }
 
         /// <summary>
         /// Constructs a new Namespace Map which is optionally empty.
         /// </summary>
         /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined.</param>
-        protected internal NestedNamespaceMapper(bool empty)
+        protected internal NestedNamespaceMapper(bool empty) 
+            : this(UriFactory.Root, empty) { }
+
+        /// <summary>
+        /// Creates a new namespace map with the specified URI factory.
+        /// </summary>
+        /// <param name="uriFactory">The URI factory to use.</param>
+        /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined.</param>
+        protected internal NestedNamespaceMapper(IUriFactory uriFactory, bool empty = false)
         {
             if (!empty)
             {
                 // Add Standard Namespaces
-                AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
-                AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
-                AddNamespace("xsd", UriFactory.Create(NamespaceMapper.XMLSCHEMA));
+                AddNamespace("rdf", uriFactory.Create(NamespaceMapper.RDF));
+                AddNamespace("rdfs", uriFactory.Create(NamespaceMapper.RDFS));
+                AddNamespace("xsd", uriFactory.Create(NamespaceMapper.XMLSCHEMA));
             }
         }
-
         /// <summary>
         /// Adds a Namespace at the Current Nesting Level.
         /// </summary>
@@ -68,7 +75,7 @@ namespace VDS.RDF
         /// <param name="uri">Namespace URI.</param>
         public void AddNamespace(string prefix, Uri uri)
         {
-            if (uri == null) throw new ArgumentNullException("Cannot set a prefix to the null URI");
+            if (uri == null) throw new ArgumentNullException(nameof(uri), "Cannot set a prefix to the null URI");
             var mapping = new NestedMapping(prefix, uri, _level);
             if (!_prefixes.ContainsKey(uri.GetEnhancedHashCode())) _prefixes.Add(uri.GetEnhancedHashCode(), new List<NestedMapping>());
 
