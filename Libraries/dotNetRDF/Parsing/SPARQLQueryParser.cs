@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="syntax">SPARQL Syntax.</param>
         public SparqlQueryParser(SparqlQuerySyntax syntax)
-            : this(TokenQueueMode.QueueAllBeforeParsing, syntax) { }
+            : this(TokenQueueMode.QueueAllBeforeParsing, syntax, RDF.UriFactory.Root) { }
 
         /// <summary>
         /// Creates a new instance of the SPARQL Query Parser using the given Tokeniser Queue Mode.
@@ -106,8 +106,9 @@ namespace VDS.RDF.Parsing
         public SparqlQueryParser(TokenQueueMode queueMode)
             : this(queueMode,
 #pragma warning disable CS0618 // Type or member is obsolete
-                  Options.QueryDefaultSyntax //SparqlQuerySyntax.Sparql_1_1
+                  Options.QueryDefaultSyntax, //SparqlQuerySyntax.Sparql_1_1
 #pragma warning restore CS0618 // Type or member is obsolete
+                  RDF.UriFactory.Root
                   ) { }
 
         /// <summary>
@@ -115,10 +116,16 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="queueMode">Token Queue Mode.</param>
         /// <param name="syntax">SPARQL Syntax.</param>
-        public SparqlQueryParser(TokenQueueMode queueMode, SparqlQuerySyntax syntax)
+        public SparqlQueryParser(TokenQueueMode queueMode, SparqlQuerySyntax syntax) 
+        :this(queueMode, syntax, RDF.UriFactory.Root)
+        {
+        }
+
+        public SparqlQueryParser(TokenQueueMode queueMode, SparqlQuerySyntax syntax, IUriFactory uriFactory)
         {
             _queuemode = queueMode;
             SyntaxMode = syntax;
+            UriFactory = uriFactory;
         }
 
         /// <summary>
@@ -135,6 +142,11 @@ namespace VDS.RDF.Parsing
         /// Gets/Sets the Syntax that should be supported.
         /// </summary>
         public SparqlQuerySyntax SyntaxMode { get; set; }
+
+        /// <summary>
+        /// Gets/Sets the factory to use for creating URIs.
+        /// </summary>
+        public IUriFactory UriFactory { get; set; }
 
         /// <summary>
         /// Gets/Sets the locally scoped custom expression factories.
