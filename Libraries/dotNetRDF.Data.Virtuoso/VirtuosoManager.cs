@@ -292,7 +292,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                LoadGraph(handler, UriFactory.Root.Create(graphUri));
+                LoadGraph(handler, UriFactory.Create(graphUri));
             }
         }
 
@@ -683,7 +683,7 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed.</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            Uri u = graphUri.Equals(string.Empty) ? null : UriFactory.Root.Create(graphUri);
+            Uri u = graphUri.Equals(string.Empty) ? null : UriFactory.Create(graphUri);
             UpdateGraph(u, additions, removals);
         }
 
