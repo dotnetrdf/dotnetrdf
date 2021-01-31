@@ -178,7 +178,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                LoadGraph(handler, UriFactory.Root.Create(graphUri));
+                LoadGraph(handler, UriFactory.Create(graphUri));
             }
         }
 

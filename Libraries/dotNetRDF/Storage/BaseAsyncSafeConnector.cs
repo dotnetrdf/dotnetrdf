@@ -61,6 +61,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Get or set the URI factory for the connector to use.
+        /// </summary>
+        public virtual IUriFactory UriFactory { get; set; } = new CachingUriFactory();
+
+        /// <summary>
         /// Loads a Graph from the Store.
         /// </summary>
         /// <param name="g">Graph to load into.</param>
@@ -239,7 +244,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
-            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Root.Create(graphUri);
+            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
             LoadGraph(handler, u, callback, state);
         }
 
@@ -295,7 +300,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
-            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Root.Create(graphUri);
+            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
             UpdateGraph(u, additions, removals, callback, state);
         }
 
@@ -325,7 +330,7 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
-            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Root.Create(graphUri);
+            Uri u = string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri);
             DeleteGraph(u, callback, state);
         }
 
