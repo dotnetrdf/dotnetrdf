@@ -24,101 +24,11 @@
 // </copyright>
 */
 
-using System.Collections.Generic;
 using System.IO;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
 {
-    /// <summary>
-    /// Interface for Writer Contexts.
-    /// </summary>
-    public interface IWriterContext
-    {
-        /// <summary>
-        /// Gets the Graph being written.
-        /// </summary>
-        IGraph Graph
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the TextWriter being written to.
-        /// </summary>
-        TextWriter Output
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Pretty Printing Mode used.
-        /// </summary>
-        bool PrettyPrint
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets/Sets the High Speed Mode used.
-        /// </summary>
-        bool HighSpeedModePermitted
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Compression Level used.
-        /// </summary>
-        int CompressionLevel
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets/Sets the Node Formatter used.
-        /// </summary>
-        INodeFormatter NodeFormatter
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Gets/Sets the URI Formatter used.
-        /// </summary>
-        IUriFormatter UriFormatter
-        {
-            get;
-            set;
-        }
-    }
-
-    /// <summary>
-    /// Interface for Writer Contexts which store collection compression data.
-    /// </summary>
-    public interface ICollectionCompressingWriterContext : IWriterContext
-    {
-        /// <summary>
-        /// Gets the mapping from Blank Nodes to Collections.
-        /// </summary>
-        Dictionary<INode, OutputRdfCollection> Collections
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Triples that should be excluded from standard output as they are part of collections.
-        /// </summary>
-        BaseTripleCollection TriplesDone
-        {
-            get;
-        }
-    }
-
     /// <summary>
     /// Base Class for Writer Context Objects.
     /// </summary>
@@ -132,34 +42,12 @@ namespace VDS.RDF.Writing.Contexts
         /// Compression Level to be used.
         /// </summary>
         protected int _compressionLevel = WriterCompressionLevel.Default;
-        /// <summary>
-        /// Pretty Printing Mode setting.
-        /// </summary>
-        protected bool _prettyPrint = true;
-        /// <summary>
-        /// High Speed Mode setting.
-        /// </summary>
-        protected bool _hiSpeedAllowed = true;
-        /// <summary>
-        /// Graph being written.
-        /// </summary>
-        private IGraph _g;
-        /// <summary>
-        /// TextWriter being written to.
-        /// </summary>
-        private TextWriter _output;
-        /// <summary>
-        /// QName Output Mapper.
-        /// </summary>
-        protected QNameOutputMapper _qnameMapper;
-        /// <summary>
-        /// Node Formatter.
-        /// </summary>
-        protected INodeFormatter _formatter;
+
         /// <summary>
         /// URI Formatter.
         /// </summary>
         protected IUriFormatter _uriFormatter;
+       
 
         /// <summary>
         /// Creates a new Base Writer Context with default settings.
@@ -168,9 +56,10 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">TextWriter being written to.</param>
         public BaseWriterContext(IGraph g, TextWriter output)
         {
-            _g = g;
-            _output = output;
-            _qnameMapper = new QNameOutputMapper(_g.NamespaceMap);
+            Graph = g;
+            Output = output;
+            QNameMapper = new QNameOutputMapper(Graph.NamespaceMap);
+            UriFactory = g.UriFactory;
         }
 
         /// <summary>
@@ -197,42 +86,24 @@ namespace VDS.RDF.Writing.Contexts
             : this(g, output)
         {
             _compressionLevel = compressionLevel;
-            _prettyPrint = prettyPrint;
-            _hiSpeedAllowed = hiSpeedAllowed;
+            PrettyPrint = prettyPrint;
+            HighSpeedModePermitted = hiSpeedAllowed;
         }
 
         /// <summary>
         /// Gets the Graph being written.
         /// </summary>
-        public IGraph Graph
-        {
-            get
-            {
-                return _g;
-            }
-        }
+        public IGraph Graph { get; }
 
         /// <summary>
         /// Gets the TextWriter being written to.
         /// </summary>
-        public TextWriter Output
-        {
-            get
-            {
-                return _output;
-            }
-        }
+        public TextWriter Output { get; }
 
         /// <summary>
         /// Gets the QName Output Mapper in use.
         /// </summary>
-        public QNameOutputMapper QNameMapper
-        {
-            get
-            {
-                return _qnameMapper;
-            }
-        }
+        public QNameOutputMapper QNameMapper { get; }
 
         /// <summary>
         /// Gets/Sets the Compression Level used.
@@ -252,47 +123,17 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Gets/Sets the Pretty Printing Mode used.
         /// </summary>
-        public bool PrettyPrint
-        {
-            get
-            {
-                return _prettyPrint;
-            }
-            set
-            {
-                _prettyPrint = value;
-            }
-        }
+        public bool PrettyPrint { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the High Speed Mode used.
         /// </summary>
-        public bool HighSpeedModePermitted
-        {
-            get
-            {
-                return _hiSpeedAllowed;
-            }
-            set
-            {
-                _hiSpeedAllowed = value;
-            }
-        }
+        public bool HighSpeedModePermitted { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets the Node Formatter in use.
         /// </summary>
-        public INodeFormatter NodeFormatter
-        {
-            get
-            {
-                return _formatter;
-            }
-            set
-            {
-                _formatter = value;
-            }
-        }
+        public INodeFormatter NodeFormatter { get; set; }
 
         /// <summary>
         /// Gets/Sets the URI Formatter in use.
@@ -304,9 +145,9 @@ namespace VDS.RDF.Writing.Contexts
                 if (_uriFormatter == null)
                 {
                     // If no URI Formatter set but the Node Formatter used is also a URI Formatter return that instead
-                    if (_formatter is IUriFormatter)
+                    if (NodeFormatter is IUriFormatter uriFormatter)
                     {
-                        return (IUriFormatter)_formatter;
+                        return uriFormatter;
                     }
                     else
                     {
@@ -323,5 +164,11 @@ namespace VDS.RDF.Writing.Contexts
                 _uriFormatter = value;
             }
         }
+
+        /// <summary>
+        /// Gets the URI factory for the writer to use.
+        /// </summary>
+        /// <remarks>Defaults to the URI factory of the graph being written.</remarks>
+        public IUriFactory UriFactory { get; set; }
     }
 }

@@ -87,8 +87,8 @@ namespace VDS.RDF.Writing.Contexts
         public TurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
             : base(g, output, compressionLevel, prettyPrint, hiSpeed) 
         {
-            _formatter = (syntax == TurtleSyntax.Original ? new TurtleFormatter(g) : new TurtleW3CFormatter(g));
-            _uriFormatter = (IUriFormatter)_formatter;
+            NodeFormatter = (syntax == TurtleSyntax.Original ? new TurtleFormatter(g) : new TurtleW3CFormatter(g));
+            _uriFormatter = (IUriFormatter)NodeFormatter;
         }
     }
 

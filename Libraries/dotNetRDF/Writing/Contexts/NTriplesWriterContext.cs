@@ -56,8 +56,8 @@ namespace VDS.RDF.Writing.Contexts
             : base(g, output, WriterCompressionLevel.Default, prettyPrint, hiSpeed)
         {
             Syntax = syntax;
-            _formatter = new NTriplesFormatter(Syntax);
-            _uriFormatter = (IUriFormatter)_formatter;
+            NodeFormatter = new NTriplesFormatter(Syntax);
+            _uriFormatter = (IUriFormatter)NodeFormatter;
         }
 
         /// <summary>

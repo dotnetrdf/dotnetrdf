@@ -53,6 +53,7 @@ namespace VDS.RDF.Writing.Contexts
             Output = output;
             Writer = XmlWriter.Create(Output, GetSettings(output.Encoding));
             NamespaceMap.Import(Graph.NamespaceMap);
+            UriFactory = g.UriFactory;
         }
 
         /// <summary>
@@ -115,6 +116,11 @@ namespace VDS.RDF.Writing.Contexts
             get => null;
             set => throw new NotSupportedException("URI Formatters are not used for RDF/XML output");
         }
+
+        /// <summary>
+        /// Gets/sets the URI factory used.
+        /// </summary>
+        public IUriFactory UriFactory { get; set; }
 
         /// <summary>
         /// Gets the Namespace Map in use.

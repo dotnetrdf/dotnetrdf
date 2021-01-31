@@ -97,7 +97,7 @@ namespace VDS.RDF.Writing
             IGraph g = new Graph();
 
             // Add the relevant namespaces
-            g.NamespaceMap.AddNamespace("rs", UriFactory.Create(SparqlSpecsHelper.SparqlRdfResultsNamespace));
+            g.NamespaceMap.AddNamespace("rs", g.UriFactory.Create(SparqlSpecsHelper.SparqlRdfResultsNamespace));
 
             // Create relevant Nodes
             IUriNode rdfType = g.CreateUriNode("rdf:type");
@@ -166,7 +166,7 @@ namespace VDS.RDF.Writing
             else
             {
                 // A Boolean Result Set
-                g.Assert(new Triple(rset, boolean, g.CreateLiteralNode(results.Result.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))));
+                g.Assert(new Triple(rset, boolean, g.CreateLiteralNode(results.Result.ToString(), g.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))));
             }
 
             return g;
@@ -178,11 +178,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message.</param>
         private void RaiseWarning(string message)
         {
-            SparqlWarning d = Warning;
-            if (d != null)
-            {
-                d(message);
-            }
+            Warning?.Invoke(message);
         }
 
         /// <summary>
