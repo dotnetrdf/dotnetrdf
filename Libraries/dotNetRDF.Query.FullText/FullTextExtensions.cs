@@ -73,7 +73,7 @@ namespace VDS.RDF.Query
             Field graphField = doc.GetField(schema.GraphField);
             IRefNode graphName = graphField == null ? null :
                 graphField.StringValue.StartsWith("_:") ?  (IRefNode)_factory.CreateBlankNode(graphField.StringValue) :
-                _factory.CreateUriNode(UriFactory.Create(graphField.StringValue));
+                _factory.CreateUriNode(_factory.UriFactory.Create(graphField.StringValue));
 
             //Then get the node value
             Field nodeValueField = doc.GetField(schema.NodeValueField);
@@ -106,13 +106,13 @@ namespace VDS.RDF.Query
                         else
                         {
                             //Assume a Datatyped literal
-                            return new FullTextSearchResult(graphName, _factory.CreateLiteralNode(nodeValue, UriFactory.Create(nodeMeta)), score);
+                            return new FullTextSearchResult(graphName, _factory.CreateLiteralNode(nodeValue, _factory.UriFactory.Create(nodeMeta)), score);
                         }
                     }
 
                 case NodeType.Uri:
                     //Can just create a URI Node
-                    return new FullTextSearchResult(graphName, _factory.CreateUriNode(UriFactory.Create(nodeValue)), score);
+                    return new FullTextSearchResult(graphName, _factory.CreateUriNode(_factory.UriFactory.Create(nodeValue)), score);
 
                 default:
                     throw new RdfQueryException("Only Blank, Literal and URI Nodes may be retrieved from a Lucene Document");
@@ -195,13 +195,13 @@ namespace VDS.RDF.Query
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode indexClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassIndex));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode indexClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassIndex));
             INode dirObj = context.NextSubject;
 
             context.Graph.Assert(dirObj, rdfType, indexClass);
-            context.Graph.Assert(dirObj, context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyEnsureIndex)), (true).ToLiteral(context.Graph));
+            context.Graph.Assert(dirObj, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertyEnsureIndex)), (true).ToLiteral(context.Graph));
             if (directory is RAMDirectory)
             {
                 context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(directory.GetType().FullName + ", Lucene.Net"));
@@ -209,7 +209,7 @@ namespace VDS.RDF.Query
             else if (directory is FSDirectory)
             {
                 context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(typeof(FSDirectory).FullName + ", Lucene.Net"));
-                context.Graph.Assert(dirObj, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)), context.Graph.CreateLiteralNode(((FSDirectory)directory).Directory.FullName));
+                context.Graph.Assert(dirObj, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyFromFile)), context.Graph.CreateLiteralNode(((FSDirectory)directory).Directory.FullName));
             }
             else
             {
@@ -221,9 +221,9 @@ namespace VDS.RDF.Query
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode analyzerClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassAnalyzer));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode analyzerClass = context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassAnalyzer));
             INode analyzerObj = context.NextSubject;
 
             Type t = analyzer.GetType();
@@ -265,14 +265,14 @@ namespace VDS.RDF.Query
         /// <param name="factoryType">Factory Type.</param>
         internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
         {
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
             var assm = Assembly.GetAssembly(factoryType).FullName;
             if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
 
             //Firstly need to ensure our object factory has been referenced
             var factoryCheck = new SparqlParameterizedString();
-            factoryCheck.Namespaces.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            factoryCheck.Namespaces.AddNamespace("dnr", context.UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
             factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assm + "' . }";
             var rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
             if (!rset.Result)
