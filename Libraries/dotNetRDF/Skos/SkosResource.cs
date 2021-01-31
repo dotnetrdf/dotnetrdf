@@ -59,10 +59,7 @@ namespace VDS.RDF.Skos
 
         internal IEnumerable<INode> GetObjects(string predicateUri)
         {
-            IUriNode predicate = Graph
-                .CreateUriNode(
-                    UriFactory.Create(
-                        predicateUri));
+            IUriNode predicate = Graph.CreateUriNode(Graph.UriFactory.Create(predicateUri));
 
             return Graph
                 .GetTriplesWithSubjectPredicate(Resource, predicate)

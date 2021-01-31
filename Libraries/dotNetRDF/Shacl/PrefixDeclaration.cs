@@ -51,7 +51,7 @@ namespace VDS.RDF.Shacl
         {
             get
             {
-                return UriFactory.Create(((ILiteralNode)Vocabulary.Namespace.ObjectsOf(this).Single()).Value);
+                return Graph.UriFactory.Create(((ILiteralNode)Vocabulary.Namespace.ObjectsOf(this).Single()).Value);
             }
         }
     }

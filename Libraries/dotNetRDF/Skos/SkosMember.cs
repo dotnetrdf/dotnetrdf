@@ -39,16 +39,16 @@ namespace VDS.RDF.Skos
 
         internal static SkosMember Create(INode node, IGraph graph)
         {
-            IUriNode a = graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode a = graph.CreateUriNode(graph.UriFactory.Create(RdfSpecsHelper.RdfType));
             IEnumerable<Triple> typeStatements = graph.GetTriplesWithSubjectPredicate(node, a);
 
-            IUriNode skosOrderedCollection = graph.CreateUriNode(UriFactory.Create(SkosHelper.OrderedCollection));
+            IUriNode skosOrderedCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.OrderedCollection));
             if (typeStatements.WithObject(skosOrderedCollection).Any())
             {
                 return new SkosOrderedCollection(node, graph);
             }
 
-            IUriNode skosCollection = graph.CreateUriNode(UriFactory.Create(SkosHelper.Collection));
+            IUriNode skosCollection = graph.CreateUriNode(graph.UriFactory.Create(SkosHelper.Collection));
             if (typeStatements.WithObject(skosCollection).Any())
             {
                 return new SkosCollection(node, graph);

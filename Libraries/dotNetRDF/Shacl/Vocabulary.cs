@@ -747,6 +747,6 @@ namespace VDS.RDF.Shacl
 
         private static IUriNode ShaclNode(string name) => AnyNode($"{BaseUri}{name}");
 
-        private static IUriNode AnyNode(string uri) => Factory.CreateUriNode(UriFactory.Create(uri));
+        private static IUriNode AnyNode(string uri) => Factory.CreateUriNode(Factory.UriFactory.Create(uri));
     }
 }
