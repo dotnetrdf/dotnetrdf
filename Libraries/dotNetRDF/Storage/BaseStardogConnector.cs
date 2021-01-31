@@ -497,7 +497,7 @@ namespace VDS.RDF.Storage
         {
             if (g.IsEmpty && graphUri != null && !graphUri.Equals(string.Empty))
             {
-                g.BaseUri = g.UriFactory.Create(graphUri);
+                g.BaseUri = UriFactory.Create(graphUri);
             }
             LoadGraph(new GraphHandler(g), graphUri);
         }

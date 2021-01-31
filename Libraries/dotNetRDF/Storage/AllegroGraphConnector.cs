@@ -360,13 +360,13 @@ namespace VDS.RDF.Storage
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Root.Create(NamespaceMapper.RDFS + "label"));
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyType));
-            INode genericManager = context.Graph.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.ClassStorageProvider));
-            INode server = context.Graph.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyServer));
-            INode catalog = context.Graph.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyCatalog));
-            INode store = context.Graph.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyStore));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+            INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
+            INode catalog = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog));
+            INode store = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore));
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
@@ -384,8 +384,8 @@ namespace VDS.RDF.Storage
             
             if (HttpClientHandler?.Credentials is NetworkCredential networkCredential)
             {
-                INode username = context.Graph.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyUser));
-                INode pwd = context.Graph.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyPassword));
+                INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
+                INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
                 context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(networkCredential.UserName)));
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(networkCredential.Password)));
             }

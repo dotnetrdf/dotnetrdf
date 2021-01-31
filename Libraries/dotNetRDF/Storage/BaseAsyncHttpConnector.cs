@@ -750,6 +750,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets or sets the URI factory for the connector to use.
+        /// </summary>
+        protected IUriFactory UriFactory { get; set; } = new CachingUriFactory();
+
+        /// <summary>
         /// Helper method for doing async operations where a sequence of HTTP requests must be run.
         /// </summary>
         /// <param name="requests">HTTP requests.</param>
