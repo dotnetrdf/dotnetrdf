@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
+using VDS.Common.Collections.Enumerations;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
@@ -744,6 +745,37 @@ namespace VDS.RDF.Query.Algebra
             foreach (ISet s in other.Sets)
             {
                 Add(s.Copy());
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Does a merge of this multiset and another multiset, avoiding adding duplicate sets to this multiset.
+        /// </summary>
+        /// <param name="other">The multiset to be merged into this multiset.</param>
+        /// <returns>This multiset.</returns>
+        /// <remarks>The merge operation adds only sets from <paramref name="other"/> that do not exist in this multiset.</remarks>
+        public virtual BaseMultiset Merge(BaseMultiset other)
+        {
+            if (other is IdentityMultiset || other is NullMultiset || other.IsEmpty) return this;
+            var sets = new HashSet<ISet>(Sets);
+            foreach (var s in other.Sets)
+            {
+                // A simple hash of s does not work here as if s is a superset of a set in other
+                // the hash codes are different even though the sets compare equal.
+                // Instead we test using a trimmed version of s that contains only the variables in this multiset
+                // to ensure that hash code and equality tests match
+                // Although this does add some processing overhead, it is still much faster for moderate to large sets.
+                var trimmedSet = new Set();
+                foreach (var v in this.Variables)
+                {
+                    trimmedSet.Add(v, s[v]);
+                }
+                if (!sets.Contains(trimmedSet))
+                {
+                    sets.Add(trimmedSet);
+                    Add(s.Copy());
+                }
             }
             return this;
         }

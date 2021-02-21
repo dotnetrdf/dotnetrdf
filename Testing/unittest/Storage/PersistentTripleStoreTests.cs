@@ -791,6 +791,10 @@ namespace VDS.RDF.Storage
         private void TestUpdate(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
+
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing),
+                "Test Config marks Remote Parsing as unavailable, test cannot be run");
+
             Uri updateUri = new Uri("http://example.org/persistence/update/temp");
             this.EnsureGraphDeleted(manager, updateUri);
 
