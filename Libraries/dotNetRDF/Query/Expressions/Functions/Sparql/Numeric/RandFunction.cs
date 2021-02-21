@@ -38,6 +38,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         : ISparqlExpression
     {
         private static Random _rnd = new Random();
+        private Dictionary<int, IValuedNode> _bindings = new Dictionary<int, IValuedNode>();
 
         /// <summary>
         /// Creates a new SPARQL RAND() Function.
@@ -53,7 +54,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return new DoubleNode(null, _rnd.NextDouble());
+            // Ensure we return a consistent value when evaluating a set we have already seen
+            if (_bindings.TryGetValue(bindingID, out IValuedNode result)) return result;
+            result = new DoubleNode(null, _rnd.NextDouble());
+            _bindings[bindingID] = result;
+            return result;
         }
 
         /// <summary>
