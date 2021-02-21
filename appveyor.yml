@@ -17,11 +17,12 @@ install:
 
 before_build:
   - ps: gitversion /l console /output buildserver /updateassemblyinfo
+  - ps: dotnet restore dotNetRDF.sln
 
 configuration: Release
 
 build_script:
-  - ps: ./build.ps1 -Target Pack --configuration=Release --NuGetVersion=$env:GitVersion_NuGetVersion
+  - ps: dotnet build dotNetRDF.sln --configuration=Release
 
 test_script:
   - ps: ./build.ps1 -Target Cover --configuration=Release *> test.log
