@@ -30,6 +30,7 @@ test_script:
   - ps: dotnet test -c Release --filter "Category=fulltext" --framework net472
 
 before_deploy:
+  - ps: dotnet pack -o .\nugets --no-build --configuration Release -p:Version=$env:GitVersion_NuGetVersion
   - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
 
 deploy:
