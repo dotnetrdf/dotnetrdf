@@ -23,6 +23,7 @@ configuration: Release
 
 build_script:
   - ps: dotnet build dotNetRDF.sln --configuration=Release
+  - ps: dotnet pack -o $env:APPVEYOR_BUILD_FOLDER\nugets --no-build --configuration Release -p:Version=$env:GitVersion_NuGetVersion
 
 test_script:
   - ps: dotnet test -c Release --filter "Category!=explicit" --framework netcoreapp2.2 Testing\unittest\unittest.csproj
@@ -30,7 +31,6 @@ test_script:
   - ps: dotnet test -c Release --filter "Category=fulltext" --framework net472
 
 before_deploy:
-  - ps: dotnet pack -o $env:APPVEYOR_BUILD_FOLDER\nugets --no-build --configuration Release -p:Version=$env:GitVersion_NuGetVersion
 #  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
 
 deploy:
@@ -44,9 +44,7 @@ deploy:
   - provider: NuGet
     api_key:
       secure: 9zViqGPPKYiYVnk9iH14649Oj6tXTwsNxtZ73AcsESYm795D918U0D3UlH9zjxcT
-    on:
-      appveyor_repo_tag: true 
-    artifact: /((?!Spin).)*.nupkg/
+    artifact: /.*\.nupkg/
 
 artifacts:
   - path: nugets\*.nupkg
