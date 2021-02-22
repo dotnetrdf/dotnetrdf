@@ -31,7 +31,7 @@ test_script:
 
 before_deploy:
   - ps: dotnet pack -o $env:APPVEYOR_BUILD_FOLDER\nugets --no-build --configuration Release -p:Version=$env:GitVersion_NuGetVersion
-  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
+#  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
 
 deploy:
   - provider: GitHub
@@ -49,7 +49,7 @@ deploy:
     artifact: /((?!Spin).)*.nupkg/
 
 artifacts:
-  - path: 'nugets\*.nupkg'
-  - path: 'Build\shfb\Help\dotNetRDFApi.chm'
-  - path: 'Build\shfb\Help'
+  - path: nugets\*.nupkg
+#  - path: Build\shfb\Help\dotNetRDFApi.chm
+#  - path: Build\shfb\Help
 
