@@ -52,7 +52,4 @@ artifacts:
   - path: 'nugets\*.nupkg'
   - path: 'Build\shfb\Help\dotNetRDFApi.chm'
   - path: 'Build\shfb\Help'
-  - path: 'opencover.xml'
 
-on_finish:
-  - ps: Push-AppveyorArtifact 'test.log'
