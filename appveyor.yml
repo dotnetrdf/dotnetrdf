@@ -31,9 +31,6 @@ test_script:
   - ps: dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\unittest\unittest.csproj
   - ps: dotnet test -c Release --filter "Category=fulltext" --framework net472
 
-before_deploy:
-#  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
-
 deploy:
   - provider: GitHub
     description: 'dotNetRDF $(GitVersion_SemVer)'
@@ -45,7 +42,7 @@ deploy:
   - provider: NuGet
     api_key:
       secure: 9zViqGPPKYiYVnk9iH14649Oj6tXTwsNxtZ73AcsESYm795D918U0D3UlH9zjxcT
-    artifact: /.*\.nupkg/
+    artifact: /((?!Spin).)*.nupkg/
 
 artifacts:
   - path: nugets\*.nupkg
