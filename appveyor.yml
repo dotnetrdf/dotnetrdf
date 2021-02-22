@@ -24,6 +24,7 @@ configuration: Release
 build_script:
   - ps: dotnet build dotNetRDF.sln --configuration=Release
   - ps: dotnet pack -o $env:APPVEYOR_BUILD_FOLDER\nugets --no-build --configuration Release -p:Version=$env:GitVersion_NuGetVersion
+  - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=Release /p:HelpFileVersion=$env:GitVersion_NuGetVersion }
 
 test_script:
   - ps: dotnet test -c Release --filter "Category!=explicit" --framework netcoreapp2.2 Testing\unittest\unittest.csproj
@@ -48,6 +49,6 @@ deploy:
 
 artifacts:
   - path: nugets\*.nupkg
-#  - path: Build\shfb\Help\dotNetRDFApi.chm
-#  - path: Build\shfb\Help
+  - path: Build\shfb\Help\dotNetRDFApi.chm
+  - path: Build\shfb\Help
 
