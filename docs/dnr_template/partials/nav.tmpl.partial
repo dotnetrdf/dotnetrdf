@@ -1,0 +1,34 @@
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{ site.url }}">{{ site.title }}</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+        {{#site.links}}
+          {{^children}}
+            <li>
+              <a href="{{url}}">{{title}}</a>
+            </li>
+          {{/children}}
+          {{#children}}
+            <li class="navlinks-container">
+              <a class="navlinks-parent" href="javascript:void(0)">{{title}}</a>
+              <div class="navlinks-children">
+                {{#links}}
+                  <a href="{{url}}">{{title}}</a>
+                {{/links}}
+              </div>
+          {{/children}}
+        {{/site.links}}
+      </ul>
+    </div>
+  </div>
+</nav>

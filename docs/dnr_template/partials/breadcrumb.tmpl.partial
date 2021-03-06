@@ -1,0 +1,7 @@
+<div class="subnav navbar navbar-default">
+  <div class="container hide-when-search" id="breadcrumb">
+    <ul class="breadcrumb">
+      <li>{{tocTitle}}</li>
+    </ul>
+  </div>
+</div>

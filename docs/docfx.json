@@ -1,0 +1,72 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "dotNetRDF.Data.Virtuoso/*.csproj"
+          ],
+          "src": "../Libraries",
+          "dest": "latest/api"
+        }
+      ],
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**.yml",
+          "index.md"
+        ],
+        "src": "_api",
+        "dest": "latest/api"
+      },
+      {
+        "files": [
+          "**.md",
+          "**/toc.yml"
+        ],
+        "src": "articles",
+        "dest": "latest/articles"
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**",
+          "js/**",
+          "css/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**"
+        ]
+      }
+    ],
+    "dest": "_site",
+    "globalMetadataFiles": [
+        "versions.json"
+    ],
+    "fileMetadataFiles": [],
+    "template": [
+      "statictoc",
+      "dnr_template"
+    ],
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": false,
+    "disableGitFeatures": false
+  }
+}

@@ -1,0 +1,23 @@
+{{!include(/^js/.*/)}}
+{{!include(/^css/.*/)}}
+<html>
+  {{>partials/head}}
+  <body>
+    <header>
+      {{>partials/nav}}
+      {{^_disableBreadcrumb}}
+        {{>partials/breadcrumb}}
+      {{/_disableBreadcrumb}}
+    </header>
+    <div role="main" class="container body-content">
+      <div class="row">
+        <div class="toc col-md-3">
+          {{>partials/toc}}
+        </div>
+        <div class="article col-md-9">
+          {{!body}}
+        </div>
+    </div>
+    {{>partials/scripts}}
+  </body>
+</html>
