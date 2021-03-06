@@ -95,7 +95,7 @@ namespace dotNetRDF.MockServerTests
                     new SparqlRemoteEndpoint(new Uri(_fixture.Server1.Urls[0] + "/query")),
                     new SparqlRemoteEndpoint(new Uri(_fixture.Server2.Urls[0] + "/timeout")),
                 })
-                { Timeout = 2000, IgnoreFailedRequests = true};
+                { Timeout = 3000, IgnoreFailedRequests = true};
             var results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
             results.Should().NotBeNull().And.HaveCount(1);
             _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/query"))
