@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -37,6 +38,12 @@ namespace VDS.RDF.JsonLd.Processors
     /// </summary>
     internal class JsonLdUtils
     {
+        /// <summary>
+        /// Provides a hashed index of JSON-LD keywords for faster resolution in the parser.
+        /// </summary>
+        internal static HashSet<string> KeywordSet = new HashSet<string>(JsonLdKeywords.CoreKeywords.Union(JsonLdKeywords.FramingKeywords));
+
+
         /// <summary>
         /// Ensure that <paramref name="token"/> is wrapped in an array unless it already is an array.
         /// </summary>
@@ -65,8 +72,7 @@ namespace VDS.RDF.JsonLd.Processors
         /// <returns>True if <paramref name="value"/> is a JSON-LD keyword, false otherwise.</returns>
         public static bool IsKeyword(string value)
         {
-            return JsonLdKeywords.CoreKeywords.Contains(value) ||
-                   JsonLdKeywords.FramingKeywords.Contains(value);
+            return KeywordSet.Contains(value);
         }
 
         /// <summary>
