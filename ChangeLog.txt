@@ -1,6 +1,23 @@
 ﻿Change Log
 ==========
 
+2.6.4
+-----
+
+ENHANCEMENT: Improve performance of the JSON-LD parser for large files by optimising keyword checks. Thanks to @CFlatWouldbeMinor for the report and suggestion.
+FIX: Fixed the NamespaceMapper class to handle the case where two prefixes map to the same URI and one is then removed from the mapper. Previously this would result in the backwards URI-to-prefix mapping to the remaining prefix being lost, with this release, the URI-to-prefix mapping will now correctly return the remaining prefix. Thanks to @rdewaele for the report.
+FIX: Fixed a bug with the ToString serialization of HAVING clauses in a SparqQuery instance. Thanks to @jiatao99 for the report.
+
+2.6.3
+-----
+
+This package was released to NuGet by error due to changes in the CI build script.
+
+2.6.2
+-----
+
+ENHANCEMENT: Improve performance of processing * paths in the Leviathan query engine. Thanks to @joc-proxem for the report.
+
 2.6.1
 -----
 
