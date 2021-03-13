@@ -1018,8 +1018,12 @@ namespace VDS.RDF.Query
             if (_having != null)
             {
                 output.Append("HAVING ");
-                String having = _having.ToString();
-                output.Append(having.Substring(7, having.Length - 8));
+                var having = _having.ToString();
+                if (having.StartsWith("FILTER"))
+                {
+                    having = having.Substring(6);
+                }
+                output.Append(having);
                 output.Append(' ');
             }
 
