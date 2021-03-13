@@ -6,6 +6,7 @@ branches:
 
 environment:
   SHFBROOT:  C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
+  IGNORE_NORMALISATION_GIT_HEAD_MOVE: 1
   SandCastleZipFile: SHFBInstaller.zip
   SandCastleUri: https://github.com/EWSoftware/SHFB/releases/download/v2019.11.17.0/SHFBInstaller_v2019.11.17.0.zip
   
