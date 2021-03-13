@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Provides a framework for building RDF-powered web applications and web APIs.</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2019</Copyright>
+    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
     <AssemblyTitle>dotNetRDF.Web</AssemblyTitle>
     <VersionPrefix>1.0.13-pre6</VersionPrefix>
     <TargetFrameworks>net40</TargetFrameworks>

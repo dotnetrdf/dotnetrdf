@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2019</Copyright>
+    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
     <AssemblyTitle>dotNetRDF SPIN</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>tpluscode;dotnetrdf</Authors>

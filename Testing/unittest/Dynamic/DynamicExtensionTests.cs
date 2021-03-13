@@ -339,8 +339,8 @@ u:s u:p u:o .
         ""9999-12-31T23:59:59.999999""^^xsd:dateTime ,
         ""9999-12-31T23:59:59.999999+00:00""^^xsd:dateTime ,
         ""79228162514264337593543950335""^^xsd:decimal ,
-        ""1.79769313486232E+308""^^xsd:double ,
-        ""3.402823E+38""^^xsd:float ,
+        ""1.797E+308""^^xsd:double ,
+        ""3.402E+38""^^xsd:float ,
         ""9223372036854775807""^^xsd:integer ,
         ""2147483647""^^xsd:integer ,
         """" ,
@@ -354,15 +354,15 @@ u:s u:p u:o .
             {
                 p = new object[]
                 {
-                    new NodeFactory().CreateBlankNode(),
+                    new NodeFactory().CreateBlankNode("o"),
                     UriFactory.Create("urn:o"),
                     true,
                     byte.MaxValue,
                     DateTime.MaxValue,
                     DateTimeOffset.MaxValue,
                     decimal.MaxValue,
-                    double.MaxValue,
-                    float.MaxValue,
+                    1.797e308,
+                    3.402e38f,
                     long.MaxValue,
                     int.MaxValue,
                     string.Empty,
@@ -371,7 +371,8 @@ u:s u:p u:o .
                 }
             };
 
-            Assert.Equal<IGraph>(expected, d);
+            TestTools.CompareGraphs(expected, d, true);
+            //Assert.Equal<IGraph>(expected, d);
         }
 
         [Fact]
