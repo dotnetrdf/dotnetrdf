@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
+using FluentAssertions;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Aggregates;
@@ -676,6 +677,20 @@ namespace VDS.RDF.Query.Builder
 
             // then
             Assert.Equal("?sum > 10", query.Having.Expression.ToString().Trim());
+        }
+
+        [Fact]
+        public void QueryWithHavingShouldRoundtripThroughParser()
+        {
+            IQueryBuilder queryBuilder = QueryBuilder.Select(b => b.Sum("z")).As("sum")
+                .Where(p => p.Subject("x").Predicate("y").Object("z"))
+                .GroupBy("y")
+                .Having(b => b.Variable("sum") > 10);
+            SparqlQuery query = queryBuilder.BuildQuery();
+            var queryString = query.ToString();
+            SparqlQuery parsedQuery = new SparqlQueryParser().ParseFromString(queryString);
+            parsedQuery.Having.Should().NotBeNull();
+            parsedQuery.Having.Expression.ToString().Trim().Should().Be("?sum > 10");
         }
 
         [Fact]
