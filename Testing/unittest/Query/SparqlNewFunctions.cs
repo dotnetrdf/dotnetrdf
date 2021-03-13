@@ -27,10 +27,13 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Nodes;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -40,6 +43,13 @@ namespace VDS.RDF.Query
 
     public class SparqlNewFunctions
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public SparqlNewFunctions(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void SparqlFunctionsIsNumeric()
         {
@@ -119,22 +129,21 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlOrderByNonDeterministic()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
-            Graph g = new Graph();
+            const string query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
+            var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            var results = g.ExecuteQuery(query);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+        }
 
-            for (int i = 0; i < 50; i++)
-            {
-                Object results = g.ExecuteQuery(query);
-                if (results is SparqlResultSet)
-                {
-                    Console.WriteLine("Run #" + (i+1) + " OK");
-                }
-                else
-                {
-                    Assert.True(false, "Did not get a SPARQL Result Set as expected");
-                }
-            }
+        [Fact]
+        public void RandFunctionCachesResultAgainstBindingId()
+        {
+            var rand = new RandFunction();
+            var context = new SparqlEvaluationContext(null);
+            IValuedNode resultNode = rand.Evaluate(context, 0);
+            IValuedNode repeatResultNode = rand.Evaluate(context, 0);
+            Assert.Same(resultNode, repeatResultNode);
         }
     }
 }
