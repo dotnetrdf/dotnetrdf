@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2019</Copyright>
+    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
     <AssemblyTitle>dotNetRDF</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
@@ -60,7 +60,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.28" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.31" />
     <PackageReference Include="VDS.Common" Version="1.10.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>All</PrivateAssets>
@@ -70,13 +70,13 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="AngleSharp" Version="0.14.0" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.Globalization.Extensions" Version="4.3.0" />
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.6.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
     <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
     <PackageReference Include="System.Collections.Specialized" Version="4.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
