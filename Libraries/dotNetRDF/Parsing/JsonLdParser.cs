@@ -240,8 +240,10 @@ namespace VDS.RDF.Parsing
                     var roundedValue = Math.Round(doubleValue);
                     if (doubleValue.Equals(roundedValue) && doubleValue < 1000000000000000000000.0 && datatype == null)
                     {
-                        // Integer values up to 10^21 should be rendered as a fixed-point integer
+                        // Integer values up to 10^21 should be rendered as an integer rather than a float
                         literalValue = roundedValue.ToString("F0");
+                        // The JSON-LD test suite requires no leading minus sign when the value is 0
+                        if (literalValue.Equals("-0")) literalValue = "0";
                         datatype = XsdNs + "integer";
                     }
                     else
