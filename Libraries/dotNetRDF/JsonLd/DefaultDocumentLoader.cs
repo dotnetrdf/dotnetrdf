@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Mime;
+using System.Text;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd.Syntax;
 
@@ -41,9 +43,11 @@ namespace VDS.RDF.JsonLd
         public static RemoteDocument LoadJson(Uri remoteRef, JsonLdLoaderOptions loaderOptions)
         {
             var client = new RedirectingWebClient();
-            client.Headers.Set(HttpRequestHeader.Accept, "application/ld+json;q=1.0, application/json;q=0.9, */*+json;q=0.8");
+            client.Headers.Set(HttpRequestHeader.Accept,
+                "application/ld+json;q=1.0, application/json;q=0.9, */*+json;q=0.8");
 
-            var responseString = client.DownloadString(remoteRef);
+            // var responseString = client.DownloadString(remoteRef);
+            var responseData = client.DownloadData(remoteRef);
             var contentType = client.ResponseHeaders.GetValues("Content-Type");
             bool matchesContentType =
                 contentType != null &&
@@ -80,18 +84,37 @@ namespace VDS.RDF.JsonLd
                     .Select(x => x.LinkValue).ToList();
                 if (contextLinks.Count > 1)
                 {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.MultipleContextLinkHeaders, "Multiple context link headers");
+                    throw new JsonLdProcessorException(JsonLdErrorCode.MultipleContextLinkHeaders,
+                        "Multiple context link headers");
                 }
+
                 contextLink = contextLinks.FirstOrDefault();
             }
 
-            var ret = new RemoteDocument
+            // Use the content of the response decoded according to the charset specified in the content-type header (or UTF-8 if not specified)
+            Encoding responseEncoding = Encoding.UTF8;
+            try
             {
-                ContextUrl = contextLink == null ? null : new Uri(contextLink),
-                DocumentUrl = client.ResponseUri,
-                Document = JToken.Parse(responseString),
-            };
-            return ret;
+                var ct = new ContentType(client.ResponseHeaders[HttpResponseHeader.ContentType]);
+                if (!string.IsNullOrEmpty(ct.CharSet))
+                {
+                    responseEncoding = Encoding.GetEncoding(ct.CharSet);
+                }
+                var responseString = responseEncoding.GetString(responseData);
+                var ret = new RemoteDocument
+                {
+                    ContextUrl = contextLink == null ? null : new Uri(contextLink),
+                    DocumentUrl = client.ResponseUri,
+                    Document = JToken.Parse(responseString),
+                };
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingDocumentFailed,
+                    "Loading document failed. Could not parse the content of the response as valid JSON.",
+                    ex);
+            }
         }
 
         private static IEnumerable<WebLink> ParseLinkHeaders(IEnumerable<string> linkHeaderValues)
@@ -102,6 +125,7 @@ namespace VDS.RDF.JsonLd
             }
         }
 
+        
         private class RedirectingWebClient : WebClient
         {
             public Uri ResponseUri { get; private set; }
