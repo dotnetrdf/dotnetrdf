@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Patterns
     /// </summary>
     public class BindingsPattern
     {
-        private readonly List<String> _vars = new List<string>();
+        private readonly List<string> _vars = new List<string>();
         private readonly List<BindingTuple> _tuples = new List<BindingTuple>();
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Patterns
         /// Creates a new Bindings Pattern.
         /// </summary>
         /// <param name="vars">Variables.</param>
-        public BindingsPattern(IEnumerable<String> vars)
+        public BindingsPattern(IEnumerable<string> vars)
         {
             _vars.AddRange(vars);
         }
@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the enumeration of Variables.
         /// </summary>
-        public IEnumerable<String> Variables
+        public IEnumerable<string> Variables
         {
             get
             {
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Get the enumeration of fixed variables i.e. those guaranteed to be bound.
         /// </summary>
-        public IEnumerable<String> FixedVariables
+        public IEnumerable<string> FixedVariables
         {
             get { return _vars.Where(v => _tuples.All(t => t.IsBound(v))); }
         }
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the enumeration of floating variables i.e. those not guaranteed to be bound.
         /// </summary>
-        public IEnumerable<String> FloatingVariables
+        public IEnumerable<string> FloatingVariables
         {
             get { return _vars.Where(v => _tuples.Any(t => !t.IsBound(v))); }
         }
@@ -85,19 +85,13 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the enumeration of Tuples.
         /// </summary>
-        public IEnumerable<BindingTuple> Tuples
-        {
-            get
-            {
-                return _tuples;
-            }
-        }
+        public IEnumerable<BindingTuple> Tuples => _tuples;
 
         /// <summary>
         /// Adds a Tuple to the Bindings pattern.
         /// </summary>
         /// <param name="t"></param>
-        internal void AddTuple(BindingTuple t)
+        public void AddTuple(BindingTuple t)
         {
             _tuples.Add(t);
         }
@@ -111,7 +105,7 @@ namespace VDS.RDF.Query.Patterns
             if (_vars.Any())
             {
                 Multiset m = new Multiset();
-                foreach (String var in _vars)
+                foreach (string var in _vars)
                 {
                     m.AddVariable(var);
                 }
@@ -135,7 +129,7 @@ namespace VDS.RDF.Query.Patterns
         {
             StringBuilder output = new StringBuilder();
             output.Append("VALUES ( ");
-            foreach (String var in _vars)
+            foreach (string var in _vars)
             {
                 output.Append("?" + var + " ");
             }
@@ -156,14 +150,14 @@ namespace VDS.RDF.Query.Patterns
     /// </summary>
     public class BindingTuple
     {
-        private readonly Dictionary<String, PatternItem> _values = new Dictionary<String, PatternItem>();
+        private readonly Dictionary<string, PatternItem> _values = new Dictionary<string, PatternItem>();
 
         /// <summary>
         /// Creates a new Binding Tuple.
         /// </summary>
         /// <param name="variables">Variables.</param>
         /// <param name="values">Values.</param>
-        public BindingTuple(List<String> variables, List<PatternItem> values)
+        public BindingTuple(List<string> variables, List<PatternItem> values)
         {
             for (int i = 0; i < variables.Count; i++)
             {
@@ -174,7 +168,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the enumeration of Variable-Value pairs.
         /// </summary>
-        public IEnumerable<KeyValuePair<String, PatternItem>> Values
+        public IEnumerable<KeyValuePair<string, PatternItem>> Values
         {
             get
             {
@@ -187,7 +181,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="var">Variable.</param>
         /// <returns></returns>
-        public INode this[String var]
+        public INode this[string var]
         {
             get
             {
