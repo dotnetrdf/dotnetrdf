@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Builder
     public interface IAggregateBuilder : IDistinctAggregateBuilder
     {
         /// <summary>
-        /// Gets a builder which builds a DISTICT aggregate.
+        /// Gets a builder which builds a DISTINCT aggregate.
         /// </summary>
         IDistinctAggregateBuilder Distinct { get; }
 
