@@ -31,12 +31,17 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Additional methods and properties that can be used by extensions of the <see cref="ITriplePatternBuilder"/> interface.
     /// </summary>
-    public interface ITriplePatternBuilderInternal
+    public interface ITriplePatternBuilderInternal : ITriplePatternBuilder
     {
         /// <summary>
         /// Gets the pattern item factory used by the builder.
         /// </summary>
         IPatternItemFactory PatternItemFactory { get; }
+
+        /// <summary>
+        /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern.
+        /// </summary>
+        INamespaceMapper Prefixes { get; }
 
         /// <summary>
         /// Add TriplePattern to the builder.
