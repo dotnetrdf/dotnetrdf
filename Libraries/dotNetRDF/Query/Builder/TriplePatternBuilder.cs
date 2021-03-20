@@ -32,7 +32,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Builder
 {
     /// <inheritdoc />
-    public class TriplePatternBuilder : ITriplePatternBuilder
+    public class TriplePatternBuilder : ITriplePatternBuilder, ITriplePatternBuilderInternal
     {
         private readonly IList<ITriplePattern> _patterns = new List<ITriplePattern>();
         private readonly PatternItemFactory _patternItemFactory;
@@ -95,12 +95,12 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Gets the pattern item factory.
         /// </summary>
-        internal PatternItemFactory PatternItemFactory
+        public IPatternItemFactory PatternItemFactory
         {
             get { return _patternItemFactory; }
         }
 
-        internal void AddPattern(TriplePattern triplePattern)
+        public void AddPattern(TriplePattern triplePattern)
         {
             _patterns.Add(triplePattern);
         }
