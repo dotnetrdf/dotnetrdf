@@ -196,7 +196,7 @@ namespace VDS.RDF.Query.Patterns
         /// Adds inline data to a Graph Pattern respecting any BGP breaks.
         /// </summary>
         /// <param name="data"></param>
-        internal void AddInlineData(BindingsPattern data)
+        public void AddInlineData(BindingsPattern data)
         {
             if (_break)
             {
