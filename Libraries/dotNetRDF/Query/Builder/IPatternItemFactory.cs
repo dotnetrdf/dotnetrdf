@@ -95,5 +95,15 @@ namespace VDS.RDF.Query.Builder
         /// <returns></returns>
         /// <remarks>If <paramref name="literal"/> is a <see cref="DateTime"/> or <see cref="DateTimeOffset"/> then the literal pattern will use the appropriate XML Schema-compatible string representation as the literal value. For all other types, the value returned by the ToString method will be used as the literal value.</remarks>
         PatternItem CreateLiteralNodeMatchPattern(object literal, string langSpec);
+
+        /// <summary>
+        /// Create a pattern item that matches a node of a specific type.
+        /// </summary>
+        /// <param name="nodeType">The type of node to match. Must be one of <see cref="IBlankNode"/>, <see cref="ILiteralNode"/>, <see cref="IUriNode"/> or <see cref="IVariableNode"/>.</param>
+        /// <param name="patternString">The string value of the pattern item.</param>
+        /// <param name="namespaceMapper">The namespace mapper to use when resolving any prefixes in <paramref name="patternString"/>.</param>
+        /// <returns></returns>
+        /// <remarks>It is recommended to use one of the CreateXxxNodeMatchPattern methods in preference to this method.</remarks>
+        PatternItem CreatePatternItem(Type nodeType, string patternString, INamespaceMapper namespaceMapper);
     }
 }

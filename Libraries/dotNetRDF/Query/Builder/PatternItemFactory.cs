@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Builder
             return new BlankNodePattern(blankNodeIdentifier);
         }
 
-        internal PatternItem CreatePatternItem(Type nodeType, string patternString, INamespaceMapper namespaceMapper)
+        public PatternItem CreatePatternItem(Type nodeType, string patternString, INamespaceMapper namespaceMapper)
         {
             if (nodeType == typeof(IUriNode))
             {

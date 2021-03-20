@@ -35,6 +35,9 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Class for building graph patterns.
+    /// </summary>
     public sealed class GraphPatternBuilder : IGraphPatternBuilder, IDescribeGraphPatternBuilder
     {
         private readonly IList<InlineDataBuilder> _inlineDataBuilders = new List<InlineDataBuilder>();
