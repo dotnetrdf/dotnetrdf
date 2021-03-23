@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Service Clause.
     /// </summary>
-    public class Service 
+    public class Service
         : ITerminalOperator
     {
         private readonly IToken _endpointSpecifier;
@@ -70,147 +70,28 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            bool bypassSilent = false;
+            SparqlRemoteEndpoint endpoint = GetRemoteEndpoint(context);
             try
             {
-                SparqlRemoteEndpoint endpoint;
-                Uri endpointUri;
-                String baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.AbsoluteUri;
-                SparqlParameterizedString sparqlQuery = new SparqlParameterizedString("SELECT * WHERE ");
-
-                String pattern = _pattern.ToString();
-                pattern = pattern.Substring(pattern.IndexOf('{'));
-                sparqlQuery.CommandText += pattern;
-
-                // Pass through LIMIT and OFFSET to the remote service
-                if (context.Query.Limit >= 0)
-                {
-                    // Calculate a LIMIT which is the LIMIT plus the OFFSET
-                    // We'll apply OFFSET locally so don't pass that through explicitly
-                    int limit = context.Query.Limit;
-                    if (context.Query.Offset > 0) limit += context.Query.Offset;
-                    sparqlQuery.CommandText += " LIMIT " + limit;
-                }
-
-                // Select which service to use
-                if (_endpointSpecifier.TokenType == Token.URI)
-                {
-                    endpointUri = UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
-                    endpoint = new SparqlRemoteEndpoint(endpointUri);
-                }
-                else if (_endpointSpecifier.TokenType == Token.VARIABLE)
-                {
-                    // Get all the URIs that are bound to this Variable in the Input
-                    String var = _endpointSpecifier.Value.Substring(1);
-                    if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
-                    List<IUriNode> services = new List<IUriNode>();
-                    foreach (ISet s in context.InputMultiset.Sets)
-                    {
-                        if (s.ContainsVariable(var))
-                        {
-                            if (s[var].NodeType == NodeType.Uri)
-                            {
-                                services.Add((IUriNode)s[var]);
-                            }
-                        }
-                    }
-                    services = services.Distinct().ToList();
-
-                    // Now generate a Federated Remote Endpoint
-                    List<SparqlRemoteEndpoint> serviceEndpoints = new List<SparqlRemoteEndpoint>();
-                    services.ForEach(u => serviceEndpoints.Add(new SparqlRemoteEndpoint(u.Uri)));
-                    endpoint = new FederatedSparqlRemoteEndpoint(serviceEndpoints);
-                }
-                else
-                {
-                    // Note that we must bypass the SILENT operator in this case as this is not an evaluation failure
-                    // but a query syntax error
-                    bypassSilent = true;
-                    throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + _endpointSpecifier.GetType().ToString() + " Token was provided");
-                }
-
-                // Where possible do substitution and execution to get accurate and correct SERVICE results
                 context.OutputMultiset = new Multiset();
-                List<String> existingVars = (from v in _pattern.Variables
-                                             where context.InputMultiset.ContainsVariable(v)
-                                             select v).ToList();
-
-                if (existingVars.Any() || context.Query.Bindings != null)
+                foreach (var query in GetRemoteQueries(context, GetBindings(context)))
                 {
-                    // Pre-bound variables/BINDINGS clause so do substitution and execution
-
-                    // Build the set of possible bindings
-                    HashSet<ISet> bindings = new HashSet<ISet>();
-                    if (context.Query.Bindings != null && !_pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
-                    {
-                        // Possible Bindings comes from BINDINGS clause
-                        // In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
-                        foreach (BindingTuple tuple in context.Query.Bindings.Tuples)
-                        {
-                            bindings.Add(new Set(tuple));
-                        }
-                    }
-                    else
-                    {
-                        // Possible Bindings get built from current input (if there was a BINDINGS clause the variables it defines are not in this SERVICE clause)
-                        // In this case each possibility only contains Variables bound so far
-                        foreach (ISet s in context.InputMultiset.Sets)
-                        {
-                            Set t = new Set();
-                            foreach (String var in existingVars)
-                            {
-                                t.Add(var, s[var]);
-                            }
-                            bindings.Add(t);
-                        }
-                    }
-
-                    // Execute the Query for every possible Binding and build up our Output Multiset from all the results
-                    foreach (ISet s in bindings)
-                    {
-                        // Q: Should we continue processing here if and when we hit an error?
-
-                        foreach (String var in s.Variables)
-                        {
-                            sparqlQuery.SetVariable(var, s[var]);
-                        }
-                        SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
-                        context.CheckTimeout();
-
-                        foreach (SparqlResult r in results)
-                        {
-                            Set t = new Set(r);
-                            foreach (String var in s.Variables)
-                            {
-                                t.Add(var, s[var]);
-                            }
-                            context.OutputMultiset.Add(t);
-                        }
-                    }
-
-                    return context.OutputMultiset;
-                }
-                else
-                {
-                    // No pre-bound variables/BINDINGS clause so just execute the query
-
                     // Try and get a Result Set from the Service
-                    SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
+                    SparqlResultSet results = endpoint.QueryWithResultSet(query.ToString());
+                    context.CheckTimeout();
 
                     // Transform this Result Set back into a Multiset
-                    foreach (SparqlResult r in results.Results)
+                    foreach (SparqlResult r in results)
                     {
                         context.OutputMultiset.Add(new Set(r));
                     }
-
-                    return context.OutputMultiset;
                 }
+                return context.OutputMultiset;
             }
             catch (Exception ex)
             {
-                if (_silent && !bypassSilent)
+                if (_silent)
                 {
-
                     // If Evaluation Errors are SILENT is specified then a Multiset containing a single set with all values unbound is returned
                     // Unless some of the SPARQL queries did return results in which we just return the results we did obtain
                     if (context.OutputMultiset.IsEmpty)
@@ -229,6 +110,116 @@ namespace VDS.RDF.Query.Algebra
                     throw new RdfQueryException("Query execution failed because evaluating a SERVICE clause failed - this may be due to an error with the remote service", ex);
                 }
             }
+        }
+
+        private SparqlRemoteEndpoint GetRemoteEndpoint(SparqlEvaluationContext context)
+        {
+            if (_endpointSpecifier.TokenType == Token.URI)
+            {
+                var baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.AbsoluteUri;
+                var endpointUri = UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
+                return new SparqlRemoteEndpoint(endpointUri);
+            }
+
+            if (_endpointSpecifier.TokenType == Token.VARIABLE)
+            {
+                // Get all the URIs that are bound to this Variable in the Input
+                String var = _endpointSpecifier.Value.Substring(1);
+                if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
+
+                var serviceEndpoints = context.InputMultiset.Sets
+                    .Where(s => s.ContainsVariable(var) && s[var].NodeType == NodeType.Uri)
+                    .Cast<IUriNode>()
+                    .Distinct()
+                    .Select(u => new SparqlRemoteEndpoint(u.Uri));
+                return new FederatedSparqlRemoteEndpoint(serviceEndpoints);
+            }
+
+            throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + _endpointSpecifier.GetType().ToString() + " Token was provided");
+        }
+
+        private ISet[] GetBindings(SparqlEvaluationContext context)
+        {
+            var bindings = new HashSet<ISet>();
+            List<String> existingVars = (from v in _pattern.Variables
+                                         where context.InputMultiset.ContainsVariable(v)
+                                         select v).ToList();
+
+            if (existingVars.Any() || context.Query.Bindings != null)
+            {
+                // Build the set of possible bindings
+
+                if (context.Query.Bindings != null && !_pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
+                {
+                    // Possible Bindings comes from BINDINGS clause
+                    // In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
+                    foreach (BindingTuple tuple in context.Query.Bindings.Tuples)
+                    {
+                        bindings.Add(new Set(tuple));
+                    }
+                }
+                else
+                {
+                    // Possible Bindings get built from current input (if there was a BINDINGS clause the variables it defines are not in this SERVICE clause)
+                    // In this case each possibility only contains Variables bound so far
+                    foreach (ISet s in context.InputMultiset.Sets)
+                    {
+                        Set t = new Set();
+                        foreach (String var in existingVars)
+                        {
+                            t.Add(var, s[var]);
+                        }
+                        bindings.Add(t);
+                    }
+                }
+            }
+
+            return bindings.ToArray();
+        }
+
+        private IEnumerable<SparqlQuery> GetRemoteQueries(SparqlEvaluationContext context, ISet[] bindings)
+        {
+            if (bindings.Length == 0)
+            {
+                // No pre-bound variables/BINDINGS clause so just return the query
+                yield return GetRemoteQuery(context);
+            }
+            else
+            {
+                // Split bindings in chunks and inject them
+                foreach (var chunk in bindings.ChunkBy(100))
+                {
+                    var vars = chunk.SelectMany(x => x.Variables).Distinct();
+                    var data = new BindingsPattern(vars);
+                    foreach (var set in chunk)
+                    {
+                        var tuple = new BindingTuple(
+                            new List<string>(set.Variables),
+                            new List<PatternItem>(set.Values.Select(x => new NodeMatchPattern(x))));
+                        data.AddTuple(tuple);
+                    }
+                    var sparqlQuery = GetRemoteQuery(context);
+                    sparqlQuery.RootGraphPattern.AddInlineData(data);
+                    yield return sparqlQuery;
+                }
+            }
+        }
+
+        private SparqlQuery GetRemoteQuery(SparqlEvaluationContext context)
+        {
+            // Pass through LIMIT and OFFSET to the remote service
+
+            // Calculate a LIMIT which is the LIMIT plus the OFFSET
+            // We'll apply OFFSET locally so don't pass that through explicitly
+            var limit = context.Query.Limit;
+            if (context.Query.Offset > 0) limit += context.Query.Offset;
+
+            return new SparqlQuery
+            {
+                QueryType = SparqlQueryType.SelectAll,
+                Limit = limit,
+                RootGraphPattern = new GraphPattern(_pattern) { IsService = false },
+            };
         }
 
         /// <summary>
