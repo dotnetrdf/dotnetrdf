@@ -24,34 +24,29 @@
 // </copyright>
 */
 
-using VDS.RDF.Query.Builder.Expressions;
-using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Provides methods for creating aggregates expressions.
+    /// Additional methods and properties that can be used by extensions of the <see cref="ITriplePatternBuilder"/> interface.
     /// </summary>
-    public interface IAggregateBuilder : IDistinctAggregateBuilder
+    public interface ITriplePatternBuilderInternal : ITriplePatternBuilder
     {
         /// <summary>
-        /// Gets a builder which builds a DISTINCT aggregate.
+        /// Gets the pattern item factory used by the builder.
         /// </summary>
-        IDistinctAggregateBuilder Distinct { get; }
+        IPatternItemFactory PatternItemFactory { get; }
 
         /// <summary>
-        /// Creates a SAMPLE aggregate.
+        /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern.
         /// </summary>
-        AggregateExpression Sample(VariableTerm variable);
+        INamespaceMapper Prefixes { get; }
 
         /// <summary>
-        /// Creates a SAMPLE aggregate.
+        /// Add TriplePattern to the builder.
         /// </summary>
-        AggregateExpression Sample(string variable);
-
-        /// <summary>
-        /// Creates a SAMPLE aggregate.
-        /// </summary>
-        AggregateExpression Sample(SparqlExpression expression);
+        /// <param name="triplePattern"></param>
+        void AddPattern(TriplePattern triplePattern);
     }
 }
