@@ -326,7 +326,7 @@ namespace VDS.RDF.Query
             // Get the First Term of this Expression
             ISparqlExpression firstTerm = TryParseUnaryExpression(tokens);
 
-            if (tokens.Count > 0)
+            while (tokens.Count > 0)
             {
                 IToken next = tokens.Peek();
                 switch (next.TokenType)
@@ -334,44 +334,23 @@ namespace VDS.RDF.Query
                     case Token.MULTIPLY:
                     {
                         tokens.Dequeue();
-                        var rhs = TryParseMultiplicativeExpression(tokens);
-                        if (rhs is DivisionExpression)
-                        {
-                            var args = rhs.Arguments.ToList();
-                            return new DivisionExpression(new MultiplicationExpression(firstTerm, args[0]), args[1]);
-                        }
-                        if (rhs is MultiplicationExpression)
-                        {
-                            var args = rhs.Arguments.ToList();
-                            return new MultiplicationExpression(new MultiplicationExpression(firstTerm, args[0]),
-                                args[1]);
-                        }
-                        return new MultiplicationExpression(firstTerm, rhs);
+                        ISparqlExpression rhs = TryParseUnaryExpression(tokens);
+                        firstTerm = new MultiplicationExpression(firstTerm, rhs);
+                        break;
                     }
                     case Token.DIVIDE:
                     {
                         tokens.Dequeue();
-                        var rhs = TryParseMultiplicativeExpression(tokens);
-                        if (rhs is DivisionExpression)
-                        {
-                            var args = rhs.Arguments.ToList();
-                            return new DivisionExpression(new DivisionExpression(firstTerm, args[0]), args[1]);
-                        }
-                        if (rhs is MultiplicationExpression)
-                        {
-                            var args = rhs.Arguments.ToList();
-                            return new MultiplicationExpression(new DivisionExpression(firstTerm, args[0]), args[1]);
-                        }
-                        return new DivisionExpression(firstTerm, rhs);
+                        ISparqlExpression rhs = TryParseUnaryExpression(tokens);
+                        firstTerm = new DivisionExpression(firstTerm, rhs);
+                        break;
                     }
                     default:
                         return firstTerm;
                 }
             }
-            else
-            {
-                return firstTerm;
-            }
+
+            return firstTerm;
         }
 
         private ISparqlExpression TryParseUnaryExpression(Queue<IToken> tokens)
