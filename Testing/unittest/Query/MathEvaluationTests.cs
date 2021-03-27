@@ -49,8 +49,14 @@ namespace VDS.RDF.Query
         public void TestDivisionBeforeSubtraction()
         {
             // 10-4/2 should be interpreted as 10 - (4/2) = 8, not (10 - 4)/2 = 3
-            // TODO: SparqlParser throws an error if the space around the - is missed out, suggesting that the use of the MINUS token is ambiguous
             TestQuery("SELECT ?f WHERE {BIND (10 - 4/2 as ?f)}", "8");
+        }
+
+        [Fact]
+        public void TestAdditionExpressionWithASignedNumberComponent()
+        {
+            // Same as the above but without whitespace means that -4 can be interpreted as a negative integer.
+            TestQuery("SELECT ?f WHERE {BIND (10-4/2 as ?f)}", "8");
         }
 
         [Fact]
