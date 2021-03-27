@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using Xunit;
@@ -63,6 +58,24 @@ namespace VDS.RDF.Query
         {
             // 10/5/2 should be interpreted as (10/5)/2 = 1, not 10/(5/2) = 4
             TestQuery("SELECT ?f WHERE {BIND (10/5/2 as ?f)}", "1");
+        }
+
+        [Fact]
+        public void TestBracketedExpression1()
+        {
+            TestQuery("SELECT ?f WHERE {BIND (10/(5/2) as ?f)}", "4");
+        }
+
+        [Fact]
+        public void TestMultiplicativeExpressionEvaluatedLeftToRight()
+        {
+            TestQuery("SELECT ?f WHERE {BIND (10/5*2 as ?f)}", "4");
+        }
+
+        [Fact]
+        public void TestBracketedExpression2()
+        {
+            TestQuery("SELECT ?f WHERE {BIND (10/(5*2) as ?f)}", "1");
         }
     }
 }
