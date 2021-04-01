@@ -79,25 +79,6 @@ namespace VDS.RDF.Query
             }
         }
 
-        [SkippableFact]
-        public void SparqlServiceJoiningLocalTriples()
-        {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteParsing), "Test Config marks Remote Parsing as unavailable, test cannot be run");
-
-            var endpointtUri = "http://dbpedia.org/sparql";
-            
-            var endpoint = new SparqlRemoteEndpoint(new Uri(endpointtUri));
-            var localGraph = endpoint.QueryWithResultGraph("CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o} LIMIT 250");
-            var dataset = new InMemoryDataset(new TripleStore(), true);
-            dataset.AddGraph(localGraph);
-
-            var processor = new LeviathanQueryProcessor(dataset);
-            var query = $"CONSTRUCT {{?s ?p ?o}} WHERE {{ ?s ?p ?o SERVICE <{endpointtUri}> {{?s ?p ?o}} }}";
-            var resultGraph = processor.ProcessQuery(new SparqlQueryParser().ParseFromString(query));
-
-            Assert.Equal(resultGraph, localGraph);
-        }
-
         [Fact]
         public void SparqlServiceWithNonExistentService()
         {

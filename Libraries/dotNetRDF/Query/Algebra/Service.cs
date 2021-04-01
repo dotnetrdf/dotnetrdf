@@ -128,10 +128,11 @@ namespace VDS.RDF.Query.Algebra
                 if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
 
                 var serviceEndpoints = context.InputMultiset.Sets
-                    .Where(s => s.ContainsVariable(var) && s[var].NodeType == NodeType.Uri)
-                    .Cast<IUriNode>()
+                    .Select(set => set[var])
+                    .OfType<IUriNode>()
                     .Distinct()
                     .Select(u => new SparqlRemoteEndpoint(u.Uri));
+
                 return new FederatedSparqlRemoteEndpoint(serviceEndpoints);
             }
 

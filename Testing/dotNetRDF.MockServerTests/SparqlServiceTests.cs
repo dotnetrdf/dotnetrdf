@@ -90,6 +90,7 @@ namespace dotNetRDF.MockServerTests
                     .WithStatusCode(HttpStatusCode.OK));
         }
 
+
         private string ServiceUri => _server.Urls[0] + "/sparql";
 
         private Predicate<string> SameAsQuery(string expectedQuery) =>
@@ -153,6 +154,33 @@ namespace dotNetRDF.MockServerTests
             sparqlLogEntries.Should().HaveCount(2);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
             sparqlLogEntries[1].RequestMessage.Method.Should().BeEquivalentTo("get");
+        }
+
+        [Fact]
+        public void ItResolvesEndpointFromVariable()
+        {
+            var dataset = CreateDataset(numberOfTriples: 1);
+            var query = $"SELECT * WHERE {{ VALUES ?service {{<{ServiceUri}>}} SERVICE ?service {{?s ?p ?o}} }}";
+            var serviceResults = XmlFormat(CreateResults(numberOfTriples: 1));
+            RegisterSelectQueryGetHandler(SameAsQuery("SELECT * WHERE {?s ?p ?o}"), serviceResults);
+
+            var results = ProcessQuery(dataset, query);
+
+            results.Should().NotBeNull().And.HaveCount(1);
+            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            sparqlLogEntries.Should().HaveCount(1);
+            sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
+        }
+
+        [Fact]
+        public void ItResolvesNoEndpointFromVariable()
+        {
+            var dataset = CreateDataset(numberOfTriples: 0);
+            var query = $"SELECT * WHERE {{ VALUES ?service {{ 'noturi' }} SERVICE ?service {{?s ?p ?o}} }}";
+
+            var results = ProcessQuery(dataset, query);
+
+            results.Should().NotBeNull().And.HaveCount(0);
         }
 
         private static SparqlResultSet ProcessQuery(InMemoryDataset dataset, string query)
