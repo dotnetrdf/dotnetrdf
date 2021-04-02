@@ -54,52 +54,52 @@ namespace VDS.RDF
             nsmap.NamespaceModified += changed;
             nsmap.NamespaceRemoved += removed;
 
-            _testOutputHelper.WriteLine("Trying to add the RDF Namespace, this should already be defined");
+            _output.WriteLine("Trying to add the RDF Namespace, this should already be defined");
             nsmap.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
             Assert.False(eventRaised);
             eventRaised = false;
-            _testOutputHelper.WriteLine(string.Empty);
+            _output.WriteLine(string.Empty);
 
-            _testOutputHelper.WriteLine("Trying to add an example Namespace which isn't defined");
+            _output.WriteLine("Trying to add an example Namespace which isn't defined");
             nsmap.AddNamespace("ex", new Uri("http://example.org/"));
             Assert.True(eventRaised);
             eventRaised = false;
-            _testOutputHelper.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
-            _testOutputHelper.WriteLine(string.Empty);
+            _output.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
+            _output.WriteLine(string.Empty);
 
-            _testOutputHelper.WriteLine("Trying to modify the example Namespace");
+            _output.WriteLine("Trying to modify the example Namespace");
             nsmap.AddNamespace("ex", new Uri("http://example.org/test/"));
             Assert.True(eventRaised);
             eventRaised = false;
-            _testOutputHelper.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
-            _testOutputHelper.WriteLine(string.Empty);
+            _output.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
+            _output.WriteLine(string.Empty);
 
-            _testOutputHelper.WriteLine("Trying to remove the example Namespace");
+            _output.WriteLine("Trying to remove the example Namespace");
             nsmap.RemoveNamespace("ex");
             Assert.True(eventRaised);
             eventRaised = false;
-            _testOutputHelper.WriteLine(string.Empty);
+            _output.WriteLine(string.Empty);
 
-            _testOutputHelper.WriteLine("Trying to remove a non-existent Namespace");
+            _output.WriteLine("Trying to remove a non-existent Namespace");
             nsmap.RemoveNamespace("ex");
             Assert.False(eventRaised);
             eventRaised = false;
-            _testOutputHelper.WriteLine(string.Empty);
+            _output.WriteLine(string.Empty);
 
-            _testOutputHelper.WriteLine("Adding some example Namespace back in again for an import test");
+            _output.WriteLine("Adding some example Namespace back in again for an import test");
             nsmap.AddNamespace("ex", new Uri("http://example.org/"));
             nsmap.AddNamespace("ns0", new Uri("http://example.org/clashes/"));
 
-            _testOutputHelper.WriteLine("Creating another Namespace Mapper with the ex prefix mapped to a different URI");
+            _output.WriteLine("Creating another Namespace Mapper with the ex prefix mapped to a different URI");
             var nsmap2 = new NamespaceMapper();
             nsmap2.AddNamespace("ex", new Uri("http://example.org/test/"));
 
-            _testOutputHelper.WriteLine("Importing the new NamespaceMapper into the original");
+            _output.WriteLine("Importing the new NamespaceMapper into the original");
             nsmap.Import(nsmap2);
-            _testOutputHelper.WriteLine("NamespaceMapper now contains the following Namespaces:");
+            _output.WriteLine("NamespaceMapper now contains the following Namespaces:");
             foreach (var prefix in nsmap.Prefixes)
             {
-                _testOutputHelper.WriteLine("\t" + prefix + " <" + nsmap.GetNamespaceUri(prefix).AbsoluteUri + ">");
+                _output.WriteLine("\t" + prefix + " <" + nsmap.GetNamespaceUri(prefix).AbsoluteUri + ">");
             }
             Assert.Equal(nsmap.GetNamespaceUri("ex"), new Uri("http://example.org/"));
             Assert.Equal(nsmap.GetNamespaceUri("ns1"), new Uri("http://example.org/test/"));
