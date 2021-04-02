@@ -74,6 +74,32 @@ namespace VDS.RDF
             return x.All(item => !y.Contains(item));
         }
 
+        /// <summary>
+        /// Splits a sequence into bounded chunks.
+        /// </summary>
+        /// <typeparam name="T">Type Parameter.</typeparam>
+        /// <param name="source">An Enumerable.</param>
+        /// <param name="size">Max Chunk Size.</param>
+        /// <returns></returns>
+        public static IEnumerable<T[]> ChunkBy<T>(this IEnumerable<T> source, int size)
+        {
+            var buffer = new List<T>();
+            foreach (var item in source)
+            {
+                buffer.Add(item);
+                if (buffer.Count == size)
+                {
+                    yield return buffer.ToArray();
+                    buffer.Clear();
+                }
+            }
+            if (buffer.Count > 0)
+            {
+                yield return buffer.ToArray();
+                buffer.Clear();
+            }
+        }
+
         #endregion
 
         #region Triple Selection Extensions
