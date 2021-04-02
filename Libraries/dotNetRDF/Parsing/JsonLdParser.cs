@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -239,9 +239,10 @@ namespace VDS.RDF.Parsing
                     var roundedValue = Math.Round(doubleValue);
                     if (doubleValue.Equals(roundedValue) && doubleValue < 1e21 && datatype == null)
                     {
-                        // Integer values up to 10^21 should be rendered as a fixed-point integer
+                        // Integer values up to 10^21 should be rendered as an integer rather than a float
                         literalValue = roundedValue.ToString("F0");
-                        if (literalValue.Equals("-0")) literalValue = "0"; // Special corner-case when the input is -0e0
+                        // The JSON-LD test suite requires no leading minus sign when the value is 0
+                        if (literalValue.Equals("-0")) literalValue = "0";
                         datatype = XsdNs + "integer";
                     }
                     else

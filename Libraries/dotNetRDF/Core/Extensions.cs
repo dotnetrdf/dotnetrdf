@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -72,6 +72,32 @@ namespace VDS.RDF
         public static bool IsDisjoint<T>(this IEnumerable<T> x, IEnumerable<T> y)
         {
             return x.All(item => !y.Contains(item));
+        }
+
+        /// <summary>
+        /// Splits a sequence into bounded chunks.
+        /// </summary>
+        /// <typeparam name="T">Type Parameter.</typeparam>
+        /// <param name="source">An Enumerable.</param>
+        /// <param name="size">Max Chunk Size.</param>
+        /// <returns></returns>
+        public static IEnumerable<T[]> ChunkBy<T>(this IEnumerable<T> source, int size)
+        {
+            var buffer = new List<T>();
+            foreach (var item in source)
+            {
+                buffer.Add(item);
+                if (buffer.Count == size)
+                {
+                    yield return buffer.ToArray();
+                    buffer.Clear();
+                }
+            }
+            if (buffer.Count > 0)
+            {
+                yield return buffer.ToArray();
+                buffer.Clear();
+            }
         }
 
         #endregion

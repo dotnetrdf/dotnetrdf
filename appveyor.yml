@@ -6,6 +6,7 @@ branches:
 
 environment:
   SHFBROOT:  C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
+  IGNORE_NORMALISATION_GIT_HEAD_MOVE: 1
   SandCastleZipFile: SHFBInstaller.zip
   SandCastleUri: https://github.com/EWSoftware/SHFB/releases/download/v2019.11.17.0/SHFBInstaller_v2019.11.17.0.zip
   
@@ -23,6 +24,8 @@ configuration: Release
 
 build_script:
   - ps: dotnet build dotNetRDF.sln --configuration=Release
+  - ps: dotnet pack -o $env:APPVEYOR_BUILD_FOLDER\nugets --no-build --configuration Release -p:Version=$env:GitVersion_NuGetVersion
+  - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=Release /p:HelpFileVersion=$env:GitVersion_NuGetVersion }
 
 test_script:
   - ps: dotnet test -c Release --filter "Category!=explicit" --framework netcoreapp3.1 Testing\unittest\unittest.csproj
@@ -33,9 +36,6 @@ test_script:
   - cmd: dotnet test -c Release --framework netcoreapp3.1 Testing\dotNetRDF.Connectors.Fuseki.Tests\dotNetRDF.Connectors.Fuseki.Tests.csproj
   - cmd: docker stop fuseki & exit 0
   
-before_deploy:
-  - cmd: msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=%CONFIGURATION% /p:HelpFileVersion=%GitVersion_NuGetVersion%
-
 deploy:
   - provider: GitHub
     description: 'dotNetRDF $(GitVersion_SemVer)'
@@ -48,14 +48,11 @@ deploy:
     api_key:
       secure: 9zViqGPPKYiYVnk9iH14649Oj6tXTwsNxtZ73AcsESYm795D918U0D3UlH9zjxcT
     on:
-      appveyor_repo_tag: true 
+      appveyor_repo_tag: true
     artifact: /((?!Spin).)*.nupkg/
 
 artifacts:
-  - path: 'nugets\*.nupkg'
-  - path: 'Build\shfb\Help\dotNetRDFApi.chm'
-  - path: 'Build\shfb\Help'
-  - path: 'opencover.xml'
+  - path: nugets\*.nupkg
+  - path: Build\shfb\Help\dotNetRDFApi.chm
+  - path: Build\shfb\Help
 
-on_finish:
-  - ps: Push-AppveyorArtifact 'test.log'

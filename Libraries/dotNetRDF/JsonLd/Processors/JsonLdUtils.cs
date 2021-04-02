@@ -1,9 +1,9 @@
-﻿/*
+/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -274,7 +274,13 @@ namespace VDS.RDF.JsonLd.Processors
         /// <returns>True if <paramref name="value"/> can be parsed as an absolute IRI, false otherwise.</returns>
         public static bool IsAbsoluteIri(string value)
         {
-            return Uri.TryCreate(value, UriKind.Absolute, out Uri _) && Uri.EscapeUriString(value).Equals(value);
+            return Uri.TryCreate(value, UriKind.Absolute, out var u)
+                   && (
+                       // Trying to determine if the TryCreate constructor performed some unwanted escaping
+                       // IsWellFormedOriginalString() works most of the time but fails for some of the JSON-LD tests - in particular where the path contains [ or ]
+                       u.IsWellFormedOriginalString() || 
+                       // This check sees if escaping the original string changes it - this unfortunately fails for IRIs because .NET 
+                       Uri.EscapeUriString(value).Equals(value));
         }
 
         /// <summary>

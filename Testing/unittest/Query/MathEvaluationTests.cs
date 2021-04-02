@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using Xunit;
@@ -54,8 +49,14 @@ namespace VDS.RDF.Query
         public void TestDivisionBeforeSubtraction()
         {
             // 10-4/2 should be interpreted as 10 - (4/2) = 8, not (10 - 4)/2 = 3
-            // TODO: SparqlParser throws an error if the space around the - is missed out, suggesting that the use of the MINUS token is ambiguous
             TestQuery("SELECT ?f WHERE {BIND (10 - 4/2 as ?f)}", "8");
+        }
+
+        [Fact]
+        public void TestAdditionExpressionWithASignedNumberComponent()
+        {
+            // Same as the above but without whitespace means that -4 can be interpreted as a negative integer.
+            TestQuery("SELECT ?f WHERE {BIND (10-4/2 as ?f)}", "8");
         }
 
         [Fact]
@@ -63,6 +64,24 @@ namespace VDS.RDF.Query
         {
             // 10/5/2 should be interpreted as (10/5)/2 = 1, not 10/(5/2) = 4
             TestQuery("SELECT ?f WHERE {BIND (10/5/2 as ?f)}", "1");
+        }
+
+        [Fact]
+        public void TestBracketedExpression1()
+        {
+            TestQuery("SELECT ?f WHERE {BIND (10/(5/2) as ?f)}", "4");
+        }
+
+        [Fact]
+        public void TestMultiplicativeExpressionEvaluatedLeftToRight()
+        {
+            TestQuery("SELECT ?f WHERE {BIND (10/5*2 as ?f)}", "4");
+        }
+
+        [Fact]
+        public void TestBracketedExpression2()
+        {
+            TestQuery("SELECT ?f WHERE {BIND (10/(5*2) as ?f)}", "1");
         }
     }
 }

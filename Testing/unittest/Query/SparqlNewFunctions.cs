@@ -27,10 +27,13 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Nodes;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -40,6 +43,13 @@ namespace VDS.RDF.Query
 
     public class SparqlNewFunctions
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public SparqlNewFunctions(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void SparqlFunctionsIsNumeric()
         {
@@ -114,12 +124,18 @@ namespace VDS.RDF.Query
             const string query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            var results = g.ExecuteQuery(query);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+        }
 
-            for (var i = 0; i < 50; i++)
-            {
-                object results = g.ExecuteQuery(query);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-            }
+        [Fact]
+        public void RandFunctionCachesResultAgainstBindingId()
+        {
+            var rand = new RandFunction();
+            var context = new SparqlEvaluationContext(null);
+            IValuedNode resultNode = rand.Evaluate(context, 0);
+            IValuedNode repeatResultNode = rand.Evaluate(context, 0);
+            Assert.Same(resultNode, repeatResultNode);
         }
     }
 }

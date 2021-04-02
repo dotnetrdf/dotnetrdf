@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -827,7 +827,11 @@ namespace VDS.RDF.Query
             {
                 output.Append("HAVING ");
                 var having = _having.ToString();
-                output.Append(having.Substring(7, having.Length - 8));
+                if (having.StartsWith("FILTER"))
+                {
+                    having = having.Substring(6);
+                }
+                output.Append(having);
                 output.Append(' ');
             }
 

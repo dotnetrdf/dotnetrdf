@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -53,55 +54,66 @@ namespace VDS.RDF
             nsmap.NamespaceModified += changed;
             nsmap.NamespaceRemoved += removed;
 
-            Console.WriteLine("Trying to add the RDF Namespace, this should already be defined");
+            _testOutputHelper.WriteLine("Trying to add the RDF Namespace, this should already be defined");
             nsmap.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
             Assert.False(eventRaised);
             eventRaised = false;
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
 
-            Console.WriteLine("Trying to add an example Namespace which isn't defined");
+            _testOutputHelper.WriteLine("Trying to add an example Namespace which isn't defined");
             nsmap.AddNamespace("ex", new Uri("http://example.org/"));
             Assert.True(eventRaised);
             eventRaised = false;
-            Console.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
+            _testOutputHelper.WriteLine(string.Empty);
 
-            Console.WriteLine("Trying to modify the example Namespace");
+            _testOutputHelper.WriteLine("Trying to modify the example Namespace");
             nsmap.AddNamespace("ex", new Uri("http://example.org/test/"));
             Assert.True(eventRaised);
             eventRaised = false;
-            Console.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
+            _testOutputHelper.WriteLine(string.Empty);
 
-            Console.WriteLine("Trying to remove the example Namespace");
+            _testOutputHelper.WriteLine("Trying to remove the example Namespace");
             nsmap.RemoveNamespace("ex");
             Assert.True(eventRaised);
             eventRaised = false;
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
 
-            Console.WriteLine("Trying to remove a non-existent Namespace");
+            _testOutputHelper.WriteLine("Trying to remove a non-existent Namespace");
             nsmap.RemoveNamespace("ex");
             Assert.False(eventRaised);
             eventRaised = false;
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(string.Empty);
 
-            Console.WriteLine("Adding some example Namespace back in again for an import test");
+            _testOutputHelper.WriteLine("Adding some example Namespace back in again for an import test");
             nsmap.AddNamespace("ex", new Uri("http://example.org/"));
             nsmap.AddNamespace("ns0", new Uri("http://example.org/clashes/"));
 
-            Console.WriteLine("Creating another Namespace Mapper with the ex prefix mapped to a different URI");
+            _testOutputHelper.WriteLine("Creating another Namespace Mapper with the ex prefix mapped to a different URI");
             var nsmap2 = new NamespaceMapper();
             nsmap2.AddNamespace("ex", new Uri("http://example.org/test/"));
 
-            Console.WriteLine("Importing the new NamespaceMapper into the original");
+            _testOutputHelper.WriteLine("Importing the new NamespaceMapper into the original");
             nsmap.Import(nsmap2);
-            Console.WriteLine("NamespaceMapper now contains the following Namespaces:");
+            _testOutputHelper.WriteLine("NamespaceMapper now contains the following Namespaces:");
             foreach (var prefix in nsmap.Prefixes)
             {
-                Console.WriteLine("\t" + prefix + " <" + nsmap.GetNamespaceUri(prefix).AbsoluteUri + ">");
+                _testOutputHelper.WriteLine("\t" + prefix + " <" + nsmap.GetNamespaceUri(prefix).AbsoluteUri + ">");
             }
             Assert.Equal(nsmap.GetNamespaceUri("ex"), new Uri("http://example.org/"));
             Assert.Equal(nsmap.GetNamespaceUri("ns1"), new Uri("http://example.org/test/"));
+        }
+
+        [Fact]
+        public void WhenTwoPrefixesMapToTheSameUriTheUriToPrefixMapIsExtended()
+        {
+            var nsmap = new NamespaceMapper();
+            nsmap.AddNamespace("foo", new Uri("http://example.org/"));
+            nsmap.AddNamespace("bar", new Uri("http://example.org/"));
+            nsmap.GetPrefix(new Uri("http://example.org/")).Should().BeOneOf("foo", "bar");
+            nsmap.RemoveNamespace("bar");
+            nsmap.GetPrefix(new Uri("http://example.org/")).Should().Be("foo");
         }
     }
 }

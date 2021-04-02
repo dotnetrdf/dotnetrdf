@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Builder
     public interface IAggregateBuilder : IDistinctAggregateBuilder
     {
         /// <summary>
-        /// Gets a builder which builds a DISTICT aggregate.
+        /// Gets a builder which builds a DISTINCT aggregate.
         /// </summary>
         IDistinctAggregateBuilder Distinct { get; }
 

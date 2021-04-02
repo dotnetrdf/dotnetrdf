@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>dotNetRDF.Data.Virtuoso provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2019</Copyright>
+    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
     <AssemblyTitle>dotNetRDF.Data.Virtuoso</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>

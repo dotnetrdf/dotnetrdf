@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -65,10 +65,11 @@ namespace VDS.RDF
         /// Mapping of Prefixes to URIs.
         /// </summary>
         protected Dictionary<string, Uri> _uris;
+
         /// <summary>
         /// Mapping of URIs to Prefixes.
         /// </summary>
-        protected Dictionary<int, string> _prefixes;
+        protected Dictionary<int, List<string>> _prefixes;
 
         /// <summary>
         /// Constructs a new Namespace Map.
@@ -84,7 +85,7 @@ namespace VDS.RDF
         public NamespaceMapper(bool empty)
         {
             _uris = new Dictionary<string, Uri>();
-            _prefixes = new Dictionary<int, string>();
+            _prefixes = new Dictionary<int, List<string>>();
 
             if (!empty)
             {
@@ -115,7 +116,7 @@ namespace VDS.RDF
             var hash = uri.GetEnhancedHashCode();
             if (_prefixes.ContainsKey(hash))
             {
-                return _prefixes[hash];
+                return _prefixes[hash][0];
             }
             else
             {
@@ -153,7 +154,16 @@ namespace VDS.RDF
             {
                 // Add a New Prefix
                 _uris.Add(prefix, uri);
-
+                if (!_prefixes.ContainsKey(hash))
+                {
+                    _prefixes[hash] = new List<string> {prefix};
+                }
+                else
+                {
+                    _prefixes[hash].Add(prefix);
+                }
+                OnNamespaceAdded(prefix, uri);
+                /*
                 if (!_prefixes.ContainsKey(hash))
                 {
                     // Add a New Uri
@@ -171,7 +181,7 @@ namespace VDS.RDF
                         // Raise modified event
                         OnNamespaceModified(prefix, uri);
                     }
-                }
+                }*/
             }
             else
             {
@@ -179,9 +189,30 @@ namespace VDS.RDF
                 // If the existing Uri is the same as the old one no change is needed
                 if (!_uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
                 {
-                    // Update the existing Prefix
+                    Uri oldUri = _uris[prefix];
+
+                    // Overwrite the prefix-to-uri mapping
                     _uris[prefix] = uri;
-                    _prefixes[hash] = prefix;
+
+                    // Remove the old uri-to-prefix mapping
+                    var oldUriHash = oldUri.GetEnhancedHashCode();
+                    _prefixes[oldUriHash].Remove(prefix);
+                    if (_prefixes[oldUriHash].Count == 0)
+                    {
+                        _prefixes.Remove(oldUriHash);
+                    }
+
+                    // Insert the new uri-to-prefix mapping
+                    if (_prefixes.ContainsKey(hash))
+                    {
+                        _prefixes[hash].Add(prefix);
+                    }
+                    else
+                    {
+                        _prefixes[hash] = new List<string> {prefix};
+                    }
+
+                    // Raise the modified event
                     OnNamespaceModified(prefix, uri);
                 }
             }
@@ -205,7 +236,8 @@ namespace VDS.RDF
                 var hash = u.GetEnhancedHashCode();
                 if (_prefixes.ContainsKey(hash))
                 {
-                    _prefixes.Remove(hash);
+                    _prefixes[hash].Remove(prefix);
+                    if (_prefixes[hash].Count == 0) _prefixes.Remove(hash);
                 }
 
                 // Raise the Event
@@ -264,7 +296,7 @@ namespace VDS.RDF
         {
             foreach (Uri u in _uris.Values)
             {
-                var baseuri = u.AbsoluteUri;
+                string baseuri = u.AbsoluteUri;
 
                 // Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
@@ -272,7 +304,7 @@ namespace VDS.RDF
                     // Remove the Base Uri from the front of the Uri
                     qname = uri.Substring(baseuri.Length);
                     // Add the Prefix back onto the front plus the colon to give a QName
-                    qname = _prefixes[u.GetEnhancedHashCode()] + ":" + qname;
+                    qname = _prefixes[u.GetEnhancedHashCode()][0] + ":" + qname;
                     if (qname.Equals(":")) continue;
                     if (qname.Contains("/") || qname.Contains("#")) continue;
                     return true;
@@ -293,9 +325,9 @@ namespace VDS.RDF
         /// </remarks>
         public virtual void Import(INamespaceMapper nsmap)
         {
-            var tempPrefix = "ns0";
-            var tempPrefixID = 0;
-            foreach (var prefix in nsmap.Prefixes)
+            string tempPrefix = "ns0";
+            int tempPrefixID = 0;
+            foreach (string prefix in nsmap.Prefixes)
             {
                 if (!_uris.ContainsKey(prefix))
                 {
@@ -441,7 +473,7 @@ namespace VDS.RDF
 
             foreach (Uri u in _uris.Values)
             {
-                var baseuri = u.AbsoluteUri;
+                string baseuri = u.AbsoluteUri;
 
                 // Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
@@ -451,7 +483,7 @@ namespace VDS.RDF
                     // Add the Prefix back onto the front plus the colon to give a QName
                     if (_prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
-                        qname = _prefixes[u.GetEnhancedHashCode()] + ":" + qname;
+                        qname = _prefixes[u.GetEnhancedHashCode()][0] + ":" + qname;
                         if (qname.Equals(":")) continue;
                         if (qname.Contains("/") || qname.Contains("#")) continue;
                         // Cache the Mapping
@@ -498,7 +530,7 @@ namespace VDS.RDF
             // Try and find a Namespace URI that is the prefix of the URI
             foreach (Uri u in _uris.Values)
             {
-                var baseuri = u.AbsoluteUri;
+                string baseuri = u.AbsoluteUri;
 
                 // Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
@@ -508,7 +540,7 @@ namespace VDS.RDF
                     // Add the Prefix back onto the front plus the colon to give a QName
                     if (_prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
-                        qname = _prefixes[u.GetEnhancedHashCode()] + ":" + qname;
+                        qname = _prefixes[u.GetEnhancedHashCode()][0] + ":" + qname;
                         if (qname.Equals(":")) continue;
                         if (qname.Contains("/") || qname.Contains("#")) continue;
                         // Cache the Mapping
@@ -565,7 +597,7 @@ namespace VDS.RDF
         /// <returns></returns>
         private string GetNextTemporaryNamespacePrefix()
         {
-            var nextPrefixBase = "ns";
+            string nextPrefixBase = "ns";
             while (_uris.ContainsKey(nextPrefixBase + _nextNamespaceID))
             {
                 _nextNamespaceID++;
@@ -622,6 +654,77 @@ namespace VDS.RDF
             {
                 Monitor.Exit(_prefixes);
                 Monitor.Exit(_uris);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Represents a mapping from a URI to a QName.
+    /// </summary>
+    public class QNameMapping 
+    {
+        private string _u;
+        private string _qname;
+
+        /// <summary>
+        /// Creates a new QName Mapping.
+        /// </summary>
+        /// <param name="u">URI.</param>
+        public QNameMapping(string u)
+        {
+            _u = u;
+        }
+
+        /// <summary>
+        /// URI this is a mapping for.
+        /// </summary>
+        public string Uri
+        {
+            get
+            {
+                return _u;
+            }
+        }
+
+        /// <summary>
+        /// QName this URI maps to.
+        /// </summary>
+        public string QName
+        {
+            get
+            {
+                return _qname;
+            }
+            set
+            {
+                _qname = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the String representation of the URI.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return _u.ToString();
+        }
+
+        /// <summary>
+        /// Checks whether this is equal to another Object.
+        /// </summary>
+        /// <param name="obj">Object to test against.</param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (obj is QNameMapping)
+            {
+                return ToString().Equals(obj.ToString(), StringComparison.Ordinal);
+            }
+            else
+            {
+                return false;
             }
         }
     }
