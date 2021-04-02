@@ -23,75 +23,28 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using FluentAssertions;
 using System;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Web;
-using FluentAssertions;
-using VDS.RDF;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing;
 using WireMock.Matchers;
 using WireMock.Matchers.Request;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
-using WireMock.Server;
 using Xunit;
 
-namespace dotNetRDF.MockServerTests
+namespace VDS.RDF.Query
 {
-    public class SparqlServiceTests : IDisposable
+    public class SparqlServiceTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {
-        private readonly WireMockServer _server;
+        private readonly MockRemoteSparqlEndpointFixture _serverFixture;
 
-        public SparqlServiceTests()
+        public SparqlServiceTests(MockRemoteSparqlEndpointFixture serverFixture)
         {
-            _server = WireMockServer.Start();
+            _serverFixture = serverFixture;
         }
 
-        public void Dispose()
-        {
-            _server.Stop();
-        }
-
-        private void RegisterSelectQueryGetHandler(Predicate<string> queryPredicate, string results)
-        {
-            _server
-                .Given(Request.Create()
-                    .WithPath("/sparql")
-                    .UsingGet()
-                    .WithParam(queryParams =>
-                        queryParams.ContainsKey("query") && 
-                        queryParams["query"].Any(q => queryPredicate(HttpUtility.UrlDecode(q)))))
-                .RespondWith(Response.Create()
-                    .WithBody(results, encoding:Encoding.UTF8)
-                    .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
-                    .WithStatusCode(HttpStatusCode.OK));
-        }
-
-        private void RegisterSelectQueryPostHandler(Predicate<string> queryPredicate, string results)
-        {
-            _server
-                .Given(Request.Create()
-                    .WithPath("/sparql")
-                    .UsingPost()
-                    .WithBody(x => {
-                        var decoded = HttpUtility.UrlDecode(x);
-                        var prefix = "query=";
-                        var queryStartIndex = decoded.IndexOf(prefix) + prefix.Length;
-                        return queryPredicate(decoded.Substring(queryStartIndex));
-                        }))
-                .RespondWith(Response.Create()
-                    .WithBody(results, encoding: Encoding.UTF8)
-                    .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
-                    .WithStatusCode(HttpStatusCode.OK));
-        }
-
-
-        private string ServiceUri => _server.Urls[0] + "/sparql";
+        private string ServiceUri => _serverFixture.ServiceUri;
 
         private Predicate<string> SameAsQuery(string expectedQuery) =>
             actualQuery => actualQuery == new SparqlQueryParser().ParseFromString(expectedQuery).ToString();
@@ -111,12 +64,13 @@ namespace dotNetRDF.MockServerTests
             var query = $"SELECT * WHERE {{ SERVICE <{ServiceUri}> {{?s ?p ?o}} }}";
             var expectedServiceQuery = "SELECT * WHERE { ?s ?p ?o }";
             var serviceResults = XmlFormat(CreateResults(1));
-            RegisterSelectQueryGetHandler(SameAsQuery(expectedServiceQuery), serviceResults);
-           
+            _serverFixture.RegisterSelectQueryGetHandler(SameAsQuery(expectedServiceQuery), serviceResults);
+            _serverFixture.Server.ResetLogEntries();
+
             var results = ProcessQuery(dataset, query);
 
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -127,12 +81,13 @@ namespace dotNetRDF.MockServerTests
             var dataset = CreateDataset(numberOfTriples: 2);
             var query = $"SELECT * WHERE {{ ?s ?p ?o SERVICE <{ServiceUri}> {{?s ?p ?o}} }}";
             var serviceResults = XmlFormat(CreateResults(numberOfTriples: 2));
-            RegisterSelectQueryGetHandler(QueryWithInlineData(2), serviceResults);
+            _serverFixture.RegisterSelectQueryGetHandler(QueryWithInlineData(2), serviceResults);
+            _serverFixture.Server.ResetLogEntries();
 
             var results = ProcessQuery(dataset, query);
 
             results.Should().NotBeNull().And.HaveCount(2);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -144,13 +99,14 @@ namespace dotNetRDF.MockServerTests
             var query = $"SELECT * WHERE {{ ?s ?p ?o SERVICE <{ServiceUri}> {{?s ?p ?o}} }}";
             var resultsOfPost = XmlFormat(CreateResults(numberOfTriples: 100)); 
             var resultsOfGet = XmlFormat(CreateResults(numberOfTriples: 2));
-            RegisterSelectQueryPostHandler(QueryWithInlineData(100), resultsOfPost);
-            RegisterSelectQueryGetHandler(QueryWithInlineData(2), resultsOfGet);
-            
+            _serverFixture.RegisterSelectQueryPostHandler(QueryWithInlineData(100), resultsOfPost);
+            _serverFixture.RegisterSelectQueryGetHandler(QueryWithInlineData(2), resultsOfGet);
+            _serverFixture.Server.ResetLogEntries();
+
             var results = ProcessQuery(dataset, query);
 
             results.Should().NotBeNull().And.HaveCount(102);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(2);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
             sparqlLogEntries[1].RequestMessage.Method.Should().BeEquivalentTo("get");
@@ -162,12 +118,12 @@ namespace dotNetRDF.MockServerTests
             var dataset = CreateDataset(numberOfTriples: 1);
             var query = $"SELECT * WHERE {{ VALUES ?service {{<{ServiceUri}>}} SERVICE ?service {{?s ?p ?o}} }}";
             var serviceResults = XmlFormat(CreateResults(numberOfTriples: 1));
-            RegisterSelectQueryGetHandler(SameAsQuery("SELECT * WHERE {?s ?p ?o}"), serviceResults);
-
+            _serverFixture.RegisterSelectQueryGetHandler(SameAsQuery("SELECT * WHERE {?s ?p ?o}"), serviceResults);
+            _serverFixture.Server.ResetLogEntries();
             var results = ProcessQuery(dataset, query);
 
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
