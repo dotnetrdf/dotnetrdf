@@ -77,7 +77,7 @@ namespace VDS.RDF.JsonLd
             }
 
             // If content type is application/ld+json the context link header is ignored
-            if (!contentType.Any(x => x.Contains("application/ld+json")))
+            if (!contentType.Any(x => x.Contains("application/ld+json")) && !contentType.Any(x => x.Contains("application/json")))
             {
                 var contextLinks = ParseLinkHeaders(client.ResponseHeaders.GetValues("Link"))
                     .Where(x => x.RelationTypes.Contains(JsonLdVocabulary.Context))
