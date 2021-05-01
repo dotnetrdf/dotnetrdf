@@ -1,0 +1,12 @@
+﻿@prefix : <http://example.org/test/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+:alice a foaf:Person ;
+       foaf:knows :bob .
+:bob a foaf:Person .
+
+:managers a foaf:Group ;
+    foaf:member :alice .
+
+:developers a foaf:Group ;
+    foaf:member :bob .
