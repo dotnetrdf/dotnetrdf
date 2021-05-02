@@ -23,21 +23,26 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using Xunit;
+
 namespace VDS.RDF.Storage
 {
 
     public class StardogAsync
-        : BaseAsyncTests
+        : BaseAsyncTests, IClassFixture<StardogStoreFixture>
     {
-        public StardogAsync()
+        private readonly StardogStoreFixture _fixture;
+
+        public StardogAsync(StardogStoreFixture fixture)
         {
             //Increase the wait delay for Stardog because we have extra overhead for transactions
             WaitDelay = 45000;
+            _fixture = fixture;
         }
 
         protected override IAsyncStorageProvider GetAsyncProvider()
         {
-            return StardogTests.GetConnection();
+            return _fixture.Connector;
         }
     }
 }
