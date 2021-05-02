@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF;
+using VDS.RDF.Query;
 
 namespace dotNetRDF.Query.Behemoth
 {
@@ -17,6 +18,11 @@ namespace dotNetRDF.Query.Behemoth
         private Bindings(IDictionary<string, INode> bindings)
         {
             _dict = bindings;
+        }
+
+        internal Bindings(IEnumerable<KeyValuePair<string, INode>> values)
+        {
+            _dict = new Dictionary<string, INode>(values.ToDictionary(x => x.Key, x => x.Value));
         }
 
         public INode this[string key]
@@ -48,12 +54,36 @@ namespace dotNetRDF.Query.Behemoth
             return new Bindings(d);
         }
 
+        public Bindings Select(List<string> selectVars)
+        {
+            var d = new Dictionary<string, INode>();
+            foreach (var key in selectVars)
+            {
+                if (_dict.TryGetValue(key, out INode node)) {
+                    d[key] = node;
+                }
+            }
+
+            return new Bindings(d);
+        }
+
         public bool ContainsVariable(string varName)
         {
             return _dict.ContainsKey(varName);
         }
 
         public static Bindings Empty = new Bindings(new Dictionary<string, INode>(0));
+
+        public SparqlResult AsSparqlResult()
+        {
+            var result = new SparqlResult();
+            foreach (KeyValuePair<string, INode> entry in _dict)
+            {
+                result.SetValue(entry.Key, entry.Value);
+            }
+
+            return result;
+        }
 
         public override bool Equals(object obj)
         {
