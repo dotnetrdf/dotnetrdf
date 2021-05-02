@@ -554,11 +554,11 @@ namespace VDS.RDF.Storage
             try
             {
                 // Have to do the delete first as that requires a separate transaction
-                if (g.BaseUri != null)
+                if (g.Name != null)
                 {
                     try
                     {
-                        DeleteGraph(g.BaseUri);
+                        DeleteGraph(g.Name.ToString());
                     }
                     catch (Exception ex)
                     {
@@ -648,9 +648,8 @@ namespace VDS.RDF.Storage
 
                         // Save the Data to be removed as TriG to the Request Stream
                         var store = new TripleStore();
-                        var g = new Graph();
+                        var g = new Graph(graphUri);
                         g.Assert(removals);
-                        g.BaseUri = graphUri;
                         store.Add(g);
                         request.Content = new DatasetContent(store, _writer);
                         using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
@@ -666,11 +665,10 @@ namespace VDS.RDF.Storage
                         HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any,
                             HttpMethod.Post, new Dictionary<string, string>());
 
-                        // Save the Data to be removed as TriG to the Request Stream
+                        // Save the Data to be added as TriG to the Request Stream
                         var store = new TripleStore();
-                        var g = new Graph();
+                        var g = new Graph(graphUri);
                         g.Assert(additions);
-                        g.BaseUri = graphUri;
                         store.Add(g);
                         request.Content = new DatasetContent(store, _writer);
 
@@ -1570,7 +1568,7 @@ namespace VDS.RDF.Storage
                 MimeTypesHelper.Any,
                 HttpMethod.Post, new Dictionary<string, string>());
             var store = new TripleStore();
-            var g = new Graph {BaseUri = graphName.ToSafeUri()};
+            var g = new Graph(graphName.ToSafeUri());
             g.Assert(additions);
             store.Add(g);
             addRequest.Content = new DatasetContent(store, _writer);
@@ -1589,7 +1587,7 @@ namespace VDS.RDF.Storage
             HttpRequestMessage request = CreateRequest(_kb + "/" + transactionId + "/remove", MimeTypesHelper.Any,
                 HttpMethod.Post, new Dictionary<string, string>());
             var store = new TripleStore();
-            var g = new Graph {BaseUri = graphName.ToSafeUri()};
+            var g = new Graph(graphName.ToSafeUri());
             g.Assert(removals);
             store.Add(g);
             request.Content = new DatasetContent(store, _writer);
