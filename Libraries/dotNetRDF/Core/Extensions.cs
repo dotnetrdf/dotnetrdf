@@ -681,10 +681,11 @@ namespace VDS.RDF
         /// Turns a string into a safe URI.
         /// </summary>
         /// <param name="str">String.</param>
+        /// <param name="uriFactory">Factor to use when creating the URI. If not specified, the <see cref="UriFactory.Root"/> instance will be used.</param>
         /// <returns>Either null if the string is null/empty or a URI otherwise.</returns>
-        internal static Uri ToSafeUri(this string str)
+        internal static Uri ToSafeUri(this string str, IUriFactory uriFactory = null)
         {
-            return (string.IsNullOrEmpty(str) ? null : UriFactory.Create(str));
+            return string.IsNullOrEmpty(str) ? null : (uriFactory ?? UriFactory.Root).Create(str);
         }
 
         internal static string ToSafeString(IRefNode refNode)
