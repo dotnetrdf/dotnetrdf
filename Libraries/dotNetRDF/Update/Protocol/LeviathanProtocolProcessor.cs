@@ -39,14 +39,16 @@ namespace VDS.RDF.Update.Protocol
         /// Creates a new Leviathan Protocol Processor.
         /// </summary>
         /// <param name="store">Triple Store.</param>
-        public LeviathanProtocolProcessor(IInMemoryQueryableStore store)
-            : this(new InMemoryDataset(store)) { }
+        /// <param name="uriFactory">Factory to use when creating URI instances.</param>
+        public LeviathanProtocolProcessor(IInMemoryQueryableStore store, IUriFactory uriFactory = null)
+            : this(new InMemoryDataset(store), uriFactory) { }
 
         /// <summary>
         /// Creates a new Leviathan Protocol Processor.
         /// </summary>
         /// <param name="dataset">SPARQL Dataset.</param>
-        public LeviathanProtocolProcessor(ISparqlDataset dataset)
-            : base(new LeviathanQueryProcessor(dataset), new LeviathanUpdateProcessor(dataset)) { }
+        /// <param name="uriFactory">Factory to use when creating URI instances.</param>
+        public LeviathanProtocolProcessor(ISparqlDataset dataset, IUriFactory uriFactory = null)
+            : base(new LeviathanQueryProcessor(dataset), new LeviathanUpdateProcessor(dataset), uriFactory) { }
     }
 }

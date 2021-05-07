@@ -40,7 +40,7 @@ namespace VDS.RDF.Update.Protocol
         : ISparqlHttpProtocolProcessor
     {
         /// <summary>
-        /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognise ?default as being a valid querystring key unless it ends in a = which the specification does not mandate so cannot be assumed.
+        /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognize ?default as being a valid querystring key unless it ends in a = which the specification does not mandate so cannot be assumed.
         /// </summary>
         public const string DefaultParameterPattern = "^default$|^default&|&default&|&default$";
 
@@ -48,6 +48,20 @@ namespace VDS.RDF.Update.Protocol
         /// Get or set the default compression to use when serializing a response using a writer that implements the <see cref="ICompressingWriter"/> interface.
         /// </summary>
         public int DefaultCompressionLevel { get; set; } = WriterCompressionLevel.More;
+
+        /// <summary>
+        /// Get the factory to use when creating / interning URI instances.
+        /// </summary>
+        protected readonly IUriFactory UriFactory;
+
+        /// <summary>
+        /// Initialise a new BaseProtocolProcessor instance.
+        /// </summary>
+        /// <param name="uriFactory">The factory object to use when creating URI instances. If not specified, defaults to <see cref="VDS.RDF.UriFactory.Root"/>.</param>
+        protected BaseProtocolProcessor(IUriFactory uriFactory = null)
+        {
+            UriFactory = uriFactory ?? RDF.UriFactory.Root;
+        }
 
         /// <summary>
         /// Processes a GET operation.
