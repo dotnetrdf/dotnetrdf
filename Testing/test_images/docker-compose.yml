@@ -34,3 +34,10 @@ services:
         ports:
             - 8890:8890
             - 1111:1111
+            
+    stardog:
+        image: stardog/stardog:latest
+        ports:
+          - 5820:5820
+        volumes:
+          - ./stardog:/var/opt/stardog

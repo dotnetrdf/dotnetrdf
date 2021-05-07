@@ -30,10 +30,11 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
-    public class ServiceTests : IClassFixture< MockRemoteSparqlEndpointFixture>
+    public class ServiceTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {
         private readonly MockRemoteSparqlEndpointFixture _serverFixture;
 
@@ -45,7 +46,9 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlServiceUsingDBPedia()
         {
-            _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { ?s ?p ?o . } LIMIT 10");
+            _serverFixture.RegisterSelectQueryGetHandler(@"SELECT * WHERE 
+{ ?s ?p ?o . }
+LIMIT 10");
             var query = $"SELECT * WHERE {{ SERVICE <{_serverFixture.Server.Urls[0] + "/sparql"}> {{ ?s ?p ?o }} }} LIMIT 10";
             var parser = new SparqlQueryParser();
             var q = parser.ParseFromString(query);
@@ -86,37 +89,20 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var processor = new LeviathanQueryProcessor(new TripleStore());
-            try
-            {
-                var results = processor.ProcessQuery(q);
-                Assert.True(false, "Should have errored");
-            }
-            catch (RdfQueryException queryEx)
-            {
-                Console.WriteLine("Errored as expected");
-                TestTools.ReportError("Query Error", queryEx);
-            }
+            Assert.Throws<RdfQueryException>(() => processor.ProcessQuery(q));
         }
 
         [Fact]
         public void SparqlServiceWithSilentNonExistentService()
         {
-            var query = "SELECT * WHERE { SERVICE SILENT <http://www.dotnetrdf.org/noSuchService> { ?s a ?type } } LIMIT 10";
+            var query =
+                "SELECT * WHERE { SERVICE SILENT <http://www.dotnetrdf.org/noSuchService> { ?s a ?type } } LIMIT 10";
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
             var processor = new LeviathanQueryProcessor(new TripleStore());
-            try
-            {
-                var results = processor.ProcessQuery(q);
-                Console.WriteLine("Errors were suppressed as expected");
-                TestTools.ShowResults(results);
-            }
-            catch (RdfQueryException queryEx)
-            {
-                Console.WriteLine("Errored when errors should have been suppressed");
-                TestTools.ReportError("Query Error", queryEx);
-            }
+            object results = processor.ProcessQuery(q);
+            TestTools.ShowResults(results);
         }
     }
 }

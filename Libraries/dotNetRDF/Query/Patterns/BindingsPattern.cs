@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -85,19 +85,13 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the enumeration of Tuples.
         /// </summary>
-        public IEnumerable<BindingTuple> Tuples
-        {
-            get
-            {
-                return _tuples;
-            }
-        }
+        public IEnumerable<BindingTuple> Tuples => _tuples;
 
         /// <summary>
         /// Adds a Tuple to the Bindings pattern.
         /// </summary>
         /// <param name="t"></param>
-        internal void AddTuple(BindingTuple t)
+        public void AddTuple(BindingTuple t)
         {
             _tuples.Add(t);
         }
@@ -135,7 +129,7 @@ namespace VDS.RDF.Query.Patterns
         {
             var output = new StringBuilder();
             output.Append("VALUES ( ");
-            foreach (var var in _vars)
+            foreach (string var in _vars)
             {
                 output.Append("?" + var + " ");
             }

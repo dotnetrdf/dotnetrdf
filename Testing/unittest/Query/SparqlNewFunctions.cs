@@ -24,13 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+using VDS.RDF.Nodes;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Writing.Formatting;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 
 namespace VDS.RDF.Query
 {
@@ -75,19 +72,9 @@ namespace VDS.RDF.Query
         {
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromFile("resources\\now01.rq");
-
-            Console.WriteLine("ToString Output:");
-            Console.WriteLine(q.ToString());
-            Console.WriteLine();
-
-            var formatter = new SparqlFormatter();
-            Console.WriteLine("SparqlFormatter Output:");
-            Console.WriteLine(formatter.Format(q));
-
             var store = new TripleStore();
             var processor = new LeviathanQueryProcessor(store);
-            var results = processor.ProcessQuery(q) as SparqlResultSet;
-            if (results != null)
+            if (processor.ProcessQuery(q) is SparqlResultSet results)
             {
                 Assert.True(results.Result, "Result should be true");
             }
@@ -108,18 +95,14 @@ namespace VDS.RDF.Query
             Assert.IsAssignableFrom<SparqlResultSet>(results);
         }
 
-        [Fact(Skip="Fails intermittently due to RAND being re-evaluated during the sort. Tracked as issue #344")]
-        public void SparqlOrderByNonDeterministic()
+        [Fact]
+        public void RandFunctionCachesResultAgainstBindingId()
         {
-            const string query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
-            var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-
-            for (var i = 0; i < 50; i++)
-            {
-                object results = g.ExecuteQuery(query);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-            }
+            var rand = new RandFunction();
+            var context = new SparqlEvaluationContext(null, null, new LeviathanQueryOptions());
+            IValuedNode resultNode = rand.Evaluate(context, 0);
+            IValuedNode repeatResultNode = rand.Evaluate(context, 0);
+            Assert.Same(resultNode, repeatResultNode);
         }
     }
 }

@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,12 +31,26 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    /// <inheritdoc />
-    public class TriplePatternBuilder : ITriplePatternBuilder
+    /// <summary>
+    /// Provides methods for building triple patterns.
+    /// </summary>
+    public class TriplePatternBuilder : ITriplePatternBuilderInternal
     {
         private readonly IList<ITriplePattern> _patterns = new List<ITriplePattern>();
         private readonly PatternItemFactory _patternItemFactory;
-        private readonly INamespaceMapper _prefixes;
+
+        /// <summary>
+        /// Gets the triple patterns.
+        /// </summary>
+        public ITriplePattern[] Patterns => _patterns.ToArray();
+
+        /// <summary>
+        /// Gets the pattern item factory.
+        /// </summary>
+        public IPatternItemFactory PatternItemFactory => _patternItemFactory;
+
+        /// <inheritdoc/>
+        public INamespaceMapper Prefixes { get; }
 
         /// <summary>
         /// 
@@ -44,7 +58,7 @@ namespace VDS.RDF.Query.Builder
         /// <param name="prefixes"></param>
         public TriplePatternBuilder(INamespaceMapper prefixes)
         {
-            _prefixes = prefixes;
+            Prefixes = prefixes;
             _patternItemFactory = new PatternItemFactory();
         }
 
@@ -63,7 +77,7 @@ namespace VDS.RDF.Query.Builder
         /// <inheritdoc/>
         public TriplePatternPredicatePart Subject<TNode>(string subject) where TNode : INode
         {
-            return Subject(PatternItemFactory.CreatePatternItem(typeof(TNode), subject, _prefixes));
+            return Subject(_patternItemFactory.CreatePatternItem(typeof(TNode), subject, Prefixes));
         }
 
         /// <inheritdoc/>
@@ -81,26 +95,11 @@ namespace VDS.RDF.Query.Builder
         /// <inheritdoc/>
         public TriplePatternPredicatePart Subject(PatternItem subject)
         {
-            return new TriplePatternPredicatePart(this, subject, _prefixes);
+            return new TriplePatternPredicatePart(this, subject, Prefixes);
         }
 
-        /// <summary>
-        /// Gets the triple patterns.
-        /// </summary>
-        public ITriplePattern[] Patterns
-        {
-            get { return _patterns.ToArray(); }
-        }
-
-        /// <summary>
-        /// Gets the pattern item factory.
-        /// </summary>
-        internal PatternItemFactory PatternItemFactory
-        {
-            get { return _patternItemFactory; }
-        }
-
-        internal void AddPattern(TriplePattern triplePattern)
+        /// <inheritdoc />
+        public void AddPattern(TriplePattern triplePattern)
         {
             _patterns.Add(triplePattern);
         }

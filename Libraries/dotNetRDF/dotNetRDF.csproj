@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2019</Copyright>
+    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
     <AssemblyTitle>dotNetRDF</AssemblyTitle>
     <VersionPrefix>$(Version)</VersionPrefix>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
@@ -54,7 +54,8 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.28" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.31" />
+    <PackageReference Include="VDS.Common" Version="1.10.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>

@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -251,13 +251,7 @@ namespace VDS.RDF.Query.Algebra
                 context.OutputMultiset = new Multiset();
                 BaseMultiset results = context.Evaluate(zeroPath);//zeroPath.Evaluate(context);
                 context.OutputMultiset = currResults;
-                foreach (ISet s in results.Sets)
-                {
-                    if (!context.OutputMultiset.Sets.Contains(s))
-                    {
-                        context.OutputMultiset.Add(s.Copy());
-                    }
-                }
+                context.OutputMultiset.Merge(results);
             }
 
             context.InputMultiset = initialInput;

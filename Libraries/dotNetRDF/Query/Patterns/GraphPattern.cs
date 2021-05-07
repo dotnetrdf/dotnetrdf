@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -196,7 +196,7 @@ namespace VDS.RDF.Query.Patterns
         /// Adds inline data to a Graph Pattern respecting any BGP breaks.
         /// </summary>
         /// <param name="data"></param>
-        internal void AddInlineData(BindingsPattern data)
+        public void AddInlineData(BindingsPattern data)
         {
             if (_break)
             {

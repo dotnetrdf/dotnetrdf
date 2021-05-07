@@ -34,9 +34,7 @@ Exposes an Allegrograph server at http://localhost:10035/ with a catalog named `
 
 ### Stardog
 
-This image needs to be installed and initialized as described at https://www.stardog.com/docs/#_docker
-
-An evaluation license is required to run this image (you will be prompted for a "business email address" when the server first runs).
+This image requires a license file to run. You can obtain a free license file from https://www.stardog.com/. The image itself is the base Stardog Docker image with no modifications and the local `stardog` directory here is just provided as a default location for the Stardog home volume. If you place the license file you receive from Stardog into the `stardog` directory and then start the service (`docker compose up stardog`) the server should automatically find and use that license file. Please note that as this is the home directory for the server, running the server will also create all of the Stardog database files and log files in this directory.
 
 ### Virtuoso
 

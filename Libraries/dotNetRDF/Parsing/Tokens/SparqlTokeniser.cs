@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1607,7 +1607,8 @@ namespace VDS.RDF.Parsing.Tokens
                         // Check this is at the start of the string or immediately after the 'e'
                         if (Length > 0 && !Value.ToLower().EndsWith("e"))
                         {
-                            throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal and once immediately after the exponent specifier, if this was intended as a subtractive operator please insert space to disambiguate this");
+                            //throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal and once immediately after the exponent specifier, if this was intended as a subtractive operator please insert space to disambiguate this");
+                            break;
                         }
                     }
                 }

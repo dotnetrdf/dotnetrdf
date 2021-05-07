@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
+using VDS.RDF.Parsing;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
@@ -27,6 +28,8 @@ namespace VDS.RDF.Query
         {
             Server.Stop();
         }
+
+        public string ServiceUri => Server.Urls[0] + "/sparql";
 
         public readonly string ConstructQuery = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
         public readonly string ErrorConstructQuery = "CONSTRUCT {?s ?p ?err} WHERE {?s ?p ?o}";
@@ -69,6 +72,43 @@ namespace VDS.RDF.Query
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
                     .WithStatusCode(HttpStatusCode.OK));
         }
+
+        public void RegisterSelectQueryGetHandler(Predicate<string> queryPredicate, string results)
+        {
+            Server
+                .Given(Request.Create()
+                    .WithPath("/sparql")
+                    .UsingGet()
+                    .WithParam(queryParams =>
+                        queryParams.ContainsKey("query") &&
+                        queryParams["query"].Any(q => queryPredicate(HttpUtility.UrlDecode(q)))))
+                .RespondWith(Response.Create()
+                    .WithBody(results, encoding: Encoding.UTF8)
+                    .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
+                    .WithStatusCode(HttpStatusCode.OK));
+        }
+
+        public void RegisterSelectQueryPostHandler(Predicate<string> queryPredicate, string results)
+        {
+            Server
+                .Given(Request.Create()
+                    .WithPath("/sparql")
+                    .UsingPost()
+                    .WithBody(x => {
+                        var decoded = HttpUtility.UrlDecode(x);
+                        var prefix = "query=";
+                        var queryStartIndex = decoded.IndexOf(prefix) + prefix.Length;
+                        return queryPredicate(decoded.Substring(queryStartIndex));
+                    }))
+                .RespondWith(Response.Create()
+                    .WithBody(results, encoding: Encoding.UTF8)
+                    .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
+                    .WithStatusCode(HttpStatusCode.OK));
+        }
+
+        public Predicate<string> SameAsQuery(string expectedQuery) =>
+            actualQuery => actualQuery == new SparqlQueryParser().ParseFromString(expectedQuery).ToString();
+
 
         protected void RegisterConstructQueryGetHandler()
         {
