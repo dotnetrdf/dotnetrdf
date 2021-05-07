@@ -319,9 +319,11 @@ namespace VDS.RDF
         /// <param name="b">Second Literal Node.</param>
         /// <param name="culture">Culture to use for lexical string comparisons where more natural comparisons are not possible/applicable. If not specified (or specified as null), defaults to <see cref="CultureInfo.InvariantCulture"/>.</param>
         /// <param name="comparisonOptions">String Comparison options used for lexical string comparisons where more natural comparisons are not possible/applicable. Defaults to <see cref="CompareOptions.Ordinal"/> if not specified.</param>
+        /// <param name="uriFactory">Factory to use when creating temporary URIs for comparison purposes. If not specified, <see cref="UriFactory.Root"/> will be used.</param>
         /// <returns></returns>
         public static int CompareLiterals(ILiteralNode a, ILiteralNode b, CultureInfo culture = null,
-            CompareOptions comparisonOptions = CompareOptions.Ordinal)
+            CompareOptions comparisonOptions = CompareOptions.Ordinal,
+            IUriFactory uriFactory = null)
         {
             if (ReferenceEquals(a, b)) return 0;
             if (a == null)
@@ -736,12 +738,13 @@ namespace VDS.RDF
                                 // Uri Type
                                 // Try and convert to a URI and use lexical ordering
                                 Uri aUri, bUri;
+                                uriFactory ??= UriFactory.Root;
                                 try
                                 {
-                                    aUri = UriFactory.Create(a.Value);
+                                    aUri = uriFactory.Create(a.Value);
                                     try
                                     {
-                                        bUri = UriFactory.Create(b.Value);
+                                        bUri = uriFactory.Create(b.Value);
                                         return CompareUris(aUri, bUri);
                                     }
                                     catch
@@ -753,7 +756,7 @@ namespace VDS.RDF
                                 {
                                     try
                                     {
-                                        bUri = UriFactory.Create(b.Value);
+                                        bUri = uriFactory.Create(b.Value);
                                         return 1;
                                     }
                                     catch
