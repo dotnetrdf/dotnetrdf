@@ -59,7 +59,7 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="endpointUri">Endpoint URI.</param>
         public SparqlRemoteUpdateEndpoint(string endpointUri)
-            : this(UriFactory.Create(endpointUri)) { }
+            : this(UriFactory.Root.Create(endpointUri)) { }
 
         /// <summary>
         /// Gets/Sets the HTTP Method used for requests.

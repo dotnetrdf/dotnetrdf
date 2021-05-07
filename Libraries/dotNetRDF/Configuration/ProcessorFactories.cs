@@ -353,7 +353,7 @@ namespace VDS.RDF.Configuration
                     {
                         if (updateProc is ISparqlUpdateProcessor)
                         {
-                            processor = new ProtocolToUpdateProcessor((ISparqlQueryProcessor)queryProc, (ISparqlUpdateProcessor)updateProc);
+                            processor = new ProtocolToUpdateProcessor((ISparqlQueryProcessor)queryProc, (ISparqlUpdateProcessor)updateProc, UriFactory.Root);
                         }
                         else
                         {
@@ -374,7 +374,7 @@ namespace VDS.RDF.Configuration
                         temp = ConfigurationLoader.LoadObject(g, datasetNode);
                         if (temp is ISparqlDataset)
                         {
-                            processor = new LeviathanProtocolProcessor((ISparqlDataset)temp);
+                            processor = new LeviathanProtocolProcessor((ISparqlDataset)temp, UriFactory.Root);
                         }
                         else
                         {
@@ -390,7 +390,7 @@ namespace VDS.RDF.Configuration
 
                         if (store is IInMemoryQueryableStore)
                         {
-                            processor = new LeviathanProtocolProcessor((IInMemoryQueryableStore)store);
+                            processor = new LeviathanProtocolProcessor((IInMemoryQueryableStore)store, UriFactory.Root);
                         }
                         else
                         {
@@ -405,7 +405,7 @@ namespace VDS.RDF.Configuration
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IStorageProvider)
                     {
-                        processor = new GenericProtocolProcessor((IStorageProvider)temp);
+                        processor = new GenericProtocolProcessor((IStorageProvider)temp, UriFactory.Root);
                     }
                     else
                     {
