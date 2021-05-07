@@ -38,24 +38,26 @@ namespace VDS.RDF.Parsing
     /// Parser for reading SPARQL Results that have been serialized in the SPARQL Results TSV format.
     /// </summary>
     public class SparqlTsvParser
-        : ISparqlResultsReader
+        : BaseSparqlResultsReader
     {
         /// <summary>
         /// Loads a Result Set from an Input Stream.
         /// </summary>
         /// <param name="results">Result Set to load into.</param>
         /// <param name="input">Input Stream to read from.</param>
-        public void Load(SparqlResultSet results, StreamReader input)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(SparqlResultSet results, StreamReader input, IUriFactory uriFactory)
         {
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
             
             // Check Encoding
-            if (input.CurrentEncoding != Encoding.UTF8)
+            if (!Equals(input.CurrentEncoding, Encoding.UTF8))
             {
                 RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
             }
 
-            Load(results, (TextReader)input);
+            Load(results, (TextReader)input, uriFactory);
         }
 
 
@@ -64,10 +66,12 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="results">Result Set to load into.</param>
         /// <param name="filename">File to load from.</param>
-        public void Load(SparqlResultSet results, string filename)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(SparqlResultSet results, string filename, IUriFactory uriFactory)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            Load(results, new StreamReader(File.OpenRead(filename)));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(results, new StreamReader(File.OpenRead(filename)), uriFactory);
         }
 
         /// <summary>
@@ -75,11 +79,13 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="results">Result Set to load into.</param>
         /// <param name="input">Input to read from.</param>
-        public void Load(SparqlResultSet results, TextReader input)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(SparqlResultSet results, TextReader input, IUriFactory uriFactory)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
-            Load(new ResultSetHandler(results), input);
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(new ResultSetHandler(results), input, uriFactory);
         }
 
         /// <summary>
@@ -87,9 +93,11 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">Results Handler to use.</param>
         /// <param name="input">Input Stream to read from.</param>
-        public void Load(ISparqlResultsHandler handler, StreamReader input)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(ISparqlResultsHandler handler, StreamReader input, IUriFactory uriFactory)
         {
             if (input == null) throw new RdfParseException("Cannot parser SPARQL Results from a null input stream");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             // Check Encoding
             if (input.CurrentEncoding != Encoding.UTF8)
@@ -97,7 +105,7 @@ namespace VDS.RDF.Parsing
                 RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
             }
 
-            Load(handler, (TextReader)input);
+            Load(handler, (TextReader)input, uriFactory);
         }
 
         /// <summary>
@@ -105,10 +113,12 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">Results Handler to use.</param>
         /// <param name="filename">Filename to load from.</param>
-        public void Load(ISparqlResultsHandler handler, string filename)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(ISparqlResultsHandler handler, string filename, IUriFactory uriFactory)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            Load(handler, new StreamReader(File.OpenRead(filename)));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(handler, new StreamReader(File.OpenRead(filename)), uriFactory);
         }
 
         /// <summary>
@@ -116,14 +126,15 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">Results Handler to use.</param>
         /// <param name="input">Input to read from.</param>
-        public void Load(ISparqlResultsHandler handler, TextReader input)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(ISparqlResultsHandler handler, TextReader input, IUriFactory uriFactory)
         {
             if (handler == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Handler");
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input stream");
 
             try
             {
-                var context = new TokenisingResultParserContext(handler, new TsvTokeniser(ParsingTextReader.Create(input)));
+                var context = new TokenisingResultParserContext(handler, new TsvTokeniser(ParsingTextReader.Create(input)), uriFactory);
                 TryParseResults(context);
                 input.Close();
             }
@@ -362,7 +373,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Event which is raised when the parser encounters a non-fatal issue with the syntax being parsed
         /// </summary>
-        public event SparqlWarning Warning;
+        public override event SparqlWarning Warning;
 
         private void RaiseWarning(string message)
         {

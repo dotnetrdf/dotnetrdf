@@ -36,19 +36,16 @@ namespace VDS.RDF.Parsing.Contexts
     /// </summary>
     public class SparqlXmlParserContext : BaseResultsParserContext
     {
-        private XmlReader _reader;
-
         /// <summary>
         /// Creates a new Parser Context.
         /// </summary>
         /// <param name="reader">XML Reader.</param>
         /// <param name="handler">Results Handler.</param>
-        public SparqlXmlParserContext(XmlReader reader, ISparqlResultsHandler handler)
-            : base(handler)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public SparqlXmlParserContext(XmlReader reader, ISparqlResultsHandler handler, IUriFactory uriFactory = null)
+            : base(handler, uriFactory)
         {
-            if (reader == null) throw new ArgumentNullException("reader");
-
-            _reader = reader;
+            Input = reader ?? throw new ArgumentNullException(nameof(reader));
         }
 
         /// <summary>
@@ -56,18 +53,13 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="reader">XML Reader.</param>
         /// <param name="results">Results Set to load into.</param>
-        public SparqlXmlParserContext(XmlReader reader, SparqlResultSet results)
-            : this(reader, new ResultSetHandler(results)) { }
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public SparqlXmlParserContext(XmlReader reader, SparqlResultSet results, IUriFactory uriFactory = null)
+            : this(reader, new ResultSetHandler(results), uriFactory) { }
 
         /// <summary>
         /// Gets the XML Reader.
         /// </summary>
-        public XmlReader Input
-        {
-            get
-            {
-                return _reader;
-            }
-        }
+        public XmlReader Input { get; }
     }
 }

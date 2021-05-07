@@ -35,18 +35,16 @@ namespace VDS.RDF.Parsing.Contexts
     /// </summary>
     public class SparqlRdfParserContext : BaseResultsParserContext
     {
-        private IGraph _g;
-
         /// <summary>
         /// Creates a new Parser Context.
         /// </summary>
         /// <param name="g">Graph to parse from.</param>
         /// <param name="handler">Results Handler.</param>
-        public SparqlRdfParserContext(IGraph g, ISparqlResultsHandler handler)
-            : base(handler)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public SparqlRdfParserContext(IGraph g, ISparqlResultsHandler handler, IUriFactory uriFactory = null)
+            : base(handler, uriFactory)
         {
-            if (g == null) throw new ArgumentNullException("g");
-            _g = g;
+            Graph = g ?? throw new ArgumentNullException(nameof(g));
         }
 
         /// <summary>
@@ -54,19 +52,13 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="g">Graph to parse from.</param>
         /// <param name="results">Results Handler.</param>
-        public SparqlRdfParserContext(IGraph g, SparqlResultSet results)
-            : this(g, new ResultSetHandler(results)) { }
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public SparqlRdfParserContext(IGraph g, SparqlResultSet results, IUriFactory uriFactory = null)
+            : this(g, new ResultSetHandler(results), uriFactory) { }
 
         /// <summary>
         /// Gets the Graph being parsed from.
         /// </summary>
-        public IGraph Graph
-        {
-            get
-            {
-                return _g;
-            }
-        }
-
+        public IGraph Graph { get; }
     }
 }
