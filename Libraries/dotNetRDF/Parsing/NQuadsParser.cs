@@ -323,7 +323,7 @@ namespace VDS.RDF.Parsing
                     s = TryParseSubject(tokens);
                     p = TryParsePredicate(tokens);
                     o = TryParseObject(tokens);
-                    Uri context = TryParseContext(handler, tokens);
+                    Uri context = TryParseContext(handler, tokens, uriFactory);
 
                     TryParseTriple(handler, uriFactory, s, p, o, context);
 
@@ -406,7 +406,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private Uri TryParseContext(IRdfHandler handler, ITokenQueue tokens)
+        private Uri TryParseContext(IRdfHandler handler, ITokenQueue tokens, IUriFactory uriFactory)
         {
             IToken next = tokens.Dequeue();
             if (next.TokenType == Token.DOT)
@@ -420,7 +420,7 @@ namespace VDS.RDF.Parsing
                     context = handler.CreateBlankNode(next.Value.Substring(2));
                     break;
                 case Token.URI:
-                    context = TryParseUri(handler, next.Value);
+                    context = TryParseUri(handler, next.Value, uriFactory);
                     break;
                 case Token.LITERAL:
                     if (Syntax != NQuadsSyntax.Original) throw new RdfParseException("Only a Blank Node/URI may be used as the graph name in RDF NQuads 1.1");
@@ -435,7 +435,7 @@ namespace VDS.RDF.Parsing
                             break;
                         case Token.DATATYPE:
                             tokens.Dequeue();
-                            context = handler.CreateLiteralNode(next.Value, ((IUriNode) TryParseUri(handler, temp.Value.Substring(1, temp.Value.Length - 2))).Uri);
+                            context = handler.CreateLiteralNode(next.Value, ((IUriNode) TryParseUri(handler, temp.Value.Substring(1, temp.Value.Length - 2), uriFactory)).Uri);
                             break;
                         default:
                             context = handler.CreateLiteralNode(next.Value);
@@ -460,11 +460,11 @@ namespace VDS.RDF.Parsing
             }
             else if (context.NodeType == NodeType.Blank)
             {
-                return UriFactory.Create("nquads:bnode:" + context.GetHashCode());
+                return uriFactory.Create("nquads:bnode:" + context.GetHashCode());
             }
             else if (context.NodeType == NodeType.Literal)
             {
-                return UriFactory.Create("nquads:literal:" + context.GetHashCode());
+                return uriFactory.Create("nquads:literal:" + context.GetHashCode());
             }
             else
             {
@@ -482,7 +482,7 @@ namespace VDS.RDF.Parsing
                     subj = handler.CreateBlankNode(s.Value.Substring(2));
                     break;
                 case Token.URI:
-                    subj = TryParseUri(handler, s.Value);
+                    subj = TryParseUri(handler, s.Value, uriFactory);
                     break;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + s.GetType().ToString() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", s);
@@ -507,13 +507,13 @@ namespace VDS.RDF.Parsing
                     break;
                 case Token.LITERALWITHDT:
                     var dtUri = ((LiteralWithDataTypeToken) o).DataType;
-                    obj = handler.CreateLiteralNode(o.Value, ((IUriNode) TryParseUri(handler, dtUri.Substring(1, dtUri.Length - 2))).Uri);
+                    obj = handler.CreateLiteralNode(o.Value, ((IUriNode) TryParseUri(handler, dtUri.Substring(1, dtUri.Length - 2), uriFactory)).Uri);
                     break;
                 case Token.LITERALWITHLANG:
                     obj = handler.CreateLiteralNode(o.Value, ((LiteralWithLanguageSpecifierToken) o).Language);
                     break;
                 case Token.URI:
-                    obj = TryParseUri(handler, o.Value);
+                    obj = TryParseUri(handler, o.Value, uriFactory);
                     break;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + o.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", o);
@@ -528,11 +528,11 @@ namespace VDS.RDF.Parsing
         /// <param name="handler">RDF Handler.</param>
         /// <param name="uri">URI.</param>
         /// <returns>URI Node if parsed successfully.</returns>
-        private static INode TryParseUri(IRdfHandler handler, string uri)
+        private static INode TryParseUri(IRdfHandler handler, string uri, IUriFactory uriFactory)
         {
             try
             {
-                IUriNode n = handler.CreateUriNode(UriFactory.Create(uri));
+                IUriNode n = handler.CreateUriNode(uriFactory.Create(uri));
                 if (!n.Uri.IsAbsoluteUri)
                     throw new RdfParseException("NQuads does not permit relative URIs");
                 return n;
