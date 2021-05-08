@@ -519,7 +519,7 @@ namespace VDS.RDF.Query
             else
             {
                 // Make the query normally via GET
-                httpResponse = ExecuteQuery(UriFactory.Create(queryUri.ToString()), string.Empty, acceptHeader);
+                httpResponse = ExecuteQuery(new Uri(queryUri.ToString()), string.Empty, acceptHeader);
             }
 
             return httpResponse;

@@ -25,11 +25,8 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using VDS.RDF.Parsing;
@@ -84,7 +81,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 // OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), _basePath));
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, new Uri(UriFactory.Root.Create(context.Request.Url.AbsoluteUri), _basePath));
                 HandlerHelper.SendToClient(webContext, svcDescrip, _config);
                 return;
             }
@@ -104,7 +101,7 @@ namespace VDS.RDF.Web
                         _config.Processor.ProcessPut(webContext);
                         break;
                     case "POST":
-                        var serviceUri = new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), _basePath);
+                        var serviceUri = new Uri(UriFactory.Root.Create(context.Request.Url.AbsoluteUri), _basePath);
                         if (context.Request.Url.AbsoluteUri.Equals(serviceUri.AbsoluteUri))
                         {
                             // If there is a ?graph parameter or ?default parameter then this is a normal Post
