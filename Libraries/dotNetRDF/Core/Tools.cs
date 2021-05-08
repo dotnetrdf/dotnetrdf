@@ -120,53 +120,45 @@ namespace VDS.RDF
                     // Empty Uri reference refers to the Base Uri
                     return uriFactory.Create(FixMalformedUriStrings(baseUri)).AbsoluteUri;
                 }
-                else
-                {
-                    // Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
-                    //var u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
-                    var u = uriFactory.Create(FixMalformedUriStrings(uriref));
-                    if (u.IsAbsoluteUri) 
-                    {
-                        // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
-                        return u.AbsoluteUri;
-                    } 
-                    else 
-                    {
-                        Uri b = uriFactory.Create(FixMalformedUriStrings(baseUri));
 
-                        // Check that the Base Uri is valid for resolving Relative URIs
-                        // If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
-                        // We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
-                        if (u.ToString().StartsWith("#"))
-                        {
-                            return ResolveUri(u, b).AbsoluteUri;
-                        }
-                        else if (IsValidBaseUri(b))
-                        {
-                            return ResolveUri(u, b).AbsoluteUri;
-                        }
-                        else
-                        {
-                            throw new RdfParseException("Cannot resolve a URI since the Base URI is not a valid for resolving Relative URIs against");
-                        }
-                    }
+                // Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
+                var u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
+                if (u.IsAbsoluteUri) 
+                {
+                    // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
+                    return u.AbsoluteUri;
                 }
+
+                Uri b = uriFactory.Create(FixMalformedUriStrings(baseUri));
+
+                // Check that the Base Uri is valid for resolving Relative URIs
+                // If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
+                // We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
+                if (u.ToString().StartsWith("#"))
+                {
+                    return ResolveUri(u, b).AbsoluteUri;
+                }
+
+                if (IsValidBaseUri(b))
+                {
+                    return ResolveUri(u, b).AbsoluteUri;
+                }
+
+                throw new RdfParseException("Cannot resolve a URI since the Base URI is not a valid for resolving Relative URIs against");
             }
-            else
-            {
-                if (uriref.Equals(string.Empty))
-                {
-                    throw new RdfParseException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
-                }
 
-                try
-                {
-                    return new Uri(FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
-                }
-                catch (UriFormatException)
-                {
-                    throw new RdfParseException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
-                }
+            if (uriref.Equals(string.Empty))
+            {
+                throw new RdfParseException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
+            }
+
+            try
+            {
+                return new Uri(FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
+            }
+            catch (UriFormatException)
+            {
+                throw new RdfParseException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
             }
         }
 
