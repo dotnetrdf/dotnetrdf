@@ -208,7 +208,7 @@ namespace VDS.RDF
             IBlankNode a = g.CreateBlankNode("b1");
             IBlankNode b = g.CreateBlankNode("b2");
             IBlankNode c = g.CreateBlankNode("b3");
-            INode pred = g.CreateUriNode(UriFactory.Create("http://predicate"));
+            INode pred = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
             g.Assert(a, pred, g.CreateLiteralNode("A"));
             g.Assert(a, pred, b);
@@ -221,7 +221,7 @@ namespace VDS.RDF
             IBlankNode a2 = h.CreateBlankNode("b4");
             IBlankNode b2 = h.CreateBlankNode("b5");
             IBlankNode c2 = h.CreateBlankNode("b3");
-            INode pred2 = h.CreateUriNode(UriFactory.Create("http://predicate"));
+            INode pred2 = h.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
             h.Assert(a2, pred2, h.CreateLiteralNode("A"));
             h.Assert(a2, pred2, b2);

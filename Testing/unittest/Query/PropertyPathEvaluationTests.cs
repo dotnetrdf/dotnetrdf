@@ -157,8 +157,8 @@ namespace VDS.RDF.Query
             var path =
                 new FixedCardinality(new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
             var algebra = GetAlgebra(path,
-                                                     new Graph().CreateUriNode(
-                                                         UriFactory.Create(ConfigurationLoader.ClassHttpHandler)), null);
+                new Graph().CreateUriNode(
+                    UriFactory.Root.Create(ConfigurationLoader.ClassHttpHandler)), null);
             var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
             var results = algebra.Evaluate(context);
 
@@ -175,9 +175,9 @@ namespace VDS.RDF.Query
             var path =
                 new FixedCardinality(new Property(_factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
             var algebra = GetAlgebra(path,
-                                                     new Graph().CreateUriNode(
-                                                         UriFactory.Create(ConfigurationLoader.ClassHttpHandler)),
-                                                     _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
+                new Graph().CreateUriNode(
+                    UriFactory.Root.Create(ConfigurationLoader.ClassHttpHandler)),
+                _factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
             var context = new SparqlEvaluationContext(null, _data, new LeviathanQueryOptions());
             var results = algebra.Evaluate(context);
 

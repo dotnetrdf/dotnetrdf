@@ -53,7 +53,7 @@ namespace VDS.RDF.Dynamic
             g.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var d = s.AsDynamic(g);
 
             Assert.Equal<INode>(s, d);
@@ -102,9 +102,9 @@ WHERE {
                 d,
                 new Dictionary<string, object>
                 {
-                    { "s", UriFactory.Create("urn:s") },
-                    { "p", UriFactory.Create("urn:p") },
-                    { "o", UriFactory.Create("urn:o") }
+                    { "s", UriFactory.Root.Create("urn:s") },
+                    { "p", UriFactory.Root.Create("urn:p") },
+                    { "o", UriFactory.Root.Create("urn:o") }
                 });
 
             Assert.IsType<DynamicSparqlResult>(d);
@@ -238,7 +238,7 @@ WHERE {
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = d.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = d.CreateUriNode(UriFactory.Root.Create("urn:s"));
 
             Assert.Equal(s, d["urn:s"]);
         }
@@ -251,7 +251,7 @@ WHERE {
 <http://example.com/s> <http://example.com/p> <http://example.com/o> .
 ");
 
-            var s = d.CreateUriNode(UriFactory.Create("http://example.com/s"));
+            var s = d.CreateUriNode(UriFactory.Root.Create("http://example.com/s"));
 
             Assert.Equal(s, d["http://example.com/s"]);
         }
@@ -288,7 +288,7 @@ u:s u:p u:o .
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = d.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = d.CreateUriNode(UriFactory.Root.Create("urn:s"));
 
             Assert.Throws<InvalidOperationException>(() =>
                 Assert.Equal(s, d["/s"]));
@@ -297,12 +297,12 @@ u:s u:p u:o .
         [Fact]
         public void Expands_hash_URI_base()
         {
-            var d = new DynamicGraph { BaseUri = UriFactory.Create("http://example.com/#") };
+            var d = new DynamicGraph { BaseUri = UriFactory.Root.Create("http://example.com/#") };
             d.LoadFromString(@"
 <http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .
 ");
 
-            var s = d.CreateUriNode(UriFactory.Create("http://example.com/#s"));
+            var s = d.CreateUriNode(UriFactory.Root.Create("http://example.com/#s"));
 
             Assert.Equal(s, d["s"]);
         }
@@ -310,12 +310,12 @@ u:s u:p u:o .
         [Fact]
         public void Expands_slash_URI_base()
         {
-            var d = new DynamicGraph { BaseUri = UriFactory.Create("http://example.com/") };
+            var d = new DynamicGraph { BaseUri = UriFactory.Root.Create("http://example.com/") };
             d.LoadFromString(@"
 <http://example.com/s> <http://example.com/p> <http://example.com/o> .
 ");
 
-            var s = d.CreateUriNode(UriFactory.Create("http://example.com/s"));
+            var s = d.CreateUriNode(UriFactory.Root.Create("http://example.com/s"));
 
             Assert.Equal(s, d["s"]);
         }
@@ -346,14 +346,14 @@ u:s u:p u:o .
         ""P10675199DT2H48M5.4775807S""^^xsd:duration .
 ");
 
-            var d = new DynamicGraph { BaseUri = UriFactory.Create("urn:") };
+            var d = new DynamicGraph { BaseUri = UriFactory.Root.Create("urn:") };
 
             d["s"] = new
             {
                 p = new object[]
                 {
                     new NodeFactory().CreateBlankNode("o"),
-                    UriFactory.Create("urn:o"),
+                    UriFactory.Root.Create("urn:o"),
                     true,
                     byte.MaxValue,
                     DateTime.MaxValue,
@@ -376,7 +376,7 @@ u:s u:p u:o .
         [Fact]
         public void Rejects_unknown_data_types()
         {
-            var d = new DynamicGraph { BaseUri = UriFactory.Create("urn:") };
+            var d = new DynamicGraph { BaseUri = UriFactory.Root.Create("urn:") };
 
             Assert.Throws<InvalidOperationException>(() =>
                 d["s"] = new
@@ -412,7 +412,7 @@ u:s u:p u:o .
         [Fact]
         public void Reduces_hash_base_URIs()
         {
-            var d = new DynamicGraph { BaseUri = UriFactory.Create("http://example.com/#") };
+            var d = new DynamicGraph { BaseUri = UriFactory.Root.Create("http://example.com/#") };
             d.LoadFromString(@"
 <http://example.com/#s> <http://example.com/#p> <http://example.com/#o> .
 ");
@@ -423,7 +423,7 @@ u:s u:p u:o .
         [Fact]
         public void Reduces_base_URIs()
         {
-            var d = new DynamicGraph { BaseUri = UriFactory.Create("urn:") };
+            var d = new DynamicGraph { BaseUri = UriFactory.Root.Create("urn:") };
             d.LoadFromString(@"
 <urn:s> <urn:p> <urn:o> .
 ");

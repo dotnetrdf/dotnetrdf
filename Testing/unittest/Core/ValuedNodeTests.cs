@@ -71,7 +71,7 @@ namespace VDS.RDF
         [Fact]
         public void NodeAsValuedDateTime2()
         {
-            INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             IValuedNode valued = orig.AsValuedNode();
             Assert.Equal(DateTimeKind.Unspecified, valued.AsDateTime().Kind);
         }
@@ -79,7 +79,7 @@ namespace VDS.RDF
         [Fact]
         public void NodeAsValuedDateTime3()
         {
-            INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00-07:00", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode orig = _graph.CreateLiteralNode("2013-06-19T09:58:00-07:00", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
             IValuedNode valued = orig.AsValuedNode();
             Assert.Equal(16, valued.AsDateTime().Hour);
             Assert.Equal(DateTimeKind.Utc, valued.AsDateTime().Kind);

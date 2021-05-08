@@ -41,7 +41,7 @@ namespace VDS.RDF.Writing
         private void Test(String literal, IRdfWriter writer, IRdfReader parser)
         {
             IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
+            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
             g.Assert(g.CreateUriNode(":subj"), g.CreateUriNode(":pred"), g.CreateLiteralNode(literal));
 
             var strWriter = new System.IO.StringWriter();

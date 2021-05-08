@@ -322,7 +322,7 @@ namespace VDS.RDF.Query.FullText
 
                 for (var i = 0; i < 10; i++)
                 {
-                    g.Assert(new Triple(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Create("ex:predicate")), example));
+                    g.Assert(new Triple(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("ex:predicate")), example));
                 }
                 indexer.Index(g);
 

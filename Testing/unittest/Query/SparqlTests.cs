@@ -484,7 +484,7 @@ WHERE
             IGraph g = new Graph();
             ILiteralNode lit = g.CreateLiteralNode("example", "en-gb");
             INode s = g.CreateBlankNode();
-            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+            INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
             g.Assert(s, p, lit);
             TestLanguageSpecifierCase(g);
@@ -496,7 +496,7 @@ WHERE
             IGraph g = new Graph();
             ILiteralNode lit = g.CreateLiteralNode("example", "en-GB");
             INode s = g.CreateBlankNode();
-            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+            INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
             g.Assert(s, p, lit);
             TestLanguageSpecifierCase(g);
@@ -508,7 +508,7 @@ WHERE
             IGraph g = new Graph();
             ILiteralNode lit = g.CreateLiteralNode("example", "EN-gb");
             INode s = g.CreateBlankNode();
-            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+            INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
             g.Assert(s, p, lit);
             TestLanguageSpecifierCase(g);
@@ -520,7 +520,7 @@ WHERE
             IGraph g = new Graph();
             ILiteralNode lit = g.CreateLiteralNode("example", "EN-GB");
             INode s = g.CreateBlankNode();
-            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+            INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
             g.Assert(s, p, lit);
             TestLanguageSpecifierCase(g);

@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Aggregates
         public void SparqlGroupConcat1()
         {
             IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.org/ns#"));
+            g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/ns#"));
             g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
 
             RunTest(g, "SELECT (GROUP_CONCAT(?o) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "object");
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Aggregates
         public void SparqlGroupConcat2()
         {
             IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.org/ns#"));
+            g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/ns#"));
             g.Assert(g.CreateUriNode("ex:subject"), g.CreateUriNode("ex:predicate"), g.CreateLiteralNode("object"));
 
             RunTest(g, "SELECT (GROUP_CONCAT(?s) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "subject");

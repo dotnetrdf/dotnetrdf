@@ -89,7 +89,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromFile(@"resources\rvesse.ttl");
 
-            dynamic d = g.AsDynamic(UriFactory.Create("http://www.dotnetrdf.org/people#"), predicateBaseUri: UriFactory.Create("http://xmlns.com/foaf/0.1/"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("http://www.dotnetrdf.org/people#"), predicateBaseUri: UriFactory.Root.Create("http://xmlns.com/foaf/0.1/"));
 
             dynamic rvesse = d.rvesse;
             dynamic onlineAccount = rvesse.OnlineAccount.Single();
@@ -98,7 +98,7 @@ namespace VDS.RDF.Dynamic
             dynamic mbox = rvesse.mbox;
             dynamic hex_id = rvesse["wot:hasKey"].Single()["wot:hex_id"].Single();
 
-            Assert.Equal(g.CreateUriNode(UriFactory.Create("http://www.dotnetrdf.org/people#rvesse")), rvesse);
+            Assert.Equal(g.CreateUriNode(UriFactory.Root.Create("http://www.dotnetrdf.org/people#rvesse")), rvesse);
             Assert.IsAssignableFrom<IBlankNode>(onlineAccount);
             Assert.Equal("RobVesse", accountName);
             Assert.Equal(2, currentProjects.Count());
@@ -124,10 +124,10 @@ namespace VDS.RDF.Dynamic
 
             var g = new Graph
             {
-                BaseUri = UriFactory.Create("http://example.org/")
+                BaseUri = UriFactory.Root.Create("http://example.org/")
             };
-            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example.org/"));
-            g.NamespaceMap.AddNamespace("rdfs", UriFactory.Create("http://www.w3.org/2000/01/rdf-schema#"));
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example.org/"));
+            g.NamespaceMap.AddNamespace("rdfs", UriFactory.Root.Create("http://www.w3.org/2000/01/rdf-schema#"));
 
             dynamic d = g.AsDynamic();
 
@@ -214,34 +214,34 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromFile(@"resources\rvesse.ttl");
             var actual = new Graph();
-            dynamic d = actual.AsDynamic(UriFactory.Create("http://www.dotnetrdf.org/people#"));
+            dynamic d = actual.AsDynamic(UriFactory.Root.Create("http://www.dotnetrdf.org/people#"));
 
             var rvesse = new FoafPerson(d.rvesse, actual);
             rvesse.Names.Add("Rob Vesse");
             rvesse.FirstNames.Add("Rob");
             rvesse.LastNames.Add("Vesse");
-            rvesse.Homepages.Add(UriFactory.Create("http://www.dotnetrdf.org/"));
-            rvesse.Emails.Add(UriFactory.Create("mailto:rav08r@ecs.soton.ac.uk"));
-            rvesse.Emails.Add(UriFactory.Create("mailto:rvesse@apache.org"));
-            rvesse.Emails.Add(UriFactory.Create("mailto:rvesse@cray.com"));
-            rvesse.Emails.Add(UriFactory.Create("mailto:rvesse@dotnetrdf.org"));
-            rvesse.Emails.Add(UriFactory.Create("mailto:rvesse@vdesign-studios.com"));
-            rvesse.Emails.Add(UriFactory.Create("mailto:rvesse@yarcdata.com"));
+            rvesse.Homepages.Add(UriFactory.Root.Create("http://www.dotnetrdf.org/"));
+            rvesse.Emails.Add(UriFactory.Root.Create("mailto:rav08r@ecs.soton.ac.uk"));
+            rvesse.Emails.Add(UriFactory.Root.Create("mailto:rvesse@apache.org"));
+            rvesse.Emails.Add(UriFactory.Root.Create("mailto:rvesse@cray.com"));
+            rvesse.Emails.Add(UriFactory.Root.Create("mailto:rvesse@dotnetrdf.org"));
+            rvesse.Emails.Add(UriFactory.Root.Create("mailto:rvesse@vdesign-studios.com"));
+            rvesse.Emails.Add(UriFactory.Root.Create("mailto:rvesse@yarcdata.com"));
 
             var account = new FoafAccount(d.CreateBlankNode(), actual);
             account.Names.Add("RobVesse");
-            account.Profiles.Add(UriFactory.Create("http://twitter.com/RobVesse"));
-            account.Services.Add(UriFactory.Create("http://twitter.com/"));
+            account.Profiles.Add(UriFactory.Root.Create("http://twitter.com/RobVesse"));
+            account.Services.Add(UriFactory.Root.Create("http://twitter.com/"));
             rvesse.Accounts.Add(account);
 
             var jena = new DoapProject(d.CreateBlankNode(), actual);
             jena.Names.Add("Apache Jena");
-            jena.Homepages.Add(UriFactory.Create("http://incubator.apache.org/jena"));
+            jena.Homepages.Add(UriFactory.Root.Create("http://incubator.apache.org/jena"));
             rvesse.Projects.Add(jena);
 
             var dnr = new DoapProject(d.CreateBlankNode(), actual);
             dnr.Names.Add("dotNetRDF");
-            dnr.Homepages.Add(UriFactory.Create("http://www.dotnetrdf.org/"));
+            dnr.Homepages.Add(UriFactory.Root.Create("http://www.dotnetrdf.org/"));
             rvesse.Projects.Add(dnr);
 
             var key = new WotKey(d.CreateBlankNode(), actual);
@@ -255,8 +255,8 @@ namespace VDS.RDF.Dynamic
         private class FoafPerson : DynamicNode
         {
             public FoafPerson(INode node, IGraph graph)
-                : base(node, graph, UriFactory.Create("http://xmlns.com/foaf/0.1/"))
-                => Add("rdf:type", UriFactory.Create("http://xmlns.com/foaf/0.1/Person"));
+                : base(node, graph, UriFactory.Root.Create("http://xmlns.com/foaf/0.1/"))
+                => Add("rdf:type", UriFactory.Root.Create("http://xmlns.com/foaf/0.1/Person"));
 
             public ICollection<string> Names => new DynamicObjectCollection<string>(this, "name");
 
@@ -278,7 +278,7 @@ namespace VDS.RDF.Dynamic
         private class FoafAccount : DynamicNode
         {
             public FoafAccount(INode node, IGraph graph)
-                : base(node, graph, UriFactory.Create("http://xmlns.com/foaf/0.1/")) { }
+                : base(node, graph, UriFactory.Root.Create("http://xmlns.com/foaf/0.1/")) { }
 
             public ICollection<string> Names => new DynamicObjectCollection<string>(this, "accountName");
 
@@ -290,8 +290,8 @@ namespace VDS.RDF.Dynamic
         private class DoapProject : DynamicNode
         {
             public DoapProject(INode node, IGraph graph)
-                : base(node, graph, UriFactory.Create("http://www.web-semantics.org/ns/pm#"))
-                => Add("rdf:type", UriFactory.Create("http://usefulinc.com/ns/doap#Project"));
+                : base(node, graph, UriFactory.Root.Create("http://www.web-semantics.org/ns/pm#"))
+                => Add("rdf:type", UriFactory.Root.Create("http://usefulinc.com/ns/doap#Project"));
 
             public ICollection<string> Names => new DynamicObjectCollection<string>(this, "name");
 
@@ -301,8 +301,8 @@ namespace VDS.RDF.Dynamic
         private class WotKey : DynamicNode
         {
             public WotKey(INode node, IGraph graph)
-                : base(node, graph, UriFactory.Create("http://xmlns.com/wot/0.1/"))
-                => Add("rdf:type", UriFactory.Create("http://xmlns.com/wot/0.1/PubKey"));
+                : base(node, graph, UriFactory.Root.Create("http://xmlns.com/wot/0.1/"))
+                => Add("rdf:type", UriFactory.Root.Create("http://xmlns.com/wot/0.1/PubKey"));
 
             public ICollection<string> Ids => new DynamicObjectCollection<string>(this, "hex_id");
 
@@ -314,8 +314,8 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
-            IUriNode expected = g.CreateUriNode(UriFactory.Create("urn:s"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
+            IUriNode expected = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
 
             // See 1. for other key options
             dynamic actual = d["s"];
@@ -328,8 +328,8 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
-            IUriNode expected = g.CreateUriNode(UriFactory.Create("urn:s"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
+            IUriNode expected = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
 
             dynamic actual = d.s;
 
@@ -342,7 +342,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = actual.AsDynamic(UriFactory.Root.Create("urn:"));
 
             // See 1. for other key options
             // See 3. for other value options
@@ -357,7 +357,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = actual.AsDynamic(UriFactory.Root.Create("urn:"));
 
             // See 3. for other value options
             d.s = new { p = "o" };
@@ -370,7 +370,7 @@ namespace VDS.RDF.Dynamic
         {
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            var actual = new Graph { BaseUri = UriFactory.Create("urn:") };
+            var actual = new Graph { BaseUri = UriFactory.Root.Create("urn:") };
             dynamic d = actual.AsDynamic();
 
             // See 1. for other key options
@@ -385,7 +385,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
 
             // See 1. for other key options
             // See 3. for other value options
@@ -399,7 +399,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
 
             // See 1. for other key options
             dynamic condition = d.ContainsKey("s");
@@ -412,7 +412,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
 
             // See 1. for other key options
             d.Remove("s");
@@ -425,7 +425,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
 
             // See 1. for other key options
             // See 3. for other value options
@@ -440,7 +440,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             IEnumerable<string> expected = "o".AsEnumerable();
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             // See 1. for other key options
@@ -455,7 +455,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             IEnumerable<string> expected = "o".AsEnumerable();
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             dynamic actual = s.p;
@@ -469,7 +469,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = actual.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             // See 1. for other key options
@@ -485,7 +485,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = actual.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             // See 2. for other value options
@@ -500,7 +500,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = actual.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             // See 1. for other key options
@@ -515,7 +515,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             // See 1. for other key options
@@ -530,7 +530,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             // See 1. for other key options
@@ -544,7 +544,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             s.Clear();
@@ -557,7 +557,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             // See 1. for other key options
@@ -571,7 +571,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic s = d.s;
 
             // See 1. for other key options
@@ -587,7 +587,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var expected = 1;
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic sp = d.s.p;
 
             dynamic actual = sp.Count;
@@ -601,7 +601,7 @@ namespace VDS.RDF.Dynamic
             var expected = new Graph();
             expected.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var actual = new Graph();
-            dynamic d = actual.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = actual.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic sp = d.s.p;
 
             // See 2. for other value options
@@ -614,7 +614,7 @@ namespace VDS.RDF.Dynamic
         public void Object_collection_clear()
         {
             var g = new Graph();
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic sp = d.s.p;
 
             sp.Clear();
@@ -627,7 +627,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic sp = d.s.p;
 
             // See 2. for other value options
@@ -641,7 +641,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             dynamic sp = d.s.p;
 
             // See 2. for other value options
@@ -655,7 +655,7 @@ namespace VDS.RDF.Dynamic
         {
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
-            dynamic d = g.AsDynamic(UriFactory.Create("urn:"));
+            dynamic d = g.AsDynamic(UriFactory.Root.Create("urn:"));
             var expected = "o";
             dynamic sp = d.s.p;
 

@@ -35,7 +35,7 @@ namespace VDS.RDF.Dynamic
         public void BaseUri_defaults_to_graph_base_uri()
         {
             var g = new Graph { BaseUri = new Uri("urn:g") };
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var d = new DynamicNode(s, g);
 
             Assert.Equal(g.BaseUri, d.BaseUri);
@@ -45,7 +45,7 @@ namespace VDS.RDF.Dynamic
         public void Can_act_like_uri_node()
         {
             var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var d = new DynamicNode(s, g);
 
             Assert.IsAssignableFrom<IUriNode>(d);
@@ -78,7 +78,7 @@ namespace VDS.RDF.Dynamic
         public void InternalId_fails_if_underlying_node_is_not_blank()
         {
             var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var d = new DynamicNode(s, g);
 
             Assert.Throws<InvalidOperationException>(() =>
@@ -93,7 +93,7 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var d = new DynamicNode(s, g);
             var p = (IDynamicMetaObjectProvider)d;
             var mo = p.GetMetaObject(Expression.Empty());

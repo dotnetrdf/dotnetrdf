@@ -208,7 +208,7 @@ namespace VDS.RDF
             ILiteralNode lcase = g.CreateLiteralNode("example", "en-gb");
             ILiteralNode ucase = g.CreateLiteralNode("example", "en-GB");
             INode s = g.CreateBlankNode();
-            INode p = g.CreateUriNode(UriFactory.Create("http://predicate"));
+            INode p = g.CreateUriNode(UriFactory.Root.Create("http://predicate"));
 
             g.Assert(s, p, lcase);
             g.Assert(s, p, ucase);

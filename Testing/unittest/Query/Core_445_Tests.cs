@@ -96,13 +96,13 @@ WHERE {
         {
             var randomizer = new Random();
             var command = new SparqlParameterizedString("SELECT * FROM <urn:with@char> FROM <urn:with?or$char> WHERE { ?subject rdfs:subClassOf ? $c . $c rdfs:label \"string literal with lang tag @inLiteralParamPattern \"@en }");
-            command.SetVariable("subject", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
-            command.SetVariable("c", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
-            command.SetVariable("or", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
-            command.SetVariable("char", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
-            command.SetParameter("char", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
-            command.SetParameter("en", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
-            command.SetParameter("inLiteralParamPattern", g.CreateUriNode(UriFactory.Create("urn:some-uri")));
+            command.SetVariable("subject", g.CreateUriNode(UriFactory.Root.Create("urn:some-uri")));
+            command.SetVariable("c", g.CreateUriNode(UriFactory.Root.Create("urn:some-uri")));
+            command.SetVariable("or", g.CreateUriNode(UriFactory.Root.Create("urn:some-uri")));
+            command.SetVariable("char", g.CreateUriNode(UriFactory.Root.Create("urn:some-uri")));
+            command.SetParameter("char", g.CreateUriNode(UriFactory.Root.Create("urn:some-uri")));
+            command.SetParameter("en", g.CreateUriNode(UriFactory.Root.Create("urn:some-uri")));
+            command.SetParameter("inLiteralParamPattern", g.CreateUriNode(UriFactory.Root.Create("urn:some-uri")));
             var output = command.ToString();
             Assert.True(output.Contains("<urn:with@char>"), "In IRI @ characters should not start a parameter capture");
             Assert.True(output.Contains("<urn:with?or$char>"), "In IRI ? and $ characters should not start a variable capture");
@@ -140,7 +140,7 @@ WHERE {
                 }
                 foreach (var variable in _variables.Take(variablesToSet))
                 {
-                    command.SetVariable(variable, g.CreateUriNode(UriFactory.Create("urn:test#" + _randomizer.Next(randomBodyIterations).ToString())));
+                    command.SetVariable(variable, g.CreateUriNode(UriFactory.Root.Create("urn:test#" + _randomizer.Next(randomBodyIterations).ToString())));
                 }
                 timer.Stop();
                 Console.WriteLine(variablesToSet.ToString() + " Variables set: " + timer.ElapsedMilliseconds.ToString());

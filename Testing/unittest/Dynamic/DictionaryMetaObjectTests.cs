@@ -41,7 +41,7 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             dynamic d = g;
 
             Assert.Equal(s, d.s);
@@ -60,7 +60,7 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             dynamic d = g;
 
             d.s = new { p = "o" };

@@ -231,7 +231,7 @@ namespace VDS.RDF.Query
             var query = "SELECT * WHERE { ?s ?p ?o . }";
             SparqlQuery q = _parser.ParseFromString(query);
             var factory = new NodeFactory();
-            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
         [Fact]
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query
             var query = "SELECT * WHERE { ?s ?p ?o . ?o ?x ?y }";
             SparqlQuery q = _parser.ParseFromString(query);
             var factory = new NodeFactory();
-            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
         [Fact]
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query
             var query = "SELECT * WHERE { ?s ?p ?o . FILTER(ISURI(?o)) }";
             SparqlQuery q = _parser.ParseFromString(query);
             var factory = new NodeFactory();
-            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
         [Fact]
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query
             var query = "SELECT * WHERE { ?s ?p ?o . BIND(ISURI(?o) AS ?uri) }";
             SparqlQuery q = _parser.ParseFromString(query);
             var factory = new NodeFactory();
-            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
         }
 
         [Fact]
@@ -271,7 +271,7 @@ namespace VDS.RDF.Query
                 var query = "SELECT * WHERE { ?s ?p ?o . LET (?uri := ISURI(?o))}";
                 SparqlQuery q = _parser.ParseFromString(query);
                 var factory = new NodeFactory();
-                TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
+                TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>" }, new String[] { "?o" });
             }
             finally
             {
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query
             var query = "SELECT * WHERE { ?s ?p ?o . OPTIONAL { ?o ?x ?y } }";
             SparqlQuery q = _parser.ParseFromString(query);
             var factory = new NodeFactory();
-            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "OPTIONAL" }, new String[] { "?o" });
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "OPTIONAL" }, new String[] { "?o" });
         }
 
         [Fact]
@@ -294,7 +294,7 @@ namespace VDS.RDF.Query
             var query = "SELECT * WHERE { ?s ?p ?o . GRAPH <http://example.org/graph> { ?o ?x ?y } }";
             SparqlQuery q = _parser.ParseFromString(query);
             var factory = new NodeFactory();
-            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "GRAPH" }, new String[] { "?o" });
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "GRAPH" }, new String[] { "?o" });
         }
 
         [Fact]
@@ -303,7 +303,7 @@ namespace VDS.RDF.Query
             var query = "SELECT * WHERE { ?s ?p ?o . MINUS { ?o ?x ?y } }";
             SparqlQuery q = _parser.ParseFromString(query);
             var factory = new NodeFactory();
-            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "MINUS" }, new String[] { "?o" });
+            TestSubstitution(q, "o", factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "MINUS" }, new String[] { "?o" });
         }
 
         [Fact]
@@ -312,7 +312,7 @@ namespace VDS.RDF.Query
             var query = "SELECT * WHERE { { ?s ?p ?o .} UNION { ?o ?x ?y } }";
             SparqlQuery q = _parser.ParseFromString(query);
 
-            TestSubstitution(q, "o", _factory.CreateUriNode(UriFactory.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "UNION" }, new String[] { "?o" });
+            TestSubstitution(q, "o", _factory.CreateUriNode(UriFactory.Root.Create("http://example.org/object")), new String[] { "<http://example.org/object>", "UNION" }, new String[] { "?o" });
         }
 
         [Fact]
@@ -320,7 +320,7 @@ namespace VDS.RDF.Query
         {
             var query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
             SparqlQuery q = _parser.ParseFromString(query);
-            TestSubstitution(q, "g", _factory.CreateUriNode(UriFactory.Create("http://example.org/graph")), new String[] { "<http://example.org/graph>", "GRAPH" }, new String[] { "?g" });
+            TestSubstitution(q, "g", _factory.CreateUriNode(UriFactory.Root.Create("http://example.org/graph")), new String[] { "<http://example.org/graph>", "GRAPH" }, new String[] { "?g" });
         }
 
         [Fact]

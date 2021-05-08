@@ -498,10 +498,10 @@ namespace VDS.RDF.Storage
 
                 var g = new Graph();
                 INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                INode dnrType = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-                INode objFactory = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassObjectFactory));
+                INode dnrType = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyType));
+                INode objFactory = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.ClassObjectFactory));
                 INode virtFactory = g.CreateLiteralNode("VDS.RDF.Configuration.VirtuosoObjectFactory, dotNetRDF.Data.Virtuoso");
-                INode genericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+                INode genericManager = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.ClassStorageProvider));
                 INode virtManager = g.CreateLiteralNode("VDS.RDF.Storage.VirtuosoManager, dotNetRDF.Data.Virtuoso");
 
                 //Serialize Configuration
@@ -589,7 +589,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = new Graph();
-                var t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));
+                var t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Root.Create("http://example.org/object")));
 
                 manager.UpdateGraph("http://localhost/insertBNodeTest", t.AsEnumerable(), null);
 
@@ -618,7 +618,7 @@ namespace VDS.RDF.Storage
             {
                 manager.DeleteGraph("http://localhost/deleteBNodeTest");
                 var g = new Graph();
-                var t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));
+                var t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Root.Create("http://example.org/object")));
                 g.Assert(t);
 
                 manager.UpdateGraph("http://localhost/deleteBNodeTest", t.AsEnumerable(), null);

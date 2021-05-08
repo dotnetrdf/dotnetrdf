@@ -24,11 +24,11 @@ namespace VDS.RDF.Query
             var binding = new BindingsPattern(bindingVars);
             binding.AddTuple(new BindingTuple(bindingVars, new List<PatternItem>
             {
-                new NodeMatchPattern(g.CreateUriNode(UriFactory.Create("http://xmlns.com/foaf/0.1/name")))
+                new NodeMatchPattern(g.CreateUriNode(UriFactory.Root.Create("http://xmlns.com/foaf/0.1/name")))
             }));
             binding.AddTuple(new BindingTuple(bindingVars, new List<PatternItem>
             {
-                new NodeMatchPattern(g.CreateUriNode(UriFactory.Create("http://xmlns.com/foaf/0.1/givenname")))
+                new NodeMatchPattern(g.CreateUriNode(UriFactory.Root.Create("http://xmlns.com/foaf/0.1/givenname")))
             }));
             startingQuery.RootGraphPattern.AddInlineData(binding);
             

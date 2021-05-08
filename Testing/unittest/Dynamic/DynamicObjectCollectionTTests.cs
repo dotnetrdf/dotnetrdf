@@ -41,7 +41,7 @@ namespace VDS.RDF.Dynamic
 ");
 
             var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var test = new Test(s, g);
 
             test.PrimitiveProperty.Add("o");
@@ -59,7 +59,7 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:primitive> ""o"" .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var test = new Test(s, g);
 
             Assert.Contains("s", test.PrimitiveProperty);
@@ -77,7 +77,7 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:primitive> ""o"" .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var test = new Test(s, g);
 
             var objects = new string[5]; // +2 for padding on each side
@@ -96,7 +96,7 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:complex> <urn:s> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var test = new Test(s, g);
 
             var expected = new[] { s }.GetEnumerator();
@@ -127,7 +127,7 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:primitive> ""o"" .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var test = new Test(s, g);
 
             test.PrimitiveProperty.Remove("o");

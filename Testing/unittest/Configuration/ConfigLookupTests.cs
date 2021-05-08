@@ -98,7 +98,7 @@ _:a dnr:type <appsetting:ConfigurationLookupNode3> .";
         public void ConfigurationLookupNode4()
         {
             var g = new Graph();
-            INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
+            INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyType)));
             Assert.Null(value);
         }
 
@@ -154,7 +154,7 @@ _:a dnr:other <http://other> ;
         public void ConfigurationLookupNode8()
         {
             var g = new Graph();
-            g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            g.NamespaceMap.AddNamespace("dnr", UriFactory.Root.Create(ConfigurationLoader.ConfigurationNamespace));
             INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") });
             Assert.Null(value);
         }
@@ -390,7 +390,7 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
         public void ConfigurationLookupString4()
         {
             var g = new Graph();
-            var value = ConfigurationLoader.GetConfigurationString(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
+            var value = ConfigurationLoader.GetConfigurationString(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyType)));
             Assert.Null(value);
         }
 
@@ -442,7 +442,7 @@ _:a dnr:type <appsetting:ConfigurationLookupString3> .";
         public void ConfigurationLookupValue4()
         {
             var g = new Graph();
-            var value = ConfigurationLoader.GetConfigurationValue(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
+            var value = ConfigurationLoader.GetConfigurationValue(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyType)));
             Assert.Null(value);
         }
 

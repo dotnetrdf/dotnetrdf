@@ -123,9 +123,9 @@ _:s3 <urn:p6> <urn:o12> .
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var d = (IEnumerable)g;
             var spo = new[] { s, p, o };
 

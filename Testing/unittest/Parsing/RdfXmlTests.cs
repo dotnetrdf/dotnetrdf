@@ -191,9 +191,9 @@ namespace VDS.RDF.Parsing
             IGraph g = new Graph();
             var parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
             parser.Load(g, @"resources\rdfxml-defaultns-scope.xml");
-            var resourceNode = g.CreateUriNode(UriFactory.Create("http://example.org/thing/1"));
-            var p1Node = g.CreateUriNode(UriFactory.Create("http://example.org/ns/b#p1"));
-            var p2Node = g.CreateUriNode(UriFactory.Create("http://example.org/ns/a#p2"));
+            var resourceNode = g.CreateUriNode(UriFactory.Root.Create("http://example.org/thing/1"));
+            var p1Node = g.CreateUriNode(UriFactory.Root.Create("http://example.org/ns/b#p1"));
+            var p2Node = g.CreateUriNode(UriFactory.Root.Create("http://example.org/ns/a#p2"));
             var triples = g.GetTriplesWithSubject(resourceNode).ToList();
 
             Assert.False(g.IsEmpty);

@@ -409,7 +409,7 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
         public void SparqlUpdateInsertWithGraphClause1()
         {
             var g = new Graph();
-            g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
+            g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
 
             var dataset = new InMemoryDataset(g);
 
@@ -420,15 +420,15 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             processor.ProcessCommandSet(commands);
 
             Assert.Equal(2, dataset.GraphNames.Count());
-            Assert.True(dataset.HasGraph(g.CreateUriNode(UriFactory.Create("http://subject"))));
+            Assert.True(dataset.HasGraph(g.CreateUriNode(UriFactory.Root.Create("http://subject"))));
         }
 
         [Fact]
         public void SparqlUpdateDeleteWithGraphClause1()
         {
             var g = new Graph();
-            g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
-            var h = new Graph(new UriNode(UriFactory.Create("http://subject")));
+            g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
+            var h = new Graph(new UriNode(UriFactory.Root.Create("http://subject")));
             h.Merge(g);
 
             var dataset = new InMemoryDataset(g);
@@ -444,16 +444,16 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             processor.ProcessCommandSet(commands);
 
             Assert.Equal(2, dataset.GraphNames.Count());
-            Assert.True(dataset.HasGraph(new UriNode(UriFactory.Create("http://subject"))));
-            Assert.Equal(0, dataset[new UriNode(UriFactory.Create("http://subject"))].Triples.Count);
+            Assert.True(dataset.HasGraph(new UriNode(UriFactory.Root.Create("http://subject"))));
+            Assert.Equal(0, dataset[new UriNode(UriFactory.Root.Create("http://subject"))].Triples.Count);
         }
 
         [Fact]
         public void SparqlUpdateDeleteWithGraphClause2()
         {
             var g = new Graph();
-            g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
-            var h = new Graph(new UriNode(UriFactory.Create("http://subject")));
+            g.Assert(g.CreateUriNode(UriFactory.Root.Create("http://subject")), g.CreateUriNode(UriFactory.Root.Create("http://predicate")), g.CreateUriNode(UriFactory.Root.Create("http://object")));
+            var h = new Graph(new UriNode(UriFactory.Root.Create("http://subject")));
             h.Merge(g);
 
             var dataset = new InMemoryDataset(g);
@@ -469,9 +469,9 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             processor.ProcessCommandSet(commands);
 
             Assert.Equal(3, dataset.GraphNames.Count());
-            Assert.True(dataset.HasGraph(new UriNode(UriFactory.Create("http://subject"))));
-            Assert.True(dataset.HasGraph(new UriNode(UriFactory.Create("http://object"))));
-            Assert.Equal(0, dataset[new UriNode(UriFactory.Create("http://subject"))].Triples.Count);
+            Assert.True(dataset.HasGraph(new UriNode(UriFactory.Root.Create("http://subject"))));
+            Assert.True(dataset.HasGraph(new UriNode(UriFactory.Root.Create("http://object"))));
+            Assert.Equal(0, dataset[new UriNode(UriFactory.Root.Create("http://subject"))].Triples.Count);
         }
 
         [Fact]
