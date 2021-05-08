@@ -40,9 +40,24 @@ namespace VDS.RDF
         #region Constructor
 
         /// <summary>
-        /// Creates a new instance of a Graph.
+        /// Creates a new instance of a graph.
         /// </summary>
         public Graph() { }
+
+        /// <summary>
+        /// Creates a new instance of a Graph.
+        /// </summary>
+        /// <param name="name">The name to assign to the graph. If null, the graph is unnamed.</param>
+        /// <param name="emptyNamespaceMap">Whether to initialise the graph with an empty namespace map. If false, the namespace map will contain default declarations for the RDF, RDFS and XSD namespaces.</param>
+        /// <param name="nodeFactory">The factory to use when constructing nodes in this graph. If null, defaults to a new <see cref="NodeFactory"/> instance using the same UriFactory instance as this graph.</param>
+        /// <param name="uriFactory">The factory to use when constructing URIs in this graph. If null, defaults to the <see cref="VDS.RDF.UriFactory.Root">root UriFactory</see>.</param>
+        /// <param name="tripleCollection">The initial content of the graph. If null, the graph will initially be empty.</param>
+        public Graph(IRefNode name, INodeFactory nodeFactory,
+            IUriFactory uriFactory, BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
+        :base(tripleCollection, name, nodeFactory, uriFactory)
+        {
+            if (emptyNamespaceMap) NamespaceMap.Clear();
+        }
 
         /// <summary>
         /// Create a new instance of a graph with the specified name.

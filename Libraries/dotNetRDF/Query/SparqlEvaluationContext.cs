@@ -57,6 +57,7 @@ namespace VDS.RDF.Query
             Options = options;
             NodeComparer = Options.NodeComparer;
             OrderingComparer = new SparqlOrderingComparer(NodeComparer);
+            UriFactory = options.UriFactory;
         }
 
         /// <summary>
@@ -82,6 +83,7 @@ namespace VDS.RDF.Query
             Binder = binder;
             Options = options;
             OrderingComparer = new SparqlOrderingComparer(Options.NodeComparer);
+            UriFactory = options.UriFactory;
         }
 
         /// <summary>
@@ -150,7 +152,10 @@ namespace VDS.RDF.Query
         /// </summary>
         public SparqlOrderingComparer OrderingComparer { get; }
 
-
+        /// <summary>
+        /// Get the factory to use when creating URI instances.
+        /// </summary>
+        public IUriFactory UriFactory { get; }
         /// <summary>
         /// Starts the Execution Timer.
         /// </summary>

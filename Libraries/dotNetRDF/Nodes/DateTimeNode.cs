@@ -90,14 +90,14 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="value">Date Time value.</param>
         public DateTimeNode(DateTimeOffset value)
-            : this(value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
+            : this(value, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
 
         /// <summary>
         /// Creates a new Date Time valued node.
         /// </summary>
         /// <param name="value">Date Time value.</param>
         public DateTimeNode(DateTime value)
-            : this(value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
+            : this(value, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
 
         /// <summary>
         /// Creates a new Date Time valued node.
@@ -106,7 +106,7 @@ namespace VDS.RDF.Nodes
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
         public DateTimeNode(DateTimeOffset value, string lexicalValue, bool normalizeLiteralValue = false)
-            : this(value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime), normalizeLiteralValue) { }
+            : this(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime), normalizeLiteralValue) { }
 
         /// <summary>
         /// Creates a new Date Time valued node.
@@ -115,7 +115,7 @@ namespace VDS.RDF.Nodes
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
         public DateTimeNode(DateTime value, string lexicalValue, bool normalizeLiteralValue = false)
-            : this(value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime), normalizeLiteralValue) { }
+            : this(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime), normalizeLiteralValue) { }
 
         /// <summary>
         /// Creates a new Date Time valued node.
@@ -125,7 +125,7 @@ namespace VDS.RDF.Nodes
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="normalizeLiteralValue">Whether to perform unicode normalization on <paramref name="lexicalValue"/>.</param>
         public DateTimeNode(DateTime value, DateTimeOffset offsetValue, string lexicalValue, bool normalizeLiteralValue = false)
-            : this(value, offsetValue, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime), normalizeLiteralValue) { }
+            : this(value, offsetValue, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime), normalizeLiteralValue) { }
 
         /// <summary>
         /// Creates a new Date Time valued node.
@@ -306,7 +306,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="value">Date Time value.</param>
         public DateNode(DateTimeOffset value)
-            : base(value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
+            : base(value, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
 
         /// <summary>
         /// Creates a new Date valued node.
@@ -314,14 +314,14 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Date Time value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         public DateNode(DateTimeOffset value, string lexicalValue)
-            : base(value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
+            : base(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
 
         /// <summary>
         /// Creates a new Date valued node.
         /// </summary>
         /// <param name="value">Date Time value.</param>
         public DateNode(DateTime value)
-            : base(value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
+            : base(value, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
 
         /// <summary>
         /// Creates a new Date valued node.
@@ -329,6 +329,6 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Date Time value.</param>
         /// <param name="lexicalValue">Lexical Value.</param>
         public DateNode(DateTime value, string lexicalValue)
-            : base(value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
+            : base(value, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
     }
 }

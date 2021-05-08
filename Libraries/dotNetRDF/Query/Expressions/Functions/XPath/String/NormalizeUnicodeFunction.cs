@@ -55,24 +55,26 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal.
         /// </summary>
+        /// <param name="context">Evaluation context.</param>
         /// <param name="stringLit">Simple/String typed Literal.</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(ILiteralNode stringLit)
+        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
         {
-            return new StringNode(stringLit.Value.Normalize(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new StringNode(stringLit.Value.Normalize(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal and Argument.
         /// </summary>
+        /// <param name="context">Evaluation context.</param>
         /// <param name="stringLit">Simple/String typed Literal.</param>
         /// <param name="arg">Argument.</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg)
+        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg)
         {
             if (arg == null)
             {
-                return ValueInternal(stringLit);
+                return ValueInternal(context, stringLit);
             }
             else
             {
@@ -101,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                         throw new RdfQueryException("'" + arg.Value + "' is not a valid Normalization Form as defined by the XPath specification");
                 }
 
-                return new StringNode(normalized, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                return new StringNode(normalized, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
         }
 

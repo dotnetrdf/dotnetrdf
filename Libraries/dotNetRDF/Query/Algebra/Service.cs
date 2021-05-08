@@ -27,8 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Patterns;
 
@@ -119,7 +117,7 @@ namespace VDS.RDF.Query.Algebra
             if (_endpointSpecifier.TokenType == Token.URI)
             {
                 var baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.AbsoluteUri;
-                var endpointUri = UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
+                var endpointUri = context.UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
                 return new SparqlRemoteEndpoint(endpointUri);
             }
 

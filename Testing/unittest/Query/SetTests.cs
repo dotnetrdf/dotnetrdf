@@ -148,9 +148,9 @@ namespace VDS.RDF.Query
         public void SparqlSetDistinctnessComparer1()
         {
             ISet x = new Set();
-            x.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            x.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
             ISet y = new Set();
-            y.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
 
 
             var comparer = new SetDistinctnessComparer(new String[] { "a" });
@@ -165,10 +165,10 @@ namespace VDS.RDF.Query
         public void SparqlSetDistinctnessComparer2()
         {
             ISet x = new Set();
-            x.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            x.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
             x.Add("b", _factory.CreateLiteralNode("x"));
             ISet y = new Set();
-            y.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
             y.Add("b", _factory.CreateLiteralNode("y"));
             
             var comparer = new SetDistinctnessComparer(new String[] { "a" });
@@ -183,10 +183,10 @@ namespace VDS.RDF.Query
         public void SparqlSetDistinctnessComparer3()
         {
             ISet x = new Set();
-            x.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            x.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
             x.Add("b", _factory.CreateLiteralNode("x"));
             ISet y = new Set();
-            y.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
             y.Add("b", _factory.CreateLiteralNode("y"));
 
             var comparer = new SetDistinctnessComparer(new String[] { "a", "b" });
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query
         {
             ISet x = new Set();
             ISet y = new Set();
-            y.Add("a", _factory.CreateUriNode(UriFactory.Create("http://x")));
+            y.Add("a", _factory.CreateUriNode(UriFactory.Root.Create("http://x")));
 
             var comparer = new SetDistinctnessComparer(new String[] { "a" });
             var xHash = comparer.GetHashCode(x);

@@ -874,7 +874,7 @@ namespace VDS.RDF
             var g = new Graph();
             ILiteralNode canonical = (1).ToLiteral(g);
             ILiteralNode alternate =
-                g.CreateLiteralNode("01", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+                g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
             var ns = new List<INode>()
             {
@@ -897,7 +897,7 @@ namespace VDS.RDF
             var g = new Graph();
             ILiteralNode canonical = (true).ToLiteral(g);
             ILiteralNode alternate =
-                g.CreateLiteralNode("TRUE", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+                g.CreateLiteralNode("TRUE", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
 
             var ns = new List<INode>()
             {
@@ -920,7 +920,7 @@ namespace VDS.RDF
             var g = new Graph();
             ILiteralNode canonical = (1d).ToLiteral(g);
             ILiteralNode alternate =
-                g.CreateLiteralNode("1.00000", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
+                g.CreateLiteralNode("1.00000", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
 
             var ns = new List<INode>()
             {

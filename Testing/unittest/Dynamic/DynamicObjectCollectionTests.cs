@@ -46,7 +46,7 @@ namespace VDS.RDF.Dynamic
         public void Requires_predicate()
         {
             var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var d = new DynamicNode(s, g);
 
             Assert.Throws<ArgumentNullException>(() =>
@@ -87,8 +87,8 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
             var d = new DynamicNode(s, g);
             var c = new DynamicObjectCollection(d, p);
 
@@ -99,8 +99,8 @@ namespace VDS.RDF.Dynamic
         public void Is_writable()
         {
             var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
             var d = new DynamicNode(s, g);
             var c = new DynamicObjectCollection(d, p);
 
@@ -116,9 +116,9 @@ namespace VDS.RDF.Dynamic
 ");
 
             var g = new Graph();
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var d = new DynamicNode(s, g);
             var c = new DynamicObjectCollection(d, p);
 
@@ -192,8 +192,8 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
             var d = new DynamicNode(s, g);
             var c = new DynamicObjectCollection(d, p);
 
@@ -236,9 +236,9 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var d = new DynamicNode(s, g);
             var c = new DynamicObjectCollection(d, p);
 
@@ -282,9 +282,9 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var d = new DynamicNode(s, g);
             var c = new DynamicObjectCollection(d, p);
 
@@ -330,9 +330,9 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var d = new DynamicNode(s, g);
             var c = new DynamicObjectCollection(d, p);
 
@@ -415,9 +415,9 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var d = new DynamicNode(s, g);
             var c = new DynamicObjectCollection(d, p);
 
@@ -462,9 +462,9 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:o> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var d = new DynamicNode(s, g);
             var c = new DynamicObjectCollection(d, p) as IEnumerable;
 
@@ -488,9 +488,9 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var d = new DynamicNode(s, g);
             var l = new DynamicObjectCollection(d, p) as IDynamicMetaObjectProvider;
             var mo = l.GetMetaObject(Expression.Empty());

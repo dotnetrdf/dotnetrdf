@@ -147,13 +147,13 @@ namespace VDS.RDF.Writing
         {
             // Always force RDF Namespace to be correctly defined
             g.NamespaceMap.Import(DefaultNamespaces);
-            g.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
+            g.NamespaceMap.AddNamespace("rdf", g.UriFactory.Create(NamespaceMapper.RDF));
 
             // Create our Writer Context and start the XML Document
-            var context = new RdfXmlWriterContext(g, output);
-            context.CompressionLevel = CompressionLevel;
-            context.UseDtd = UseDtd;
-            context.UseAttributes = UseAttributes;
+            var context = new RdfXmlWriterContext(g, output)
+            {
+                CompressionLevel = CompressionLevel, UseDtd = UseDtd, UseAttributes = UseAttributes,
+            };
             context.Writer.WriteStartDocument();
 
             if (context.UseDtd)
@@ -291,7 +291,7 @@ namespace VDS.RDF.Writing
             // First off determine what the XML Element should be
             // If there is a rdf:type triple then create a typed node
             // Otherwise create a rdf:Description node
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
             Triple typeTriple = ts.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
             INode subj;
             if (typeTriple != null)
@@ -605,7 +605,7 @@ namespace VDS.RDF.Writing
                 }
 
                 // First see if there is a typed triple available (only applicable if we have more than one triple)
-                INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
                 Triple typeTriple = c.Triples.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
                 if (typeTriple != null)
                 {
@@ -745,7 +745,7 @@ namespace VDS.RDF.Writing
             }
             var prefix = "ns" + context.NextNamespaceID;
             context.NextNamespaceID++;
-            context.NamespaceMap.AddNamespace(prefix, UriFactory.Create(nsUri));
+            context.NamespaceMap.AddNamespace(prefix, context.UriFactory.Create(nsUri));
 
             tempPrefix = prefix;
             tempUri = nsUri;
@@ -759,10 +759,7 @@ namespace VDS.RDF.Writing
         /// <param name="message">Warning Message.</param>
         private void RaiseWarning(string message)
         {
-            if (Warning != null)
-            {
-                Warning(message);
-            }
+            Warning?.Invoke(message);
         }
 
         /// <summary>

@@ -85,8 +85,9 @@ namespace VDS.RDF
         /// Returns a URI with any Fragment ID removed from it.
         /// </summary>
         /// <param name="u">URI.</param>
+        /// <param name="uriFactory">The factory to use to create the returned URI. If not specified, defaults to <see cref="UriFactory.Root"/>.</param>
         /// <returns></returns>
-        public static Uri StripUriFragment(Uri u)
+        public static Uri StripUriFragment(Uri u, IUriFactory uriFactory = null)
         {
             if (u.Fragment.Equals(string.Empty))
             {
@@ -96,7 +97,7 @@ namespace VDS.RDF
             {
                 var temp = u.AbsoluteUri;
                 temp = temp.Substring(0, temp.Length - u.Fragment.Length);
-                return UriFactory.Create(temp);
+                return (uriFactory??UriFactory.Root).Create(temp);
             }
         }
 
@@ -105,64 +106,59 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uriref">Uri Reference to resolve.</param>
         /// <param name="baseUri">Base Uri to resolve against.</param>
+        /// <param name="uriFactory">The factory to use to create the temporary URI created internally by this method. If not specified, defaults to <see cref="UriFactory.Root"/>.</param>
         /// <returns>Resolved Uri as a String.</returns>
         /// <exception cref="RdfParseException">RDF Parse Exception if the Uri cannot be resolved for a know reason.</exception>
         /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed.</exception>
-        public static string ResolveUri(string uriref, string baseUri)
+        public static string ResolveUri(string uriref, string baseUri, IUriFactory uriFactory = null)
         {
+            uriFactory ??= UriFactory.Root;
             if (!baseUri.Equals(string.Empty))
             {
                 if (uriref.Equals(string.Empty))
                 {
                     // Empty Uri reference refers to the Base Uri
-                    return UriFactory.Create(FixMalformedUriStrings(baseUri)).AbsoluteUri;
+                    return uriFactory.Create(FixMalformedUriStrings(baseUri)).AbsoluteUri;
                 }
-                else
-                {
-                    // Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
-                    var u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
-                    if (u.IsAbsoluteUri) 
-                    {
-                        // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
-                        return u.AbsoluteUri;
-                    } 
-                    else 
-                    {
-                        Uri b = UriFactory.Create(FixMalformedUriStrings(baseUri));
 
-                        // Check that the Base Uri is valid for resolving Relative URIs
-                        // If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
-                        // We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
-                        if (u.ToString().StartsWith("#"))
-                        {
-                            return ResolveUri(u, b).AbsoluteUri;
-                        }
-                        else if (IsValidBaseUri(b))
-                        {
-                            return ResolveUri(u, b).AbsoluteUri;
-                        }
-                        else
-                        {
-                            throw new RdfParseException("Cannot resolve a URI since the Base URI is not a valid for resolving Relative URIs against");
-                        }
-                    }
+                // Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
+                var u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
+                if (u.IsAbsoluteUri) 
+                {
+                    // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
+                    return u.AbsoluteUri;
                 }
+
+                Uri b = uriFactory.Create(FixMalformedUriStrings(baseUri));
+
+                // Check that the Base Uri is valid for resolving Relative URIs
+                // If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
+                // We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
+                if (u.ToString().StartsWith("#"))
+                {
+                    return ResolveUri(u, b).AbsoluteUri;
+                }
+
+                if (IsValidBaseUri(b))
+                {
+                    return ResolveUri(u, b).AbsoluteUri;
+                }
+
+                throw new RdfParseException("Cannot resolve a URI since the Base URI is not a valid for resolving Relative URIs against");
             }
-            else
-            {
-                if (uriref.Equals(string.Empty))
-                {
-                    throw new RdfParseException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
-                }
 
-                try
-                {
-                    return new Uri(FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
-                }
-                catch (UriFormatException)
-                {
-                    throw new RdfParseException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
-                }
+            if (uriref.Equals(string.Empty))
+            {
+                throw new RdfParseException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
+            }
+
+            try
+            {
+                return new Uri(FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
+            }
+            catch (UriFormatException)
+            {
+                throw new RdfParseException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
             }
         }
 

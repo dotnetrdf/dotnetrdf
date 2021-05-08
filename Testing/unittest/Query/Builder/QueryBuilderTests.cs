@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Builder
             builder.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             var q = builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o")
-                                            .Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object<IUriNode>("foaf:Person")
+                                            .Subject("s").PredicateUri(UriFactory.Root.Create(RdfSpecsHelper.RdfType)).Object<IUriNode>("foaf:Person")
                                             .Subject("s").PredicateUri("foaf:Name").Object("Tomasz Pluskiewicz")
                                             .Subject<IBlankNode>("bnode_id").Predicate("p").Object("o"))
                 .BuildQuery();
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Builder
             var builder = QueryBuilder.SelectAll()
                                       .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
                                       .Optional(gpb => gpb.Where(tpb => tpb.Subject("s")
-                                                                           .PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType))
+                                                                           .PredicateUri(UriFactory.Root.Create(RdfSpecsHelper.RdfType))
                                                                            .Object("type")));
 
             // when
@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Builder
             var builder = QueryBuilder.SelectAll()
                                       .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
                                       .Optional(gpb => gpb.Where(tpb => tpb.Subject("s")
-                                                                           .PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType))
+                                                                           .PredicateUri(UriFactory.Root.Create(RdfSpecsHelper.RdfType))
                                                                            .Object("type")))
                                       .Where(tpb => tpb.Subject("x").Predicate("y").Object("z"));
 

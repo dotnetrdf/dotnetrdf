@@ -114,6 +114,18 @@ namespace VDS.RDF.Parsing.Contexts
             : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser) { }
 
         /// <summary>
+        /// Creates a new TriG Parser Context with custom settings.
+        /// </summary>
+        /// <param name="handler">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public TriGParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
+            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser, uriFactory) { }
+
+        /// <summary>
         /// Gets/Sets whether the Default Graph exists.
         /// </summary>
         public bool DefaultGraphExists

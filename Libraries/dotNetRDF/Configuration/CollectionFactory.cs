@@ -56,7 +56,7 @@ namespace VDS.RDF.Configuration
             object wrappedCollection;
             if (_tripleCollectionType.IsAssignableFrom(targetType))
             {
-                wrapsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingTripleCollection)));
+                wrapsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingTripleCollection)));
                 if (wrapsNode == null)
                 {
                     // Simple Triple Collection creation
@@ -86,7 +86,7 @@ namespace VDS.RDF.Configuration
             }
             else if (_graphCollectionType.IsAssignableFrom(targetType))
             {
-                wrapsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
+                wrapsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
                 if (wrapsNode == null)
                 {
                     // Simple Graph Collection creation

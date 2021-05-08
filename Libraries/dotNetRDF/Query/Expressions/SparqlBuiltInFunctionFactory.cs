@@ -653,7 +653,7 @@ namespace VDS.RDF.Query.Expressions
             get 
             {
                 return (from u in SparqlSpecsHelper.FunctionKeywords
-                        select UriFactory.Create(SparqlFunctionsNamespace + u.ToLower()));
+                        select UriFactory.Root.Create(SparqlFunctionsNamespace + u.ToLower()));
             }
         }
 
@@ -665,7 +665,7 @@ namespace VDS.RDF.Query.Expressions
             get 
             {
                 return (from u in SparqlSpecsHelper.AggregateFunctionKeywords
-                        select UriFactory.Create(SparqlFunctionsNamespace + u.ToLower()));
+                        select UriFactory.Root.Create(SparqlFunctionsNamespace + u.ToLower()));
             }
         }
     }

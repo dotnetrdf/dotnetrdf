@@ -120,3 +120,11 @@ Of course if you want a URI to be both the name and the base URI of the graph, t
     var graph = new Graph(new UriNode(new Uri("http://example.org/graph1"))) {
        BaseUri = new Uri("http://example.org/graph1")
     };
+
+## There is now more control over the interning of URIs
+
+Prior to this release, the UriFactory static class provided a way to construct URIs in a way that interns the URI, providing the same System.Net.Uri instance for the same URI string. This can drastically reduce memory usage in some scenarios, but in other scenarios where you are dealing with a lot of data or simply a lot of variance in URIs, the interned map of URIs can actually become a memory-hog itself.
+
+In this release we introduce the concept of a hierarchical structure of URI factories each of which has its own interned set of URIs and which can also delegate lookups to a parent factory. This gives you a lot more control over how long interned URIs are kept for. For example in a server you may choose to only intern URIs on a per request basis, or create a session-scoped factory so that the interned URIs are kept just within a single session.
+
+To support this we introduce a new IUriFactory interface and a default implementation (CachingUriFactory). The static UriFactory class now has a static Root (which is an instance of CachingUriFactory) and the static Create and Clear methods just delegate to Root.Create and Root.Clear. In addition there is a lot of restructuring of APIs to add the option to pass a UriFactory or configure a UriFactory to use - for example the IRdfReader interface now has overrides that accept an IUriFactory parameter. In all cases, if the parameter is optional and you don't specify an IUriFactory instance for these parameters, the default is to use the static UriFactory.Root instance, so existing code should not be affected by this change.

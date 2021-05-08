@@ -132,12 +132,10 @@ namespace VDS.RDF.Writing
         {
             // Always force RDF Namespace to be correctly defined
             g.NamespaceMap.Import(DefaultNamespaces);
-            g.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
+            g.NamespaceMap.AddNamespace("rdf", g.UriFactory.Create(NamespaceMapper.RDF));
 
             // Create our Writer Context and start the XML Document
-            var context = new RdfXmlWriterContext(g, output);
-            context.CompressionLevel = CompressionLevel;
-            context.UseDtd = UseDtd;
+            var context = new RdfXmlWriterContext(g, output) {CompressionLevel = CompressionLevel, UseDtd = UseDtd};
             context.Writer.WriteStartDocument();
 
             if (context.UseDtd)
@@ -721,7 +719,7 @@ namespace VDS.RDF.Writing
             }
             var prefix = "ns" + context.NextNamespaceID;
             context.NextNamespaceID++;
-            context.NamespaceMap.AddNamespace(prefix, UriFactory.Create(nsUri));
+            context.NamespaceMap.AddNamespace(prefix, context.UriFactory.Create(nsUri));
 
             tempPrefix = prefix;
             tempUri = nsUri;
@@ -753,7 +751,7 @@ namespace VDS.RDF.Writing
         private Dictionary<INode, string> FindTypeReferences(RdfXmlWriterContext context)
         {
             // LINQ query to find all Triples which define the rdf:type of a Uri/BNode as a Uri
-            IUriNode rdfType = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "type"));
+            IUriNode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "type"));
             IEnumerable<Triple> ts = from t in context.Graph.Triples
                                      where (t.Subject.NodeType == NodeType.Blank || t.Subject.NodeType == NodeType.Uri)
                                             && t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri

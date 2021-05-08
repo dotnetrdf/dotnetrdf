@@ -38,83 +38,64 @@ namespace VDS.RDF.Parsing.Contexts
     public class BaseResultsParserContext 
         : IResultsParserContext
     {
-        private ISparqlResultsHandler _handler;
-        private List<string> _variables = new List<string>();
-        /// <summary>
-        /// Controls parser tracing behaviour.
-        /// </summary>
-        protected bool _traceParsing = false;
-
         /// <summary>
         /// Creates a new Results Parser Context.
         /// </summary>
         /// <param name="results">Result Set.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
-        public BaseResultsParserContext(SparqlResultSet results, bool traceParsing)
-            : this(new ResultSetHandler(results), traceParsing) { }
+        /// <param name="uriFactory">URI Factory to use. If not specified <see cref="RDF.UriFactory.Root"/> will be used.</param>
+        public BaseResultsParserContext(SparqlResultSet results, bool traceParsing, IUriFactory uriFactory = null)
+            : this(new ResultSetHandler(results), traceParsing, uriFactory) { }
 
         /// <summary>
         /// Creates a new Results Parser Context.
         /// </summary>
         /// <param name="results">Result Set.</param>
-        public BaseResultsParserContext(SparqlResultSet results)
-            : this(results, false) { }
+        /// <param name="uriFactory">URI Factory to use. If not specified <see cref="RDF.UriFactory.Root"/> will be used.</param>
+        public BaseResultsParserContext(SparqlResultSet results, IUriFactory uriFactory = null)
+            : this(results, false, uriFactory) { }
 
         /// <summary>
-        /// Creates a new Parser Context.
+        /// Creates a new Results Parser Context.
         /// </summary>
         /// <param name="handler">Results Handler.</param>
+        /// <param name="uriFactory">URI Factory to use. If not specified <see cref="RDF.UriFactory.Root"/> will be used.</param>
+        public BaseResultsParserContext(ISparqlResultsHandler handler, IUriFactory uriFactory = null)
+            : this(handler, false, uriFactory) { }
+
+        /// <summary>
+        /// Creates a new Results Parser Context.
+        /// </summary>
+        /// <param name="handler">Handler to use.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
-        public BaseResultsParserContext(ISparqlResultsHandler handler, bool traceParsing)
+        /// <param name="uriFactory">URI Factory to use. If not specified <see cref="RDF.UriFactory.Root"/> will be used.</param>
+        public BaseResultsParserContext(ISparqlResultsHandler handler, bool traceParsing, IUriFactory uriFactory = null)
         {
-            if (handler == null) throw new ArgumentNullException("handler");
-            _handler = handler;
-            _traceParsing = traceParsing;
-        }
+            Handler = handler ?? throw new ArgumentNullException(nameof(handler));
+            TraceParsing = traceParsing;
+            UriFactory = uriFactory ?? RDF.UriFactory.Root;
 
-        /// <summary>
-        /// Creates a new Results Parser Context.
-        /// </summary>
-        /// <param name="handler">Results Handler.</param>
-        public BaseResultsParserContext(ISparqlResultsHandler handler)
-            : this(handler, false) { }
+        }
 
         /// <summary>
         /// Gets the Results Handler to be used.
         /// </summary>
-        public ISparqlResultsHandler Handler
-        {
-            get
-            {
-                return _handler;
-            }
-        }
+        public ISparqlResultsHandler Handler { get; }
+
+        /// <summary>
+        /// Gets the URI factory to use.
+        /// </summary>
+        public IUriFactory UriFactory { get; }
 
         /// <summary>
         /// Gets the Variables that have been seen.
         /// </summary>
-        public List<string> Variables
-        {
-            get
-            {
-                return _variables;
-            }
-        }
+        public List<string> Variables { get; } = new List<string>();
 
         /// <summary>
         /// Gets/Sets whether Parser Tracing is used.
         /// </summary>
-        public bool TraceParsing
-        {
-            get
-            {
-                return _traceParsing;
-            }
-            set
-            {
-                _traceParsing = value;
-            }
-        }
+        public bool TraceParsing { get; set; }
     }
 
     /// <summary>
@@ -141,8 +122,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="results">Result Set to parse into.</param>
         /// <param name="tokeniser">Tokeniser to use.</param>
-        public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser)
-            : base(results)
+        public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, IUriFactory uriFactory = null)
+            : base(results, uriFactory)
         {
             _queue = new BufferedTokenQueue(tokeniser);
         }
@@ -153,8 +134,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="results">Result Set to parse into.</param>
         /// <param name="tokeniser">Tokeniser to use.</param>
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(results)
+        public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, TokenQueueMode queueMode, IUriFactory uriFactory = null)
+            : base(results, uriFactory)
         {
             switch (queueMode)
             {
@@ -178,10 +159,10 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : this(results, tokeniser)
+        public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
+            : this(results, tokeniser, uriFactory)
         {
-            _traceParsing = traceParsing;
+            TraceParsing = traceParsing;
             _traceTokeniser = traceTokeniser;
             _queue.Tracing = _traceTokeniser;
         }
@@ -194,8 +175,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(results, traceParsing)
+        public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
+            : base(results, traceParsing, uriFactory)
         {
             switch (queueMode)
             {
@@ -219,8 +200,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">Results Handler.</param>
         /// <param name="tokeniser">Tokeniser to use.</param>
-        public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser)
-            : base(handler)
+        public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, IUriFactory uriFactory = null)
+            : base(handler, uriFactory)
         {
             _queue = new BufferedTokenQueue(tokeniser);
         }
@@ -231,8 +212,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">Results Handler.</param>
         /// <param name="tokeniser">Tokeniser to use.</param>
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
-        public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(handler)
+        public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, IUriFactory uriFactory = null)
+            : base(handler, uriFactory)
         {
             switch (queueMode)
             {
@@ -256,10 +237,10 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : this(handler, tokeniser)
+        public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
+            : this(handler, tokeniser, uriFactory)
         {
-            _traceParsing = traceParsing;
+            TraceParsing = traceParsing;
             _traceTokeniser = traceTokeniser;
             _queue.Tracing = _traceTokeniser;
         }
@@ -272,8 +253,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
-        public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(handler, traceParsing)
+        public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
+            : base(handler, traceParsing, uriFactory)
         {
             switch (queueMode)
             {

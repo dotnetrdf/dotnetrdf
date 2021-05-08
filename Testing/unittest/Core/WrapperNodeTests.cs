@@ -139,7 +139,7 @@ namespace VDS.RDF
         [Fact]
         public void Delegates_CompareTo_uri()
         {
-            var node = new NodeFactory().CreateUriNode(UriFactory.Create("http://example.com/"));
+            var node = new NodeFactory().CreateUriNode(UriFactory.Root.Create("http://example.com/"));
             var wrapper = new MockWrapperNode(node);
 
             var expected = node.CompareTo(node);
@@ -211,7 +211,7 @@ namespace VDS.RDF
         [Fact]
         public void Delegates_Equals_uri()
         {
-            var node = new NodeFactory().CreateUriNode(UriFactory.Create("http://example.com/"));
+            var node = new NodeFactory().CreateUriNode(UriFactory.Root.Create("http://example.com/"));
             var wrapper = new MockWrapperNode(node);
 
             var expected = node.Equals(node);
@@ -292,7 +292,7 @@ namespace VDS.RDF
         [Fact]
         public void Delegates_Uri()
         {
-            var expected = UriFactory.Create("urn:s");
+            var expected = UriFactory.Root.Create("urn:s");
             var node = new NodeFactory().CreateUriNode(expected);
             var wrapper = new MockWrapperNode(node);
 
@@ -358,7 +358,7 @@ namespace VDS.RDF
         [Fact]
         public void Delegates_DataType()
         {
-            var expected = UriFactory.Create("urn:s");
+            var expected = UriFactory.Root.Create("urn:s");
             var node = new NodeFactory().CreateLiteralNode(string.Empty, expected);
             var wrapper = new MockWrapperNode(node);
 

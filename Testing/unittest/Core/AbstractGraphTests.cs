@@ -66,7 +66,7 @@ namespace VDS.RDF
         public void GraphAssert01()
         {
             IGraph g = GetInstance();
-            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
 
             var t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
             g.Assert(t);
@@ -78,7 +78,7 @@ namespace VDS.RDF
         public void GraphRetract01()
         {
             IGraph g = GetInstance();
-            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
 
             var t = new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateBlankNode(":o"));
             g.Assert(t);
@@ -98,7 +98,7 @@ namespace VDS.RDF
 
             Assert.False(g.IsEmpty);
 
-            INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfType = g.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfType));
             Assert.True(g.GetTriplesWithPredicate(rdfType).Any());
 
             g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
@@ -109,7 +109,7 @@ namespace VDS.RDF
         public void NodesPropertyShouldNotReturnPredicateNodes()
         {
             var g = GetInstance();
-            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
             g.Assert(new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateUriNode(":o")));
             g.Nodes.Should().HaveCount(2).And.NotContain(g.CreateUriNode(":p"));
         }
@@ -118,7 +118,7 @@ namespace VDS.RDF
         public void AllNodesPropertyShouldIncludePredicateNodes()
         {
             var g = GetInstance();
-            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Create("http://example/"));
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
             g.Assert(new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateUriNode(":o")));
             g.AllNodes.Should().HaveCount(3).And.Contain(g.CreateUriNode(":p"));
         }

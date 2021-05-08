@@ -74,8 +74,8 @@ namespace VDS.RDF.Writing
         {
             //Create an example Graph
             var g = new Graph();
-            g.NamespaceMap.AddNamespace("ex", UriFactory.Create("http://example.org/"));
-            g.NamespaceMap.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
+            g.NamespaceMap.AddNamespace("ex", UriFactory.Root.Create("http://example.org/"));
+            g.NamespaceMap.AddNamespace("owl", UriFactory.Root.Create(NamespaceMapper.OWL));
             INode testProperty = g.CreateUriNode("ex:property");
             INode rdfType = g.CreateUriNode("rdf:type");
             INode rdfProperty = g.CreateUriNode("rdf:Property");

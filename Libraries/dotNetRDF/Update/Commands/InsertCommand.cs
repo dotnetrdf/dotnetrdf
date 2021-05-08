@@ -369,7 +369,7 @@ namespace VDS.RDF.Update.Commands
 
                                 // Ensure the Graph we're inserting to exists in the dataset creating it if necessary
                                 IGraph h;
-                                Uri destUri = UriFactory.Create(graphUri);
+                                Uri destUri = UriFactory.Root.Create(graphUri);
                                 IRefNode destName = new UriNode(destUri);
                                 if (graphs.ContainsKey(destUri))
                                 {

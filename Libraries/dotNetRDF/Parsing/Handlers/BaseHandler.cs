@@ -98,6 +98,15 @@ namespace VDS.RDF.Parsing.Handlers
         public INamespaceMapper NamespaceMap => _factory.NamespaceMap;
 
         /// <summary>
+        /// Get or set the factory to use when creating URIs.
+        /// </summary>
+        public IUriFactory UriFactory
+        {
+            get => _factory.UriFactory;
+            set => _factory.UriFactory = value;
+        }
+
+        /// <summary>
         /// Creates a Blank Node.
         /// </summary>
         /// <returns></returns>

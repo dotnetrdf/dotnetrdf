@@ -46,7 +46,7 @@ namespace VDS.RDF.Nodes
         /// <param name="lexicalValue">Lexical Value.</param>
         /// <param name="normalizeValue">Whether to normalize <paramref name="lexicalValue"/> on node creation.</param>
         public BooleanNode(bool value, string lexicalValue, bool normalizeValue = false)
-            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean), normalizeValue)
+            : base(lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean), normalizeValue)
         {
             _value = value;
         }

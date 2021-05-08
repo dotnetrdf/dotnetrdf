@@ -45,7 +45,7 @@ namespace VDS.RDF.Query
 }";
 
             var queryStr = new SparqlParameterizedString(query);
-            queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
+            queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Root.Create(NamespaceMapper.RDFS));
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
 
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query
 }";
 
             var queryStr = new SparqlParameterizedString(query);
-            queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
+            queryStr.Namespaces.AddNamespace("rdfs", UriFactory.Root.Create(NamespaceMapper.RDFS));
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(queryStr);
 

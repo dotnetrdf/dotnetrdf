@@ -60,27 +60,27 @@ namespace VDS.RDF.Configuration
             switch (targetType.FullName)
             {
                 case QueryEndpoint:
-                    var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                    var queryEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
                     if (queryEndpointUri == null) return false;
 
                     // Get Default/Named Graphs if specified
-                    IEnumerable<string> defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
+                    IEnumerable<string> defaultGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
                                                         select n.ToString();
-                    IEnumerable<string> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
+                    IEnumerable<string> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                                                       select n.ToString();
-                    endpoint = new SparqlRemoteEndpoint(UriFactory.Create(queryEndpointUri), defaultGraphs, namedGraphs);
+                    endpoint = new SparqlRemoteEndpoint(g.UriFactory.Create(queryEndpointUri), defaultGraphs, namedGraphs);
                     break;
 
                 case UpdateEndpoint:
-                    var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
+                    var updateEndpointUri = ConfigurationLoader.GetConfigurationValue(g, objNode, new INode[] { g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUpdateEndpointUri)), g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)) });
                     if (updateEndpointUri == null) return false;
 
-                    endpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(updateEndpointUri));
+                    endpoint = new SparqlRemoteUpdateEndpoint(g.UriFactory.Create(updateEndpointUri));
                     break;
 
                 case FederatedEndpoint:
-                    IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
-                        .Concat(ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint))));
+                    IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyQueryEndpoint)))
+                        .Concat(ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEndpoint))));
                     foreach (INode e in endpoints)
                     {
                         var temp = ConfigurationLoader.LoadObject(g, e);
@@ -114,7 +114,7 @@ namespace VDS.RDF.Configuration
                 }
 
                 // Is there a Proxy Server specified
-                INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy)));
+                INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyProxy)));
                 if (proxyNode != null)
                 {
                     var proxy = ConfigurationLoader.LoadObject(g, proxyNode);
@@ -123,7 +123,7 @@ namespace VDS.RDF.Configuration
                         endpoint.Proxy = (IWebProxy)proxy;
 
                         // Are we supposed to use the same credentials for the proxy as for the endpoint?
-                        var useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);
+                        var useCredentialsForProxy = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy)), false);
                         if (useCredentialsForProxy)
                         {
                             endpoint.UseCredentialsForProxy = true;

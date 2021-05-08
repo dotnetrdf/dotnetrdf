@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                 }
             }
 
-            return new StringNode(output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new StringNode(output.ToString(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>

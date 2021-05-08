@@ -109,19 +109,19 @@ namespace VDS.RDF.Writing
             object results;
 
             // Add the Namespaces we want to use later on
-            context.QNameMapper.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
-            context.QNameMapper.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
-            context.QNameMapper.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
-            context.QNameMapper.AddNamespace("dc", UriFactory.Create("http://purl.org/dc/elements/1.1/"));
-            context.QNameMapper.AddNamespace("dct", UriFactory.Create("http://purl.org/dc/terms/"));
-            context.QNameMapper.AddNamespace("vann", UriFactory.Create("http://purl.org/vocab/vann/"));
-            context.QNameMapper.AddNamespace("vs", UriFactory.Create("http://www.w3.org/2003/06/sw-vocab-status/ns#"));
+            context.QNameMapper.AddNamespace("owl", context.UriFactory.Create(NamespaceMapper.OWL));
+            context.QNameMapper.AddNamespace("rdf", context.UriFactory.Create(NamespaceMapper.RDF));
+            context.QNameMapper.AddNamespace("rdfs", context.UriFactory.Create(NamespaceMapper.RDFS));
+            context.QNameMapper.AddNamespace("dc", context.UriFactory.Create("http://purl.org/dc/elements/1.1/"));
+            context.QNameMapper.AddNamespace("dct", context.UriFactory.Create("http://purl.org/dc/terms/"));
+            context.QNameMapper.AddNamespace("vann", context.UriFactory.Create("http://purl.org/vocab/vann/"));
+            context.QNameMapper.AddNamespace("vs", context.UriFactory.Create("http://www.w3.org/2003/06/sw-vocab-status/ns#"));
 
             // Find the Node that represents the Schema Ontology
             // Assumes there is exactly one thing given rdf:type owl:Ontology
-            IUriNode ontology = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "Ontology"));
-            IUriNode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            IUriNode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
+            IUriNode ontology = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "Ontology"));
+            IUriNode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfsLabel = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode ontoNode = context.Graph.GetTriplesWithPredicateObject(rdfType, ontology).Select(t => t.Subject).FirstOrDefault();
             INode ontoLabel = (ontoNode != null) ? context.Graph.GetTriplesWithSubjectPredicate(ontoNode, rdfsLabel).Select(t => t.Object).FirstOrDefault() : null;
 
@@ -328,7 +328,7 @@ namespace VDS.RDF.Writing
 
             var getPropertyRanges = new SparqlParameterizedString();
             getPropertyRanges.Namespaces = new NamespaceMapper();
-            getPropertyRanges.Namespaces.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
+            getPropertyRanges.Namespaces.AddNamespace("owl", context.UriFactory.Create(NamespaceMapper.OWL));
             getPropertyRanges.CommandText = "SELECT ?range WHERE { { @property rdfs:range ?range . FILTER(ISURI(?range)) } UNION { @property rdfs:range ?union . ?union owl:unionOf ?ranges . { ?ranges rdf:first ?range } UNION { ?ranges rdf:rest+/rdf:first ?range } } }";
             var getPropertyDomains = new SparqlParameterizedString();
             getPropertyDomains.Namespaces = getPropertyRanges.Namespaces;
@@ -447,14 +447,14 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 
             // Now create the URI Nodes we need for the next stage of Output
-            IUriNode rdfsDomain = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "domain"));
-            IUriNode rdfsRange = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"));
-            IUriNode rdfsSubClassOf = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
-            IUriNode rdfsSubPropertyOf = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "subPropertyOf"));
-            IUriNode owlDisjointClass = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "disjointWith"));
-            IUriNode owlEquivalentClass = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "equivalentClass"));
-            IUriNode owlEquivalentProperty = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "equivalentProperty"));
-            IUriNode owlInverseProperty = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "inverseOf"));
+            IUriNode rdfsDomain = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "domain"));
+            IUriNode rdfsRange = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "range"));
+            IUriNode rdfsSubClassOf = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
+            IUriNode rdfsSubPropertyOf = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "subPropertyOf"));
+            IUriNode owlDisjointClass = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "disjointWith"));
+            IUriNode owlEquivalentClass = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "equivalentClass"));
+            IUriNode owlEquivalentProperty = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "equivalentProperty"));
+            IUriNode owlInverseProperty = context.Graph.CreateUriNode(context.UriFactory.Create(NamespaceMapper.OWL + "inverseOf"));
 
             // Alter our previous getClasses query to get additional details
             getClasses.CommandText = "SELECT ?class (SAMPLE(?label) AS ?classLabel) (SAMPLE(?description) AS ?classDescription) WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } FILTER(ISURI(?class)) OPTIONAL { ?class rdfs:label ?label } OPTIONAL { ?class rdfs:comment ?description } } GROUP BY ?class ORDER BY ?class";

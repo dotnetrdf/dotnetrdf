@@ -60,9 +60,9 @@ namespace VDS.RDF.Parsing.Contexts
             : base(g) 
         {
             _queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
-            if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator)
+            if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator generator)
             {
-                ((IRdfXmlPreProcessingEventGenerator)_queue.EventGenerator).GetAllEvents(this);
+                generator.GetAllEvents(this);
             }
         }
 
@@ -80,8 +80,9 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">RDF Handler.</param>
         /// <param name="document">XML Document.</param>
         /// <param name="traceParsing">Whether to Trace Parsing.</param>
-        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing)
-            : base(handler)
+        /// <param name="uriFactory">URI factory to use.</param>
+        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing, IUriFactory uriFactory = null)
+            : base(handler, traceParsing, uriFactory ?? RDF.UriFactory.Root)
         {
             _queue = new EventQueue<IRdfXmlEvent>(new DomBasedEventGenerator(document));
             if (_queue.EventGenerator is IRdfXmlPreProcessingEventGenerator)
@@ -128,8 +129,9 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="input">Input.</param>
-        public RdfXmlParserContext(IRdfHandler handler, TextReader input)
-            : base(handler)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public RdfXmlParserContext(IRdfHandler handler, TextReader input, IUriFactory uriFactory= null)
+            : base(handler, false, uriFactory ?? RDF.UriFactory.Root)
         {
             _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri().ToSafeString()));
         }

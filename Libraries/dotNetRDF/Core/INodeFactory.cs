@@ -44,6 +44,11 @@ namespace VDS.RDF
         public INamespaceMapper NamespaceMap { get; }
 
         /// <summary>
+        /// Get or set the factory to use when creating URIs.
+        /// </summary>
+        public IUriFactory UriFactory { get; set; }
+
+        /// <summary>
         /// Creates a Blank Node with a new automatically generated ID.
         /// </summary>
         /// <returns></returns>

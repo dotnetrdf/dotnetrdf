@@ -80,7 +80,7 @@ namespace VDS.RDF.Parsing
 
                 for (var j = 1; j <= triplesPerGraph; j++)
                 {
-                    g.Assert(new Triple(g.CreateUriNode(UriFactory.Create("http://example.org/subject/" + j)), g.CreateUriNode(UriFactory.Create("http://example.org/predicate/" + j)), (j).ToLiteral(g)));
+                    g.Assert(new Triple(g.CreateUriNode(UriFactory.Root.Create("http://example.org/subject/" + j)), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate/" + j)), (j).ToLiteral(g)));
                 }
                 store.Add(g);
             }

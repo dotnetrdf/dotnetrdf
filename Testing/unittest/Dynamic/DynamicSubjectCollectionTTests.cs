@@ -41,8 +41,8 @@ namespace VDS.RDF.Dynamic
 ");
 
             var g = new Graph();
-            var s = new Test(g.CreateUriNode(UriFactory.Create("urn:s")), g);
-            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")), g);
+            var s = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:s")), g);
+            var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
 
             o.P.Add(s);
 
@@ -59,9 +59,9 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:p> <urn:o> .
 ");
 
-            var s = new Test(g.CreateUriNode(UriFactory.Create("urn:s")), g);
-            var p = new Test(g.CreateUriNode(UriFactory.Create("urn:p")), g);
-            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")), g);
+            var s = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:s")), g);
+            var p = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:p")), g);
+            var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
 
             Assert.Contains(s, o.P);
             Assert.Contains(p, o.P);
@@ -78,9 +78,9 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:p> <urn:o> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
-            var p = g.CreateUriNode(UriFactory.Create("urn:p"));
-            var o = g.CreateUriNode(UriFactory.Create("urn:o"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
+            var p = g.CreateUriNode(UriFactory.Root.Create("urn:p"));
+            var o = g.CreateUriNode(UriFactory.Root.Create("urn:o"));
             var testO = new Test(o, g);
 
             var subjects = new Test[5]; // +2 for padding on each side
@@ -99,7 +99,7 @@ namespace VDS.RDF.Dynamic
 <urn:s> <urn:p> <urn:s> .
 ");
 
-            var s = g.CreateUriNode(UriFactory.Create("urn:s"));
+            var s = g.CreateUriNode(UriFactory.Root.Create("urn:s"));
             var test = new Test(s, g);
 
             var expected = new[] { s }.GetEnumerator();
@@ -130,7 +130,7 @@ namespace VDS.RDF.Dynamic
 <urn:o> <urn:p> <urn:o> .
 ");
 
-            var o = new Test(g.CreateUriNode(UriFactory.Create("urn:o")), g);
+            var o = new Test(g.CreateUriNode(UriFactory.Root.Create("urn:o")), g);
 
             o.P.Remove(o);
 

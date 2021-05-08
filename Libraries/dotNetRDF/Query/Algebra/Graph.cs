@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         case Token.URI:
                         case Token.QNAME:
-                            IRefNode activeGraphName = new UriNode(UriFactory.Create(Tools.ResolveUriOrQName(_graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri)));
+                            IRefNode activeGraphName = new UriNode(context.UriFactory.Create(Tools.ResolveUriOrQName(_graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri)));
                             if (context.Data.HasGraph(activeGraphName))
                             {
                                 // If the Graph is explicitly specified and there are FROM/FROM NAMED present then the Graph 
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query.Algebra
                     // correctly
                     context.InputMultiset = initialInput;
                     IRefNode currGraphName = (uri.Equals(string.Empty)) ? null : 
-                        uri.StartsWith("_:") ? new BlankNode(uri) : new UriNode(UriFactory.Create(uri));
+                        uri.StartsWith("_:") ? new BlankNode(uri) : new UriNode(context.UriFactory.Create(uri));
 
                     // Set Active Graph
                     if (currGraphName == null)

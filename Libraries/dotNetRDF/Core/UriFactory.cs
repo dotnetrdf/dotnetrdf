@@ -25,7 +25,6 @@
 */
 
 using System;
-using VDS.Common.Tries;
 
 namespace VDS.RDF
 {
@@ -34,13 +33,21 @@ namespace VDS.RDF
     /// </summary>
     public static class UriFactory
     {
-        private static readonly ITrie<string, char, Uri> _uris = new SparseStringTrie<Uri>();
+        /// <summary>
+        /// Get or set the root URI factory for this app domain.
+        /// </summary>
+        /// <remarks>Internally, the root URI factory is used as the default factory when no other factory is specified in constructors/method parameters.</remarks>
+        public static IUriFactory Root = new CachingUriFactory();
 
         /// <summary>
         /// Get / set the flag that controls the caching of Uri instances constructed by this factory.
         /// </summary>
         /// <remarks>When <see cref="InternUris"/> is set to true, the factory will cache each constructed URI against the original string value used for construction and return a cached Uri where available in preference to calling the Uri constructor.</remarks>
-        public static bool InternUris { get; set; }
+        public static bool InternUris
+        {
+            get => Root.InternUris;
+            set => Root.InternUris = value;
+        }
 
         /// <summary>
         /// Creates a URI interning it if interning is enabled via the <see cref="InternUris"/> property.
@@ -52,18 +59,7 @@ namespace VDS.RDF
         /// </remarks>
         public static Uri Create(string uri)
         {
-            if (InternUris)
-            {
-                ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
-                if (node.HasValue)
-                {
-                    return node.Value;
-                }
-                var u = new Uri(uri);
-                node.Value = u;
-                return node.Value;
-            }
-            return new Uri(uri);
+            return Root.Create(uri);
         }
 
         /// <summary>
@@ -71,7 +67,7 @@ namespace VDS.RDF
         /// </summary>
         public static void Clear()
         {
-            _uris.Clear();
+            Root.Clear();
         }
     }
 }

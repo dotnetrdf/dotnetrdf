@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Web;
 using System.Web.UI;
 using VDS.RDF.Parsing;
@@ -86,7 +85,7 @@ namespace VDS.RDF.Web
                 {
                     case "OPTIONS":
                         // OPTIONS requests always result in the Service Description document
-                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri));
+                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Root.Create(context.Request.Url.AbsoluteUri));
                         HandlerHelper.SendToClient(webContext, svcDescrip, _config);
                         return;
 
@@ -119,7 +118,7 @@ namespace VDS.RDF.Web
                                     {
                                         // If not a HTML Writer selected OR not showing Query Form then show the Service Description Graph
                                         // unless an error occurs creating it
-                                        IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri));
+                                        IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Root.Create(context.Request.Url.AbsoluteUri));
                                         context.Response.ContentType = definition.CanonicalMimeType;
                                         context.Response.ContentEncoding = definition.Encoding;
                                         writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));
@@ -298,7 +297,7 @@ namespace VDS.RDF.Web
                 {
                     foreach (var userDefaultGraph in userDefaultGraphs)
                     {
-                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Create(userDefaultGraph)));
+                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Root.Create(userDefaultGraph)));
                     }
                 }
                 else if (!_config.DefaultGraphURI.Equals(String.Empty))
@@ -307,7 +306,7 @@ namespace VDS.RDF.Web
                     // dataset present
                     if (!query.DefaultGraphNames.Any())
                     {
-                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Create(_config.DefaultGraphURI)));
+                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Root.Create(_config.DefaultGraphURI)));
                     }
                 }
 
@@ -317,7 +316,7 @@ namespace VDS.RDF.Web
                     query.ClearNamedGraphs();
                     foreach (var userNamedGraph in userNamedGraphs)
                     {
-                        query.AddNamedGraph(nodeFactory.CreateUriNode(UriFactory.Create(userNamedGraph)));
+                        query.AddNamedGraph(nodeFactory.CreateUriNode(UriFactory.Root.Create(userNamedGraph)));
                     }
                 }
 

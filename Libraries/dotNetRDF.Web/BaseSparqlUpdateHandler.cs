@@ -80,6 +80,9 @@ namespace VDS.RDF.Web
             var userDefaultGraphs = new List<String>();
             var userNamedGraphs = new List<String>();
 
+            // Request-scoped URI Factory
+            var uriFactory = UriFactory.Root.InternUris ? new CachingUriFactory(UriFactory.Root) : UriFactory.Root;
+
             try
             {
                 // Decide what to do based on the HTTP Method
@@ -87,7 +90,7 @@ namespace VDS.RDF.Web
                 {
                     case "OPTIONS":
                         // OPTIONS requests always result in the Service Description document
-                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri));
+                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, uriFactory.Create(context.Request.Url.AbsoluteUri));
                         HandlerHelper.SendToClient(webContext, svcDescrip, _config);
                         return;
 
@@ -115,7 +118,7 @@ namespace VDS.RDF.Web
                                 {
                                     // If not a HTML Writer selected then show the Service Description Graph
                                     // unless an error occurs creating it
-                                    IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri));
+                                    IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, uriFactory.Create(context.Request.Url.AbsoluteUri));
                                     context.Response.ContentType = definition.CanonicalMimeType;
                                     context.Response.ContentEncoding = definition.Encoding;
                                     writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));
@@ -249,8 +252,8 @@ namespace VDS.RDF.Web
                             else
                             {
                                 // Otherwise go ahead and apply
-                                userDefaultGraphs.ForEach(u => modify.AddUsingUri(UriFactory.Create(u)));
-                                userNamedGraphs.ForEach(u => modify.AddUsingNamedUri(UriFactory.Create(u)));
+                                userDefaultGraphs.ForEach(u => modify.AddUsingUri(uriFactory.Create(u)));
+                                userNamedGraphs.ForEach(u => modify.AddUsingNamedUri(uriFactory.Create(u)));
                             }
                         }
                     }

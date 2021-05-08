@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                 throw new RdfQueryException("Cannot cast a Null to a xsd:string");
             }
 
-            return new StringNode(n.AsString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new StringNode(n.AsString(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>

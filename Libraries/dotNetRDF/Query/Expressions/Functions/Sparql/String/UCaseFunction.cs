@@ -45,9 +45,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <summary>
         /// Converts the given String Literal to upper case.
         /// </summary>
+        /// <param name="context"></param>
         /// <param name="stringLit">String Literal.</param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
         {
             if (stringLit.DataType != null)
             {

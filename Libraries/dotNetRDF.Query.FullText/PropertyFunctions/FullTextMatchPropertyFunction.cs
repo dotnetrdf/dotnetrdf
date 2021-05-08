@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         {
             get 
             {
-                return UriFactory.Create(FullTextHelper.FullTextMatchPredicateUri); 
+                return UriFactory.Root.Create(FullTextHelper.FullTextMatchPredicateUri); 
             }
         }
 

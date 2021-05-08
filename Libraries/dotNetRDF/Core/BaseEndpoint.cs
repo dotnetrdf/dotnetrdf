@@ -278,16 +278,16 @@ namespace VDS.RDF
         {
             if (Credentials != null && UseCredentialsForProxy)
             {
-                INode useCreds = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy));
+                INode useCreds = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy));
                 context.Graph.Assert(new Triple(endpoint, useCreds, UseCredentialsForProxy.ToLiteral(context.Graph)));
             }
             if (Proxy is WebProxy webProxy)
             {
                 INode proxy = context.NextSubject;
-                INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-                INode usesProxy = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy));
-                INode proxyType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassProxy));
-                INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
+                INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode usesProxy = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyProxy));
+                INode proxyType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassProxy));
+                INode server = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyServer));
 
                 context.Graph.Assert(new Triple(endpoint, usesProxy, proxy));
                 context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
@@ -351,8 +351,8 @@ namespace VDS.RDF
             if (Credentials != null || Proxy != null)
             {
                 INode endpoint = context.NextSubject;
-                INode user = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
-                INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+                INode user = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyUser));
+                INode pwd = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyPassword));
 
                 if (Credentials != null)
                 {

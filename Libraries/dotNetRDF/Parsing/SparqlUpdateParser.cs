@@ -46,27 +46,24 @@ namespace VDS.RDF.Parsing
     public class SparqlUpdateParser
         : ITraceableTokeniser, IObjectParser<SparqlUpdateCommandSet>
     {
-        private bool _traceTokeniser = false;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
-        private Uri _baseUri;
-        private IQueryOptimiser _optimiser;
 
         // OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
+        /// <summary>
+        /// Create a new parser instance.
+        /// </summary>
+        public SparqlUpdateParser() : this(RDF.UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new parser instance that uses the specified URI factory to create URIs.
+        /// </summary>
+        /// <param name="uriFactory"></param>
+        public SparqlUpdateParser(IUriFactory uriFactory) { UriFactory = uriFactory; }
 
         /// <summary>
         /// Gets/Sets whether Tokeniser Tracing is used.
         /// </summary>
-        public bool TraceTokeniser
-        {
-            get
-            {
-                return _traceTokeniser;
-            }
-            set
-            {
-                _traceTokeniser = value;
-            }
-        }
+        public bool TraceTokeniser { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets the locally scoped custom expression factories.
@@ -89,17 +86,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets the Default Base URI used for Updated Commands parsed by this parser instance.
         /// </summary>
-        public Uri DefaultBaseUri
-        {
-            get
-            {
-                return _baseUri;
-            }
-            set
-            {
-                _baseUri = value;
-            }
-        }
+        public Uri DefaultBaseUri { get; set; }
 
         /// <summary>
         /// Gets/Sets the locally scoped Query Optimiser applied to graph patterns in update commands at the end of the parsing process.
@@ -109,17 +96,12 @@ namespace VDS.RDF.Parsing
         /// May be null if no locally scoped optimiser is set in which case the globally scoped optimiser will be used.
         /// </para>
         /// </remarks>
-        public IQueryOptimiser QueryOptimiser
-        {
-            get
-            {
-                return _optimiser;
-            }
-            set
-            {
-                _optimiser = value;
-            }
-        }
+        public IQueryOptimiser QueryOptimiser { get; set; }
+
+        /// <summary>
+        /// Get or set the factory to use when creating URIs in this parser.
+        /// </summary>
+        public IUriFactory UriFactory { get; set; }
 
         /// <summary>
         /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.
@@ -190,13 +172,12 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Start the actual parsing
-                var context = new SparqlUpdateParserContext(new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1));
-                context.AllowUnknownFunctions = AllowUnknownFunctions;
+                var context = new SparqlUpdateParserContext(
+                    new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1), UriFactory)
+                {
+                    AllowUnknownFunctions = AllowUnknownFunctions,
+                };
                 return ParseInternal(context);
-            }
-            catch
-            {
-                throw;
             }
             finally
             {

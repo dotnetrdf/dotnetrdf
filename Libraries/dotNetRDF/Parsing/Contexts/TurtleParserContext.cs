@@ -128,6 +128,22 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
+        /// Creates a new Turtle Parser Context with custom settings.
+        /// </summary>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
+            : base(handler, tokeniser, queueMode, traceParsing, traceTokeniser, uriFactory)
+        {
+            _syntax = syntax;
+        }
+
+        /// <summary>
         /// Gets the Turtle Syntax being used.
         /// </summary>
         public TurtleSyntax Syntax

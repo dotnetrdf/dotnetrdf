@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Spin.Model
                     p.printKeyword(keyword);
                     p.print(" ");
                 }
-                p.printURIResource(Resource.Get(RDFUtil.CreateUriNode(UriFactory.Create(graphIRI)), Graph, getModel()));
+                p.printURIResource(Resource.Get(RDFUtil.CreateUriNode(Graph.UriFactory.Create(graphIRI)), Graph, getModel()));
             }
         }
 

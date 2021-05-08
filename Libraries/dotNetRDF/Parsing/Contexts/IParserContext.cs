@@ -68,6 +68,11 @@ namespace VDS.RDF.Parsing.Contexts
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets the URI factory for the handler.
+        /// </summary>
+        IUriFactory UriFactory { get; }
     }
 
     /// <summary>

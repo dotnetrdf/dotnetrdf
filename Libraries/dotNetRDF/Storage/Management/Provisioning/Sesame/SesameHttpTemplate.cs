@@ -99,7 +99,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             url += "repositories/";
             url += RemoteRepositoryID;
 
-            g.Assert(impl, g.CreateUriNode("hr:repositoryURL"), g.CreateUriNode(UriFactory.Create(url)));
+            g.Assert(impl, g.CreateUriNode("hr:repositoryURL"), g.CreateUriNode(g.UriFactory.Create(url)));
             return g;
         }
     }

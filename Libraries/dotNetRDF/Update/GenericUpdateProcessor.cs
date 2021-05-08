@@ -672,7 +672,7 @@ namespace VDS.RDF.Update
                             case Token.QNAME:
                                 throw new NotSupportedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
                             case Token.URI:
-                                graphUri = UriFactory.Create(pattern.GraphSpecifier.Value);
+                                graphUri = UriFactory.Root.Create(pattern.GraphSpecifier.Value);
                                 break;
                             default:
                                 throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command as the Graph Specifier is not a QName/URI");
@@ -1068,7 +1068,7 @@ namespace VDS.RDF.Update
                             case Token.QNAME:
                                 throw new NotSupportedException("Graph Specifiers as QNames for INSERT DATA Commands are not supported - please specify an absolute URI instead");
                             case Token.URI:
-                                graphUri = UriFactory.Create(pattern.GraphSpecifier.Value);
+                                graphUri = UriFactory.Root.Create(pattern.GraphSpecifier.Value);
                                 break;
                             default:
                                 throw new SparqlUpdateException("Cannot evaluate an INSERT DATA Command as the Graph Specifier is not a QName/URI");

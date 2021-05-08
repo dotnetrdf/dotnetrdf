@@ -55,7 +55,7 @@ namespace VDS.RDF.Configuration
             switch (targetType.FullName)
             {
                 case OwlReasonerWrapperType:
-                    INode reasonerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyOwlReasoner)));
+                    INode reasonerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyOwlReasoner)));
                     if (reasonerNode == null) return false;
                     var reasoner = ConfigurationLoader.LoadObject(g, reasonerNode);
                     if (reasoner is IOwlReasoner)
@@ -87,7 +87,7 @@ namespace VDS.RDF.Configuration
                 if (output is IInferenceEngine)
                 {
                     // Now initialise with any specified Graphs
-                    IEnumerable<INode> rulesGraphs = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
+                    IEnumerable<INode> rulesGraphs = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
                     foreach (INode rulesGraph in rulesGraphs)
                     {
                         var temp = ConfigurationLoader.LoadObject(g, rulesGraph);

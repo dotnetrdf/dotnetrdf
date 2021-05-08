@@ -386,7 +386,7 @@ WHERE { GRAPH <htp://source> { ?s ?p ?o } . FILTER (NOT EXISTS { ?s a <http://re
             tokens.Enqueue(new HatHatToken(0, 0));
             tokens.Enqueue(new DataTypeToken("<http://example/type>", 0, 0, 0));
 
-            var parser = new SparqlExpressionParser();
+            var parser = new SparqlExpressionParser(UriFactory.Root);
             var expr = parser.Parse(tokens);
 
             Assert.IsType<ConstantTerm>(expr);

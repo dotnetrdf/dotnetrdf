@@ -180,6 +180,12 @@ namespace VDS.RDF.Query.Spin
         /// <inheritdoc />
         public BaseTripleCollection Triples => throw new NotImplementedException();
 
+        /// <inheritdoc />
+        public IUriFactory UriFactory { 
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
         /// <inheritdoc/>
         public bool NormalizeLiteralValues
         {

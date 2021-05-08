@@ -45,9 +45,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <summary>
         /// Calculates.
         /// </summary>
+        /// <param name="context"></param>
         /// <param name="stringLit"></param>
         /// <returns></returns>
-        protected override IValuedNode ValueInternal(ILiteralNode stringLit)
+        protected override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
         {
             if (stringLit.DataType != null)
             {

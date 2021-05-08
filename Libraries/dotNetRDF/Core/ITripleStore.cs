@@ -64,6 +64,10 @@ namespace VDS.RDF
             get;
         }
 
+        /// <summary>
+        /// Get the preferred URI factory to use when creating URIs in this store.
+        /// </summary>
+        IUriFactory UriFactory { get; }
         #endregion
 
         #region Loading & Unloading Graphs

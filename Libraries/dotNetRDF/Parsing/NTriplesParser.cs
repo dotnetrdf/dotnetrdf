@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
 
-            Load(new GraphHandler(g), input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace VDS.RDF.Parsing
                     input = new StreamReader(File.OpenRead(filename), Encoding.UTF8);
                     break;
             }
-            Load(g, input);
+            Load(new GraphHandler(g), input, g.UriFactory);
         }
 
         /// <summary>
@@ -181,6 +181,17 @@ namespace VDS.RDF.Parsing
         /// <param name="handler">RDF Handler to use.</param>
         /// <param name="input">Input Stream to read input from.</param>
         public void Load(IRdfHandler handler, StreamReader input)
+        {
+           Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Parses NTriples Syntax from the given Input Stream using a RDF Handler.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input Stream to read input from.</param>
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public void Load(IRdfHandler handler, StreamReader input, IUriFactory uriFactory)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
@@ -203,7 +214,7 @@ namespace VDS.RDF.Parsing
                     break;
             }
 
-            Load(handler, (TextReader) input);
+            Load(handler, (TextReader)input, uriFactory);
         }
 
         /// <summary>
@@ -213,17 +224,25 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to read input from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Parses NTriples syntax from the given input using the specified RDF handler and URI factory.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="input">Input to read from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
-
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
             try
             {
-                var context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, Syntax), TokenQueueMode, TraceParsing, TraceTokeniser);
+                var context = new TokenisingParserContext(handler, new NTriplesTokeniser(input, Syntax), TokenQueueMode,
+                    TraceParsing, TraceTokeniser, uriFactory);
                 Parse(context);
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -246,9 +265,24 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to read from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="filename">The Filename of the File to read from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF.</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input.</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), uriFactory);
         }
 
         private void Parse(TokenisingParserContext context)
@@ -437,7 +471,7 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                IUriNode n = context.Handler.CreateUriNode(UriFactory.Create(uri));
+                IUriNode n = context.Handler.CreateUriNode(context.UriFactory.Create(uri));
                 if (!n.Uri.IsAbsoluteUri)
                     throw new RdfParseException("NTriples does not permit relative URIs");
                 return n;

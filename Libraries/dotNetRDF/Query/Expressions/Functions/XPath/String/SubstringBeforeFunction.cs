@@ -46,15 +46,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Gets the Value of the function as applied to the given String Literal and Argument.
         /// </summary>
+        /// <param name="context">The evaluation context.</param>
         /// <param name="stringLit">Simple/String typed Literal.</param>
         /// <param name="arg">Argument.</param>
         /// <returns></returns>
-        public override IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg)
+        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg)
         {
             if (arg.Value.Equals(string.Empty))
             {
                 // The substring before the empty string is the empty string
-                return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                return new StringNode(string.Empty, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
             else
             {
@@ -62,12 +63,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 if (stringLit.Value.Contains(arg.Value))
                 {
                     var result = stringLit.Value.Substring(0, stringLit.Value.IndexOf(arg.Value));
-                    return new StringNode(result, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    return new StringNode(result, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 else
                 {
                     // If it doesn't contain the search string the empty string is returned
-                    return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    return new StringNode(string.Empty, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
             }
         }

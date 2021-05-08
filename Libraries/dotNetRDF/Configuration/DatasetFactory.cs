@@ -50,15 +50,15 @@ namespace VDS.RDF.Configuration
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
-            var unionDefGraph = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUnionDefaultGraph)), false);
-            INode defaultGraphNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)));
+            var unionDefGraph = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUnionDefaultGraph)), false);
+            INode defaultGraphNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)));
             Uri defaultGraph = (defaultGraphNode != null && defaultGraphNode.NodeType == NodeType.Uri ? ((IUriNode)defaultGraphNode).Uri : null);
 
             INode storeNode;
             switch (targetType.FullName)
             {
                 case InMemoryDataset:
-                    storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
+                    storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                     if (storeNode == null)
                     {
                         obj = new InMemoryDataset();
@@ -89,7 +89,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case InMemoryQuadDataset:
-                    storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
+                    storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                     if (storeNode == null)
                     {
                         obj = new InMemoryQuadDataset();
@@ -109,7 +109,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case WebDemandDataset:
-                    storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                    storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                     if (storeNode == null)
                     {
                         obj = new WebDemandDataset(new InMemoryQuadDataset());

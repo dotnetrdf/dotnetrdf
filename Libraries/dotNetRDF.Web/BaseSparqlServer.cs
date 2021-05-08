@@ -87,7 +87,7 @@ namespace VDS.RDF.Web
             // OPTIONS requests always result in the Service Description document
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), _basePath + "description"), ServiceDescriptionType.All);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, new Uri(UriFactory.Root.Create(context.Request.Url.AbsoluteUri), _basePath + "description"), ServiceDescriptionType.All);
                 HandlerHelper.SendToClient(webContext, svcDescrip, _config);
             }
             else
@@ -131,6 +131,9 @@ namespace VDS.RDF.Web
             var userDefaultGraphs = new List<String>();
             var userNamedGraphs = new List<String>();
 
+            // Request-scoped URI Factory
+            IUriFactory uriFactory = UriFactory.Root.InternUris ? new CachingUriFactory(UriFactory.Root) : UriFactory.Root;
+
             try
             {
                 // Decide what to do based on the HTTP Method
@@ -138,7 +141,7 @@ namespace VDS.RDF.Web
                 {
                     case "OPTIONS":
                         // OPTIONS requests always result in the Service Description document
-                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
+                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, uriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
                         HandlerHelper.SendToClient(webContext, svcDescrip, _config);
                         return;
 
@@ -171,7 +174,7 @@ namespace VDS.RDF.Web
                                     {
                                         // If not a HTML Writer selected OR not showing Query Form then show the Service Description Graph
                                         // unless an error occurs creating it
-                                        IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
+                                        IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, uriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
                                         context.Response.ContentType = definition.CanonicalMimeType;
                                         context.Response.ContentEncoding = definition.Encoding;
                                         writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));
@@ -309,10 +312,13 @@ namespace VDS.RDF.Web
                 }
 
                 // Now we're going to parse the Query
-                var parser = new SparqlQueryParser(_config.QuerySyntax);
-                parser.DefaultBaseUri = context.Request.Url;
-                parser.ExpressionFactories = _config.ExpressionFactories;
-                parser.QueryOptimiser = _config.QueryOptimiser;
+                var parser = new SparqlQueryParser(_config.QuerySyntax)
+                {
+                    UriFactory = uriFactory,
+                    DefaultBaseUri = context.Request.Url,
+                    ExpressionFactories = _config.ExpressionFactories,
+                    QueryOptimiser = _config.QueryOptimiser
+                };
                 SparqlQuery query = parser.ParseFromString(queryText);
                 query.AlgebraOptimisers = _config.AlgebraOptimisers;
                 query.PropertyFunctionFactories = _config.PropertyFunctionFactories;
@@ -332,8 +338,8 @@ namespace VDS.RDF.Web
                 if (requireActionAuth) HandlerHelper.IsAuthenticated(webContext, _config.UserGroups, GetQueryPermissionAction(query));
 
                 // Clear query dataset if there is a protocol defined one
-                userDefaultGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
-                userNamedGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
+                userDefaultGraphs.RemoveAll(string.IsNullOrEmpty);
+                userNamedGraphs.RemoveAll(string.IsNullOrEmpty);
                 var isProtocolDataset = false;
                 if (userDefaultGraphs.Count > 0 || userNamedGraphs.Count > 0)
                 {
@@ -348,16 +354,16 @@ namespace VDS.RDF.Web
                 {
                     foreach (var userDefaultGraph in userDefaultGraphs)
                     {
-                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Create(userDefaultGraph)));
+                        query.AddDefaultGraph(nodeFactory.CreateUriNode(uriFactory.Create(userDefaultGraph)));
                     }
                 }
-                else if (!_config.DefaultGraphURI.Equals(String.Empty))
+                else if (!_config.DefaultGraphURI.Equals(string.Empty))
                 {
                     // Only applies if the Query doesn't specify any Default Graph and there wasn't a protocol defined
                     // dataset present
                     if (!query.DefaultGraphNames.Any())
                     {
-                        query.AddDefaultGraph(nodeFactory.CreateUriNode(UriFactory.Create(_config.DefaultGraphURI)));
+                        query.AddDefaultGraph(nodeFactory.CreateUriNode(uriFactory.Create(_config.DefaultGraphURI)));
                     }
                 }
 
@@ -367,7 +373,7 @@ namespace VDS.RDF.Web
                     query.ClearNamedGraphs();
                     foreach (var userNamedGraph in userNamedGraphs)
                     {
-                        query.AddNamedGraph(nodeFactory.CreateUriNode(UriFactory.Create(userNamedGraph)));
+                        query.AddNamedGraph(nodeFactory.CreateUriNode(uriFactory.Create(userNamedGraph)));
                     }
                 }
 
@@ -448,6 +454,10 @@ namespace VDS.RDF.Web
             var userDefaultGraphs = new List<String>();
             var userNamedGraphs = new List<String>();
 
+            // Create a request-scoped URI Factory
+            IUriFactory uriFactory =
+                UriFactory.Root.InternUris ? new CachingUriFactory(UriFactory.Root) : UriFactory.Root;
+
             try
             {
                 // Decide what to do based on the HTTP Method
@@ -455,7 +465,7 @@ namespace VDS.RDF.Web
                 {
                     case "OPTIONS":
                         // OPTIONS requests always result in the Service Description document
-                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
+                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, uriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
                         HandlerHelper.SendToClient(webContext, svcDescrip, _config);
                         return;
 
@@ -483,7 +493,7 @@ namespace VDS.RDF.Web
                                 {
                                     // If not a HTML Writer selected then show the Service Description Graph
                                     // unless an error occurs creating it
-                                    IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
+                                    IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, uriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
                                     context.Response.ContentType = definition.CanonicalMimeType;
                                     context.Response.ContentEncoding = definition.Encoding;
                                     writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));
@@ -572,13 +582,16 @@ namespace VDS.RDF.Web
                 }
 
                 // Clean up protocol provided dataset
-                userDefaultGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
-                userNamedGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
+                userDefaultGraphs.RemoveAll(string.IsNullOrEmpty);
+                userNamedGraphs.RemoveAll(string.IsNullOrEmpty);
 
                 // Now we're going to parse the Updates
-                var parser = new SparqlUpdateParser();
-                parser.DefaultBaseUri = context.Request.Url;
-                parser.ExpressionFactories = _config.ExpressionFactories;
+                var parser = new SparqlUpdateParser
+                {
+                    UriFactory = uriFactory,
+                    DefaultBaseUri = context.Request.Url,
+                    ExpressionFactories = _config.ExpressionFactories
+                };
                 SparqlUpdateCommandSet commands = parser.ParseFromString(updateText);
 
                 // Check whether we need to use authentication
@@ -606,8 +619,7 @@ namespace VDS.RDF.Web
                     // Check whether we need to (and are permitted to) apply USING/USING NAMED parameters
                     if (userDefaultGraphs.Count > 0 || userNamedGraphs.Count > 0)
                     {
-                        var modify = cmd as BaseModificationCommand;
-                        if (modify != null)
+                        if (cmd is BaseModificationCommand modify)
                         {
                             if (modify.WithGraphName != null || modify.UsingUris.Any() || modify.UsingNamedUris.Any())
                             {
@@ -617,8 +629,8 @@ namespace VDS.RDF.Web
                             else
                             {
                                 // Otherwise go ahead and apply
-                                userDefaultGraphs.ForEach(u => modify.AddUsingUri(UriFactory.Create(u)));
-                                userNamedGraphs.ForEach(u => modify.AddUsingNamedUri(UriFactory.Create(u)));
+                                userDefaultGraphs.ForEach(u => modify.AddUsingUri(uriFactory.Create(u)));
+                                userNamedGraphs.ForEach(u => modify.AddUsingNamedUri(uriFactory.Create(u)));
                             }
                         }
                     }
@@ -681,10 +693,13 @@ namespace VDS.RDF.Web
 
             var webContext = new WebContext(context);
 
+            IUriFactory uriFactory =
+                UriFactory.Root.InternUris ? new CachingUriFactory(UriFactory.Root) : UriFactory.Root;
+
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 // OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), _basePath), ServiceDescriptionType.Protocol);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(_config, new Uri(uriFactory.Create(context.Request.Url.AbsoluteUri), _basePath), ServiceDescriptionType.Protocol);
                 HandlerHelper.SendToClient(webContext, svcDescrip, _config);
                 return;
             }
@@ -704,7 +719,7 @@ namespace VDS.RDF.Web
                         _config.ProtocolProcessor.ProcessPut(webContext);
                         break;
                     case "POST":
-                        var serviceUri = new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), _basePath);
+                        var serviceUri = new Uri(uriFactory.Create(context.Request.Url.AbsoluteUri), _basePath);
                         if (context.Request.Url.AbsoluteUri.Equals(serviceUri.AbsoluteUri))
                         {
                             // If there is a ?graph parameter or ?default parameter then this is a normal Post
@@ -791,12 +806,12 @@ namespace VDS.RDF.Web
         /// Processes Service Description requests
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public void ProcessDescriptionRequest(HttpContext context)
+        public void ProcessDescriptionRequest(HttpContext context, IUriFactory uriFactory = null)
         {
             try
             {
                 // Get the Service Description Graph
-                IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.All);
+                IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(_config, (uriFactory??UriFactory.Root).Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.All);
                 HandlerHelper.SendToClient(new WebContext(context), serviceDescrip, _config);
             }
             catch

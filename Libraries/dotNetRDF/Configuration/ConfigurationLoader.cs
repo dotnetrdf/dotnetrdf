@@ -392,7 +392,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Find initial imports
-            INode imports = g.CreateUriNode(UriFactory.Create(PropertyImports));
+            INode imports = g.CreateUriNode(g.UriFactory.Create(PropertyImports));
             var importQueue = new Queue<INode>();
             foreach (INode importData in g.GetTriplesWithPredicate(imports).Select(t => t.Object))
             {
@@ -460,8 +460,8 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigureObjectFactories(IGraph g)
         {
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode objLoader = g.CreateUriNode(UriFactory.Create(ClassObjectFactory));
+            IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode objLoader = g.CreateUriNode(g.UriFactory.Create(ClassObjectFactory));
 
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
             {
@@ -494,7 +494,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static void AutoConfigureStaticOptions(IGraph g)
         {
-            IUriNode dnrConfigure = g.CreateUriNode(UriFactory.Create(PropertyConfigure));
+            IUriNode dnrConfigure = g.CreateUriNode(g.UriFactory.Create(PropertyConfigure));
 
             foreach (Triple t in g.GetTriplesWithPredicate(dnrConfigure))
             {
@@ -544,7 +544,7 @@ namespace VDS.RDF.Configuration
                             }
                             else if (valueType.Equals(typeof(Uri)))
                             {
-                                Uri uriValue = (value.NodeType == NodeType.Uri ? ((IUriNode)value).Uri : UriFactory.Create(valueNode.AsString()));
+                                Uri uriValue = (value.NodeType == NodeType.Uri ? ((IUriNode)value).Uri : g.UriFactory.Create(valueNode.AsString()));
                                 property.SetValue(null, uriValue, null);
                             }
 #if NETCORE
@@ -583,10 +583,10 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigureReadersAndWriters(IGraph g)
         {
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfParser));
-            INode formatMimeType = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/media_type"));
-            INode formatExtension = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/preferred_suffix"));
+            IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode desiredType = g.CreateUriNode(g.UriFactory.Create(ClassRdfParser));
+            INode formatMimeType = g.CreateUriNode(g.UriFactory.Create("http://www.w3.org/ns/formats/media_type"));
+            INode formatExtension = g.CreateUriNode(g.UriFactory.Create("http://www.w3.org/ns/formats/preferred_suffix"));
             object temp;
             string[] mimeTypes, extensions;
 
@@ -611,7 +611,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Load Dataset parsers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetParser));
+            desiredType = g.CreateUriNode(g.UriFactory.Create(ClassDatasetParser));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -632,7 +632,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Load SPARQL Result parsers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassSparqlResultsParser));
+            desiredType = g.CreateUriNode(g.UriFactory.Create(ClassSparqlResultsParser));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -653,7 +653,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Load RDF Writers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfWriter));
+            desiredType = g.CreateUriNode(g.UriFactory.Create(ClassRdfWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -674,7 +674,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Load Dataset Writers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetWriter));
+            desiredType = g.CreateUriNode(g.UriFactory.Create(ClassDatasetWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -695,7 +695,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Load SPARQL Result Writers
-            desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetWriter));
+            desiredType = g.CreateUriNode(g.UriFactory.Create(ClassDatasetWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -722,9 +722,9 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph.</param>
         public static void AutoConfigureSparqlOperators(IGraph g)
         {
-            INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)),
-                  operatorClass = g.CreateUriNode(UriFactory.Create(ClassSparqlOperator)),
-                  enabled = g.CreateUriNode(UriFactory.Create(PropertyEnabled));
+            INode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType)),
+                  operatorClass = g.CreateUriNode(g.UriFactory.Create(ClassSparqlOperator)),
+                  enabled = g.CreateUriNode(g.UriFactory.Create(PropertyEnabled));
 
             foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
             {
@@ -792,7 +792,7 @@ namespace VDS.RDF.Configuration
         [Obsolete("This method is obsolete and should no longer be used, constants are now URIs so you should just create URI Nodes directly on your Configuration Graph", true)]
         public static INode CreateConfigurationNode(IGraph g, string qname)
         {
-            return g.CreateUriNode(UriFactory.Create(qname));
+            return g.CreateUriNode(g.UriFactory.Create(qname));
         }
 
         /// <summary>
@@ -1180,15 +1180,15 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static void GetUsernameAndPassword(IGraph g, INode objNode, bool allowCredentials, out string user, out string pwd)
         {
-            INode propUser = g.CreateUriNode(UriFactory.Create(PropertyUser)),
-                  propPwd = g.CreateUriNode(UriFactory.Create(PropertyPassword));
+            INode propUser = g.CreateUriNode(g.UriFactory.Create(PropertyUser)),
+                  propPwd = g.CreateUriNode(g.UriFactory.Create(PropertyPassword));
 
             user = GetConfigurationString(g, objNode, propUser);
             pwd = GetConfigurationString(g, objNode, propPwd);
             if ((user == null || pwd == null) && allowCredentials)
             {
                 // Have they been specified as credentials instead?
-                INode propCredentials = g.CreateUriNode(UriFactory.Create(PropertyCredentials));
+                INode propCredentials = g.CreateUriNode(g.UriFactory.Create(PropertyCredentials));
                 INode credObj = GetConfigurationNode(g, objNode, propCredentials);
                 if (credObj != null)
                 {
@@ -1302,7 +1302,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static object LoadObject(IGraph g, INode objNode)
         {
-            var typeName = GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(PropertyType)));
+            var typeName = GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(PropertyType)));
             if (typeName == null)
             {
                 typeName = GetDefaultType(g, objNode);
@@ -1328,7 +1328,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static string GetDefaultType(IGraph g, INode objNode)
         {
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
             INode declaredType = GetConfigurationNode(g, objNode, rdfType);
             if (declaredType == null) return null; //Fixes Bug CORE-98
             if (declaredType.NodeType == NodeType.Uri)

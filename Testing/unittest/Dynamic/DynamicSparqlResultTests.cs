@@ -82,7 +82,7 @@ WHERE {
             var result = results.Single();
             var d = new DynamicSparqlResult(result);
 
-            Assert.Equal(UriFactory.Create("urn:s"), d["s"]);
+            Assert.Equal(UriFactory.Root.Create("urn:s"), d["s"]);
         }
 
         [Fact]
@@ -124,7 +124,7 @@ WHERE {
 
             var result = results.Single();
             var d = new DynamicSparqlResult(result);
-            var s2 = UriFactory.Create("urn:s2");
+            var s2 = UriFactory.Root.Create("urn:s2");
             var expected = new NodeFactory().CreateUriNode(s2);
 
             d["s"] = s2;
@@ -344,7 +344,7 @@ WHERE {
             var result = results.Single();
             var d = new DynamicSparqlResult(result);
 
-            Assert.Contains(new KeyValuePair<string, object>("s", UriFactory.Create("urn:s")), d);
+            Assert.Contains(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s")), d);
         }
 
         [Fact]
@@ -414,9 +414,9 @@ WHERE {
                 new[]
                 {
                     default,
-                    new KeyValuePair<string, object>("s", UriFactory.Create("urn:s")),
-                    new KeyValuePair<string, object>("p", UriFactory.Create("urn:p")),
-                    new KeyValuePair<string, object>("o", UriFactory.Create("urn:o")),
+                    new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s")),
+                    new KeyValuePair<string, object>("p", UriFactory.Root.Create("urn:p")),
+                    new KeyValuePair<string, object>("o", UriFactory.Root.Create("urn:o")),
                     default
                 },
                 objects);
@@ -591,7 +591,7 @@ WHERE {
             var result = results.Single();
             var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-            Assert.False(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Create("urn:x"))));
+            Assert.False(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:x"))));
             Assert.True(result.HasValue("s"));
         }
 
@@ -613,7 +613,7 @@ WHERE {
             var result = results.Single();
             var d = (ICollection<KeyValuePair<string, object>>)new DynamicSparqlResult(result);
 
-            Assert.True(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Create("urn:s"))));
+            Assert.True(d.Remove(new KeyValuePair<string, object>("s", UriFactory.Root.Create("urn:s"))));
             Assert.False(result.HasValue("s"));
         }
 
@@ -680,7 +680,7 @@ WHERE {
             var d = new DynamicSparqlResult(result);
 
             Assert.True(d.TryGetValue("s", out var value));
-            Assert.Equal(UriFactory.Create("urn:s"), value);
+            Assert.Equal(UriFactory.Root.Create("urn:s"), value);
         }
 
         [Fact]

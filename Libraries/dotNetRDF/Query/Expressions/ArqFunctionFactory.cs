@@ -253,7 +253,7 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return (from u in FunctionUris
-                        select UriFactory.Create(ArqFunctionsNamespace + u));
+                        select UriFactory.Root.Create(ArqFunctionsNamespace + u));
             }
         }
 

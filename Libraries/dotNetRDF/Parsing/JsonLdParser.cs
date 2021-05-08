@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new ArgumentNullException(nameof(filename));
             using (StreamReader reader = File.OpenText(filename))
             {
-                Load(new StoreHandler(store), reader);
+                Load(new StoreHandler(store), reader, store.UriFactory);
             }
         }
 
@@ -88,25 +88,43 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new ArgumentNullException(nameof(store));
             if (input == null) throw new ArgumentNullException(nameof(input));
-            Load(new StoreHandler(store), input);
+            Load(new StoreHandler(store), input, store.UriFactory);
         }
 
         /// <inheritdoc/>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <inheritdoc />
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (filename == null) throw new ArgumentNullException(nameof(filename));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
             using (StreamReader reader = File.OpenText(filename))
             {
-                Load(handler, reader);
+                Load(handler, reader, uriFactory);
             }
         }
 
         /// <inheritdoc/>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <inheritdoc />
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory) {
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
+
             handler.StartRdf();
-            IUriNode rdfTypeNode = handler.CreateUriNode(new Uri(RdfNs + "type"));
+            IUriNode rdfTypeNode = handler.CreateUriNode(uriFactory.Create(RdfNs + "type"));
             try
             {
                 JToken element;
@@ -131,7 +149,7 @@ namespace VDS.RDF.Parsing
                     {
                         if (IsBlankNodeIdentifier(graphName))
                         {
-                            graphIri = new Uri("nquads:bnode:" + graphName.Substring(2));
+                            graphIri = uriFactory.Create("nquads:bnode:" + graphName.Substring(2));
                         } 
                         else if (!(Uri.TryCreate(graphName, UriKind.Absolute, out graphIri) && graphIri.IsWellFormedOriginalString()))
                         {
@@ -274,24 +292,24 @@ namespace VDS.RDF.Parsing
                     // Otherwise direction mode is CompoundLiteral
                     IBlankNode literalNode = handler.CreateBlankNode();
                     Uri xsdString =
-                        UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+                        UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
                     handler.HandleTriple(new Triple(
                         literalNode,
-                        handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfValue)),
+                        handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfValue)),
                         handler.CreateLiteralNode(literalValue, xsdString),
                         graphIri));
                     if (!string.IsNullOrEmpty(language))
                     {
                         handler.HandleTriple(new Triple(
                             literalNode,
-                            handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfLanguage)),
+                            handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfLanguage)),
                             handler.CreateLiteralNode(language, xsdString),
                             graphIri));
                     }
 
                     handler.HandleTriple(new Triple(
                         literalNode,
-                        handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfDirection)),
+                        handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfDirection)),
                         handler.CreateLiteralNode(direction, xsdString),
                         graphIri));
 

@@ -233,7 +233,7 @@ WHERE
                 TestTools.ReportError("Bad Manifest", ex);
                 Assert.True(false, "Failed to load Manifest " + file);
             }
-            manifest.NamespaceMap.AddNamespace("rdf", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+            manifest.NamespaceMap.AddNamespace("rdf", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
 
             var findTests = @"prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> 

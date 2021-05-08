@@ -77,7 +77,7 @@ namespace VDS.RDF.Query
             //DESC() on a condition causes subsequent condition to act as DESC even if it was an ASC condition
 
             IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
+            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
             INode a = g.CreateUriNode(":a");
             INode b = g.CreateUriNode(":b");
             INode c = g.CreateUriNode(":c");
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query
             //DESC() on a condition causes subsequent condition to act as DESC even if it was an ASC condition
 
             IGraph g = new Graph();
-            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Create("http://example/"));
+            g.NamespaceMap.AddNamespace(String.Empty, UriFactory.Root.Create("http://example/"));
             INode a = g.CreateUriNode(":a");
             INode b = g.CreateUriNode(":b");
             INode c = g.CreateUriNode(":c");

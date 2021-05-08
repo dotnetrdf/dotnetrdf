@@ -38,17 +38,19 @@ namespace VDS.RDF.Parsing
     /// Parser for SPARQL Results XML Format.
     /// </summary>
     public class SparqlXmlParser 
-        : ISparqlResultsReader
+        : BaseSparqlResultsReader
     {
         /// <summary>
         /// Loads a Result Set from an Input.
         /// </summary>
         /// <param name="results">Result Set to load into.</param>
         /// <param name="input">Input to read from.</param>
-        public void Load(SparqlResultSet results, TextReader input)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(SparqlResultSet results, TextReader input, IUriFactory uriFactory)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            Load(new ResultSetHandler(results), input);
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(new ResultSetHandler(results), input, uriFactory);
         }
 
         /// <summary>
@@ -56,10 +58,12 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="results">Result Set to load into.</param>
         /// <param name="input">Input Stream to read from.</param>
-        public void Load(SparqlResultSet results, StreamReader input)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(SparqlResultSet results, StreamReader input, IUriFactory uriFactory)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            Load(new ResultSetHandler(results), input);
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(new ResultSetHandler(results), input, uriFactory);
         }
 
         /// <summary>
@@ -67,11 +71,13 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="results">Result Set to load into.</param>
         /// <param name="filename">File to load from.</param>
-        public void Load(SparqlResultSet results, string filename)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(SparqlResultSet results, string filename, IUriFactory uriFactory)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            Load(results, new StreamReader(File.OpenRead(filename)));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(results, new StreamReader(File.OpenRead(filename)), uriFactory);
         }
 
         /// <summary>
@@ -79,16 +85,18 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">Results Handler to use.</param>
         /// <param name="input">Input to read from.</param>
-        public void Load(ISparqlResultsHandler handler, TextReader input)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(ISparqlResultsHandler handler, TextReader input, IUriFactory uriFactory)
         {
             if (handler == null) throw new RdfParseException("Cannot read SPARQL Results using a null Results Handler");
             if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null Input");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             try
             {
                 // Parse the XML
                 var reader = XmlReader.Create(input, GetSettings());
-                Parse(new SparqlXmlParserContext(reader, handler));
+                Parse(new SparqlXmlParserContext(reader, handler, uriFactory));
             }
             catch
             {
@@ -112,10 +120,12 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">Results Handler to use.</param>
         /// <param name="input">Input Stream to read from.</param>
-        public void Load(ISparqlResultsHandler handler, StreamReader input)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(ISparqlResultsHandler handler, StreamReader input, IUriFactory uriFactory)
         {
             if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null input");
-            Load(handler, (TextReader)input);
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(handler, (TextReader)input, uriFactory);
         }
 
         /// <summary>
@@ -123,10 +133,12 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">Results Handler to use.</param>
         /// <param name="filename">File to read from.</param>
-        public void Load(ISparqlResultsHandler handler, string filename)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public override void Load(ISparqlResultsHandler handler, string filename, IUriFactory uriFactory)
         {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            Load(handler, new StreamReader(File.OpenRead(filename)));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(handler, new StreamReader(File.OpenRead(filename)), uriFactory);
         }
 
         /// <summary>
@@ -477,7 +489,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
         /// </summary>
-        public event SparqlWarning Warning;
+        public override event SparqlWarning Warning;
 
         /// <summary>
         /// Gets the String representation of the Parser which is a description of the syntax it parses.

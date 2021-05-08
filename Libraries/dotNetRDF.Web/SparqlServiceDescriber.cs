@@ -116,9 +116,9 @@ namespace VDS.RDF.Web
         private static IGraph GetNewGraph()
         {
             var g = new Graph();
-            g.NamespaceMap.AddNamespace("sd", UriFactory.Create(SparqlServiceDescriber.ServiceDescriptionNamespace));
-            g.NamespaceMap.AddNamespace("void", UriFactory.Create("http://rdfs.org/ns/void#"));
-            g.NamespaceMap.AddNamespace("scovo", UriFactory.Create("http://purl.org/NET/scovo#"));
+            g.NamespaceMap.AddNamespace("sd", g.UriFactory.Create(SparqlServiceDescriber.ServiceDescriptionNamespace));
+            g.NamespaceMap.AddNamespace("void", g.UriFactory.Create("http://rdfs.org/ns/void#"));
+            g.NamespaceMap.AddNamespace("scovo", g.UriFactory.Create("http://purl.org/NET/scovo#"));
 
             return g;
         }
@@ -138,7 +138,7 @@ namespace VDS.RDF.Web
 
             // Add the Top Level Node representing the Service
             IUriNode descrip = g.CreateUriNode(descripUri);
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
             IUriNode service = g.CreateUriNode("sd:" + ClassService);
             g.Assert(descrip, rdfType, service);
 
@@ -169,7 +169,7 @@ namespace VDS.RDF.Web
                 {
                     if (definition.FormatUri != null)
                     {
-                        g.Assert(descrip, resultFormat, g.CreateUriNode(UriFactory.Create(definition.FormatUri)));
+                        g.Assert(descrip, resultFormat, g.CreateUriNode(g.UriFactory.Create(definition.FormatUri)));
                     }
                 }
             }
@@ -209,7 +209,7 @@ namespace VDS.RDF.Web
             if (config.ServiceDescription != null) return config.ServiceDescription;
 
             IGraph g = SparqlServiceDescriber.GetNewGraph();
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
             IUriNode service = g.CreateUriNode("sd:" + ClassService);
 
             INode queryNode, updateNode, protocolNode;
@@ -248,7 +248,7 @@ namespace VDS.RDF.Web
                     {
                         if (definition.FormatUri != null)
                         {
-                            g.Assert(queryNode, resultFormat, g.CreateUriNode(UriFactory.Create(definition.FormatUri)));
+                            g.Assert(queryNode, resultFormat, g.CreateUriNode(g.UriFactory.Create(definition.FormatUri)));
                         }
                     }
                 }
@@ -318,7 +318,7 @@ namespace VDS.RDF.Web
                 {
                     var actualUri = descripUri.AbsoluteUri;
                     actualUri = actualUri.Substring(0, actualUri.LastIndexOf("/description") + 1);
-                    protocolNode = g.CreateUriNode(UriFactory.Create(actualUri));
+                    protocolNode = g.CreateUriNode(g.UriFactory.Create(actualUri));
                 }
                 else
                 {
@@ -338,7 +338,7 @@ namespace VDS.RDF.Web
                     {
                         if (definition.FormatUri != null)
                         {
-                            g.Assert(protocolNode, inputFormat, g.CreateUriNode(UriFactory.Create(definition.FormatUri)));
+                            g.Assert(protocolNode, inputFormat, g.CreateUriNode(g.UriFactory.Create(definition.FormatUri)));
                         }
                     }
                 }
@@ -351,7 +351,7 @@ namespace VDS.RDF.Web
                     {
                         if (definition.FormatUri != null)
                         {
-                            g.Assert(protocolNode, resultFormat, g.CreateUriNode(UriFactory.Create(definition.FormatUri)));
+                            g.Assert(protocolNode, resultFormat, g.CreateUriNode(g.UriFactory.Create(definition.FormatUri)));
                         }
                     }
                 }
@@ -382,7 +382,7 @@ namespace VDS.RDF.Web
 
             // Add the Top Level Node representing the Service
             IUriNode descrip = g.CreateUriNode(descripUri);
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
             IUriNode service = g.CreateUriNode("sd:" + ClassService);
             g.Assert(descrip, rdfType, service);
 
@@ -431,7 +431,7 @@ namespace VDS.RDF.Web
 
             // Add the Top Level Node representing the Service
             IUriNode descrip = g.CreateUriNode(descripUri);
-            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType));
             IUriNode service = g.CreateUriNode("sd:" + ClassService);
             g.Assert(descrip, rdfType, service);
 
@@ -447,7 +447,7 @@ namespace VDS.RDF.Web
                 {
                     if (definition.FormatUri != null)
                     {
-                        g.Assert(descrip, inputFormat, g.CreateUriNode(UriFactory.Create(definition.FormatUri)));
+                        g.Assert(descrip, inputFormat, g.CreateUriNode(g.UriFactory.Create(definition.FormatUri)));
                     }
                 }
             }
@@ -460,7 +460,7 @@ namespace VDS.RDF.Web
                 {
                     if (definition.FormatUri != null)
                     {
-                        g.Assert(descrip, resultFormat, g.CreateUriNode(UriFactory.Create(definition.FormatUri)));
+                        g.Assert(descrip, resultFormat, g.CreateUriNode(g.UriFactory.Create(definition.FormatUri)));
                     }
                 }
             }

@@ -41,7 +41,6 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         protected bool _traceParsing = false;
 
-        private IRdfHandler _handler;
         private NamespaceMapper _nsmap = new NamespaceMapper(true);
         private Uri _baseUri;
 
@@ -50,11 +49,23 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
-        public BaseStoreParserContext(IRdfHandler handler, bool traceParsing)
+        /// <param name="uriFactory">URI factory to use.</param>
+        public BaseStoreParserContext(IRdfHandler handler, bool traceParsing, IUriFactory uriFactory)
         {
-            if (handler == null) throw new ArgumentNullException("handler", "RDF Handler cannot be null");
-            _handler = handler;
+            Handler = handler ?? throw new ArgumentNullException(nameof(handler), "RDF Handler cannot be null");
+            UriFactory = uriFactory ??
+                         throw new ArgumentNullException(nameof(uriFactory), "URI Factory must not be null");
             _traceParsing = traceParsing;
+        }
+
+        /// <summary>
+        /// Creates a new Store Parser Context.
+        /// </summary>
+        /// <param name="handler">RDF Handler.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        public BaseStoreParserContext(IRdfHandler handler, bool traceParsing)
+            : this(handler, traceParsing, RDF.UriFactory.Root)
+        {
         }
 
         /// <summary>
@@ -80,6 +91,15 @@ namespace VDS.RDF.Parsing.Contexts
             : this(new StoreHandler(store), traceParsing) { }
 
         /// <summary>
+        /// Creates a new base parser context.
+        /// </summary>
+        /// <param name="store">Triple Store.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public BaseStoreParserContext(ITripleStore store, bool traceParsing, IUriFactory uriFactory)
+            :this(new StoreHandler(store), traceParsing, uriFactory) { }
+
+        /// <summary>
         /// Gets/Sets whether to trace parsing.
         /// </summary>
         public bool TraceParsing
@@ -97,13 +117,12 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the RDF Handler that is in-use.
         /// </summary>
-        public IRdfHandler Handler
-        {
-            get
-            {
-                return _handler;
-            }
-        }
+        public IRdfHandler Handler { get; }
+
+        /// <summary>
+        /// Gets the URI factory for the handler.
+        /// </summary>
+        public IUriFactory UriFactory { get; }
 
         /// <summary>
         /// Gets the Namespace Map for the parser context.
@@ -209,7 +228,19 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(store, traceParsing)
+            : this(store, tokeniser, queueMode, traceParsing, traceTokeniser, RDF.UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new Tokenising Store Parser Context with custom settings.
+        /// </summary>
+        /// <param name="store">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+        /// <param name="uriFactory">The URI factory to use.</param>
+        public TokenisingStoreParserContext(ITripleStore store, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
+            : base(store, traceParsing, uriFactory)
         {
             switch (queueMode)
             {
@@ -287,7 +318,19 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
         public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(handler, traceParsing)
+            :this(handler, tokeniser, queueMode, traceParsing, traceTokeniser, RDF.UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new Tokenising Store Parser Context with custom settings.
+        /// </summary>
+        /// <param name="handler">Store to parse into.</param>
+        /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public TokenisingStoreParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory)
+            : base(handler, traceParsing, uriFactory)
         {
             switch (queueMode)
             {

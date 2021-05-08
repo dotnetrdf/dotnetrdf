@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Describe
                     case Token.QNAME:
                     case Token.URI:
                         // Resolve Uri/QName
-                        nodes.Add(factory.CreateUriNode(UriFactory.Create(Tools.ResolveUriOrQName(t, nsmap, baseUri))));
+                        nodes.Add(factory.CreateUriNode(context.UriFactory.Create(Tools.ResolveUriOrQName(t, nsmap, baseUri))));
                         break;
 
                     case Token.VARIABLE:

@@ -22,7 +22,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             //Nodes for positive and negative tests
             var g = new Graph();
-            g.NamespaceMap.AddNamespace("rdft", UriFactory.Create("http://www.w3.org/ns/rdftest#"));
+            g.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
             INode posSyntaxTest = g.CreateUriNode("rdft:TestNQuadsPositiveSyntax");
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNQuadsNegativeSyntax");
 

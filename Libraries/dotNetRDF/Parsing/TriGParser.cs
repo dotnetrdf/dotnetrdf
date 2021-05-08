@@ -118,7 +118,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            Load(new StoreHandler(store), input);
+            Load(new StoreHandler(store), input, store.UriFactory);
         }
 
         /// <summary>
@@ -128,8 +128,19 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using an RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), uriFactory);
         }
 
         /// <summary>
@@ -139,19 +150,27 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using and RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="input">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             try
             {
                 // Create the Parser Context and Invoke the Parser
-                var context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), TokenQueueMode, false, _tracetokeniser);
-                context.Syntax = _syntax;
+                var context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), TokenQueueMode, false,
+                    _tracetokeniser, uriFactory) {Syntax = _syntax};
                 Parse(context);
-            }
-            catch
-            {
-                throw;
             }
             finally
             {
@@ -347,7 +366,7 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.QNAME)
             {
                 // Try to resolve the QName
-                graphUri = UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, null));
+                graphUri = context.UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, null));
 
                 // Get the Next Token
                 next = context.Tokens.Dequeue();
@@ -469,7 +488,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Empty Collection
                             context.Tokens.Dequeue();
-                            subjNode = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+                            subjNode = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil));
                         }
                         else
                         {
@@ -555,7 +574,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.KEYWORDA:
                         // 'a' Keyword
-                        predNode = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                        predNode = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
                         break;
 
                     case Token.EOF:
@@ -653,7 +672,7 @@ namespace VDS.RDF.Parsing
                             next = context.Tokens.Dequeue();
                             if (next.TokenType == Token.QNAME || next.TokenType == Token.URI)
                             {
-                                Uri dt = UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
+                                Uri dt = context.UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
                                 objNode = context.Handler.CreateLiteralNode(obj.Value, dt);
                             }
                             else
@@ -715,7 +734,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Empty Collection
                             context.Tokens.Dequeue();
-                            objNode = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+                            objNode = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil));
                         }
                         else
                         {
@@ -753,9 +772,9 @@ namespace VDS.RDF.Parsing
         {
             // Create the Nodes we need
             IUriNode rdfFirst, rdfRest, rdfNil;
-            rdfFirst = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-            rdfRest = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
-            rdfNil = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+            rdfFirst = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            rdfRest = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListRest));
+            rdfNil = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil));
 
             IToken next;
             INode item, temp;
@@ -791,7 +810,7 @@ namespace VDS.RDF.Parsing
                                 next = context.Tokens.Dequeue();
                                 if (next.TokenType == Token.QNAME || next.TokenType == Token.URI)
                                 {
-                                    Uri dt = UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
+                                    Uri dt = context.UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
                                     item = context.Handler.CreateLiteralNode(obj.Value, dt);
                                 }
                                 else
@@ -833,7 +852,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Empty Collection
                             context.Tokens.Dequeue();
-                            item = context.Handler.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+                            item = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil));
                         }
                         else
                         {

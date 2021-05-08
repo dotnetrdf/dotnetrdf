@@ -54,7 +54,8 @@ namespace VDS.RDF.Update.Protocol
         /// </summary>
         /// <param name="queryProcessor">Query Processor.</param>
         /// <param name="updateProcessor">Update Processor.</param>
-        public ProtocolToUpdateProcessor(ISparqlQueryProcessor queryProcessor, ISparqlUpdateProcessor updateProcessor)
+        /// <param name="uriFactory">Factory for creating new URI instances.</param>
+        public ProtocolToUpdateProcessor(ISparqlQueryProcessor queryProcessor, ISparqlUpdateProcessor updateProcessor, IUriFactory uriFactory = null) : base(uriFactory)
         {
             _queryProcessor = queryProcessor;
             _updateProcessor = updateProcessor;

@@ -64,6 +64,22 @@ namespace VDS.RDF
         void Load(IRdfHandler handler, TextReader input);
 
         /// <summary>
+        /// Loads an RDF dataset using an RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        void Load(IRdfHandler handler, string filename, IUriFactory uriFactory);
+
+        /// <summary>
+        /// Loads an RDF dataset using and RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="input">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory);
+
+        /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
         /// </summary>
         event StoreReaderWarning Warning;

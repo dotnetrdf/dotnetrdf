@@ -61,9 +61,9 @@ namespace VDS.RDF.Query.Spin
 
             // Ensure that SP, SPIN and SPL are present
             IRdfReader rdfReader = new RdfXmlParser();
-            Initialise(UriFactory.Create(SP.BASE_URI), rdfReader);
-            Initialise(UriFactory.Create(SPIN.BASE_URI), rdfReader);
-            Initialise(UriFactory.Create(SPL.BASE_URI), rdfReader);
+            Initialise(UriFactory.Root.Create(SP.BASE_URI), rdfReader);
+            Initialise(UriFactory.Root.Create(SPIN.BASE_URI), rdfReader);
+            Initialise(UriFactory.Root.Create(SPL.BASE_URI), rdfReader);
         }
 
         internal void Initialise(Uri spinGraphUri, IRdfReader rdfReader = null)
@@ -359,7 +359,7 @@ namespace VDS.RDF.Query.Spin
             else
             {
                 _currentSparqlGraph = new Graph();
-                _currentSparqlGraph.BaseUri = UriFactory.Create("sparql-query:" + sparqlQuery);
+                _currentSparqlGraph.BaseUri = _currentSparqlGraph.UriFactory.Create("sparql-query:" + sparqlQuery);
                 INode q = new SparqlQueryParser().ParseFromString(sparqlQuery).ToSpinRdf(_currentSparqlGraph);
                 if (!_currentSparqlGraph.IsEmpty)
                 {
@@ -386,7 +386,7 @@ namespace VDS.RDF.Query.Spin
                 else
                 {
                     _currentSparqlGraph = new Graph();
-                    _currentSparqlGraph.BaseUri = UriFactory.Create("sparql-query:" + sparqlQuery);
+                    _currentSparqlGraph.BaseUri = _currentSparqlGraph.UriFactory.Create("sparql-query:" + sparqlQuery);
                     INode q = command.ToSpinRdf(_currentSparqlGraph);
                     if (!_currentSparqlGraph.IsEmpty)
                     {

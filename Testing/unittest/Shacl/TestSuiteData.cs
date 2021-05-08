@@ -33,7 +33,7 @@ namespace VDS.RDF.Shacl
 
     internal static class TestSuiteData
     {
-        private static readonly Uri baseUri = UriFactory.Create(IO.Path.GetFullPath("resources\\shacl\\test-suite\\manifest.ttl"));
+        private static readonly Uri baseUri = UriFactory.Root.Create(IO.Path.GetFullPath("resources\\shacl\\test-suite\\manifest.ttl"));
         private static readonly TripleStore store;
 
         private static readonly NodeFactory factory = new NodeFactory();
@@ -131,7 +131,7 @@ namespace VDS.RDF.Shacl
 
         private static IUriNode Node(string uri)
         {
-            return factory.CreateUriNode(UriFactory.Create(uri));
+            return factory.CreateUriNode(UriFactory.Root.Create(uri));
         }
 
     }

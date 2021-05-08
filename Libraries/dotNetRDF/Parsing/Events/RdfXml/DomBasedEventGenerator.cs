@@ -151,7 +151,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         // Relative Uri with no Base Uri
                         throw new RdfParseException("Cannot resolve a Relative Namespace URI since there is no in-scope Base URI");
                     }
-                    context.Namespaces.AddNamespace(prefix, UriFactory.Create(uri));
+                    context.Namespaces.AddNamespace(prefix, context.UriFactory.Create(uri));
                 }
                 else if (attr.Name == "xml:base")
                 {

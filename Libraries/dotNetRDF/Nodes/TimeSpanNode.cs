@@ -45,7 +45,7 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="value">Time Span.</param>
         public TimeSpanNode(TimeSpan value)
-            : this(value, XmlConvert.ToString(value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+            : this(value, XmlConvert.ToString(value), UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         /// <summary>
         /// Creates a new Time span node. 
@@ -53,7 +53,7 @@ namespace VDS.RDF.Nodes
         /// <param name="value">Time Span.</param>
         /// <param name="lexicalValue">Lexical value.</param>
         public TimeSpanNode(TimeSpan value, string lexicalValue)
-            : this(value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+            : this(value, lexicalValue, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         /// <summary>
         /// Creates a new Time span node.

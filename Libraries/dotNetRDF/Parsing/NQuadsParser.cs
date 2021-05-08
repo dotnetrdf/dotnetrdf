@@ -137,7 +137,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
 
-            Load(new StoreHandler(store), filename);
+            Load(new StoreHandler(store), filename, store.UriFactory);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace VDS.RDF.Parsing
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            Load(new StoreHandler(store), input);
+            Load(new StoreHandler(store), input, store.UriFactory);
         }
 
         /// <summary>
@@ -159,7 +159,19 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
+            Load(handler, filename, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using an RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
+        { 
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             // Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
             // However if we are parsing RDF 1.1 NTriples then we use UTF-8 anyway so that doesn't matter
@@ -186,9 +198,21 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to load from.</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
+            Load(handler, input, UriFactory.Root);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using and RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="input">File to load from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
+
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
             // Check for incorrect stream encoding and issue warning if appropriate
             if (input is StreamReader)
             {
@@ -196,20 +220,31 @@ namespace VDS.RDF.Parsing
                 {
                     case NQuadsSyntax.Original:
                         // Issue a Warning if the Encoding of the Stream is not ASCII
-                        if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.ASCII))
+                        if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.ASCII))
                         {
-                            RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                            RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " +
+                                         ((StreamReader)input).CurrentEncoding.EncodingName +
+                                         " - Please be aware that parsing errors may occur as a result");
                         }
+
                         break;
                     default:
-                        if (!((StreamReader) input).CurrentEncoding.Equals(Encoding.UTF8))
+                        if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.UTF8))
                         {
-                            RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader) input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                            RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " +
+                                         ((StreamReader)input).CurrentEncoding.EncodingName +
+                                         " - Please be aware that parsing errors may occur as a result");
                         }
+
                         break;
                 }
             }
 
+            LoadInternal(handler, input, uriFactory);
+        }
+
+        private void LoadInternal(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
+        {
             try
             {
                 // Setup Token Queue and Tokeniser
@@ -233,7 +268,7 @@ namespace VDS.RDF.Parsing
                 tokens.InitialiseBuffer();
 
                 // Invoke the Parser
-                Parse(handler, tokens);
+                Parse(handler, uriFactory, tokens);
             }
             finally
             {
@@ -264,7 +299,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void Parse(IRdfHandler handler, ITokenQueue tokens)
+        private void Parse(IRdfHandler handler, IUriFactory uriFactory, ITokenQueue tokens)
         {
             IToken next;
             IToken s, p, o;
@@ -288,9 +323,9 @@ namespace VDS.RDF.Parsing
                     s = TryParseSubject(tokens);
                     p = TryParsePredicate(tokens);
                     o = TryParseObject(tokens);
-                    Uri context = TryParseContext(handler, tokens);
+                    Uri context = TryParseContext(handler, tokens, uriFactory);
 
-                    TryParseTriple(handler, s, p, o, context);
+                    TryParseTriple(handler, uriFactory, s, p, o, context);
 
                     next = tokens.Peek();
                 } while (next.TokenType != Token.EOF);
@@ -371,7 +406,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private Uri TryParseContext(IRdfHandler handler, ITokenQueue tokens)
+        private Uri TryParseContext(IRdfHandler handler, ITokenQueue tokens, IUriFactory uriFactory)
         {
             IToken next = tokens.Dequeue();
             if (next.TokenType == Token.DOT)
@@ -385,7 +420,7 @@ namespace VDS.RDF.Parsing
                     context = handler.CreateBlankNode(next.Value.Substring(2));
                     break;
                 case Token.URI:
-                    context = TryParseUri(handler, next.Value);
+                    context = TryParseUri(handler, next.Value, uriFactory);
                     break;
                 case Token.LITERAL:
                     if (Syntax != NQuadsSyntax.Original) throw new RdfParseException("Only a Blank Node/URI may be used as the graph name in RDF NQuads 1.1");
@@ -400,7 +435,7 @@ namespace VDS.RDF.Parsing
                             break;
                         case Token.DATATYPE:
                             tokens.Dequeue();
-                            context = handler.CreateLiteralNode(next.Value, ((IUriNode) TryParseUri(handler, temp.Value.Substring(1, temp.Value.Length - 2))).Uri);
+                            context = handler.CreateLiteralNode(next.Value, ((IUriNode) TryParseUri(handler, temp.Value.Substring(1, temp.Value.Length - 2), uriFactory)).Uri);
                             break;
                         default:
                             context = handler.CreateLiteralNode(next.Value);
@@ -425,11 +460,11 @@ namespace VDS.RDF.Parsing
             }
             else if (context.NodeType == NodeType.Blank)
             {
-                return UriFactory.Create("nquads:bnode:" + context.GetHashCode());
+                return uriFactory.Create("nquads:bnode:" + context.GetHashCode());
             }
             else if (context.NodeType == NodeType.Literal)
             {
-                return UriFactory.Create("nquads:literal:" + context.GetHashCode());
+                return uriFactory.Create("nquads:literal:" + context.GetHashCode());
             }
             else
             {
@@ -437,7 +472,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseTriple(IRdfHandler handler, IToken s, IToken p, IToken o, Uri graphUri)
+        private void TryParseTriple(IRdfHandler handler, IUriFactory uriFactory, IToken s, IToken p, IToken o, Uri graphUri)
         {
             INode subj, pred, obj;
 
@@ -447,7 +482,7 @@ namespace VDS.RDF.Parsing
                     subj = handler.CreateBlankNode(s.Value.Substring(2));
                     break;
                 case Token.URI:
-                    subj = TryParseUri(handler, s.Value);
+                    subj = TryParseUri(handler, s.Value, uriFactory);
                     break;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + s.GetType().ToString() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", s);
@@ -456,7 +491,7 @@ namespace VDS.RDF.Parsing
             switch (p.TokenType)
             {
                 case Token.URI:
-                    pred = ParserHelper.TryResolveUri(handler, p);
+                    pred = ParserHelper.TryResolveUri(handler, p, uriFactory);
                     break;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + p.GetType().ToString() + "' encountered, expected a URI as the Predicate of a Triple", p);
@@ -472,13 +507,13 @@ namespace VDS.RDF.Parsing
                     break;
                 case Token.LITERALWITHDT:
                     var dtUri = ((LiteralWithDataTypeToken) o).DataType;
-                    obj = handler.CreateLiteralNode(o.Value, ((IUriNode) TryParseUri(handler, dtUri.Substring(1, dtUri.Length - 2))).Uri);
+                    obj = handler.CreateLiteralNode(o.Value, ((IUriNode) TryParseUri(handler, dtUri.Substring(1, dtUri.Length - 2), uriFactory)).Uri);
                     break;
                 case Token.LITERALWITHLANG:
                     obj = handler.CreateLiteralNode(o.Value, ((LiteralWithLanguageSpecifierToken) o).Language);
                     break;
                 case Token.URI:
-                    obj = TryParseUri(handler, o.Value);
+                    obj = TryParseUri(handler, o.Value, uriFactory);
                     break;
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + o.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", o);
@@ -493,11 +528,11 @@ namespace VDS.RDF.Parsing
         /// <param name="handler">RDF Handler.</param>
         /// <param name="uri">URI.</param>
         /// <returns>URI Node if parsed successfully.</returns>
-        private static INode TryParseUri(IRdfHandler handler, string uri)
+        private static INode TryParseUri(IRdfHandler handler, string uri, IUriFactory uriFactory)
         {
             try
             {
-                IUriNode n = handler.CreateUriNode(UriFactory.Create(uri));
+                IUriNode n = handler.CreateUriNode(uriFactory.Create(uri));
                 if (!n.Uri.IsAbsoluteUri)
                     throw new RdfParseException("NQuads does not permit relative URIs");
                 return n;

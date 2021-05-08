@@ -355,7 +355,7 @@ namespace VDS.RDF.Update.Commands
                             switch (gp.GraphSpecifier.TokenType)
                             {
                                 case Token.URI:
-                                    graphName = new UriNode(UriFactory.Create(gp.GraphSpecifier.Value));
+                                    graphName = new UriNode(UriFactory.Root.Create(gp.GraphSpecifier.Value));
                                     break;
                                 case Token.VARIABLE:
                                     var graphVar = gp.GraphSpecifier.Value.Substring(1);

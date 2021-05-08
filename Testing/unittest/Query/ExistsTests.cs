@@ -62,7 +62,7 @@ WHERE
         {
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            var expected = g.GetTriplesWithObject(g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassHttpHandler))).Count();
+            var expected = g.GetTriplesWithObject(g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.ClassHttpHandler))).Count();
 
             var query = @"SELECT *
 WHERE

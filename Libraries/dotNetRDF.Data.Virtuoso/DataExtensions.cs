@@ -55,20 +55,20 @@ namespace VDS.RDF
         /// <param name="factoryType">Factory Type.</param>
         internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
         {
-            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
             var assm = Assembly.GetAssembly(factoryType).FullName;
             if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
 
             //Firstly need to ensure our object factory has been referenced
             var factoryCheck = new SparqlParameterizedString();
-            factoryCheck.Namespaces.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            factoryCheck.Namespaces.AddNamespace("dnr", context.UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
             factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assm + "' . }";
             var rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
             if (!rset.Result)
             {
                 INode factory = context.Graph.CreateBlankNode();
-                context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
+                context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
                 context.Graph.Assert(new Triple(factory, dnrType, context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assm)));
             }
         }

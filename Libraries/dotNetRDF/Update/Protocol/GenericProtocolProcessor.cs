@@ -42,13 +42,14 @@ namespace VDS.RDF.Update.Protocol
     public class GenericProtocolProcessor
         : BaseProtocolProcessor
     {
-        private IStorageProvider _manager;
+        private readonly IStorageProvider _manager;
 
         /// <summary>
         /// Creates a new Generic Protocol Processor.
         /// </summary>
         /// <param name="manager">Generic IO Manager.</param>
-        public GenericProtocolProcessor(IStorageProvider manager)
+        /// <param name="uriFactory">Factory for creating new URI instances.</param>
+        public GenericProtocolProcessor(IStorageProvider manager, IUriFactory uriFactory = null) : base(uriFactory)
         {
             _manager = manager;
         }

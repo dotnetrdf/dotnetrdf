@@ -41,9 +41,9 @@ namespace VDS.RDF.Parsing
     /// </para>
     /// </remarks>
     public abstract class BaseGZipResultsParser
-        : ISparqlResultsReader
+        : BaseSparqlResultsReader
     {
-        private ISparqlResultsReader _parser;
+        private readonly ISparqlResultsReader _parser;
 
         /// <summary>
         /// Creates a new GZipped results parser.
@@ -51,76 +51,94 @@ namespace VDS.RDF.Parsing
         /// <param name="parser">Underlying parser.</param>
         public BaseGZipResultsParser(ISparqlResultsReader parser)
         {
-            if (parser == null) throw new ArgumentNullException("parser");
-            _parser = parser;
+            _parser = parser ?? throw new ArgumentNullException(nameof(parser));
             _parser.Warning += RaiseWarning;
         }
 
         /// <summary>
-        /// Loads a Result Set from GZipped input.
+        /// Loads a Result Set from the given Stream.
         /// </summary>
+        /// <param name="input">Stream to read from.</param>
         /// <param name="results">Result Set to load into.</param>
-        /// <param name="input">Input to load from.</param>
-        public void Load(SparqlResultSet results, StreamReader input)
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <returns></returns>
+        /// <remarks>Should throw an error if the Result Set is not empty.</remarks>
+        public override void Load(SparqlResultSet results, StreamReader input, IUriFactory uriFactory)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
-            Load(new ResultSetHandler(results), input);
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(new ResultSetHandler(results), input, uriFactory);
         }
 
+
         /// <summary>
-        /// Loads a Result Set from GZipped input.
+        /// Loads a Result Set from the given Input.
         /// </summary>
+        /// <param name="input">Input to read from.</param>
         /// <param name="results">Result Set to load into.</param>
-        /// <param name="input">Input to load from.</param>
-        public void Load(SparqlResultSet results, TextReader input)
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <returns></returns>
+        /// <remarks>Should throw an error if the Result Set is not empty.</remarks>
+        public override void Load(SparqlResultSet results, TextReader input, IUriFactory uriFactory)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
-            Load(new ResultSetHandler(results), input);
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(new ResultSetHandler(results), input, uriFactory);
         }
 
+        
         /// <summary>
-        /// Loads a Result Set from GZipped input.
+        /// Loads a Result Set from the given File.
         /// </summary>
+        /// <param name="filename">File containing a Result Set.</param>
         /// <param name="results">Result Set to load into.</param>
-        /// <param name="filename">File to load from.</param>
-        public void Load(SparqlResultSet results, string filename)
+        /// <param name="uriFactory">URI factory to use.</param>
+        /// <returns></returns>
+        /// <remarks>Should throw an error if the Result Set is not empty.</remarks>
+        public override void Load(SparqlResultSet results, string filename, IUriFactory uriFactory)
         {
             if (results == null) throw new RdfParseException("Cannot parse SPARQL Results into a null Result Set");
-            Load(new ResultSetHandler(results), filename);
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(new ResultSetHandler(results), filename, uriFactory);
         }
 
+        
         /// <summary>
-        /// Loads a Result Set from GZipped input.
+        /// Loads a Result Set using a Results Handler from the given Stream.
         /// </summary>
-        /// <param name="handler">Results Handler to use.</param>
-        /// <param name="input">Input to load from.</param>
-        public void Load(ISparqlResultsHandler handler, StreamReader input)
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="input">Stream to read from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public override void Load(ISparqlResultsHandler handler, StreamReader input, IUriFactory uriFactory)
         {
             if (handler == null) throw new RdfParseException("Cannot parse SPARQL Results using a null Handler");
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Results from a null input");
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
 
             if (input.BaseStream is GZipStream)
             {
-                _parser.Load(handler, input);
+                _parser.Load(handler, input, uriFactory);
             }
             else
             {
                 // Force the inner stream to be GZipped
                 input = new StreamReader(new GZipStream(input.BaseStream, CompressionMode.Decompress));
-                _parser.Load(handler, input);
+                _parser.Load(handler, input, uriFactory);
             }
         }
 
         /// <summary>
-        /// Loads a Result Set from GZipped input.
+        /// Loads a Result Set using a Results Handler from the given Input.
         /// </summary>
-        /// <param name="handler">Results Handler to use.</param>
-        /// <param name="input">Input to load from.</param>
-        public void Load(ISparqlResultsHandler handler, TextReader input)
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="input">Input to read from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public override void Load(ISparqlResultsHandler handler, TextReader input, IUriFactory uriFactory)
         {
-            if (input is StreamReader)
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            if (input is StreamReader streamReader)
             {
-                Load(handler, (StreamReader)input);
+                Load(handler, streamReader, uriFactory);
             }
             else
             {
@@ -128,15 +146,18 @@ namespace VDS.RDF.Parsing
             }
         }
 
+
         /// <summary>
-        /// Loads a Result Set from GZipped input.
+        /// Loads a Result Set using a Results Handler from the given file.
         /// </summary>
-        /// <param name="handler">Results Handler to use.</param>
-        /// <param name="filename">File to load from.</param>
-        public void Load(ISparqlResultsHandler handler, string filename)
+        /// <param name="handler">Results Handler.</param>
+        /// <param name="filename">File to read results from.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public override void Load(ISparqlResultsHandler handler, string filename, IUriFactory uriFactory)
         {
             if (filename == null) throw new RdfParseException("Cannot parse SPARQL Results from a null file");
-            Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+            Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)), uriFactory);
         }
 
         /// <summary>
@@ -145,7 +166,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public override string ToString()
         {
-            return "GZipped " + _parser.ToString();
+            return "GZipped " + _parser;
         }
 
         /// <summary>
@@ -155,13 +176,13 @@ namespace VDS.RDF.Parsing
         private void RaiseWarning(string message)
         {
             SparqlWarning d = Warning;
-            if (d != null) d(message);
+            d?.Invoke(message);
         }
 
         /// <summary>
         /// Event which is raised if non-fatal errors are countered with parsing results
         /// </summary>
-        public event SparqlWarning Warning;
+        public override event SparqlWarning Warning;
     }
 
     /// <summary>

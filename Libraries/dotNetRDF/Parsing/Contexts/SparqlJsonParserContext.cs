@@ -36,18 +36,16 @@ namespace VDS.RDF.Parsing.Contexts
     /// </summary>
     public class SparqlJsonParserContext : BaseResultsParserContext
     {
-        private JsonTextReader _reader;
-
         /// <summary>
         /// Creates a new Parser Context.
         /// </summary>
         /// <param name="reader">JSON Text Reader.</param>
         /// <param name="handler">Results Handler.</param>
-        public SparqlJsonParserContext(JsonTextReader reader, ISparqlResultsHandler handler)
-            : base(handler)
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public SparqlJsonParserContext(JsonTextReader reader, ISparqlResultsHandler handler, IUriFactory uriFactory = null)
+            : base(handler, uriFactory)
         {
-            if (reader == null) throw new ArgumentNullException("reader");
-            _reader = reader;
+            Input = reader ?? throw new ArgumentNullException(nameof(reader));
         }
 
         /// <summary>
@@ -55,18 +53,13 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="reader">JSON Text Reader.</param>
         /// <param name="results">SPARQL Result Set.</param>
-        public SparqlJsonParserContext(JsonTextReader reader, SparqlResultSet results)
-            : this(reader, new ResultSetHandler(results)) { }
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public SparqlJsonParserContext(JsonTextReader reader, SparqlResultSet results, IUriFactory uriFactory = null)
+            : this(reader, new ResultSetHandler(results), uriFactory) { }
 
         /// <summary>
         /// Gets the JSON Text Reader.
         /// </summary>
-        public JsonTextReader Input
-        {
-            get
-            {
-                return _reader;
-            }
-        }
+        public JsonTextReader Input { get; }
     }
 }

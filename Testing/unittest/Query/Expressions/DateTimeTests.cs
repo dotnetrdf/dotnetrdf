@@ -45,8 +45,8 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateTimeEquality(String x, String y, bool equals)
         {
             IGraph g = new Graph();
-            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-            INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
             if (equals)
             {
@@ -77,8 +77,8 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateEquality(String x, String y, bool equals)
         {
             IGraph g = new Graph();
-            INode date1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
-            INode date2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+            INode date1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+            INode date2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
 
             if (equals)
             {
@@ -103,8 +103,8 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateTimeMixedEquality(String x, String y, bool equals)
         {
             IGraph g = new Graph();
-            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-            INode date2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode date2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
             if (equals)
             {
@@ -129,8 +129,8 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateTimeIncomparable(String x, String y)
         {
             IGraph g = new Graph();
-            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-            INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
             Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateTimeEquality(dateTime1, dateTime2));
         }
@@ -140,8 +140,8 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateIncomparable(String x, String y)
         {
             IGraph g = new Graph();
-            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
-            INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+            INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
 
             Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateEquality(dateTime1, dateTime2));
         }
@@ -151,8 +151,8 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateTimeMixedIncomparable(String x, String y)
         {
             IGraph g = new Graph();
-            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-            INode date2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode date2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
 
             Assert.Throws<RdfQueryException>(() => SparqlSpecsHelper.DateTimeEquality(dateTime1, date2));
         }
@@ -210,8 +210,8 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateTimeCompare(String x, String y)
         {
             IGraph g = new Graph();
-            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-            INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode dateTime1 = g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            INode dateTime2 = g.CreateLiteralNode(y, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
 
             var comparer = new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
 
@@ -232,13 +232,13 @@ namespace VDS.RDF.Query.Expressions
         {
             IGraph g = new Graph();
             var orig =
-                input.Select(x => g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
+                input.Select(x => g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
                      .OfType<INode>().ToList();
             var sorted = new List<INode>(orig);
             sorted.Sort(new SparqlOrderingComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal));
 
             var expected =
-                output.Select(x => g.CreateLiteralNode(x, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
+                output.Select(x => g.CreateLiteralNode(x, UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)))
                       .OfType<INode>()
                       .ToList();
 

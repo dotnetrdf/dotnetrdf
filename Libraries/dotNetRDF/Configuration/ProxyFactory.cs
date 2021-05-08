@@ -52,7 +52,7 @@ namespace VDS.RDF.Configuration
             WebProxy proxy = null;
 
             // Can we create a Proxy?
-            var server = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
+            var server = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyServer)));
             if (server == null) return false;
             proxy = new WebProxy(server);
 

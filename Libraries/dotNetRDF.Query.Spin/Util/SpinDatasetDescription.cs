@@ -47,8 +47,10 @@ namespace VDS.RDF.Query.Spin.Util
 
         #region Static methods
 
-        internal static SpinDatasetDescription Load(IUpdateableStorage storage, Uri datasetUri = null, IEnumerable<Uri> graphsUri = null)
+        internal static SpinDatasetDescription Load(IUpdateableStorage storage, Uri datasetUri = null, IEnumerable<Uri> graphsUri = null, IUriFactory uriFactory = null)
         {
+            if (uriFactory == null) uriFactory = VDS.RDF.UriFactory.Root;
+
             SpinDatasetDescription dataset;
             if (datasetUri == null)
             {
@@ -64,7 +66,7 @@ namespace VDS.RDF.Query.Spin.Util
                 }
                 else
                 {
-                    datasetUri = UriFactory.Create(RDFRuntime.DATASET_NS_URI + Guid.NewGuid().ToString());
+                    datasetUri = uriFactory.Create(RDFRuntime.DATASET_NS_URI + Guid.NewGuid().ToString());
                 }
             }
             dataset = new SpinDatasetDescription(datasetUri);

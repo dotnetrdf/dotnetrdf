@@ -257,7 +257,7 @@ namespace VDS.RDF.Query
                 case Token.QNAME:
                 case Token.URI:
                     // Only a single active graph
-                    Uri activeGraphUri = UriFactory.Create(Tools.ResolveUriOrQName(graph.GraphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
+                    Uri activeGraphUri = context.UriFactory.Create(Tools.ResolveUriOrQName(graph.GraphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
                     PrintExplanations("Graph clause accesses single named graph " + activeGraphUri.AbsoluteUri);
                     break;
                 case Token.VARIABLE:

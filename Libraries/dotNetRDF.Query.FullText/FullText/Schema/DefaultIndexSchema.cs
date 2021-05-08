@@ -68,8 +68,8 @@ namespace VDS.RDF.Query.FullText.Schema
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
             INode schemaObj = context.NextSubject;
-            context.Graph.Assert(schemaObj, context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassSchema)));
-            context.Graph.Assert(schemaObj, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
+            context.Graph.Assert(schemaObj, context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType)), context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.ClassSchema)));
+            context.Graph.Assert(schemaObj, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
         }
     }
 }

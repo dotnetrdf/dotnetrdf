@@ -392,7 +392,7 @@ namespace VDS.RDF.Update.Commands
                                     continue;
                             }
 
-                            var graphName = new UriNode(UriFactory.Create(graphUri));
+                            var graphName = new UriNode(UriFactory.Root.Create(graphUri));
                             // If the Dataset doesn't contain the Graph then no need to do the Deletions
                             if (!context.Data.HasGraph(graphName)) continue;
 
@@ -500,7 +500,7 @@ namespace VDS.RDF.Update.Commands
 
                             // Ensure the Graph we're inserting to exists in the dataset creating it if necessary
                             IGraph h;
-                            IRefNode destGraph = new UriNode(UriFactory.Create(graphUri));
+                            IRefNode destGraph = new UriNode(UriFactory.Root.Create(graphUri));
                             if (context.Data.HasGraph(destGraph))
                             {
                                 h = context.Data.GetModifiableGraph(destGraph);

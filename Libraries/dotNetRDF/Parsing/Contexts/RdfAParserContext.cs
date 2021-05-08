@@ -24,11 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
@@ -36,10 +31,10 @@ namespace VDS.RDF.Parsing.Contexts
     /// </summary>
     public class RdfAParserContext<THtmlDocument> : BaseParserContext
     {
-        private THtmlDocument _document;
+        private readonly THtmlDocument _document;
         private RdfASyntax _syntax = RdfASyntax.RDFa_1_1;
         private bool _allowXmlBase = true;
-        private IRdfAVocabulary _defaultVocabularly;
+        private IRdfAVocabulary _defaultVocabulary;
 
         /// <summary>
         /// Creates a new Parser Context.
@@ -82,6 +77,28 @@ namespace VDS.RDF.Parsing.Contexts
             : this(handler, document, false) { }
 
         /// <summary>
+        /// Creates a new Parser Context.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="document">HTML Document.</param>
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public RdfAParserContext(IRdfHandler handler, THtmlDocument document, IUriFactory uriFactory)
+            : this(handler, document, false, uriFactory) { }
+
+        /// <summary>
+        /// Creates a new parser context.
+        /// </summary>
+        /// <param name="handler">RDF Handler to use.</param>
+        /// <param name="document">HTML document.</param>
+        /// <param name="traceParsing">Whether to trace parsing.</param>
+        /// <param name="uriFactory">URI Factory to use.</param>
+        public RdfAParserContext(IRdfHandler handler, THtmlDocument document, bool traceParsing, IUriFactory uriFactory)
+            : base(handler, traceParsing, uriFactory)
+        {
+            _document = document;
+        }
+
+        /// <summary>
         /// Gets the HTML Document.
         /// </summary>
         public THtmlDocument Document
@@ -114,11 +131,11 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return _defaultVocabularly;
+                return _defaultVocabulary;
             }
             set
             {
-                _defaultVocabularly = value;
+                _defaultVocabulary = value;
             }
         }
 

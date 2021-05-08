@@ -577,12 +577,12 @@ namespace VDS.RDF.Query
             {
                 if (preambleItem.Groups[1].Value.ToUpper().StartsWith("BASE"))
                 {
-                    BaseUri = UriFactory.Create(preambleItem.Groups[3].Value);
+                    BaseUri = new Uri(preambleItem.Groups[3].Value);
                     Namespaces.AddNamespace("", BaseUri);
                 }
                 else
                 {
-                    Namespaces.AddNamespace(preambleItem.Groups[2].Value, UriFactory.Create(preambleItem.Groups[3].Value));
+                    Namespaces.AddNamespace(preambleItem.Groups[2].Value, new Uri(preambleItem.Groups[3].Value));
                 }
                 commandStart = preambleItem.Index + preambleItem.Length;
             }

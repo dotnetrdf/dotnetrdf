@@ -95,8 +95,8 @@ namespace VDS.RDF.Query.Spin.Util
             return nodeFactory.CreateLiteralNode(literal, datatype);
         }
 
-        internal static ILiteralNode FALSE = CreateLiteralNode("false", UriFactory.Create(NamespaceMapper.XMLSCHEMA + "boolean"));
-        internal static ILiteralNode TRUE = CreateLiteralNode("true", UriFactory.Create(NamespaceMapper.XMLSCHEMA + "boolean"));
+        internal static ILiteralNode FALSE = CreateLiteralNode("false", UriFactory.Root.Create(NamespaceMapper.XMLSCHEMA + "boolean"));
+        internal static ILiteralNode TRUE = CreateLiteralNode("true", UriFactory.Root.Create(NamespaceMapper.XMLSCHEMA + "boolean"));
 
         internal static HashSet<Uri> numericDatatypeURIs = new HashSet<Uri>(uriComparer);
 
