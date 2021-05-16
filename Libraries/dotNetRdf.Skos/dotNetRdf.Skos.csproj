@@ -9,7 +9,7 @@
     <PackageId>dotNetRdf.Skos</PackageId>
     <PackageTags>RDF;SKOS</PackageTags>
     <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>
-    <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
+    <PackageIcon>../../rdf_w3c_icon.64.png</PackageIcon>
     <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
