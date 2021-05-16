@@ -9,9 +9,6 @@
     <TargetFrameworks>net472</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>dotNetRDF.Data.Virtuoso</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>dotNetRDF.Data.Virtuoso</PackageId>
     <PackageTags>RDF;Semantic;Web;SPARQL;Virtuoso;OpenLink</PackageTags>
     <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>

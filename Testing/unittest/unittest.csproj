@@ -4,9 +4,6 @@
     <AssemblyTitle>dotNetRDF.Test</AssemblyTitle>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>dotNetRDF.Test</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>unittest</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>

@@ -8,9 +8,6 @@
     <TargetFrameworks>net472</TargetFrameworks>
     <AssemblyName>dotNetRDF.Web</AssemblyName>
     <Authors>RobVesse;tpluscode;kal_ahmed;dotnetrdf</Authors>
-    <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>dotNetRDF.Web</PackageId>
     <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3;Web API</PackageTags>
     <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>

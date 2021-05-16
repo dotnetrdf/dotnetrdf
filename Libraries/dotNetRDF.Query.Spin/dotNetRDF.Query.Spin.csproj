@@ -9,9 +9,6 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>dotNetRDF.Query.Spin</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>dotNetRDF.Query.Spin</PackageId>
     <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>
     <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
