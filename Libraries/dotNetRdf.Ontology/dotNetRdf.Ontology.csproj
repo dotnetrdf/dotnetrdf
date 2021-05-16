@@ -9,7 +9,7 @@
     <RootNamespace>VDS.RDF.Ontology</RootNamespace>
     <PackageTags>RDF;Ontology;OWL</PackageTags>
     <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>
-    <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
+    <PackageIcon>../../rdf_w3c_icon.64.png</PackageIcon>
     <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
