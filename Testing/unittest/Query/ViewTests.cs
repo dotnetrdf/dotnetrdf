@@ -153,7 +153,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlViewAndReasonerInteraction1()
         {
-            var store = new TripleStore();
+            var store = new InferencingTripleStore();
             var view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { GRAPH ?g { ?s a ?type } }", store,
                 new UriNode(new Uri("http://example.org/view")));
             store.Add(view);

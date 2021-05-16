@@ -374,6 +374,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.Equal(orig, h);
         }
 
+        // TODO: Replace these tests with tests that don't rely on the RDFS Reasoner
         [Fact]
         public void SparqlUpdateInsertCommand()
         {

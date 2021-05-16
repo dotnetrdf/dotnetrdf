@@ -741,7 +741,7 @@ namespace VDS.RDF.Shacl
 
         internal static IUriNode RdfsSubClassOf { get; } = AnyNode("http://www.w3.org/2000/01/rdf-schema#subClassOf");
 
-        internal static IUriNode OwlImports { get; } = AnyNode(OntologyHelper.PropertyImports);
+        internal static IUriNode OwlImports { get; } = AnyNode(NamespaceMapper.OWL + "imports");
 
         #endregion
 

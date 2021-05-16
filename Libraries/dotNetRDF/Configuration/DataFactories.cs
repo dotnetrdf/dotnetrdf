@@ -252,6 +252,7 @@ namespace VDS.RDF.Configuration
             }
 
             // Finally we'll apply any reasoners
+            /* TODO: Find a way to support this in the new structure - may need some post processing or factory extension
             IEnumerable<INode> reasoners = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyReasoner)));
             foreach (INode reasoner in reasoners)
             {
@@ -265,6 +266,7 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Unable to apply a reasoner for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:reasoner property points to an Object which cannot be loaded as an object which implements the IInferenceEngine interface");
                 }
             }
+            */
 
             obj = output;
             return true;
@@ -410,24 +412,6 @@ namespace VDS.RDF.Configuration
                     else
                     {
                         throw new DotNetRdfConfigurationException("Unable to load data from a file for the Triple Store identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromFile property is not a Literal Node as required");
-                    }
-                }
-
-                // Finally we'll apply any reasoners
-                if (store is IInferencingTripleStore)
-                {
-                    IEnumerable<INode> reasoners = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyReasoner)));
-                    foreach (INode reasoner in reasoners)
-                    {
-                        temp = ConfigurationLoader.LoadObject(g, reasoner);
-                        if (temp is IInferenceEngine)
-                        {
-                            ((IInferencingTripleStore)store).AddInferenceEngine((IInferenceEngine)temp);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to apply a reasoner for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:reasoner property points to an Object which cannot be loaded as an object which implements the IInferenceEngine interface");
-                        }
                     }
                 }
 

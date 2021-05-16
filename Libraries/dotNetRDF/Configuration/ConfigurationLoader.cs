@@ -257,7 +257,7 @@ namespace VDS.RDF.Configuration
 
             // SPARQL Extension related Factories
             new OptimiserFactory(),
-            new ReasonerFactory(),
+//            new ReasonerFactory(),
             new ExpressionFactoryFactory(),
             new PropertyFunctionFactoryFactory(),
             new OperatorFactory(),

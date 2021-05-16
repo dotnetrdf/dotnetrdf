@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <RootNamespace>VDS.RDF</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Ontology\" />
+    <Folder Include="Query\Inference\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf.Ontology\dotNetRdf.Ontology.csproj" />
+  </ItemGroup>
+
+</Project>
