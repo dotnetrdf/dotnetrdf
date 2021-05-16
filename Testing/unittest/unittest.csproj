@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\dotNetRdf.Inferencing\dotNetRdf.Inferencing.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\dotNetRdf.TestSupport\dotNetRdf.TestSupport.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   
