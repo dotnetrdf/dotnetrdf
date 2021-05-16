@@ -48,6 +48,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("39beeb2e-f86b-46ef-a4c1-c91d5f3fe432")]
 
 [assembly: InternalsVisibleTo("dotNetRDF.Test")]
+[assembly: InternalsVisibleTo("dotNetRDF.Dynamic")]
 
 // Version information is managed by GitVersion
 [assembly: AssemblyVersion("0.0.0.0")]

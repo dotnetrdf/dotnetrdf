@@ -44,21 +44,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Stardo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Virtuoso.Tests", "Testing\dotNetRDF.Connectors.Virtuoso.Tests\dotNetRDF.Connectors.Virtuoso.Tests.csproj", "{C706FF67-D9DD-454C-97D2-7EB6B55730CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Skos", "Libraries\dotNetRdf.Skos\dotNetRdf.Skos.csproj", "{41744666-E7E6-48BD-A4F1-631CCDCD69F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Skos", "Libraries\dotNetRdf.Skos\dotNetRdf.Skos.csproj", "{41744666-E7E6-48BD-A4F1-631CCDCD69F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Skos.Tests", "Testing\dotNetRdf.Skos.Tests\dotNetRdf.Skos.Tests.csproj", "{1B3E81C7-CEEA-405D-946A-05E630402571}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Skos.Tests", "Testing\dotNetRdf.Skos.Tests\dotNetRdf.Skos.Tests.csproj", "{1B3E81C7-CEEA-405D-946A-05E630402571}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Ontology", "Libraries\dotNetRdf.Ontology\dotNetRdf.Ontology.csproj", "{C496106D-9081-408B-9846-800FA213EC48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Ontology", "Libraries\dotNetRdf.Ontology\dotNetRdf.Ontology.csproj", "{C496106D-9081-408B-9846-800FA213EC48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Ontology.Tests", "Testing\dotNetRdf.Ontology.Tests\dotNetRdf.Ontology.Tests.csproj", "{DCC69DD1-0AA0-486F-B2FA-13F204FF74FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Ontology.Tests", "Testing\dotNetRdf.Ontology.Tests\dotNetRdf.Ontology.Tests.csproj", "{DCC69DD1-0AA0-486F-B2FA-13F204FF74FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Inferencing", "Libraries\dotNetRdf.Inferencing\dotNetRdf.Inferencing.csproj", "{50376223-A24D-4D8A-94C6-1CFF770AD62A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Inferencing", "Libraries\dotNetRdf.Inferencing\dotNetRdf.Inferencing.csproj", "{50376223-A24D-4D8A-94C6-1CFF770AD62A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Inferencing.Tests", "Testing\dotNetRdf.Inferencing.Tests\dotNetRdf.Inferencing.Tests.csproj", "{5DF953C8-A1BF-4881-AD79-647F9CFABA17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Inferencing.Tests", "Testing\dotNetRdf.Inferencing.Tests\dotNetRdf.Inferencing.Tests.csproj", "{5DF953C8-A1BF-4881-AD79-647F9CFABA17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Shacl", "Libraries\dotNetRdf.Shacl\dotNetRdf.Shacl.csproj", "{1E10C5DC-F2A5-4606-A878-62500942DB29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Shacl", "Libraries\dotNetRdf.Shacl\dotNetRdf.Shacl.csproj", "{1E10C5DC-F2A5-4606-A878-62500942DB29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.Shacl.Tests", "Testing\dotNetRdf.Shacl.Tests\dotNetRdf.Shacl.Tests.csproj", "{6299F2C5-2602-4854-981D-63ECDE86A6C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Shacl.Tests", "Testing\dotNetRdf.Shacl.Tests\dotNetRdf.Shacl.Tests.csproj", "{6299F2C5-2602-4854-981D-63ECDE86A6C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Dynamic", "Libraries\dotNetRdf.Dynamic\dotNetRdf.Dynamic.csproj", "{B32D0747-46AD-468B-A35F-34AABB5B166A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Dynamic.Tests", "Testing\dotNetRdf.Dynamic.Tests\dotNetRdf.Dynamic.Tests.csproj", "{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.TestSupport", "Testing\dotNetRdf.TestSupport\dotNetRdf.TestSupport.csproj", "{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -346,6 +352,42 @@ Global
 		{6299F2C5-2602-4854-981D-63ECDE86A6C8}.Release|x64.Build.0 = Release|Any CPU
 		{6299F2C5-2602-4854-981D-63ECDE86A6C8}.Release|x86.ActiveCfg = Release|Any CPU
 		{6299F2C5-2602-4854-981D-63ECDE86A6C8}.Release|x86.Build.0 = Release|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Debug|x64.Build.0 = Debug|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Debug|x86.Build.0 = Debug|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Release|x64.ActiveCfg = Release|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Release|x64.Build.0 = Release|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Release|x86.ActiveCfg = Release|Any CPU
+		{B32D0747-46AD-468B-A35F-34AABB5B166A}.Release|x86.Build.0 = Release|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Debug|x64.Build.0 = Debug|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Debug|x86.Build.0 = Debug|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Release|x64.ActiveCfg = Release|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Release|x64.Build.0 = Release|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Release|x86.ActiveCfg = Release|Any CPU
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3}.Release|x86.Build.0 = Release|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Debug|x64.Build.0 = Debug|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Debug|x86.Build.0 = Debug|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Release|x64.ActiveCfg = Release|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Release|x64.Build.0 = Release|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Release|x86.ActiveCfg = Release|Any CPU
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -374,6 +416,9 @@ Global
 		{5DF953C8-A1BF-4881-AD79-647F9CFABA17} = {F0F45D49-20AC-4407-8618-8C3650E34B97}
 		{1E10C5DC-F2A5-4606-A878-62500942DB29} = {3B3CCD52-CF1B-492C-A5F8-FBB626C5039C}
 		{6299F2C5-2602-4854-981D-63ECDE86A6C8} = {F0F45D49-20AC-4407-8618-8C3650E34B97}
+		{B32D0747-46AD-468B-A35F-34AABB5B166A} = {3B3CCD52-CF1B-492C-A5F8-FBB626C5039C}
+		{EFE304E9-C8D4-4F8C-99A4-AAEF5ADAFDC3} = {F0F45D49-20AC-4407-8618-8C3650E34B97}
+		{5B0EC247-EB83-498D-AB16-2BFF4789C4B0} = {F0F45D49-20AC-4407-8618-8C3650E34B97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {801E5D6F-1615-444B-BDE4-8A6A30FE0520}
