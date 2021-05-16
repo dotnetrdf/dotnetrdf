@@ -248,7 +248,8 @@ namespace VDS.RDF.Configuration
             // Processor Factories
             new QueryProcessorFactory(),
             new UpdateProcessorFactory(),
-            new ProtocolProcessorFactory(),
+            // TODO: Extension to register this factory
+            //new ProtocolProcessorFactory(),
             // User and Permission related Factories
             new UserGroupFactory(),
             new PermissionFactory(),
@@ -257,6 +258,7 @@ namespace VDS.RDF.Configuration
 
             // SPARQL Extension related Factories
             new OptimiserFactory(),
+            // TODO: Extension to register this factory
 //            new ReasonerFactory(),
             new ExpressionFactoryFactory(),
             new PropertyFunctionFactoryFactory(),

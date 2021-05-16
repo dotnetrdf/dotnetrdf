@@ -298,7 +298,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="s">String to hash.</param>
         /// <returns></returns>
-        internal static string GetSha256Hash(this string s)
+        public static string GetSha256Hash(this string s)
         {
             if (s == null) throw new ArgumentNullException("s");
 
@@ -1089,6 +1089,34 @@ namespace VDS.RDF
             IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
             g.SaveToStream(streamWriter, writer);
         }
+
+        /// <summary>
+        /// Computes the ETag for a Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
+        public static string GetETag(this IGraph g)
+        {
+            var ts = g.Triples.ToList();
+            ts.Sort();
+
+            var hash = new StringBuilder();
+            foreach (Triple t in ts)
+            {
+                hash.AppendLine(t.GetHashCode().ToString());
+            }
+            var h = hash.ToString().GetHashCode().ToString();
+
+            var sha1 = SHA1.Create();
+            var hashBytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(h));
+            hash = new StringBuilder();
+            foreach (var b in hashBytes)
+            {
+                hash.Append(b.ToString("x2"));
+            }
+            return hash.ToString();
+        }
+
     }
 
     /// <summary>

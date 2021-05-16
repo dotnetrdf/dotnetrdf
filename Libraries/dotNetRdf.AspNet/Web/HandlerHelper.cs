@@ -469,33 +469,7 @@ namespace VDS.RDF.Web
 
         #region HTTP Headers and Caching
 
-        /// <summary>
-        /// Computes the ETag for a Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        public static String GetETag(this IGraph g)
-        {
-            var ts = g.Triples.ToList();
-            ts.Sort();
-
-            var hash = new StringBuilder();
-            foreach (Triple t in ts)
-            {
-                hash.AppendLine(t.GetHashCode().ToString());
-            }
-            var h = hash.ToString().GetHashCode().ToString();
-
-            var sha1 = SHA1.Create();
-            var hashBytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(h));
-            hash = new StringBuilder();
-            foreach (var b in hashBytes)
-            {
-                hash.Append(b.ToString("x2"));
-            }
-            return hash.ToString();
-        }
-
+        
         /// <summary>
         /// Checks whether the HTTP Request contains caching headers that means a 304 Modified response can be sent
         /// </summary>
