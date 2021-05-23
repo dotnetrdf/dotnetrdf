@@ -89,7 +89,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
-        public string Format(SparqlResult result)
+        public string Format(ISparqlResult result)
         {
             var output = new StringBuilder();
             output.AppendLine(" <result>");

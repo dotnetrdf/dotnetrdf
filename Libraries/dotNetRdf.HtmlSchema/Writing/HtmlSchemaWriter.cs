@@ -189,7 +189,7 @@ namespace VDS.RDF.Writing
                     {
                         if (!((SparqlResultSet)results).IsEmpty)
                         {
-                            SparqlResult ontoInfo = ((SparqlResultSet)results)[0];
+                            ISparqlResult ontoInfo = ((SparqlResultSet)results)[0];
 
                             // Show rdfs:comment on the Ontology
                             if (ontoInfo.HasValue("description"))
@@ -360,7 +360,7 @@ namespace VDS.RDF.Writing
                     var rs = (SparqlResultSet)results;
                     for (var i = 0; i < rs.Count; i++)
                     {
-                        SparqlResult r = rs[i];
+                        ISparqlResult r = rs[i];
 
                         // Get the QName and output a Link to an anchor that we'll generate later to let
                         // users jump to a Class/Property definition
@@ -410,7 +410,7 @@ namespace VDS.RDF.Writing
                     var rs = (SparqlResultSet)results;
                     for (var i = 0; i < rs.Count; i++)
                     {
-                        SparqlResult r = rs[i];
+                        ISparqlResult r = rs[i];
 
                         // Get the QName and output a Link to an anchor that we'll generate later to let
                         // users jump to a Class/Property definition

@@ -414,7 +414,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
-        protected override bool HandleResultInternal(SparqlResult result)
+        protected override bool HandleResultInternal(ISparqlResult result)
         {
             if (_currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handle a Result when the handler has already handled a boolean result");
             _currentType = SparqlResultsType.VariableBindings;

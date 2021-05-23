@@ -25,14 +25,12 @@
 */
 
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -41,8 +39,6 @@ namespace VDS.RDF.Query
     /// </summary>
     public static class SparqlSpecsHelper
     {
-        private static SparqlFormatter _formatter;
-
         #region Keywords and Constants
 
         /// <summary>
@@ -320,24 +316,7 @@ namespace VDS.RDF.Query
                                                                 SparqlKeywordSample,
                                                            };
 
-        /// <summary>
-        /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL.
-        /// </summary>
-        public static string[] IntegerDataTypes = {   
-                                                      XmlSpecsHelper.XmlSchemaDataTypeByte, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeInt,
-                                                      XmlSpecsHelper.XmlSchemaDataTypeInteger, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeLong, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypePositiveInteger, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeShort, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong, 
-                                                      XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort,
-                                                  };
+
         /// <summary>
         /// Set of IRIs for supported Cast Functions.
         /// </summary>
@@ -1189,200 +1168,15 @@ namespace VDS.RDF.Query
 
         #endregion
 
-        #region Numeric Type determination
-
-        /// <summary>
-        /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri.
-        /// </summary>
-        /// <param name="dtUri">Data Type Uri.</param>
-        /// <returns></returns>
-        public static SparqlNumericType GetNumericTypeFromDataTypeUri(Uri dtUri)
-        {
-            return GetNumericTypeFromDataTypeUri(dtUri.AbsoluteUri);
-        }
-
-        /// <summary>
-        /// Determines the Sparql Numeric Type for a Literal based on its Data Type Uri.
-        /// </summary>
-        /// <param name="dtUri">Data Type Uri as a String.</param>
-        /// <returns></returns>
-        public static SparqlNumericType GetNumericTypeFromDataTypeUri(string dtUri)
-        {
-            if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
-            {
-                return SparqlNumericType.Double;
-            }
-            else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
-            {
-                return SparqlNumericType.Float;
-            }
-            else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
-            {
-                return SparqlNumericType.Decimal;
-            }
-            else if (IntegerDataTypes.Contains(dtUri))
-            {
-                return SparqlNumericType.Integer;
-            }
-            else
-            {
-                return SparqlNumericType.NaN;
-            }
-        }
-
-        #endregion
-
         /// <summary>
         /// Calculates the Effective Boolean Value of a given Node according to the Sparql specification.
         /// </summary>
         /// <param name="n">Node to computer EBV for.</param>
         /// <returns></returns>
+        [Obsolete("Replaced by the INode.EffectiveBooleanValue extension method.")]
         public static bool EffectiveBooleanValue(INode n)
         {
-            if (n == null)
-            {
-                // Nulls give Type Error
-                throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a null value");
-            }
-            else
-            {
-                if (n.NodeType == NodeType.Literal)
-                {
-                    var lit = (ILiteralNode)n;
-
-                    if (lit.DataType == null)
-                    {
-                        if (lit.Value == string.Empty)
-                        {
-                            // Empty String Literals have EBV of False
-                            return false;
-                        }
-                        else
-                        {
-                            // Non-Empty String Literals have EBV of True
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        // EBV is dependent on the Data Type for Typed Literals
-                        var dt = lit.DataType.ToString();
-
-                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
-                        {
-                            // Boolean Typed Literal
-                            if (bool.TryParse(lit.Value, out var b))
-                            {
-                                // Valid Booleans have EBV of their value
-                                return b;
-                            }
-                            // Invalid Booleans have EBV of false
-                            return false;
-                        }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            // String Typed Literal
-                            if (lit.Value == string.Empty)
-                            {
-                                // Empty String Literals have EBV of False
-                                return false;
-                            }
-                            else
-                            {
-                                // Non-Empty String Literals have EBV of True
-                                return true;
-                            }
-                        }
-                        else
-                        {
-                            // Is it a Number?
-                            SparqlNumericType numType = GetNumericTypeFromDataTypeUri(dt);
-                            switch (numType)
-                            {
-                                case SparqlNumericType.Decimal:
-                                    // Should be a decimal
-                                    decimal dec;
-                                    if (decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
-                                    {
-                                        if (dec == decimal.Zero)
-                                        {
-                                            // Zero gives EBV of false
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            // Non-Zero gives EBV of true
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Invalid Numerics have EBV of false
-                                        return false;
-                                    }
-
-                                case SparqlNumericType.Float:
-                                case SparqlNumericType.Double:
-                                    // Should be a double
-                                    double dbl;
-                                    if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
-                                    {
-                                        if (dbl == 0.0d || double.IsNaN(dbl))
-                                        {
-                                            // Zero/NaN gives EBV of false
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            // Non-Zero gives EBV of true
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Invalid Numerics have EBV of false
-                                        return false;
-                                    }
-
-                                case SparqlNumericType.Integer:
-                                    // Should be an Integer
-                                    long l;
-                                    if (long.TryParse(lit.Value, out l))
-                                    {
-                                        if (l == 0)
-                                        {
-                                            // Zero gives EBV of false
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            // Non-Zero gives EBV of true
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Invalid Numerics have EBV of false
-                                        return false;
-                                    }
-
-                                case SparqlNumericType.NaN:
-                                    // If not a Numeric Type then Type error
-                                    throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
-
-                                default:
-                                    // Shouldn't hit this case but included to keep compiler happy
-                                    throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Non-Literal Nodes give type error
-                    throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a non-literal RDF Term");
-                }
-            }
+            return n.EffectiveBooleanValue();
         }
 
         /// <summary>
@@ -1458,7 +1252,7 @@ namespace VDS.RDF.Query
                 else
                 {
                     // Both have known types
-                    var numtype = (SparqlNumericType)Math.Max((int)GetNumericTypeFromDataTypeUri(xtype), (int)GetNumericTypeFromDataTypeUri(ytype));
+                    var numtype = (SparqlNumericType)Math.Max((int)NumericTypesHelper.GetNumericTypeFromDataTypeUri(xtype), (int)NumericTypesHelper.GetNumericTypeFromDataTypeUri(ytype));
                     if (numtype != SparqlNumericType.NaN)
                     {
                         // Both are Numeric so use Numeric equality
@@ -1571,8 +1365,8 @@ namespace VDS.RDF.Query
                 else
                 {
                     // Both have known types
-                    SparqlNumericType xnumtype = GetNumericTypeFromDataTypeUri(xtype);
-                    SparqlNumericType ynumtype = GetNumericTypeFromDataTypeUri(ytype);
+                    SparqlNumericType xnumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(xtype);
+                    SparqlNumericType ynumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(ytype);
                     var numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
                     if (numtype != SparqlNumericType.NaN)
                     {
@@ -1837,105 +1631,6 @@ namespace VDS.RDF.Query
             }
         }
 
-        /// <summary>
-        /// Converts a Literal Node to a Decimal.
-        /// </summary>
-        /// <param name="n">Literal Node.</param>
-        /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDecimal() instead", true)]
-        public static decimal ToDecimal(ILiteralNode n)
-        {
-            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Decimal");
-            return decimal.Parse(n.Value);
-        }
-
-        /// <summary>
-        /// Converts a Literal Node to a Double.
-        /// </summary>
-        /// <param name="n">Literal Node.</param>
-        /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDouble() instead", true)]
-        public static double ToDouble(ILiteralNode n)
-        {
-            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Double");
-            return double.Parse(n.Value);
-        }
-
-        /// <summary>
-        /// Converts a Literal Node to a Float.
-        /// </summary>
-        /// <param name="n">Literal Node.</param>
-        /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsFloat() instead", true)]
-        public static float ToFloat(ILiteralNode n)
-        {
-            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Float");
-            return float.Parse(n.Value);
-        }
-
-        /// <summary>
-        /// Converts a Literal Node to an Integer.
-        /// </summary>
-        /// <param name="n">Literal Node.</param>
-        /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsInteger() instead", true)]
-        public static long ToInteger(ILiteralNode n)
-        {
-            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to an Integer");
-            return long.Parse(n.Value);
-        }
-
-        /// <summary>
-        /// Converts a Literal Node to a Date Time.
-        /// </summary>
-        /// <param name="n">Literal Node.</param>
-        /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDateTime() instead", true)]
-        public static DateTime ToDateTime(ILiteralNode n)
-        {
-            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
-            return DateTime.Parse(n.Value, null, DateTimeStyles.AssumeUniversal);
-        }
-
-        /// <summary>
-        /// Converts a Literal Node to a Date Time Offset.
-        /// </summary>
-        /// <param name="n">Literal Node.</param>
-        /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsDateTimeOffset() instead", true)]
-        public static DateTimeOffset ToDateTimeOffset(ILiteralNode n)
-        {
-            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
-            return DateTimeOffset.Parse(n.Value, null, DateTimeStyles.AssumeUniversal);
-        }
-
-        /// <summary>
-        /// Converts a Literal Node to a Time Span.
-        /// </summary>
-        /// <param name="n">Literal Node.</param>
-        /// <returns></returns>
-        [Obsolete("Use AsValuedNode().AsTimeSpan() instead", true)]
-        public static TimeSpan ToTimeSpan(ILiteralNode n)
-        {
-            if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Time Span");
-            return TimeSpan.Parse(n.Value);
-        }
-
-        #endregion
-
-        #region Query Formatting
-
-        /// <summary>
-        /// Gets a SPARQL Formatter to use in formatting Queries as Strings.
-        /// </summary>
-        internal static SparqlFormatter Formatter
-        {
-            get
-            {
-                if (_formatter == null) _formatter = new SparqlFormatter();
-                return _formatter;
-            }
-        }
 
         #endregion
 

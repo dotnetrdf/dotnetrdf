@@ -19,10 +19,11 @@
   <ItemGroup>
     <Folder Include="Update\Protocol\" />
     <Folder Include="Web\" />
-    <None Include="..\..\rdf_w3c_icon.64.png" Pack="true" PackagePath="\"/>
+    <None Include="..\..\rdf_w3c_icon.64.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web" />

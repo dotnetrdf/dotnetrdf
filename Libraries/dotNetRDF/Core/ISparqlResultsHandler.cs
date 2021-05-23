@@ -63,6 +63,6 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="result">Result.</param>
         /// <returns></returns>
-        bool HandleResult(SparqlResult result);
+        bool HandleResult(ISparqlResult result);
     }
 }

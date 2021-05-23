@@ -44,10 +44,6 @@
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
     
-  <ItemGroup>
-    <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
-    <EmbeddedResource Include="Query\Optimisation\OptimiserStats.ttl" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

@@ -76,7 +76,7 @@ namespace VDS.RDF.Dynamic
         /// </summary>
         /// <param name="result">The SPARQL result to wrap dynamically.</param>
         /// <returns>A dynamic result that wraps <paramref name="result"/>.</returns>
-        public static dynamic AsDynamic(this SparqlResult result)
+        public static dynamic AsDynamic(this ISparqlResult result)
         {
             return new DynamicSparqlResult(result);
         }

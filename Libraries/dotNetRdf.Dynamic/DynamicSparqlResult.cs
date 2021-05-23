@@ -39,14 +39,14 @@ namespace VDS.RDF.Dynamic
     /// </summary>
     public class DynamicSparqlResult : IDictionary<string, object>, IDynamicMetaObjectProvider
     {
-        private readonly SparqlResult original;
+        private readonly ISparqlResult original;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicSparqlResult"/> class.
         /// </summary>
         /// <param name="original">The SPARQL result to wrap.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="original"/> is null.</exception>
-        public DynamicSparqlResult(SparqlResult original)
+        public DynamicSparqlResult(ISparqlResult original)
         {
             if (original is null)
             {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Dynamic
 
                 return original[variable].AsObject();
             }
-
+            
             set
             {
                 if (variable is null)
@@ -83,6 +83,7 @@ namespace VDS.RDF.Dynamic
 
                 original.SetValue(variable, value.AsNode());
             }
+            
         }
 
         /// <summary>

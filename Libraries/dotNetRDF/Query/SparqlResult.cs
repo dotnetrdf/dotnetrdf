@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.Common.Collections;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
@@ -38,10 +37,10 @@ namespace VDS.RDF.Query
     /// Class for representing a Row of a Sparql Result Set.
     /// </summary>
     public sealed class SparqlResult 
-        : IEnumerable<KeyValuePair<string, INode>>, IEquatable<SparqlResult>
+        : ISparqlResult
     {
-        private List<string> _variables = new List<string>();
-        private Dictionary<string, INode> _resultValues = new Dictionary<string, INode>();
+        private List<string> _variables = new ();
+        private readonly Dictionary<string, INode> _resultValues = new();
 
         /// <summary>
         /// Creates a new empty SPARQL Result which can only be filled by methods internal to the dotNetRDF Library.
@@ -50,29 +49,15 @@ namespace VDS.RDF.Query
         { }
 
         /// <summary>
-        /// Creates a new SPARQL Result from the given Set.
+        /// Creates a new SPARQL Result with the specified set of result bindings.
         /// </summary>
-        /// <param name="s">Set.</param>
-        public SparqlResult(ISet s)
+        /// <param name="bindings">An enumeration of key-value pairs that bind a variable name to a node value.</param>
+        public SparqlResult(IEnumerable<KeyValuePair<string, INode>> bindings)
         {
-            foreach (var var in s.Variables)
+            foreach (KeyValuePair<string, INode> binding in bindings)
             {
-                _variables.Add(var);
-                _resultValues.Add(var, s[var]);
-            }
-        }
-
-        /// <summary>
-        /// Creates a new SPARQL Result from the given Set which contains only the given variables in the given order.
-        /// </summary>
-        /// <param name="s">Set.</param>
-        /// <param name="variables">Variables.</param>
-        public SparqlResult(ISet s, IEnumerable<string> variables)
-        {
-            _variables.AddRange(variables);
-            foreach (var var in _variables)
-            {
-                _resultValues.Add(var, s[var]);
+                _variables.Add(binding.Key);
+                _resultValues[binding.Key] = binding.Value;
             }
         }
 
@@ -176,7 +161,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="variable">Variable Name.</param>
         /// <param name="value">Value bound to the Variable.</param>
-        internal void SetValue(string variable, INode value)
+        public void SetValue(string variable, INode value)
         {
             if (_resultValues.ContainsKey(variable))
             {
@@ -350,11 +335,14 @@ namespace VDS.RDF.Query
         }
 
         /// <inheritdoc />
-        public bool Equals(SparqlResult other)
+        public bool Equals(ISparqlResult other)
         {
+            if (other == null) return false;
+            if (Object.ReferenceEquals(other, this)) return true;
+
             // Empty Results are only equal to Empty Results
-            if (_resultValues.Count == 0 && other._resultValues.Count == 0) return true;
-            if (_resultValues.Count == 0 || other._resultValues.Count == 0) return false;
+            if (_resultValues.Count == 0 && other.Count == 0) return true;
+            if (_resultValues.Count == 0 || other.Count == 0) return false;
 
             // For differing numbers of values we must contain all the same values for variables
             // bound in both or the variable missing from us must be bound to null in the other

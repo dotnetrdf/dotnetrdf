@@ -38,7 +38,7 @@ namespace VDS.RDF
     /// Class for representing Triple Stores which are collections of RDF Graphs.
     /// </summary>
     public class TripleStore
-        : BaseTripleStore, IInMemoryQueryableStore, IUpdateableTripleStore
+        : BaseTripleStore, IInMemoryQueryableStore, ISparqlUpdateTripleStore
     {
         /// <summary>
         /// Controls whether inferred information is stored in a special Graph or in the original Graph.

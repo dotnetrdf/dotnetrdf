@@ -101,7 +101,7 @@ namespace VDS.RDF.Nodes
                 case SparqlNumericType.Double:
                     return AsDouble() != 0.0d && !double.IsNaN(AsDouble());
                 default:
-                    return SparqlSpecsHelper.EffectiveBooleanValue(this);
+                    return this.EffectiveBooleanValue();
             }
         }
 

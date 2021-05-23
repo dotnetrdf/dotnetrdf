@@ -6,7 +6,7 @@
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <PackageId>dotNetRdf.Ontology</PackageId>
-    <RootNamespace>VDS.RDF.Ontology</RootNamespace>
+    <RootNamespace>VDS.RDF</RootNamespace>
     <PackageTags>RDF;Ontology;OWL</PackageTags>
     <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>
     <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
@@ -20,8 +20,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\rdf_w3c_icon.64.png" Pack="true" PackagePath="\"/>
+    <None Include="..\..\rdf_w3c_icon.64.png" Pack="true" PackagePath="\" />
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Writing\" />
   </ItemGroup>
 
 </Project>

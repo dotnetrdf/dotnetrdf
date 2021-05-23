@@ -1193,7 +1193,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
-        public override string Format(SparqlResult result)
+        public override string Format(ISparqlResult result)
         {
             return result.ToString(this);
         }

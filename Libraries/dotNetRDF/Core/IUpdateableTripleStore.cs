@@ -50,16 +50,6 @@ namespace VDS.RDF
         /// </remarks>
         void ExecuteUpdate(string update);
 
-        /// <summary>
-        /// Executes a single Update Command against the Triple Store.
-        /// </summary>
-        /// <param name="update">SPARQL Update Command.</param>
-        void ExecuteUpdate(SparqlUpdateCommand update);
-
-        /// <summary>
-        /// Executes a set of Update Commands against the Triple Store.
-        /// </summary>
-        /// <param name="updates">SPARQL Update Command Set.</param>
-        void ExecuteUpdate(SparqlUpdateCommandSet updates);
+        
     }
 }

@@ -199,7 +199,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="result">SPARQL Result.</param>
         /// <returns></returns>
-        public virtual string Format(SparqlResult result)
+        public virtual string Format(ISparqlResult result)
         {
             return result.ToString(this);
         }

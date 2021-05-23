@@ -63,7 +63,7 @@ namespace VDS.RDF.Configuration
         public const string PropertyType = ConfigurationNamespace + "type",
                             PropertyImports = ConfigurationNamespace + "imports",
                             PropertyConfigure = ConfigurationNamespace  + "configure",
-                            PropertyEnabled = ConfigurationNamespace + "enabled",
+                            
                             PropertyUser = ConfigurationNamespace + "user",
                             PropertyPassword = ConfigurationNamespace + "password",
                             PropertyCredentials = ConfigurationNamespace + "credentials",
@@ -234,21 +234,28 @@ namespace VDS.RDF.Configuration
         {
             // Default Data Factories
             new GraphFactory(),
-            new StoreFactory(),
+            // TODO: Extension to register this factory
+            // new StoreFactory(),
+
             new CollectionFactory(),
+
             // Default Manager Factories
-            new StorageFactory(),
-            new DatasetFactory(),
+            // TODO: Extension to register these factories
+            // new StorageFactory(),
+            // new DatasetFactory(),
             // Endpoint Factories
             new SparqlClientFactory(),
+
 #pragma warning disable 618
             // To be removed when deprecated classes are removed
             new SparqlEndpointFactory(),
 #pragma warning restore 618
+
             // Processor Factories
-            new QueryProcessorFactory(),
-            new UpdateProcessorFactory(),
-            // TODO: Extension to register this factory
+            // TODO: Extension to register these factories
+            //new QueryProcessorFactory(),
+            //new UpdateProcessorFactory(),
+
             //new ProtocolProcessorFactory(),
             // User and Permission related Factories
             new UserGroupFactory(),
@@ -257,12 +264,13 @@ namespace VDS.RDF.Configuration
             new ProxyFactory(),
 
             // SPARQL Extension related Factories
-            new OptimiserFactory(),
-            // TODO: Extension to register this factory
-//            new ReasonerFactory(),
-            new ExpressionFactoryFactory(),
-            new PropertyFunctionFactoryFactory(),
-            new OperatorFactory(),
+            // TODO: Extension to register these factories
+            // new OptimiserFactory(),
+            //new ReasonerFactory(),
+            //new ExpressionFactoryFactory(),
+            // new PropertyFunctionFactoryFactory(),
+            // new OperatorFactory(),
+
             // ObjectFactory Factory
             new ObjectFactoryFactory(),
             // Parser and Writer Factories
@@ -452,7 +460,6 @@ namespace VDS.RDF.Configuration
         {
             AutoConfigureObjectFactories(g);
             AutoConfigureReadersAndWriters(g);
-            AutoConfigureSparqlOperators(g);
             AutoConfigureStaticOptions(g);
         }
 
@@ -718,37 +725,6 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        /// <summary>
-        /// Given a Configuration Graph will detect and configure SPARQL Operators.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        public static void AutoConfigureSparqlOperators(IGraph g)
-        {
-            INode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType)),
-                  operatorClass = g.CreateUriNode(g.UriFactory.Create(ClassSparqlOperator)),
-                  enabled = g.CreateUriNode(g.UriFactory.Create(PropertyEnabled));
-
-            foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
-            {
-                var temp = LoadObject(g, t.Subject);
-                if (temp is ISparqlOperator)
-                {
-                    var enable = GetConfigurationBoolean(g, t.Subject, enabled, true);
-                    if (enable)
-                    {
-                        SparqlOperators.AddOperator((ISparqlOperator)temp);
-                    }
-                    else
-                    {
-                        SparqlOperators.RemoveOperatorByType((ISparqlOperator)temp);
-                    }
-                }
-                else
-                {
-                    throw new DotNetRdfConfigurationException("Auto-configuration of SPARQL Operators failed as the Operator specified by the Node '" + t.Subject.ToString() + "' does not implement the required ISparqlOperator interface");
-                }
-            }
-        }
 
         #endregion
 

@@ -55,7 +55,7 @@ namespace VDS.RDF.Writing
         /// <inheritdoc />
         public void Save(IGraph g, string filename)
         {
-            _storeWriter.Save(g.AsTripleStore(), filename);
+            _storeWriter.Save(MakeTripleStoreWrapper(g), filename);
         }
 
         /// <inheritdoc />
@@ -70,13 +70,20 @@ namespace VDS.RDF.Writing
         /// <inheritdoc />
         public void Save(IGraph g, TextWriter output)
         {
-            _storeWriter.Save(g.AsTripleStore(), output);
+            _storeWriter.Save(MakeTripleStoreWrapper(g), output);
         }
 
         /// <inheritdoc />
         public void Save(IGraph g, TextWriter output, bool leaveOpen)
         {
-            _storeWriter.Save(g.AsTripleStore(), output, leaveOpen);
+            _storeWriter.Save(MakeTripleStoreWrapper(g), output, leaveOpen);
+        }
+
+        private ITripleStore MakeTripleStoreWrapper(IGraph g)
+        {
+            var store = new SimpleTripleStore(g.UriFactory);
+            store.Add(g);
+            return store;
         }
 
         /// <inheritdoc/>

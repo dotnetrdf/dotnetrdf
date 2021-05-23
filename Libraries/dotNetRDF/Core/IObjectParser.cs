@@ -74,6 +74,6 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="cmdString">Parameterized String.</param>
         /// <returns></returns>
-        T ParseFromString(SparqlParameterizedString cmdString);
+        //T ParseFromString(SparqlParameterizedString cmdString);
     }
 }

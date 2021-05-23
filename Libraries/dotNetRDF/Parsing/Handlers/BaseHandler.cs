@@ -457,7 +457,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="result">Result.</param>
         /// <returns></returns>
-        public bool HandleResult(SparqlResult result)
+        public bool HandleResult(ISparqlResult result)
         {
             if (!_inUse) throw new RdfParseException("Cannot Handle a Result as this Handler is not currently in-use");
             return HandleResultInternal(result);
@@ -468,7 +468,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="result">Result.</param>
         /// <returns></returns>
-        protected abstract bool HandleResultInternal(SparqlResult result);
+        protected abstract bool HandleResultInternal(ISparqlResult result);
 
         #endregion
     }

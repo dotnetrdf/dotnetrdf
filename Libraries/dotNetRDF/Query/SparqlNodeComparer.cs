@@ -144,8 +144,8 @@ namespace VDS.RDF.Query
                     //return 1;
                 }
 
-                SparqlNumericType xnumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(xtype);
-                SparqlNumericType ynumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(ytype);
+                SparqlNumericType xnumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(xtype);
+                SparqlNumericType ynumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(ytype);
                 var numtype = (SparqlNumericType) Math.Max((int) xnumtype, (int) ynumtype);
                 if (numtype != SparqlNumericType.NaN)
                 {
@@ -581,8 +581,8 @@ namespace VDS.RDF.Query
                         return 1;
                     }
 
-                    SparqlNumericType xnumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(xtype);
-                    SparqlNumericType ynumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(ytype);
+                    SparqlNumericType xnumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(xtype);
+                    SparqlNumericType ynumtype = NumericTypesHelper.GetNumericTypeFromDataTypeUri(ytype);
                     var numtype = (SparqlNumericType) Math.Max((int) xnumtype, (int) ynumtype);
                     if (numtype != SparqlNumericType.NaN)
                     {
