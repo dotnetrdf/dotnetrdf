@@ -43,32 +43,11 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public SampleAggregate(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Applies the SAMPLE Aggregate.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            // Try the expression with each member of the Group until we find a non-null
-            foreach (var id in bindingIDs)
-            {
-                try
-                {
-
-                    // First non-null result we find is returned
-                    IValuedNode temp = _expr.Evaluate(context, id);
-                    if (temp != null) return temp;
-                }
-                catch (RdfQueryException)
-                {
-                    // Ignore errors - we'll loop round and try the next
-                }
-            }
-
-            // If the Group is Empty of the Expression fails to evaluate for the entire Group then the result is null
-            return null;
+            return processor.ProcessSample(this, context, bindings);
         }
 
         /// <summary>

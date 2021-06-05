@@ -44,40 +44,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             : base(arg1, arg2) { }
 
         /// <summary>
-        /// Gets the numeric value of the function in the given Evaluation Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode a = _leftExpr.Evaluate(context, bindingID);
-            IValuedNode b = _rightExpr.Evaluate(context, bindingID);
-
-            var type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
-
-            switch (type)
-            {
-                case SparqlNumericType.Integer:
-                    return new LongNode(Math.Min(a.AsInteger(), b.AsInteger()));
-                case SparqlNumericType.Decimal:
-                    return new DecimalNode(Math.Min(a.AsDecimal(), b.AsDecimal()));
-                case SparqlNumericType.Float:
-                    return new FloatNode(Math.Min(a.AsFloat(), b.AsFloat()));
-                case SparqlNumericType.Double:
-                    return new DoubleNode(Math.Min(a.AsDouble(), b.AsDouble()));
-                default:
-                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Min + ">(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessMinFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitMinFunction(this);
         }
 
         /// <summary>

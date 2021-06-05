@@ -24,9 +24,7 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Aggregates
@@ -36,18 +34,8 @@ namespace VDS.RDF.Query.Aggregates
     /// </summary>
     public interface ISparqlAggregate
     {
-        /// <summary>
-        /// Applies the Aggregate to the Result Binder and returns a single Node as a Result.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        IValuedNode Apply(SparqlEvaluationContext context);
-
-        /// <summary>
-        /// Applies the Aggregate to the Result Binder and returns a single Node as a Result.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Enumerable of Binding IDs which the aggregate is applied over.</param>
-        IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs);
+        TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings);
 
         /// <summary>
         /// Gets the Expression that the Aggregate is applied to.

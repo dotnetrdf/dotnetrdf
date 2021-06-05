@@ -49,26 +49,6 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Select Distinct Graphs optimisation.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            context.OutputMultiset = new Multiset();
-            var var = context.Query != null ? context.Query.Variables.First(v => v.IsResultVariable).Name : _graphVar;
-
-            foreach (IRefNode graphName in context.Data.GraphNames)
-            {
-                var s = new Set();
-                s.Add(var, graphName);
-                context.OutputMultiset.Add(s);
-            }
-
-            return context.OutputMultiset;
-        }
-
-        /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
@@ -109,6 +89,16 @@ namespace VDS.RDF.Query.Algebra
             return "SelectDistinctGraphs()";
         }
 
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessSelectDistinctGraphs(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitSelectDistinctGraphs(this);
+        }
+
         /// <summary>
         /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
@@ -146,24 +136,6 @@ namespace VDS.RDF.Query.Algebra
     public class AskAnyTriples : ISparqlAlgebra
     {
         /// <summary>
-        /// Evalutes the Ask Any Triples optimisation.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            if (context.Data.HasTriples)
-            {
-                context.OutputMultiset = new IdentityMultiset();
-            }
-            else
-            {
-                context.OutputMultiset = new NullMultiset();
-            }
-            return context.OutputMultiset;
-        }
-
-        /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
@@ -191,6 +163,16 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "AskAnyTriples()";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessAskAnyTriples(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitAskAnyTriples(this);
         }
 
         /// <summary>

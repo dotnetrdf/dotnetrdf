@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System.Security.Cryptography;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
@@ -40,11 +39,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// </summary>
         /// <param name="expr">Expression.</param>
         public MD5HashFunction(ISparqlExpression expr)
-#if NETCORE || NETSTANDARD2_0
-            : base(expr, MD5.Create()) { }
-#else
-            : base(expr, new MD5Cng()) { }
-#endif
+            : base(expr) { }
 
         /// <summary>
         /// Gets the String representation of the function.
@@ -52,7 +47,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash + ">(" + _expr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessLeviathanMD5HashFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -73,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new MD5HashFunction(transformer.Transform(_expr));
+            return new MD5HashFunction(transformer.Transform(InnerExpression));
         }
     }
 }

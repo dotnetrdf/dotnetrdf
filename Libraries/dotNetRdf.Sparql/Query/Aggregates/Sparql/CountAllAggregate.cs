@@ -49,16 +49,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         {
         }
 
-        /// <summary>
-        /// Counts the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            // Just Count the number of results
-            return new LongNode(bindingIDs.Count());
+            return processor.ProcessCountAll(this, context, bindings);
         }
 
         /// <summary>

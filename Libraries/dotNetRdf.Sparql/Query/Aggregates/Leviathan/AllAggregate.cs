@@ -52,36 +52,10 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public AllAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
-        /// <summary>
-        /// Applies the Aggregate to see if the expression evaluates true for every member of the Group.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Does lazy evaluation - as soon as it encounters a false/error it will return false.
-        /// </remarks>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            foreach (var id in bindingIDs)
-            {
-                try
-                {
-                    if (!_expr.Evaluate(context, id).AsSafeBoolean())
-                    {
-                        // As soon as we see a false we can return false
-                        return new BooleanNode(false);
-                    }
-                }
-                catch (RdfQueryException)
-                {
-                    // An error is a failure so we return false
-                    return new BooleanNode(false);
-                }
-            }
-
-            // If everything is true then we return true;
-            return new BooleanNode(true);
+            return processor.ProcessAll(this, context, bindings);
         }
 
         /// <summary>

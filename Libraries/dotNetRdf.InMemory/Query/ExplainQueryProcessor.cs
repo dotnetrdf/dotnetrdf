@@ -771,12 +771,12 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Processes a Zero or More Path.
         /// </summary>
-        /// <param name="path">Path.</param>
+        /// <param name="zeroOrMorePath">Path.</param>
         /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
-        public override BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath path, SparqlEvaluationContext context)
+        public override BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath zeroOrMorePath, SparqlEvaluationContext context)
         {
-            return ExplainAndEvaluate(path, context, base.ProcessZeroOrMorePath);
+            return ExplainAndEvaluate(zeroOrMorePath, context, base.ProcessZeroOrMorePath);
         }
     }
 }

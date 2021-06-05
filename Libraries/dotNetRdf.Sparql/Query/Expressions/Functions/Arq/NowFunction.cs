@@ -37,36 +37,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     public class NowFunction 
         : ISparqlExpression
     {
-        private SparqlQuery _currQuery;
-        private IValuedNode _node;
-
-        /// <summary>
-        /// Gets the value of the function in the given Evaluation Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns>
-        /// Returns a constant Literal Node which is a Date Time typed Literal.
-        /// </returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            if (_currQuery == null)
-            {
-                _currQuery = context.Query;
-            }
-            if (_node == null || !ReferenceEquals(_currQuery, context.Query))
-            {
-                lock (this)
-                {
-                    if (_node == null || !ReferenceEquals(_currQuery, context.Query))
-                    {
-                        _node = new DateTimeNode(DateTime.Now);
-                    }
-                }
-            }
-            return _node;
-        }
-
+        
         /// <summary>
         /// Gets the Type of the Expression.
         /// </summary>
@@ -107,6 +78,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         public override string ToString()
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Now + ">()";
+        }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessNowFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitNowFunction(this);
         }
 
         /// <summary>

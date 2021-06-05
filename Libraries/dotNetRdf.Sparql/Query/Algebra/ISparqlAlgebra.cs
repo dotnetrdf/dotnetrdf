@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -35,14 +36,14 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Interface for classes that represent the SPARQL Algebra and are used to evaluate queries.
     /// </summary>
-    public interface ISparqlAlgebra
+    public interface ISparqlAlgebra : IVisitable, IProcessable
     {
         /// <summary>
         /// Evaluates the Algebra in the given Context.
         /// </summary>
         /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
-        BaseMultiset Evaluate(SparqlEvaluationContext context);
+        // BaseMultiset Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
         /// Gets the enumeration of Variables used in the Algebra.

@@ -24,6 +24,7 @@
 // </copyright>
 */
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Filters;
 
 namespace VDS.RDF.Query
 {
@@ -35,7 +36,7 @@ namespace VDS.RDF.Query
     /// </remarks>
     /// <typeparam name="TResult">Type of intermediate results produced by processing an Algebra operator.</typeparam>
     /// <typeparam name="TContext">Type of context object providing evaluation context.</typeparam>
-    public interface ISparqlQueryAlgebraProcessor<TResult, TContext>
+    public interface ISparqlQueryAlgebraProcessor<out TResult, in TContext>
     {
         /// <summary>
         /// Processes SPARQL Algebra.
@@ -50,6 +51,14 @@ namespace VDS.RDF.Query
         /// <param name="ask">Ask.</param>
         /// <param name="context">Evaluation Context.</param>
         TResult ProcessAsk(Ask ask, TContext context);
+
+        /// <summary>
+        /// Processes an optimised ASK of the form ASK WHERE { ?s ?p ?o }
+        /// </summary>
+        /// <param name="askAny"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        TResult ProcessAskAnyTriples(AskAnyTriples askAny, TContext context);
 
         /// <summary>
         /// Processes a BGP.
@@ -226,14 +235,6 @@ namespace VDS.RDF.Query
         TResult ProcessUnion(IUnion union, TContext context);
 
         /// <summary>
-        /// Processes an Unknown Operator.
-        /// </summary>
-        /// <param name="algebra">Algebra.</param>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        TResult ProcessUnknownOperator(ISparqlAlgebra algebra, TContext context);
-
-        /// <summary>
         /// Processes a Zero Length Path.
         /// </summary>
         /// <param name="path">Path.</param>
@@ -244,9 +245,19 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Processes a Zero or More Path.
         /// </summary>
-        /// <param name="path">Path.</param>
+        /// <param name="zeroOrMorePath">Path.</param>
         /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
-        TResult ProcessZeroOrMorePath(ZeroOrMorePath path, TContext context);
+        TResult ProcessZeroOrMorePath(ZeroOrMorePath zeroOrMorePath, TContext context);
+
+        /// <summary>
+        /// Process a 
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        TResult ProcessBoundFilter(BoundFilter filter, TContext context);
+        TResult ProcessUnaryExpressionFilter(UnaryExpressionFilter filter, TContext context);
+        TResult ProcessChainFilter(ChainFilter filter, TContext context);
     }
 }

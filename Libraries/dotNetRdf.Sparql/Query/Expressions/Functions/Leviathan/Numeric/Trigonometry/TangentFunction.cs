@@ -34,8 +34,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
     public class TangentFunction
         : BaseTrigonometricFunction
     {
-        private bool _inverse = false;
-
         /// <summary>
         /// Creates a new Leviathan Tangent Function.
         /// </summary>
@@ -51,8 +49,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public TangentFunction(ISparqlExpression expr, bool inverse)
             : base(expr)
         {
-            _inverse = inverse;
-            if (_inverse)
+            Inverse = inverse;
+            if (Inverse)
             {
                 _func = Math.Atan;
             }
@@ -62,20 +60,32 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             }
         }
 
+        public bool Inverse { get; }
+
         /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            if (_inverse)
+            if (Inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv + ">(" + _expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv + ">(" + InnerExpression.ToString() + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan + ">(" + _expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan + ">(" + InnerExpression.ToString() + ")";
             }
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessTangentFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitTangentFunction(this);
         }
 
         /// <summary>
@@ -85,7 +95,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             get
             {
-                if (_inverse)
+                if (Inverse)
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv;
                 }
@@ -103,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new TangentFunction(transformer.Transform(_expr), _inverse);
+            return new TangentFunction(transformer.Transform(InnerExpression), Inverse);
         }
     }
 }

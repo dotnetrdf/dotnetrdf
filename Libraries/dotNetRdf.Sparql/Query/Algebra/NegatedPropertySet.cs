@@ -111,80 +111,6 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Negated Property Set.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            IEnumerable<Triple> ts;
-            var subjVar = _start.VariableName;
-            var objVar = _end.VariableName;
-            if (subjVar != null && context.InputMultiset.ContainsVariable(subjVar))
-            {
-                if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
-                {
-                    ts = (from s in context.InputMultiset.Sets
-                          where s[subjVar] != null && s[objVar] != null
-                          from t in context.Data.GetTriplesWithSubjectObject(s[subjVar], s[objVar])
-                          select t);
-                }
-                else
-                {
-                    ts = (from s in context.InputMultiset.Sets
-                          where s[subjVar] != null
-                          from t in context.Data.GetTriplesWithSubject(s[subjVar])
-                          select t);
-                }
-            }
-            else if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
-            {
-                ts = (from s in context.InputMultiset.Sets
-                      where s[objVar] != null
-                      from t in context.Data.GetTriplesWithObject(s[objVar])
-                      select t);
-            }
-            else
-            {
-                ts = context.Data.Triples;
-            }
-
-            context.OutputMultiset = new Multiset();
-
-            // Q: Should this not go at the start of evaluation?
-            if (_inverse)
-            {
-                var temp = objVar;
-                objVar = subjVar;
-                subjVar = temp;
-            }
-            foreach (Triple t in ts)
-            {
-                if (!_properties.Contains(t.Predicate))
-                {
-                    var s = new Set();
-                    if (subjVar != null) s.Add(subjVar, t.Subject);
-                    if (objVar != null) s.Add(objVar, t.Object);
-                    context.OutputMultiset.Add(s);
-                }
-            }
-
-            if (subjVar == null && objVar == null)
-            {
-                if (context.OutputMultiset.Count == 0)
-                {
-                    context.OutputMultiset = new NullMultiset();
-                }
-                else
-                {
-                    context.OutputMultiset = new IdentityMultiset();
-                }
-            }
-
-            return context.OutputMultiset;
-        }
-
-        /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
@@ -230,7 +156,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Transforms the Algebra back into a SPARQL QUery.
+        /// Transforms the Algebra back into a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
@@ -268,7 +194,7 @@ namespace VDS.RDF.Query.Algebra
         {
             var output = new StringBuilder();
             output.Append("NegatedPropertySet(");
-            output.Append(_start.ToString());
+            output.Append(_start);
             output.Append(", {");
             for (var i = 0; i < _properties.Count; i++)
             {
@@ -279,10 +205,20 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
             output.Append("}, ");
-            output.Append(_end.ToString());
+            output.Append(_end);
             output.Append(')');
 
             return output.ToString();
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessNegatedPropertySet(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitNegatedPropertySet(this);
         }
     }
 }

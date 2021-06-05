@@ -24,10 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -37,19 +35,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     public class EFunction 
         : ISparqlExpression
     {
-        private IValuedNode _node = new DoubleNode(Math.E);
-
-        /// <summary>
-        /// Evaluates the function.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            return _node;
-        }
-
         /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
@@ -70,6 +55,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
         }
 
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessEFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitEFunction(this);
+        }
 
         /// <summary>
         /// Gets the Variables used.

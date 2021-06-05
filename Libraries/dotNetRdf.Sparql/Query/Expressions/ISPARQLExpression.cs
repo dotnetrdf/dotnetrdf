@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions
@@ -74,17 +75,19 @@ namespace VDS.RDF.Query.Expressions
     public interface ISparqlExpression
     {
         /// <summary>
-        /// Evalutes a SPARQL Expression for the given binding in a given context.
+        /// Accept a <see cref="ISparqlExpressionProcessor{TResult,TContext,TBinding}"/> by calling the appropriate method on its interface for this expression.
         /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
+        /// <typeparam name="TResult">Type of result that the process method returns.</typeparam>
+        /// <typeparam name="TContext">The type of the context parameter to the process method.</typeparam>
+        /// <typeparam name="TBinding">The type of the binding parameter of the process method.</typeparam>
+        /// <param name="processor">The processor to be invoked.</param>
+        /// <param name="context">The context object to use for processing.</param>
+        /// <param name="binding">The binding to be processed.</param>
         /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// Newly introduced in Version 0.6.0 to replace the variety of functions that were used previously for numeric vs non-numeric versions to allow our code to be simplified and improve performance.
-        /// </para>
-        /// </remarks>
-        IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
+        TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+
+
+        T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
         /// Gets an enumeration of all the Variables used in an expression.

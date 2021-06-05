@@ -45,55 +45,6 @@ namespace VDS.RDF.Query.Algebra
             : base(start, path, end) { }
 
         /// <summary>
-        /// Evaluates the Path in the given context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public override BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            // Try and generate an Algebra expression
-            // Make sure we don't generate clashing temporary variable IDs over the life of the
-            // Evaluation
-            var transformContext = new PathTransformContext(PathStart, PathEnd);
-            if (context["PathTransformID"] != null)
-            {
-                transformContext.NextID = (int)context["PathTransformID"];
-            }
-            ISparqlAlgebra algebra = Path.ToAlgebra(transformContext);
-            context["PathTransformID"] = transformContext.NextID;
-
-            // Now we can evaluate the resulting algebra
-            BaseMultiset initialInput = context.InputMultiset;
-            var trimMode = context.TrimTemporaryVariables;
-            var rigMode = context.Options.RigorousEvaluation;
-            try
-            {
-                // Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
-                context.Options.RigorousEvaluation = true;
-
-                // Note: We may need to preserve Blank Node variables across evaluations
-                // which we usually don't do BUT because of the way we translate only part of the path
-                // into an algebra at a time and may need to do further nested translate calls we do
-                // need to do this here
-                context.TrimTemporaryVariables = false;
-                BaseMultiset result = context.Evaluate(algebra);
-
-                // Also note that we don't trim temporary variables here even if we've set the setting back
-                // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
-
-                // Once we have our results can join then into our input
-                context.OutputMultiset = initialInput.Join(result);
-            }
-            finally
-            {
-                context.TrimTemporaryVariables = trimMode;
-                context.Options.RigorousEvaluation = rigMode;
-            }
-
-            return context.OutputMultiset;
-        }
-
-        /// <summary>
         /// Converts the algebra back into a Graph Pattern.
         /// </summary>
         /// <returns></returns>
@@ -111,6 +62,16 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "PropertyPath()";
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitPropertyPath(this);
+        }
+
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessPropertyPath(this, context);
         }
     }
 }

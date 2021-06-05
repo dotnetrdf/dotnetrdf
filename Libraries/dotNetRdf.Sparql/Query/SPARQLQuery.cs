@@ -296,25 +296,6 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the <see cref="ISparqlDescribe">ISparqlDescribe</see> which provides the Describe algorithm you wish to use.
-        /// </summary>
-        /// <remarks>
-        /// By default this will be the <see cref="ConciseBoundedDescription">ConciseBoundedDescription</see> (CBD) algorithm.
-        /// </remarks>
-        public ISparqlDescribe Describer
-        {
-            get
-            {
-                if (_describer == null)
-                {
-                    _describer = new ConciseBoundedDescription();
-                }
-                return _describer;
-            }
-            set => _describer = value;
-        }
-
-        /// <summary>
         /// Gets/Sets the locally scoped Algebra Optimisers that are used to optimise the Query Algebra in addition to (but before) any global optimisers (specified by <see cref="SparqlOptimiser.AlgebraOptimisers">SparqlOptimiser.AlgebraOptimisers</see>) that are applied.
         /// </summary>
         public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
@@ -506,6 +487,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member.
         /// </summary>
+        [Obsolete("This property is obsolete and is no longer set when a query is processed")]
         public int VirtualCount { get; internal set; } = -1;
 
         #endregion
@@ -1141,5 +1123,22 @@ namespace VDS.RDF.Query
         /// </para>
         /// </remarks>
         public bool UsesDefaultDataset => !_defaultGraphs.Any() && _rootGraphPattern.UsesDefaultDataset;
+
+        /// <summary>
+        /// Create a query instance that can be passed to remote endpoint when processing a SERVICE clause
+        /// in a SPARQL Query.
+        /// </summary>
+        /// <param name="serviceGraphPattern">The root graph pattern of the SERVICE query</param>
+        /// <param name="limit">The limit on the number of results requested.</param>
+        /// <returns></returns>
+        public static SparqlQuery FromServiceQuery(GraphPattern serviceGraphPattern, int limit)
+        {
+            return new SparqlQuery
+            {
+                QueryType = SparqlQueryType.SelectAll,
+                Limit = limit,
+                RootGraphPattern = new GraphPattern(serviceGraphPattern) {IsService = false},
+            };
+        }
     }
 }

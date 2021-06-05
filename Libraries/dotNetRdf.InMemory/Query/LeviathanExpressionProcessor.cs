@@ -24,13 +24,22 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Aggregates
+
+namespace VDS.RDF.Query
 {
+    /// <summary>
+    /// Extends the <see cref="BaseExpressionProcessor{TContext,TBinding}"/> with the logic for retrieving the bound value for a specific binding in a <see cref="SparqlEvaluationContext"/>.
+    /// </summary>
+    internal class LeviathanExpressionProcessor : BaseExpressionProcessor<SparqlEvaluationContext, int>
+    {
+        LeviathanExpressionProcessor(LeviathanQueryOptions options):base(
+            options.NodeComparer, options.UriFactory, options.StrictOperators)
+        {
+        }
 
-
-
-
-
-
-
+        protected override INode GetBoundValue(SparqlEvaluationContext context, int binding, string var)
+        {
+            return context.Binder.Value(var, binding);
+        }
+    }
 }

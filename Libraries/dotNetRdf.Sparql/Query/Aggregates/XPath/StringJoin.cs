@@ -24,12 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -68,124 +64,13 @@ namespace VDS.RDF.Query.Aggregates.XPath
             _sep = sep;
         }
 
-        /// <summary>
-        /// Applies the Aggregate in the given Context over the given Binding IDs.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+        public ISparqlExpression SeparatorExpression { get => _sep; }
+
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            var ids = bindingIDs.ToList();
-            var output = new StringBuilder();
-            var values = new HashSet<string>();
-            for (var i = 0; i < ids.Count; i++)
-            {
-                try
-                {
-                    var temp = ValueInternal(context, ids[i]);
-
-                    // Apply DISTINCT modifer if required
-                    if (_distinct)
-                    {
-                        if (values.Contains(temp))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            values.Add(temp);
-                        }
-                    }
-                    output.Append(temp);
-                }
-                catch (RdfQueryException)
-                {
-                    output.Append(string.Empty);
-                }
-
-                // Append Separator if required
-                if (i < ids.Count - 1)
-                {
-                    var sep = GetSeparator(context, ids[i]);
-                    output.Append(sep);
-                }
-            }
-
-            return new StringNode(output.ToString(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-        }
-
-        /// <summary>
-        /// Gets the value of a member of the Group for concatenating as part of the result for the Group.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        protected virtual string ValueInternal(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");
-            if (temp.NodeType == NodeType.Literal)
-            {
-                var l = (ILiteralNode)temp;
-                if (l.DataType != null)
-                {
-                    if (l.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                    {
-                        return temp.AsString();
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot do an XPath string-join on a Literal which is not typed as a String");
-                    }
-                }
-                else
-                {
-                    return temp.AsString();
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot do an XPath string-join on a non-Literal Node");
-            }
-        }
-
-        /// <summary>
-        /// Gets the separator to use in the concatenation.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        private string GetSeparator(SparqlEvaluationContext context, int bindingID)
-        {
-            INode temp = _sep.Evaluate(context, bindingID);
-            if (temp == null)
-            {
-                return string.Empty;
-            }
-            else if (temp.NodeType == NodeType.Literal)
-            {
-                var l = (ILiteralNode)temp;
-                if (l.DataType != null)
-                {
-                    if (l.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                    {
-                        return l.Value;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot evaluate an XPath string-join since the separator expression returns a typed Literal which is not a String");
-                    }
-                }
-                else
-                {
-                    return l.Value;
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot evaluate an XPath string-join since the separator expression does not return a Literal");
-            }
+            return processor.ProcessStringJoin(this, context, bindings);
         }
 
         /// <summary>

@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
     /// <summary>
@@ -42,28 +40,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             : base(expr) { }
 
         /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode  Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp == null) throw new RdfQueryException("Cannot evaluate reciprocal of a null");
-            var d = temp.AsDouble();
-            if (d == 0) throw new RdfQueryException("Cannot evaluate reciprocal of zero");
-
-            return new DoubleNode(1d / d);
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Reciprocal + ">(" + _expr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Reciprocal + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessReciprocalFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitReciprocalFunction(this);
         }
 
         /// <summary>
@@ -95,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new ReciprocalFunction(transformer.Transform(_expr));
+            return new ReciprocalFunction(transformer.Transform(InnerExpression));
         }
     }
 }

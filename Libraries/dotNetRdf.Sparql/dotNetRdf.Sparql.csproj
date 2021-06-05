@@ -6,6 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Query\PropertyFunctions\**" />
+    <EmbeddedResource Remove="Query\PropertyFunctions\**" />
+    <None Remove="Query\PropertyFunctions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Query\Algebra\PropertyFunction.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
   </ItemGroup>
 

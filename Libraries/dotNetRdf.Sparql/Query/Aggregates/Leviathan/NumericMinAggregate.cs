@@ -43,8 +43,6 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
     public class NumericMinAggregate
         : BaseAggregate
     {
-        private string _varname;
-
         /// <summary>
         /// Creates a new NMIN Aggregate.
         /// </summary>
@@ -67,8 +65,10 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public NumericMinAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
-            _varname = expr.ToString().Substring(1);
+            Variable = expr.ToString().Substring(1);
         }
+
+        public string Variable { get; }
 
         /// <summary>
         /// Creates a new NMIN Aggregate.
@@ -78,157 +78,11 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public NumericMinAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
-        /// <summary>
-        /// Applies the Numeric Min Aggregate function to the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            if (_varname != null)
-            {
-                // Ensured the MINed variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(_varname))
-                {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a NMIN Aggregate since the Variable does not occur in a Graph Pattern");
-                }
-            }
-
-            // Prep Variables
-            long lngmin = 0;
-            var decmin = 0.0m;
-            var fltmin = 0.0f;
-            var dblmin = 0.0d;
-            SparqlNumericType mintype = SparqlNumericType.NaN;
-            SparqlNumericType numtype;
-
-            foreach (var id in bindingIDs)
-            {
-                IValuedNode temp;
-                try
-                {
-                    temp = _expr.Evaluate(context, id);
-                    if (temp == null) continue;
-                    numtype = temp.NumericType;
-                }
-                catch
-                {
-                    continue;
-                }
-
-                // Skip if Not a Number
-                if (numtype == SparqlNumericType.NaN) continue;
-
-                // Track the Numeric Type
-                if ((int)numtype > (int)mintype)
-                {
-                    if (mintype == SparqlNumericType.NaN)
-                    {
-                        // Initialise Minimums
-                        switch (numtype)
-                        {
-                            case SparqlNumericType.Integer:
-                                lngmin = temp.AsInteger();
-                                decmin = temp.AsDecimal();
-                                fltmin = temp.AsFloat();
-                                dblmin = temp.AsDouble();
-                                break;
-                            case SparqlNumericType.Decimal:
-                                decmin = temp.AsDecimal();
-                                fltmin = temp.AsFloat();
-                                dblmin = temp.AsDouble();
-                                break;
-                            case SparqlNumericType.Float:
-                                fltmin = temp.AsFloat();
-                                dblmin = temp.AsDouble();
-                                break;
-                            case SparqlNumericType.Double:
-                                dblmin = temp.AsDouble();
-                                break;
-                        }
-                        mintype = numtype;
-                        continue;
-                    }
-                    else
-                    {
-                        mintype = numtype;
-                    }
-                }
-
-                long lngval;
-                decimal decval;
-                float fltval;
-                double dblval;
-                switch (mintype)
-                {
-                    case SparqlNumericType.Integer:
-                        lngval = temp.AsInteger();
-
-                        if (lngval < lngmin)
-                        {
-                            lngmin = lngval;
-                            decmin = temp.AsDecimal();
-                            fltmin = temp.AsFloat();
-                            dblmin = temp.AsDouble();
-                        }
-                        break;
-                    case SparqlNumericType.Decimal:
-                        decval = temp.AsDecimal();
-
-                        if (decval < decmin)
-                        {
-                            decmin = decval;
-                            fltmin = temp.AsFloat();
-                            dblmin = temp.AsDouble();
-                        }
-                        break;
-                    case SparqlNumericType.Float:
-                        fltval = temp.AsFloat();
-
-                        if (fltval < fltmin)
-                        {
-                            fltmin = fltval;
-                            dblmin = temp.AsDouble();
-                        }
-                        break;
-                    case SparqlNumericType.Double:
-                        dblval = temp.AsDouble();
-
-                        if (dblval < dblmin)
-                        {
-                            dblmin = dblval;
-                        }
-                        break;
-                }
-            }
-
-            // Return the Min
-            switch (mintype)
-            {
-                case SparqlNumericType.NaN:
-                    // No Numeric Values
-                    return null;
-
-                case SparqlNumericType.Integer:
-                    // Integer Values
-                    return new LongNode(lngmin);
-
-                case SparqlNumericType.Decimal:
-                    // Decimal Values
-                    return new DecimalNode(decmin);
-
-                case SparqlNumericType.Float:
-                    // Float Values
-                    return new FloatNode(fltmin);
-
-                case SparqlNumericType.Double:
-                    // Double Values
-                    return new DoubleNode(dblmin);
-
-                default:
-                    throw new RdfQueryException("Failed to calculate a valid Minimum");
-            }
+            return processor.ProcessNumericMin(this, context, bindings);
         }
 
         /// <summary>

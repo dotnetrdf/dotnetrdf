@@ -68,32 +68,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode min = _leftExpr.Evaluate(context, bindingID);
-            if (min == null) throw new RdfQueryException("Cannot randomize with a null minimum");
-            IValuedNode max = _rightExpr.Evaluate(context, bindingID);
-            if (max == null) throw new RdfQueryException("Cannot randomize with a null maximum");
-
-            if (min.NumericType == SparqlNumericType.NaN || max.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot randomize when one/both arguments are non-numeric");
-
-            var x = min.AsDouble();
-            var y = max.AsDouble();
-
-            if (x > y) throw new RdfQueryException("Cannot generate a random number in the given range since the minumum is greater than the maximum");
-            var range = y - x;
-            var rnd = _rnd.NextDouble() * range;
-            rnd += x;
-            return new DoubleNode(rnd);
-        }
-
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
@@ -117,6 +91,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             }
             output.Append(')');
             return output.ToString();
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessRandomFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitRandomFunction(this);
         }
 
         /// <summary>

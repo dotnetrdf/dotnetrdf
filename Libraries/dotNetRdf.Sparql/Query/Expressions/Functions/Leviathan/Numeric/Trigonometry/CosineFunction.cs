@@ -34,8 +34,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
     public class CosineFunction
         : BaseTrigonometricFunction
     {
-        private bool _inverse = false;
-
         /// <summary>
         /// Creates a new Leviathan Cosine Function.
         /// </summary>
@@ -51,8 +49,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public CosineFunction(ISparqlExpression expr, bool inverse)
             : base(expr)
         {
-            _inverse = inverse;
-            if (_inverse)
+            Inverse = inverse;
+            if (Inverse)
             {
                 _func = Math.Acos;
             }
@@ -62,20 +60,32 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             }
         }
 
+        public bool Inverse { get; }
+
         /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            if (_inverse)
+            if (Inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosInv + ">(" + _expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosInv + ">(" + InnerExpression.ToString() + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCos + ">(" + _expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCos + ">(" + InnerExpression.ToString() + ")";
             }
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessCosineFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitCosineFunction(this);
         }
 
         /// <summary>
@@ -85,7 +95,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             get
             {
-                if (_inverse)
+                if (Inverse)
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosInv;
                 }
@@ -103,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new CosineFunction(transformer.Transform(_expr), _inverse);
+            return new CosineFunction(transformer.Transform(InnerExpression), Inverse);
         }
     }
 }

@@ -57,87 +57,6 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates a Group By by generating a <see cref="GroupMultiset">GroupMultiset</see> from the Input Multiset.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            BaseMultiset results = context.Evaluate(_pattern);
-            context.InputMultiset = results;
-
-            // Identity/Null yields an empty multiset
-            if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
-            {
-                results = new Multiset();
-            }
-            GroupMultiset groupSet = new GroupMultiset(results);
-            List<BindingGroup> groups;
-
-            // Calculate Groups
-            if (context.Query.GroupBy != null)
-            {
-                groups = context.Query.GroupBy.Apply(context);
-            }
-            else if (_grouping != null)
-            {
-                groups = _grouping.Apply(context);
-            }
-            else
-            {
-                groups = new List<BindingGroup>() { new BindingGroup(results.SetIDs) };
-            }
-
-            // Add Groups to the GroupMultiset
-            var vars = new HashSet<string>();
-            foreach (BindingGroup group in groups)
-            {
-                foreach (KeyValuePair<string, INode> assignment in group.Assignments)
-                {
-                    if (vars.Contains(assignment.Key)) continue;
-
-                    groupSet.AddVariable(assignment.Key);
-                    vars.Add(assignment.Key);
-                }
-                groupSet.AddGroup(group);
-            }
-            // If grouping produced no groups, there are aggregates present, then an implicit group is created unless the input multiset was empty and explicit grouping was specified.
-            if (groups.Count == 0 && _aggregates.Count > 0 && !(context.InputMultiset.IsEmpty && (Grouping != null || context.Query.GroupBy != null)))
-            {
-                groupSet.AddGroup(new BindingGroup());
-            }
-
-            // Apply the aggregates
-            context.InputMultiset = groupSet;
-            context.Binder.SetGroupContext(true);
-            foreach (SparqlVariable var in _aggregates)
-            {
-                if (!vars.Contains(var.Name))
-                {
-                    groupSet.AddVariable(var.Name);
-                    vars.Add(var.Name);
-                }
-
-                foreach (ISet s in groupSet.Sets)
-                {
-                    try
-                    {
-                        INode value = var.Aggregate.Apply(context, groupSet.GroupSetIDs(s.ID));
-                        s.Add(var.Name, value);
-                    }
-                    catch (RdfQueryException)
-                    {
-                        s.Add(var.Name, null);
-                    }
-                }
-            }
-            context.Binder.SetGroupContext(false);
-
-            context.OutputMultiset = groupSet;
-            return context.OutputMultiset;
-        }
-
-        /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
@@ -209,6 +128,16 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "GroupBy(" + _pattern.ToString() + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessGroupBy(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitGroupBy(this);
         }
 
         /// <summary>

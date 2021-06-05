@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">SPARQL Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
+        protected internal override bool Accepts(IPatternEvaluationContext context, INode obj)
         {
             if (obj.NodeType == NodeType.Blank)
             {

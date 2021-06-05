@@ -24,9 +24,7 @@
 // </copyright>
 */
 
-using System;
 using System.Text;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Conditional
 {
@@ -43,52 +41,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <param name="rightExpr">Right Hand Expression.</param>
         public OrExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) : base(leftExpr, rightExpr) { }
 
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            // Lazy Evaluation for efficiency
-            try
-            {
-                var leftResult = _leftExpr.Evaluate(context, bindingID).AsBoolean();
-                if (leftResult)
-                {
-                    // If the LHS is true it doesn't matter about any subsequent results
-                    return new BooleanNode(true);
-                }
-                else
-                {
-                    // If the LHS is false then we have to evaluate the RHS
-                    return new BooleanNode(_rightExpr.Evaluate(context, bindingID).AsBoolean());
-                }
-            }
-            catch (Exception ex)
-            {
-                // If there's an Error on the LHS we return true only if the RHS evaluates to true
-                // Otherwise we throw the Error
-                var rightResult = _rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
-                if (rightResult)
-                {
-                    return new BooleanNode(true);
-                }
-                else
-                {
-                    // Ensure the error we throw is a RdfQueryException so as not to cause issues higher up
-                    if (ex is RdfQueryException)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Error evaluating OR expression", ex);
-                    }
-                }
-            }
-        }
+        
 
         /// <summary>
         /// Gets the String representation of this Expression.
@@ -115,6 +68,16 @@ namespace VDS.RDF.Query.Expressions.Conditional
                 output.Append(_rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessOrExpression(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitOrExpression(this);
         }
 
         /// <summary>

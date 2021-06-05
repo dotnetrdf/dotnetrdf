@@ -44,7 +44,12 @@ namespace VDS.RDF.Query.Patterns
         /// Evaluates the Triple Pattern in the given Evaluation Context.
         /// </summary>
         /// <param name="context">Evaluation Context.</param>
-        public abstract void Evaluate(SparqlEvaluationContext context);
+        public abstract void Evaluate(IPatternEvaluationContext context);
+
+        public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> visitor,
+            TContext context);
+
+        public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
 
         /// <summary>
         /// Returns whether the Triple Pattern is an accept all.

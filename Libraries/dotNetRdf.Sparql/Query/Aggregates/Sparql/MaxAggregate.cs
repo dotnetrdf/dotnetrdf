@@ -40,8 +40,6 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class MaxAggregate
         : BaseAggregate
     {
-        private string _varname;
-
         /// <summary>
         /// Creates a new MAX Aggregate.
         /// </summary>
@@ -50,7 +48,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public MaxAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
-            _varname = expr.ToString().Substring(1);
+            Variable = expr.ToString().Substring(1);
         }
 
         /// <summary>
@@ -76,6 +74,13 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             : this(expr, false) { }
 
         /// <summary>
+        /// Get the name of the variable that is aggregated if the
+        /// aggregation operates on a simple variable term, otherwise
+        /// this property will return null.
+        /// </summary>
+        public string Variable { get; }
+
+        /// <summary>
         /// Creates a new MAX Aggregate.
         /// </summary>
         /// <param name="distinct">Distinct Modifier.</param>
@@ -93,40 +98,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             }
         }
 
-        /// <summary>
-        /// Applies the Max Aggregate function to the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            var values = new List<IValuedNode>();
-
-            if (_varname != null)
-            {
-                // Ensured the MAXed variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(_varname))
-                {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a MAX Aggregate since the Variable does not occur in a Graph Pattern");
-                }
-            }
-
-            foreach (var id in bindingIDs)
-            {
-                try
-                {
-                    values.Add(_expr.Evaluate(context, id));
-                }
-                catch
-                {
-                    // Ignore errors
-                }
-            }
-
-            values.Sort(new SparqlOrderingComparer(context.NodeComparer.Culture, context.NodeComparer.Options));
-            values.Reverse();
-            return values.FirstOrDefault();
+            return processor.ProcessMax(this, context, bindings);
         }
 
         /// <summary>

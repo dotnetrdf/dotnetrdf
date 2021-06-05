@@ -40,7 +40,10 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
     public class MedianAggregate 
         : BaseAggregate
     {
-        private string _varname;
+        /// <summary>
+        /// Get the name of the variable to be aggregated if the expression is a simple variable term.
+        /// </summary>
+        public string Variable { get; }
 
         /// <summary>
         /// Creates a new MEDIAN Aggregate.
@@ -64,7 +67,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public MedianAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
-            _varname = expr.ToString().Substring(1);
+            Variable = expr.ToString().Substring(1);
         }
 
         /// <summary>
@@ -75,67 +78,11 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public MedianAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
-        /// <summary>
-        /// Applies the Median Aggregate function to the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            if (_varname != null)
-            {
-                // Ensured the MEDIANed variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(_varname))
-                {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a MEDIAN Aggregate since the Variable does not occur in a Graph Pattern");
-                }
-            }
-
-            var values = new List<IValuedNode>();
-            var distinctValues = new HashSet<IValuedNode>();
-            var nullSeen = false;
-            foreach (var id in bindingIDs)
-            {
-                try
-                {
-                    IValuedNode temp = _expr.Evaluate(context, id);
-                    if (_distinct)
-                    {
-                        if (temp != null)
-                        {
-                            if (distinctValues.Contains(temp))
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                distinctValues.Add(temp);
-                            }
-                        }
-                        else if (!nullSeen)
-                        {
-                            nullSeen = false;
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-                    values.Add(temp);
-                }
-                catch
-                {
-                    // Ignore errors
-                }
-            }
-
-            if (values.Count == 0) return null;
-
-            // Find the middle value and return
-            values.Sort();
-            var skip = values.Count / 2;
-            return values.Skip(skip).First();
+            return processor.ProcessMedian(this, context, bindings);
         }
 
         /// <summary>

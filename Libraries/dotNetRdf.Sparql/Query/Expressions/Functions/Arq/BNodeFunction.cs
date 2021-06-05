@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Arq
 {
@@ -43,39 +42,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             : base(expr) { }
 
         /// <summary>
-        /// Gets the value of the function in the given Evaluation Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode temp = _expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                if (temp.NodeType == NodeType.Blank)
-                {
-                    var b = (IBlankNode)temp;
-                    return new StringNode(null, b.InternalID);
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot find the BNode Label for a non-Blank Node");
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot find the BNode Label for a null");
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode + ">(" + _expr.ToString() + ")";
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessArqBNodeFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitArqBNodeFunction(this);
         }
 
         /// <summary>
@@ -107,7 +89,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new BNodeFunction(transformer.Transform(_expr));
+            return new BNodeFunction(transformer.Transform(InnerExpression));
         }
 
         /// <summary>
@@ -128,7 +110,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         {
             get
             {
-                return _expr.AsEnumerable();
+                return InnerExpression.AsEnumerable();
             }
         }
 
@@ -139,7 +121,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         {
             get
             {
-                return _expr.Variables;
+                return InnerExpression.Variables;
             }
         }
     }

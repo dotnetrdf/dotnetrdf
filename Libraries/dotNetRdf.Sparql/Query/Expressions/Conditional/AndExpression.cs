@@ -45,52 +45,6 @@ namespace VDS.RDF.Query.Expressions.Conditional
         public AndExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) : base(leftExpr, rightExpr) { }
 
         /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            // Lazy Evaluation for Efficiency
-            try
-            {
-                var leftResult = _leftExpr.Evaluate(context, bindingID).AsBoolean();
-                if (!leftResult)
-                {
-                    // If the LHS is false then no subsequent results matter
-                    return new BooleanNode(false);
-                }
-                else
-                {
-                    // If the LHS is true then we have to continue by evaluating the RHS
-                    return new BooleanNode(_rightExpr.Evaluate(context, bindingID).AsBoolean());
-                }
-            }
-            catch (Exception ex)
-            {
-                // If we encounter an error on the LHS then we return false only if the RHS is false
-                // Otherwise we error
-                var rightResult = _rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
-                if (!rightResult)
-                {
-                    return new BooleanNode(false);
-                }
-                else
-                {
-                    if (ex is RdfQueryException)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Error evaluating AND expression", ex);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>

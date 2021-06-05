@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using System;
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
     /// <summary>
@@ -44,30 +41,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             : base(arg1, arg2) { }
 
         /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode arg = _leftExpr.Evaluate(context, bindingID);
-            if (arg == null) throw new RdfQueryException("Cannot raise a null to a power");
-            IValuedNode pow = _rightExpr.Evaluate(context, bindingID);
-            if (pow == null) throw new RdfQueryException("Cannot raise to a null power");
-
-            if (arg.NumericType == SparqlNumericType.NaN || pow.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot raise to a power when one/both arguments are non-numeric");
-
-            return new DoubleNode(Math.Pow(arg.AsDouble(), pow.AsDouble()));
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power + ">(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessPowerFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitPowerFunction(this);
         }
 
         /// <summary>

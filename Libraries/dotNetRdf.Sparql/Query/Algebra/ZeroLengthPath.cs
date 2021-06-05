@@ -47,174 +47,30 @@ namespace VDS.RDF.Query.Algebra
             : base(start, path, end) { }
 
         /// <summary>
-        /// Evaluates a Zero Length Path.
+        /// Return true if both the path start and the path end are fixed terms,
+        /// or false if either start or end are a variable.
         /// </summary>
-        /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
-        public override BaseMultiset Evaluate(SparqlEvaluationContext context)
+        public bool AreBothTerms()
         {
-            if (AreBothTerms())
-            {
-                if (AreSameTerms())
-                {
-                    return new IdentityMultiset();
-                }
-                else
-                {
-                    return new NullMultiset();
-                }
-            }
-
-            var subjVar = PathStart.VariableName;
-            var objVar = PathEnd.VariableName;
-            context.OutputMultiset = new Multiset();
-
-            // Determine the Triples to which this applies
-            if (subjVar != null)
-            {
-                // Subject is a Variable
-                if (context.InputMultiset.ContainsVariable(subjVar))
-                {
-                    // Subject is Bound
-                    if (objVar != null)
-                    {
-                        // Object is a Variable
-                        if (context.InputMultiset.ContainsVariable(objVar))
-                        {
-                            // Both Subject and Object are Bound
-                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && x[objVar] != null && PathStart.Accepts(context, x[subjVar]) && PathEnd.Accepts(context, x[objVar])))
-                            {
-                                ISet x = new Set();
-                                x.Add(subjVar, x[subjVar]);
-                                context.OutputMultiset.Add(x);
-                                x = new Set();
-                                x.Add(objVar, x[objVar]);
-                                context.OutputMultiset.Add(x);
-                            }
-                        }
-                        else
-                        {
-                            // Subject is bound but Object is Unbound
-                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && PathStart.Accepts(context, x[subjVar])))
-                            {
-                                ISet x = s.Copy();
-                                x.Add(objVar, x[subjVar]);
-                                context.OutputMultiset.Add(x);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Object is a Term
-                        // Preseve sets where the Object Term is equal to the currently bound Subject
-                        INode objTerm = ((NodeMatchPattern)PathEnd).Node;
-                        foreach (ISet s in context.InputMultiset.Sets)
-                        {
-                            INode temp = s[subjVar];
-                            if (temp != null && temp.Equals(objTerm))
-                            {
-                                context.OutputMultiset.Add(s.Copy());
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Subject is Unbound
-                    if (objVar != null)
-                    {
-                        // Object is a Variable
-                        if (context.InputMultiset.ContainsVariable(objVar))
-                        {
-                            // Object is Bound but Subject is unbound
-                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[objVar] != null && PathEnd.Accepts(context, x[objVar])))
-                            {
-                                ISet x = s.Copy();
-                                x.Add(subjVar, x[objVar]);
-                                context.OutputMultiset.Add(x);
-                            }
-                        }
-                        else
-                        {
-                            // Subject and Object are Unbound
-                            var nodes = new HashSet<INode>();
-                            foreach (Triple t in context.Data.Triples)
-                            {
-                                nodes.Add(t.Subject);
-                                nodes.Add(t.Object);
-                            }
-                            foreach (INode n in nodes)
-                            {
-                                var s = new Set();
-                                s.Add(subjVar, n);
-                                s.Add(objVar, n);
-                                context.OutputMultiset.Add(s);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Object is a Term
-                        // Create a single set with the Variable bound to the Object Term
-                        var s = new Set();
-                        s.Add(subjVar, ((NodeMatchPattern)PathEnd).Node);
-                        context.OutputMultiset.Add(s);
-                    }
-                }
-            }
-            else if (objVar != null)
-            {
-                // Subject is a Term but Object is a Variable
-                if (context.InputMultiset.ContainsVariable(objVar))
-                {
-                    // Object is Bound
-                    // Preseve sets where the Subject Term is equal to the currently bound Object
-                    INode subjTerm = ((NodeMatchPattern)PathStart).Node;
-                    foreach (ISet s in context.InputMultiset.Sets)
-                    {
-                        INode temp = s[objVar];
-                        if (temp != null && temp.Equals(subjTerm))
-                        {
-                            context.OutputMultiset.Add(s.Copy());
-                        }
-                    }
-                }
-                else
-                {
-                    // Object is Unbound
-                    // Create a single set with the Variable bound to the Suject Term
-                    var s = new Set();
-                    s.Add(objVar, ((NodeMatchPattern)PathStart).Node);
-                    context.OutputMultiset.Add(s);
-                }
-            }
-            else
-            {
-                // Should already have dealt with this earlier (the AreBothTerms() and AreSameTerms() branch)
-                throw new RdfQueryException("Reached unexpected point of ZeroLengthPath evaluation");
-            }
-
-            return context.OutputMultiset;
+            return PathStart.VariableName == null && PathEnd.VariableName == null;
         }
 
-        private bool AreBothTerms()
+        /// <summary>
+        /// Return true of the path start and path end reference the same term,
+        /// false otherwise.
+        /// </summary>
+        /// <returns></returns>
+        public bool AreSameTerms()
         {
-            return (PathStart.VariableName == null && PathEnd.VariableName == null);
-        }
-
-        private bool AreSameTerms()
-        {
-            if (PathStart is NodeMatchPattern && PathEnd is NodeMatchPattern)
+            switch (PathStart)
             {
-                return ((NodeMatchPattern)PathStart).Node.Equals(((NodeMatchPattern)PathEnd).Node);
-            }
-            else if (PathStart is FixedBlankNodePattern && PathEnd is FixedBlankNodePattern)
-            {
-                return ((FixedBlankNodePattern)PathStart).InternalID.Equals(((FixedBlankNodePattern)PathEnd).InternalID);
-            }
-            else
-            {
-                return false;
+                case NodeMatchPattern startPattern when PathEnd is NodeMatchPattern endPattern:
+                    return startPattern.Node.Equals(endPattern.Node);
+                case FixedBlankNodePattern startBlankNodePattern when PathEnd is FixedBlankNodePattern endBlankNodePattern:
+                    return startBlankNodePattern.InternalID.Equals(endBlankNodePattern.InternalID);
+                default:
+                    return false;
             }
         }
 
@@ -224,7 +80,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "ZeroLengthPath(" + PathStart.ToString() + ", " + Path.ToString() + ", " + PathEnd.ToString() + ")";
+            return "ZeroLengthPath(" + PathStart + ", " + Path.ToString() + ", " + PathEnd + ")";
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitZeroLengthPath(this);
+        }
+
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessZeroLengthPath(this, context);
         }
 
         /// <summary>

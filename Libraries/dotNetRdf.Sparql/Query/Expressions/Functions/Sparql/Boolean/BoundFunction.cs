@@ -44,23 +44,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             : base(varExpr) { }
 
         /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            return new BooleanNode(_expr.Evaluate(context, bindingID) != null);
-        }
-
-        /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "BOUND(" + _expr.ToString() + ")";
+            return "BOUND(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessBoundFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitBoundFunction(this);
         }
 
         /// <summary>
@@ -92,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new BoundFunction((VariableTerm)transformer.Transform(_expr));
+            return new BoundFunction((VariableTerm)transformer.Transform(InnerExpression));
         }
     }
 }

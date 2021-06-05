@@ -66,23 +66,8 @@ namespace VDS.RDF.Query.Aggregates
             _distinct = distinct;
         }
 
-        /// <summary>
-        /// Applies the Aggregate to the Result Binder.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public IValuedNode Apply(SparqlEvaluationContext context)
-        {
-            return Apply(context, context.Binder.BindingIDs);
-        }
-
-        /// <summary>
-        /// Applies the Aggregate to the Result Binder.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Enumerable of Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public abstract IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs);
+        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings);
 
         /// <summary>
         /// Expression that the Aggregate executes over.
@@ -94,6 +79,11 @@ namespace VDS.RDF.Query.Aggregates
                 return _expr;
             }
         }
+
+        /// <summary>
+        /// Get whether the aggregate should apply only to distinct values.
+        /// </summary>
+        public bool Distinct { get => _distinct; }
 
         /// <summary>
         /// Gets the String representation of the Aggregate.

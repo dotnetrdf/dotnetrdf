@@ -96,30 +96,6 @@ namespace VDS.RDF.Query.Patterns
             _tuples.Add(t);
         }
 
-        /// <summary>
-        /// Converts a Bindings Clause to a Multiset.
-        /// </summary>
-        /// <returns></returns>
-        public BaseMultiset ToMultiset()
-        {
-            if (_vars.Any())
-            {
-                var m = new Multiset();
-                foreach (var var in _vars)
-                {
-                    m.AddVariable(var);
-                }
-                foreach (BindingTuple tuple in _tuples)
-                {
-                    m.Add(new Set(tuple));
-                }
-                return m;
-            }
-            else
-            {
-                return new IdentityMultiset();
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of the Pattern.

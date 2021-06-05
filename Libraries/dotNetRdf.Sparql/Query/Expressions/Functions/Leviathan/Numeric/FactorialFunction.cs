@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
     /// <summary>
@@ -42,43 +40,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             : base(expr) { }
 
         /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp == null) throw new RdfQueryException("Cannot evaluate factorial of a null");
-            var l = temp.AsInteger();
-
-            if (l == 0) return new LongNode(0);
-            long fac = 1;
-            if (l > 0)
-            {
-                for (var i = l; i > 1; i--)
-                {
-                    fac = fac * i;
-                }
-            }
-            else
-            {
-                for (var i = l; i < -1; i++)
-                {
-                    fac = fac * i;
-                }
-            }
-            return new LongNode(fac);
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Factorial + ">(" + _expr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Factorial + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessFactorialFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitFactorialFunction(this);
         }
 
         /// <summary>
@@ -110,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new FactorialFunction(transformer.Transform(_expr));
+            return new FactorialFunction(transformer.Transform(InnerExpression));
         }
     }
 }

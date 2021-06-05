@@ -24,11 +24,9 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
@@ -38,9 +36,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
     public class CartesianFunction
         : ISparqlExpression
     {
-        private ISparqlExpression _x1, _y1, _z1, _x2, _y2, _z2;
-        private bool _3d = false;
-
         /// <summary>
         /// Creates a new 2D Cartesian Function.
         /// </summary>
@@ -50,10 +45,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="y2">Expression for Y Coordinate of 2nd point.</param>
         public CartesianFunction(ISparqlExpression x1, ISparqlExpression y1, ISparqlExpression x2, ISparqlExpression y2)
         {
-            _x1 = x1;
-            _y1 = y1;
-            _x2 = x2;
-            _y2 = y2;
+            X1 = x1;
+            Y1 = y1;
+            X2 = x2;
+            Y2 = y2;
         }
 
         /// <summary>
@@ -67,84 +62,32 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <param name="z2">Expression for Z Coordinate of 2nd point.</param>
         public CartesianFunction(ISparqlExpression x1, ISparqlExpression y1, ISparqlExpression z1, ISparqlExpression x2, ISparqlExpression y2, ISparqlExpression z2)
         {
-            _x1 = x1;
-            _y1 = y1;
-            _z1 = z1;
-            _x2 = x2;
-            _y2 = y2;
-            _z2 = z2;
-            _3d = true;
+            X1 = x1;
+            Y1 = y1;
+            Z1 = z1;
+            X2 = x2;
+            Y2 = y2;
+            Z2 = z2;
+            Is3D = true;
         }
 
+        public bool Is3D { get; }
+        public ISparqlExpression X1 { get; }
+        public ISparqlExpression X2 { get; }
+        public ISparqlExpression Y1 { get; }
+        public ISparqlExpression Y2 { get; }
+        public ISparqlExpression Z1 { get; }
+        public ISparqlExpression Z2 { get; }
 
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            // Validate that all expressions are numeric expression
-            if (_3d)
-            {
-                return CartesianDistance3D(context, bindingID);
-            }
-            else
-            {
-                return CartesianDistance2D(context, bindingID);
-            }
+            return processor.ProcessCartesianFunction(this, context, binding);
         }
 
-        /// <summary>
-        /// Internal helper for calculating 2D Cartesian Distance.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        private IValuedNode CartesianDistance2D(SparqlEvaluationContext context, int bindingID)
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
-            IValuedNode x1 = _x1.Evaluate(context, bindingID);
-            if (x1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y1 = _y1.Evaluate(context, bindingID);
-            if (y1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode x2 = _x2.Evaluate(context, bindingID);
-            if (x2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y2 = _y2.Evaluate(context, bindingID);
-            if (y2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-
-            var dX = x2.AsDouble() - x1.AsDouble();
-            var dY = y2.AsDouble() - y1.AsDouble();
-
-            return new DoubleNode(Math.Sqrt(Math.Pow(dX, 2) + Math.Pow(dY, 2)));
-        }
-
-        /// <summary>
-        /// Internal helper for calculating 3D Cartesian Distance.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        private IValuedNode CartesianDistance3D(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode x1 = _x1.Evaluate(context, bindingID);
-            if (x1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y1 = _y1.Evaluate(context, bindingID);
-            if (y1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode z1 = _z1.Evaluate(context, bindingID);
-            if (z1 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode x2 = _x2.Evaluate(context, bindingID);
-            if (x2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode y2 = _y2.Evaluate(context, bindingID);
-            if (y2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-            IValuedNode z2 = _z2.Evaluate(context, bindingID);
-            if (z2 == null) throw new RdfQueryException("Cannot calculate cartesian distance when a argument is null");
-
-            var dX = x2.AsDouble() - x1.AsDouble();
-            var dY = y2.AsDouble() - y1.AsDouble();
-            var dZ = z2.AsDouble() - z1.AsDouble();
-
-            return new DoubleNode(Math.Sqrt(Math.Pow(dX, 2) + Math.Pow(dY, 2) + Math.Pow(dZ,2)));
+            return visitor.VisitCartesianFunction(this);
         }
 
         /// <summary>
@@ -154,13 +97,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             get
             {
-                if (_3d)
+                if (Is3D)
                 {
-                    return _x1.Variables.Concat(_y1.Variables).Concat(_z1.Variables).Concat(_x2.Variables).Concat(_y2.Variables).Concat(_z2.Variables);
+                    return X1.Variables.Concat(Y1.Variables).Concat(Z1.Variables).Concat(X2.Variables).Concat(Y2.Variables).Concat(Z2.Variables);
                 }
                 else
                 {
-                    return _x1.Variables.Concat(_y1.Variables).Concat(_x2.Variables).Concat(_y2.Variables);
+                    return X1.Variables.Concat(Y1.Variables).Concat(X2.Variables).Concat(Y2.Variables);
                 }
             }
         }
@@ -173,22 +116,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             var output = new StringBuilder();
             output.Append("<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cartesian + ">(");
-            output.Append(_x1.ToString());
+            output.Append(X1.ToString());
             output.Append(',');
-            output.Append(_y1.ToString());
+            output.Append(Y1.ToString());
             output.Append(',');
-            if (_3d)
+            if (Is3D)
             {
-                output.Append(_z1.ToString());
+                output.Append(Z1.ToString());
                 output.Append(',');
             }
-            output.Append(_x2.ToString());
+            output.Append(X2.ToString());
             output.Append(',');
-            output.Append(_y2.ToString());
-            if (_3d)
+            output.Append(Y2.ToString());
+            if (Is3D)
             {
                 output.Append(',');
-                output.Append(_z2.ToString());
+                output.Append(Z2.ToString());
             }
             output.Append(')');
             return output.ToString();
@@ -223,13 +166,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             get 
             {
-                if (_3d)
+                if (Is3D)
                 {
-                    return new ISparqlExpression[] { _x1, _y1, _z1, _x2, _y2, _z2 };
+                    return new ISparqlExpression[] { X1, Y1, Z1, X2, Y2, Z2 };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { _x1, _y1, _x2, _y2 };
+                    return new ISparqlExpression[] { X1, Y1, X2, Y2 };
                 }
             }
         }
@@ -241,13 +184,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             get
             {
-                if (_3d)
+                if (Is3D)
                 {
-                    return _x1.CanParallelise && _y1.CanParallelise && _z1.CanParallelise && _x1.CanParallelise && _y2.CanParallelise && _z2.CanParallelise;
+                    return X1.CanParallelise && Y1.CanParallelise && Z1.CanParallelise && X1.CanParallelise && Y2.CanParallelise && Z2.CanParallelise;
                 }
                 else
                 {
-                    return _x1.CanParallelise && _y1.CanParallelise && _x2.CanParallelise && _y2.CanParallelise;
+                    return X1.CanParallelise && Y1.CanParallelise && X2.CanParallelise && Y2.CanParallelise;
                 }
             }
         }
@@ -259,13 +202,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (_3d)
+            if (Is3D)
             {
-                return new CartesianFunction(transformer.Transform(_x1), transformer.Transform(_y1), transformer.Transform(_z1), transformer.Transform(_x2), transformer.Transform(_y2), transformer.Transform(_z2));
+                return new CartesianFunction(transformer.Transform(X1), transformer.Transform(Y1), transformer.Transform(Z1), transformer.Transform(X2), transformer.Transform(Y2), transformer.Transform(Z2));
             }
             else
             {
-                return new CartesianFunction(transformer.Transform(_x1), transformer.Transform(_y1), transformer.Transform(_x2), transformer.Transform(_y2));
+                return new CartesianFunction(transformer.Transform(X1), transformer.Transform(Y1), transformer.Transform(X2), transformer.Transform(Y2));
             }
         }
     }

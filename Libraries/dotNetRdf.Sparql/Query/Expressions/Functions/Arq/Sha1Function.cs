@@ -40,11 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// </summary>
         /// <param name="expr">Expression.</param>
         public Sha1Function(ISparqlExpression expr)
-#if NETCORE
-            :base(expr, SHA1.Create()) { }
-#else
-            : base(expr, new SHA1Managed()) { }
-#endif
+            : base(expr) { }
 
         /// <summary>
         /// Gets the String representation of the function.
@@ -52,7 +48,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Sha1Sum + ">(" + _expr.ToString() + ")";
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Sha1Sum + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSha1Function(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSha1Function(this);
         }
 
         /// <summary>
@@ -73,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new Sha1Function(transformer.Transform(_expr));
+            return new Sha1Function(transformer.Transform(InnerExpression));
         }
     }
 }
