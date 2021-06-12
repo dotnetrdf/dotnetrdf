@@ -329,7 +329,7 @@ namespace VDS.RDF.Parsing
                         if (requireFreshness)
                         {
                             // Check the freshness of the local copy
-                            DateTime created = File.GetCreationTime(graph);
+                            DateTime created = File.GetLastWriteTime(graph);
                             TimeSpan freshness = DateTime.Now - created;
                             if (freshness > _cacheDuration)
                             {
