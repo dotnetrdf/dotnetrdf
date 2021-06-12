@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Parsing.Handlers;
@@ -38,18 +37,16 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Provides caching services to the <see cref="UriLoader">UriLoader</see> class.
     /// </summary>
-    class UriLoaderCache
+    internal class UriLoaderCache
         : IUriLoaderCache
     {
-        private String _cacheDir;
-        private TimeSpan _cacheDuration = new TimeSpan(1, 0, 0);
-        private bool _canCacheGraphs = false, _canCacheETag = false;
-        private String _graphDir;
-        private String _etagFile;
-        private Dictionary<int, String> _etags = new Dictionary<int, string>();
-        private CompressingTurtleWriter _ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.Medium);
-        private HashSet<String> _nocache = new HashSet<string>();
-        private Type _formatterType = typeof(TurtleFormatter);
+        private string _cacheDir;
+        private bool _canCacheGraphs, _canCacheETag;
+        private string _graphDir;
+        private string _etagFile;
+        private readonly Dictionary<int, string> _etags = new Dictionary<int, string>();
+        private readonly HashSet<string> _nocache = new HashSet<string>();
+        private readonly Type _formatterType = typeof(TurtleFormatter);
 
         /// <summary>
         /// Creates a new Cache which uses the system temporary directory as the cache location.
@@ -61,7 +58,7 @@ namespace VDS.RDF.Parsing
         /// Creates a new Cache which uses the given directory as the cache location.
         /// </summary>
         /// <param name="dir">Directory.</param>
-        public UriLoaderCache(String dir)
+        public UriLoaderCache(string dir)
         {
             if (Directory.Exists(dir))
             {
@@ -80,27 +77,14 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// This only applies to downloaded URIs where an ETag is not available, where ETags are available proper ETag based caching is used.
         /// </remarks>
-        public TimeSpan CacheDuration
-        {
-            get
-            {
-                return _cacheDuration;
-            }
-            set
-            {
-                _cacheDuration = value;
-            }
-        }
+        public TimeSpan CacheDuration { get; set; } = new TimeSpan(1, 0, 0);
 
         /// <summary>
         /// Gets/Sets the Cache Directory that is used.
         /// </summary>
-        public String CacheDirectory
+        public string CacheDirectory
         {
-            get
-            {
-                return _cacheDir;
-            }
+            get => _cacheDir;
             set
             {
                 if (!_cacheDir.Equals(value))
@@ -144,16 +128,17 @@ namespace VDS.RDF.Parsing
                 try
                 {
                     // Read in the existing ETags
-                    using (StreamReader reader = new StreamReader(File.Open(_etagFile, FileMode.Open, FileAccess.Read), Encoding.UTF8))
+                    using (var reader = new StreamReader(File.Open(_etagFile, FileMode.Open, FileAccess.Read), Encoding.UTF8))
                     {
                         while (!reader.EndOfStream)
                         {
-                            String line = reader.ReadLine();
+                            var line = reader.ReadLine();
+                            if (line == null) continue;
                             try
                             {
-                                String[] data = line.Split('\t');
-                                int i = Int32.Parse(data[0]);
-                                String etag = data[1];
+                                var data = line.Split('\t');
+                                var i = int.Parse(data[0]);
+                                var etag = data[1];
 
                                 if (!_etags.ContainsKey(i))
                                 {
@@ -197,13 +182,13 @@ namespace VDS.RDF.Parsing
             _etags.Clear();
             if (_canCacheETag && File.Exists(_etagFile))
             {
-                File.WriteAllText(_etagFile, String.Empty, Encoding.UTF8);
+                File.WriteAllText(_etagFile, string.Empty, Encoding.UTF8);
             }
 
             // Clear the Graphs Cache
             if (_canCacheGraphs && Directory.Exists(_graphDir))
             {
-                foreach (String file in Directory.GetFiles(_graphDir))
+                foreach (var file in Directory.GetFiles(_graphDir))
                 {
                     File.Delete(file);
                 }
@@ -234,12 +219,12 @@ namespace VDS.RDF.Parsing
         /// <param name="u">URI.</param>
         /// <returns></returns>
         /// <exception cref="KeyNotFoundException">Thrown if there is no ETag for the given URI.</exception>
-        public String GetETag(Uri u)
+        public string GetETag(Uri u)
         {
             if (_canCacheETag)
             {
                 if (_nocache.Contains(u.GetSha256Hash())) throw new KeyNotFoundException("No ETag was found for the URI " + u.AbsoluteUri);
-                int id = u.GetEnhancedHashCode();
+                var id = u.GetEnhancedHashCode();
                 if (_etags.ContainsKey(id))
                 {
                     return _etags[id];
@@ -269,9 +254,9 @@ namespace VDS.RDF.Parsing
                     {
                         _etags.Remove(u.GetEnhancedHashCode());
                         // If we did remove an ETag then we need to rewrite our ETag cache file
-                        using (StreamWriter writer = new StreamWriter(File.Open(_etagFile, FileMode.Create, FileAccess.Write), Encoding.UTF8))
+                        using (var writer = new StreamWriter(File.Open(_etagFile, FileMode.Create, FileAccess.Write), Encoding.UTF8))
                         {
-                            foreach (KeyValuePair<int, String> etag in _etags)
+                            foreach (var etag in _etags)
                             {
                                 writer.WriteLine(etag.Key + "\t" + etag.Value);
                             }
@@ -296,7 +281,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                String graph = Path.Combine(_graphDir, u.GetSha256Hash());
+                var graph = Path.Combine(_graphDir, u.GetSha256Hash());
                 if (File.Exists(graph))
                 {
                     File.Delete(graph);
@@ -323,15 +308,15 @@ namespace VDS.RDF.Parsing
                 {
                     if (_nocache.Contains(u.GetSha256Hash())) return false;
 
-                    String graph = Path.Combine(_graphDir, u.GetSha256Hash());
+                    var graph = Path.Combine(_graphDir, u.GetSha256Hash());
                     if (File.Exists(graph))
                     {
                         if (requireFreshness)
                         {
                             // Check the freshness of the local copy
-                            DateTime created = File.GetLastWriteTime(graph);
-                            TimeSpan freshness = DateTime.Now - created;
-                            if (freshness > _cacheDuration)
+                            var created = File.GetLastWriteTime(graph);
+                            var freshness = DateTime.Now - created;
+                            if (freshness > CacheDuration)
                             {
                                 // Local copy has expired
                                 File.Delete(graph);
@@ -372,13 +357,13 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// This method does not do any cache expiry calculations on the file.  This is due to the fact that we'll store local copies of Graphs for which we have ETags and when using ETags we rely on the servers knowledge of whether the resource described by the URI has changed rather than some arbitrary caching duration that we/the user has set to use.
         /// </remarks>
-        public String GetLocalCopy(Uri u)
+        public string GetLocalCopy(Uri u)
         {
             if (_canCacheGraphs)
             {
                 if (_nocache.Contains(u.GetSha256Hash())) return null;
 
-                String graph = Path.Combine(_graphDir, u.GetSha256Hash());
+                var graph = Path.Combine(_graphDir, u.GetSha256Hash());
                 if (File.Exists(graph))
                 {
                     return graph;
@@ -394,18 +379,18 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        public IRdfHandler ToCache(Uri requestUri, Uri responseUri, String etag)
+        public IRdfHandler ToCache(Uri requestUri, Uri responseUri, string etag)
         {
             IRdfHandler handler = null;
             try
             {
-                bool cacheTwice = !requestUri.AbsoluteUri.Equals(responseUri.AbsoluteUri, StringComparison.OrdinalIgnoreCase);
+                var cacheTwice = !requestUri.AbsoluteUri.Equals(responseUri.AbsoluteUri, StringComparison.OrdinalIgnoreCase);
 
                 // Cache the ETag if present
-                if (_canCacheETag && etag != null && !etag.Equals(String.Empty))
+                if (_canCacheETag && etag != null && !etag.Equals(string.Empty))
                 {
-                    int id = requestUri.GetEnhancedHashCode();
-                    bool requireAdd = false;
+                    var id = requestUri.GetEnhancedHashCode();
+                    var requireAdd = false;
                     if (_etags.ContainsKey(id))
                     {
                         if (!_etags[id].Equals(etag))
@@ -424,7 +409,7 @@ namespace VDS.RDF.Parsing
                     {
                         // Add a New ETag
                         _etags.Add(id, etag);
-                        using (StreamWriter writer = new StreamWriter(File.Open(_etagFile, FileMode.Append, FileAccess.Write), Encoding.UTF8))
+                        using (var writer = new StreamWriter(File.Open(_etagFile, FileMode.Append, FileAccess.Write), Encoding.UTF8))
                         {
                             writer.WriteLine(id + "\t" + etag);
                             writer.Close();
@@ -452,7 +437,7 @@ namespace VDS.RDF.Parsing
 
                         if (requireAdd)
                         {
-                            using (StreamWriter writer = new StreamWriter(File.Open(_etagFile, FileMode.Append, FileAccess.Write), Encoding.UTF8))
+                            using (var writer = new StreamWriter(File.Open(_etagFile, FileMode.Append, FileAccess.Write), Encoding.UTF8))
                             {
                                 writer.WriteLine(id + "\t" + etag);
                                 writer.Close();
@@ -464,7 +449,8 @@ namespace VDS.RDF.Parsing
                 // Then if we are caching Graphs return WriteThroughHandlers to do the caching for us
                 if (_canCacheGraphs)
                 {
-                    String graph = Path.Combine(_graphDir, requestUri.GetSha256Hash());
+                    var graph = Path.Combine(_graphDir, requestUri.GetSha256Hash());
+                    
                     handler = new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append)));
 
                     if (cacheTwice)
