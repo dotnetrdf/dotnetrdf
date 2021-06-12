@@ -356,7 +356,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="varname">Variable Name.</param>
         /// <returns></returns>
-        public IVariableNode CreateVariableNode(String varname)
+        public IVariableNode CreateVariableNode(string varname)
         {
             return _g.CreateVariableNode(varname);
         }
@@ -827,7 +827,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Triple Event Arguments.</param>
-        protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
+        protected virtual void OnTripleAsserted(object sender, TripleEventArgs args)
         {
             RaiseTripleAsserted(args);
         }
@@ -868,7 +868,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="sender">Sender.</param>
         /// <param name="args">Triple Event Arguments.</param>
-        protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
+        protected virtual void OnTripleRetracted(object sender, TripleEventArgs args)
         {
             RaiseTripleRetracted(args);
         }
@@ -1110,7 +1110,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Used to indicate whether the persistence mechansim can persist batches of Triples.
+        /// Used to indicate whether the persistence mechanism can persist batches of Triples.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -1207,16 +1207,9 @@ namespace VDS.RDF
                     reader.Read();
                     while (reader.Name.Equals("triple"))
                     {
-                        try
-                        {
-                            Object temp = tripleDeserializer.Deserialize(reader);
-                            Assert((Triple)temp);
-                            reader.Read();
-                        }
-                        catch
-                        {
-                            throw;
-                        }
+                        object temp = tripleDeserializer.Deserialize(reader);
+                        Assert((Triple)temp);
+                        reader.Read();
                     }
                 }
             }
@@ -1269,10 +1262,10 @@ namespace VDS.RDF
         public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g, Uri graphUri, bool writeOnly)
             : base(g, writeOnly)
         {
-            if (manager == null) throw new ArgumentNullException("manager","Cannot persist to a null Generic IO Manager");
-            if (manager.IsReadOnly) throw new ArgumentException("Cannot persist to a read-only Generic IO Manager", "manager");
-            if (writeOnly && !manager.UpdateSupported) throw new ArgumentException("If writeOnly is set to true then the Generic IO Manager must support triple level updates", "writeOnly");
-            if (writeOnly && !g.IsEmpty) throw new ArgumentException("If writeOnly is set to true then the input graph must be empty", "writeOnly");
+            if (manager == null) throw new ArgumentNullException(nameof(manager),"Cannot persist to a null Generic IO Manager");
+            if (manager.IsReadOnly) throw new ArgumentException("Cannot persist to a read-only Generic IO Manager", nameof(manager));
+            if (writeOnly && !manager.UpdateSupported) throw new ArgumentException("If writeOnly is set to true then the Generic IO Manager must support triple level updates", nameof(writeOnly));
+            if (writeOnly && !g.IsEmpty) throw new ArgumentException("If writeOnly is set to true then the input graph must be empty", nameof(writeOnly));
 
             _manager = manager;
             BaseUri = graphUri;
@@ -1317,9 +1310,9 @@ namespace VDS.RDF
         public StoreGraphPersistenceWrapper(IStorageProvider manager, Uri graphUri, bool writeOnly)
             : base(writeOnly)
         {
-            if (manager == null) throw new ArgumentNullException("manager", "Cannot persist to a null Generic IO Manager");
-            if (manager.IsReadOnly) throw new ArgumentException("Cannot persist to a read-only Generic IO Manager", "manager");
-            if (writeOnly && !manager.UpdateSupported) throw new ArgumentException("If writeOnly is set to true then the Generic IO Manager must support triple level updates", "writeOnly");
+            if (manager == null) throw new ArgumentNullException(nameof(manager), "Cannot persist to a null Generic IO Manager");
+            if (manager.IsReadOnly) throw new ArgumentException("Cannot persist to a read-only Generic IO Manager", nameof(manager));
+            if (writeOnly && !manager.UpdateSupported) throw new ArgumentException("If writeOnly is set to true then the Generic IO Manager must support triple level updates", nameof(writeOnly));
 
             _manager = manager;
             BaseUri = graphUri;
@@ -1386,36 +1379,35 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// The File Graph Persistence Wrapper is a wrapper around antoher Graph that will be persisted to a file.
+    /// The File Graph Persistence Wrapper is a wrapper around another Graph that will be persisted to a file.
     /// </summary>
     public class FileGraphPersistenceWrapper 
         : GraphPersistenceWrapper
     {
-        private String _filename;
+        private string _filename;
 
         /// <summary>
         /// Creates a new File Graph Persistence Wrapper around the given Graph.
         /// </summary>
         /// <param name="g">Graph.</param>
         /// <param name="filename">File to persist to.</param>
-        public FileGraphPersistenceWrapper(IGraph g, String filename)
+        public FileGraphPersistenceWrapper(IGraph g, string filename)
             : base(g)
         {
-            if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", "filename");
-            _filename = filename;
+            _filename = filename ?? throw new ArgumentException("Cannot persist to a null Filename", nameof(filename));
         }
 
         /// <summary>
-        /// Creates a new File Graph Persistence Wrapper around a new emtpy Graph.
+        /// Creates a new File Graph Persistence Wrapper around a new empty Graph.
         /// </summary>
         /// <param name="filename">File to persist to.</param>
         /// <remarks>
         /// If the given file already exists then the Graph will be loaded from that file.
         /// </remarks>
-        public FileGraphPersistenceWrapper(String filename)
-            : base(new Graph())
+        public FileGraphPersistenceWrapper(string filename)
+            : this(new Graph(), filename)
         {
-            if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", "filename");
+            if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", nameof(filename));
 
             if (File.Exists(filename))
             {
