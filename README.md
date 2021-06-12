@@ -44,11 +44,12 @@ quickly.
 dotNetRDF is developed by the following people:
 
  - Rob Vesse
- - Ron Michael Zettlemoyer
- - Khalil Ahmed
- - Graham Moore
  - Tomasz Pluskiewicz
+ - Ron Michael Zettlemoyer
+ - Max
+ - Khalil Ahmed
  - Samu Lang
+ - Giacomo Citi
 
 dotNetRDF also benefits from many community contributors who contribute in the form of bug reports, patches, suggestions and other feedback, 
 please see the [Acknowledgements](https://github.com/dotnetrdf/dotnetrdf/blob/master/Acknowledgments.txt) file for a full list.
