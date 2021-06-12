@@ -1,0 +1,37 @@
+@base <http://www.dotnetrdf.org/people#>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix pm: <http://www.web-semantics.org/ns/pm#>.
+@prefix wot: <http://xmlns.com/wot/0.1/>.
+@prefix rss: <http://purl.org/rss/1.0/>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix ical: <http://www.w3.org/2002/12/cal/ical#>.
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+
+<http://www.dotnetrdf.org/people#rvesse> a foaf:Person;
+                                         foaf:OnlineAccount [foaf:accountName "RobVesse" ; 
+                                                             foaf:accountProfilePage <http://twitter.com/RobVesse> ; 
+                                                             foaf:accountServiceHomepage <http://twitter.com/>];
+                                         foaf:currentProject [a doap:Project ; 
+                                                              pm:name "Apache Jena" ; 
+                                                              pm:homepage <http://incubator.apache.org/jena>],
+                                                             [a doap:Project ; 
+                                                              pm:name "dotNetRDF" ; 
+                                                              pm:homepage <http://www.dotnetrdf.org/>];
+                                         foaf:family_name "Vesse";
+                                         foaf:givenname "Rob";
+                                         foaf:homepage <http://www.dotnetrdf.org/>;
+                                         foaf:mbox <mailto:rav08r@ecs.soton.ac.uk>,
+                                                   <mailto:rvesse@apache.org>,
+                                                   <mailto:rvesse@cray.com>,
+                                                   <mailto:rvesse@dotnetrdf.org>,
+                                                   <mailto:rvesse@vdesign-studios.com>,
+                                                   <mailto:rvesse@yarcdata.com>;
+                                         foaf:name "Rob Vesse";
+                                         wot:hasKey [a wot:PubKey ; 
+                                                     wot:fingerprint "7C4C 2916 BF74 E242 53BC  C5B7 764D FB13 6E24 97EB" ; 
+                                                     wot:hex_id "6E2497EB"].
