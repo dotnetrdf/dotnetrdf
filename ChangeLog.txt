@@ -1,6 +1,13 @@
 ﻿Change Log
 ==========
 
+2.7.1
+-----
+FIX: Fixed the UriLoaderCache to correctly handle cache file freshness checks when a cache file is deleted and then recreated within a short period of time.  Thanks to @co2chicken for the report. (#396)
+FIX: Fixed the FileGraphPersistenceWrapper's single-parameter constructor to properly set the internal reference to the file used for graph persistence, preventing an error which would occur when attempting to flush the persisted graph. Thanks to @DarkOOze for the report. (#397)
+FIX: Fixed the BaseFormatter's handling of URI formatting to avoid using Uri.ToString() which can change the original URI string because it automatically performs some unescaping. Instead Uri.AbsoluteUri is used for absolute URIs and Uri.OriginalString is used for relative URIs. These changes should better preserve the original URI string and its escaping (which is important in RDF when determining URI node equality). Thanks to @IllidanS4 for the PR (#395)
+ENHANCEMENT: Improved performance of handling SERVICE clauses in SPARQL queries by injecting multiple values into the SERVICE query request rather than issuing one request for each binding set. This should drastically reduce the number of remote calls required to process a SERVICE block in a SPARQL query. Thanks to @giacomociti for the PR (#382)
+
 2.7.0
 -----
 

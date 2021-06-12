@@ -22,12 +22,13 @@ Developers
 
 dotNetRDF is developed by the following people:
 
-- Rob Vesse
-- Ron Michael Zettlemoyer
-- Kal Ahmed
-- Graham Moore
-- Tomasz Plusekiewicz
-- Samu Lang
+ - Rob Vesse
+ - Tomasz Pluskiewicz
+ - Ron Michael Zettlemoyer
+ - Max
+ - Khalil Ahmed
+ - Samu Lang
+ - Giacomo Citi
 
 Contributors
 ------------
