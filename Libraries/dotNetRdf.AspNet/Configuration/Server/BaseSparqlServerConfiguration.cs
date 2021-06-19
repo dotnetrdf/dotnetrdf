@@ -168,6 +168,7 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <summary>
         /// Gets the SPARQL Describe Algorithm to be used
         /// </summary>
+        [Obsolete("The describe algorithm to be used must now be set on the query processor options")]
         public ISparqlDescribe DescribeAlgorithm => _describer;
 
         /// <summary>

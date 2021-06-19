@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Datasets
     /// <strong>Note: </strong> By default the <see cref="InMemoryDataset">InMemoryDataset</see> uses the Union of all Graphs in the Dataset if no Active/Default Graph is otherwise specified.  Use the <see cref="ISparqlDataset.UsesUnionDefaultGraph">UsesUnionDefaultGraph</see> property to see whether a Dataset implementation behaves in this way.
     /// </para>
     /// </remarks>
-    public interface ISparqlDataset
+    public interface ISparqlDataset : ITripleIndex
     {
         #region Active and Default Graph Management
 

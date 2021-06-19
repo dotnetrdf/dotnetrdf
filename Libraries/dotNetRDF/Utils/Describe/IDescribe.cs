@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -26,42 +26,30 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Query.Describe
+namespace VDS.RDF.Utils.Describe
 {
     /// <summary>
-    /// Computes a Simple Subject Description for all Values resulting from the Query.
+    /// Interface for a class of algorithms that emit a sub-graph of a dataset from a list of starting nodes.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The Description returned is all the Triples for which a Value is the Subject - this description does not expand any Blank Nodes.
-    /// </para>
-    /// </remarks>
-    public class SimpleSubjectDescription 
-        : BaseDescribeAlgorithm
+    public interface IDescribeAlgorithm
     {
         /// <summary>
-        /// Generates the Description for each of the Nodes to be described.
+        /// Generates a Graph which is the description of the resources represented by the provided nodes.
         /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <param name="nodes">Nodes to be described.</param>
-        protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
-        {
-            // Rewrite Blank Node IDs for DESCRIBE Results
-            var bnodeMapping = new Dictionary<string, INode>();
+        /// <param name="dataset">The dataset to extract descriptions from.</param>
+        /// <param name="nodes">The nodes to be described.</param>
+        /// <returns></returns>
+        IGraph Describe(ITripleIndex dataset, IEnumerable<INode> nodes);
 
-            // Get Triples for this Subject
-            foreach (INode subj in nodes)
-            {
-                // Get Triples where the Node is the Subject
-                foreach (Triple t in context.Data.GetTriplesWithSubject(subj).ToList())
-                {
-                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
-                }
-            }
-        }
+        /// <summary>
+        /// Generates a graph which is the description of the resources represented by the provided nodes.
+        /// </summary>
+        /// <param name="handler">The handler to receive the triples that provide the description.</param>
+        /// <param name="dataset">The dataset to extract descriptions from.</param>
+        /// <param name="nodes">The nodes to be described.</param>
+        /// <param name="baseUri">An optional base URI to pass through to the RDF handler.</param>
+        /// <param name="namespaceMap">An optional namespace map to pass through to the RDF handler.</param>
+        void Describe(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes, Uri baseUri = null, INamespaceMapper namespaceMap = null);
     }
 }

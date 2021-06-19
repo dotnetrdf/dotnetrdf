@@ -28,35 +28,44 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query.Describe
+namespace VDS.RDF.Utils.Describe
 {
     /// <summary>
-    /// Computes a Description for all the results such that the description is the merge of all the Graphs named with a resulting URI.
+    /// Computes a Simple Subject Object Description for all Values resulting from the Query.
     /// </summary>
-    public class NamedGraphDescription 
+    /// <remarks>
+    /// <para>
+    /// The Description returned is all the Triples for which a Value is the Subject or Object - this description does not expand any Blank Nodes.
+    /// </para>
+    /// </remarks>
+    public class SimpleSubjectObjectDescription 
         : BaseDescribeAlgorithm
     {
         /// <summary>
         /// Generates the Description for each of the Nodes to be described.
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="dataset">Dataset to extract descriptions from.</param>
         /// <param name="nodes">Nodes to be described.</param>
-        protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
+        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
         {
             // Rewrite Blank Node IDs for DESCRIBE Results
             var bnodeMapping = new Dictionary<string, INode>();
 
+            // Get Triples for this Subject
             foreach (INode n in nodes)
             {
-                if (n.NodeType == NodeType.Uri || n.NodeType == NodeType.Blank)
+                // Get Triples where the Node is the Subject
+                foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
                 {
-                    IGraph g = context.Data[(IRefNode)n];
-                    foreach (Triple t in g.Triples.ToList())
-                    {
-                        if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
-                    }
+                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+                }
+                // Get Triples where the Node is the Object
+                foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
+                {
+                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
             }
         }

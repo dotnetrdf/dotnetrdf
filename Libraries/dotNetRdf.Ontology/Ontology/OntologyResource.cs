@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query;
+using VDS.RDF.Utils.Describe;
 
 namespace VDS.RDF.Ontology
 {
@@ -1145,23 +1146,18 @@ namespace VDS.RDF.Ontology
         /// </remarks>
         public static explicit operator Graph(OntologyResource resource)
         {
-            var describe = new SparqlParameterizedString("DESCRIBE @resource");
-            describe.SetParameter("resource", resource.Resource);
-            var results = resource.Graph.ExecuteQuery(describe.ToString());
-            if (results is Graph)
+            var describe = new ConciseBoundedDescription();
+            IGraph results = describe.Describe(resource.Graph, new List<INode> {resource.Resource});
+
+            if (results is Graph graph)
             {
-                return (Graph)results;
+                return graph;
             }
-            else if (results is IGraph)
-            {
-                var g = new Graph();
-                g.Merge((IGraph)results);
-                return g;
-            }
-            else
-            {
-                throw new InvalidCastException("Unable to cast this Resource to a valid Graph");
-            }
+
+            var g = new Graph();
+            g.Merge((IGraph)results);
+            return g;
+
         }
     }
 }

@@ -28,57 +28,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query.Describe
+namespace VDS.RDF.Utils.Describe
 {
     /// <summary>
-    /// Computes a Labelled Description for all the Values resulting from the Query.
+    /// Computes a Description for all the results such that the description is the merge of all the Graphs named with a resulting URI.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The Description returned is all the Triples for which a Value is a Subject and with any Blank Nodes expanded to include their rdfs:label property if present.
-    /// </para>
-    /// </remarks>
-    public class LabelledDescription
+    public class NamedGraphDescription 
         : BaseDescribeAlgorithm
     {
         /// <summary>
         /// Generates the Description for each of the Nodes to be described.
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="dataset">The dataset to extract descriptions from.</param>
         /// <param name="nodes">Nodes to be described.</param>
-        protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
+        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
         {
             // Rewrite Blank Node IDs for DESCRIBE Results
             var bnodeMapping = new Dictionary<string, INode>();
 
-            // Get Triples for this Subject
-            var bnodes = new Queue<INode>();
-            var expandedBNodes = new HashSet<INode>();
-            INode rdfsLabel = handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDFS + "label"));
-            foreach (INode n in nodes)
+            if (dataset is ISparqlDataset sparqlDataset)
             {
-                // Get Triples where the Node is the Subject
-                foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())
+                foreach (INode n in nodes)
                 {
-                    if (t.Object.NodeType == NodeType.Blank)
+                    if (n.NodeType is NodeType.Uri or NodeType.Blank)
                     {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
-                    }
-                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
-                }
-
-                // Compute the Blank Node Closure for this Subject
-                while (bnodes.Count > 0)
-                {
-                    INode bsubj = bnodes.Dequeue();
-                    if (expandedBNodes.Contains(bsubj)) continue;
-                    expandedBNodes.Add(bsubj);
-
-                    foreach (Triple t2 in context.Data.GetTriplesWithSubjectPredicate(bsubj, rdfsLabel).ToList())
-                    {
-                        if (!handler.HandleTriple((RewriteDescribeBNodes(t2, bnodeMapping, handler)))) ParserHelper.Stop();
+                        IGraph g = sparqlDataset[(IRefNode)n];
+                        foreach (Triple t in g.Triples.ToList())
+                        {
+                            if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler)))
+                                ParserHelper.Stop();
+                        }
                     }
                 }
             }

@@ -28,8 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query.Describe
+namespace VDS.RDF.Utils.Describe
 {
     /// <summary>
     /// Computes the merge of the Minimal Spanning Graphs for all the Values resulting from the Query.
@@ -41,9 +42,9 @@ namespace VDS.RDF.Query.Describe
         /// Generates the Description for each of the Nodes to be described.
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="dataset">Dataset to extract descriptions from.</param>
         /// <param name="nodes">Nodes to be described.</param>
-        protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
+        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
         {
             // Rewrite Blank Node IDs for DESCRIBE Results
             var bnodeMapping = new Dictionary<string, INode>();
@@ -53,7 +54,7 @@ namespace VDS.RDF.Query.Describe
             var expandedBNodes = new HashSet<INode>();
             foreach (INode n in nodes)
             {
-                foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())
+                foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
                 {
                     if (t.Object.NodeType == NodeType.Blank)
                     {
@@ -63,7 +64,7 @@ namespace VDS.RDF.Query.Describe
                 }
                 if (n.NodeType == NodeType.Blank)
                 {
-                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n).ToList())
+                    foreach (Triple t in dataset.GetTriplesWithPredicate(n).ToList())
                     {
                         if (t.Subject.NodeType == NodeType.Blank)
                         {
@@ -76,7 +77,7 @@ namespace VDS.RDF.Query.Describe
                         if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                     }
                 }
-                foreach (Triple t in context.Data.GetTriplesWithObject(n).ToList())
+                foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
                 {
                     if (t.Subject.NodeType == NodeType.Blank)
                     {
@@ -93,7 +94,7 @@ namespace VDS.RDF.Query.Describe
                 if (expandedBNodes.Contains(n)) continue;
                 expandedBNodes.Add(n);
 
-                foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())
+                foreach (Triple t in dataset.GetTriplesWithSubject(n).ToList())
                 {
                     if (t.Object.NodeType == NodeType.Blank)
                     {
@@ -103,7 +104,7 @@ namespace VDS.RDF.Query.Describe
                 }
                 if (n.NodeType == NodeType.Blank)
                 {
-                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n).ToList())
+                    foreach (Triple t in dataset.GetTriplesWithPredicate(n).ToList())
                     {
                         if (t.Subject.NodeType == NodeType.Blank)
                         {
@@ -116,7 +117,7 @@ namespace VDS.RDF.Query.Describe
                         if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                     }
                 }
-                foreach (Triple t in context.Data.GetTriplesWithObject(n).ToList())
+                foreach (Triple t in dataset.GetTriplesWithObject(n).ToList())
                 {
                     if (t.Subject.NodeType == NodeType.Blank)
                     {

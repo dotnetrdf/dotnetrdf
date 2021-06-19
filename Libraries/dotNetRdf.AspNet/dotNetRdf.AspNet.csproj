@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf.HtmlSchema\dotNetRdf.HtmlSchema.csproj" />
     <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
     <Reference Include="System.Configuration" />

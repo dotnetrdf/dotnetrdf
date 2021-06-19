@@ -26,6 +26,7 @@
 using System;
 using System.Globalization;
 using VDS.RDF.Query.Describe;
+using VDS.RDF.Utils.Describe;
 
 namespace VDS.RDF.Query
 {
@@ -126,7 +127,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return _describer ?? (_describer = new ConciseBoundedDescription());
+                return _describer ??= new SparqlDescriber(new ConciseBoundedDescription());
             }
             set => _describer = value;
         }

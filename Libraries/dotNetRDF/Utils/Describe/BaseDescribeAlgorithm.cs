@@ -28,60 +28,53 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query.Describe
+namespace VDS.RDF.Utils.Describe
 {
     /// <summary>
     /// Abstract Base Class for SPARQL Describe Algorithms which provides BNode rewriting functionality.
     /// </summary>
     public abstract class BaseDescribeAlgorithm
-        : ISparqlDescribe
+        : IDescribeAlgorithm
     {
-        /// <summary>
-        /// Gets the Description Graph based on the Query Results from the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <returns></returns>
-        public IGraph Describe(SparqlEvaluationContext context)
+        /// <inheritdoc />
+        public IGraph Describe(ITripleIndex dataset, IEnumerable<INode> nodes)
         {
             var g = new Graph();
-            Describe(new GraphHandler(g), context);
+            Describe(new GraphHandler(g), dataset, nodes);
             return g;
         }
 
-        /// <summary>
-        /// Gets the Description Graph based on the Query Results from the given Evaluation Context passing the resulting Triples to the given RDF Handler.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        public void Describe(IRdfHandler handler, SparqlEvaluationContext context)
+        /// <inheritdoc />
+        public void Describe(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes, Uri baseUri = null,
+            INamespaceMapper namespaceMap = null)
         {
             try
             {
                 handler.StartRdf();
 
                 // Apply Base URI and Namespaces to the Handler
-                if (context.Query != null)
+                if (baseUri != null)
                 {
-                    if (context.Query.BaseUri != null)
+                    if (!handler.HandleBaseUri(baseUri))
                     {
-                        if (!handler.HandleBaseUri(context.Query.BaseUri)) ParserHelper.Stop();
-                    }
-                    foreach (var prefix in context.Query.NamespaceMap.Prefixes)
-                    {
-                        if (!handler.HandleNamespace(prefix, context.Query.NamespaceMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
+                        ParserHelper.Stop();
                     }
                 }
 
-                // Get the Nodes needing describing
-                List<INode> nodes = GetNodes(handler, context);
-                if (nodes.Count > 0)
+                if (namespaceMap != null)
                 {
-                    // If there is at least 1 Node then start describing
-                    DescribeInternal(handler, context, nodes);
+                    foreach (var prefix in namespaceMap.Prefixes)
+                    {
+                        if (!handler.HandleNamespace(prefix, namespaceMap.GetNamespaceUri(prefix)))
+                        {
+                            ParserHelper.Stop();
+                        }
+                    }
                 }
+
+                DescribeInternal(handler, dataset, nodes);
 
                 handler.EndRdf(true);
             }
@@ -100,55 +93,11 @@ namespace VDS.RDF.Query.Describe
         /// Generates the Description for each of the Nodes to be described.
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="dataset">Dataset to extract descriptions from.</param>
         /// <param name="nodes">Nodes to be described.</param>
-        protected abstract void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes);
+        protected abstract void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes);
 
-        /// <summary>
-        /// Gets the Nodes that the algorithm should generate the descriptions for.
-        /// </summary>
-        /// <param name="factory">Factory to create Nodes in.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <returns></returns>
-        private List<INode> GetNodes(INodeFactory factory, SparqlEvaluationContext context)
-        {
-            INamespaceMapper nsmap = (context.Query != null ? context.Query.NamespaceMap : new NamespaceMapper(true));
-            Uri baseUri = context.Query?.BaseUri;
-
-            // Build a list of INodes to describe
-            var nodes = new List<INode>();
-            foreach (IToken t in context.Query.DescribeVariables)
-            {
-                switch (t.TokenType)
-                {
-                    case Token.QNAME:
-                    case Token.URI:
-                        // Resolve Uri/QName
-                        nodes.Add(factory.CreateUriNode(context.UriFactory.Create(Tools.ResolveUriOrQName(t, nsmap, baseUri))));
-                        break;
-
-                    case Token.VARIABLE:
-                        // Get Variable Values
-                        var var = t.Value.Substring(1);
-                        if (context.OutputMultiset.ContainsVariable(var))
-                        {
-                            foreach (ISet s in context.OutputMultiset.Sets)
-                            {
-                                INode temp = s[var];
-                                if (temp != null) nodes.Add(temp);
-                            }
-                        }
-                        break;
-
-                    default:
-                        throw new RdfQueryException($"Unexpected Token '{t.GetType()}' in DESCRIBE Variables list");
-                }
-            }
-            return nodes;
-        }
-
-        // OPT: Replace with usage of MapTriple instead?
-
+        
         /// <summary>
         /// Helper method which rewrites Blank Node IDs for Describe Queries.
         /// </summary>

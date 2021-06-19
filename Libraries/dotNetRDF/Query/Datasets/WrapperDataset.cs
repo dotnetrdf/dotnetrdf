@@ -382,6 +382,12 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
+        {
+            return _dataset.GetTriplesWithPredicate(u);
+        }
+
         /// <summary>
         /// Gets triples with a given subject.
         /// </summary>
@@ -392,6 +398,12 @@ namespace VDS.RDF.Query.Datasets
             return _dataset.GetTriplesWithSubject(subj);
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
+        {
+            return _dataset.GetTriplesWithSubject(u);
+        }
+
         /// <summary>
         /// Gets triples with a given predicate.
         /// </summary>
@@ -400,6 +412,24 @@ namespace VDS.RDF.Query.Datasets
         public virtual IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
             return _dataset.GetTriplesWithPredicate(pred);
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriples(Uri uri)
+        {
+            return _dataset.GetTriples(uri);
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriples(INode n)
+        {
+            return _dataset.GetTriples(n);
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithObject(Uri u)
+        {
+            return _dataset.GetTriplesWithObject(u);
         }
 
         /// <summary>

@@ -28,61 +28,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Query.Describe
+namespace VDS.RDF.Utils.Describe
 {
     /// <summary>
-    /// Computes a Concise Bounded Description for all the Values resulting from the Query.
+    /// Computes a Simple Subject Description for all Values resulting from the Query.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Description returned is all the Triples for which a Value is a Subject and with any Blank Nodes expanded to include Triples with the Blank Node as the Subject.
+    /// The Description returned is all the Triples for which a Value is the Subject - this description does not expand any Blank Nodes.
     /// </para>
     /// </remarks>
-    public class ConciseBoundedDescription 
+    public class SimpleSubjectDescription 
         : BaseDescribeAlgorithm
     {
         /// <summary>
         /// Generates the Description for each of the Nodes to be described.
         /// </summary>
         /// <param name="handler">RDF Handler.</param>
-        /// <param name="context">SPARQL Evaluation Context.</param>
+        /// <param name="dataset">Dataset to extract descriptions from.</param>
         /// <param name="nodes">Nodes to be described.</param>
-        protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
+        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex dataset, IEnumerable<INode> nodes)
         {
             // Rewrite Blank Node IDs for DESCRIBE Results
             var bnodeMapping = new Dictionary<string, INode>();
 
             // Get Triples for this Subject
-            var bnodes = new Queue<INode>();
-            var expandedBNodes = new HashSet<INode>();
-            foreach (INode n in nodes)
+            foreach (INode subj in nodes)
             {
                 // Get Triples where the Node is the Subject
-                foreach (Triple t in context.Data.GetTriplesWithSubject(n).ToList())
+                foreach (Triple t in dataset.GetTriplesWithSubject(subj).ToList())
                 {
-                    if (t.Object.NodeType == NodeType.Blank)
-                    {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
-                    }
-                    if (!handler.HandleTriple(RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
-                }
-
-                // Compute the Blank Node Closure for this Subject
-                while (bnodes.Count > 0)
-                {
-                    INode bsubj = bnodes.Dequeue();
-                    if (expandedBNodes.Contains(bsubj)) continue;
-                    expandedBNodes.Add(bsubj);
-
-                    foreach (Triple t2 in context.Data.GetTriplesWithSubject(bsubj).ToList())
-                    {
-                        if (t2.Object.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t2.Object)) bnodes.Enqueue(t2.Object);
-                        }
-                        if (!handler.HandleTriple(RewriteDescribeBNodes(t2, bnodeMapping, handler))) ParserHelper.Stop();
-                    }
+                    if (!handler.HandleTriple((RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
                 }
             }
         }

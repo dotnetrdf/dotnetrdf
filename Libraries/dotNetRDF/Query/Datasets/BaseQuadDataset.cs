@@ -583,6 +583,12 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetQuads(IRefNode graphName);
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
+        {
+            return GetTriplesWithPredicate(new UriNode(u));
+        }
+
         /// <summary>
         /// Gets all the Triples with a given subject.
         /// </summary>
@@ -593,6 +599,12 @@ namespace VDS.RDF.Query.Datasets
             return (from u in ActiveGraphNames
                     from t in GetQuadsWithSubject(u, subj)
                     select t);
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
+        {
+            return GetTriplesWithSubject(new UriNode(u));
         }
 
         /// <summary>
@@ -622,6 +634,25 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetQuadsWithPredicate(IRefNode graphName, INode pred);
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriples(Uri uri)
+        {
+            return GetTriples(new UriNode(uri));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriples(INode n)
+        {
+            return GetTriplesWithSubject(n).Union(GetTriplesWithPredicate(n).Where(t => !t.Subject.Equals(n)))
+                .Union(GetTriplesWithObject(n).Where(t => !(t.Subject.Equals(n) || t.Predicate.Equals(n))));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithObject(Uri u)
+        {
+            return GetTriplesWithObject(new UriNode(u));
+        }
 
         /// <summary>
         /// Gets all the Triples with a given object.

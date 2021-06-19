@@ -391,7 +391,7 @@ namespace VDS.RDF.Web
                 query.PartialResultsOnTimeout = partialResults;
 
                 // Set Describe Algorithm
-                query.Describer = _config.DescribeAlgorithm;
+                // query.Describer = _config.DescribeAlgorithm;
 
                 // Now we can finally make the query and return the results
                 var result = ProcessQuery(query);
