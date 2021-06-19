@@ -29,6 +29,8 @@ using System.Linq;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Describe;
 
 namespace VDS.RDF.Shacl.Validation
 {
@@ -79,6 +81,12 @@ namespace VDS.RDF.Shacl.Validation
         {
             get
             {
+                IEnumerable<INode> reportNodes = Graph.GetTriplesWithPredicateObject(Vocabulary.RdfType, Vocabulary.ValidationReport)
+                    .Select(t => t.Subject);
+                var describer = new ReportDescribeAlgorithm();
+                return describer.Describe(Graph, reportNodes);
+
+                /*
                 SparqlQuery q = new SparqlQueryParser().ParseFromString(@"
 PREFIX sh: <http://www.w3.org/ns/shacl#> 
 
@@ -88,9 +96,12 @@ WHERE {
 }
 ");
 
-                q.Describer = new ReportDescribeAlgorithm();
-
-                return (IGraph)Graph.ExecuteQuery(q);
+                var processor = new LeviathanQueryProcessor(new InMemoryDataset(Graph), option =>
+                {
+                    option.Describer = new SparqlDescriber(new ReportDescribeAlgorithm());
+                });
+                return (IGraph)processor.ProcessQuery(q);
+                */
             }
         }
 

@@ -29,6 +29,7 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <RootNamespace>VDS.RDF.Query.Spin</RootNamespace>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

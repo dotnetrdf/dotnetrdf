@@ -43,12 +43,20 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
 
     public class LeviathanTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public LeviathanTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void SparqlBgpEvaluation()
         {
@@ -67,12 +75,12 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             if (testResult is SparqlResultSet)
             {
                 var rset = (SparqlResultSet)testResult;
-                Console.WriteLine(rset.Count + " Results");
+                _testOutputHelper.WriteLine(rset.Count + " Results");
                 foreach (SparqlResult r in rset) 
                 {
-                    Console.WriteLine(r.ToString());
+                    _testOutputHelper.WriteLine(r.ToString());
                 }
-                Console.WriteLine();
+                _testOutputHelper.WriteLine();
             }
 
             //Create some Triple Patterns
@@ -112,14 +120,15 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Console.WriteLine("{?s ?p ?o . OPTIONAL {?s :name ?name}}");
             //this.ShowMultiset(selectOptionalNamed.Evaluate(new SparqlEvaluationContext(null, store)));
 
-            Console.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o}}");
-            ShowMultiset(selectAllUnion.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
+           
+            _testOutputHelper.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o}}");
+            ShowMultiset(processor.ProcessAlgebra(selectAllUnion, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
 
-            Console.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o} UNION {?s ?p ?o}}");
-            ShowMultiset(selectAllUnion2.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
+            _testOutputHelper.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o} UNION {?s ?p ?o}}");
+            ShowMultiset(processor.ProcessAlgebra(selectAllUnion2, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
 
-            Console.WriteLine("{?s ?p ?o FILTER (ISURI(?o))}");
-            ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
+            _testOutputHelper.WriteLine("{?s ?p ?o FILTER (ISURI(?o))}");
+            ShowMultiset(processor.ProcessAlgebra(selectAllUriObjects, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions())));
         }
 
         [Fact]
@@ -174,6 +183,8 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             d.Add(s);
 
             var mockContext = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
+            var expressionProcessor = new LeviathanExpressionProcessor(mockContext.Options,
+                mockContext.Processor as LeviathanQueryProcessor);
 
             //Show the Sets
             Console.WriteLine("LHS");
@@ -233,7 +244,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin NULL-LHS");
-            BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(true)), mockContext);
+            BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(true)), mockContext, expressionProcessor);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -242,7 +253,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin LHS-NULL");
-            leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(true)), mockContext);
+            leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(true)), mockContext, expressionProcessor);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -260,7 +271,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
            
             //Try a LeftOuterJoin
             Console.WriteLine("LeftJoin LHS-RHS");
-            leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(true)), mockContext);
+            leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(true)), mockContext, expressionProcessor);
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -370,6 +381,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
+            var processor = new LeviathanQueryProcessor(store);
             //g = new Graph();
             //g.LoadFromFile("noise.ttl");
             //store.Add(g);
@@ -422,12 +434,12 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 var timer = new Stopwatch();
                 TimeSpan unopt, opt;
                 timer.Start();
-                BaseMultiset results1 = ask.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
+                BaseMultiset results1 = ask.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
                 timer.Stop();
                 unopt = timer.Elapsed;
                 timer.Reset();
                 timer.Start();
-                BaseMultiset results2 = askOptimised.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
+                BaseMultiset results2 = askOptimised.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
                 timer.Stop();
                 opt = timer.Elapsed;
 
@@ -481,6 +493,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             var g = new Graph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
             store.Add(g);
+            var processor = new LeviathanQueryProcessor(store);
             //g = new Graph();
             //g.LoadFromFile("noise.ttl");
             //store.Add(g);
@@ -533,12 +546,12 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 var timer = new Stopwatch();
                 TimeSpan unopt, opt;
                 timer.Start();
-                BaseMultiset results1 = select.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
+                BaseMultiset results1 = select.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
                 timer.Stop();
                 unopt = timer.Elapsed;
                 timer.Reset();
                 timer.Start();
-                BaseMultiset results2 = selectOptimised.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
+                BaseMultiset results2 = selectOptimised.Accept(processor, new SparqlEvaluationContext(null, new InMemoryDataset(store), new LeviathanQueryOptions()));
                 timer.Stop();
                 opt = timer.Elapsed;
 

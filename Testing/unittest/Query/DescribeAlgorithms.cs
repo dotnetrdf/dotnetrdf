@@ -32,6 +32,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Describe;
+using VDS.RDF.Utils.Describe;
 
 namespace VDS.RDF.Query
 {
@@ -76,8 +77,10 @@ namespace VDS.RDF.Query
         public void SparqlDescribeAlgorithms(Type describerType)
         {
             SparqlQuery q = GetQuery();
-            q.Describer = (ISparqlDescribe) Activator.CreateInstance(describerType);
-            var results = _processor.ProcessQuery(q);
+            var processor = new LeviathanQueryProcessor(_data,
+                options => options.Describer =
+                    new SparqlDescriber((IDescribeAlgorithm)Activator.CreateInstance(describerType)));
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<Graph>(results);
             if (results is Graph)
             {

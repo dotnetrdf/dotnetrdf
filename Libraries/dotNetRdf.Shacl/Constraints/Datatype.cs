@@ -97,7 +97,7 @@ namespace VDS.RDF.Shacl.Constraints
                 return false;
             }
 
-            IEnumerable<string> supportedDatatypes = SparqlSpecsHelper.SupportedCastFunctions.Union(SparqlSpecsHelper.IntegerDataTypes);
+            IEnumerable<string> supportedDatatypes = SparqlSpecsHelper.SupportedCastFunctions.Union(NumericTypesHelper.IntegerDataTypes);
 
             if (!supportedDatatypes.Contains(literal.DataType.AbsoluteUri))
             {

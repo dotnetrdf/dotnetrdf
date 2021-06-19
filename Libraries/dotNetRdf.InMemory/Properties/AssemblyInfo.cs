@@ -15,7 +15,5 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM.
 
-[assembly: Guid("404c22a8-2b97-4e23-a568-87f62f774500")]
-[assembly: InternalsVisibleTo("dotNetRDF.InMemory")]
-[assembly: InternalsVisibleTo("dotNetRDF.Test")]
-
+[assembly: Guid("74d77c03-f00f-44ec-bdaa-61b23816a904")]
+[assembly: InternalsVisibleTo("dotNetRDF.Test")] 

@@ -512,11 +512,11 @@ WHERE
             Assert.NotNull(results);
             Assert.True(results.All(r => r.HasBoundValue("Total")));
 
-            SparqlResult x = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/x")));
+            ISparqlResult x = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/x")));
             Assert.NotNull(x);
             Assert.Equal("$3", x["Total"].AsValuedNode().AsString());
 
-            SparqlResult y = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/y")));
+            ISparqlResult y = results.FirstOrDefault(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/y")));
             Assert.NotNull(y);
             Assert.Equal("$5", y["Total"].AsValuedNode().AsString());
         }

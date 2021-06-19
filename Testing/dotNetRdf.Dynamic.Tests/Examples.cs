@@ -708,7 +708,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            SparqlResult result = results.Single();
+            ISparqlResult result = results.Single();
             dynamic dynamicResults = results.AsDynamic();
             dynamic dynamicResult = dynamicResults.Single();
             ILiteralNode expected = new NodeFactory().CreateLiteralNode("o1");
@@ -725,7 +725,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            SparqlResult result = results.Single();
+            ISparqlResult result = results.Single();
             dynamic dynamicResults = results.AsDynamic();
             dynamic dynamicResult = dynamicResults.Single();
             ILiteralNode expected = new NodeFactory().CreateLiteralNode("o1");
@@ -742,7 +742,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            SparqlResult result = results.Single();
+            ISparqlResult result = results.Single();
             dynamic dynamicResults = results.AsDynamic();
             dynamic dynamicResult = dynamicResults.Single();
             ILiteralNode expected = new NodeFactory().CreateLiteralNode("y");
@@ -759,7 +759,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            SparqlResult result = results.Single();
+            ISparqlResult result = results.Single();
             dynamic dynamicResults = results.AsDynamic();
             dynamic dynamicResult = dynamicResults.Single();
 
@@ -774,7 +774,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            SparqlResult _ = results.Single();
+            ISparqlResult _ = results.Single();
             dynamic dynamicResults = results.AsDynamic();
             dynamic dynamicResult = dynamicResults.Single();
 
@@ -789,7 +789,7 @@ namespace VDS.RDF.Dynamic
             var g = new Graph();
             g.LoadFromString(@"<urn:s> <urn:p> ""o"" .");
             var results = (SparqlResultSet)g.ExecuteQuery(@"SELECT * WHERE { ?s ?p ?o }");
-            SparqlResult result = results.Single();
+            ISparqlResult result = results.Single();
             dynamic dynamicResults = results.AsDynamic();
             dynamic dynamicResult = dynamicResults.Single();
 

@@ -1009,13 +1009,31 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithSubject(Uri uri)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithPredicate(Uri uri)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithObject(INode obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithObject(Uri uri)
         {
             throw new NotImplementedException();
         }
@@ -1034,6 +1052,18 @@ namespace VDS.RDF.Query.Spin
 
         /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriples(Uri uti)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriples(INode n)
         {
             throw new NotImplementedException();
         }

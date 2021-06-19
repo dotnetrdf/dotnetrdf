@@ -27,14 +27,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Describe;
+using VDS.RDF.Utils.Describe;
 
 namespace VDS.RDF.Shacl.Validation
 {
     internal class ReportDescribeAlgorithm : BaseDescribeAlgorithm
     {
-        protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
+        protected override void DescribeInternal(IRdfHandler handler, ITripleIndex index, IEnumerable<INode> nodes)
         {
             var bnodeMapping = new Dictionary<string, INode>();
             var map = new Dictionary<INode, INode>();
@@ -43,7 +42,7 @@ namespace VDS.RDF.Shacl.Validation
 
             void process(INode originalSubject, INode mappedSubject = null)
             {
-                foreach (Triple t in context.Data.GetTriplesWithSubject(originalSubject))
+                foreach (Triple t in index.GetTriplesWithSubject(originalSubject))
                 {
                     INode @object = t.Object;
                     if (@object.NodeType == NodeType.Blank && !done.Contains(@object))

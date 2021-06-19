@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
     <ProjectReference Include="..\dotNetRdf.Sparql\dotNetRdf.Sparql.csproj" />
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
   </ItemGroup>

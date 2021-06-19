@@ -157,7 +157,7 @@ dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
                 var g = new Graph();
                 g.LoadFromString(data);
 
-                ConfigurationLoader.AutoConfigureSparqlOperators(g);
+                SparqlConfigurationLoader.AutoConfigureSparqlOperators(g);
 
                 SparqlOperators.TryGetOperator(SparqlOperatorType.Add, false, out var op, null);
 
@@ -183,7 +183,7 @@ dnr:enabled false .";
                 var g = new Graph();
                 g.LoadFromString(data);
 
-                ConfigurationLoader.AutoConfigureSparqlOperators(g);
+                SparqlConfigurationLoader.AutoConfigureSparqlOperators(g);
 
                 Assert.False(SparqlOperators.IsRegistered(new DateTimeAddition()));
             }
