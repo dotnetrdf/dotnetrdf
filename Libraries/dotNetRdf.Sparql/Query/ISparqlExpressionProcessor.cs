@@ -18,6 +18,8 @@ using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
 using VDS.RDF.Query.Expressions.Functions.XPath.Numeric;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
+using VDS.RDF.Query.Expressions.Primary;
+using XPath=VDS.RDF.Query.Expressions.Functions.XPath; 
 using AbsFunction = VDS.RDF.Query.Expressions.Functions.Sparql.Numeric.AbsFunction;
 using BNodeFunction = VDS.RDF.Query.Expressions.Functions.Arq.BNodeFunction;
 using ConcatFunction = VDS.RDF.Query.Expressions.Functions.Sparql.String.ConcatFunction;
@@ -34,6 +36,14 @@ namespace VDS.RDF.Query
 {
     public interface ISparqlExpressionProcessor<out TResult, in TContext, in TBinding>
     {
+
+        // Primary
+        TResult ProcessAggregateTerm(AggregateTerm aggregate, TContext context, TBinding binding);
+        TResult ProcessAllModifier(AllModifier all, TContext context, TBinding binding);
+        TResult ProcessConstantTerm(ConstantTerm constant, TContext context, TBinding binding);
+        TResult ProcessDistinctModifier(DistinctModifier distinct, TContext context, TBinding binding);
+        TResult ProcessGraphPatternTerm(GraphPatternTerm graphPattern, TContext context, TBinding binding);
+        TResult ProcessVariableTerm(VariableTerm variable, TContext context, TBinding binding);
         TResult ProcessAdditionExpression(AdditionExpression addition, TContext context, TBinding binding);
 
         TResult ProcessDivisionExpression(DivisionExpression division, TContext context, TBinding binding);
@@ -149,17 +159,18 @@ namespace VDS.RDF.Query
         TResult ProcessStrBeforeFunction(StrBeforeFunction strBefore, TContext context, TBinding binding);
         TResult ProcessStrEndsFunction(StrEndsFunction strEnds, TContext context, TBinding binding);
         TResult ProcessStrFunction(StrFunction str, TContext context, TBinding binding);
-        TResult ProcessStrLenFunction(StrLangFunction strLen, TContext context, TBinding binding);
+        TResult ProcessStrLenFunction(StrLenFunction strLen, TContext context, TBinding binding);
         TResult ProcessStrStartsFunction(StrStartsFunction strStarts, TContext context, TBinding binding);
         TResult ProcessSubStrFunction(SubStrFunction subStr, TContext context, TBinding binding);
         TResult ProcessUCaseFunction(UCaseFunction uCase, TContext context, TBinding binding);
         TResult ProcessUuidFunction(UUIDFunction uuid, TContext context, TBinding binding);
+        TResult ProcessStrUuidFunction(StrUUIDFunction uuid, TContext context, TBinding binding);
         TResult ProcessCallFunction(CallFunction call, TContext context, TBinding binding);
         TResult ProcessCoalesceFunction(CoalesceFunction coalesce, TContext context, TBinding binding);
         TResult ProcessIfElseFunction(IfElseFunction ifElse, TContext context, TBinding binding);
 
         // XPath Functions
-        TResult ProcessBooleanCase(BooleanCast cast, TContext context, TBinding binding);
+        TResult ProcessBooleanCast(BooleanCast cast, TContext context, TBinding binding);
         TResult ProcessDateTimeCast(DateTimeCast cast, TContext context, TBinding binding);
         TResult ProcessDecimalCast(DecimalCast cast, TContext context, TBinding binding);
         TResult ProcessDoubleCast(DoubleCast cast, TContext context, TBinding binding);
@@ -173,27 +184,27 @@ namespace VDS.RDF.Query
         TResult ProcessSecondsFromDateTimeFunction(SecondsFromDateTimeFunction seconds, TContext context, TBinding binding);
         TResult ProcessTimezoneFromDateTimeFunction(TimezoneFromDateTimeFunction timezone, TContext context, TBinding binding);
         TResult ProcessYearsFromDateTimeFunction(YearFromDateTimeFunction years, TContext context, TBinding binding);
-        TResult ProcessXpathAbsFunction(AbsFunction abs, TContext context, TBinding binding);
-        TResult ProcessXpathCeilFunction(CeilingFunction ceil, TContext context, TBinding binding);
-        TResult ProcessXpathFloorFunction(Expressions.Functions.XPath.Numeric.FloorFunction floor, TContext context, TBinding binding);
-        TResult ProcessXpathRoundFunction(Expressions.Functions.XPath.Numeric.RoundFunction round, TContext context, TBinding binding);
-        TResult ProcessXpathRoundHalfToEvenFunction(Expressions.Functions.XPath.Numeric.RoundHalfToEvenFunction round, TContext context, TBinding binding);
+        TResult ProcessAbsFunction(XPath.Numeric.AbsFunction abs, TContext context, TBinding binding);
+        TResult ProcessCeilFunction(XPath.Numeric.CeilingFunction ceil, TContext context, TBinding binding);
+        TResult ProcessFloorFunction(XPath.Numeric.FloorFunction floor, TContext context, TBinding binding);
+        TResult ProcessRoundFunction(Expressions.Functions.XPath.Numeric.RoundFunction round, TContext context, TBinding binding);
+        TResult ProcessRoundHalfToEvenFunction(Expressions.Functions.XPath.Numeric.RoundHalfToEvenFunction round, TContext context, TBinding binding);
         TResult ProcessCompareFunction(CompareFunction compare, TContext context, TBinding binding);
-        TResult ProcessXpathConcatFunction(Expressions.Functions.XPath.String.ConcatFunction concat, TContext context, TBinding binding);
-        TResult ProcessXpathContainsFunction(Expressions.Functions.XPath.String.ContainsFunction contains, TContext context, TBinding binding);
-        TResult ProcessXpathEncodeForUriFunction(Expressions.Functions.XPath.String.EncodeForUriFunction encodeForUri, TContext context, TBinding binding);
-        TResult ProcessXpathEndsWithFunction(Expressions.Functions.XPath.String.EndsWithFunction endsWith, TContext context, TBinding binding);
-        TResult ProcessXpathEscapeHtmlUriFunction(Expressions.Functions.XPath.String.EscapeHtmlUriFunction escape, TContext context, TBinding binding);
-        TResult ProcessXpathLowerCaseFunction(Expressions.Functions.XPath.String.LowerCaseFunction lCase, TContext context, TBinding binding);
-        TResult ProcessXpathNormalizeSpaceFunction(Expressions.Functions.XPath.String.NormalizeSpaceFunction normalize, TContext context, TBinding binding);
-        TResult ProcessXpathNormalizeUnicodeFunction(Expressions.Functions.XPath.String.NormalizeUnicodeFunction normalize, TContext context, TBinding binding);
-        TResult ProcessXpathReplaceFunction(Expressions.Functions.XPath.String.ReplaceFunction replace, TContext context, TBinding binding);
-        TResult ProcessXpathStartsWithFunction(Expressions.Functions.XPath.String.StartsWithFunction startsWith, TContext context, TBinding binding);
-        TResult ProcessXpathStringLengthFunction(Expressions.Functions.XPath.String.StringLengthFunction strLen, TContext context, TBinding binding);
-        TResult ProcessXpathSubstringAfterFunction(Expressions.Functions.XPath.String.SubstringAfterFunction substringAfter, TContext context, TBinding binding);
-        TResult ProcessXpathSubstringBeforeFunction(Expressions.Functions.XPath.String.SubstringBeforeFunction substringBefore, TContext context, TBinding binding);
-        TResult ProcessXpathSubstringFunction(Expressions.Functions.XPath.String.SubstringFunction substring, TContext context, TBinding binding);
-        TResult ProcessXpathUpperCaseFunction(Expressions.Functions.XPath.String.UpperCaseFunction uCase, TContext context, TBinding binding);
+        TResult ProcessConcatFunction(Expressions.Functions.XPath.String.ConcatFunction concat, TContext context, TBinding binding);
+        TResult ProcessContainsFunction(Expressions.Functions.XPath.String.ContainsFunction contains, TContext context, TBinding binding);
+        TResult ProcessEncodeForUriFunction(Expressions.Functions.XPath.String.EncodeForUriFunction encodeForUri, TContext context, TBinding binding);
+        TResult ProcessEndsWithFunction(Expressions.Functions.XPath.String.EndsWithFunction endsWith, TContext context, TBinding binding);
+        TResult ProcessEscapeHtmlUriFunction(Expressions.Functions.XPath.String.EscapeHtmlUriFunction escape, TContext context, TBinding binding);
+        TResult ProcessLowerCaseFunction(Expressions.Functions.XPath.String.LowerCaseFunction lCase, TContext context, TBinding binding);
+        TResult ProcessNormalizeSpaceFunction(Expressions.Functions.XPath.String.NormalizeSpaceFunction normalize, TContext context, TBinding binding);
+        TResult ProcessNormalizeUnicodeFunction(Expressions.Functions.XPath.String.NormalizeUnicodeFunction normalize, TContext context, TBinding binding);
+        TResult ProcessReplaceFunction(Expressions.Functions.XPath.String.ReplaceFunction replace, TContext context, TBinding binding);
+        TResult ProcessStartsWithFunction(Expressions.Functions.XPath.String.StartsWithFunction startsWith, TContext context, TBinding binding);
+        TResult ProcessStringLengthFunction(Expressions.Functions.XPath.String.StringLengthFunction strLen, TContext context, TBinding binding);
+        TResult ProcessSubstringAfterFunction(Expressions.Functions.XPath.String.SubstringAfterFunction substringAfter, TContext context, TBinding binding);
+        TResult ProcessSubstringBeforeFunction(Expressions.Functions.XPath.String.SubstringBeforeFunction substringBefore, TContext context, TBinding binding);
+        TResult ProcessSubstringFunction(Expressions.Functions.XPath.String.SubstringFunction substring, TContext context, TBinding binding);
+        TResult ProcessUpperCaseFunction(Expressions.Functions.XPath.String.UpperCaseFunction uCase, TContext context, TBinding binding);
         TResult ProcessBooleanFunction(BooleanFunction boolean, TContext context, TBinding binding);
 
         // Generic unrecognized function

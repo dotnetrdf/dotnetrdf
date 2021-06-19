@@ -41,17 +41,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public StrLenFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Determines the Length of the given String Literal.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="stringLit">String Literal.</param>
-        /// <returns></returns>
-        protected override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
-        {
-            return new LongNode(stringLit.Value.Length);
-        }
-
+        
         /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
@@ -61,6 +51,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return SparqlSpecsHelper.SparqlKeywordStrLen;
             }
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessStrLenFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitStrLenFunction(this);
         }
 
         /// <summary>

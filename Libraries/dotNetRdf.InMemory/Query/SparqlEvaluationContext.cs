@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Patterns;
@@ -295,7 +296,12 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public BaseMultiset Evaluate(ISparqlAlgebra algebra)
         {
-            return Processor == null ? algebra.Evaluate(this) : Processor.ProcessAlgebra(algebra, this);
+            return Processor == null ? GetDefaultQueryProcessor().ProcessAlgebra(algebra, this) : Processor.ProcessAlgebra(algebra, this);
+        }
+
+        private LeviathanQueryProcessor GetDefaultQueryProcessor()
+        {
+            return new(Data, Options);
         }
 
         /// <summary>

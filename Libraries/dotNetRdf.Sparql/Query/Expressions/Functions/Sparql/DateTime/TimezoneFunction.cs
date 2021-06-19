@@ -42,28 +42,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
             : base(expr) { }
 
         /// <summary>
-        /// Gets the Timezone of the Argument Expression as evaluated for the given Binding in the given Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = base.Evaluate(context, bindingID);
-
-            if (temp == null)
-            {
-                // Unlike base function must error if no timezone component
-                throw new RdfQueryException("Cannot get the Timezone from a Date Time that does not have a timezone component");
-            }
-            else
-            {
-                // Otherwise the base value is fine
-                return temp;
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of this Expression.
         /// </summary>
         public override string Functor
@@ -91,6 +69,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new TimezoneFunction(transformer.Transform(_expr));
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessTimezoneFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitTimezoneFunction(this);
         }
     }
 }

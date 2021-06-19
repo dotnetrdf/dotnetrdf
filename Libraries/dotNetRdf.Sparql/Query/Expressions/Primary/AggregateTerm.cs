@@ -37,8 +37,6 @@ namespace VDS.RDF.Query.Expressions.Primary
     public class AggregateTerm 
         : BaseUnaryExpression
     {
-        private ISparqlAggregate _aggregate;
-
         /// <summary>
         /// Creates a new Aggregate Expression Term that uses the given Aggregate.
         /// </summary>
@@ -46,42 +44,13 @@ namespace VDS.RDF.Query.Expressions.Primary
         public AggregateTerm(ISparqlAggregate aggregate)
             : base(null)
         {
-            _aggregate = aggregate;
-        }
-
-        /// <summary>
-        /// Evaluates the aggregate expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode aggValue;
-            if (context.Binder.IsGroup(bindingID))
-            {
-                BindingGroup group = context.Binder.Group(bindingID);
-                context.Binder.SetGroupContext(true);
-                aggValue = _aggregate.Apply(context, group.BindingIDs);
-                context.Binder.SetGroupContext(false);
-            }
-            else
-            {
-                aggValue = _aggregate.Apply(context);
-            }
-            return aggValue;
+            Aggregate = aggregate;
         }
 
         /// <summary>
         /// Gets the Aggregate this Expression represents.
         /// </summary>
-        public ISparqlAggregate Aggregate
-        {
-            get
-            {
-                return _aggregate;
-            }
-        }
+        public ISparqlAggregate Aggregate { get; }
 
         /// <summary>
         /// Gets the String representation of the Aggregate Expression.
@@ -89,7 +58,17 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public override string ToString()
         {
-            return _aggregate.ToString();
+            return Aggregate.ToString();
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessAggregateTerm(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitAggregateTerm(this);
         }
 
         /// <summary>
@@ -99,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return _aggregate.Expression.Variables;
+                return Aggregate.Expression.Variables;
             }
         }
 
@@ -121,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return _aggregate.Functor;
+                return Aggregate.Functor;
             }
         }
 
@@ -132,7 +111,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return _aggregate.Arguments;
+                return Aggregate.Arguments;
             }
         }
 

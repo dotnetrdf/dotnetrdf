@@ -24,11 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Text;
-using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
     /// <summary>
@@ -52,59 +47,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public NormalizeUnicodeFunction(ISparqlExpression stringExpr, ISparqlExpression normalizationFormExpr)
             : base(stringExpr, normalizationFormExpr, true, XPathFunctionFactory.AcceptStringArguments) { }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal.
-        /// </summary>
-        /// <param name="context">Evaluation context.</param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <returns></returns>
-        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            return new StringNode(stringLit.Value.Normalize(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return processor.ProcessNormalizeUnicodeFunction(this, context, binding);
         }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal and Argument.
-        /// </summary>
-        /// <param name="context">Evaluation context.</param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <param name="arg">Argument.</param>
-        /// <returns></returns>
-        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg)
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
-            if (arg == null)
-            {
-                return ValueInternal(context, stringLit);
-            }
-            else
-            {
-                var normalized = stringLit.Value;
-
-                switch (arg.Value)
-                {
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormC:
-                        normalized = normalized.Normalize();
-                        break;
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormD:
-                        normalized = normalized.Normalize(NormalizationForm.FormD);
-                        break;
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormFull:
-                        throw new RdfQueryException(".Net does not support Fully Normalized Unicode Form");
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormKC:
-                        normalized = normalized.Normalize(NormalizationForm.FormKC);
-                        break;
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormKD:
-                        normalized = normalized.Normalize(NormalizationForm.FormKD);
-                        break;
-                    case "":
-                        // No Normalization
-                        break;
-                    default:
-                        throw new RdfQueryException("'" + arg.Value + "' is not a valid Normalization Form as defined by the XPath specification");
-                }
-
-                return new StringNode(normalized, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-            }
+            return visitor.VisitNormalizeUnicodeFunction(this);
         }
 
         /// <summary>

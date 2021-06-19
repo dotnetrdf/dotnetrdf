@@ -37,17 +37,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     public abstract class BaseUUIDFunction
         : ISparqlExpression
     {
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public virtual IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            var uuid = Guid.NewGuid();
-            return EvaluateInternal(uuid);
-        }
 
         /// <summary>
         /// Method to be implemented by derived classes to implement the actual logic of turning the generated UUID into a RDF term.
@@ -55,6 +44,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="uuid">UUID.</param>
         /// <returns></returns>
         protected abstract IValuedNode EvaluateInternal(Guid uuid);
+
+        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+        public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
         /// Gets the variables used in the expression.

@@ -24,11 +24,7 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 {
@@ -52,57 +48,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             _expr = expr;
         }
 
-        /// <summary>
-        /// Calculates the value of the function in the given Evaluation Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public virtual IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public ISparqlExpression InnerExpression { get => _expr; }
+
+
+        public virtual TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                DateTimeOffset dt = temp.AsDateTimeOffset();
-                // Regex based check to see if the value has a Timezone component
-                // If not then the result is a null
-                if (!Regex.IsMatch(temp.AsString(), "(Z|[+-]\\d{2}:\\d{2})$")) return null;
-
-                // Now we have a DateTime we can try and return the Timezone
-                if (dt.Offset.Equals(TimeSpan.Zero))
-                {
-                    // If Zero it was specified as Z (which means UTC so zero offset)
-                    return new StringNode("PT0S", context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
-                }
-                else
-                {
-                    // If the Offset is outside the range -14 to 14 this is considered invalid
-                    if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
-
-                    // Otherwise it has an offset which is a given number of hours and minutse
-                    var offset = "PT" + Math.Abs(dt.Offset.Hours) + "H";
-                    if (dt.Offset.Hours < 0) offset = "-" + offset;
-                    if (dt.Offset.Minutes != 0) offset = offset + Math.Abs(dt.Offset.Minutes) + "M";
-                    if (dt.Offset.Hours == 0 && dt.Offset.Minutes < 0) offset = "-" + offset;
-
-                    return new StringNode(offset, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
-            }
+            return processor.ProcessTimezoneFromDateTimeFunction(this, context, binding);
         }
 
-        /// <summary>
-        /// Calculates the effective boolean value of the function in the given Evaluation Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        public virtual T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
-            throw new RdfQueryException("Cannot calculate the Effective Boolean Value of an XML Schema Duration");
+            return visitor.VisitTimezoneFromDateTimeFunction(this);
         }
 
         /// <summary>
@@ -178,5 +134,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         {
             return new TimezoneFromDateTimeFunction(transformer.Transform(_expr));
         }
+
+        
     }
 }

@@ -939,7 +939,7 @@ namespace VDS.RDF.Query
                         u = UriFactory.Create(Tools.ResolveQName(next.Value, _nsmapper, _baseUri));
                     }
 
-                    if (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(u) != SparqlNumericType.NaN)
+                    if (NumericTypesHelper.GetNumericTypeFromDataTypeUri(u) != SparqlNumericType.NaN)
                     {
                         // Should be a Number
                         return TryParseNumericLiteral(dtlit, tokens, false);

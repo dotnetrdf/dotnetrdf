@@ -29,6 +29,7 @@
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
+    <RootNamespace>VDS.RDF.Query</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +38,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
+    <ProjectReference Include="..\dotNetRdf.Sparql\dotNetRdf.Sparql.csproj" />
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
   </ItemGroup>
 

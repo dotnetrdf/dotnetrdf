@@ -106,7 +106,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Command.</param>
         public void ProcessCommand(SparqlUpdateCommand cmd)
         {
-            _store.ExecuteUpdate(cmd);
+            _store.ExecuteUpdate(cmd.ToString());
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace VDS.RDF.Update
             commands.UpdateExecutionTime = null;
             try
             {
-                _store.ExecuteUpdate(commands);
+                _store.ExecuteUpdate(commands.ToString());
             }
             finally
             {

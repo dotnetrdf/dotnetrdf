@@ -71,6 +71,16 @@ namespace VDS.RDF.Query.Expressions.Conditional
             return output.ToString();
         }
 
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessAndExpression(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitAndExpression(this);
+        }
+
         /// <summary>
         /// Gets the Type of the Expression.
         /// </summary>

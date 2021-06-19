@@ -49,6 +49,8 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("dotNetRDF.Test")]
 [assembly: InternalsVisibleTo("dotNetRDF.Dynamic")]
+[assembly: InternalsVisibleTo("dotNetRDF.Sparql")]
+[assembly: InternalsVisibleTo("dotNetRdf.InMemory")]
 
 // Version information is managed by GitVersion
 [assembly: AssemblyVersion("0.0.0.0")]

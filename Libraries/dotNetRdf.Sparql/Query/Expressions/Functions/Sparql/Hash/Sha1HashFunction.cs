@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using System.Security.Cryptography;
-
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
     /// <summary>
@@ -38,12 +36,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// Creates a new SHA1() Function.
         /// </summary>
         /// <param name="expr">Argument Expression.</param>
-        public Sha1HashFunction(ISparqlExpression expr)
-#if NETCORE
-            :base(expr, SHA1.Create()) { }
-#else
-            : base(expr, new SHA1Managed()) { }
-#endif
+        public Sha1HashFunction(ISparqlExpression expr) : base(expr)
+        {}
 
         /// <summary>
         /// Gets the Functor of the Expression.
@@ -62,7 +56,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordSha1 + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordSha1 + "(" + InnerExpression + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSha1HashFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -72,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new Sha1HashFunction(transformer.Transform(_expr));
+            return new Sha1HashFunction(transformer.Transform(InnerExpression));
         }
     }
 }

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Algebra
@@ -59,7 +60,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="expr">Expression which the Join is predicated on.</param>
         /// <param name="baseContext">The parent context for the evaluation of the join.</param>
         /// <returns>The other Multiset.</returns>
-        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext)
+        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext, ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
         {
             // If Other is Null/Empty then the Join still results in Identity
             if (other is NullMultiset) return this;

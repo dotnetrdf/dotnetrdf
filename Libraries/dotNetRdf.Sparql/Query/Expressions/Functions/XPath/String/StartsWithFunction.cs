@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
     /// <summary>
@@ -42,38 +40,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public StartsWithFunction(ISparqlExpression stringExpr, ISparqlExpression prefixExpr)
             : base(stringExpr, prefixExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal and Argument.
-        /// </summary>
-        /// <param name="context">Evaluation context.</param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <param name="arg">Argument.</param>
-        /// <returns></returns>
-        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg)
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            if (stringLit.Value.Equals(string.Empty))
-            {
-                if (arg.Value.Equals(string.Empty))
-                {
-                    // The Empty String starts with the Empty String
-                    return new BooleanNode(true);
-                }
-                else
-                {
-                    // Empty String doesn't start with a non-empty string
-                    return new BooleanNode(false);
-                }
-            }
-            else if (arg.Value.Equals(string.Empty))
-            {
-                // Any non-empty string starts with the empty string
-                return new BooleanNode(true);
-            }
-            else
-            {
-                // Otherwise evalute the StartsWith
-                return new BooleanNode(stringLit.Value.StartsWith(arg.Value));
-            }
+            return processor.ProcessStartsWithFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitStartsWithFunction(this);
         }
 
         /// <summary>

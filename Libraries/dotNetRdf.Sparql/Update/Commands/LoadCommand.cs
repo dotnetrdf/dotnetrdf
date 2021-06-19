@@ -35,8 +35,6 @@ namespace VDS.RDF.Update.Commands
     /// </summary>
     public class LoadCommand : SparqlUpdateCommand
     {
-        private readonly Loader _loader;
-
         /// <summary>
         /// Creates a new LOAD command.
         /// </summary>
@@ -51,7 +49,7 @@ namespace VDS.RDF.Update.Commands
             SourceUri = sourceUri;
             TargetGraphName = graphName;
             Silent = silent;
-            _loader = loader ?? new Loader();
+            Loader = loader ?? new Loader();
 
         }
         /// <summary>
@@ -141,43 +139,10 @@ namespace VDS.RDF.Update.Commands
         public bool Silent { get; }
 
         /// <summary>
-        /// Evaluates the Command in the given Context.
+        /// Get the loader to use for retrieving and parsing the data.
         /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlUpdateEvaluationContext context)
-        {
-            // Q: Does LOAD into a named Graph require that Graph to be pre-existing?
-            // if (this._graphUri != null)
-            // {
-            //    //When adding to specific Graph need to ensure that Graph exists
-            //    //In the case when we're adding to the default graph we'll create it if it doesn't exist
-            //    if (!context.Data.HasGraph(this._graphUri))
-            //    {
-            //        throw new RdfUpdateException("Cannot LOAD into a Graph that does not exist in the Store");
-            //    }
-            // }
+        public Loader Loader { get; }
 
-            try
-            {
-                // Load from the URI
-                var g = new Graph(TargetGraphName);
-                _loader.LoadGraph(g, SourceUri);
-                if (context.Data.HasGraph(TargetGraphName))
-                {
-                    // Merge the Data into the existing Graph
-                    context.Data.GetModifiableGraph(TargetGraphName).Merge(g);
-                }
-                else
-                {
-                    // Add New Graph to the Dataset
-                    context.Data.AddGraph(g);
-                }
-            }
-            catch
-            {
-                if (!Silent) throw;
-            }
-        }
 
         /// <summary>
         /// Processes the Command using the given Update Processor.

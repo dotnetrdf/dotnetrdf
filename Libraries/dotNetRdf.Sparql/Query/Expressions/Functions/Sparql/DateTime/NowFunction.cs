@@ -52,5 +52,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         {
             return SparqlSpecsHelper.SparqlKeywordNow + "()";
         }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessNowFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitNowFunction(this);
+        }
     }
 }

@@ -43,64 +43,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             : base(expr) { }
 
         /// <summary>
-        /// Gets the Numeric Value of the function as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode a = _expr.Evaluate(context, bindingID);
-            if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
-
-            switch (a.NumericType)
-            {
-                case SparqlNumericType.Integer:
-                    try
-                    {
-                        return new LongNode(Convert.ToInt64(Math.Ceiling(a.AsDecimal())));
-                    }
-                    catch (RdfQueryException)
-                    {
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfQueryException("Unable to cast ceiling value of integer to an integer", ex);
-                    }
-
-                case SparqlNumericType.Decimal:
-                    return new DecimalNode(Math.Ceiling(a.AsDecimal()));
-
-                case SparqlNumericType.Float:
-                    try
-                    {
-                        return new FloatNode(Convert.ToSingle(Math.Ceiling(a.AsDouble())));
-                    }
-                    catch (RdfQueryException)
-                    {
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfQueryException("Unable to cast ceiling value of float to a float", ex);
-                    }
-
-                case SparqlNumericType.Double:
-                    return new DoubleNode(Math.Ceiling(a.AsDouble()));
-
-                default:
-                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Ceiling + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Ceiling + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessCeilFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitCeilFunction(this);
         }
 
         /// <summary>
@@ -132,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new CeilingFunction(transformer.Transform(_expr));
+            return new CeilingFunction(transformer.Transform(InnerExpression));
         }
     }
 }

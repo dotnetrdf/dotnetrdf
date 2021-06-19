@@ -41,41 +41,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public StrFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode result = _expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                throw new RdfQueryException("Cannot return the lexical value of an NULL");
-            }
-            else
-            {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                    case NodeType.Uri:
-                        return new StringNode(result.AsString());
-
-                    default:
-                        throw new RdfQueryException("Cannot return the lexical value of Nodes which are not Literal/URI Nodes");
-
-                }
-            }
-        }
-
+        
         /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "STR(" + _expr + ")";
+            return "STR(" + InnerExpression + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessStrFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitStrFunction(this);
         }
 
         /// <summary>
@@ -107,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StrFunction(transformer.Transform(_expr));
+            return new StrFunction(transformer.Transform(InnerExpression));
         }
     }
 }

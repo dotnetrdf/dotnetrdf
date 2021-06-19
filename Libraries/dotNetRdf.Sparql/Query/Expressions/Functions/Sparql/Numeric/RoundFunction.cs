@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordRound + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordRound + "(" + InnerExpression.ToString() + ")";
         }
 
         /// <summary>
@@ -66,7 +66,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new RoundFunction(transformer.Transform(_expr));
+            return new RoundFunction(transformer.Transform(InnerExpression));
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessRoundFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitRoundFunction(this);
         }
     }
 }

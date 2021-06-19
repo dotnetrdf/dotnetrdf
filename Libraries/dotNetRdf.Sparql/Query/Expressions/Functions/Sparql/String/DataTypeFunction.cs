@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
     /// <summary>
@@ -43,53 +40,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             : base(expr) { }
 
         /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode result = _expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
-            }
-            else
-            {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        var lit = (ILiteralNode)result;
-                        if (lit.DataType == null)
-                        {
-                            if (!lit.Language.Equals(string.Empty))
-                            {
-                                throw new RdfQueryException("Cannot return the Data Type URI of Language Specified Literals in SPARQL 1.0");
-                            }
-                            else
-                            {
-                                return new UriNode(context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                            }
-                        }
-                        else
-                        {
-                            return new UriNode(lit.DataType);
-                        }
-
-                    default:
-                        throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "DATATYPE(" + _expr.ToString() + ")";
+            return "DATATYPE(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessDataTypeFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitDataTypeFunction(this);
         }
 
         /// <summary>
@@ -121,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new DataTypeFunction(transformer.Transform(_expr));
+            return new DataTypeFunction(transformer.Transform(InnerExpression));
         }
     }
 
@@ -141,45 +107,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public DataType11Function(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            INode result = _expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
-            }
-            else
-            {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        var lit = (ILiteralNode)result;
-                        if (lit.DataType == null)
-                        {
-                            if (!lit.Language.Equals(string.Empty))
-                            {
-                                return new UriNode(context.UriFactory.Create(RdfSpecsHelper.RdfLangString));
-                            }
-                            else
-                            {
-                                return new UriNode(context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                            }
-                        }
-                        else
-                        {
-                            return new UriNode(lit.DataType);
-                        }
+            return processor.ProcessDataType11Function(this, context, binding);
+        }
 
-                    default:
-                        throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
-                }
-            }
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitDataType11Function(this);
         }
     }
 }

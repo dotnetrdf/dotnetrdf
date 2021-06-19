@@ -41,24 +41,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public IsLiteralFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode result = _expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                return new BooleanNode(false);
-            }
-            else
-            {
-                return new BooleanNode(result.NodeType == NodeType.Literal);
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of this Expression.
@@ -66,7 +48,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "ISLITERAL(" + _expr.ToString() + ")";
+            return "ISLITERAL(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessIsLiteralFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitIsLiteralFunction(this);
         }
 
         /// <summary>
@@ -98,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IsLiteralFunction(transformer.Transform(_expr));
+            return new IsLiteralFunction(transformer.Transform(InnerExpression));
         }
     }
 }

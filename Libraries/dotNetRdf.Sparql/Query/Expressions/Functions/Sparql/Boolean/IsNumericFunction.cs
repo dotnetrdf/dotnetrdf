@@ -42,18 +42,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             : base(expr) { }
 
         /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="bindingID"></param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode result = _expr.Evaluate(context, bindingID);
-            return new BooleanNode(result.NumericType != SparqlNumericType.NaN);
-        }
-
-        /// <summary>
         /// Gets the Type of this Expression.
         /// </summary>
         public override SparqlExpressionType Type
@@ -81,7 +69,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessIsNumericFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitIsNumericFunction(this);
         }
 
         /// <summary>
@@ -91,7 +89,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IsNumericFunction(transformer.Transform(_expr));
+            return new IsNumericFunction(transformer.Transform(InnerExpression));
         }
     }
 }

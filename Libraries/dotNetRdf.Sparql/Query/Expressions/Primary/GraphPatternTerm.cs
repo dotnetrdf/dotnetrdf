@@ -38,37 +38,29 @@ namespace VDS.RDF.Query.Expressions.Primary
     public class GraphPatternTerm
         : ISparqlExpression
     {
-        private GraphPattern _pattern;
-
         /// <summary>
         /// Creates a new Graph Pattern Term.
         /// </summary>
         /// <param name="pattern">Graph Pattern.</param>
         public GraphPatternTerm(GraphPattern pattern)
         {
-            _pattern = pattern;
+            Pattern = pattern;
         }
 
-        /// <summary>
-        /// Gets the value of this Term as evaluated for the given Bindings in the given Context.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="bindingID"></param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            throw new RdfQueryException("Graph Pattern Terms do not have a Node Value");
-        }
 
         /// <summary>
         /// Gets the Graph Pattern this term represents.
         /// </summary>
-        public GraphPattern Pattern
+        public GraphPattern Pattern { get; }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            get
-            {
-                return _pattern;
-            }
+            return processor.ProcessGraphPatternTerm(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitGraphPatternTerm(this);
         }
 
         /// <summary>
@@ -78,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return _pattern.Variables;
+                return Pattern.Variables;
             }
         }
 

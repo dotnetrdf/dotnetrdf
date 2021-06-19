@@ -145,12 +145,6 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Evaluates the Command in the given Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public abstract void Evaluate(SparqlUpdateEvaluationContext context);
-
-        /// <summary>
         /// Processes the Command Set using the given Update Processor.
         /// </summary>
         /// <param name="processor">Update Processor.</param>

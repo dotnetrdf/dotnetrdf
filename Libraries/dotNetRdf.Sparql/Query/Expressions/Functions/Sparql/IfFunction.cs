@@ -37,8 +37,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
     public class IfElseFunction 
         : ISparqlExpression
     {
-        private ISparqlExpression _condition, _ifBranch, _elseBranch;
-
         /// <summary>
         /// Creates a new IF function.
         /// </summary>
@@ -47,31 +45,34 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <param name="elseBranch">Expression to evalaute if condition evaluates to false/error.</param>
         public IfElseFunction(ISparqlExpression condition, ISparqlExpression ifBranch, ISparqlExpression elseBranch)
         {
-            _condition = condition;
-            _ifBranch = ifBranch;
-            _elseBranch = elseBranch;
+            ConditionExpression = condition;
+            TrueBranchExpression = ifBranch;
+            FalseBranchExpression = elseBranch;
         }
 
         /// <summary>
-        /// Gets the value of the expression as evaluated in the given Context for the given Binding ID.
+        /// Get the condition to test.
         /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode result = _condition.Evaluate(context, bindingID);
+        public ISparqlExpression ConditionExpression { get; }
 
-            // Condition evaluated without error so we go to the appropriate branch of the IF ELSE
-            // depending on whether it evaluated to true or false
-            if (result.AsSafeBoolean())
-            {
-                return _ifBranch.Evaluate(context, bindingID);
-            }
-            else
-            {
-                return _elseBranch.Evaluate(context, bindingID);
-            }
+        /// <summary>
+        /// Get the expression to evaluate if <see cref="ConditionExpression"/> evaluates to true.
+        /// </summary>
+        public ISparqlExpression TrueBranchExpression { get; }
+
+        /// <summary>
+        /// Get the expression to evaluate if <see cref="ConditionExpression"/> evaluates to false.
+        /// </summary>
+        public ISparqlExpression FalseBranchExpression { get; }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessIfElseFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitIfElseFunction(this);
         }
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get 
             {
-                return _condition.Variables.Concat(_ifBranch.Variables).Concat(_elseBranch.Variables);
+                return ConditionExpression.Variables.Concat(TrueBranchExpression.Variables).Concat(FalseBranchExpression.Variables);
             }
         }
 
@@ -93,11 +94,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             var output = new StringBuilder();
             output.Append("IF (");
-            output.Append(_condition.ToString());
+            output.Append(ConditionExpression.ToString());
             output.Append(" , ");
-            output.Append(_ifBranch.ToString());
+            output.Append(TrueBranchExpression.ToString());
             output.Append(" , ");
-            output.Append(_elseBranch.ToString());
+            output.Append(FalseBranchExpression.ToString());
             output.Append(')');
             return output.ToString();
         }
@@ -131,7 +132,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get
             {
-                return new ISparqlExpression[] { _condition, _ifBranch, _elseBranch };
+                return new ISparqlExpression[] { ConditionExpression, TrueBranchExpression, FalseBranchExpression };
             }
         }
 
@@ -142,7 +143,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get
             {
-                return _condition.CanParallelise && _ifBranch.CanParallelise && _elseBranch.CanParallelise;
+                return ConditionExpression.CanParallelise && TrueBranchExpression.CanParallelise && FalseBranchExpression.CanParallelise;
             }
         }
 
@@ -153,7 +154,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IfElseFunction(transformer.Transform(_condition), transformer.Transform(_ifBranch), transformer.Transform(_elseBranch));
+            return new IfElseFunction(transformer.Transform(ConditionExpression), transformer.Transform(TrueBranchExpression), transformer.Transform(FalseBranchExpression));
         }
     }
 }

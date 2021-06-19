@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using System;
-using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
@@ -44,98 +42,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             : base(expr) { }
 
         /// <summary>
-        /// Casts the value of the inner Expression to a Date Time.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode n = _expr.Evaluate(context, bindingID);//.CoerceToDateTime();
-
-            if (n == null)
-            {
-                throw new RdfQueryException("Cannot cast a Null to a xsd:dateTime");
-            }
-
-            // New method should be much faster
-            // if (n is DateTimeNode) return n;
-            // if (n is DateNode) return new DateTimeNode(n.Graph, n.AsDateTime());
-            // return new DateTimeNode(null, n.AsDateTime());
-
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                case NodeType.GraphLiteral:
-                case NodeType.Uri:
-                    throw new RdfQueryException("Cannot cast a Blank/URI/Graph Literal Node to a xsd:dateTime");
-
-                case NodeType.Literal:
-                    if (n is DateTimeNode) return n;
-                    if (n is DateNode) return new DateTimeNode(n.AsDateTime());
-                    // See if the value can be cast
-                    var lit = (ILiteralNode)n;
-                    if (lit.DataType != null)
-                    {
-                        var dt = lit.DataType.ToString();
-                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            // Already a xsd:dateTime
-                            DateTimeOffset d;
-                            if (DateTimeOffset.TryParse(lit.Value, out d))
-                            {
-                                // Parsed OK
-                                return new DateTimeNode(d);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid lexical form for xsd:dateTime");
-                            }
-                            
-                        }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            DateTimeOffset d;
-                            if (DateTimeOffset.TryParse(lit.Value, out d))
-                            {
-                                // Parsed OK
-                                return new DateTimeNode(d);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast a Literal typed <" + dt + "> to a xsd:dateTime");
-                        }
-                    }
-                    else
-                    {
-                        DateTimeOffset d;
-                        if (DateTimeOffset.TryParse(lit.Value, out d))
-                        {
-                            // Parsed OK
-                            return new DateTimeNode(d);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:dateTime");
-                        }
-                    }
-                default:
-                    throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:string");
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeDateTime + ">(" + _expr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessDateTimeCast(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitDateTimeCast(this);
         }
 
         /// <summary>

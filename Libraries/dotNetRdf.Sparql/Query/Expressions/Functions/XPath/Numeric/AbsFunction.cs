@@ -42,46 +42,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         public AbsFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Gets the Numeric Value of the function as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode a = _expr.Evaluate(context, bindingID);
-            if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
-
-            switch (a.NumericType)
-            {
-                case SparqlNumericType.Integer:
-                    return new LongNode(Math.Abs(a.AsInteger()));
-
-                case SparqlNumericType.Decimal:
-                    return new DecimalNode(Math.Abs(a.AsDecimal()));
-
-                case SparqlNumericType.Float:
-                    try
-                    {
-                        return new FloatNode(Convert.ToSingle(Math.Abs(a.AsDouble())));
-                    }
-                    catch (RdfQueryException)
-                    {
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfQueryException("Unable to cast absolute value of float to a float", ex);
-                    }
-
-                case SparqlNumericType.Double:
-                    return new DoubleNode(Math.Abs(a.AsDouble()));
-
-                default:
-                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of the function.
@@ -89,7 +49,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Absolute + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Absolute + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessAbsFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitAbsFunction(this);
         }
 
         /// <summary>
@@ -121,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new AbsFunction(transformer.Transform(_expr));
+            return new AbsFunction(transformer.Transform(InnerExpression));
         }
     }
 }

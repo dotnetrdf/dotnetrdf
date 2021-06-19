@@ -25,6 +25,7 @@
 */
 
 using VDS.RDF.Query.Construct;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Patterns
 {
@@ -34,15 +35,13 @@ namespace VDS.RDF.Query.Patterns
     public class NodeMatchPattern
         : PatternItem
     {
-        private INode _node;
-
         /// <summary>
         /// Creates a new Node Match Pattern.
         /// </summary>
         /// <param name="n">Exact Node to match.</param>
         public NodeMatchPattern(INode n)
         {
-            _node = n;
+            Node = n;
         }
 
         /// <summary>
@@ -62,11 +61,11 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        protected internal override bool Accepts(IPatternEvaluationContext context, INode obj)
+        public override bool Accepts(IPatternEvaluationContext context, INode obj)
         {
             if (context.RigorousEvaluation || RigorousEvaluation)
             {
-                return _node.Equals(obj);
+                return Node.Equals(obj);
             }
             else
             {
@@ -78,9 +77,9 @@ namespace VDS.RDF.Query.Patterns
         /// Constructs a Node based on the given Set.
         /// </summary>
         /// <param name="context">Construct Context.</param>
-        protected internal override INode Construct(ConstructContext context)
+        public override INode Construct(ConstructContext context)
         {
-            return context.GetNode(_node);
+            return context.GetNode(Node);
         }
 
         /// <summary>
@@ -89,18 +88,12 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.Formatter.Format(_node);
+            return new SparqlFormatter().Format(Node);
         }
 
         /// <summary>
         /// Gets the Node that this Pattern matches.
         /// </summary>
-        public INode Node
-        {
-            get
-            {
-                return _node;
-            }
-        }
+        public INode Node { get; }
     }
 }

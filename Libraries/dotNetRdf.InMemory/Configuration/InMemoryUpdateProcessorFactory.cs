@@ -1,5 +1,6 @@
 ﻿using System;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Storage;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Configuration
@@ -10,7 +11,8 @@ namespace VDS.RDF.Configuration
     public class InMemoryUpdateProcessorFactory
         : IObjectFactory
     {
-        private const string LeviathanUpdateProcessor = "VDS.RDF.Update.LeviathanUpdateProcessor";
+        private const string LeviathanUpdateProcessor = "VDS.RDF.Update.LeviathanUpdateProcessor",
+            GenericUpdateProcessor = "VDS.RDF.Update.GenericUpdateProcessor";
 
         /// <summary>
         /// Tries to load a SPARQL Update based on information from the Configuration Graph.
@@ -60,6 +62,21 @@ namespace VDS.RDF.Configuration
                         }
                     }
                     break;
+                case GenericUpdateProcessor:
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
+                    if (managerObj == null) return false;
+                    temp = ConfigurationLoader.LoadObject(g, managerObj);
+                    if (temp is IStorageProvider)
+                    {
+                        processor = new GenericUpdateProcessor((IStorageProvider)temp);
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load the Generic Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IStorageProvider interface");
+                    }
+
+                    break;
+
             }
 
             obj = processor;
@@ -76,6 +93,7 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case LeviathanUpdateProcessor:
+                case GenericUpdateProcessor:
                     return true;
                 default:
                     return false;

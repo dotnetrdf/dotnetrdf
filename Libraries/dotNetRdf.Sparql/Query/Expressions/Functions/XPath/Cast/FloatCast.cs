@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Globalization;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -45,94 +44,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             : base(expr) { }
 
         /// <summary>
-        /// Casts the value of the inner Expression to a Float.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Vinding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode n = _expr.Evaluate(context, bindingID);//.CoerceToFloat();
-
-            if (n == null)
-            {
-                throw new RdfQueryException("Cannot cast a Null to a xsd:float");
-            }
-
-            // New method should be much faster
-            // if (n is FloatNode) return n;
-            // return new FloatNode(null, n.AsFloat());
-
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                case NodeType.GraphLiteral:
-                case NodeType.Uri:
-                    throw new RdfQueryException("Cannot cast a Blank/URI/Graph Literal Node to a xsd:float");
-
-                case NodeType.Literal:
-                    if (n is FloatNode) return n;
-                    // See if the value can be cast
-                    var lit = (ILiteralNode)n;
-                    if (lit.DataType != null)
-                    {
-                        if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
-                        {
-                            float f;
-                            if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
-                            {
-                                // Parsed OK
-                                return new FloatNode(f);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid lexical form for a xsd:float");
-                            }
-                        }
-                        else if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            // DateTime cast forbidden
-                            throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:float");
-                        }
-                        else
-                        {
-                            float f;
-                            if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
-                            {
-                                // Parsed OK
-                                return new FloatNode(f);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        float f;
-                        if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
-                        {
-                            // Parsed OK
-                            return new FloatNode(f);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float");
-                        }
-                    }
-                default:
-                    throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:float");
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeFloat + ">(" + _expr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessFloatCast(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitFloatCast(this);
         }
 
         /// <summary>

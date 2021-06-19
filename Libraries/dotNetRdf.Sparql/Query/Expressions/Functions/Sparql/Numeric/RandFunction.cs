@@ -24,10 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
 {
@@ -37,28 +35,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
     public class RandFunction
         : ISparqlExpression
     {
-        private static Random _rnd = new Random();
-        private Dictionary<int, IValuedNode> _bindings = new Dictionary<int, IValuedNode>();
-
-        /// <summary>
-        /// Creates a new SPARQL RAND() Function.
-        /// </summary>
-        public RandFunction()
-            : base() { }
-
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            // Ensure we return a consistent value when evaluating a set we have already seen
-            if (_bindings.TryGetValue(bindingID, out IValuedNode result)) return result;
-            result = new DoubleNode(_rnd.NextDouble());
-            _bindings[bindingID] = result;
-            return result;
+            return processor.ProcessRandFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitRandFunction(this);
         }
 
         /// <summary>

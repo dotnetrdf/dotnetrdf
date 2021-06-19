@@ -141,38 +141,24 @@ namespace VDS.RDF.Query.Optimisation
 
             if (lhs is VariableTerm)
             {
-                if (rhs.GetType().Equals(_exprType))
+                if (rhs is ConstantTerm constant)
                 {
                     var = lhs.Variables.First();
-                    term = rhs.Evaluate(null, 0);
-                    if (term.NodeType == NodeType.Uri)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    term = constant.Node;
+                    return term.NodeType == NodeType.Uri;
                 }
                 else
                 {
                     return false;
                 }
             }
-            else if (lhs.GetType().Equals(_exprType))
+            else if (lhs is ConstantTerm constant)
             {
                 if (rhs is VariableTerm)
                 {
                     var = rhs.Variables.First();
-                    term = lhs.Evaluate(null, 0);
-                    if (term.NodeType == NodeType.Uri)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    term = constant.Node;
+                    return term.NodeType == NodeType.Uri;
                 }
                 else
                 {

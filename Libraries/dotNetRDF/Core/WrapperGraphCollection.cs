@@ -73,7 +73,7 @@ namespace VDS.RDF
         /// <param name="g">Graph.</param>
         /// <param name="mergeIfExists">Whether to merge into an existing Graph with the same URI.</param>
         /// <returns></returns>
-        protected internal override bool Add(IGraph g, bool mergeIfExists)
+        public override bool Add(IGraph g, bool mergeIfExists)
         {
             return _graphs.Add(g, mergeIfExists);
         }

@@ -24,10 +24,6 @@
 // </copyright>
 */
 
-using System;
-using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 {
     /// <summary>
@@ -43,55 +39,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         public IriFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode result = _expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                throw new RdfQueryException("Cannot create an IRI from a null");
-            }
-            else
-            {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        var lit = (ILiteralNode)result;
-                        var baseUri = string.Empty;
-                        if (context.Query != null) baseUri = context.Query.BaseUri.ToSafeString();
-                        string uri;
-                        if (lit.DataType == null)
-                        {
-                            uri = Tools.ResolveUri(lit.Value, baseUri);
-                            return new UriNode(context.UriFactory.Create(uri));
-                        }
-                        else
-                        {
-                            var dt = lit.DataType.AbsoluteUri;
-                            if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString, StringComparison.Ordinal))
-                            {
-                                uri = Tools.ResolveUri(lit.Value, baseUri);
-                                return new UriNode(context.UriFactory.Create(uri));
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create an IRI from a non-string typed literal");
-                            }
-                        }
-
-                    case NodeType.Uri:
-                        // Already a URI so nothing to do
-                        return result;
-                    default:
-                        throw new RdfQueryException("Cannot create an IRI from a non-URI/String literal");
-                }
-            }
-        }
+        
 
         /// <summary>
         /// Gets the String representation of the function.
@@ -99,7 +47,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override string ToString()
         {
-            return "IRI(" + _expr.ToString() + ")";
+            return "IRI(" + InnerExpression + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessIriFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitIriFunction(this);
         }
 
         /// <summary>
@@ -131,7 +89,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IriFunction(transformer.Transform(_expr));
+            return new IriFunction(transformer.Transform(InnerExpression));
         }
     }
 }

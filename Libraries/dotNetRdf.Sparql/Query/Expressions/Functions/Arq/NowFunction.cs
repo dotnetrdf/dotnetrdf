@@ -80,12 +80,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Now + ">()";
         }
 
-        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        public virtual TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessNowFunction(this, context, binding);
         }
 
-        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        public virtual T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitNowFunction(this);
         }

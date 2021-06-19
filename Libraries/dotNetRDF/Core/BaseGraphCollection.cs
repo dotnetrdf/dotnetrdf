@@ -61,7 +61,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph to add.</param>
         /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present.</param>
-        protected abstract internal bool Add(IGraph g, bool mergeIfExists);
+        public abstract bool Add(IGraph g, bool mergeIfExists);
 
         /// <summary>
         /// Removes a Graph from the Collection.

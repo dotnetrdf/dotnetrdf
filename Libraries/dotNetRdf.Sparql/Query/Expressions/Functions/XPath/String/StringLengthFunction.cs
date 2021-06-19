@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
     /// <summary>
@@ -41,15 +39,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public StringLengthFunction(ISparqlExpression stringExpr)
             : base(stringExpr) { }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <returns></returns>
-        protected override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            return new LongNode(stringLit.Value.Length);
+            return processor.ProcessStringLengthFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitStringLengthFunction(this);
         }
 
         /// <summary>

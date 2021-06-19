@@ -159,14 +159,14 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Argument Type Validator for validating that a Literal has an Integer datatype.
         /// </summary>
-        public static Func<Uri, bool> AcceptIntegerArguments = (u => u != null && SparqlSpecsHelper.IntegerDataTypes.Contains(u.AbsoluteUri));
+        public static Func<Uri, bool> AcceptIntegerArguments = (u => u != null && NumericTypesHelper.IntegerDataTypes.Contains(u.AbsoluteUri));
         /// <summary>
         /// Argument Type Validator for validating that a Literal has a Numeric datatype.
         /// </summary>
-        public static Func<Uri, bool> AcceptNumericArguments = (u => u != null && SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(u) != SparqlNumericType.NaN);
+        public static Func<Uri, bool> AcceptNumericArguments = (u => u != null && NumericTypesHelper.GetNumericTypeFromDataTypeUri(u) != SparqlNumericType.NaN);
 
         /// <summary>
-        /// Tries to create an XPath Function expression if the function Uri correseponds to a supported XPath Function.
+        /// Tries to create an XPath Function expression if the function Uri corresponds to a supported XPath Function.
         /// </summary>
         /// <param name="u">Function Uri.</param>
         /// <param name="args">Function Arguments.</param>

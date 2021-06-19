@@ -41,17 +41,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             : base(stringExpr, searchExpr) { }
 
         /// <summary>
-        /// Determines whether the String contains the given Argument.
-        /// </summary>
-        /// <param name="stringLit">String Literal.</param>
-        /// <param name="argLit">Argument Literal.</param>
-        /// <returns></returns>
-        protected override bool ValueInternal(ILiteralNode stringLit, ILiteralNode argLit)
-        {
-            return stringLit.Value.Contains(argLit.Value);
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
@@ -69,6 +58,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordContains + "(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessContainsFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitContainsFunction(this);
         }
 
         /// <summary>

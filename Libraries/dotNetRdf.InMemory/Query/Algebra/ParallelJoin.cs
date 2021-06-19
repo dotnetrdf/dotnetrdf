@@ -24,11 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
@@ -39,11 +36,6 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public class ParallelJoin : IJoin
     {
-        private readonly ISparqlAlgebra _lhs, _rhs;
-        private BaseMultiset _rhsResult;
-        private Exception _rhsError;
-        private readonly ParallelEvaluateDelegate _d;
-
         /// <summary>
         /// Creates a new Join.
         /// </summary>
@@ -52,188 +44,10 @@ namespace VDS.RDF.Query.Algebra
         public ParallelJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
             if (!lhs.Variables.IsDisjoint(rhs.Variables)) throw new RdfQueryException("Cannot create a ParallelJoin between two algebra operators which are not distinct");
-            _lhs = lhs;
-            _rhs = rhs;
-            _d = new ParallelEvaluateDelegate(ParallelEvaluate);
+            Lhs = lhs;
+            Rhs = rhs;
         }
 
-        /// <summary>
-        /// Evaluates a Join.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            // Create a copy of the evaluation context for the RHS
-            var context2 =
-                new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.Options);
-            if (!(context.InputMultiset is IdentityMultiset))
-            {
-                context2.InputMultiset = new Multiset();
-                foreach (ISet s in context.InputMultiset.Sets)
-                {
-                    context2.InputMultiset.Add(s.Copy());
-                }
-            }
-
-            var activeGraphs = context.Data.ActiveGraphNames.ToList();
-            var defaultGraphs = context.Data.DefaultGraphNames.ToList();
-
-            // Start both executing asynchronously
-            var cts = new CancellationTokenSource();
-            CancellationToken cancellationToken = cts.Token;
-            Task<BaseMultiset> lhsEvaluation =
-                Task.Factory.StartNew(() => ParallelEvaluate(_lhs, context, activeGraphs, defaultGraphs),
-                    cancellationToken);
-            Task<BaseMultiset> rhsEvaluation =
-                Task.Factory.StartNew(() => ParallelEvaluate(_rhs, context2, activeGraphs, defaultGraphs),
-                    cancellationToken);
-            var evaluationTasks = new Task[] {lhsEvaluation, rhsEvaluation};
-            try
-            {
-                if (context.RemainingTimeout > 0)
-                {
-                    Task.WaitAny(evaluationTasks, (int) context.RemainingTimeout, cancellationToken);
-                }
-                else
-                {
-                    Task.WaitAny(evaluationTasks, cancellationToken);
-                }
-
-                BaseMultiset firstResult = lhsEvaluation.IsCompleted ? lhsEvaluation.Result : rhsEvaluation.Result;
-                if (firstResult == null)
-                {
-                    context.OutputMultiset = new NullMultiset();
-                    cts.Cancel();
-                }
-                else if (firstResult is NullMultiset)
-                {
-                    context.OutputMultiset = new NullMultiset();
-                    cts.Cancel();
-                }
-                else
-                {
-                    context.CheckTimeout();
-                    if (context.RemainingTimeout > 0)
-                    {
-                        Task.WaitAll(evaluationTasks, (int) context.RemainingTimeout, cancellationToken);
-                    }
-                    else
-                    {
-                        Task.WaitAll(evaluationTasks, cancellationToken);
-                    }
-
-                    BaseMultiset lhsResult = lhsEvaluation.Result;
-                    BaseMultiset rhsResult = rhsEvaluation.Result;
-                    if (lhsResult is NullMultiset)
-                    {
-                        context.OutputMultiset = lhsResult;
-                    }
-                    else if (rhsResult is NullMultiset)
-                    {
-                        context.OutputMultiset = rhsResult;
-                    }
-                    else if (lhsResult == null || rhsResult == null)
-                    {
-                        context.OutputMultiset = new NullMultiset();
-                    }
-                    else
-                    {
-                        context.OutputMultiset = lhsResult.Product(rhsResult);
-                    }
-                }
-
-                return context.OutputMultiset;
-            }
-            catch (OperationCanceledException)
-            {
-                throw new RdfQueryTimeoutException("Query Execution Time exceeded the Timeout of " +
-                                                   context.QueryTimeout + "ms, query aborted after " +
-                                                   context.QueryTime + "ms");
-            }
-            catch (AggregateException ex)
-            {
-                Exception firstCause = ex.InnerExceptions.FirstOrDefault();
-                if (firstCause is RdfException) throw firstCause;
-                throw new RdfQueryException("Error in parallel join evaluation.", ex);
-            }
-            catch (RdfException)
-            {
-                throw;
-            }
-            catch(Exception ex)
-            {
-                throw new RdfQueryException("Error in parallel join evaluation.", ex);
-            }
-        }
-    
-
-        private delegate BaseMultiset ParallelEvaluateDelegate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IList<IRefNode> activeGraphs, IList<IRefNode> defGraphs);
-
-        private BaseMultiset ParallelEvaluate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IList<IRefNode> activeGraphs, IList<IRefNode> defGraphs)
-        {
-            bool activeGraphOk = false, defaultGraphOk = false;
-            try
-            {
-                // Set the Active Graph
-                if (activeGraphs.Any())
-                {
-                    context.Data.SetActiveGraph(activeGraphs);
-                    activeGraphOk = true;
-                }
-                // Set the Default Graph
-                if (defGraphs.Any())
-                {
-                    context.Data.SetDefaultGraph(defGraphs);
-                    defaultGraphOk = true;
-                }
-
-                // Evaluate the algebra and return the result
-                return context.Evaluate(algebra);
-            }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                if (defaultGraphOk)
-                {
-                    try
-                    {
-                        context.Data.ResetDefaultGraph();
-                    }
-                    catch
-                    {
-                        // Ignore reset exceptions
-                    }
-                }
-                if (activeGraphOk)
-                {
-                    try
-                    {
-                        context.Data.ResetActiveGraph();
-                    }
-                    catch
-                    {
-                        // Ignore reset exceptions
-                    }
-                }
-            }
-        }
-
-        private void RhsCallback(IAsyncResult result)
-        {
-            try
-            {
-                _rhsResult = _d.EndInvoke(result);
-            }
-            catch (Exception ex)
-            {
-                _rhsError = ex;
-                _rhsResult = null;
-            }
-        }
 
         /// <summary>
         /// Gets the Variables used in the Algebra.
@@ -242,7 +56,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
+                return (Lhs.Variables.Concat(Rhs.Variables)).Distinct();
             }
         }
         /// <summary>
@@ -253,7 +67,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are those floating on either side which are not fixed
-                IEnumerable<string> floating = _lhs.FloatingVariables.Concat(_rhs.FloatingVariables).Distinct();
+                IEnumerable<string> floating = Lhs.FloatingVariables.Concat(Rhs.FloatingVariables).Distinct();
                 var fixedVars = new HashSet<string>(FixedVariables);
                 return floating.Where(v => !fixedVars.Contains(v));
             }
@@ -267,31 +81,19 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Fixed variables are those fixed on either side
-                return _lhs.FixedVariables.Concat(_rhs.FixedVariables).Distinct();
+                return Lhs.FixedVariables.Concat(Rhs.FixedVariables).Distinct();
             }
         }
 
         /// <summary>
         /// Gets the LHS of the Join.
         /// </summary>
-        public ISparqlAlgebra Lhs
-        {
-            get
-            {
-                return _lhs;
-            }
-        }
+        public ISparqlAlgebra Lhs { get; }
 
         /// <summary>
         /// Gets the RHS of the Join.
         /// </summary>
-        public ISparqlAlgebra Rhs
-        {
-            get
-            {
-                return _rhs;
-            }
-        }
+        public ISparqlAlgebra Rhs { get; }
 
         /// <summary>
         /// Gets the String representation of the Join.
@@ -299,7 +101,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "ParallelJoin(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "ParallelJoin(" + Lhs.ToString() + ", " + Rhs.ToString() + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessJoin(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitJoin(this);
         }
 
         /// <summary>
@@ -320,8 +132,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            var p = _lhs.ToGraphPattern();
-            p.AddGraphPattern(_rhs.ToGraphPattern());
+            var p = Lhs.ToGraphPattern();
+            p.AddGraphPattern(Rhs.ToGraphPattern());
             return p;
         }
 
@@ -332,7 +144,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new ParallelJoin(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
+            return new ParallelJoin(optimiser.Optimise(Lhs), optimiser.Optimise(Rhs));
         }
 
         /// <summary>
@@ -342,7 +154,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new ParallelJoin(optimiser.Optimise(_lhs), _rhs);
+            return new ParallelJoin(optimiser.Optimise(Lhs), Rhs);
         }
 
         /// <summary>
@@ -352,7 +164,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new ParallelJoin(_lhs, optimiser.Optimise(_rhs));
+            return new ParallelJoin(Lhs, optimiser.Optimise(Rhs));
         }
     }
 }

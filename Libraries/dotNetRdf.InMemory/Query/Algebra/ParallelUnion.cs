@@ -39,7 +39,6 @@ namespace VDS.RDF.Query.Algebra
     public class ParallelUnion 
         : IUnion
     {
-
         /// <summary>
         /// Creates a new Union.
         /// </summary>
@@ -49,100 +48,6 @@ namespace VDS.RDF.Query.Algebra
         {
             Lhs = lhs;
             Rhs = rhs;
-        }
-
-        /// <summary>
-        /// Evaluates the Union.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            // Create a copy of the evaluation context for the RHS
-            var context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.Options);
-            if (!(context.InputMultiset is IdentityMultiset))
-            {
-                context2.InputMultiset = new Multiset();
-                foreach (ISet s in context.InputMultiset.Sets)
-                {
-                    context2.InputMultiset.Add(s.Copy());
-                }
-            }
-
-            var activeGraphs = context.Data.ActiveGraphNames.ToList();
-            var defaultGraphs = context.Data.ActiveGraphNames.ToList();
-
-            Task<BaseMultiset> lhsTask = Task.Factory.StartNew(() => ParallelEvaluate(Lhs, context, activeGraphs, defaultGraphs));
-            Task<BaseMultiset> rhsTask = Task.Factory.StartNew(() => ParallelEvaluate(Rhs, context2, activeGraphs, defaultGraphs));
-            Task[] evaluationTasks = {lhsTask, rhsTask};
-            try
-            {
-                Task.WaitAll(evaluationTasks);
-                context.CheckTimeout();
-                BaseMultiset lhsResult = lhsTask.Result;
-                BaseMultiset rhsResult = rhsTask.Result;
-                context.OutputMultiset = lhsResult.Union(rhsResult);
-                context.CheckTimeout();
-                context.InputMultiset = context.OutputMultiset;
-                return context.OutputMultiset;
-            }
-            catch (AggregateException ex)
-            {
-                if (ex.InnerExceptions.Any())
-                {
-                    throw ex.InnerExceptions.First();
-                }
-
-                throw;
-            }
-        }
-
-        private static BaseMultiset ParallelEvaluate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IList<IRefNode> activeGraphs, IList<IRefNode> defGraphs)
-        {
-            bool activeGraphOk = false, defaultGraphOk = false;
-            try
-            {
-                // Set the Active Graph
-                if (activeGraphs.Any())
-                {
-                    context.Data.SetActiveGraph(activeGraphs);
-                    activeGraphOk = true;
-                }
-                // Set the Default Graph
-                if (defGraphs.Any())
-                {
-                    context.Data.SetDefaultGraph(defGraphs);
-                    defaultGraphOk = true;
-                }
-
-                // Evaluate the algebra and return the result
-                return context.Evaluate(algebra);
-            }
-            finally
-            {
-                if (defaultGraphOk)
-                {
-                    try
-                    {
-                        context.Data.ResetDefaultGraph();
-                    }
-                    catch
-                    {
-                        // Ignore reset exceptions
-                    }
-                }
-                if (activeGraphOk)
-                {
-                    try
-                    {
-                        context.Data.ResetActiveGraph();
-                    }
-                    catch
-                    {
-                        // Ignore reset exceptions
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -185,6 +90,16 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "ParallelUnion(" + Lhs + ", " + Rhs + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessUnion(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitUnion(this);
         }
 
         /// <summary>

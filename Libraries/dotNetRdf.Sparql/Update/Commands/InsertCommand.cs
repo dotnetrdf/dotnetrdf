@@ -45,8 +45,6 @@ namespace VDS.RDF.Update.Commands
     public class InsertCommand 
         : BaseModificationCommand
     {
-        private readonly GraphPattern _insertPattern, _wherePattern;
-
         /// <summary>
         /// Creates a new INSERT command.
         /// </summary>
@@ -56,8 +54,8 @@ namespace VDS.RDF.Update.Commands
         public InsertCommand(GraphPattern insertions, GraphPattern where, IRefNode graphName) : base(
             SparqlUpdateCommandType.Insert)
         {
-            _insertPattern = insertions;
-            _wherePattern = where;
+            InsertPattern = insertions;
+            WherePattern = where;
             WithGraphName = graphName;
         }
 
@@ -93,10 +91,10 @@ namespace VDS.RDF.Update.Commands
                 {
                     affectedUris.Add(TargetGraph.ToSafeString());
                 }
-                if (_insertPattern.IsGraph) affectedUris.Add(_insertPattern.GraphSpecifier.Value);
-                if (_insertPattern.HasChildGraphPatterns)
+                if (InsertPattern.IsGraph) affectedUris.Add(InsertPattern.GraphSpecifier.Value);
+                if (InsertPattern.HasChildGraphPatterns)
                 {
-                    affectedUris.AddRange(from p in _insertPattern.ChildGraphPatterns
+                    affectedUris.AddRange(from p in InsertPattern.ChildGraphPatterns
                                           where p.IsGraph
                                           select p.GraphSpecifier.Value);
                 }
@@ -122,10 +120,10 @@ namespace VDS.RDF.Update.Commands
             {
                 affectedUris.Add(string.Empty);
             }
-            if (_insertPattern.IsGraph) affectedUris.Add(_insertPattern.GraphSpecifier.Value);
-            if (_insertPattern.HasChildGraphPatterns)
+            if (InsertPattern.IsGraph) affectedUris.Add(InsertPattern.GraphSpecifier.Value);
+            if (InsertPattern.HasChildGraphPatterns)
             {
-                affectedUris.AddRange(from p in _insertPattern.ChildGraphPatterns
+                affectedUris.AddRange(from p in InsertPattern.ChildGraphPatterns
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
@@ -142,10 +140,10 @@ namespace VDS.RDF.Update.Commands
         public override bool AffectsGraph(IRefNode graphName)
         {
             var affectedUris = new List<string> {TargetGraph.ToSafeString()};
-            if (_insertPattern.IsGraph) affectedUris.Add(_insertPattern.GraphSpecifier.Value);
-            if (_insertPattern.HasChildGraphPatterns)
+            if (InsertPattern.IsGraph) affectedUris.Add(InsertPattern.GraphSpecifier.Value);
+            if (InsertPattern.HasChildGraphPatterns)
             {
-                affectedUris.AddRange(from p in _insertPattern.ChildGraphPatterns
+                affectedUris.AddRange(from p in InsertPattern.ChildGraphPatterns
                     where p.IsGraph
                     select p.GraphSpecifier.Value);
             }
@@ -173,263 +171,21 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Gets the pattern used for insertions.
         /// </summary>
-        public GraphPattern InsertPattern
-        {
-            get
-            {
-                return _insertPattern;
-            }
-        }
+        public GraphPattern InsertPattern { get; }
 
         /// <summary>
         /// Gets the pattern used for the WHERE clause.
         /// </summary>
-        public GraphPattern WherePattern
-        {
-            get
-            {
-                return _wherePattern;
-            }
-        }
+        public GraphPattern WherePattern { get; }
 
         /// <summary>
         /// Optimises the Commands WHERE pattern.
         /// </summary>
         public override void Optimise(IQueryOptimiser optimiser)
         {
-            _wherePattern.Optimise(optimiser);
+            WherePattern.Optimise(optimiser);
         }
 
-        /// <summary>
-        /// Evaluates the Command in the given Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlUpdateEvaluationContext context)
-        {
-            var datasetOk = false;
-            var defGraphOk = false;
-
-            try
-            {
-                // First evaluate the WHERE pattern to get the affected bindings
-                ISparqlAlgebra where = _wherePattern.ToAlgebra();
-                if (context.Commands != null)
-                {
-                    where = context.Commands.ApplyAlgebraOptimisers(where);
-                }
-
-                // Set Active Graph for the WHERE
-                // Don't bother if there are USING URIs as these would override any Active Graph we set here
-                // so we can save ourselves the effort of doing this
-                if (!UsingUris.Any())
-                {
-                    if (WithGraphName != null)
-                    {
-                        context.Data.SetActiveGraph(WithGraphName);
-                        defGraphOk = true;
-                    }
-                    else
-                    {
-                        context.Data.SetActiveGraph((IRefNode)null);
-                        defGraphOk = true;
-                    }
-                }
-
-                // We need to make a dummy SparqlQuery object since if the Command has used any 
-                // USING NAMEDs along with GRAPH clauses then the algebra needs to have the
-                // URIs available to it which it gets from the Query property of the Context
-                // object
-                var query = new SparqlQuery();
-                foreach (Uri u in UsingUris)
-                {
-                    query.AddDefaultGraph(new UriNode(u));
-                }
-                foreach (Uri u in UsingNamedUris)
-                {
-                    query.AddNamedGraph(new UriNode(u));
-                }
-                var queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor, context.Options);
-                if (UsingUris.Any())
-                {
-                    // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
-                    context.Data.SetActiveGraph(_usingUris.Select<Uri, IRefNode>(u=>new UriNode(u)).ToList());
-                    datasetOk = true;
-                }
-                BaseMultiset results = queryContext.Evaluate(where);
-                if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
-                if (UsingUris.Any())
-                {
-                    // If there are USING URIs reset the Active Graph afterwards
-                    // Also flag the dataset as no longer being OK as this flag is used in the finally 
-                    // block to determine whether the Active Graph needs resetting which it may do if the
-                    // evaluation of the query fails for any reason
-                    context.Data.ResetActiveGraph();
-                    datasetOk = false;
-                }
-
-                // Reset Active Graph for the WHERE
-                if (defGraphOk)
-                {
-                    context.Data.ResetActiveGraph();
-                    defGraphOk = false;
-                }
-
-                // TODO: Need to detect when we create a Graph for Insertion but then fail to insert anything since in this case the Inserted Graph should be removed
-
-                // Get the Graph to which we are inserting Triples with no explicit Graph clause
-                IGraph g = null;
-                if (_insertPattern.TriplePatterns.Count > 0)
-                {
-                    if (context.Data.HasGraph(WithGraphName))
-                    {
-                        g = context.Data.GetModifiableGraph(WithGraphName);
-                    }
-                    else
-                    {
-                        // insertedGraphs.Add(this._graphUri);
-                        g = new Graph(WithGraphName);
-                        context.Data.AddGraph(g);
-                        g = context.Data.GetModifiableGraph(WithGraphName);
-                    }
-                }
-
-                // Keep a record of graphs to which we insert
-                var graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : 0), true, new UriComparer(), MultiDictionaryMode.AVL);
-
-                // Insert the Triples for each Solution
-                foreach (ISet s in results.Sets)
-                {
-                    var insertedTriples = new List<Triple>();
-
-                    try
-                    {
-                        // Create a new Construct Context for each Solution
-                        var constructContext = new ConstructContext(null, s, true);
-
-                        // Triples from raw Triple Patterns
-                        if (_insertPattern.TriplePatterns.Count > 0)
-                        {
-                            foreach (IConstructTriplePattern p in _insertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
-                            {
-                                try
-                                {
-                                    insertedTriples.Add(p.Construct(constructContext));
-                                }
-                                catch (RdfQueryException)
-                                {
-                                    // If we throw an error this means we couldn't construct a specific Triple
-                                    // so we continue anyway
-                                }
-                            }
-                            g.Assert(insertedTriples);
-                        }
-
-                        // Triples from GRAPH clauses
-                        foreach (GraphPattern gp in _insertPattern.ChildGraphPatterns)
-                        {
-                            insertedTriples.Clear();
-                            try
-                            {
-                                string graphUri;
-                                switch (gp.GraphSpecifier.TokenType)
-                                {
-                                    case Token.URI:
-                                        graphUri = gp.GraphSpecifier.Value;
-                                        break;
-                                    case Token.VARIABLE:
-                                        var graphVar = gp.GraphSpecifier.Value.Substring(1);
-                                        if (s.ContainsVariable(graphVar))
-                                        {
-                                            INode temp = s[graphVar];
-                                            if (temp == null)
-                                            {
-                                                // If the Variable is not bound then skip
-                                                continue;
-                                            }
-                                            if (temp.NodeType == NodeType.Uri)
-                                            {
-                                                graphUri = temp.ToSafeString();
-                                            }
-                                            else
-                                            {
-                                                // If the Variable is not bound to a URI then skip
-                                                continue;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // If the Variable is not bound for this solution then skip
-                                            continue;
-                                        }
-                                        break;
-                                    default:
-                                        // Any other Graph Specifier we have to ignore this solution
-                                        continue;
-                                }
-
-                                // Ensure the Graph we're inserting to exists in the dataset creating it if necessary
-                                IGraph h;
-                                Uri destUri = UriFactory.Root.Create(graphUri);
-                                IRefNode destName = new UriNode(destUri);
-                                if (graphs.ContainsKey(destUri))
-                                {
-                                    h = graphs[destUri];
-                                }
-                                else
-                                {
-                                    if (context.Data.HasGraph(destName))
-                                    {
-                                        h = context.Data.GetModifiableGraph(destName);
-                                    }
-                                    else
-                                    {
-                                        // insertedGraphs.Add(destUri);
-                                        h = new Graph(destName);
-                                        context.Data.AddGraph(h);
-                                        h = context.Data.GetModifiableGraph(destName);
-                                    }
-                                    graphs.Add(destUri, h);
-                                }
-
-                                // Do the actual Insertions
-                                foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
-                                {
-                                    try
-                                    {
-                                        Triple t = p.Construct(constructContext);
-                                        t = new Triple(t.Subject, t.Predicate, t.Object, destUri);
-                                        insertedTriples.Add(t);
-                                    }
-                                    catch (RdfQueryException)
-                                    {
-                                        // If we throw an error this means we couldn't construct a specific Triple
-                                        // so we continue anyway
-                                    }
-                                }
-                                h.Assert(insertedTriples);
-                            }
-                            catch (RdfQueryException)
-                            {
-                                // If we throw an error this means we couldn't construct for this solution so the
-                                // solution is ignored for this Graph
-                            }
-                        }
-                    }
-                    catch (RdfQueryException)
-                    {
-                        // If we throw an error this means we couldn't construct for this solution so the
-                        // solution is ignored for this graph
-                    }
-                }
-            }
-            finally
-            {
-                // If the Dataset was set and an error occurred in doing the WHERE clause then
-                // we'll need to Reset the Active Graph
-                if (datasetOk) context.Data.ResetActiveGraph();
-                if (defGraphOk) context.Data.ResetActiveGraph();
-            }
-        }
 
         /// <summary>
         /// Processes the Command using the given Update Processor.
@@ -454,7 +210,7 @@ namespace VDS.RDF.Update.Commands
                 output.AppendLine(formatter.Format(WithGraphName));
             }
             output.AppendLine("INSERT");
-            output.AppendLine(_insertPattern.ToString());
+            output.AppendLine(InsertPattern.ToString());
             if (_usingUris != null)
             {
                 foreach (Uri u in _usingUris)
@@ -470,7 +226,7 @@ namespace VDS.RDF.Update.Commands
                 }
             }
             output.AppendLine("WHERE");
-            output.AppendLine(_wherePattern.ToString());
+            output.AppendLine(WherePattern.ToString());
             return output.ToString();
         }
     }

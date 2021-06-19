@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
     /// <summary>
@@ -42,15 +39,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public LowerCaseFunction(ISparqlExpression stringExpr)
             : base(stringExpr) { }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <returns></returns>
-        protected override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            return new StringNode(stringLit.Value.ToLower(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return processor.ProcessLowerCaseFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitLowerCaseFunction(this);
         }
 
         /// <summary>

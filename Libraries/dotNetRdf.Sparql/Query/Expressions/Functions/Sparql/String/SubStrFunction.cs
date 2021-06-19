@@ -38,8 +38,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     public class SubStrFunction
         : ISparqlExpression
     {
-        private ISparqlExpression _expr, _start, _length;
-
         /// <summary>
         /// Creates a new XPath Substring function.
         /// </summary>
@@ -56,160 +54,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <param name="lengthExpr">Length.</param>
         public SubStrFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr, ISparqlExpression lengthExpr)
         {
-            _expr = stringExpr;
-            _start = startExpr;
-            _length = lengthExpr;
+            StringExpression = stringExpr;
+            StartExpression = startExpr;
+            LengthExpression = lengthExpr;
         }
 
-        /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public ISparqlExpression StringExpression { get; }
+        public ISparqlExpression StartExpression { get; }
+        public ISparqlExpression LengthExpression { get; }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            var input = (ILiteralNode)CheckArgument(_expr, context, bindingID);
-            IValuedNode start = CheckArgument(_start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
-
-            if (_length != null)
-            {
-                IValuedNode length = CheckArgument(_length, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
-
-                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-
-                try
-                {
-                    var s = Convert.ToInt32(start.AsInteger());
-                    var l = Convert.ToInt32(length.AsInteger());
-
-                    if (s < 1) s = 1;
-                    if (l < 1)
-                    {
-                        // If no/negative characters are being selected the empty string is returned
-                        if (input.DataType != null)
-                        {
-                            return new StringNode(string.Empty, input.DataType);
-                        }
-                        else
-                        {
-                            return new StringNode(string.Empty, input.Language);
-                        }
-                    }
-                    else if ((s - 1) > input.Value.Length)
-                    {
-                        // If the start is after the end of the string the empty string is returned
-                        if (input.DataType != null)
-                        {
-                            return new StringNode(string.Empty, input.DataType);
-                        }
-                        else
-                        {
-                            return new StringNode(string.Empty, input.Language);
-                        }
-                    }
-                    else
-                    {
-                        if (((s - 1) + l) > input.Value.Length)
-                        {
-                            // If the start plus the length is greater than the length of the string the string from the starts onwards is returned
-                            if (input.DataType != null)
-                            {
-                                return new StringNode(input.Value.Substring(s - 1), input.DataType);
-                            }
-                            else
-                            {
-                                return new StringNode(input.Value.Substring(s - 1), input.Language);
-                            }
-                        }
-                        else
-                        {
-                            // Otherwise do normal substring
-                            if (input.DataType != null)
-                            {
-                                return new StringNode(input.Value.Substring(s - 1, l), input.DataType);
-                            }
-                            else
-                            {
-                                return new StringNode(input.Value.Substring(s - 1, l), input.Language);
-                            }
-                        }
-                    }
-                }
-                catch
-                {
-                    throw new RdfQueryException("Unable to convert the Start/Length argument to an Integer");
-                }
-            }
-            else
-            {
-                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-
-                try
-                {
-                    var s = Convert.ToInt32(start.AsInteger());
-                    if (s < 1) s = 1;
-
-                    if (input.DataType != null)
-                    {
-                        return new StringNode(input.Value.Substring(s - 1), input.DataType);
-                    }
-                    else
-                    {
-                        return new StringNode(input.Value.Substring(s - 1), input.Language);
-                    }
-                }
-                catch
-                {
-                    throw new RdfQueryException("Unable to convert the Start argument to an Integer");
-                }
-            }
+            return processor.ProcessSubStrFunction(this, context, binding);
         }
 
-        private IValuedNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
-            return CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
-        }
-
-        private IValuedNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
-        {
-            IValuedNode temp = expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                if (temp.NodeType == NodeType.Literal)
-                {
-                    var lit = (ILiteralNode)temp;
-                    if (lit.DataType != null)
-                    {
-                        if (argumentTypeValidator(lit.DataType))
-                        {
-                            // Appropriately typed literals are fine
-                            return temp;
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a typed literal with an invalid type");
-                        }
-                    }
-                    else if (argumentTypeValidator(context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
-                    {
-                        // Untyped Literals are treated as Strings and may be returned when the argument allows strings
-                        return temp;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evalaute a substring as one of the argument expressions returned an untyped literal");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a non-literal");
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions evaluated to null");
-            }
+            return visitor.VisitSubStrFunction(this);
         }
 
         /// <summary>
@@ -219,13 +80,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                if (_length != null)
+                if (LengthExpression != null)
                 {
-                    return _expr.Variables.Concat(_start.Variables).Concat(_length.Variables);
+                    return StringExpression.Variables.Concat(StartExpression.Variables).Concat(LengthExpression.Variables);
                 }
                 else
                 {
-                    return _expr.Variables.Concat(_start.Variables);
+                    return StringExpression.Variables.Concat(StartExpression.Variables);
                 }
             }
         }
@@ -236,13 +97,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            if (_length != null)
+            if (LengthExpression != null)
             {
-                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + _expr.ToString() + "," + _start.ToString() + "," + _length.ToString() + ")";
+                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression.ToString() + "," + StartExpression.ToString() + "," + LengthExpression.ToString() + ")";
             }
             else
             {
-                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + _expr.ToString() + "," + _start.ToString() + ")";
+                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression.ToString() + "," + StartExpression.ToString() + ")";
             }
         }
 
@@ -275,13 +136,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                if (_length != null)
+                if (LengthExpression != null)
                 {
-                    return new ISparqlExpression[] { _expr, _start, _length };
+                    return new ISparqlExpression[] { StringExpression, StartExpression, LengthExpression };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { _expr, _start };
+                    return new ISparqlExpression[] { StringExpression, StartExpression };
                 }
             }
         }
@@ -293,7 +154,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return _expr.CanParallelise && _start.CanParallelise && (_length == null || _length.CanParallelise);
+                return StringExpression.CanParallelise && StartExpression.CanParallelise && (LengthExpression == null || LengthExpression.CanParallelise);
             }
         }
 
@@ -304,13 +165,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (_length != null)
+            if (LengthExpression != null)
             {
-                return new SubStrFunction(transformer.Transform(_expr), transformer.Transform(_start), transformer.Transform(_length));
+                return new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression));
             }
             else
             {
-                return new SubStrFunction(transformer.Transform(_expr), transformer.Transform(_start));
+                return new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression));
             }
         }
     }

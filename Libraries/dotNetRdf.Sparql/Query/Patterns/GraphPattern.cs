@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Creates a new Graph Pattern.
         /// </summary>
-        internal GraphPattern()
+        public GraphPattern()
         {
         }
 
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Patterns
         /// Adds a Triple Pattern to the Graph Pattern respecting any BGP breaks.
         /// </summary>
         /// <param name="p">Triple Pattern.</param>
-        internal void AddTriplePattern(ITriplePattern p)
+        public void AddTriplePattern(ITriplePattern p)
         {
             if (_break)
             {

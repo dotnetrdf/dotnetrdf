@@ -76,9 +76,13 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="result">Result.</param>
         /// <returns></returns>
-        protected override bool HandleResultInternal(SparqlResult result)
+        protected override bool HandleResultInternal(ISparqlResult result)
         {
-            _mset.Add(new Set(result));
+            var set = new Set();
+            foreach (var var in result.Variables)
+            {
+                set.Add(var, result[var]);
+            }
             return true;
         }
     }

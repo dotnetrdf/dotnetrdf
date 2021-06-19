@@ -32,14 +32,9 @@ namespace VDS.RDF.Query.Paths
     /// <summary>
     /// Evaluation Context for evaluating complex property paths in SPARQL.
     /// </summary>
+    /// <typeparam name="T">The type of the SPARQL evaluation context to use when evaluating the path.</typeparam>
     public class PathEvaluationContext
     {
-        private bool _first = true, _last = true, _reverse = false, _earlyAbort = false, _allowNewPaths = false;
-        private HashSet<PotentialPath> _incompletePaths = new HashSet<PotentialPath>();
-        private HashSet<PotentialPath> _completePaths = new HashSet<PotentialPath>();
-        private SparqlEvaluationContext _context;
-        private PatternItem _start, _end;
-
         /// <summary>
         /// Creates a new Path Evaluation Context.
         /// </summary>
@@ -48,12 +43,12 @@ namespace VDS.RDF.Query.Paths
         /// <param name="start">End point of the Path.</param>
         public PathEvaluationContext(SparqlEvaluationContext context, PatternItem start, PatternItem end)
         {
-            _context = context;
-            _start = start;
-            _end = end;
-            if (_start.VariableName == null && _end.VariableName == null) _earlyAbort = true;
-            _start.RigorousEvaluation = true;
-            _end.RigorousEvaluation = true;
+            SparqlContext = context;
+            PathStart = start;
+            PathEnd = end;
+            if (PathStart.VariableName == null && PathEnd.VariableName == null) CanAbortEarly = true;
+            PathStart.RigorousEvaluation = true;
+            PathEnd.RigorousEvaluation = true;
         }
 
         /// <summary>
@@ -65,113 +60,53 @@ namespace VDS.RDF.Query.Paths
         {
             foreach (PotentialPath p in context.Paths)
             {
-                _incompletePaths.Add(new PotentialPath(p));
+                Paths.Add(new PotentialPath(p));
             }
-            _completePaths.UnionWith(context.CompletePaths);
-            _first = context.IsFirst;
-            _last = context.IsLast;
-            _reverse = context.IsReversed;
+            CompletePaths.UnionWith(context.CompletePaths);
+            IsFirst = context.IsFirst;
+            IsLast = context.IsLast;
+            IsReversed = context.IsReversed;
         }
 
         /// <summary>
         /// Gets the SPARQL Evaluation Context.
         /// </summary>
-        public SparqlEvaluationContext SparqlContext
-        {
-            get
-            {
-                return _context;
-            }
-        }
+        public SparqlEvaluationContext SparqlContext { get; }
 
         /// <summary>
         /// Gets/Sets whether this is the first part of the Path to be evaluated.
         /// </summary>
-        public bool IsFirst
-        {
-            get
-            {
-                return _first;
-            }
-            set
-            {
-                _first = value;
-            }
-        }
+        public bool IsFirst { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether this is the last part of the Path to be evaluated.
         /// </summary>
-        public bool IsLast
-        {
-            get
-            {
-                return _last;
-            }
-            set
-            {
-                _last = value;
-            }
-        }
+        public bool IsLast { get; set; } = true;
 
         /// <summary>
         /// Gets/Sets whether the Path is currently reversed.
         /// </summary>
-        public bool IsReversed
-        {
-            get
-            {
-                return _reverse;
-            }
-            set
-            {
-                _reverse = value;
-            }
-        }
+        public bool IsReversed { get; set; }
 
         /// <summary>
         /// Gets the hash set of incomplete paths generated so far.
         /// </summary>
-        public HashSet<PotentialPath> Paths
-        {
-            get
-            {
-                return _incompletePaths;
-            }
-        }
+        public HashSet<PotentialPath> Paths { get; } = new HashSet<PotentialPath>();
 
         /// <summary>
         /// Gets the hash set of complete paths generated so far.
         /// </summary>
-        public HashSet<PotentialPath> CompletePaths
-        {
-            get
-            {
-                return _completePaths;
-            }
-        }
+        public HashSet<PotentialPath> CompletePaths { get; } = new HashSet<PotentialPath>();
 
         /// <summary>
         /// Gets the pattern which is the start of the path.
         /// </summary>
-        public PatternItem PathStart
-        {
-            get
-            {
-                return _start;
-            }
-        }
+        public PatternItem PathStart { get; }
 
         /// <summary>
         /// Gets the pattern which is the end of the path.
         /// </summary>
-        public PatternItem PathEnd
-        {
-            get
-            {
-                return _end;
-            }
-        }
+        public PatternItem PathEnd { get; }
 
         /// <summary>
         /// Gets whether pattern evaluation can be aborted early.
@@ -179,13 +114,7 @@ namespace VDS.RDF.Query.Paths
         /// <remarks>
         /// Useful when both the start and end of the path are fixed (non-variables) which means that we can stop evaluating once we find the path (if it exists).
         /// </remarks>
-        public bool CanAbortEarly
-        {
-            get
-            {
-                return _earlyAbort;
-            }
-        }
+        public bool CanAbortEarly { get; }
 
         /// <summary>
         /// Gets/Sets whether new paths can be introduced when not evaluating the first part of the path.
@@ -198,17 +127,7 @@ namespace VDS.RDF.Query.Paths
         /// The cases where ?x is already bound are handled elsewhere as we can just introduce zero-length paths for every existing binding for ?x.
         /// </para>
         /// </remarks>
-        public bool PermitsNewPaths
-        {
-            get
-            {
-                return _allowNewPaths;
-            }
-            set
-            {
-                _allowNewPaths = value;
-            }
-        }
+        public bool PermitsNewPaths { get; set; } = false;
 
         /// <summary>
         /// Adds a new path to the list of current incomplete paths.
@@ -216,9 +135,9 @@ namespace VDS.RDF.Query.Paths
         /// <param name="p">Path.</param>
         public void AddPath(PotentialPath p)
         {
-            if (!_incompletePaths.Contains(p))
+            if (!Paths.Contains(p))
             {
-                _incompletePaths.Add(p);
+                Paths.Add(p);
             }
         }
 
@@ -230,9 +149,9 @@ namespace VDS.RDF.Query.Paths
         {
             if (p.IsComplete && !p.IsPartial)
             {
-                if (!_completePaths.Contains(p))
+                if (!CompletePaths.Contains(p))
                 {
-                    _completePaths.Add(p);
+                    CompletePaths.Add(p);
                 }
             }
         }

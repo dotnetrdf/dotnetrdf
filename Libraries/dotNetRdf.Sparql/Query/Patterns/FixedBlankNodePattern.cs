@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">SPARQL Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        protected internal override bool Accepts(IPatternEvaluationContext context, INode obj)
+        public override bool Accepts(IPatternEvaluationContext context, INode obj)
         {
             if (obj.NodeType == NodeType.Blank)
             {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Patterns
         /// Returns a Blank Node with a fixed ID scoped to whichever graph is provided.
         /// </summary>
         /// <param name="context">Construct Context.</param>
-        protected internal override INode Construct(ConstructContext context)
+        public override INode Construct(ConstructContext context)
         {
             if (context.Graph != null)
             {

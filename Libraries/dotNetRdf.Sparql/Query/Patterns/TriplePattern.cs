@@ -40,9 +40,6 @@ namespace VDS.RDF.Query.Patterns
     public class TriplePattern
         : BaseTriplePattern, IMatchTriplePattern, IConstructTriplePattern, IComparable<TriplePattern>
     {
-        private readonly TripleIndexType _indexType = TripleIndexType.None;
-        private readonly PatternItem _subj, _pred, _obj;
-
         /// <summary>
         /// Creates a new Triple Pattern.
         /// </summary>
@@ -51,64 +48,64 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="obj">Object Pattern.</param>
         public TriplePattern(PatternItem subj, PatternItem pred, PatternItem obj)
         {
-            _subj = subj;
+            Subject = subj;
             if (pred is BlankNodePattern)
             {
                 throw new RdfParseException("Cannot use a Triple Pattern with a Blank Node Predicate in a SPARQL Query");
             }
-            _pred = pred;
-            _obj = obj;
+            Predicate = pred;
+            Object = obj;
 
             // Decide on the Index Type
-            if (_subj is NodeMatchPattern)
+            if (Subject is NodeMatchPattern)
             {
-                if (_pred is NodeMatchPattern)
+                if (Predicate is NodeMatchPattern)
                 {
-                    _indexType = TripleIndexType.SubjectPredicate;
+                    IndexType = TripleIndexType.SubjectPredicate;
                 }
-                else if (_obj is NodeMatchPattern)
+                else if (Object is NodeMatchPattern)
                 {
-                    _indexType = TripleIndexType.SubjectObject;
+                    IndexType = TripleIndexType.SubjectObject;
                 }
                 else
                 {
-                    _indexType = TripleIndexType.Subject;
+                    IndexType = TripleIndexType.Subject;
                 }
             }
-            else if (_pred is NodeMatchPattern)
+            else if (Predicate is NodeMatchPattern)
             {
-                if (_obj is NodeMatchPattern)
+                if (Object is NodeMatchPattern)
                 {
-                    _indexType = TripleIndexType.PredicateObject;
+                    IndexType = TripleIndexType.PredicateObject;
                 }
                 else
                 {
-                    _indexType = TripleIndexType.Predicate;
+                    IndexType = TripleIndexType.Predicate;
                 }
             }
-            else if (_obj is NodeMatchPattern)
+            else if (Object is NodeMatchPattern)
             {
-                _indexType = TripleIndexType.Object;
+                IndexType = TripleIndexType.Object;
             }
 
             // Determine variables used
-            if (_subj.VariableName != null) _vars.Add(_subj.VariableName);
-            if (_pred.VariableName != null)
+            if (Subject.VariableName != null) _vars.Add(Subject.VariableName);
+            if (Predicate.VariableName != null)
             {
-                if (!_vars.Contains(_pred.VariableName))
+                if (!_vars.Contains(Predicate.VariableName))
                 {
-                    _vars.Add(_pred.VariableName);
+                    _vars.Add(Predicate.VariableName);
                 }
                 else
                 {
-                    _pred.Repeated = true;
+                    Predicate.Repeated = true;
                 }
             }
-            if (_obj.VariableName != null)
+            if (Object.VariableName != null)
             {
-                if (!_vars.Contains(_obj.VariableName))
+                if (!_vars.Contains(Object.VariableName))
                 {
-                    _vars.Add(_obj.VariableName);
+                    _vars.Add(Object.VariableName);
                 }
                 else
                 {
@@ -116,7 +113,7 @@ namespace VDS.RDF.Query.Patterns
                 }
             }
             _vars.Sort();
-            if (_vars.Count == 0) _indexType = TripleIndexType.NoVariables;
+            if (_vars.Count == 0) IndexType = TripleIndexType.NoVariables;
         }
 
         /// <summary>
@@ -127,21 +124,21 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public bool Accepts(IPatternEvaluationContext context, Triple obj)
         {
-            if (!_pred.Repeated && !_obj.Repeated)
+            if (!Predicate.Repeated && !Object.Repeated)
             {
-                return (_subj.Accepts(context, obj.Subject) && _pred.Accepts(context, obj.Predicate) && _obj.Accepts(context, obj.Object));
+                return (Subject.Accepts(context, obj.Subject) && Predicate.Accepts(context, obj.Predicate) && Object.Accepts(context, obj.Object));
             }
-            else if (_pred.Repeated && !_obj.Repeated)
+            else if (Predicate.Repeated && !Object.Repeated)
             {
-                return (_subj.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && _obj.Accepts(context, obj.Object));
+                return (Subject.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && Object.Accepts(context, obj.Object));
             }
-            else if (!_pred.Repeated && _obj.Repeated)
+            else if (!Predicate.Repeated && Object.Repeated)
             {
-                return (_subj.Accepts(context, obj.Subject) && _pred.Accepts(context, obj.Predicate) && obj.Subject.Equals(obj.Object));
+                return (Subject.Accepts(context, obj.Subject) && Predicate.Accepts(context, obj.Predicate) && obj.Subject.Equals(obj.Object));
             }
             else
             {
-                return (_subj.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && obj.Subject.Equals(obj.Object));
+                return (Subject.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && obj.Subject.Equals(obj.Object));
             }
         }
 
@@ -159,46 +156,22 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Index Type we will use for this Pattern.
         /// </summary>
-        public TripleIndexType IndexType
-        {
-            get
-            {
-                return _indexType;
-            }
-        }
+        public TripleIndexType IndexType { get; } = TripleIndexType.None;
 
         /// <summary>
         /// Subject Pattern.
         /// </summary>
-        public PatternItem Subject
-        {
-            get
-            {
-                return _subj;
-            }
-        }
+        public PatternItem Subject { get; }
 
         /// <summary>
         /// Predicate Pattern.
         /// </summary>
-        public PatternItem Predicate
-        {
-            get
-            {
-                return _pred;
-            }
-        }
+        public PatternItem Predicate { get; }
 
         /// <summary>
         /// Object Pattern.
         /// </summary>
-        public PatternItem Object
-        {
-            get
-            {
-                return _obj;
-            }
-        }
+        public PatternItem Object { get; }
 
         /// <summary>
         /// Returns all variables mentioned as a match guarantees all variables are bound.
@@ -213,6 +186,16 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<string>(); } }
 
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessTriplePattern(this, context);
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitTriplePattern(this);
+        }
+
         /// <summary>
         /// Returns whether the Triple Pattern is an accept all.
         /// </summary>
@@ -223,8 +206,8 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (_subj is VariablePattern && _pred is VariablePattern && _obj is VariablePattern)  &&
-                    (_subj.VariableName != _pred.VariableName && _pred.VariableName != _obj.VariableName && _subj.VariableName != _obj.VariableName);
+                return (Subject is VariablePattern && Predicate is VariablePattern && Object is VariablePattern)  &&
+                    (Subject.VariableName != Predicate.VariableName && Predicate.VariableName != Object.VariableName && Subject.VariableName != Object.VariableName);
             }
 
         }
@@ -237,17 +220,17 @@ namespace VDS.RDF.Query.Patterns
         public ISet CreateResult(Triple t)
         {
             var s = new Set();
-            if (_subj.VariableName != null)
+            if (Subject.VariableName != null)
             {
-                s.Add(_subj.VariableName, t.Subject);
+                s.Add(Subject.VariableName, t.Subject);
             }
-            if (_pred.VariableName != null && !_pred.Repeated)
+            if (Predicate.VariableName != null && !Predicate.Repeated)
             {
-                s.Add(_pred.VariableName, t.Predicate);
+                s.Add(Predicate.VariableName, t.Predicate);
             }
-            if (_obj.VariableName != null && !_obj.Repeated)
+            if (Object.VariableName != null && !Object.Repeated)
             {
-                s.Add(_obj.VariableName, t.Object);
+                s.Add(Object.VariableName, t.Object);
             }
             return s;
         }
@@ -259,7 +242,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public Triple Construct(ConstructContext context)
         {
-            return new Triple(_subj.Construct(context), _pred.Construct(context), _obj.Construct(context));
+            return new Triple(Subject.Construct(context), Predicate.Construct(context), Object.Construct(context));
         }
 
         /// <summary>
@@ -269,7 +252,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (_indexType == TripleIndexType.NoVariables);
+                return (IndexType == TripleIndexType.NoVariables);
             }
         }
 
@@ -280,9 +263,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (_subj is NodeMatchPattern || _subj is BlankNodePattern || _subj is FixedBlankNodePattern) &&
-                       (_pred is NodeMatchPattern || _pred is BlankNodePattern || _pred is FixedBlankNodePattern) &&
-                       (_obj is NodeMatchPattern || _obj is BlankNodePattern || _obj is FixedBlankNodePattern);
+                return (Subject is NodeMatchPattern || Subject is BlankNodePattern || Subject is FixedBlankNodePattern) &&
+                       (Predicate is NodeMatchPattern || Predicate is BlankNodePattern || Predicate is FixedBlankNodePattern) &&
+                       (Object is NodeMatchPattern || Object is BlankNodePattern || Object is FixedBlankNodePattern);
             }
         }
 
@@ -293,9 +276,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (_subj is NodeMatchPattern || _subj is VariablePattern || _subj is FixedBlankNodePattern) &&
-                       (_pred is NodeMatchPattern || _pred is VariablePattern || _pred is FixedBlankNodePattern) &&
-                       (_obj is NodeMatchPattern || _obj is VariablePattern || _obj is FixedBlankNodePattern);
+                return (Subject is NodeMatchPattern || Subject is VariablePattern || Subject is FixedBlankNodePattern) &&
+                       (Predicate is NodeMatchPattern || Predicate is VariablePattern || Predicate is FixedBlankNodePattern) &&
+                       (Object is NodeMatchPattern || Object is VariablePattern || Object is FixedBlankNodePattern);
             }
         }
 
@@ -325,7 +308,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return _subj.ToString() + " " + _pred.ToString() + " " + _obj.ToString();
+            return Subject.ToString() + " " + Predicate.ToString() + " " + Object.ToString();
         }
     }
 }

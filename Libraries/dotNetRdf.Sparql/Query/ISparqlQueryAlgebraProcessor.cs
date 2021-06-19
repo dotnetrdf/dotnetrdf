@@ -25,6 +25,7 @@
 */
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
@@ -259,5 +260,24 @@ namespace VDS.RDF.Query
         TResult ProcessBoundFilter(BoundFilter filter, TContext context);
         TResult ProcessUnaryExpressionFilter(UnaryExpressionFilter filter, TContext context);
         TResult ProcessChainFilter(ChainFilter filter, TContext context);
+        TResult ProcessSingleValueRestrictionFilter(SingleValueRestrictionFilter filter, TContext context);
+
+        TResult ProcessBindPattern(BindPattern bindPattern, TContext context);
+        TResult ProcessFilterPattern(FilterPattern filterPattern, TContext context);
+        TResult ProcessLetPattern(LetPattern letPattern, TContext context);
+        TResult ProcessPropertyFunction(PropertyFunction propertyFunction, TContext context);
+        TResult ProcessPropertyPathPattern(PropertyPathPattern propertyPathPattern, TContext context);
+        TResult ProcessSubQueryPattern(SubQueryPattern subQueryPattern, TContext context);
+        TResult ProcessPropertyFunctionPattern(PropertyFunctionPattern propFunctionPattern, TContext context);
+        TResult ProcessTriplePattern(TriplePattern triplePattern, TContext context);
+
+        /// <summary>
+        /// Invoked to process any other algebra class not covered above. In particular
+        /// engine-specific optimised algebra classes.
+        /// </summary>
+        /// <param name="op"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        TResult ProcessUnknownOperator(ISparqlAlgebra op, TContext context);
     }
 }

@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using System;
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 {
     /// <summary>
@@ -42,57 +39,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         public FloorFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Gets the Numeric Value of the function as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode a = _expr.Evaluate(context, bindingID);
-            if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
-
-            switch (a.NumericType)
-            {
-                case SparqlNumericType.Integer:
-                    try
-                    {
-                        return new LongNode(Convert.ToInt64(Math.Floor(a.AsDecimal())));
-                    }
-                    catch (RdfQueryException)
-                    {
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfQueryException("Unable to cast floor value of integer to an integer", ex);
-                    }
-
-                case SparqlNumericType.Decimal:
-                    return new DecimalNode(Math.Floor(a.AsDecimal()));
-
-                case SparqlNumericType.Float:
-                    try
-                    {
-                        return new FloatNode(Convert.ToSingle(Math.Floor(a.AsDouble())));
-                    }
-                    catch (RdfQueryException)
-                    {
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfQueryException("Unable to cast floor value of float to a float", ex);
-                    }
-
-                case SparqlNumericType.Double:
-                    return new DoubleNode(Math.Floor(a.AsDouble()));
-
-                default:
-                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of the function.
@@ -100,7 +46,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Floor + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Floor + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessFloorFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitFloorFunction(this);
         }
 
         /// <summary>
@@ -132,7 +88,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new FloorFunction(transformer.Transform(_expr));
+            return new FloorFunction(transformer.Transform(InnerExpression));
         }
     }
 }

@@ -26,9 +26,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using VDS.Common.Comparers;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -40,8 +42,10 @@ using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
+using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Query
 {
@@ -62,12 +66,9 @@ namespace VDS.RDF.Query
     {
         private readonly ISparqlDataset _dataset;
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-        private LeviathanQueryOptions _options = new LeviathanQueryOptions();
+        private readonly LeviathanQueryOptions _options = new LeviathanQueryOptions();
         private readonly ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> _expressionProcessor;
-
-        private readonly ISparqlAggregateProcessor<IValuedNode, SparqlEvaluationContext, int>
-            _aggregateProcessor;
-
+        private readonly ISparqlAggregateProcessor<IValuedNode, SparqlEvaluationContext, int> _aggregateProcessor;
         private readonly IDictionary<Bindings, BaseMultiset> _bindingsCache = new Dictionary<Bindings, BaseMultiset>();
 
         /// <summary>
@@ -85,9 +86,6 @@ namespace VDS.RDF.Query
         /// <param name="options">Set the processor options.</param>
         public LeviathanQueryProcessor(ISparqlDataset data, Action<LeviathanQueryOptions> options = null)
         {
-            _expressionProcessor = new LeviathanExpressionProcessor();
-            _aggregateProcessor = new LeviathanAggregateProcessor(_expressionProcessor);
-
             _dataset = data;
 
             if (!_dataset.UsesUnionDefaultGraph)
@@ -101,6 +99,30 @@ namespace VDS.RDF.Query
             }
 
             options?.Invoke(_options);
+            var expressionProcessor = new LeviathanExpressionProcessor(_options, this);
+            _aggregateProcessor = expressionProcessor.AggregateProcessor;
+            _expressionProcessor = expressionProcessor;
+        }
+
+        public LeviathanQueryProcessor(ISparqlDataset data, LeviathanQueryOptions options)
+        {
+            _options = options ??
+                       throw new ArgumentNullException(nameof(options), "Query options parameter must not be null.");
+
+            _dataset = data;
+
+            if (!_dataset.UsesUnionDefaultGraph)
+            {
+                if (!_dataset.HasGraph((IRefNode)null))
+                {
+                    // Create the Default unnamed Graph if it doesn't exist and then Flush() the change
+                    _dataset.AddGraph(new Graph());
+                    _dataset.Flush();
+                }
+            }
+            var expressionProcessor = new LeviathanExpressionProcessor(_options, this);
+            _aggregateProcessor = expressionProcessor.AggregateProcessor;
+            _expressionProcessor = expressionProcessor;
         }
 
         /// <summary>
@@ -503,86 +525,91 @@ namespace VDS.RDF.Query
                     context.OutputMultiset.Trim();
                     return context.OutputMultiset;
                 case LazyBgp lazyBgp:
-                    return lazyBgp.Evaluate(context);
+                    return EvaluateLazyBgp(lazyBgp, context);
                 default:
-                    IList<ITriplePattern> triplePatterns = bgp.TriplePatterns.ToList();
-                    if (triplePatterns.Count > 0)
-                    {
-                        for (var i = 0; i < triplePatterns.Count; i++)
-                        {
-                            if (i == 0)
-                            {
-                                // If the 1st thing in a BGP is a BIND/LET/FILTER the Input becomes the Identity Multiset
-                                if (triplePatterns[i].PatternType == TriplePatternType.Filter ||
-                                    triplePatterns[i].PatternType == TriplePatternType.BindAssignment ||
-                                    triplePatterns[i].PatternType == TriplePatternType.LetAssignment)
-                                {
-                                    if (triplePatterns[i].PatternType == TriplePatternType.BindAssignment)
-                                    {
-                                        if (context.InputMultiset.ContainsVariable(
-                                            ((IAssignmentPattern)triplePatterns[i]).VariableName))
-                                            throw new RdfQueryException(
-                                                "Cannot use a BIND assigment to BIND to a variable that has previously been declared");
-                                    }
-                                    else
-                                    {
-                                        context.InputMultiset = new IdentityMultiset();
-                                    }
-                                }
-                            }
-
-                            // Create a new Output Multiset
-                            context.OutputMultiset = new Multiset();
-
-                            triplePatterns[i].Accept(this, context);
-
-                            // If at any point we've got an Empty Multiset as our Output then we terminate BGP execution
-                            if (context.OutputMultiset.IsEmpty) break;
-
-                            // Check for Timeout before attempting the Join
-                            context.CheckTimeout();
-
-                            // If this isn't the first Pattern we do Join/Product the Output to the Input
-                            if (i > 0)
-                            {
-                                if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                                {
-                                    // Disjoint so do a Product
-                                    context.OutputMultiset =
-                                        context.InputMultiset.ProductWithTimeout(context.OutputMultiset,
-                                            context.RemainingTimeout);
-                                }
-                                else
-                                {
-                                    // Normal Join
-                                    context.OutputMultiset = context.InputMultiset.Join(context.OutputMultiset);
-                                }
-                            }
-
-                            // Then the Input for the next Pattern is the Output from the previous Pattern
-                            context.InputMultiset = context.OutputMultiset;
-                        }
-
-                        if (context.TrimTemporaryVariables)
-                        {
-                            // Trim the Multiset - this eliminates any temporary variables
-                            context.OutputMultiset.Trim();
-                        }
-                    }
-                    else
-                    {
-                        // For an Empty BGP we just return the Identity Multiset
-                        context.OutputMultiset = new IdentityMultiset();
-                    }
-
-                    // If we've ended with an Empty Multiset then we turn it into the Null Multiset
-                    // to indicate that this BGP did not match anything
-                    if (context.OutputMultiset is Multiset && context.OutputMultiset.IsEmpty)
-                        context.OutputMultiset = new NullMultiset();
-
-                    // Return the Output Multiset
-                    return context.OutputMultiset;
+                    return EvaluateDefaultBgp(bgp, context);
             }
+        }
+
+        private BaseMultiset EvaluateDefaultBgp(IBgp bgp, SparqlEvaluationContext context)
+        {
+            IList<ITriplePattern> triplePatterns = bgp.TriplePatterns.ToList();
+            if (triplePatterns.Count > 0)
+            {
+                for (var i = 0; i < triplePatterns.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        // If the 1st thing in a BGP is a BIND/LET/FILTER the Input becomes the Identity Multiset
+                        if (triplePatterns[i].PatternType == TriplePatternType.Filter ||
+                            triplePatterns[i].PatternType == TriplePatternType.BindAssignment ||
+                            triplePatterns[i].PatternType == TriplePatternType.LetAssignment)
+                        {
+                            if (triplePatterns[i].PatternType == TriplePatternType.BindAssignment)
+                            {
+                                if (context.InputMultiset.ContainsVariable(
+                                    ((IAssignmentPattern) triplePatterns[i]).VariableName))
+                                    throw new RdfQueryException(
+                                        "Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+                            }
+                            else
+                            {
+                                context.InputMultiset = new IdentityMultiset();
+                            }
+                        }
+                    }
+
+                    // Create a new Output Multiset
+                    context.OutputMultiset = new Multiset();
+
+                    triplePatterns[i].Accept(this, context);
+
+                    // If at any point we've got an Empty Multiset as our Output then we terminate BGP execution
+                    if (context.OutputMultiset.IsEmpty) break;
+
+                    // Check for Timeout before attempting the Join
+                    context.CheckTimeout();
+
+                    // If this isn't the first Pattern we do Join/Product the Output to the Input
+                    if (i > 0)
+                    {
+                        if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
+                        {
+                            // Disjoint so do a Product
+                            context.OutputMultiset =
+                                context.InputMultiset.ProductWithTimeout(context.OutputMultiset,
+                                    context.RemainingTimeout);
+                        }
+                        else
+                        {
+                            // Normal Join
+                            context.OutputMultiset = context.InputMultiset.Join(context.OutputMultiset);
+                        }
+                    }
+
+                    // Then the Input for the next Pattern is the Output from the previous Pattern
+                    context.InputMultiset = context.OutputMultiset;
+                }
+
+                if (context.TrimTemporaryVariables)
+                {
+                    // Trim the Multiset - this eliminates any temporary variables
+                    context.OutputMultiset.Trim();
+                }
+            }
+            else
+            {
+                // For an Empty BGP we just return the Identity Multiset
+                context.OutputMultiset = new IdentityMultiset();
+            }
+
+            // If we've ended with an Empty Multiset then we turn it into the Null Multiset
+            // to indicate that this BGP did not match anything
+            if (context.OutputMultiset is Multiset && context.OutputMultiset.IsEmpty)
+                context.OutputMultiset = new NullMultiset();
+
+            // Return the Output Multiset
+            return context.OutputMultiset;
         }
 
         /// <summary>
@@ -1210,6 +1237,7 @@ namespace VDS.RDF.Query
         public virtual BaseMultiset ProcessJoin(IJoin join, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
+            if (join is ParallelJoin pj) return EvaluateParallelJoin(pj, context);
             BaseMultiset initialInput = context.InputMultiset;
             BaseMultiset lhsResult = join.Lhs.Accept(this, context);
             context.CheckTimeout();
@@ -1270,7 +1298,7 @@ namespace VDS.RDF.Query
                 BaseMultiset rhsResult = leftJoin.Rhs.Accept(this, context);
                 context.CheckTimeout();
 
-                context.OutputMultiset = lhsResult.LeftJoin(rhsResult, leftJoin.Filter.Expression, context);
+                context.OutputMultiset = lhsResult.LeftJoin(rhsResult, leftJoin.Filter.Expression, context, _expressionProcessor);
                 context.CheckTimeout();
             }
 
@@ -1784,18 +1812,131 @@ namespace VDS.RDF.Query
             {
                 if (context.Query.OrderBy != null)
                 {
-                    context.Query.OrderBy.Context = context;
-                    context.InputMultiset.Sort(context.Query.OrderBy);
+                    //context.Query.OrderBy.Context = context;
+                    
+                    context.InputMultiset.Sort(Comparer<ISet>.Create(MakeSetComparer(context.Query.OrderBy, context)));
+                    //context.InputMultiset.Sort(context.Query.OrderBy);
                 }
             }
             else if (orderBy.Ordering != null)
             {
-                context.InputMultiset.Sort(orderBy.Ordering);
+                context.InputMultiset.Sort(Comparer<ISet>.Create(MakeSetComparer(orderBy.Ordering, context)));
             }
             context.OutputMultiset = context.InputMultiset;
             return context.OutputMultiset;
         }
 
+        private Comparison<ISet> MakeSetComparer(ISparqlOrderBy ordering, SparqlEvaluationContext context)
+        {
+            switch (ordering)
+            {
+                case OrderByVariable obv:
+                    return (x, y) => CompareSets(x, y, obv, context);
+                case OrderByExpression obe:
+                    return (x, y) => CompareSets(x, y, obe, context);
+                default:
+                    throw new RdfQueryException("Unable to process ordering algebra " + ordering.GetType());
+            }
+        }
+
+        private int CompareSets(ISet x, ISet y, OrderByVariable obv, SparqlEvaluationContext context)
+        {
+            INode xval = x[obv.Variable];
+            if (xval == null)
+            {
+                if (y[obv.Variable] == null)
+                {
+                    return obv.Child != null ? MakeSetComparer(obv.Child, context).Invoke(x, y) : 0;
+                }
+
+                return obv.Descending ? 1 : -1;
+            }
+            else
+            {
+                var c = context.OrderingComparer.Compare(xval, y[obv.Variable]);
+
+                if (c == 0 && obv.Child != null)
+                {
+                    return MakeSetComparer(obv.Child, context).Invoke(x, y);
+                }
+                else
+                {
+                    return c * (obv.Descending ? -1 : 1);
+                }
+            }
+        }
+
+        private int CompareSets(ISet x, ISet y, OrderByExpression ordering, SparqlEvaluationContext context)
+        {
+            if (context == null)
+            {
+                return 0;
+            }
+            else if (x.ID == y.ID)
+            {
+                return 0;
+            }
+            else
+            {
+                INode a, b;
+                try
+                {
+                    a = ordering.Expression.Accept(_expressionProcessor, context, x.ID);
+
+                    try
+                    {
+                        b = ordering.Expression.Accept(_expressionProcessor, context, y.ID);
+                    }
+                    catch
+                    {
+                        // If evaluating b errors consider this a NULL and rank a > b
+                        return ordering.Descending ? -1 : 1;
+                    }
+
+                    // If both give a value then compare
+                    if (a != null)
+                    {
+                        var c = context.OrderingComparer.Compare(a, b);
+                        if (c == 0 && ordering.Child != null)
+                        {
+                            return MakeSetComparer(ordering.Child, context).Invoke(x, y);
+                        }
+                        else
+                        {
+                            return c * (ordering.Descending ? -1 : 1);
+                        }
+                    }
+                    else
+                    {
+                        // a is NULL so a < b
+                        return ordering.Descending ? 1 : -1;
+                    }
+                }
+                catch
+                {
+                    try
+                    {
+                        ordering.Expression.Accept(_expressionProcessor, context, y.ID);
+
+                        // If evaluating a errors but b evaluates correctly consider a to be NULL and rank a < b
+                        return ordering.Descending ? 1 : -1;
+                    }
+                    catch
+                    {
+                        // If both error then use child if any to evaluate, otherwise consider a = b
+                        if (ordering.Child != null)
+                        {
+                            return MakeSetComparer(ordering.Child, context).Invoke(x, y);
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
+                }
+
+            }
+        }
         /// <summary>
         /// Processes a Property Path.
         /// </summary>
@@ -2286,11 +2427,48 @@ namespace VDS.RDF.Query
         public virtual BaseMultiset ProcessUnion(IUnion union, SparqlEvaluationContext context)
         {
             if (context == null) context = GetContext();
+            return union switch
+            {
+                LazyUnion lazyUnion => EvaluateLazyUnion(lazyUnion, context),
+                ParallelUnion parallelUnion => EvaluateParallelUnion(parallelUnion, context),
+                _ => EvaluateDefaultUnion(union, context)
+            };
+        }
+
+        private BaseMultiset EvaluateLazyUnion(LazyUnion union, SparqlEvaluationContext context)
+        {
+            BaseMultiset initialInput = context.InputMultiset;
+            if (union.Lhs is Extend || union.Rhs is Extend) initialInput = new IdentityMultiset();
+
+            context.InputMultiset = initialInput;
+            BaseMultiset lhsResult = union.Lhs.Accept(this, context);
+            context.CheckTimeout();
+
+            if (lhsResult.Count >= union.RequiredResults || union.RequiredResults == -1)
+            {
+                // Only evaluate the RHS if the LHS didn't yield sufficient results
+                context.InputMultiset = initialInput;
+                BaseMultiset rhsResult = union.Rhs.Accept(this, context);
+                context.CheckTimeout();
+
+                context.OutputMultiset = lhsResult.Union(rhsResult);
+                context.CheckTimeout();
+
+                context.InputMultiset = context.OutputMultiset;
+            }
+            else
+            {
+                context.OutputMultiset = lhsResult;
+            }
+            return context.OutputMultiset;
+        }
+
+        private BaseMultiset EvaluateDefaultUnion(IUnion union, SparqlEvaluationContext context)
+        {
             BaseMultiset initialInput = context.InputMultiset;
             if (union.Lhs is Extend || union.Rhs is Extend) initialInput = new IdentityMultiset();
             if (union is AskUnion)
             {
-
                 context.InputMultiset = initialInput;
                 BaseMultiset lhsResult = union.Lhs.Accept(this, context);
                 context.CheckTimeout();
@@ -2311,6 +2489,7 @@ namespace VDS.RDF.Query
                 {
                     context.OutputMultiset = lhsResult;
                 }
+
                 return context.OutputMultiset;
             }
             else
@@ -2811,6 +2990,394 @@ namespace VDS.RDF.Query
             return context.InputMultiset;
         }
 
+        public BaseMultiset ProcessSingleValueRestrictionFilter(SingleValueRestrictionFilter filter, SparqlEvaluationContext context)
+        {
+            INode term = filter.RestrictionValue.Accept(_expressionProcessor, context, 0);
+
+            // First take appropriate pre-filtering actions
+            if (context.InputMultiset is IdentityMultiset)
+            {
+                // If the Input is Identity switch the input to be a Multiset containing a single Set
+                // where the variable is bound to the term
+                context.InputMultiset = new Multiset();
+                var s = new Set();
+                s.Add(filter.RestrictionVariable, term);
+                context.InputMultiset.Add(s);
+            }
+            else if (context.InputMultiset is NullMultiset)
+            {
+                // If Input is Null then output is Null
+                context.OutputMultiset = context.InputMultiset;
+                return context.OutputMultiset;
+            }
+            else
+            {
+                if (context.InputMultiset.ContainsVariable(filter.RestrictionVariable))
+                {
+                    // If the Input Multiset contains the variable then pre-filter
+                    foreach (var id in context.InputMultiset.SetIDs.ToList())
+                    {
+                        ISet x = context.InputMultiset[id];
+                        try
+                        {
+                            if (x.ContainsVariable(filter.RestrictionVariable))
+                            {
+                                // If does exist check it has appropriate value and if not remove it
+                                if (!term.Equals(x[filter.RestrictionVariable])) context.InputMultiset.Remove(id);
+                            }
+                            else
+                            {
+                                // If doesn't exist for this set then bind it to the term
+                                x.Add(filter.RestrictionVariable, term);
+                            }
+                        }
+                        catch (RdfQueryException)
+                        {
+                            context.InputMultiset.Remove(id);
+                        }
+                    }
+                }
+                else
+                {
+                    // If it doesn't contain the variable then bind for each existing set
+                    foreach (ISet x in context.InputMultiset.Sets)
+                    {
+                        x.Add(filter.RestrictionVariable, term);
+                    }
+                }
+            }
+
+            // Then evaluate the inner algebra
+            BaseMultiset results = context.Evaluate(filter.InnerAlgebra);
+            if (results is NullMultiset || results is IdentityMultiset) return results;
+
+            // Filter the results to ensure that the variable is indeed bound to the term
+            foreach (var id in results.SetIDs.ToList())
+            {
+                ISet x = results[id];
+                try
+                {
+                    if (!term.Equals(x[filter.RestrictionVariable]))
+                    {
+                        results.Remove(id);
+                    }
+                }
+                catch (RdfQueryException)
+                {
+                    results.Remove(id);
+                }
+            }
+
+            if (results.Count > 0)
+            {
+                context.OutputMultiset = results;
+            }
+            else
+            {
+                context.OutputMultiset = new NullMultiset();
+            }
+            return context.OutputMultiset;
+        }
+
+        public BaseMultiset ProcessBindPattern(BindPattern bindPattern, SparqlEvaluationContext context)
+        {
+            if (context.InputMultiset is NullMultiset)
+            {
+                context.OutputMultiset = context.InputMultiset;
+            }
+            else if (context.InputMultiset is IdentityMultiset)
+            {
+                context.OutputMultiset.AddVariable(bindPattern.Variable);
+                var s = new Set();
+                try
+                {
+                    INode temp = bindPattern.InnerExpression.Accept(_expressionProcessor, context, 0);
+                    s.Add(bindPattern.Variable, temp);
+                }
+                catch
+                {
+                    // No assignment if there's an error
+                    s.Add(bindPattern.Variable, null);
+                }
+                context.OutputMultiset.Add(s);
+            }
+            else
+            {
+                if (context.InputMultiset.ContainsVariable(bindPattern.Variable))
+                {
+                    throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
+                }
+
+                context.OutputMultiset.AddVariable(bindPattern.Variable);
+                foreach (var id in context.InputMultiset.SetIDs.ToList())
+                {
+                    ISet s = context.InputMultiset[id].Copy();
+                    try
+                    {
+                        // Make a new assignment
+                        INode temp = bindPattern.InnerExpression.Accept(_expressionProcessor, context, id);
+                        s.Add(bindPattern.Variable, temp);
+                    }
+                    catch
+                    {
+                        // No assignment if there's an error but the solution is preserved
+                    }
+                    context.OutputMultiset.Add(s);
+                }
+            }
+
+            return context.OutputMultiset;
+        }
+
+        public BaseMultiset ProcessFilterPattern(FilterPattern filterPattern, SparqlEvaluationContext context)
+        {
+            if (context.InputMultiset is NullMultiset)
+            {
+                // If we get a NullMultiset then the FILTER has no effect since there are already no results
+            }
+            else if (context.InputMultiset is IdentityMultiset)
+            {
+                if (!filterPattern.Filter.Variables.Any())
+                {
+                    // If we get an IdentityMultiset then the FILTER only has an effect if there are no
+                    // variables - otherwise it is not in scope and is ignored
+
+                    try
+                    {
+                        if (!filterPattern.Filter.Expression.Accept(_expressionProcessor, context, 0).AsSafeBoolean())
+                        {
+                            context.OutputMultiset = new NullMultiset();
+                            return context.OutputMultiset;
+                        }
+                    }
+                    catch
+                    {
+                        context.OutputMultiset = new NullMultiset();
+                        return context.OutputMultiset;
+                    }
+                }
+            }
+            else
+            {
+                filterPattern.Filter.Accept(this, context);
+            }
+            context.OutputMultiset = new IdentityMultiset();
+            return context.OutputMultiset;
+        }
+
+        public BaseMultiset ProcessLetPattern(LetPattern letPattern, SparqlEvaluationContext context)
+        {
+            if (context.InputMultiset is NullMultiset)
+            {
+                context.OutputMultiset = context.InputMultiset;
+            }
+            else if (context.InputMultiset is IdentityMultiset)
+            {
+                var s = new Set();
+                try
+                {
+                    INode temp = letPattern.AssignExpression.Accept(_expressionProcessor, context, 0);
+                    s.Add(letPattern.VariableName, temp);
+                    context.OutputMultiset.Add(s);
+                }
+                catch
+                {
+                    // No assignment if there's an error
+                }
+            }
+            else
+            {
+                foreach (var id in context.InputMultiset.SetIDs.ToList())
+                {
+                    ISet s = context.InputMultiset[id];
+                    if (s.ContainsVariable(letPattern.VariableName))
+                    {
+                        try
+                        {
+                            // A value already exists so see if the two values match
+                            INode current = s[letPattern.VariableName];
+                            INode temp = letPattern.AssignExpression.Accept(_expressionProcessor, context, id);
+                            if (!current.Equals(temp))
+                            {
+                                // Where the values aren't equal the solution is eliminated
+                                context.InputMultiset.Remove(id);
+                            }
+                        }
+                        catch
+                        {
+                            // If an error occurs the solution is eliminated
+                            context.InputMultiset.Remove(id);
+                        }
+                    }
+                    else
+                    {
+                        context.InputMultiset.AddVariable(letPattern.VariableName);
+                        try
+                        {
+                            // Make a new assignment
+                            INode temp = letPattern.AssignExpression.Accept(_expressionProcessor, context, id);
+                            s.Add(letPattern.VariableName, temp);
+                        }
+                        catch
+                        {
+                            // If an error occurs no assignment happens
+                        }
+                    }
+                }
+                context.OutputMultiset = new IdentityMultiset();
+            }
+
+            return context.OutputMultiset;
+        }
+
+        public BaseMultiset ProcessPropertyFunction(PropertyFunction propertyFunction, SparqlEvaluationContext context)
+        {
+            context.InputMultiset = propertyFunction.InnerAlgebra.Accept(this, context);
+            if (propertyFunction.Function is ILeviathanPropertyFunction leviathanPropertyFunction)
+            {
+                return leviathanPropertyFunction.Evaluate(context);
+            }
+
+            throw new RdfQueryException("Unable to process property function " + propertyFunction +
+                                        " as no implementation compatible with the Leviathan engine could be found.");
+        }
+
+        public BaseMultiset ProcessPropertyPathPattern(PropertyPathPattern propertyPathPattern, SparqlEvaluationContext context)
+        {
+            // Try and generate an Algebra expression
+            // Make sure we don't generate clashing temporary variable IDs over the life of the
+            // Evaluation
+            var transformContext = new PathTransformContext(propertyPathPattern.Subject, propertyPathPattern.Object);
+            if (context["PathTransformID"] != null)
+            {
+                transformContext.NextID = (int)context["PathTransformID"];
+            }
+            ISparqlAlgebra algebra = propertyPathPattern.Path.ToAlgebra(transformContext);
+            context["PathTransformID"] = transformContext.NextID + 1;
+
+            // Now we can evaluate the resulting algebra
+            BaseMultiset initialInput = context.InputMultiset;
+            var trimMode = context.TrimTemporaryVariables;
+            var rigMode = context.Options.RigorousEvaluation;
+            try
+            {
+                // Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
+                context.Options.RigorousEvaluation = true;
+
+                // Note: We may need to preserve Blank Node variables across evaluations
+                // which we usually don't do BUT because of the way we translate only part of the path
+                // into an algebra at a time and may need to do further nested translate calls we do
+                // need to do this here
+                context.TrimTemporaryVariables = false;
+                BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
+                // Also note that we don't trim temporary variables here even if we've set the setting back
+                // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
+
+                // Once we have our results can join then into our input
+                context.OutputMultiset = result is NullMultiset ? new NullMultiset() : initialInput.Join(result);
+
+                // If we reach here we've successfully evaluated the simple pattern and can return
+                return context.OutputMultiset;
+            }
+            finally
+            {
+                context.TrimTemporaryVariables = trimMode;
+                context.Options.RigorousEvaluation = rigMode;
+            }
+        }
+
+        public BaseMultiset ProcessSubQueryPattern(SubQueryPattern subQueryPattern, SparqlEvaluationContext context)
+        {
+            // Use the same algebra optimisers as the parent query (if any)
+            if (context.Query != null)
+            {
+                subQueryPattern.SubQuery.AlgebraOptimisers = context.Query.AlgebraOptimisers;
+            }
+
+            if (context.InputMultiset is NullMultiset)
+            {
+                context.OutputMultiset = context.InputMultiset;
+            }
+            else if (context.InputMultiset.IsEmpty)
+            {
+                context.OutputMultiset = new NullMultiset();
+            }
+            else
+            {
+                var subcontext = new SparqlEvaluationContext(subQueryPattern.SubQuery, context.Data, context.Processor,
+                    context.Options) {InputMultiset = context.InputMultiset};
+
+                // Add any Named Graphs to the subquery
+                if (context.Query != null)
+                {
+                    foreach (IRefNode u in context.Query.NamedGraphNames)
+                    {
+                        subQueryPattern.SubQuery.AddNamedGraph(u);
+                    }
+                }
+
+                ISparqlAlgebra query = subQueryPattern.SubQuery.ToAlgebra();
+                try
+                {
+                    // Evaluate the Subquery
+                    context.OutputMultiset = subcontext.Evaluate(query);
+
+                    // If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
+                    if (context.OutputMultiset is GroupMultiset groupMultiset)
+                    {
+                        context.OutputMultiset = new Multiset(groupMultiset);
+                    }
+
+                    // Strip out any Named Graphs from the subquery
+                    if (subQueryPattern.SubQuery.NamedGraphNames.Any())
+                    {
+                        subQueryPattern.SubQuery.ClearNamedGraphs();
+                    }
+                }
+                catch (RdfQueryException queryEx)
+                {
+                    throw new RdfQueryException("Query failed due to a failure in Subquery Execution:\n" + queryEx.Message, queryEx);
+                }
+            }
+
+            return context.OutputMultiset;
+        }
+
+        public BaseMultiset ProcessPropertyFunctionPattern(PropertyFunctionPattern propFunctionPattern,
+            SparqlEvaluationContext context)
+        {
+            if (propFunctionPattern.PropertyFunction is ILeviathanPropertyFunction leviathanPropertyFunction)
+            {
+                return leviathanPropertyFunction.Evaluate(context);
+            }
+
+            throw new RdfQueryException("Unable to process property function " + propFunctionPattern.PropertyFunction +
+                                        " as no implementation compatible with the Leviathan engine could be found.");
+
+        }
+
+        public BaseMultiset ProcessTriplePattern(TriplePattern triplePattern, SparqlEvaluationContext context)
+        {
+            // Processing of the triple pattern is already handled
+            return context.InputMultiset;
+        }
+
+        public virtual BaseMultiset ProcessUnknownOperator(ISparqlAlgebra op, SparqlEvaluationContext context)
+        {
+            switch (op)
+            {
+                case FilteredProduct fp:
+                    return EvaluateFilteredProduct(fp, context);
+                case Table table:
+                    context.OutputMultiset = table.Multiset;
+                    return context.OutputMultiset;
+                case ILeviathanAlgebraExtension ext:
+                    return ext.Evaluate(context);
+                default:
+                    throw new RdfQueryException("Unable to process unrecognized algebra type " + op.GetType());
+            }
+        }
+
         #endregion
 
         #region AskBgp Evaluation
@@ -3194,6 +3761,775 @@ namespace VDS.RDF.Query
             // We should never reach here so throw an error to that effect
             // The reason we'll never reach here is that this method should always return earlier
             throw new RdfQueryException("Unexpected control flow in evaluating a Streamed BGP for an ASK query");
+        }
+        #endregion
+
+        #region LazyBgp Evaluation
+        /// <summary>
+        /// Evaluates the BGP against the Evaluation Context.
+        /// </summary>
+        /// <param name="context">Evaluation Context.</param>
+        /// <returns></returns>
+        private BaseMultiset EvaluateLazyBgp(LazyBgp bgp, SparqlEvaluationContext context)
+        {
+            bool halt;
+            BaseMultiset results = null;
+            var origRequired = bgp.RequiredResults;
+
+            // May need to detect the actual amount of required results if not specified at instantation
+            if (bgp.RequiredResults < 0)
+            {
+                if (context.Query != null)
+                {
+                    if (context.Query.HasDistinctModifier || (context.Query.OrderBy != null && !context.Query.IsOptimisableOrderBy) || context.Query.GroupBy != null || context.Query.Having != null || context.Query.Bindings != null)
+                    {
+                        // If there's an DISTINCT/ORDER BY/GROUP BY/HAVING/BINDINGS present then can't do Lazy evaluation
+                        bgp.RequiredResults = -1;
+                    }
+                    else
+                    {
+                        var limit = context.Query.Limit;
+                        var offset = context.Query.Offset;
+                        if (limit >= 0 && offset >= 0)
+                        {
+                            // If there is a Limit and Offset specified then the required results is the LIMIT+OFFSET
+                            bgp.RequiredResults = limit + offset;
+                        }
+                        else if (limit >= 0)
+                        {
+                            // If there is just a Limit specified then the required results is the LIMIT
+                            bgp.RequiredResults = limit;
+                        }
+                        else
+                        {
+                            // In any other case required results is everything i.e. -1
+                            bgp.RequiredResults = -1;
+                        }
+                    }
+                    Debug.WriteLine("Lazy Evaluation - Number of required results is " + bgp.RequiredResults);
+                }
+            }
+
+            switch (bgp.RequiredResults)
+            {
+                case -1:
+                    // If required results is everything just use normal evaluation as otherwise 
+                    // lazy evaluation will significantly impact performance and lead to an apparent infinite loop
+                    return EvaluateDefaultBgp(bgp, context);
+                case 0:
+                    // Don't need any results
+                    results = new NullMultiset();
+                    break;
+                default:
+                    // Do streaming evaluation
+                    if (bgp.RequiredResults != 0)
+                    {
+                        results = StreamingEvaluate(bgp, context, 0, out halt);
+                        if (results is Multiset && results.IsEmpty) results = new NullMultiset();
+                    }
+                    break;
+            }
+            bgp.RequiredResults = origRequired;
+
+            context.OutputMultiset = results;
+            context.OutputMultiset.Trim();
+            return context.OutputMultiset;
+        }
+
+        private BaseMultiset StreamingEvaluate(LazyBgp bgp, SparqlEvaluationContext context, int pattern, out bool halt)
+        {
+            // Remember to check for Timeouts during Lazy Evaluation
+            context.CheckTimeout();
+
+            halt = false;
+
+            // Handle Empty BGPs
+            if (pattern == 0 && bgp.TriplePatterns.Count == 0)
+            {
+                context.OutputMultiset = new IdentityMultiset();
+                return context.OutputMultiset;
+            }
+
+            BaseMultiset initialInput, localOutput, results = null;
+
+            // Determine whether the Pattern modifies the existing Input rather than joining to it
+            var modifies = (bgp.TriplePatterns[pattern].PatternType == TriplePatternType.Filter);
+            var extended = (pattern > 0 && bgp.TriplePatterns[pattern - 1].PatternType == TriplePatternType.BindAssignment);
+            var modified = (pattern > 0 && bgp.TriplePatterns[pattern - 1].PatternType == TriplePatternType.Filter);
+
+            // Set up the Input and Output Multiset appropriately
+            switch (pattern)
+            {
+                case 0:
+                    // Input is as given and Output is new empty multiset
+                    if (!modifies)
+                    {
+                        initialInput = context.InputMultiset;
+                    }
+                    else
+                    {
+                        // If the Pattern will modify the Input and is the first thing in the BGP then it actually modifies a new empty input
+                        // This takes care of FILTERs being out of scope
+                        initialInput = new Multiset();
+                    }
+                    localOutput = new Multiset();
+                    break;
+
+                case 1:
+                    // Input becomes current Output and Output is new empty multiset
+                    initialInput = context.OutputMultiset;
+                    localOutput = new Multiset();
+                    break;
+
+                default:
+                    if (!extended && !modified)
+                    {
+                        // Input is join of previous input and output and Output is new empty multiset
+                        if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
+                        {
+                            // Disjoint so do a Product
+                            initialInput = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
+                        }
+                        else
+                        {
+                            // Normal Join
+                            initialInput = context.InputMultiset.Join(context.OutputMultiset);
+                        }
+                    }
+                    else
+                    {
+                        initialInput = context.OutputMultiset;
+                    }
+                    localOutput = new Multiset();
+                    break;
+            }
+            context.InputMultiset = initialInput;
+            context.OutputMultiset = localOutput;
+
+            // Get the Triple Pattern we're evaluating
+            ITriplePattern temp = bgp.TriplePatterns[pattern];
+            var resultsFound = 0;
+            var prevResults = -1;
+
+            if (temp.PatternType == TriplePatternType.Match)
+            {
+                // Find the first Triple which matches the Pattern
+                var tp = (IMatchTriplePattern)temp;
+                IEnumerable<Triple> ts = context.GetTriples(tp);
+
+                // In the case that we're lazily evaluating an optimisable ORDER BY then
+                // we need to apply OrderBy()'s to our enumeration
+                // This only applies to the 1st pattern
+                if (pattern == 0)
+                {
+                    if (context.Query != null)
+                    {
+                        if (context.Query.OrderBy != null && context.Query.IsOptimisableOrderBy)
+                        {
+                            IComparer<Triple> comparer = context.Query.OrderBy.GetComparer(tp, context.OrderingComparer);
+                            if (comparer != null)
+                            {
+                                ts = ts.OrderBy(t => t, comparer);
+                            }
+                            else
+                            {
+                                // Can't get a comparer so can't optimise
+                                // Thus required results is everything so just use normal evaluation as otherwise 
+                                // lazy evaluation will significantly impact performance and lead to an apparent infinite loop
+                                return EvaluateDefaultBgp(bgp, context);
+                            }
+                        }
+                    }
+                }
+
+                foreach (Triple t in ts)
+                {
+                    if (tp.Accepts(context, t))
+                    {
+                        resultsFound++;
+                        if (tp.IndexType == TripleIndexType.NoVariables)
+                        {
+                            localOutput = new IdentityMultiset();
+                            context.OutputMultiset = localOutput;
+                        }
+                        else
+                        {
+                            context.OutputMultiset.Add(tp.CreateResult(t));
+                        }
+                    }
+                }
+                // Recurse unless we're the last pattern
+                if (pattern < bgp.TriplePatterns.Count - 1)
+                {
+                    results = StreamingEvaluate(bgp, context, pattern + 1, out halt);
+
+                    // If recursion leads to a halt then we halt and return immediately
+                    if (halt && results.Count >= bgp.RequiredResults && bgp.RequiredResults != -1)
+                    {
+                        return results;
+                    }
+                    else if (halt)
+                    {
+                        if (results.Count == 0)
+                        {
+                            // If recursing leads to no results then eliminate all outputs
+                            // Also reset to prevResults to -1
+                            resultsFound = 0;
+                            localOutput = new Multiset();
+                            prevResults = -1;
+                        }
+                        else if (prevResults > -1)
+                        {
+                            if (results.Count == prevResults)
+                            {
+                                // If the amount of results found hasn't increased then this match does not
+                                // generate any further solutions further down the recursion so we can eliminate
+                                // this from the results
+                                localOutput.Remove(localOutput.SetIDs.Max());
+                            }
+                        }
+                        prevResults = results.Count;
+
+                        // If we're supposed to halt but not reached the number of required results then continue
+                        context.InputMultiset = initialInput;
+                        context.OutputMultiset = localOutput;
+                    }
+                    else
+                    {
+                        // Otherwise we need to keep going here
+                        // So must reset our input and outputs before continuing
+                        context.InputMultiset = initialInput;
+                        context.OutputMultiset = new Multiset();
+                        resultsFound--;
+                    }
+                }
+                else
+                {
+                    // If we're at the last pattern and we've found a match then we can halt
+                    halt = true;
+
+                    // Generate the final output and return it
+                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
+                    {
+                        // Disjoint so do a Product
+                        results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset,
+                            context.RemainingTimeout);
+                    }
+                    else
+                    {
+                        // Normal Join
+                        results = context.InputMultiset.Join(context.OutputMultiset);
+                    }
+
+                    // If not reached required number of results continue
+                    if (results.Count >= bgp.RequiredResults && bgp.RequiredResults != -1)
+                    {
+                        context.OutputMultiset = results;
+                        return context.OutputMultiset;
+                    }
+                }
+                context.InputMultiset = results;
+            }
+            else if (temp.PatternType == TriplePatternType.Filter)
+            {
+                var filter = (IFilterPattern)temp;
+                ISparqlExpression filterExpr = filter.Filter.Expression;
+
+                if (filter.Variables.IsDisjoint(context.InputMultiset.Variables))
+                {
+                    // Filter is Disjoint so determine whether it has any affect or not
+                    if (filter.Variables.Any())
+                    {
+                        // Has Variables but disjoint from input => not in scope so gets ignored
+
+                        // Do we recurse or not?
+                        if (pattern < bgp.TriplePatterns.Count - 1)
+                        {
+                            // Recurse and return
+                            results = StreamingEvaluate(bgp, context, pattern + 1, out halt);
+                            return results;
+                        }
+                        else
+                        {
+                            // We don't affect the input in any way so just return it
+                            return context.InputMultiset;
+                        }
+                    }
+                    else
+                    {
+                        // No Variables so have to evaluate it to see if it gives true otherwise
+                        try
+                        {
+                            if (filterExpr.Accept(_expressionProcessor, context, 0).AsSafeBoolean())
+                            {
+                                if (pattern < bgp.TriplePatterns.Count - 1)
+                                {
+                                    // Recurse and return
+                                    results = StreamingEvaluate(bgp, context, pattern + 1, out halt);
+                                    return results;
+                                }
+                                else
+                                {
+                                    // Last Pattern and we evaluate to true so can return the input as-is
+                                    halt = true;
+                                    return context.InputMultiset;
+                                }
+                            }
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // Evaluates to false so eliminates all solutions (use an empty Multiset)
+                            return new Multiset();
+                        }
+                    }
+                }
+                else
+                {
+                    // Test each solution found so far against the Filter and eliminate those that evalute to false/error
+                    foreach (var id in context.InputMultiset.SetIDs.ToList())
+                    {
+                        try
+                        {
+                            if (filterExpr.Accept(_expressionProcessor, context, id).AsSafeBoolean())
+                            {
+                                // If evaluates to true then add to output
+                                context.OutputMultiset.Add(context.InputMultiset[id].Copy());
+                            }
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // Error means we ignore the solution
+                        }
+                    }
+
+                    // Remember to check for Timeouts during Lazy Evaluation
+                    context.CheckTimeout();
+
+                    // Decide whether to recurse or not
+                    resultsFound = context.OutputMultiset.Count;
+                    if (pattern < bgp.TriplePatterns.Count - 1)
+                    {
+                        // Recurse then return
+                        // We can never decide whether to recurse again at this point as we are not capable of deciding
+                        // which solutions should be dumped (that is the job of an earlier pattern in the BGP)
+                        results = StreamingEvaluate(bgp, context, pattern + 1, out halt);
+
+                        return results;
+                    }
+                    else
+                    {
+                        halt = true;
+
+                        // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
+                        // for us to filter
+                        return context.OutputMultiset;
+                    }
+                }
+            }
+            else if (temp is BindPattern)
+            {
+                var bind = (BindPattern)temp;
+                ISparqlExpression bindExpr = bind.AssignExpression;
+                var bindVar = bind.VariableName;
+
+                if (context.InputMultiset.ContainsVariable(bindVar))
+                {
+                    throw new RdfQueryException(
+                        "Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
+                }
+                else
+                {
+                    // Compute the Binding for every value
+                    context.OutputMultiset.AddVariable(bindVar);
+                    foreach (ISet s in context.InputMultiset.Sets)
+                    {
+                        ISet x = s.Copy();
+                        try
+                        {
+                            INode val = bindExpr.Accept(_expressionProcessor, context, s.ID);
+                            x.Add(bindVar, val);
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // Equivalent to no assignment but the solution is preserved
+                        }
+                        context.OutputMultiset.Add(x.Copy());
+                    }
+
+                    // Remember to check for Timeouts during Lazy Evaluation
+                    context.CheckTimeout();
+
+                    // Decide whether to recurse or not
+                    resultsFound = context.OutputMultiset.Count;
+                    if (pattern < bgp.TriplePatterns.Count - 1)
+                    {
+                        // Recurse then return
+                        results = StreamingEvaluate(bgp, context, pattern + 1, out halt);
+                        return results;
+                    }
+                    else
+                    {
+                        halt = true;
+
+                        // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
+                        // for us to extend
+                        return context.OutputMultiset;
+                    }
+                }
+            }
+            else
+            {
+                throw new RdfQueryException("Encountered a " + temp.GetType().FullName +
+                                            " which is not a lazily evaluable Pattern");
+            }
+
+            // If we found no possibles we return the null multiset
+            if (resultsFound == 0)
+            {
+                return new NullMultiset();
+            }
+            else
+            {
+                // Remember to check for Timeouts during Lazy Evaluation
+                context.CheckTimeout();
+
+                // Generate the final output and return it
+                if (!modifies)
+                {
+                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
+                    {
+                        // Disjoint so do a Product
+                        results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
+                    }
+                    else
+                    {
+                        // Normal Join
+                        results = context.InputMultiset.Join(context.OutputMultiset);
+                    }
+                    context.OutputMultiset = results;
+                }
+                return context.OutputMultiset;
+            }
+        }
+        #endregion
+
+        #region FilteredProductEvaluation
+
+        private BaseMultiset EvaluateFilteredProduct(FilteredProduct fp, SparqlEvaluationContext context)
+        {
+            BaseMultiset initialInput = context.InputMultiset;
+            BaseMultiset lhsResults = fp.Lhs.Accept(this, context);
+
+            if (lhsResults is NullMultiset || lhsResults.IsEmpty)
+            {
+                // If LHS Results are Null/Empty then end result will always be null so short circuit
+                context.OutputMultiset = new NullMultiset();
+            }
+            else
+            {
+
+                context.InputMultiset = initialInput;
+                BaseMultiset rhsResults = fp.Rhs.Accept(this, context);
+                if (rhsResults is NullMultiset || rhsResults.IsEmpty)
+                {
+                    // If RHS Results are Null/Empty then end results will always be null so short circuit
+                    context.OutputMultiset = new NullMultiset();
+                }
+                else if (rhsResults is IdentityMultiset)
+                {
+                    // Apply Filter over LHS Results only - defer evaluation to filter implementation
+                    context.InputMultiset = lhsResults;
+                    var filter = new UnaryExpressionFilter(fp.FilterExpression);
+                    filter.Accept(this, context);
+                    context.OutputMultiset = lhsResults;
+                }
+                else
+                {
+                    // Calculate the product applying the filter as we go
+                    if (context.Options.UsePLinqEvaluation && fp.FilterExpression.CanParallelise)
+                    {
+                        PartitionedMultiset partitionedSet;
+                        SparqlResultBinder binder = context.Binder;
+                        if (lhsResults.Count >= rhsResults.Count)
+                        {
+                            partitionedSet = new PartitionedMultiset(lhsResults.Count, rhsResults.Count);
+                            context.Binder = new LeviathanLeftJoinBinder(partitionedSet);
+                            lhsResults.Sets.AsParallel().ForAll(x => EvalFilteredProduct(fp.FilterExpression, context, x, rhsResults, partitionedSet));
+                        }
+                        else
+                        {
+                            partitionedSet = new PartitionedMultiset(rhsResults.Count, lhsResults.Count);
+                            context.Binder = new LeviathanLeftJoinBinder(partitionedSet);
+                            rhsResults.Sets.AsParallel().ForAll(y => EvalFilteredProduct(fp.FilterExpression, context, y, lhsResults, partitionedSet));
+                        }
+
+                        context.Binder = binder;
+                        context.OutputMultiset = partitionedSet;
+                    }
+                    else
+                    {
+                        BaseMultiset productSet = new Multiset();
+                        SparqlResultBinder binder = context.Binder;
+                        context.Binder = new LeviathanLeftJoinBinder(productSet);
+                        foreach (ISet x in lhsResults.Sets)
+                        {
+                            foreach (ISet y in rhsResults.Sets)
+                            {
+                                ISet z = x.Join(y);
+                                productSet.Add(z);
+                                try
+                                {
+                                    if (!fp.FilterExpression.Accept(_expressionProcessor, context, z.ID).AsSafeBoolean())
+                                    {
+                                        // Means the expression evaluates to false so we discard the solution
+                                        productSet.Remove(z.ID);
+                                    }
+                                }
+                                catch
+                                {
+                                    // Means this solution does not meet the FILTER and can be discarded
+                                    productSet.Remove(z.ID);
+                                }
+                            }
+                            // Remember to check for timeouts occassionaly
+                            context.CheckTimeout();
+                        }
+                        context.Binder = binder;
+                        context.OutputMultiset = productSet;
+                    }
+                }
+            }
+            return context.OutputMultiset;
+        }
+
+        private void EvalFilteredProduct(ISparqlExpression filterExpression, SparqlEvaluationContext context, ISet x, BaseMultiset other, PartitionedMultiset partitionedSet)
+        {
+            var id = partitionedSet.GetNextBaseID();
+            foreach (ISet y in other.Sets)
+            {
+                id++;
+                ISet z = x.Join(y);
+                z.ID = id;
+                partitionedSet.Add(z);
+                try
+                {
+                    if (!filterExpression.Accept(_expressionProcessor, context, z.ID).AsSafeBoolean())
+                    {
+                        // Means the expression evaluates to false so we discard the solution
+                        partitionedSet.Remove(z.ID);
+                    }
+                }
+                catch
+                {
+                    // Means the solution does not meet the FILTER and can be discarded
+                    partitionedSet.Remove(z.ID);
+                }
+            }
+            // Remember to check for timeouts occassionally
+            context.CheckTimeout();
+        }
+        #endregion
+
+        #region ParallelJoin Evaluation
+
+        private BaseMultiset EvaluateParallelJoin(ParallelJoin join, SparqlEvaluationContext context)
+        {
+            // Create a copy of the evaluation context for the RHS
+            var context2 =
+                new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.Options);
+            if (context.InputMultiset is not IdentityMultiset)
+            {
+                context2.InputMultiset = new Multiset();
+                foreach (ISet s in context.InputMultiset.Sets)
+                {
+                    context2.InputMultiset.Add(s.Copy());
+                }
+            }
+
+            var activeGraphs = context.Data.ActiveGraphNames.ToList();
+            var defaultGraphs = context.Data.DefaultGraphNames.ToList();
+
+            // Start both executing asynchronously
+            var cts = new CancellationTokenSource();
+            CancellationToken cancellationToken = cts.Token;
+            Task<BaseMultiset> lhsEvaluation =
+                Task.Factory.StartNew(() => ParallelEvaluate(join.Lhs, context, activeGraphs, defaultGraphs),
+                    cancellationToken);
+            Task<BaseMultiset> rhsEvaluation =
+                Task.Factory.StartNew(() => ParallelEvaluate(join.Rhs, context2, activeGraphs, defaultGraphs),
+                    cancellationToken);
+            var evaluationTasks = new Task[] { lhsEvaluation, rhsEvaluation };
+            try
+            {
+                if (context.RemainingTimeout > 0)
+                {
+                    Task.WaitAny(evaluationTasks, (int)context.RemainingTimeout, cancellationToken);
+                }
+                else
+                {
+                    Task.WaitAny(evaluationTasks, cancellationToken);
+                }
+
+                BaseMultiset firstResult = lhsEvaluation.IsCompleted ? lhsEvaluation.Result : rhsEvaluation.Result;
+                if (firstResult == null)
+                {
+                    context.OutputMultiset = new NullMultiset();
+                    cts.Cancel();
+                }
+                else if (firstResult is NullMultiset)
+                {
+                    context.OutputMultiset = new NullMultiset();
+                    cts.Cancel();
+                }
+                else
+                {
+                    context.CheckTimeout();
+                    if (context.RemainingTimeout > 0)
+                    {
+                        Task.WaitAll(evaluationTasks, (int)context.RemainingTimeout, cancellationToken);
+                    }
+                    else
+                    {
+                        Task.WaitAll(evaluationTasks, cancellationToken);
+                    }
+
+                    BaseMultiset lhsResult = lhsEvaluation.Result;
+                    BaseMultiset rhsResult = rhsEvaluation.Result;
+                    if (lhsResult is NullMultiset)
+                    {
+                        context.OutputMultiset = lhsResult;
+                    }
+                    else if (rhsResult is NullMultiset)
+                    {
+                        context.OutputMultiset = rhsResult;
+                    }
+                    else if (lhsResult == null || rhsResult == null)
+                    {
+                        context.OutputMultiset = new NullMultiset();
+                    }
+                    else
+                    {
+                        context.OutputMultiset = lhsResult.Product(rhsResult);
+                    }
+                }
+
+                return context.OutputMultiset;
+            }
+            catch (OperationCanceledException)
+            {
+                throw new RdfQueryTimeoutException("Query Execution Time exceeded the Timeout of " +
+                                                   context.QueryTimeout + "ms, query aborted after " +
+                                                   context.QueryTime + "ms");
+            }
+            catch (AggregateException ex)
+            {
+                Exception firstCause = ex.InnerExceptions.FirstOrDefault();
+                if (firstCause is RdfException) throw firstCause;
+                throw new RdfQueryException("Error in parallel join evaluation.", ex);
+            }
+            catch (RdfException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new RdfQueryException("Error in parallel join evaluation.", ex);
+            }
+
+
+        }
+
+        private BaseMultiset ParallelEvaluate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IList<IRefNode> activeGraphs, IList<IRefNode> defGraphs)
+        {
+            bool activeGraphOk = false, defaultGraphOk = false;
+            try
+            {
+                // Set the Active Graph
+                if (activeGraphs.Any())
+                {
+                    context.Data.SetActiveGraph(activeGraphs);
+                    activeGraphOk = true;
+                }
+                // Set the Default Graph
+                if (defGraphs.Any())
+                {
+                    context.Data.SetDefaultGraph(defGraphs);
+                    defaultGraphOk = true;
+                }
+
+                // Evaluate the algebra and return the result
+                return context.Evaluate(algebra);
+            }
+            finally
+            {
+                if (defaultGraphOk)
+                {
+                    try
+                    {
+                        context.Data.ResetDefaultGraph();
+                    }
+                    catch
+                    {
+                        // Ignore reset exceptions
+                    }
+                }
+                if (activeGraphOk)
+                {
+                    try
+                    {
+                        context.Data.ResetActiveGraph();
+                    }
+                    catch
+                    {
+                        // Ignore reset exceptions
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region ParallelUnion Evaluation
+
+        private BaseMultiset EvaluateParallelUnion(ParallelUnion union, SparqlEvaluationContext context)
+        {
+            // Create a copy of the evaluation context for the RHS
+            var context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor, context.Options);
+            if (!(context.InputMultiset is IdentityMultiset))
+            {
+                context2.InputMultiset = new Multiset();
+                foreach (ISet s in context.InputMultiset.Sets)
+                {
+                    context2.InputMultiset.Add(s.Copy());
+                }
+            }
+
+            var activeGraphs = context.Data.ActiveGraphNames.ToList();
+            var defaultGraphs = context.Data.ActiveGraphNames.ToList();
+
+            Task<BaseMultiset> lhsTask = Task.Factory.StartNew(() => ParallelEvaluate(union.Lhs, context, activeGraphs, defaultGraphs));
+            Task<BaseMultiset> rhsTask = Task.Factory.StartNew(() => ParallelEvaluate(union.Rhs, context2, activeGraphs, defaultGraphs));
+            Task[] evaluationTasks = { lhsTask, rhsTask };
+            try
+            {
+                Task.WaitAll(evaluationTasks);
+                context.CheckTimeout();
+                BaseMultiset lhsResult = lhsTask.Result;
+                BaseMultiset rhsResult = rhsTask.Result;
+                context.OutputMultiset = lhsResult.Union(rhsResult);
+                context.CheckTimeout();
+                context.InputMultiset = context.OutputMultiset;
+                return context.OutputMultiset;
+            }
+            catch (AggregateException ex)
+            {
+                if (ex.InnerExceptions.Any())
+                {
+                    throw ex.InnerExceptions.First();
+                }
+
+                throw;
+            }
         }
         #endregion
     }

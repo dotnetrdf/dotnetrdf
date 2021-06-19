@@ -27,10 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Builder;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -94,7 +90,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Triple Patterns in the BGP.
         /// </summary>
-        public IEnumerable<ITriplePattern> TriplePatterns
+        public IReadOnlyList<ITriplePattern> TriplePatterns
         {
             get
             {
@@ -145,7 +141,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the BGP is the emtpy BGP.
+        /// Gets whether the BGP is the empty BGP.
         /// </summary>
         public bool IsEmpty
         {
@@ -164,14 +160,23 @@ namespace VDS.RDF.Query.Algebra
             return "AskBgp()";
         }
 
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessBgp(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitBgp(this);
+        }
+
         /// <summary>
         /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
+            var q = new SparqlQuery {RootGraphPattern = ToGraphPattern()};
             q.Optimise();
             return q;
         }

@@ -49,8 +49,6 @@ namespace VDS.RDF.Query.Algebra
     public class LazyBgp
         : Bgp
     {
-        private int _requiredResults = -1;
-
         /// <summary>
         /// Creates a Streamed BGP containing a single Triple Pattern.
         /// </summary>
@@ -79,7 +77,7 @@ namespace VDS.RDF.Query.Algebra
         public LazyBgp(ITriplePattern p, int requiredResults)
         {
             if (!IsLazilyEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern, BIND or FILTER Pattern", "p");
-            _requiredResults = requiredResults;
+            RequiredResults = requiredResults;
             _triplePatterns.Add(p);
         }
 
@@ -91,460 +89,15 @@ namespace VDS.RDF.Query.Algebra
         public LazyBgp(IEnumerable<ITriplePattern> ps, int requiredResults)
         {
             if (!ps.All(p => IsLazilyEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns, BIND or FILTER Patterns", "ps");
-            _requiredResults = requiredResults;
+            RequiredResults = requiredResults;
             _triplePatterns.AddRange(ps);
         }
+
+        public int RequiredResults { get; set; } = -1;
 
         private bool IsLazilyEvaluablePattern(ITriplePattern p)
         {
             return (p.PatternType == TriplePatternType.Match || p.PatternType == TriplePatternType.Filter || p.PatternType == TriplePatternType.BindAssignment);
-        }
-
-        /// <summary>
-        /// Evaluates the BGP against the Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public override BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            bool halt;
-            BaseMultiset results = null;
-            var origRequired = _requiredResults;
-
-            // May need to detect the actual amount of required results if not specified at instantation
-            if (_requiredResults < 0)
-            {
-                if (context.Query != null)
-                {
-                    if (context.Query.HasDistinctModifier || (context.Query.OrderBy != null && !context.Query.IsOptimisableOrderBy) || context.Query.GroupBy != null || context.Query.Having != null || context.Query.Bindings != null)
-                    {
-                        // If there's an DISTINCT/ORDER BY/GROUP BY/HAVING/BINDINGS present then can't do Lazy evaluation
-                        _requiredResults = -1;
-                    }
-                    else
-                    {
-                        var limit = context.Query.Limit;
-                        var offset = context.Query.Offset;
-                        if (limit >= 0 && offset >= 0)
-                        {
-                            // If there is a Limit and Offset specified then the required results is the LIMIT+OFFSET
-                            _requiredResults = limit + offset;
-                        }
-                        else if (limit >= 0)
-                        {
-                            // If there is just a Limit specified then the required results is the LIMIT
-                            _requiredResults = limit;
-                        }
-                        else
-                        {
-                            // In any other case required results is everything i.e. -1
-                            _requiredResults = -1;
-                        }
-                    }
-                    Debug.WriteLine("Lazy Evaluation - Number of required results is " + _requiredResults);
-                }
-            }
-
-            switch (_requiredResults)
-            {
-                case -1:
-                    // If required results is everything just use normal evaluation as otherwise 
-                    // lazy evaluation will significantly impact performance and lead to an apparent infinite loop
-                    return base.Evaluate(context);
-                case 0:
-                    // Don't need any results
-                    results = new NullMultiset();
-                    break;
-                default:
-                    // Do streaming evaluation
-                    if (_requiredResults != 0)
-                    {
-                        results = StreamingEvaluate(context, 0, out halt);
-                        if (results is Multiset && results.IsEmpty) results = new NullMultiset();
-                    }
-                    break;
-            }
-            _requiredResults = origRequired;
-
-            context.OutputMultiset = results;
-            context.OutputMultiset.Trim();
-            return context.OutputMultiset;
-        }
-
-        private BaseMultiset StreamingEvaluate(SparqlEvaluationContext context, int pattern, out bool halt)
-        {
-            // Remember to check for Timeouts during Lazy Evaluation
-            context.CheckTimeout();
-
-            halt = false;
-
-            // Handle Empty BGPs
-            if (pattern == 0 && _triplePatterns.Count == 0)
-            {
-                context.OutputMultiset = new IdentityMultiset();
-                return context.OutputMultiset;
-            }
-
-            BaseMultiset initialInput, localOutput, results = null;
-
-            // Determine whether the Pattern modifies the existing Input rather than joining to it
-            var modifies = (_triplePatterns[pattern].PatternType == TriplePatternType.Filter);
-            var extended = (pattern > 0 && _triplePatterns[pattern - 1].PatternType == TriplePatternType.BindAssignment);
-            var modified = (pattern > 0 && _triplePatterns[pattern - 1].PatternType == TriplePatternType.Filter);
-
-            // Set up the Input and Output Multiset appropriately
-            switch (pattern)
-            {
-                case 0:
-                    // Input is as given and Output is new empty multiset
-                    if (!modifies)
-                    {
-                        initialInput = context.InputMultiset;
-                    }
-                    else
-                    {
-                        // If the Pattern will modify the Input and is the first thing in the BGP then it actually modifies a new empty input
-                        // This takes care of FILTERs being out of scope
-                        initialInput = new Multiset();
-                    }
-                    localOutput = new Multiset();
-                    break;
-
-                case 1:
-                    // Input becomes current Output and Output is new empty multiset
-                    initialInput = context.OutputMultiset;
-                    localOutput = new Multiset();
-                    break;
-
-                default:
-                    if (!extended && !modified)
-                    {
-                        // Input is join of previous input and output and Output is new empty multiset
-                        if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                        {
-                            // Disjoint so do a Product
-                            initialInput = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
-                        }
-                        else
-                        {
-                            // Normal Join
-                            initialInput = context.InputMultiset.Join(context.OutputMultiset);
-                        }
-                    }
-                    else
-                    {
-                        initialInput = context.OutputMultiset;
-                    }
-                    localOutput = new Multiset();
-                    break;
-            }
-            context.InputMultiset = initialInput;
-            context.OutputMultiset = localOutput;
-
-            // Get the Triple Pattern we're evaluating
-            ITriplePattern temp = _triplePatterns[pattern];
-            var resultsFound = 0;
-            var prevResults = -1;
-
-            if (temp.PatternType == TriplePatternType.Match)
-            {
-                // Find the first Triple which matches the Pattern
-                var tp = (IMatchTriplePattern) temp;
-                IEnumerable<Triple> ts = tp.GetTriples(context);
-
-                // In the case that we're lazily evaluating an optimisable ORDER BY then
-                // we need to apply OrderBy()'s to our enumeration
-                // This only applies to the 1st pattern
-                if (pattern == 0)
-                {
-                    if (context.Query != null)
-                    {
-                        if (context.Query.OrderBy != null && context.Query.IsOptimisableOrderBy)
-                        {
-                            IComparer<Triple> comparer = context.Query.OrderBy.GetComparer(tp, context.OrderingComparer);
-                            if (comparer != null)
-                            {
-                                ts = ts.OrderBy(t => t, comparer);
-                            }
-                            else
-                            {
-                                // Can't get a comparer so can't optimise
-                                // Thus required results is everything so just use normal evaluation as otherwise 
-                                // lazy evaluation will significantly impact performance and lead to an apparent infinite loop
-                                return base.Evaluate(context);
-                            }
-                        }
-                    }
-                }
-
-                foreach (Triple t in ts)
-                {
-                    if (tp.Accepts(context, t))
-                    {
-                        resultsFound++;
-                        if (tp.IndexType == TripleIndexType.NoVariables)
-                        {
-                            localOutput = new IdentityMultiset();
-                            context.OutputMultiset = localOutput;
-                        }
-                        else
-                        {
-                            context.OutputMultiset.Add(tp.CreateResult(t));
-                        }
-                    }
-                }
-                // Recurse unless we're the last pattern
-                if (pattern < _triplePatterns.Count - 1)
-                {
-                    results = StreamingEvaluate(context, pattern + 1, out halt);
-
-                    // If recursion leads to a halt then we halt and return immediately
-                    if (halt && results.Count >= _requiredResults && _requiredResults != -1)
-                    {
-                        return results;
-                    }
-                    else if (halt)
-                    {
-                        if (results.Count == 0)
-                        {
-                            // If recursing leads to no results then eliminate all outputs
-                            // Also reset to prevResults to -1
-                            resultsFound = 0;
-                            localOutput = new Multiset();
-                            prevResults = -1;
-                        }
-                        else if (prevResults > -1)
-                        {
-                            if (results.Count == prevResults)
-                            {
-                                // If the amount of results found hasn't increased then this match does not
-                                // generate any further solutions further down the recursion so we can eliminate
-                                // this from the results
-                                localOutput.Remove(localOutput.SetIDs.Max());
-                            }
-                        }
-                        prevResults = results.Count;
-
-                        // If we're supposed to halt but not reached the number of required results then continue
-                        context.InputMultiset = initialInput;
-                        context.OutputMultiset = localOutput;
-                    }
-                    else
-                    {
-                        // Otherwise we need to keep going here
-                        // So must reset our input and outputs before continuing
-                        context.InputMultiset = initialInput;
-                        context.OutputMultiset = new Multiset();
-                        resultsFound--;
-                    }
-                }
-                else
-                {
-                    // If we're at the last pattern and we've found a match then we can halt
-                    halt = true;
-
-                    // Generate the final output and return it
-                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                    {
-                        // Disjoint so do a Product
-                        results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset,
-                            context.RemainingTimeout);
-                    }
-                    else
-                    {
-                        // Normal Join
-                        results = context.InputMultiset.Join(context.OutputMultiset);
-                    }
-
-                    // If not reached required number of results continue
-                    if (results.Count >= _requiredResults && _requiredResults != -1)
-                    {
-                        context.OutputMultiset = results;
-                        return context.OutputMultiset;
-                    }
-                }
-                context.InputMultiset = results;
-            }
-            else if (temp.PatternType == TriplePatternType.Filter)
-            {
-                var filter = (IFilterPattern) temp;
-                ISparqlExpression filterExpr = filter.Filter.Expression;
-
-                if (filter.Variables.IsDisjoint(context.InputMultiset.Variables))
-                {
-                    // Filter is Disjoint so determine whether it has any affect or not
-                    if (filter.Variables.Any())
-                    {
-                        // Has Variables but disjoint from input => not in scope so gets ignored
-
-                        // Do we recurse or not?
-                        if (pattern < _triplePatterns.Count - 1)
-                        {
-                            // Recurse and return
-                            results = StreamingEvaluate(context, pattern + 1, out halt);
-                            return results;
-                        }
-                        else
-                        {
-                            // We don't affect the input in any way so just return it
-                            return context.InputMultiset;
-                        }
-                    }
-                    else
-                    {
-                        // No Variables so have to evaluate it to see if it gives true otherwise
-                        try
-                        {
-                            if (filterExpr.Evaluate(context, 0).AsSafeBoolean())
-                            {
-                                if (pattern < _triplePatterns.Count - 1)
-                                {
-                                    // Recurse and return
-                                    results = StreamingEvaluate(context, pattern + 1, out halt);
-                                    return results;
-                                }
-                                else
-                                {
-                                    // Last Pattern and we evaluate to true so can return the input as-is
-                                    halt = true;
-                                    return context.InputMultiset;
-                                }
-                            }
-                        }
-                        catch (RdfQueryException)
-                        {
-                            // Evaluates to false so eliminates all solutions (use an empty Multiset)
-                            return new Multiset();
-                        }
-                    }
-                }
-                else
-                {
-                    // Test each solution found so far against the Filter and eliminate those that evalute to false/error
-                    foreach (var id in context.InputMultiset.SetIDs.ToList())
-                    {
-                        try
-                        {
-                            if (filterExpr.Evaluate(context, id).AsSafeBoolean())
-                            {
-                                // If evaluates to true then add to output
-                                context.OutputMultiset.Add(context.InputMultiset[id].Copy());
-                            }
-                        }
-                        catch (RdfQueryException)
-                        {
-                            // Error means we ignore the solution
-                        }
-                    }
-
-                    // Remember to check for Timeouts during Lazy Evaluation
-                    context.CheckTimeout();
-
-                    // Decide whether to recurse or not
-                    resultsFound = context.OutputMultiset.Count;
-                    if (pattern < _triplePatterns.Count - 1)
-                    {
-                        // Recurse then return
-                        // We can never decide whether to recurse again at this point as we are not capable of deciding
-                        // which solutions should be dumped (that is the job of an earlier pattern in the BGP)
-                        results = StreamingEvaluate(context, pattern + 1, out halt);
-
-                        return results;
-                    }
-                    else
-                    {
-                        halt = true;
-
-                        // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
-                        // for us to filter
-                        return context.OutputMultiset;
-                    }
-                }
-            }
-            else if (temp is BindPattern)
-            {
-                var bind = (BindPattern) temp;
-                ISparqlExpression bindExpr = bind.AssignExpression;
-                var bindVar = bind.VariableName;
-
-                if (context.InputMultiset.ContainsVariable(bindVar))
-                {
-                    throw new RdfQueryException(
-                        "Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
-                }
-                else
-                {
-                    // Compute the Binding for every value
-                    context.OutputMultiset.AddVariable(bindVar);
-                    foreach (ISet s in context.InputMultiset.Sets)
-                    {
-                        ISet x = s.Copy();
-                        try
-                        {
-                            INode val = bindExpr.Evaluate(context, s.ID);
-                            x.Add(bindVar, val);
-                        }
-                        catch (RdfQueryException)
-                        {
-                            // Equivalent to no assignment but the solution is preserved
-                        }
-                        context.OutputMultiset.Add(x.Copy());
-                    }
-
-                    // Remember to check for Timeouts during Lazy Evaluation
-                    context.CheckTimeout();
-
-                    // Decide whether to recurse or not
-                    resultsFound = context.OutputMultiset.Count;
-                    if (pattern < _triplePatterns.Count - 1)
-                    {
-                        // Recurse then return
-                        results = StreamingEvaluate(context, pattern + 1, out halt);
-                        return results;
-                    }
-                    else
-                    {
-                        halt = true;
-
-                        // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
-                        // for us to extend
-                        return context.OutputMultiset;
-                    }
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Encountered a " + temp.GetType().FullName +
-                                            " which is not a lazily evaluable Pattern");
-            }
-
-            // If we found no possibles we return the null multiset
-            if (resultsFound == 0)
-            {
-                return new NullMultiset();
-            }
-            else
-            {
-                // Remember to check for Timeouts during Lazy Evaluation
-                context.CheckTimeout();
-
-                // Generate the final output and return it
-                if (!modifies)
-                {
-                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                    {
-                        // Disjoint so do a Product
-                        results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
-                    }
-                    else
-                    {
-                        // Normal Join
-                        results = context.InputMultiset.Join(context.OutputMultiset);
-                    }
-                    context.OutputMultiset = results;
-                }
-                return context.OutputMultiset;
-            }
         }
 
         /// <summary>
@@ -553,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "LazyBgp(" + _requiredResults + ")";
+            return "LazyBgp(" + RequiredResults + ")";
         }
     }
 
@@ -567,9 +120,6 @@ namespace VDS.RDF.Query.Algebra
     /// </remarks>
     public class LazyUnion : IUnion
     {
-        private readonly ISparqlAlgebra _lhs, _rhs;
-        private int _requiredResults = -1;
-
         /// <summary>
         /// Creates a new Lazy Union.
         /// </summary>
@@ -577,8 +127,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="rhs">RHS Pattern.</param>
         public LazyUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
-            _lhs = lhs;
-            _rhs = rhs;
+            Lhs = lhs;
+            Rhs = rhs;
         }
 
         /// <summary>
@@ -589,8 +139,9 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="requiredResults">The number of results that the Union should attempt to return.</param>
         public LazyUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs, int requiredResults)
         {
-            _lhs = lhs;
-            _rhs = rhs;
+            Lhs = lhs;
+            Rhs = rhs;
+            RequiredResults = requiredResults;
         }
 
         /// <summary>
@@ -601,17 +152,17 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            if (_lhs is Extend || _rhs is Extend) initialInput = new IdentityMultiset();
+            if (Lhs is Extend || Rhs is Extend) initialInput = new IdentityMultiset();
 
             context.InputMultiset = initialInput;
-            BaseMultiset lhsResult = context.Evaluate(_lhs); //this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(Lhs); //this._lhs.Evaluate(context);
             context.CheckTimeout();
 
-            if (lhsResult.Count >= _requiredResults || _requiredResults == -1)
+            if (lhsResult.Count >= RequiredResults || RequiredResults == -1)
             {
                 // Only evaluate the RHS if the LHS didn't yield sufficient results
                 context.InputMultiset = initialInput;
-                BaseMultiset rhsResult = context.Evaluate(_rhs); //this._rhs.Evaluate(context);
+                BaseMultiset rhsResult = context.Evaluate(Rhs); //this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.Union(rhsResult);
@@ -626,12 +177,14 @@ namespace VDS.RDF.Query.Algebra
             return context.OutputMultiset;
         }
 
+        public int RequiredResults { get; } = -1;
+
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
         {
-            get { return (_lhs.Variables.Concat(_rhs.Variables)).Distinct(); }
+            get { return (Lhs.Variables.Concat(Rhs.Variables)).Distinct(); }
         }
 
         /// <summary>
@@ -655,25 +208,19 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Fixed variables are those fixed on both sides
-                return _lhs.FixedVariables.Intersect(_rhs.FixedVariables);
+                return Lhs.FixedVariables.Intersect(Rhs.FixedVariables);
             }
         }
 
         /// <summary>
         /// Gets the LHS of the Join.
         /// </summary>
-        public ISparqlAlgebra Lhs
-        {
-            get { return _lhs; }
-        }
+        public ISparqlAlgebra Lhs { get; }
 
         /// <summary>
         /// Gets the RHS of the Join.
         /// </summary>
-        public ISparqlAlgebra Rhs
-        {
-            get { return _rhs; }
-        }
+        public ISparqlAlgebra Rhs { get; }
 
         /// <summary>
         /// Gets the String representation of the Algebra.
@@ -681,7 +228,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "LazyUnion(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "LazyUnion(" + Lhs.ToString() + ", " + Rhs.ToString() + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessUnion(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitUnion(this);
         }
 
         /// <summary>
@@ -704,8 +261,8 @@ namespace VDS.RDF.Query.Algebra
         {
             var p = new GraphPattern();
             p.IsUnion = true;
-            p.AddGraphPattern(_lhs.ToGraphPattern());
-            p.AddGraphPattern(_rhs.ToGraphPattern());
+            p.AddGraphPattern(Lhs.ToGraphPattern());
+            p.AddGraphPattern(Rhs.ToGraphPattern());
             return p;
         }
 
@@ -716,7 +273,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new LazyUnion(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
+            return new LazyUnion(optimiser.Optimise(Lhs), optimiser.Optimise(Rhs));
         }
 
         /// <summary>
@@ -726,7 +283,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new LazyUnion(optimiser.Optimise(_lhs), _rhs);
+            return new LazyUnion(optimiser.Optimise(Lhs), Rhs);
         }
 
         /// <summary>
@@ -736,7 +293,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new LazyUnion(_lhs, optimiser.Optimise(_rhs));
+            return new LazyUnion(Lhs, optimiser.Optimise(Rhs));
         }
     }
 }

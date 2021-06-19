@@ -58,7 +58,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="p">Graph Pattern.</param>
         /// <param name="top">Is this the top level pattern?.</param>
         /// <returns></returns>
-        private bool IsValidDataPattern(GraphPattern p, bool top)
+        public static bool IsValidDataPattern(GraphPattern p, bool top)
         {
             if (p.IsGraph)
             {
@@ -178,76 +178,6 @@ namespace VDS.RDF.Update.Commands
             return affectedUris.Contains(graphName.ToSafeString());
         }
 
-        /// <summary>
-        /// Evaluates the Command in the given Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlUpdateEvaluationContext context)
-        {
-            // Split the Pattern into the set of Graph Patterns
-            var patterns = new List<GraphPattern>();
-            if (_pattern.IsGraph)
-            {
-                patterns.Add(_pattern);
-            }
-            else if (_pattern.TriplePatterns.Count > 0 || _pattern.HasChildGraphPatterns)
-            {
-                if (_pattern.TriplePatterns.Count > 0)
-                {
-                    patterns.Add(new GraphPattern());
-                    _pattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
-                }
-                _pattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
-            }
-            else
-            {
-                // If no Triple Patterns and No Child Graph Patterns nothing to do
-                return;
-            }
-
-            foreach (GraphPattern pattern in patterns)
-            {
-                if (!IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
-
-                // Get the Target Graph
-                IGraph target;
-                IRefNode graphName;
-                if (pattern.IsGraph)
-                {
-                    switch (pattern.GraphSpecifier.TokenType)
-                    {
-                        case Token.QNAME:
-                            throw new NotSupportedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
-                        case Token.URI:
-                            graphName = new UriNode(UriFactory.Root.Create(pattern.GraphSpecifier.Value));
-                            break;
-                        default:
-                            throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command as the Graph Specifier is not a QName/URI");
-                    }
-                }
-                else
-                {
-                    graphName = null;
-                }
-
-                // If the Pattern affects a non-existent Graph then nothing to DELETE
-                if (!context.Data.HasGraph(graphName)) continue;
-                target = context.Data.GetModifiableGraph(graphName);
-
-                // Delete the actual Triples
-                INode subj, pred, obj;
-
-                var constructContext = new ConstructContext(target, null, false);
-                foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
-                {
-                    subj = p.Subject.Construct(constructContext);
-                    pred = p.Predicate.Construct(constructContext);
-                    obj = p.Object.Construct(constructContext);
-
-                    target.Retract(new Triple(subj, pred, obj));
-                }
-            }
-        }
 
         /// <summary>
         /// Processes the Command using the given Update Processor.

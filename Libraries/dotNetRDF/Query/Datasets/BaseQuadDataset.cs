@@ -334,14 +334,14 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="t">Triple.</param>
         [Obsolete("Replaced by AddQuad(IRefNode, Triple)")]
-        protected internal abstract bool AddQuad(Uri graphUri, Triple t);
+        public abstract bool AddQuad(Uri graphUri, Triple t);
 
         /// <summary>
         /// Adds a Quad to the Dataset.
         /// </summary>
         /// <param name="graphName">Graph name.</param>
         /// <param name="t">Triple.</param>
-        protected internal abstract bool AddQuad(IRefNode graphName, Triple t);
+        public abstract bool AddQuad(IRefNode graphName, Triple t);
 
         /// <summary>
         /// Removes a Graph from the Dataset.
@@ -362,8 +362,8 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="t">Triple.</param>
-        [Obsolete("Replacecd by RemoveQuad(IRefNode, Triple)")]
-        protected internal abstract bool RemoveQuad(Uri graphUri, Triple t);
+        [Obsolete("Replaced by RemoveQuad(IRefNode, Triple)")]
+        public abstract bool RemoveQuad(Uri graphUri, Triple t);
 
         /// <summary>
         /// Removes a quad from the dataset.
@@ -371,7 +371,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphName">Graph name.</param>
         /// <param name="t">Triple to remove.</param>
         /// <returns></returns>
-        protected internal abstract bool RemoveQuad(IRefNode graphName, Triple t);
+        public abstract bool RemoveQuad(IRefNode graphName, Triple t);
 
         /// <summary>
         /// Gets whether a Graph with the given URI is the Dataset.
@@ -561,7 +561,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphName">Graph name.</param>
         /// <param name="t">Triple.</param>
         /// <returns></returns>
-        protected abstract internal bool ContainsQuad(IRefNode graphName, Triple t);
+        public abstract bool ContainsQuad(IRefNode graphName, Triple t);
 
         /// <summary>
         /// Gets all triples from the dataset.
@@ -581,7 +581,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphName">Graph name.</param>
         /// <returns></returns>
-        protected abstract internal IEnumerable<Triple> GetQuads(IRefNode graphName);
+        public abstract IEnumerable<Triple> GetQuads(IRefNode graphName);
 
         /// <summary>
         /// Gets all the Triples with a given subject.
@@ -601,7 +601,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphName">Graph URI.</param>
         /// <param name="subj">Subject.</param>
         /// <returns></returns>
-        protected abstract internal IEnumerable<Triple> GetQuadsWithSubject(IRefNode graphName, INode subj);
+        public abstract IEnumerable<Triple> GetQuadsWithSubject(IRefNode graphName, INode subj);
 
         /// <summary>
         /// Gets all the Triples with a given predicate.
@@ -621,7 +621,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphName">Graph URI.</param>
         /// <param name="pred">Predicate.</param>
         /// <returns></returns>
-        protected abstract internal IEnumerable<Triple> GetQuadsWithPredicate(IRefNode graphName, INode pred);
+        public abstract IEnumerable<Triple> GetQuadsWithPredicate(IRefNode graphName, INode pred);
 
         /// <summary>
         /// Gets all the Triples with a given object.
@@ -641,7 +641,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphName">Graph URI.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        protected abstract internal IEnumerable<Triple> GetQuadsWithObject(IRefNode graphName, INode obj);
+        public abstract IEnumerable<Triple> GetQuadsWithObject(IRefNode graphName, INode obj);
 
         /// <summary>
         /// Gets all the Triples with a given subject and predicate.
@@ -663,7 +663,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="subj">Subject.</param>
         /// <param name="pred">Predicate.</param>
         /// <returns></returns>
-        protected abstract internal IEnumerable<Triple> GetQuadsWithSubjectPredicate(IRefNode graphName, INode subj, INode pred);
+        public abstract IEnumerable<Triple> GetQuadsWithSubjectPredicate(IRefNode graphName, INode subj, INode pred);
 
         /// <summary>
         /// Gets all the Triples with a given subject and object.
@@ -685,7 +685,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="subj">Subject.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        protected abstract internal IEnumerable<Triple> GetQuadsWithSubjectObject(IRefNode graphName, INode subj, INode obj);
+        public abstract IEnumerable<Triple> GetQuadsWithSubjectObject(IRefNode graphName, INode subj, INode obj);
 
         /// <summary>
         /// Gets all the Triples with a given predicate and object.
@@ -707,7 +707,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="pred">Predicate.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        protected abstract internal IEnumerable<Triple> GetQuadsWithPredicateObject(IRefNode graphName, INode pred, INode obj);
+        public abstract IEnumerable<Triple> GetQuadsWithPredicateObject(IRefNode graphName, INode pred, INode obj);
 
         /// <summary>
         /// Flushes any changes to the dataset.

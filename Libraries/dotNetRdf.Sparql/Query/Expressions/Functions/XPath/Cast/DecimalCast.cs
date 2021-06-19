@@ -24,10 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Globalization;
-using System.Linq;
-using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
@@ -46,96 +42,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             : base(expr) { }
 
         /// <summary>
-        /// Casts the Value of the inner Expression to a Decimal.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode n = _expr.Evaluate(context, bindingID);//.CoerceToDecimal();
-
-            if (n == null)
-            {
-                throw new RdfQueryException("Cannot cast a Null to a xsd:decimal");
-            }
-
-            // New method should be much faster
-            // if (n is DecimalNode) return n;
-            // return new DecimalNode(null, n.AsDecimal());
-
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                case NodeType.GraphLiteral:
-                case NodeType.Uri:
-                    throw new RdfQueryException("Cannot cast a Blank/URI/Graph Literal Node to a xsd:decimal");
-
-                case NodeType.Literal:
-                    if (n is DecimalNode) return n;
-                    // See if the value can be cast
-                    var lit = (ILiteralNode)n;
-                    if (lit.DataType != null)
-                    {
-                        var dt = lit.DataType.ToString();
-                        if (SparqlSpecsHelper.IntegerDataTypes.Contains(dt))
-                        {
-                            // Already an integer type so valid as a xsd:decimal
-                            decimal d;
-                            if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
-                            {
-                                // Parsed OK
-                                return new DecimalNode(d);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid lexical form for xsd:decimal");
-                            }
-                        }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            // DateTime cast forbidden
-                            throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:decimal");
-                        }
-                        else
-                        {
-                            decimal d;
-                            if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
-                            {
-                                // Parsed OK
-                                return new DecimalNode(d);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        decimal d;
-                        if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
-                        {
-                            // Parsed OK
-                            return new DecimalNode(d);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
-                        }
-                    }
-                default:
-                    throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:decimal");
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeDecimal + ">(" + _expr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessDecimalCast(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitDecimalCast(this);
         }
 
         /// <summary>

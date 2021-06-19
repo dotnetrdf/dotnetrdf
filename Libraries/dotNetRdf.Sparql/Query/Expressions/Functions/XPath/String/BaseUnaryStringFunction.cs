@@ -51,53 +51,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
-        /// Gets the Value of the function as evaluated in the given Context for the given Binding ID.
+        /// Get the expression that the function applies over.
         /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                if (temp.NodeType == NodeType.Literal)
-                {
-                    var lit = (ILiteralNode)temp;
-                    if (lit.DataType != null)
-                    {
-                        if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            return ValueInternal(context, lit);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an XPath String function on a non-string typed Literal");
-                        }
-                    }
-                    else
-                    {
-                        return ValueInternal(context, lit);
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
-            }
-        }
+        public ISparqlExpression InnerExpression { get => _expr; }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <returns></returns>
-        protected abstract IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit);
+        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+        public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
         /// Gets the Variables used in the function.

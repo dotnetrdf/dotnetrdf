@@ -112,26 +112,6 @@ namespace VDS.RDF.Update.Commands
         public bool Silent { get; }
 
         /// <summary>
-        /// Evaluates the Command in the given Context.
-        /// </summary>
-        /// <param name="context">Update Evaluation Context.</param>
-        public override void Evaluate(SparqlUpdateEvaluationContext context)
-        {
-            if (context.Data.HasGraph(TargetGraphName))
-            {
-                if (!Silent)
-                {
-                    throw new SparqlUpdateException("Cannot create a Named Graph with name '" + TargetGraphName + "' since a Graph with this URI already exists in the Store");
-                }
-            }
-            else
-            {
-                var g = new Graph(TargetGraphName);
-                context.Data.AddGraph(g);
-            }
-        }
-
-        /// <summary>
         /// Processes the Command using the given Update Processor.
         /// </summary>
         /// <param name="processor">SPARQL Update Processor.</param>

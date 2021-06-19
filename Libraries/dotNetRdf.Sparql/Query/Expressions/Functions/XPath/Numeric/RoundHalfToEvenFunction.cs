@@ -35,8 +35,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
     public class RoundHalfToEvenFunction
         : BaseUnaryExpression
     {
-        private ISparqlExpression _precision;
-
         /// <summary>
         /// Creates a new XPath RoundHalfToEven function.
         /// </summary>
@@ -52,65 +50,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         public RoundHalfToEvenFunction(ISparqlExpression expr, ISparqlExpression precision)
             : this(expr)
         {
-            _precision = precision;
+            Precision = precision;
         }
 
-        /// <summary>
-        /// Gets the Numeric Value of the function as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode a = _expr.Evaluate(context, bindingID);
-            if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
-
-            var p = 0;
-            if (_precision != null)
-            {
-                IValuedNode precision = _precision.Evaluate(context, bindingID);
-                if (precision == null) throw new RdfQueryException("Cannot use a null precision for rounding");
-                try
-                {
-                    p = Convert.ToInt32(precision.AsInteger());
-                }
-                catch
-                {
-                    throw new RdfQueryException("Unable to cast precision to an integer");
-                }
-            }
-
-            switch (a.NumericType)
-            {
-                case SparqlNumericType.Integer:
-                    // Rounding an Integer has no effect
-                    return a;
-
-                case SparqlNumericType.Decimal:
-                    return new DecimalNode(Math.Round(a.AsDecimal(), p, MidpointRounding.AwayFromZero));
-
-                case SparqlNumericType.Float:
-                    try
-                    {
-                        return new FloatNode(Convert.ToSingle(Math.Round(a.AsDouble(), p, MidpointRounding.AwayFromZero)));
-                    }
-                    catch (RdfQueryException)
-                    {
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfQueryException("Unable to cast the float value of a round to a float", ex);
-                    }
-
-                case SparqlNumericType.Double:
-                    return new DoubleNode(Math.Round(a.AsDouble(), p, MidpointRounding.AwayFromZero));
-
-                default:
-                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            }
-        }
+        public ISparqlExpression Precision { get; }
 
         /// <summary>
         /// Gets the String representation of the function.
@@ -118,7 +61,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessRoundHalfToEvenFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitRoundHalfToEvenFunction(this);
         }
 
         /// <summary>
@@ -150,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new RoundHalfToEvenFunction(transformer.Transform(_expr));
+            return new RoundHalfToEvenFunction(transformer.Transform(InnerExpression));
         }
     }
 }

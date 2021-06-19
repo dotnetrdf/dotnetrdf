@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
@@ -43,8 +42,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     public class UnknownFunction
         : ISparqlExpression
     {
-        private Uri _funcUri;
-        private List<ISparqlExpression> _args = new List<ISparqlExpression>();
+        private readonly Uri _funcUri;
+        private readonly List<ISparqlExpression> _args = new List<ISparqlExpression>();
 
         /// <summary>
         /// Creates a new Unknown Function that has no Arguments.
@@ -77,15 +76,15 @@ namespace VDS.RDF.Query.Expressions.Functions
             _args.AddRange(exprs);
         }
 
-        /// <summary>
-        /// Gives null as the Value since dotNetRDF does not know how to evaluate Unknown Functions.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            return null;
+            return processor.ProcessUnknownFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitUnknownFunction(this);
         }
 
         /// <summary>

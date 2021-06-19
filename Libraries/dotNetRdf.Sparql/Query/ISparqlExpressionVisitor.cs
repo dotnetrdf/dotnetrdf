@@ -18,7 +18,8 @@ using VDS.RDF.Query.Expressions.Functions.XPath;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
 using VDS.RDF.Query.Expressions.Functions.XPath.Numeric;
-using VDS.RDF.Query.Expressions.Functions.XPath.String;
+using VDS.RDF.Query.Expressions.Primary;
+using XPath=VDS.RDF.Query.Expressions.Functions.XPath;
 using AbsFunction = VDS.RDF.Query.Expressions.Functions.Sparql.Numeric.AbsFunction;
 using ArqFunctions = VDS.RDF.Query.Expressions.Functions.Arq;
 using ConcatFunction = VDS.RDF.Query.Expressions.Functions.Sparql.String.ConcatFunction;
@@ -29,8 +30,6 @@ using LeviathanNumeric = VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric;
 using LeviathanHash = VDS.RDF.Query.Expressions.Functions.Leviathan.Hash;
 using ReplaceFunction = VDS.RDF.Query.Expressions.Functions.Sparql.String.ReplaceFunction;
 using RoundFunction = VDS.RDF.Query.Expressions.Functions.Sparql.Numeric.RoundFunction;
-using XPathNumeric = VDS.RDF.Query.Expressions.Functions.XPath.Numeric;
-using XPathString = VDS.RDF.Query.Expressions.Functions.XPath.String;
 
 namespace VDS.RDF.Query
 {
@@ -40,6 +39,15 @@ namespace VDS.RDF.Query
     /// <typeparam name="T">The type returned by the visit methods of the visitor.</typeparam>
     public interface ISparqlExpressionVisitor<out T>
     {
+        // Primary
+        T VisitAggregateTerm(AggregateTerm aggregate);
+        T VisitAllModifier(AllModifier all);
+        T VisitConstantTerm(ConstantTerm constant);
+        T VisitDistinctModifier(DistinctModifier distinct);
+        T VisitGraphPatternTerm(GraphPatternTerm graphPattern);
+        T VisitVariableTerm(VariableTerm variable);
+
+        // Arithmetic
         T VisitAdditionExpression(AdditionExpression expr);
         T VisitDivisionExpression(DivisionExpression divisionExpression);
         T VisitMultiplicationExpression(MultiplicationExpression multiplicationExpression);
@@ -148,17 +156,18 @@ namespace VDS.RDF.Query
         T VisitStrBeforeFunction(StrBeforeFunction strBefore);
         T VisitStrEndsFunction(StrEndsFunction strEnds);
         T VisitStrFunction(StrFunction str);
-        T VisitStrLenFunction(StrLangFunction strLen);
+        T VisitStrLenFunction(StrLenFunction strLen);
         T VisitStrStartsFunction(StrStartsFunction strStarts);
         T VisitSubStrFunction(SubStrFunction subStr);
         T VisitUCaseFunction(UCaseFunction uCase);
         T VisitUuidFunction(UUIDFunction uuid);
+        T VisitStrUuidFunction(StrUUIDFunction uuid);
         T VisitCallFunction(CallFunction call);
         T VisitCoalesceFunction(CoalesceFunction coalesce);
         T VisitIfElseFunction(IfElseFunction ifElse);
 
         // XPath Functions
-        T VisitBooleanCase(BooleanCast cast);
+        T VisitBooleanCast(BooleanCast cast);
         T VisitDateTimeCast(DateTimeCast cast);
         T VisitDecimalCast(DecimalCast cast);
         T VisitDoubleCast(DoubleCast cast);
@@ -172,27 +181,27 @@ namespace VDS.RDF.Query
         T VisitSecondsFromDateTimeFunction(SecondsFromDateTimeFunction seconds);
         T VisitTimezoneFromDateTimeFunction(TimezoneFromDateTimeFunction timezone);
         T VisitYearsFromDateTimeFunction(YearFromDateTimeFunction years);
-        T VisitXpathAbsFunction(AbsFunction abs);
-        T VisitXpathCeilFunction(CeilingFunction ceil);
-        T VisitXpathFloorFunction(XPathNumeric.FloorFunction floor);
-        T VisitXpathRoundFunction(XPathNumeric.RoundFunction round);
-        T VisitXpathRoundHalfToEvenFunction(XPathNumeric.RoundHalfToEvenFunction round);
-        T VisitCompareFunction(CompareFunction compare);
-        T VisitXpathConcatFunction(XPathString.ConcatFunction concat);
-        T VisitXpathContainsFunction(XPathString.ContainsFunction contains);
-        T VisitXpathEncodeForUriFunction(XPathString.EncodeForUriFunction encodeForUri);
-        T VisitXpathEndsWithFunction(XPathString.EndsWithFunction endsWith);
-        T VisitXpathEscapeHtmlUriFunction(XPathString.EscapeHtmlUriFunction escape);
-        T VisitXpathLowerCaseFunction(XPathString.LowerCaseFunction lCase);
-        T VisitXpathNormalizeSpaceFunction(XPathString.NormalizeSpaceFunction normalize);
-        T VisitXpathNormalizeUnicodeFunction(XPathString.NormalizeUnicodeFunction normalize);
-        T VisitXpathReplaceFunction(XPathString.ReplaceFunction replace);
-        T VisitXpathStartsWithFunction(XPathString.StartsWithFunction startsWith);
-        T VisitXpathStringLengthFunction(XPathString.StringLengthFunction strLen);
-        T VisitXpathSubstringAfterFunction(XPathString.SubstringAfterFunction substringAfter);
-        T VisitXpathSubstringBeforeFunction(XPathString.SubstringBeforeFunction substringBefore);
-        T VisitXpathSubstringFunction(XPathString.SubstringFunction substring);
-        T VisitXpathUpperCaseFunction(XPathString.UpperCaseFunction uCase);
+        T VisitAbsFunction(XPath.Numeric.AbsFunction abs);
+        T VisitCeilFunction(CeilingFunction ceil);
+        T VisitFloorFunction(XPath.Numeric.FloorFunction floor);
+        T VisitRoundFunction(XPath.Numeric.RoundFunction round);
+        T VisitRoundHalfToEvenFunction(XPath.Numeric.RoundHalfToEvenFunction round);
+        T VisitCompareFunction(XPath.String.CompareFunction compare);
+        T VisitConcatFunction(XPath.String.ConcatFunction concat);
+        T VisitContainsFunction(XPath.String.ContainsFunction contains);
+        T VisitEncodeForUriFunction(XPath.String.EncodeForUriFunction encodeForUri);
+        T VisitEndsWithFunction(XPath.String.EndsWithFunction endsWith);
+        T VisitEscapeHtmlUriFunction(XPath.String.EscapeHtmlUriFunction escape);
+        T VisitLowerCaseFunction(XPath.String.LowerCaseFunction lCase);
+        T VisitNormalizeSpaceFunction(XPath.String.NormalizeSpaceFunction normalize);
+        T VisitNormalizeUnicodeFunction(XPath.String.NormalizeUnicodeFunction normalize);
+        T VisitReplaceFunction(XPath.String.ReplaceFunction replace);
+        T VisitStartsWithFunction(XPath.String.StartsWithFunction startsWith);
+        T VisitStringLengthFunction(XPath.String.StringLengthFunction strLen);
+        T VisitSubstringAfterFunction(XPath.String.SubstringAfterFunction substringAfter);
+        T VisitSubstringBeforeFunction(XPath.String.SubstringBeforeFunction substringBefore);
+        T VisitSubstringFunction(XPath.String.SubstringFunction substring);
+        T VisitUpperCaseFunction(XPath.String.UpperCaseFunction uCase);
         T VisitBooleanFunction(BooleanFunction boolean);
 
         // Generic unrecognized function

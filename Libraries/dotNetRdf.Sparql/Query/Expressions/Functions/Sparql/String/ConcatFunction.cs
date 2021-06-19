@@ -27,8 +27,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {
@@ -38,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     public class ConcatFunction
         : ISparqlExpression
     {
-        private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
+        private readonly List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
 
         /// <summary>
         /// Creates a new SPARQL Concatenation function.
@@ -47,66 +45,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public ConcatFunction(IEnumerable<ISparqlExpression> expressions)
         {
             _exprs.AddRange(expressions);
-        }
-
-        /// <summary>
-        /// Gets the Value of the function as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            string langTag = null;
-            var allString = true;
-            var allSameTag = true;
-
-            var output = new StringBuilder();
-            foreach (ISparqlExpression expr in _exprs)
-            {
-                INode temp = expr.Evaluate(context, bindingID);
-                if (temp == null) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument evaluates to a Null");
-
-                switch (temp.NodeType)
-                {
-                    case NodeType.Literal:
-                        // Check whether the Language Tags and Types are the same
-                        // We need to do this so that we can produce the appropriate output
-                        var lit = (ILiteralNode)temp;
-                        if (langTag == null)
-                        {
-                            langTag = lit.Language;
-                        }
-                        else
-                        {
-                            allSameTag = allSameTag && (langTag.Equals(lit.Language));
-                        }
-
-                        // Have to ensure that if Typed is an xsd:string
-                        if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument is a Typed Literal which is not an xsd:string");
-                        allString = allString && lit.DataType != null;
-
-                        output.Append(lit.Value);
-                        break;
-
-                    default:
-                        throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument is not a Literal Node");
-                }
-            }
-
-            // Produce the appropriate literal form depending on our inputs
-            if (allString)
-            {
-                return new StringNode(output.ToString(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-            }
-            else if (allSameTag)
-            {
-                return new StringNode(output.ToString(), langTag);
-            }
-            else
-            {
-                return new StringNode(output.ToString());
-            }
         }
 
         /// <summary>
@@ -129,6 +67,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return _exprs.All(e => e.CanParallelise);
             }
+        }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessConcatFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitConcatFunction(this);
         }
 
         /// <summary>

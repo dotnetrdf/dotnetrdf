@@ -39,34 +39,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// Creates a new Unary XPath Date Time function.
         /// </summary>
         /// <param name="expr"></param>
-        public BaseUnaryDateTimeFunction(ISparqlExpression expr)
+        protected BaseUnaryDateTimeFunction(ISparqlExpression expr)
             : base(expr) { }
-
-        /// <summary>
-        /// Gets the numeric value of the function in the given Evaluation Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                return ValueInternal(temp.AsDateTimeOffset());
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
-            }
-        }
-
-        /// <summary>
-        /// Abstract method which derived classes must implement to generate the actual numeric value for the function.
-        /// </summary>
-        /// <param name="dateTime">Date Time.</param>
-        /// <returns></returns>
-        protected abstract IValuedNode ValueInternal(DateTimeOffset dateTime);
 
         /// <summary>
         /// Gets the String representation of the Function.

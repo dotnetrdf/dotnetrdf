@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        protected internal override bool Accepts(IPatternEvaluationContext context, INode obj)
+        public override bool Accepts(IPatternEvaluationContext context, INode obj)
         {
             if (context.RigorousEvaluation || RigorousEvaluation)
             {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="context">Construct Context.</param>
         /// <returns></returns>
-        protected internal override INode Construct(ConstructContext context)
+        public override INode Construct(ConstructContext context)
         {
             return context.GetBlankNode(_name);
         }

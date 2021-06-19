@@ -39,7 +39,7 @@ namespace VDS.RDF.Query.Patterns
     /// Interface for Triple Patterns.
     /// </summary>
     public interface ITriplePattern
-        : IComparable<ITriplePattern>, IProcessable
+        : IComparable<ITriplePattern>, IProcessable, IVisitable
     {
         /// <summary>
         /// Gets the Pattern Type.

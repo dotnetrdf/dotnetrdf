@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordSha256 + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordSha256 + "(" + InnerExpression.ToString() + ")";
         }
 
         /// <summary>
@@ -66,7 +66,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new Sha256HashFunction(transformer.Transform(_expr));
+            return new Sha256HashFunction(transformer.Transform(InnerExpression));
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSha256HashFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSha256HashFunction(this);
         }
     }
 }

@@ -27,7 +27,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql
 {
@@ -48,35 +47,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             _expressions.AddRange(expressions);
         }
 
-        /// <summary>
-        /// Gets the value of the expression as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public IEnumerable<ISparqlExpression> InnerExpressions { get => _expressions; }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            foreach (ISparqlExpression expr in _expressions)
-            {
-                try
-                {
-                    // Test the expression
-                    IValuedNode temp = expr.Evaluate(context, bindingID);
+            return processor.ProcessCoalesceFunction(this, context, binding);
+        }
 
-                    // Don't return nulls
-                    if (temp == null) continue;
-
-                    // Otherwise return
-                    return temp;
-                }
-                catch (RdfQueryException)
-                {
-                    // Ignore the error and try the next expression (if any)
-                }
-            }
-
-            // Return error if all expressions are null/error
-            throw new RdfQueryException("None of the arguments to the COALESCE function could be evaluated to give non-null/error responses for the given Binding");
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitCoalesceFunction(this);
         }
 
         /// <summary>

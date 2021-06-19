@@ -37,34 +37,23 @@ namespace VDS.RDF.Query.Expressions.Primary
     public class VariableTerm
         : ISparqlExpression
     {
-        private string _name;
-
         /// <summary>
         /// Creates a new Variable Expression.
         /// </summary>
         /// <param name="name">Variable Name.</param>
         public VariableTerm(string name)
         {
-            _name = name;
+            Name = name;
 
             // Strip leading ?/$ if present
-            if (_name.StartsWith("?") || _name.StartsWith("$"))
+            if (Name.StartsWith("?") || Name.StartsWith("$"))
             {
-                _name = _name.Substring(1);
+                Name = Name.Substring(1);
             }
         }
         
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode value = context.Binder.Value(_name, bindingID);
-            return value.AsValuedNode();
-        }
+        public string Name { get; }
+
 
         /// <summary>
         /// Gets the String representation of this Expression.
@@ -72,7 +61,17 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public override string ToString()
         {
-            return "?" + _name;
+            return "?" + Name;
+        }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessVariableTerm(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitVariableTerm(this);
         }
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             get
             {
-                return _name.AsEnumerable();
+                return Name.AsEnumerable();
             }
         }
 

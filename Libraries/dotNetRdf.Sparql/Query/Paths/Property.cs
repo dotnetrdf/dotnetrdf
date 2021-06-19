@@ -60,6 +60,7 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /*
         /// <summary>
         /// Evaluates the Path using the given Path Evaluation Context.
         /// </summary>
@@ -297,6 +298,7 @@ namespace VDS.RDF.Query.Paths
                 }
             }
         }
+        */
 
         /// <summary>
         /// Gets the String representation of the Path.
@@ -360,6 +362,7 @@ namespace VDS.RDF.Query.Paths
 
             return output.ToString();
         }
+
 
         /// <summary>
         /// Converts a Path into its Algebra Form.

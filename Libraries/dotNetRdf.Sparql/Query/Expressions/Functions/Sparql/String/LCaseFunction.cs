@@ -43,24 +43,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             : base(expr) { }
 
         /// <summary>
-        /// Calculates.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="stringLit"></param>
-        /// <returns></returns>
-        protected override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
-        {
-            if (stringLit.DataType != null)
-            {
-                return new StringNode(stringLit.Value.ToLower(), stringLit.DataType);
-            }
-            else
-            {
-                return new StringNode(stringLit.Value.ToLower(), stringLit.Language);
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
@@ -69,6 +51,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return SparqlSpecsHelper.SparqlKeywordLCase;
             }
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessLCaseFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitLCaseFunction(this);
         }
 
         /// <summary>

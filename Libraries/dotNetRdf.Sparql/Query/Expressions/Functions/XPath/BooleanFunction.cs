@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath
 {
     /// <summary>
@@ -41,16 +39,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
         public BooleanFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            return new BooleanNode(_expr.Evaluate(context, bindingID).AsSafeBoolean());
-        }
 
         /// <summary>
         /// Gets the String representation of the function.
@@ -58,7 +46,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessBooleanFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitBooleanFunction(this);
         }
 
         /// <summary>
@@ -90,7 +88,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new BooleanFunction(transformer.Transform(_expr));
+            return new BooleanFunction(transformer.Transform(InnerExpression));
         }
     }
 }

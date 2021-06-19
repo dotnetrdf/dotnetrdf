@@ -54,10 +54,6 @@ namespace VDS.RDF.Query.Algebra
         /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra { get; }
-
-        /// <summary>
-        /// Gets the Property Function.
-        /// </summary>
         public ISparqlPropertyFunction Function { get; }
 
         /// <summary>
@@ -69,7 +65,6 @@ namespace VDS.RDF.Query.Algebra
         {
             return new PropertyFunction(optimiser.Optimise(InnerAlgebra), Function);
         }
-
 
         /// <summary>
         /// Gets the variables used in the algebra.

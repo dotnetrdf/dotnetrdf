@@ -41,32 +41,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public IsIriFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode result = _expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                return new BooleanNode(false);
-            }
-            else
-            {
-                return new BooleanNode(result.NodeType == NodeType.Uri);
-            }
-        }
-
+        
         /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "ISIRI(" + _expr.ToString() + ")";
+            return "ISIRI(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessIsIriFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitIsIriFunction(this);
         }
 
         /// <summary>
@@ -98,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IsIriFunction(transformer.Transform(_expr));
+            return new IsIriFunction(transformer.Transform(InnerExpression));
         }
     }
 
@@ -121,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "ISURI(" + _expr.ToString() + ")";
+            return "ISURI(" + InnerExpression.ToString() + ")";
         }
 
         /// <summary>
@@ -142,7 +134,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IsUriFunction(transformer.Transform(_expr));
+            return new IsUriFunction(transformer.Transform(InnerExpression));
         }
     }
 }

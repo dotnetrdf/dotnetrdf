@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.PropertyFunctions
     /// Property Function which does full text matching.
     /// </summary>
     public class FullTextMatchPropertyFunction
-        : ISparqlPropertyFunction
+        : ISparqlPropertyFunction, ILeviathanPropertyFunction
     {
         private PatternItem _matchVar, _scoreVar, _searchVar;
         private List<String> _vars = new List<String>();

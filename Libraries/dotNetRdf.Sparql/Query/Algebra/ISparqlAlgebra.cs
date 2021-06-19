@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Triple Patterns in the BGP.
         /// </summary>
-        IEnumerable<ITriplePattern> TriplePatterns
+        IReadOnlyList<ITriplePattern> TriplePatterns
         {
             get;
         }

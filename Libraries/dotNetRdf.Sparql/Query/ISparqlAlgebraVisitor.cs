@@ -1,5 +1,6 @@
 ﻿using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
@@ -13,7 +14,7 @@ namespace VDS.RDF.Query
         /// Visits a BGP.
         /// </summary>
         /// <param name="bgp">BGP.</param>
-        T VisitBgp(Bgp bgp);
+        T VisitBgp(IBgp bgp);
 
         /// <summary>
         /// Visits a Bindings modifier.
@@ -198,5 +199,21 @@ namespace VDS.RDF.Query
         /// <param name="filter">Filter.</param>
         /// <returns></returns>
         T VisitChainFilter(ChainFilter filter);
+
+        /// <summary>
+        /// Visit a Single Value Restriction Filter.
+        /// </summary>
+        /// <param name="filter">filter.</param>
+        /// <returns></returns>
+        T VisitSingleValueRestrictionFilter(SingleValueRestrictionFilter filter);
+
+        T VisitBindPattern(BindPattern bindPattern);
+        T VisitFilterPattern(FilterPattern filterPattern);
+        T VisitLetPattern(LetPattern letPattern);
+        T VisitPropertyFunction(PropertyFunction propertyFunction);
+        T VisitPropertyPathPattern(PropertyPathPattern propertyPathPattern);
+        T VisitSubQueryPattern(SubQueryPattern subQueryPattern);
+        T VisitPropertyFunctionPattern(PropertyFunctionPattern propFunctionPattern);
+        T VisitTriplePattern(TriplePattern triplePattern);
     }
 }

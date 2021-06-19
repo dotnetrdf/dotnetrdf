@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Algebra
@@ -59,7 +60,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns>
         /// Results in this Null Multiset since Null joined to anything is Null.
         /// </returns>
-        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext)
+        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext, ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
         {
             // Left Outer Join results in Null Multiset
             return this;

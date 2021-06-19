@@ -42,16 +42,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public CompareFunction(ISparqlExpression a, ISparqlExpression b)
             : base(a, b, false, XPathFunctionFactory.AcceptStringArguments) { }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal and Argument.
-        /// </summary>
-        /// <param name="context">Evaluation context.</param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <param name="arg">Argument.</param>
-        /// <returns></returns>
-        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg)
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            return new LongNode(string.Compare(stringLit.Value, arg.Value));
+            return processor.ProcessCompareFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitCompareFunction(this);
         }
 
         /// <summary>

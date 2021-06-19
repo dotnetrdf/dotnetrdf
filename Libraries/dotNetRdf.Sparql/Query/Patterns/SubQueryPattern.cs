@@ -26,8 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Patterns
 {
@@ -90,63 +88,14 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
-        /// <summary>
-        /// Evaluates a Sub-query in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlEvaluationContext context)
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
-            // Use the same algebra optimisers as the parent query (if any)
-            if (context.Query != null)
-            {
-                _subquery.AlgebraOptimisers = context.Query.AlgebraOptimisers;
-            }
+            return processor.ProcessSubQueryPattern(this, context);
+        }
 
-            if (context.InputMultiset is NullMultiset)
-            {
-                context.OutputMultiset = context.InputMultiset;
-            }
-            else if (context.InputMultiset.IsEmpty)
-            {
-                context.OutputMultiset = new NullMultiset();
-            }
-            else
-            {
-                var subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor, context.Options);
-                subcontext.InputMultiset = context.InputMultiset;
-
-                // Add any Named Graphs to the subquery
-                if (context.Query != null)
-                {
-                    foreach (IRefNode u in context.Query.NamedGraphNames)
-                    {
-                        _subquery.AddNamedGraph(u);
-                    }
-                }
-
-                ISparqlAlgebra query = _subquery.ToAlgebra();
-                try
-                {
-                    // Evaluate the Subquery
-                    context.OutputMultiset = subcontext.Evaluate(query);
-
-                    // If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
-                    if (context.OutputMultiset is GroupMultiset)
-                    {
-                        context.OutputMultiset = new Multiset((GroupMultiset)context.OutputMultiset);
-                    }
-
-                    // Strip out any Named Graphs from the subquery
-                    if (_subquery.NamedGraphNames.Any())
-                    {
-                        _subquery.ClearNamedGraphs();
-                    }
-                }
-                catch (RdfQueryException queryEx)
-                {
-                    throw new RdfQueryException("Query failed due to a failure in Subquery Execution:\n" + queryEx.Message, queryEx);
-                }
-            }
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitSubQueryPattern(this);
         }
 
         /// <summary>

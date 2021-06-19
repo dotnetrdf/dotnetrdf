@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
@@ -55,6 +54,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         protected Func<Uri, bool> _argumentTypeValidator;
 
+        public ISparqlExpression LeftExpression { get => _expr; }
+        public ISparqlExpression RightExpression { get => _arg; }
+        public bool AllowNullArgument { get => _allowNullArgument; }
+
         /// <summary>
         /// Creates a new XPath Binary String function.
         /// </summary>
@@ -71,101 +74,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             _argumentTypeValidator = argumentTypeValidator;
         }
 
-        /// <summary>
-        /// Gets the Value of the function as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public bool ValidateArgumentType(Uri datatype)
         {
-            INode temp = _expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                if (temp.NodeType == NodeType.Literal)
-                {
-                    var lit = (ILiteralNode)temp;
-                    if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                    {
-                        throw new RdfQueryException("Unable to evalaute an XPath String function on a non-string typed Literal");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
-                }
-
-                // Once we've got to here we've established that the First argument is an appropriately typed/untyped Literal
-                if (_arg == null)
-                {
-                    return ValueInternal(context, (ILiteralNode)temp);
-                }
-                else
-                {
-                    // Need to validate the argument
-                    INode tempArg = _arg.Evaluate(context, bindingID);
-                    if (tempArg != null)
-                    {
-                        if (tempArg.NodeType == NodeType.Literal)
-                        {
-                            var litArg = (ILiteralNode)tempArg;
-                            if (_argumentTypeValidator(litArg.DataType))
-                            {
-                                return ValueInternal(context, (ILiteralNode)temp, litArg);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Unable to evaluate an XPath String function since the type of the argument is not supported by this function");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an XPath String function where the argument is a non-Literal");
-                        }
-                    }
-                    else if (_allowNullArgument)
-                    {
-                        // Null argument permitted so just invoke the non-argument version of the function
-                        return ValueInternal(context, (ILiteralNode)temp);
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evaluate an XPath String function since the argument expression evaluated to a null and a null argument is not permitted by this function");
-                    }
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
-            }
+            return _argumentTypeValidator(datatype);
         }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal.
-        /// </summary>
-        /// <param name="context">The evaluation context.</param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <returns></returns>
-        public virtual IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit)
-        {
-            if (!_allowNullArgument)
-            {
-                throw new RdfQueryException("This XPath function requires a non-null argument in addition to an input string");
-            }
-            else
-            {
-                throw new RdfQueryException("Derived classes which are functions which permit a null argument must override this method");
-            }
-        }
-
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal and Argument.
-        /// </summary>
-        /// <param name="context">The evaluation context.</param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <param name="arg">Argument.</param>
-        /// <returns></returns>
-        public abstract IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg);
+        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+        public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
         /// Gets the Variables used in the function.

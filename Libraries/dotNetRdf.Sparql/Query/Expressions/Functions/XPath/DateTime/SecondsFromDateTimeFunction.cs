@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using System;
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 {
     /// <summary>
@@ -43,25 +40,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             : base(expr) { }
 
         /// <summary>
-        /// Calculates the numeric value of the function from the given Date Time.
-        /// </summary>
-        /// <param name="dateTime">Date Time.</param>
-        /// <returns></returns>
-        protected override IValuedNode ValueInternal(DateTimeOffset dateTime)
-        {
-            var seconds = Convert.ToDecimal(dateTime.Second);
-            seconds += ((decimal)dateTime.Millisecond) / 1000m;
-
-            return new DecimalNode(seconds);
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSecondsFromDateTimeFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSecondsFromDateTimeFunction(this);
         }
 
         /// <summary>
@@ -82,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new SecondsFromDateTimeFunction(transformer.Transform(_expr));
+            return new SecondsFromDateTimeFunction(transformer.Transform(InnerExpression));
         }
     }
 }

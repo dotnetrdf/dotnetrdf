@@ -27,7 +27,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
 {
@@ -45,48 +44,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public InFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
             : base(expr, set) { }
 
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            IValuedNode result = _expr.Evaluate(context, bindingID);
-            if (result != null)
-            {
-                if (_expressions.Count == 0) return new BooleanNode(false);
+            return processor.ProcessInFunction(this, context, binding);
+        }
 
-                // Have to use SPARQL Value Equality here
-                // If any expressions error and nothing in the set matches then an error is thrown
-                var errors = false;
-                foreach (ISparqlExpression expr in _expressions)
-                {
-                    try
-                    {
-                        IValuedNode temp = expr.Evaluate(context, bindingID);
-                        if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(true);
-                    }
-                    catch
-                    {
-                        errors = true;
-                    }
-                }
-
-                if (errors)
-                {
-                    throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
-                }
-                else
-                {
-                    return new BooleanNode(false);
-                }
-            }
-            else
-            {
-                return new BooleanNode(false);
-            }
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitInFunction(this);
         }
 
         /// <summary>

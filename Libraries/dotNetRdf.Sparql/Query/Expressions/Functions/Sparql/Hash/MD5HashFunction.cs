@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + InnerExpression.ToString() + ")";
         }
 
         /// <summary>
@@ -67,7 +67,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new MD5HashFunction(transformer.Transform(_expr));
+            return new MD5HashFunction(transformer.Transform(InnerExpression));
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessMd5HashFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitMd5HashFunction(this);
         }
     }
 }

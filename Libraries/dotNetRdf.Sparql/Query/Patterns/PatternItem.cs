@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="context">Construct Context.</param>
         /// <returns></returns>
-        protected internal abstract INode Construct(ConstructContext context);
+        public abstract INode Construct(ConstructContext context);
 
         /// <summary>
         /// Sets the Binding Context for the Pattern Item.

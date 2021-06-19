@@ -20,9 +20,9 @@ namespace VDS.RDF.Query
     internal class LeviathanAggregateProcessor : ISparqlAggregateProcessor<IValuedNode, SparqlEvaluationContext, int>
     {
         private readonly ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> _expressionProcessor;
-        public LeviathanAggregateProcessor(ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor = null)
+        public LeviathanAggregateProcessor(ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
         {
-            _expressionProcessor = expressionProcessor ?? new LeviathanExpressionProcessor();
+            _expressionProcessor = expressionProcessor ?? throw new ArgumentNullException(nameof(expressionProcessor));
         }
 
         public IValuedNode ProcessAverage(AverageAggregate average, SparqlEvaluationContext context, IEnumerable<int> bindings)

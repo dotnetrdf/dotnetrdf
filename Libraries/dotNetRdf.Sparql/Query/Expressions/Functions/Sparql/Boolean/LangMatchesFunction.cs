@@ -43,42 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public LangMatchesFunction(ISparqlExpression term, ISparqlExpression langRange)
             : base(term, langRange) { }
 
-        /// <summary>
-        /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode result = _leftExpr.Evaluate(context, bindingID);
-            INode langRange = _rightExpr.Evaluate(context, bindingID);
-
-            if (result == null)
-            {
-                return new BooleanNode(false);
-            }
-            if (result.NodeType == NodeType.Literal)
-            {
-                if (langRange == null)
-                {
-                    return new BooleanNode(false);
-                }
-                if (langRange.NodeType == NodeType.Literal)
-                {
-                    var range = ((ILiteralNode)langRange).Value;
-                    var lang = ((ILiteralNode)result).Value;
-
-                    if (range.Equals("*"))
-                    {
-                        return new BooleanNode(!lang.Equals(string.Empty));
-                    }
-                    return new BooleanNode(lang.Equals(range, StringComparison.OrdinalIgnoreCase) || lang.StartsWith(range + "-", StringComparison.OrdinalIgnoreCase));
-                }
-                return new BooleanNode(false);
-            }
-            return new BooleanNode(false);
-        }
+        
 
         /// <summary>
         /// Gets the String representation of this Expression.
@@ -87,6 +52,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public override string ToString()
         {
             return "LANGMATCHES(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessLangMatchesFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitLangMatchesFunction(this);
         }
 
         /// <summary>

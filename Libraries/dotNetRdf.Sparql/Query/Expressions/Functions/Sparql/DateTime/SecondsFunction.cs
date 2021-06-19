@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordSeconds + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordSeconds + "(" + InnerExpression.ToString() + ")";
         }
 
         /// <summary>
@@ -66,7 +66,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new SecondsFunction(transformer.Transform(_expr));
+            return new SecondsFunction(transformer.Transform(InnerExpression));
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSecondsFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSecondsFunction(this);
         }
     }
 }

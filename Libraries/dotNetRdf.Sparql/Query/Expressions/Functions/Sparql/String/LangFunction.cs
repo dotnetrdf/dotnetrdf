@@ -41,35 +41,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public LangFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode result = _expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                throw new RdfQueryException("Cannot return the Data Type URI of an NULL");
-            }
-            else
-            {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        return new StringNode(((ILiteralNode)result).Language);
-
-                    case NodeType.Uri:
-                    case NodeType.Blank:
-                    case NodeType.GraphLiteral:
-                    default:
-                        throw new RdfQueryException("Cannot return the Language Tag of Nodes which are not Literal Nodes");
-
-                }
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of this Expression.
@@ -77,7 +48,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "LANG(" + _expr.ToString() + ")";
+            return "LANG(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessLangFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitLangFunction(this);
         }
 
         /// <summary>
@@ -109,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new LangFunction(transformer.Transform(_expr));
+            return new LangFunction(transformer.Transform(InnerExpression));
         }
     }
 }

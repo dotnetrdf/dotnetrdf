@@ -40,16 +40,12 @@ namespace VDS.RDF.Query.Optimisation
             // Optimise to insert Property Functions first - this is always a no-op if none registered
             new PropertyFunctionOptimiser(),
             // Optimise for Lazy Evaluation
-            new AskBgpOptimiser(),
-            new LazyBgpOptimiser(),
             // Optimise into Strict Algebra - makes further optimisations easier to do
             new StrictAlgebraOptimiser(),
             // Optimise ORDER BY + DISTINCT/REDUCED combinations
             new OrderByDistinctOptimiser(),
             // Optimise for special filter constructs which improve performance
-            new IdentityFilterOptimiser(),
-            new ImplicitJoinOptimiser(),
-            new FilteredProductOptimiser(),
+            new IdentityFilterOptimiser()
         };
 
         /// <summary>
@@ -128,15 +124,11 @@ namespace VDS.RDF.Query.Optimisation
         /// </summary>
         public static void ResetOptimisers()
         {
-            if (!_queryOpt.GetType().Equals(typeof(DefaultOptimiser)))
+            if (_queryOpt.GetType() != typeof(DefaultOptimiser))
             {
                 _queryOpt = new DefaultOptimiser();
             }
-            _algebraOpt = new List<IAlgebraOptimiser>()
-            {
-                new AskBgpOptimiser(),
-                new LazyBgpOptimiser(),
-            };
+            _algebraOpt = new List<IAlgebraOptimiser>();
         }
     }
 }

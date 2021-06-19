@@ -36,16 +36,13 @@ namespace VDS.RDF.Query.Algebra
     public class Table
         : ITerminalOperator
     {
-        private readonly BaseMultiset _table;
-
         /// <summary>
         /// Creates a new fixed set of solutions.
         /// </summary>
         /// <param name="table">Table.</param>
         public Table(BaseMultiset table)
         {
-            if (table == null) throw new ArgumentNullException("table");
-            _table = table;
+            Multiset = table ?? throw new ArgumentNullException(nameof(table));
         }
 
         /// <summary>
@@ -55,9 +52,14 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.OutputMultiset = _table;
+            context.OutputMultiset = Multiset;
             return context.OutputMultiset;
         }
+
+        /// <summary>
+        /// Get the fixed set of solutions that this algebra represents
+        /// </summary>
+        public BaseMultiset Multiset { get; }
 
         /// <summary>
         /// Gets the variables used in the algebra.
@@ -66,7 +68,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return _table.Variables; 
+                return Multiset.Variables; 
             }
         }
 
@@ -78,7 +80,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Floating variables are any where there are rows with an unbound value
-                return _table.Variables.Where(v => _table.Sets.Any(s => s[v] == null));
+                return Multiset.Variables.Where(v => Multiset.Sets.Any(s => s[v] == null));
             }
         }
 
@@ -90,7 +92,7 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 // Fixed variables are any where there are no rows with an unbound value
-                return _table.Variables.Where(v => _table.Sets.All(s => s[v] != null));
+                return Multiset.Variables.Where(v => Multiset.Sets.All(s => s[v] != null));
             }
         }
 
@@ -119,6 +121,16 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Table()";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessUnknownOperator(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitUnknownOperator(this);
         }
     }
 }

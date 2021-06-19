@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Globalization;
-using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
@@ -44,152 +41,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         public BooleanCast(ISparqlExpression expr) 
             : base(expr) { }
 
-        /// <summary>
-        /// Casts the value of the inner Expression to a Boolean.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode n = _expr.Evaluate(context, bindingID);//.CoerceToBoolean();
-
-            // if (n == null)
-            // {
-            //    throw new RdfQueryException("Cannot cast a Null to a xsd:boolean");
-            // }
-
-            ////New method should be much faster
-            // if (n is BooleanNode) return n;
-            // return new BooleanNode(null, n.AsBoolean());
-
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                case NodeType.GraphLiteral:
-                case NodeType.Uri:
-                    throw new RdfQueryException("Cannot cast a Blank/URI/Graph Literal Node to a xsd:boolean");
-
-                case NodeType.Literal:
-                    // See if the value can be cast
-                    if (n is BooleanNode) return n;
-                    var lit = (ILiteralNode)n;
-                    if (lit.DataType != null)
-                    {
-                        var dt = lit.DataType.ToString();
-
-                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
-                        {
-                            // Already a Boolean
-                            bool b;
-                            if (bool.TryParse(lit.Value, out b))
-                            {
-                                return new BooleanNode(b);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid Lexical Form for xsd:boolean");
-                            }
-                        }
-
-                        // Cast based on Numeric Type
-                        SparqlNumericType type = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(dt);
-
-                        switch (type)
-                        {
-                            case SparqlNumericType.Decimal:
-                                decimal dec;
-                                if (decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
-                                {
-                                    if (dec.Equals(decimal.Zero))
-                                    {
-                                        return new BooleanNode(false);
-                                    }
-                                    else
-                                    {
-                                        return new BooleanNode(true);
-                                    }
-                                }
-                                else
-                                {
-                                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal as an intermediate stage in casting to a xsd:boolean");
-                                }
-
-                            case SparqlNumericType.Double:
-                                double dbl;
-                                if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
-                                {
-                                    if (double.IsNaN(dbl) || dbl == 0.0d)
-                                    {
-                                        return new BooleanNode( false);
-                                    }
-                                    else
-                                    {
-                                        return new BooleanNode(true);
-                                    }
-                                }
-                                else
-                                {
-                                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double as an intermediate stage in casting to a xsd:boolean");
-                                }
-
-                            case SparqlNumericType.Integer:
-                                long i;
-                                if (long.TryParse(lit.Value, out i))
-                                {
-                                    if (i == 0)
-                                    {
-                                        return new BooleanNode(false);
-                                    }
-                                    else
-                                    {
-                                        return new BooleanNode( true);
-                                    }
-                                }
-                                else
-                                {
-                                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer as an intermediate stage in casting to a xsd:boolean");
-                                }
-
-                            case SparqlNumericType.NaN:
-                                if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                                {
-                                    // DateTime cast forbidden
-                                    throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:boolean");
-                                }
-                                else
-                                {
-                                    bool b;
-                                    if (bool.TryParse(lit.Value, out b))
-                                    {
-                                        return new BooleanNode(b);
-                                    }
-                                    else
-                                    {
-                                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
-                                    }
-                                }
-
-                            default:
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
-                        }
-                    }
-                    else
-                    {
-                        bool b;
-                        if (bool.TryParse(lit.Value, out b))
-                        {
-                            return new BooleanNode(b);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
-                        }
-                    }
-                default:
-                    throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:decimal");
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of the Expression.
@@ -198,6 +49,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         public override string ToString()
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">(" + _expr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessBooleanCast(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitBooleanCast(this);
         }
 
         /// <summary>

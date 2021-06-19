@@ -233,7 +233,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="t">Triple.</param>
         [Obsolete("Replaced by AddQuad(IRefNode, Triple)")]
-        protected internal override bool AddQuad(Uri graphUri, Triple t)
+        public override bool AddQuad(Uri graphUri, Triple t)
         {
             if (!_store.HasGraph(graphUri))
             {
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphName">Graph name.</param>
         /// <param name="t">Triple.</param>
-        protected internal override bool AddQuad(IRefNode graphName, Triple t)
+        public override bool AddQuad(IRefNode graphName, Triple t)
         {
             if (!_store.HasGraph(graphName))
             {
@@ -264,7 +264,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphName">Graph URI.</param>
         /// <param name="t">Triple.</param>
-        protected internal override bool ContainsQuad(IRefNode graphName, Triple t)
+        public override bool ContainsQuad(IRefNode graphName, Triple t)
         {
             if (_store.HasGraph(graphName))
             {
@@ -281,7 +281,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphName">Graph name.</param>
         /// <returns></returns>
-        protected internal override IEnumerable<Triple> GetQuads(IRefNode graphName)
+        public override IEnumerable<Triple> GetQuads(IRefNode graphName)
         {
             if (_store.HasGraph(graphName))
             {
@@ -299,7 +299,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphName">Graph name.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        protected internal override IEnumerable<Triple> GetQuadsWithObject(IRefNode graphName, INode obj)
+        public override IEnumerable<Triple> GetQuadsWithObject(IRefNode graphName, INode obj)
         {
             if (_store.HasGraph(graphName))
             {
@@ -317,7 +317,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphName">Graph name.</param>
         /// <param name="pred">Predicate.</param>
         /// <returns></returns>
-        protected internal override IEnumerable<Triple> GetQuadsWithPredicate(IRefNode graphName, INode pred)
+        public override IEnumerable<Triple> GetQuadsWithPredicate(IRefNode graphName, INode pred)
         {
             if (_store.HasGraph(graphName))
             {
@@ -336,7 +336,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="pred">Predicate.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        protected internal override IEnumerable<Triple> GetQuadsWithPredicateObject(IRefNode graphName, INode pred, INode obj)
+        public override IEnumerable<Triple> GetQuadsWithPredicateObject(IRefNode graphName, INode pred, INode obj)
         {
             if (_store.HasGraph(graphName))
             {
@@ -354,7 +354,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphName">Graph URI.</param>
         /// <param name="subj">Subject.</param>
         /// <returns></returns>
-        protected internal override IEnumerable<Triple> GetQuadsWithSubject(IRefNode graphName, INode subj)
+        public override IEnumerable<Triple> GetQuadsWithSubject(IRefNode graphName, INode subj)
         {
             if (_store.HasGraph(graphName))
             {
@@ -373,7 +373,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="subj">Subject.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        protected internal override IEnumerable<Triple> GetQuadsWithSubjectObject(IRefNode graphName, INode subj, INode obj)
+        public override IEnumerable<Triple> GetQuadsWithSubjectObject(IRefNode graphName, INode subj, INode obj)
         {
             if (_store.HasGraph(graphName))
             {
@@ -392,7 +392,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="subj">Subject.</param>
         /// <param name="pred">Predicate.</param>
         /// <returns></returns>
-        protected internal override IEnumerable<Triple> GetQuadsWithSubjectPredicate(IRefNode graphName, INode subj, INode pred)
+        public override IEnumerable<Triple> GetQuadsWithSubjectPredicate(IRefNode graphName, INode subj, INode pred)
         {
             if (_store.HasGraph(graphName))
             {
@@ -410,7 +410,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="t">Triple.</param>
         [Obsolete("Replacecd by RemoveQuad(IRefNode, Triple)")]
-        protected internal override bool RemoveQuad(Uri graphUri, Triple t)
+        public override bool RemoveQuad(Uri graphUri, Triple t)
         {
             if (_store.HasGraph(graphUri))
             {
@@ -425,7 +425,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphName">Graph name.</param>
         /// <param name="t">Triple to remove.</param>
         /// <returns></returns>
-        protected internal override bool RemoveQuad(IRefNode graphName, Triple t)
+        public override bool RemoveQuad(IRefNode graphName, Triple t)
         {
             if (_store.HasGraph(graphName))
             {

@@ -43,22 +43,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             : base(expr) { }
 
         /// <summary>
-        /// Calculates the numeric value of the function from the given Date Time.
-        /// </summary>
-        /// <param name="dateTime">Date Time.</param>
-        /// <returns></returns>
-        protected override IValuedNode ValueInternal(DateTimeOffset dateTime)
-        {
-            return new LongNode(Convert.ToInt64(dateTime.Year));
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessYearsFromDateTimeFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitYearsFromDateTimeFunction(this);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new YearFromDateTimeFunction(transformer.Transform(_expr));
+            return new YearFromDateTimeFunction(transformer.Transform(InnerExpression));
         }
     }
 
