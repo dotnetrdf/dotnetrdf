@@ -25,6 +25,8 @@
 */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using VDS.RDF.Configuration;
@@ -61,15 +63,19 @@ namespace VDS.RDF
             if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
 
             //Firstly need to ensure our object factory has been referenced
-            var factoryCheck = new SparqlParameterizedString();
-            factoryCheck.Namespaces.AddNamespace("dnr", context.UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
-            factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assm + "' . }";
-            var rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
-            if (!rset.Result)
+            INode typeNode = context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assm);
+            INode objectFactoryNode =
+                context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassObjectFactory));
+            IEnumerable<INode> existingRegistrations = 
+                from factory in context.Graph.GetTriplesWithPredicateObject(dnrType, typeNode)
+                join objectFactory in context.Graph.GetTriplesWithPredicateObject(rdfType, objectFactoryNode)
+                    on factory.Subject equals objectFactory.Subject
+                select factory.Subject;
+            if (!existingRegistrations.Any())
             {
                 INode factory = context.Graph.CreateBlankNode();
-                context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
-                context.Graph.Assert(new Triple(factory, dnrType, context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assm)));
+                context.Graph.Assert(new Triple(factory, rdfType, objectFactoryNode));
+                context.Graph.Assert(new Triple(factory, dnrType, typeNode));
             }
         }
     }

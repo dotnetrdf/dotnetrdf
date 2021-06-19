@@ -245,5 +245,10 @@ namespace VDS.RDF.Query.Algebra
             return _values.All(pair => other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || pair.Value.Equals(other[pair.Key])));
         }
 
+        public ISparqlResult ToSparqlResult()
+        {
+            return new SparqlResult(_values);
+        }
+
     }
 }

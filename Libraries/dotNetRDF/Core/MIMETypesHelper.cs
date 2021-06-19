@@ -72,52 +72,52 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for Turtle.
         /// </summary>
-        internal static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
+        public static readonly string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
 
         /// <summary>
         /// MIME Types for RDF/XML.
         /// </summary>
-        internal static string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
+        public static readonly string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
 
         /// <summary>
         /// MIME Types for Notation 3.
         /// </summary>
-        internal static string[] Notation3 = { "text/n3", "text/rdf+n3" };
+        public static readonly string[] Notation3 = { "text/n3", "text/rdf+n3" };
 
         /// <summary>
         /// MIME Types for NTriples.
         /// </summary>
-        internal static string[] NTriples = { "application/n-triples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples", "application/ntriples" };
+        public static readonly string[] NTriples = { "application/n-triples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples", "application/ntriples" };
 
         /// <summary>
         /// MIME Types for NQuads.
         /// </summary>
-        internal static string[] NQuads = { "application/n-quads", "text/x-nquads" };
+        public static readonly string[] NQuads = { "application/n-quads", "text/x-nquads" };
 
         /// <summary>
         /// MIME Types for TriG.
         /// </summary>
-        internal static string[] TriG = { "application/x-trig" };
+        public static readonly string[] TriG = { "application/x-trig" };
 
         /// <summary>
         /// MIME Types for TriX.
         /// </summary>
-        internal static string[] TriX = { "application/trix" };
+        public static readonly string[] TriX = { "application/trix" };
 
         /// <summary>
         /// MIME Types for RDF/JSON.
         /// </summary>
-        internal static string[] Json = { "application/json", "text/json", "application/rdf+json" };
+        public static readonly string[] Json = { "application/json", "text/json", "application/rdf+json" };
 
         /// <summary>
         /// MIME types for JSON-LD.
         /// </summary>
-        internal static string[] JsonLd = {"application/ld+json"};
+        public static readonly string[] JsonLd = {"application/ld+json"};
 
         /// <summary>
         /// MIME Types for SPARQL Result Sets.
         /// </summary>
-        internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
+        public static readonly string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
 
         /// <summary>
         /// MIME Types for SPARQL Results XML.
@@ -127,27 +127,27 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for SPARQL Results JSON.
         /// </summary>
-        internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
+        public static readonly string[] SparqlResultsJson = { "application/sparql-results+json" };
 
         /// <summary>
         /// MIME Types for SPARQL Boolean Result.
         /// </summary>
-        internal static string[] SparqlResultsBoolean = { "text/boolean" };
+        public static readonly string[] SparqlResultsBoolean = { "text/boolean" };
 
         /// <summary>
         /// MIME Types for CSV.
         /// </summary>
-        internal static string[] Csv = { "text/csv", "text/comma-separated-values" };
+        public static readonly string[] Csv = { "text/csv", "text/comma-separated-values" };
 
         /// <summary>
         /// MIME Types for TSV.
         /// </summary>
-        internal static string[] Tsv = { "text/tab-separated-values" };
+        public static readonly string[] Tsv = { "text/tab-separated-values" };
 
         /// <summary>
         /// MIME Types for HTML.
         /// </summary>
-        internal static string[] Html = { "text/html", "application/xhtml+xml" };
+        public static readonly string[] Html = { "text/html", "application/xhtml+xml" };
 
         /// <summary>
         /// MIME Type for SPARQL Queries.

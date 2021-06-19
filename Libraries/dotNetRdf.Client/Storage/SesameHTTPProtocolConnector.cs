@@ -798,7 +798,30 @@ namespace VDS.RDF.Storage
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             HttpRequestMessage request = MakeSaveGraphRequestMessage(g);
-            SaveGraphAsync(request, g, callback, state);
+            base.SaveGraphAsync(request, g, callback, state);
+        }
+
+        /// <summary>
+        /// Save a graph to the store asynchronously.
+        /// </summary>
+        /// <param name="request">The HTTP request to make to save the graph.</param>
+        /// <param name="g">The graph being saved.</param>
+        /// <param name="callback">The callback to invoke on completion.</param>
+        /// <param name="state">State to pass to the callback.</param>
+        public new void SaveGraphAsync(HttpRequestMessage request, IGraph g, AsyncStorageCallback callback, object state)
+        {
+            base.SaveGraphAsync(request, g, callback, state);
+        }
+
+        /// <summary>
+        /// Save a graph to the store asynchronously.
+        /// </summary>
+        /// <param name="request">The HTTP request to make to save the graph.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public new async Task SaveGraphAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            await base.SaveGraphAsync(request, cancellationToken);
         }
 
         /// <inheritdoc />
