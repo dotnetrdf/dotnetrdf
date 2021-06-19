@@ -466,8 +466,8 @@ namespace VDS.RDF
         /// <param name="update">SPARQL Update Command.</param>
         public void ExecuteUpdate(SparqlUpdateCommand update)
         {
-            var context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this), new LeviathanUpdateOptions());
-            update.Evaluate(context);
+            var processor = new LeviathanUpdateProcessor(new InMemoryDataset(this));
+            processor.ProcessCommand(update);
         }
 
         /// <summary>
@@ -476,11 +476,11 @@ namespace VDS.RDF
         /// <param name="updates">SPARQL Update Command Set.</param>
         public void ExecuteUpdate(SparqlUpdateCommandSet updates)
         {
-            var context = new SparqlUpdateEvaluationContext(new InMemoryDataset(this), new LeviathanUpdateOptions());
+            var processor = new LeviathanUpdateProcessor(new InMemoryDataset(this));
 
             for (var i = 0; i < updates.CommandCount; i++)
             {
-                updates[i].Evaluate(context);
+                processor.ProcessCommand(updates[i]);
             }
         }
 

@@ -39,9 +39,6 @@ namespace VDS.RDF.Query.Patterns
     public class LetPattern
         : BaseTriplePattern, IComparable<LetPattern>, IAssignmentPattern
     {
-        private readonly string _var;
-        private readonly ISparqlExpression _expr;
-
         /// <summary>
         /// Creates a new LET Pattern.
         /// </summary>
@@ -49,77 +46,10 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="expr">Expression which generates a value which will be assigned to the variable.</param>
         public LetPattern(string var, ISparqlExpression expr)
         {
-            _var = var;
-            _expr = expr;
-            _vars = _var.AsEnumerable().Concat(_expr.Variables).Distinct().ToList();
+            VariableName = var;
+            AssignExpression = expr;
+            _vars = VariableName.AsEnumerable().Concat(AssignExpression.Variables).Distinct().ToList();
             _vars.Sort();
-        }
-
-        /// <summary>
-        /// Evaluates a LET assignment in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlEvaluationContext context)
-        {
-            if (context.InputMultiset is NullMultiset)
-            {
-                context.OutputMultiset = context.InputMultiset;
-            }
-            else if (context.InputMultiset is IdentityMultiset)
-            {
-                var s = new Set();
-                try
-                {
-                    INode temp = _expr.Evaluate(context, 0);
-                    s.Add(_var, temp);
-                    context.OutputMultiset.Add(s);
-                }
-                catch
-                {
-                    // No assignment if there's an error
-                }
-            }
-            else
-            {
-                foreach (var id in context.InputMultiset.SetIDs.ToList())
-                {
-                    ISet s = context.InputMultiset[id];
-                    if (s.ContainsVariable(_var))
-                    {
-                        try
-                        {
-                            // A value already exists so see if the two values match
-                            INode current = s[_var];
-                            INode temp = _expr.Evaluate(context, id);
-                            if (current != temp)
-                            {
-                                // Where the values aren't equal the solution is eliminated
-                                context.InputMultiset.Remove(id);
-                            }
-                        }
-                        catch
-                        {
-                            // If an error occurs the solution is eliminated
-                            context.InputMultiset.Remove(id);
-                        }
-                    }
-                    else
-                    {
-                        context.InputMultiset.AddVariable(_var);
-                        try
-                        {
-                            // Make a new assignment
-                            INode temp = _expr.Evaluate(context, id);
-                            s.Add(_var, temp);
-                        }
-                        catch
-                        {
-                            // If an error occurs no assignment happens
-                        }
-                    }
-                }
-                context.OutputMultiset = new IdentityMultiset();
-            }
         }
 
         /// <summary>
@@ -131,6 +61,16 @@ namespace VDS.RDF.Query.Patterns
             {
                 return TriplePatternType.LetAssignment;
             }
+        }
+
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessLetPattern(this, context);
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitLetPattern(this);
         }
 
         /// <summary>
@@ -147,24 +87,12 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Expression that is used to generate values to be assigned.
         /// </summary>
-        public ISparqlExpression AssignExpression
-        {
-            get
-            {
-                return _expr;
-            }
-        }
+        public ISparqlExpression AssignExpression { get; }
 
         /// <summary>
         /// Gets the Name of the Variable to which values will be assigned.
         /// </summary>
-        public string VariableName
-        {
-            get
-            {
-                return _var;
-            }
-        }
+        public string VariableName { get; }
 
         /// <summary>
         /// Returns an empty enumeration as any evaluation error will result in an unbound value so we can't guarantee any variables are bound.
@@ -179,7 +107,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables
         {
-            get { return _var.AsEnumerable(); }
+            get { return VariableName.AsEnumerable(); }
         }
 
         /// <summary>
@@ -189,7 +117,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return _expr.UsesDefaultDataset();
+                return AssignExpression.UsesDefaultDataset();
             }
         }
 
@@ -213,9 +141,9 @@ namespace VDS.RDF.Query.Patterns
             var output = new StringBuilder();
             output.Append("LET(");
             output.Append("?");
-            output.Append(_var);
+            output.Append(VariableName);
             output.Append(" := ");
-            output.Append(_expr.ToString());
+            output.Append(AssignExpression.ToString());
             output.Append(")");
 
             return output.ToString();

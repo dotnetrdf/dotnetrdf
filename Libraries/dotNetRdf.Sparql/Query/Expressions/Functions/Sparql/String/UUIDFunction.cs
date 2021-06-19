@@ -45,6 +45,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             return new UriNode(new Uri("urn:uuid:" + uuid.ToString()));
         }
 
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessUuidFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitUuidFunction(this);
+        }
+
         /// <summary>
         /// Gets the functor for the expression.
         /// </summary>
@@ -71,6 +81,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         protected override IValuedNode EvaluateInternal(Guid uuid)
         {
             return new StringNode(null, uuid.ToString());
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessStrUuidFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitStrUuidFunction(this);
         }
 
         /// <summary>

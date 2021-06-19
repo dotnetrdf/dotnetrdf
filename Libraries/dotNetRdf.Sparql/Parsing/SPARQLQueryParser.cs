@@ -70,9 +70,7 @@ namespace VDS.RDF.Parsing
         /// <param name="uriFactory">The URI factory to use.</param>
         public SparqlQueryParser(IUriFactory uriFactory) 
             : this(TokenQueueMode.QueueAllBeforeParsing,
-#pragma warning disable CS0618 // Type or member is obsolete
-                Options.QueryDefaultSyntax, //SparqlQuerySyntax.Sparql_1_1
-#pragma warning restore CS0618 // Type or member is obsolete
+                SparqlQuerySyntax.Sparql_1_1,
                 uriFactory) { }
 
         /// <summary>
@@ -88,9 +86,7 @@ namespace VDS.RDF.Parsing
         /// <param name="queueMode">Token Queue Mode.</param>
         public SparqlQueryParser(TokenQueueMode queueMode)
             : this(queueMode,
-#pragma warning disable CS0618 // Type or member is obsolete
-                  Options.QueryDefaultSyntax, //SparqlQuerySyntax.Sparql_1_1
-#pragma warning restore CS0618 // Type or member is obsolete
+                  SparqlQuerySyntax.Sparql_1_1,
                   RDF.UriFactory.Root
                   ) { }
 

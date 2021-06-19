@@ -39,7 +39,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         : ISparqlExpression
     {
         private List<ISparqlExpression> _args = new List<ISparqlExpression>();
-        private Dictionary<string, ISparqlExpression> _functionCache = new Dictionary<string, ISparqlExpression>();
 
         /// <summary>
         /// Creates a new COALESCE function with the given expressions as its arguments.
@@ -50,47 +49,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             _args.AddRange(expressions);
         }
 
-        /// <summary>
-        /// Gets the value of the expression as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            if (_args.Count == 0) return null;
+            return processor.ProcessCallFunction(this, context, binding);
+        }
 
-            IValuedNode funcIdent = _args[0].Evaluate(context, bindingID);
-            if (funcIdent == null) throw new RdfQueryException("Function identifier is unbound");
-            if (funcIdent.NodeType == NodeType.Uri)
-            {
-                Uri funcUri = ((IUriNode)funcIdent).Uri;
-                ISparqlExpression func;
-                if (_functionCache.TryGetValue(funcUri.AbsoluteUri, out func))
-                {
-                    if (func == null) throw new RdfQueryException("Function identifier does not identify a known function");
-                }
-                else
-                {
-                    try
-                    {
-                        // Try to create the function and cache it - remember to respect the queries Expression Factories if present
-                        func = SparqlExpressionFactory.CreateExpression(funcUri, _args.Skip(1).ToList(), (context.Query != null ? context.Query.ExpressionFactories : Enumerable.Empty<ISparqlCustomExpressionFactory>()), false);
-                        _functionCache.Add(funcUri.AbsoluteUri, func);
-                    }
-                    catch
-                    {
-                        // If something goes wrong creating the function cache a null so we ignore this function URI for later calls
-                        _functionCache.Add(funcUri.AbsoluteUri, null);
-                    }
-                }
-                // Now invoke the function
-                return func.Evaluate(context, bindingID);
-            }
-            else
-            {
-                throw new RdfQueryException("Function identifier is not a URI");
-            }
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitCallFunction(this);
         }
 
         /// <summary>

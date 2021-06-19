@@ -42,38 +42,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public EndsWithFunction(ISparqlExpression stringExpr, ISparqlExpression suffixExpr)
             : base(stringExpr, suffixExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal and Argument.
-        /// </summary>
-        /// <param name="context">Evaluation context.</param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <param name="arg">Argument.</param>
-        /// <returns></returns>
-        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg)
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            if (stringLit.Value.Equals(string.Empty))
-            {
-                if (arg.Value.Equals(string.Empty))
-                {
-                    // The Empty String ends with the Empty String
-                    return new BooleanNode(true);
-                }
-                else
-                {
-                    // Empty String doesn't end with a non-empty string
-                    return new BooleanNode(false);
-                }
-            }
-            else if (arg.Value.Equals(string.Empty))
-            {
-                // Any non-empty string ends with the empty string
-                return new BooleanNode(true);
-            }
-            else
-            {
-                // Otherwise evaluate the EndsWith
-                return new BooleanNode(stringLit.Value.EndsWith(arg.Value));
-            }
+            return processor.ProcessEndsWithFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitEndsWithFunction(this);
         }
 
         /// <summary>

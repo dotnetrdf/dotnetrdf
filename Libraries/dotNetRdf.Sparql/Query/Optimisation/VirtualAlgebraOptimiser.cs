@@ -235,13 +235,11 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         protected ISparqlExpression SubstitutePrimaryExpression(ISparqlExpression expr)
         {
-            if (expr.GetType().Equals(_exprType))
+            if (expr is ConstantTerm term)
             {
-                var term = (ConstantTerm)expr;
-                INode curr = term.Evaluate(null, 0);
-                TNodeID id = _provider.GetID(curr);
+                TNodeID id = _provider.GetID(term.Node);
                 if (id == null || id.Equals(_provider.NullID)) throw new RdfQueryException("Cannot transform the Expression to use Virtual Nodes");
-                INode virt = CreateVirtualNode(id, curr);
+                INode virt = CreateVirtualNode(id, term.Node);
                 return new ConstantTerm(virt);
             }
             else

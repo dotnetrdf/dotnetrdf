@@ -39,9 +39,6 @@ namespace VDS.RDF.Query.Algebra
     public class Having
         : IUnaryOperator
     {
-        private readonly ISparqlAlgebra _pattern;
-        private readonly ISparqlFilter _having;
-
         /// <summary>
         /// Creates a new Having Clause.
         /// </summary>
@@ -49,33 +46,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="having">Having Clause.</param>
         public Having(ISparqlAlgebra pattern, ISparqlFilter having)
         {
-            _pattern = pattern;
-            _having = having;
-        }
-
-        /// <summary>
-        /// Evaluates the Having Clause.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            context.InputMultiset = context.Evaluate(_pattern);//this._pattern.Evaluate(context);
-
-            if (context.Query != null)
-            {
-                if (context.Query.Having != null)
-                {
-                    context.Query.Having.Evaluate(context);
-                }
-            }
-            else if (_having != null)
-            {
-                _having.Evaluate(context);
-            }
-
-            context.OutputMultiset = context.InputMultiset;
-            return context.OutputMultiset;
+            InnerAlgebra = pattern;
+            HavingClause = having;
         }
 
         /// <summary>
@@ -85,30 +57,24 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return _pattern.Variables.Distinct();
+                return InnerAlgebra.Variables.Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra.
         /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get
-            {
-                return _pattern;
-            }
-        }
+        public ISparqlAlgebra InnerAlgebra { get; }
 
         /// <summary>
         /// Gets the HAVING clause used.
@@ -116,13 +82,7 @@ namespace VDS.RDF.Query.Algebra
         /// <remarks>
         /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has a HAVING clause then that is applied rather than the clause with which the Having algebra is instantiated.
         /// </remarks>
-        public ISparqlFilter HavingClause
-        {
-            get
-            {
-                return _having;
-            }
-        }
+        public ISparqlFilter HavingClause { get; }
 
         /// <summary>
         /// Gets the String representation of the Algebra.
@@ -130,7 +90,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Having(" + _pattern.ToString() + ")";
+            return "Having(" + InnerAlgebra + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessHaving(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitHaving(this);
         }
 
         /// <summary>
@@ -139,10 +109,10 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = _pattern.ToQuery();
-            if (_having != null)
+            SparqlQuery q = InnerAlgebra.ToQuery();
+            if (HavingClause != null)
             {
-                q.Having = _having;
+                q.Having = HavingClause;
             }
             return q;
         }
@@ -164,7 +134,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Having(optimiser.Optimise(_pattern), _having);
+            return new Having(optimiser.Optimise(InnerAlgebra), HavingClause);
         }
     }
 }

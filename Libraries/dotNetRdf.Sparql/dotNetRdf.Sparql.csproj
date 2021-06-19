@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <RootNamespace>VDS.RDF</RootNamespace>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,8 @@
   <ItemGroup>
     <Folder Include="Parsing\Contexts\" />
     <Folder Include="Parsing\Tokens\" />
+    <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
+    <EmbeddedResource Include="Query\Optimisation\OptimiserStats.ttl" />
   </ItemGroup>
 
 </Project>

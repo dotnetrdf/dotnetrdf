@@ -43,41 +43,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             : base(term1, term2) { }
 
         /// <summary>
-        /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode a, b;
-            a = _leftExpr.Evaluate(context, bindingID);
-            b = _rightExpr.Evaluate(context, bindingID);
-
-            if (a == null)
-            {
-                if (b == null)
-                {
-                    return new BooleanNode(true);
-                }
-                else
-                {
-                    return new BooleanNode(false);
-                }
-            }
-            else
-            {
-                return new BooleanNode(a.Equals(b));
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "SAMETERM(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSameTermFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSameTermFunction(this);
         }
 
         /// <summary>

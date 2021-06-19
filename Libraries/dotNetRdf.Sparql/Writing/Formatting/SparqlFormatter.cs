@@ -825,19 +825,17 @@ namespace VDS.RDF.Writing.Formatting
 
                     case SparqlExpressionType.Primary:
                         // If Node/Numeric Term then use Node Formatting otherwise use ToString() on the expression
-                        if (expr is ConstantTerm)
+                        if (expr is ConstantTerm nodeTerm)
                         {
-                            var nodeTerm = (ConstantTerm)expr;
-                            output.Append(Format(nodeTerm.Evaluate(null, 0)));
+                            output.Append(Format(nodeTerm.Node));
                         }
-                        else if (expr is GraphPatternTerm)
+                        else if (expr is GraphPatternTerm gp)
                         {
-                            var gp = (GraphPatternTerm)expr;
                             output.Append(Format(gp.Pattern));
                         }
                         else
                         {
-                            output.Append(expr.ToString());
+                            output.Append(expr);
                         }
                         break;
 

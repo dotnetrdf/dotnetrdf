@@ -38,8 +38,6 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     public class SubstringFunction
         : ISparqlExpression
     {
-        private ISparqlExpression _expr, _start, _length;
-
         /// <summary>
         /// Creates a new XPath Substring function.
         /// </summary>
@@ -56,111 +54,23 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="lengthExpr">Length.</param>
         public SubstringFunction(ISparqlExpression stringExpr, ISparqlExpression startExpr, ISparqlExpression lengthExpr)
         {
-            _expr = stringExpr;
-            _start = startExpr;
-            _length = lengthExpr;
+            InnerExpression = stringExpr;
+            StartExpression = startExpr;
+            LengthExpression = lengthExpr;
         }
 
-        /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public ISparqlExpression InnerExpression { get; }
+        public ISparqlExpression StartExpression { get; }
+        public ISparqlExpression LengthExpression { get; }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            var input = (ILiteralNode)CheckArgument(_expr, context, bindingID);
-            IValuedNode start = CheckArgument(_start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
-
-            if (_length != null)
-            {
-                IValuedNode length = CheckArgument(_length, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
-
-                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-
-                var s = Convert.ToInt32(start.AsInteger());
-                var l = Convert.ToInt32(length.AsInteger());
-
-                if (s < 1) s = 1;
-                if (l < 1)
-                {
-                    // If no/negative characters are being selected the empty string is returned
-                    return new StringNode(string.Empty, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                }
-                else if ((s - 1) > input.Value.Length)
-                {
-                    // If the start is after the end of the string the empty string is returned
-                    return new StringNode(string.Empty, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                }
-                else
-                {
-                    if (((s - 1) + l) > input.Value.Length)
-                    {
-                        // If the start plus the length is greater than the length of the string the string from the starts onwards is returned
-                        return new StringNode(input.Value.Substring(s - 1), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                    }
-                    else
-                    {
-                        // Otherwise do normal substring
-                        return new StringNode(input.Value.Substring(s - 1, l), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                    }
-                }
-            }
-            else
-            {
-                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-
-                var s = Convert.ToInt32(start.AsInteger());
-                if (s < 1) s = 1;
-
-                return new StringNode(input.Value.Substring(s - 1), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-            }
+            return processor.ProcessSubstringFunction(this, context, binding);
         }
 
-        private IValuedNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
-            return CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
-        }
-
-        private IValuedNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
-        {
-            IValuedNode temp = expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                if (temp.NodeType == NodeType.Literal)
-                {
-                    var lit = (ILiteralNode)temp;
-                    if (lit.DataType != null)
-                    {
-                        if (argumentTypeValidator(lit.DataType))
-                        {
-                            // Appropriately typed literals are fine
-                            return temp;
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a typed literal with an invalid type");
-                        }
-                    }
-                    else if (argumentTypeValidator(context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
-                    {
-                        // Untyped Literals are treated as Strings and may be returned when the argument allows strings
-                        return temp;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned an untyped literal");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a non-literal");
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions evaluated to null");
-            }
+            return visitor.VisitSubstringFunction(this);
         }
 
         /// <summary>
@@ -170,13 +80,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                if (_length != null)
+                if (LengthExpression != null)
                 {
-                    return _expr.Variables.Concat(_start.Variables).Concat(_length.Variables);
+                    return InnerExpression.Variables.Concat(StartExpression.Variables).Concat(LengthExpression.Variables);
                 }
                 else
                 {
-                    return _expr.Variables.Concat(_start.Variables);
+                    return InnerExpression.Variables.Concat(StartExpression.Variables);
                 }
             }
         }
@@ -187,13 +97,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            if (_length != null)
+            if (LengthExpression != null)
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + _expr.ToString() + "," + _start.ToString() + "," + _length.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression.ToString() + "," + StartExpression.ToString() + "," + LengthExpression.ToString() + ")";
             }
             else
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + _expr.ToString() + "," + _start.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression.ToString() + "," + StartExpression.ToString() + ")";
             }
         }
 
@@ -226,13 +136,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                if (_length != null)
+                if (LengthExpression != null)
                 {
-                    return new ISparqlExpression[] { _expr, _start, _length };
+                    return new ISparqlExpression[] { InnerExpression, StartExpression, LengthExpression };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { _expr, _start };
+                    return new ISparqlExpression[] { InnerExpression, StartExpression };
                 }
             }
         }
@@ -244,7 +154,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return _expr.CanParallelise && _start.CanParallelise && (_length == null || _length.CanParallelise);
+                return InnerExpression.CanParallelise && StartExpression.CanParallelise && (LengthExpression == null || LengthExpression.CanParallelise);
             }
         }
 
@@ -255,13 +165,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (_length != null)
+            if (LengthExpression != null)
             {
-                return new SubstringFunction(transformer.Transform(_expr), transformer.Transform(_start), transformer.Transform(_length));
+                return new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression));
             }
             else
             {
-                return new SubstringFunction(transformer.Transform(_expr), transformer.Transform(_start));
+                return new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression));
             }
         }
     }

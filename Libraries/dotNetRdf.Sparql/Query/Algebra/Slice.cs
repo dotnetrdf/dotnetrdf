@@ -38,17 +38,13 @@ namespace VDS.RDF.Query.Algebra
     public class Slice
         : IUnaryOperator
     {
-        private readonly ISparqlAlgebra _pattern;
-        private readonly int _limit = -1, _offset = 0;
-        private readonly bool _detectSettings = true;
-
         /// <summary>
         /// Creates a new Slice modifier which will detect LIMIT and OFFSET from the query.
         /// </summary>
         /// <param name="pattern">Pattern.</param>
         public Slice(ISparqlAlgebra pattern)
         {
-            _pattern = pattern;
+            InnerAlgebra = pattern;
         }
 
         /// <summary>
@@ -60,91 +56,11 @@ namespace VDS.RDF.Query.Algebra
         public Slice(ISparqlAlgebra pattern, int limit, int offset)
             : this(pattern)
         {
-            _limit = Math.Max(-1, limit);
-            _offset = Math.Max(0, offset);
-            _detectSettings = false;
+            Limit = Math.Max(-1, limit);
+            Offset = Math.Max(0, offset);
+            DetectFromQuery = false;
         }
 
-        /// <summary>
-        /// Evaluates the Slice by applying the appropriate LIMIT and OFFSET to the Results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            // Detect the Offset and Limit from the Query if required
-            int limit = _limit, offset = _offset;
-            if (_detectSettings)
-            {
-                if (context.Query != null)
-                {
-                    limit = Math.Max(-1, context.Query.Limit);
-                    offset = Math.Max(0, context.Query.Offset);
-                }
-            }
-
-            // First check what variables are present, we need this if we have to create
-            // a new multiset
-            IEnumerable<string> vars;
-            if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
-            {
-                vars = (context.Query != null) ? context.Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name) : context.InputMultiset.Variables;
-            }
-            else
-            {
-                vars = context.InputMultiset.Variables;
-            }
-
-            if (limit == 0)
-            {
-                // If Limit is Zero we can skip evaluation
-                context.OutputMultiset = new Multiset(vars);
-                return context.OutputMultiset;
-            }
-            else
-            {
-                // Otherwise we have a limit/offset to apply
-
-                // Firstly evaluate the inner algebra
-                context.InputMultiset = context.Evaluate(_pattern);
-                context.InputMultiset.VirtualCount = context.InputMultiset.Count;
-                // Then apply the offset
-                if (offset > 0)
-                {
-                    if (offset > context.InputMultiset.Count)
-                    {
-                        // If the Offset is greater than the count return nothing
-                        context.OutputMultiset = new Multiset(vars);
-                        return context.OutputMultiset;
-                    }
-                    else
-                    {
-                        // Otherwise discard the relevant number of Bindings
-                        foreach (var id in context.InputMultiset.SetIDs.Take(offset).ToList())
-                        {
-                            context.InputMultiset.Remove(id);
-                        }
-                    }
-                }
-                // Finally apply the limit
-                if (limit > 0)
-                {
-                    if (context.InputMultiset.Count > limit)
-                    {
-                        // If the number of results is greater than the limit remove the extraneous
-                        // results
-                        foreach (var id in context.InputMultiset.SetIDs.Skip(limit).ToList())
-                        {
-                            context.InputMultiset.Remove(id);
-                        }
-                    }
-                }
-
-                // Then return the result
-                context.OutputMultiset = context.InputMultiset;
-                return context.OutputMultiset;
-            }
-        }
 
         /// <summary>
         /// Gets the Variables used in the Algebra.
@@ -153,63 +69,39 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return _pattern.Variables.Distinct();
+                return InnerAlgebra.Variables.Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
 
         /// <summary>
         /// Gets the Limit in use (-1 indicates no Limit).
         /// </summary>
-        public int Limit
-        {
-            get
-            {
-                return _limit;
-            }
-        }
+        public int Limit { get; } = -1;
 
         /// <summary>
         /// Gets the Offset in use (0 indicates no Offset).
         /// </summary>
-        public int Offset
-        {
-            get
-            {
-                return _offset;
-            }
-        }
+        public int Offset { get; } = 0;
 
         /// <summary>
         /// Gets whether the Algebra will detect the Limit and Offset to use from the provided query.
         /// </summary>
-        public bool DetectFromQuery
-        {
-            get
-            {
-                return _detectSettings;
-            }
-        }
+        public bool DetectFromQuery { get; } = true;
 
         /// <summary>
         /// Gets the Inner Algebra.
         /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get
-            {
-                return _pattern;
-            }
-        }
+        public ISparqlAlgebra InnerAlgebra { get; }
 
         /// <summary>
         /// Gets the String representation of the Algebra.
@@ -217,7 +109,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Slice(" + _pattern.ToString() + ", LIMIT " + _limit + ", OFFSET " + _offset + ")";
+            return "Slice(" + InnerAlgebra + ", LIMIT " + Limit + ", OFFSET " + Offset + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessSlice(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitSlice(this);
         }
 
         /// <summary>
@@ -226,9 +128,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = _pattern.ToQuery();
-            q.Limit = _limit;
-            q.Offset = _offset;
+            SparqlQuery q = InnerAlgebra.ToQuery();
+            q.Limit = Limit;
+            q.Offset = Offset;
             return q;
         }
 
@@ -249,7 +151,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Slice(optimiser.Optimise(_pattern), _limit, _offset);
+            return new Slice(optimiser.Optimise(InnerAlgebra), Limit, Offset);
         }
     }
 }

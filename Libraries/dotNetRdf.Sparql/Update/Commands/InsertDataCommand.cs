@@ -57,7 +57,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="p">Graph Pattern.</param>
         /// <param name="top">Is this the top level pattern?.</param>
         /// <returns></returns>
-        private bool IsValidDataPattern(GraphPattern p, bool top)
+        public static bool IsValidDataPattern(GraphPattern p, bool top)
         {
             if (p.IsGraph)
             {
@@ -140,80 +140,6 @@ namespace VDS.RDF.Update.Commands
             return affectedUris.Contains(graphName.ToSafeString());
         }
 
-        /// <summary>
-        /// Evaluates the Command in the given Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlUpdateEvaluationContext context)
-        {
-            // Split the Pattern into the set of Graph Patterns
-            var patterns = new List<GraphPattern>();
-            if (DataPattern.IsGraph)
-            {
-                patterns.Add(DataPattern);
-            }
-            else if (DataPattern.TriplePatterns.Count > 0 || DataPattern.HasChildGraphPatterns)
-            {
-                if (DataPattern.TriplePatterns.Count > 0)
-                {
-                    patterns.Add(new GraphPattern());
-                    DataPattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
-                }
-                DataPattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
-            }
-            else
-            {
-                // If no Triple Patterns and No Child Graph Patterns nothing to do
-                return;
-            }
-
-            var constructContext = new ConstructContext(null, null, false);
-            foreach (GraphPattern pattern in patterns)
-            {
-                if (!IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
-
-                // Get the Target Graph
-                IGraph target;
-                IRefNode graphName;
-                if (pattern.IsGraph)
-                {
-                    switch (pattern.GraphSpecifier.TokenType)
-                    {
-                        case Token.QNAME:
-                            throw new NotSupportedException("Graph Specifiers as QNames for INSERT DATA Commands are not supported - please specify an absolute URI instead");
-                        case Token.URI:
-                            graphName = new UriNode(UriFactory.Root.Create(pattern.GraphSpecifier.Value));
-                            break;
-                        default:
-                            throw new SparqlUpdateException("Cannot evaluate an INSERT DATA Command as the Graph Specifier is not a QName/URI");
-                    }
-                }
-                else
-                {
-                    graphName = null;
-                }
-                if (context.Data.HasGraph(graphName))
-                {
-                    target = context.Data.GetModifiableGraph(graphName);
-                }
-                else
-                {
-                    // If the Graph does not exist then it must be created
-                    target = new Graph(graphName);
-                    context.Data.AddGraph(target);
-                }
-
-                // Insert the actual Triples
-                foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
-                {
-                    INode subj = p.Subject.Construct(constructContext);
-                    INode pred = p.Predicate.Construct(constructContext);
-                    INode obj = p.Object.Construct(constructContext);
-
-                    target.Assert(new Triple(subj, pred, obj));
-                }
-            }
-        }
 
         /// <summary>
         /// Processes the Command using the given Update Processor.

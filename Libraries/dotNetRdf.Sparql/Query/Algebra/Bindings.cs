@@ -36,27 +36,13 @@ namespace VDS.RDF.Query.Algebra
     public class Bindings
         : ITerminalOperator
     {
-        private readonly BindingsPattern _bindings;
-        private BaseMultiset _mset;
-
         /// <summary>
         /// Creates a new BINDINGS modifier.
         /// </summary>
         /// <param name="bindings">Bindings.</param>
         public Bindings(BindingsPattern bindings)
         {
-            if (bindings == null) throw new ArgumentNullException("bindings", "Bindings cannot be null");
-            _bindings = bindings;
-        }
-
-        /// <summary>
-        /// Evaluates the BINDINGS modifier.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            return _mset ?? (_mset = _bindings.ToMultiset());
+            BindingsPattern = bindings ?? throw new ArgumentNullException(nameof(bindings), "Bindings cannot be null");
         }
 
         /// <summary>
@@ -66,30 +52,24 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return _bindings.Variables;
+                return BindingsPattern.Variables;
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _bindings.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return BindingsPattern.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _bindings.FixedVariables; } } 
+        public IEnumerable<string> FixedVariables { get { return BindingsPattern.FixedVariables; } } 
 
         /// <summary>
         /// Gets the Bindings. 
         /// </summary>
-        public BindingsPattern BindingsPattern
-        {
-            get
-            {
-                return _bindings;
-            }
-        }
+        public BindingsPattern BindingsPattern { get; }
 
         /// <summary>
         /// Gets the String representation of the Algebra.
@@ -100,6 +80,18 @@ namespace VDS.RDF.Query.Algebra
             return "Bindings()";
         }
 
+        /// <inheritdoc />
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessBindings(this, context);
+        }
+
+        /// <inheritdoc />
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitBindings(this);
+        }
+
         /// <summary>
         /// Converts the Algebra back to a SPARQL Query.
         /// </summary>
@@ -107,19 +99,18 @@ namespace VDS.RDF.Query.Algebra
         public SparqlQuery ToQuery()
         {
             GraphPattern gp = ToGraphPattern();
-            var q = new SparqlQuery();
-            q.RootGraphPattern = gp;
+            var q = new SparqlQuery {RootGraphPattern = gp};
             return q;
         }
 
         /// <summary>
-        /// Convers the Algebra back to a Graph Pattern.
+        /// Converts the Algebra back to a Graph Pattern.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
             var gp = new GraphPattern();
-            gp.AddInlineData(_bindings);
+            gp.AddInlineData(BindingsPattern);
             return gp;
         }
 

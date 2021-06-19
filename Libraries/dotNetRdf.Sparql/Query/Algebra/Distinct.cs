@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
@@ -38,16 +37,13 @@ namespace VDS.RDF.Query.Algebra
     public class Distinct
         : IUnaryOperator
     {
-        private readonly ISparqlAlgebra _pattern;
-        private readonly bool _trimTemporaryVariables = true;
-
         /// <summary>
         /// Creates a new Distinct Modifier.
         /// </summary>
         /// <param name="pattern">Pattern.</param>
         public Distinct(ISparqlAlgebra pattern)
         {
-            _pattern = pattern;
+            InnerAlgebra = pattern;
         }
 
         /// <summary>
@@ -58,37 +54,7 @@ namespace VDS.RDF.Query.Algebra
         public Distinct(ISparqlAlgebra algebra, bool ignoreTemporaryVariables)
             : this(algebra)
         {
-            _trimTemporaryVariables = !ignoreTemporaryVariables;
-        }
-
-        /// <summary>
-        /// Evaluates the Distinct Modifier.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            context.InputMultiset = context.Evaluate(_pattern);
-
-            if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
-            {
-                context.OutputMultiset = context.InputMultiset;
-                return context.OutputMultiset;
-            }
-            if (_trimTemporaryVariables)
-            {
-                // Trim temporary variables
-                context.InputMultiset.Trim();
-            }
-
-            // Apply distinctness
-            context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-            IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
-            foreach (ISet s in sets)
-            {
-                context.OutputMultiset.Add(s.Copy());
-            }
-            return context.OutputMultiset;
+            TrimTemporaryVariables = !ignoreTemporaryVariables;
         }
 
         /// <summary>
@@ -98,30 +64,26 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return _pattern.Variables;
+                return InnerAlgebra.Variables;
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
 
         /// <summary>
         /// Gets the Inner Algebra.
         /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get
-            {
-                return _pattern;
-            }
-        }
+        public ISparqlAlgebra InnerAlgebra { get; }
+
+        public bool TrimTemporaryVariables { get; } = true;
 
         /// <summary>
         /// Gets the String representation of the Algebra.
@@ -129,7 +91,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Distinct(" + _pattern.ToString() + ")";
+            return "Distinct(" + InnerAlgebra + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessDistinct(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitDistinct(this);
         }
 
         /// <summary>
@@ -138,7 +110,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = _pattern.ToQuery();
+            SparqlQuery q = InnerAlgebra.ToQuery();
             switch (q.QueryType)
             {
                 case SparqlQueryType.Select:
@@ -183,152 +155,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Distinct(optimiser.Optimise(_pattern));
-        }
-    }
-
-    /// <summary>
-    /// Represents a Reduced modifier on a SPARQL Query.
-    /// </summary>
-    public class Reduced 
-        : IUnaryOperator
-    {
-        private readonly ISparqlAlgebra _pattern;
-
-        /// <summary>
-        /// Creates a new Reduced Modifier.
-        /// </summary>
-        /// <param name="pattern">Pattern.</param>
-        public Reduced(ISparqlAlgebra pattern)
-        {
-            _pattern = pattern;
-        }
-
-        /// <summary>
-        /// Evaluates the Reduced Modifier.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            context.InputMultiset = context.Evaluate(_pattern);//this._pattern.Evaluate(context);
-
-            if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
-            {
-                context.OutputMultiset = context.InputMultiset;
-                return context.OutputMultiset;
-            }
-            else
-            {
-                if (context.Query.Limit > 0)
-                {
-                    context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-                    foreach (ISet s in context.InputMultiset.Sets.Distinct())
-                    {
-                        context.OutputMultiset.Add(s.Copy());
-                    }
-                }
-                else
-                {
-                    context.OutputMultiset = context.InputMultiset;
-                }
-                return context.OutputMultiset;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Variables used in the Algebra.
-        /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                return _pattern.Variables.Distinct();
-            }
-        }
-
-        /// <summary>
-        /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
-
-        /// <summary>
-        /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
-        /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
-
-        /// <summary>
-        /// Gets the Inner Algebra.
-        /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get
-            {
-                return _pattern;
-            }
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Algebra.
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "Reduced(" + _pattern.ToString() + ")";
-        }
-
-        /// <summary>
-        /// Converts the Algebra back to a SPARQL Query.
-        /// </summary>
-        /// <returns></returns>
-        public SparqlQuery ToQuery()
-        {
-            SparqlQuery q = _pattern.ToQuery();
-            switch (q.QueryType)
-            {
-                case SparqlQueryType.Select:
-                    q.QueryType = SparqlQueryType.SelectReduced;
-                    break;
-                case SparqlQueryType.SelectAll:
-                    q.QueryType = SparqlQueryType.SelectAllReduced;
-                    break;
-                case SparqlQueryType.SelectAllDistinct:
-                case SparqlQueryType.SelectAllReduced:
-                case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:
-                    throw new NotSupportedException("Cannot convert a Reduced() to a SPARQL Query when the Inner Algebra converts to a Query that already has a DISTINCT/REDUCED modifier applied");
-                case SparqlQueryType.Ask:
-                case SparqlQueryType.Construct:
-                case SparqlQueryType.Describe:
-                case SparqlQueryType.DescribeAll:
-                    throw new NotSupportedException("Cannot convert a Reduced() to a SPARQL Query when the Inner Algebra converts to a Query that is not a SELECT query");
-                case SparqlQueryType.Unknown:
-                    q.QueryType = SparqlQueryType.SelectReduced;
-                    break;
-                default:
-                    throw new NotSupportedException("Cannot convert a Reduced() to a SPARQL Query when the Inner Algebra converts to a Query with an unexpected Query Type");
-            }
-            return q;
-        }
-
-        /// <summary>
-        /// Throws an exception since a Reduced() cannot be converted back to a Graph Pattern.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since a Reduced() cannot be converted to a Graph Pattern.</exception>
-        public GraphPattern ToGraphPattern()
-        {
-            throw new NotSupportedException("A Reduced() cannot be converted to a GraphPattern");
-        }
-
-        /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser.
-        /// </summary>
-        /// <param name="optimiser">Optimiser.</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
-        {
-            return new Reduced(optimiser.Optimise(_pattern));
+            return new Distinct(optimiser.Optimise(InnerAlgebra));
         }
     }
 }

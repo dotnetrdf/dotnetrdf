@@ -27,55 +27,66 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents a Multiset when there are no possible Solutions.
+    /// Represents the Identity Multiset.
     /// </summary>
-    public class NullMultiset 
+    public class IdentityMultiset 
         : BaseMultiset
     {
         /// <summary>
-        /// Joins another Multiset to this Null Mutliset.
+        /// Joins the Multiset to another Multiset.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <returns>
-        /// Results in this Null Multiset since Null joined to anything is Null.
+        /// The other Multiset.
         /// </returns>
         public override BaseMultiset Join(BaseMultiset other)
         {
-            // Left Join results in Null Multiset
-            return this;
+            // If Other is Null/Empty then the Join still results in Identity
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
+            return other;
         }
 
         /// <summary>
-        /// Left Joins another Multiset to this Null Mutliset.
+        /// Left Joins the Multiset to another Multiset.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
-        /// <param name="expr">Expression the join is predicate upon.</param>
+        /// <param name="expr">Expression which the Join is predicated on.</param>
         /// <param name="baseContext">The parent context for the evaluation of the join.</param>
-        /// <returns>
-        /// Results in this Null Multiset since Null joined to anything is Null.
-        /// </returns>
-        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext)
+        /// <returns>The other Multiset.</returns>
+        public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext, ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
         {
-            // Left Outer Join results in Null Multiset
-            return this;
+            // If Other is Null/Empty then the Join still results in Identity
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
+            return other;
         }
 
         /// <summary>
-        /// Exists Joins another Multiset to this Null Mutliset.
+        /// Exists Joins the Multiset to another Multiset.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
-        /// <param name="mustExist">Whether joinable solutions must exist in the other Multiset for joins to be made.</param>
-        /// <returns>
-        /// Results in this Null Multiset since Null joined to anything is Null.
-        /// </returns>
+        /// <param name="mustExist">Whether solutions must exist in the Other Multiset for the Join to succeed.</param>
+        /// <returns></returns>
         public override BaseMultiset ExistsJoin(BaseMultiset other, bool mustExist)
         {
-            return this;
+            if (mustExist)
+            {
+                if (other is NullMultiset) return other;
+                return this;
+            }
+            else
+            {
+                if (other is NullMultiset) return this;
+                if (other is IdentityMultiset) return new NullMultiset();
+                return this;
+            }
         }
 
         /// <summary>
@@ -85,48 +96,49 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override BaseMultiset MinusJoin(BaseMultiset other)
         {
+            // Identity is always disjoint with Minus so return Identity
             return this;
         }
 
         /// <summary>
-        /// Computes the Product of this Multiset and another Multiset.
+        /// Generates the Product of this Set and another Multiset.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
-        /// <returns>
-        /// Results in the Other Multiset since for Product we consider this Multiset to contain a single empty Set.
-        /// </returns>
+        /// <returns>The other Multiset.</returns>
         public override BaseMultiset Product(BaseMultiset other)
         {
-            // Join results in Other Multiset
+            // If Other is Null/Empty then the Join still results in Identity
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
             return other;
         }
 
         /// <summary>
-        /// Unions this Multiset with another Multiset.
+        /// Generates the Union of this Set and another Multiset.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
-        /// <returns>
-        /// Results in the Other Multiset as this is an empty Multiset.
-        /// </returns>
+        /// <returns>The other Multiset.</returns>
         public override BaseMultiset Union(BaseMultiset other)
         {
-            // Union results in Other Multiset
+            // If Other is Null/Empty then the Join still results in Identity
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
             return other;
         }
 
         /// <summary>
-        /// Returns false since the Null Multiset contains no values.
+        /// Returns True since the Identity Multiset is considered to contain all values.
         /// </summary>
         /// <param name="var">Variable.</param>
         /// <param name="n">Value.</param>
         /// <returns></returns>
         public override bool ContainsValue(string var, INode n)
         {
-            return false;
+            return true;
         }
 
         /// <summary>
-        /// Returns false since the Null Multiset contains no variables.
+        /// Returns False since the Identity Multiset contains no Variables.
         /// </summary>
         /// <param name="var">Variable.</param>
         /// <returns></returns>
@@ -136,33 +148,33 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Returns true since the Null Multiset is disjoint with all Multisets.
+        /// Returns False since the Identity Multiset is not disjoint with anything.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <returns></returns>
         public override bool IsDisjointWith(BaseMultiset other)
         {
-            return true;
+            return false;
         }
 
         /// <summary>
-        /// Adds a Set to this Multiset.
+        /// Adds a Set to the Multiset.
         /// </summary>
         /// <param name="s">Set.</param>
-        /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset.</exception>
+        /// <exception cref="RdfQueryException">Thrown since this operation is invalid on an Identity Multiset.</exception>
         public override void Add(ISet s)
         {
-            throw new RdfQueryException("Cannot add a Set to the Null Multiset");
+            throw new RdfQueryException("Cannot add a Set to the Identity Multiset");
         }
 
         /// <summary>
-        /// Adds a Variable to this Multiset.
+        /// Adds a Variable to the Multiset.
         /// </summary>
         /// <param name="variable">Variable.</param>
-        /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset.</exception>
+        /// <exception cref="RdfQueryException">Thrown since this operation is invalid on an Identity Multiset.</exception>
         public override void AddVariable(string variable)
         {
-            throw new RdfQueryException("Cannot add a Variable to the Null Multiset");
+            throw new RdfQueryException("Cannot add a Variable to the Identity Multiset");
         }
 
         /// <summary>
@@ -171,32 +183,32 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="variables">Variable Ordering.</param>
         public override void SetVariableOrder(IEnumerable<string> variables)
         {
-            if (variables.Any()) throw new RdfQueryException("Cannot set variable ordering for the null multiset");
+            if (variables.Any()) throw new RdfQueryException("Cannot set variable order for the Identify Multiset");
         }
 
         /// <summary>
-        /// Removes a Set from a Multiset.
+        /// Removes a Set to the Multiset.
         /// </summary>
         /// <param name="id">Set ID.</param>
-        /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset.</exception>
+        /// <exception cref="RdfQueryException">Thrown since this operation is invalid on an Identity Multiset.</exception>
         public override void Remove(int id)
         {
-            throw new RdfQueryException("Cannot remove a Set from the Null Multiset");
+            throw new RdfQueryException("Cannot remove a Set from the Identity Mutliset");
         }
 
         /// <summary>
-        /// Returns true since the Null Multiset is always empty.
+        /// Returns false as the Identity Multiset is not considered empty.
         /// </summary>
         public override bool IsEmpty
         {
             get 
             {
-                return true;
+                return false;
             }
         }
 
         /// <summary>
-        /// Returns an empty enumerable as the Null Multiset contains no Variables.
+        /// Returns an empty enumerable as the Identity Multiset contains no Variables.
         /// </summary>
         public override IEnumerable<string> Variables
         {
@@ -205,20 +217,20 @@ namespace VDS.RDF.Query.Algebra
                 return Enumerable.Empty<string>();
             }
         }
-
+        
         /// <summary>
-        /// Returns an empty enumerable as the Null Multiset contains no Sets.
+        /// Returns an empty enumerable as the Identity Multiset contains no Sets.
         /// </summary>
         public override IEnumerable<ISet> Sets
         {
             get 
             {
-                return Enumerable.Empty<ISet>();
+                return Enumerable.Empty<ISet>(); 
             }
         }
 
         /// <summary>
-        /// Returns an empty enumerable as the Null Multiset contains no Sets.
+        /// Returns an empty enumerable as the Identity Multiset contains no Sets.
         /// </summary>
         public override IEnumerable<int> SetIDs
         {
@@ -233,12 +245,12 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="index">Set ID.</param>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown since the Null Multiset contains no Sets.</exception>
+        /// <exception cref="RdfQueryException">Thrown since the Identity Multiset contains no Sets.</exception>
         public override ISet this[int index]
         {
             get 
             {
-                throw new RdfQueryException("Cannot retrieve a Set from the Null Multiset");
+                throw new RdfQueryException("Cannot retrieve a Set from the Identity Multiset");
             }
         }
     }

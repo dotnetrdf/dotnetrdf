@@ -25,10 +25,17 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using VDS.Common.Collections;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Update
@@ -147,7 +154,47 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessAddCommandInternal(AddCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            try
+            {
+                if (context.Data.HasGraph(cmd.SourceGraphName))
+                {
+                    // Get the Source Graph
+                    IGraph source = context.Data.GetModifiableGraph(cmd.SourceGraphName);
+
+                    // Get the Destination Graph
+                    IGraph dest;
+                    if (!context.Data.HasGraph(cmd.DestinationGraphName))
+                    {
+                        dest = new Graph(cmd.DestinationGraphName);
+                        context.Data.AddGraph(dest);
+                    }
+                    dest = context.Data.GetModifiableGraph(cmd.DestinationGraphName);
+
+                    // Move data from the Source into the Destination
+                    dest.Merge(source);
+                }
+                else
+                {
+                    // Only show error if not Silent
+                    if (!cmd.Silent)
+                    {
+                        if (cmd.SourceGraphName != null)
+                        {
+                            throw new SparqlUpdateException("Cannot ADD from Graph " + cmd.SourceGraphName + " as it does not exist");
+                        }
+                        else
+                        {
+                            // This would imply a more fundamental issue with the Dataset not understanding that null means default graph
+                            throw new SparqlUpdateException("Cannot ADD from the Default Graph as it does not exist");
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // If not silent throw the exception upwards
+                if (!cmd.Silent) throw;
+            }
         }
 
         /// <summary>
@@ -166,7 +213,38 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessClearCommandInternal(ClearCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            try
+            {
+                switch (cmd.Mode)
+                {
+                    case ClearMode.Graph:
+                    case ClearMode.Default:
+                        if (context.Data.HasGraph(cmd.TargetGraphName))
+                        {
+                            context.Data.GetModifiableGraph(cmd.TargetGraphName).Clear();
+                        }
+                        break;
+                    case ClearMode.Named:
+                        foreach (IRefNode u in context.Data.GraphNames)
+                        {
+                            if (u != null)
+                            {
+                                context.Data.GetModifiableGraph(u).Clear();
+                            }
+                        }
+                        break;
+                    case ClearMode.All:
+                        foreach (IRefNode u in context.Data.GraphNames)
+                        {
+                            context.Data.GetModifiableGraph(u).Clear();
+                        }
+                        break;
+                }
+            }
+            catch
+            {
+                if (!cmd.Silent) throw;
+            }
         }
 
         /// <summary>
@@ -185,7 +263,64 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessCopyCommandInternal(CopyCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            try
+            {
+                if (context.Data.HasGraph(cmd.SourceGraphName))
+                {
+                    // If Source and Destination are same this is a no-op
+                    if (EqualityHelper.AreRefNodesEqual(cmd.SourceGraphName, cmd.DestinationGraphName)) return;
+
+                    // Get the Source Graph
+                    IGraph source = context.Data.GetModifiableGraph(cmd.SourceGraphName);
+
+                    // Create/Delete/Clear the Destination Graph
+                    IGraph dest;
+                    if (context.Data.HasGraph(cmd.DestinationGraphName))
+                    {
+                        if (cmd.DestinationGraphName == null)
+                        {
+                            dest = context.Data.GetModifiableGraph(cmd.DestinationGraphName);
+                            dest.Clear();
+                        }
+                        else
+                        {
+                            context.Data.RemoveGraph(cmd.DestinationGraphName);
+                            dest = new Graph(cmd.DestinationGraphName);
+                            context.Data.AddGraph(dest);
+                            dest = context.Data.GetModifiableGraph(cmd.DestinationGraphName);
+                        }
+                    }
+                    else
+                    {
+                        dest = new Graph(cmd.DestinationGraphName);
+                        context.Data.AddGraph(dest);
+                    }
+
+                    // Move data from the Source into the Destination
+                    dest.Merge(source);
+                }
+                else
+                {
+                    // Only show error if not Silent
+                    if (!cmd.Silent)
+                    {
+                        if (cmd.SourceGraphName != null)
+                        {
+                            throw new SparqlUpdateException("Cannot COPY from Graph " + cmd.SourceGraphName + " as it does not exist");
+                        }
+                        else
+                        {
+                            // This would imply a more fundamental issue with the Dataset not understanding that null means default graph
+                            throw new SparqlUpdateException("Cannot COPY from the Default Graph as it does not exist");
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // If not silent throw the exception upwards
+                if (!cmd.Silent) throw;
+            }
         }
 
         /// <summary>
@@ -204,7 +339,18 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessCreateCommandInternal(CreateCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            if (context.Data.HasGraph(cmd.TargetGraphName))
+            {
+                if (!cmd.Silent)
+                {
+                    throw new SparqlUpdateException("Cannot create a Named Graph with name '" + cmd.TargetGraphName + "' since a Graph with this URI already exists in the Store");
+                }
+            }
+            else
+            {
+                var g = new Graph(cmd.TargetGraphName);
+                context.Data.AddGraph(g);
+            }
         }
 
         /// <summary>
@@ -403,7 +549,204 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessDeleteCommandInternal(DeleteCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            var defGraphOk = false;
+            var datasetOk = false;
+
+            try
+            {
+                // If there is a WITH clause and no matching graph, and the delete pattern doesn't contain child graph patterns then there is nothing to do
+                if (cmd.WithGraphName != null && !context.Data.HasGraph(cmd.WithGraphName) && !cmd.DeletePattern.HasChildGraphPatterns)
+                {
+                    return;
+                }
+
+                // First evaluate the WHERE pattern to get the affected bindings
+                ISparqlAlgebra where = cmd.WherePattern.ToAlgebra();
+                if (context.Commands != null)
+                {
+                    where = context.Commands.ApplyAlgebraOptimisers(where);
+                }
+
+                // Set Active Graph for the WHERE based upon the WITH clause
+                // Don't bother if there are USING URIs as these would override any Active Graph we set here
+                // so we can save ourselves the effort of doing this
+                if (!cmd.UsingUris.Any())
+                {
+                    if (cmd.WithGraphName != null)
+                    {
+                        context.Data.SetActiveGraph(cmd.WithGraphName);
+                        defGraphOk = true;
+                    }
+                    else
+                    {
+                        context.Data.SetActiveGraph((IRefNode)null);
+                        defGraphOk = true;
+                    }
+                }
+
+                // We need to make a dummy SparqlQuery object since if the Command has used any 
+                // USING/USING NAMEDs along with GRAPH clauses then the algebra needs to have the
+                // URIs available to it which it gets from the Query property of the Context
+                // object
+
+
+                // var query = new SparqlQuery();
+                SparqlQuery query = QueryBuilder.SelectAll().BuildQuery();
+                foreach (Uri u in cmd.UsingUris)
+                {
+                    query.AddDefaultGraph(new UriNode(u));
+                }
+                foreach (Uri u in cmd.UsingNamedUris)
+                {
+                    query.AddNamedGraph(new UriNode(u));
+                }
+                
+                var queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor, context.Options);
+                if (cmd.UsingUris.Any())
+                {
+                    // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
+                    IList<IRefNode> activeGraphs = cmd.UsingUris.Select<Uri, IRefNode>(u => new UriNode(u)).ToList();
+                    context.Data.SetActiveGraph(activeGraphs);
+                    datasetOk = true;
+                }
+                BaseMultiset results = queryContext.Evaluate(where);
+                if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
+                if (cmd.UsingUris.Any())
+                {
+                    // If there are USING URIs reset the Active Graph afterwards
+                    // Also flag the dataset as no longer being OK as this flag is used in the finally 
+                    // block to determine whether the Active Graph needs resetting which it may do if the
+                    // evaluation of the 
+                    context.Data.ResetActiveGraph();
+                    datasetOk = false;
+                }
+
+                // Reset Active Graph for the WHERE
+                if (defGraphOk)
+                {
+                    context.Data.ResetActiveGraph();
+                    defGraphOk = false;
+                }
+
+                // Get the Graph from which we are deleting
+                IGraph g = context.Data.HasGraph(cmd.WithGraphName) ? context.Data.GetModifiableGraph(cmd.WithGraphName) : null;
+
+                // Delete the Triples for each Solution
+                foreach (ISet s in results.Sets)
+                {
+                    var deletedTriples = new List<Triple>();
+
+                    if (g != null)
+                    {
+                        // Triples from raw Triple Patterns
+                        try
+                        {
+                            var constructContext = new ConstructContext(g, s, true);
+                            foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns
+                                .OfType<IConstructTriplePattern>())
+                            {
+                                try
+                                {
+                                    deletedTriples.Add(p.Construct(constructContext));
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    // If we get an error here then we couldn't construct a specific Triple
+                                    // so we continue anyway
+                                }
+                            }
+
+                            g.Retract(deletedTriples);
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // If we throw an error this means we couldn't construct for this solution so the
+                            // solution is ignored this graph
+                        }
+                    }
+
+                    // Triples from GRAPH clauses
+                    foreach (GraphPattern gp in cmd.DeletePattern.ChildGraphPatterns)
+                    {
+                        deletedTriples.Clear();
+                        try
+                        {
+                            IRefNode graphName;
+                            switch (gp.GraphSpecifier.TokenType)
+                            {
+                                case Token.URI:
+                                    graphName = new UriNode(UriFactory.Root.Create(gp.GraphSpecifier.Value));
+                                    break;
+                                case Token.VARIABLE:
+                                    var graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                    if (s.ContainsVariable(graphVar))
+                                    {
+                                        INode temp = s[graphVar];
+                                        if (temp == null)
+                                        {
+                                            // If the Variable is not bound then skip
+                                            continue;
+                                        }
+                                        else if (temp.NodeType == NodeType.Uri)
+                                        {
+                                            graphName = temp as IUriNode;
+                                        }
+                                        else if (temp.NodeType == NodeType.Blank)
+                                        {
+                                            graphName = temp as IBlankNode;
+                                        }
+                                        else
+                                        {
+                                            // If the Variable is not bound to a URI then skip
+                                            continue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // If the Variable is not bound for this solution then skip
+                                        continue;
+                                    }
+                                    break;
+                                default:
+                                    // Any other Graph Specifier we have to ignore this solution
+                                    continue;
+                            }
+
+                            // If the Dataset doesn't contain the Graph then no need to do the Deletions
+                            if (!context.Data.HasGraph(graphName)) continue;
+
+                            // Do the actual Deletions
+                            IGraph h = context.Data.GetModifiableGraph(graphName);
+                            var constructContext = new ConstructContext(h, s, true);
+                            foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                            {
+                                try
+                                {
+                                    deletedTriples.Add(p.Construct(constructContext));
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    // If we get an error here then we couldn't construct a specific
+                                    // triple so we continue anyway
+                                }
+                            }
+                            h.Retract(deletedTriples);
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // If we get an error here this means we couldn't construct for this solution so the
+                            // solution is ignored for this graph
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                // If the Dataset was set and an error occurred in doing the WHERE clause then
+                // we'll need to Reset the Active Graph
+                if (datasetOk) context.Data.ResetActiveGraph();
+                if (defGraphOk) context.Data.ResetActiveGraph();
+            }
         }
 
         /// <summary>
@@ -422,7 +765,72 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessDeleteDataCommandInternal(DeleteDataCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            // Split the Pattern into the set of Graph Patterns
+            var patterns = new List<GraphPattern>();
+            if (cmd.DataPattern.IsGraph)
+            {
+                patterns.Add(cmd.DataPattern);
+            }
+            else if (cmd.DataPattern.TriplePatterns.Count > 0 || cmd.DataPattern.HasChildGraphPatterns)
+            {
+                if (cmd.DataPattern.TriplePatterns.Count > 0)
+                {
+                    patterns.Add(new GraphPattern());
+                    cmd.DataPattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
+                }
+                cmd.DataPattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
+            }
+            else
+            {
+                // If no Triple Patterns and No Child Graph Patterns nothing to do
+                return;
+            }
+
+            foreach (GraphPattern pattern in patterns)
+            {
+                if (!DeleteDataCommand.IsValidDataPattern(pattern, false))
+                {
+                    throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
+                }
+
+                // Get the Target Graph
+                IGraph target;
+                IRefNode graphName;
+                if (pattern.IsGraph)
+                {
+                    switch (pattern.GraphSpecifier.TokenType)
+                    {
+                        case Token.QNAME:
+                            throw new NotSupportedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
+                        case Token.URI:
+                            graphName = new UriNode(UriFactory.Root.Create(pattern.GraphSpecifier.Value));
+                            break;
+                        default:
+                            throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command as the Graph Specifier is not a QName/URI");
+                    }
+                }
+                else
+                {
+                    graphName = null;
+                }
+
+                // If the Pattern affects a non-existent Graph then nothing to DELETE
+                if (!context.Data.HasGraph(graphName)) continue;
+                target = context.Data.GetModifiableGraph(graphName);
+
+                // Delete the actual Triples
+                INode subj, pred, obj;
+
+                var constructContext = new ConstructContext(target, null, false);
+                foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                {
+                    subj = p.Subject.Construct(constructContext);
+                    pred = p.Predicate.Construct(constructContext);
+                    obj = p.Object.Construct(constructContext);
+
+                    target.Retract(new Triple(subj, pred, obj));
+                }
+            }
         }
 
         /// <summary>
@@ -441,7 +849,64 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessDropCommandInternal(DropCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            try
+            {
+                switch (cmd.Mode)
+                {
+                    case ClearMode.Default:
+                    case ClearMode.Graph:
+                        if (!context.Data.HasGraph(cmd.TargetGraphName))
+                        {
+                            if (!cmd.Silent) throw new SparqlUpdateException(
+                                $"Cannot remove a Named Graph with name {cmd.TargetGraphName} since a Graph with this URI does not exist in the Store");
+                        }
+                        else
+                        {
+                            if (cmd.Mode == ClearMode.Graph)
+                            {
+                                context.Data.RemoveGraph(cmd.TargetGraphName);
+                            }
+                            else
+                            {
+                                // DROPing the DEFAULT graph only results in clearing it
+                                // This is because removing the default graph may cause errors in later commands/queries
+                                // which rely on it existing
+                                context.Data.GetModifiableGraph(cmd.TargetGraphName).Clear();
+                            }
+                        }
+                        break;
+
+                    case ClearMode.Named:
+                        foreach (IRefNode u in context.Data.GraphNames.ToList())
+                        {
+                            if (u != null)
+                            {
+                                context.Data.RemoveGraph(u);
+                            }
+                        }
+                        break;
+                    case ClearMode.All:
+                        foreach (IRefNode u in context.Data.GraphNames.ToList())
+                        {
+                            if (u != null)
+                            {
+                                context.Data.RemoveGraph(u);
+                            }
+                            else
+                            {
+                                // DROPing the DEFAULT graph only results in clearing it
+                                // This is because removing the default graph may cause errors in later commands/queries
+                                // which rely on it existing
+                                context.Data.GetModifiableGraph(u).Clear();
+                            }
+                        }
+                        break;
+                }
+            }
+            catch
+            {
+                if (!cmd.Silent) throw;
+            }
         }
 
         /// <summary>
@@ -460,7 +925,231 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessInsertCommandInternal(InsertCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            var datasetOk = false;
+            var defGraphOk = false;
+
+            try
+            {
+                // First evaluate the WHERE pattern to get the affected bindings
+                ISparqlAlgebra where = cmd.WherePattern.ToAlgebra();
+                if (context.Commands != null)
+                {
+                    where = context.Commands.ApplyAlgebraOptimisers(where);
+                }
+
+                // Set Active Graph for the WHERE
+                // Don't bother if there are USING URIs as these would override any Active Graph we set here
+                // so we can save ourselves the effort of doing this
+                if (!cmd.UsingUris.Any())
+                {
+                    if (cmd.WithGraphName != null)
+                    {
+                        context.Data.SetActiveGraph(cmd.WithGraphName);
+                        defGraphOk = true;
+                    }
+                    else
+                    {
+                        context.Data.SetActiveGraph((IRefNode)null);
+                        defGraphOk = true;
+                    }
+                }
+
+                // We need to make a dummy SparqlQuery object since if the Command has used any 
+                // USING NAMEDs along with GRAPH clauses then the algebra needs to have the
+                // URIs available to it which it gets from the Query property of the Context
+                // object
+                //var query = new SparqlQuery();
+                SparqlQuery query = QueryBuilder.SelectAll().BuildQuery();
+
+                foreach (Uri u in cmd.UsingUris)
+                {
+                    query.AddDefaultGraph(new UriNode(u));
+                }
+                foreach (Uri u in cmd.UsingNamedUris)
+                {
+                    query.AddNamedGraph(new UriNode(u));
+                }
+                var queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor, context.Options);
+                if (cmd.UsingUris.Any())
+                {
+                    // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
+                    context.Data.SetActiveGraph(cmd.UsingUris.Select<Uri, IRefNode>(u => new UriNode(u)).ToList());
+                    datasetOk = true;
+                }
+                BaseMultiset results = queryContext.Evaluate(where);
+                if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
+                if (cmd.UsingUris.Any())
+                {
+                    // If there are USING URIs reset the Active Graph afterwards
+                    // Also flag the dataset as no longer being OK as this flag is used in the finally 
+                    // block to determine whether the Active Graph needs resetting which it may do if the
+                    // evaluation of the query fails for any reason
+                    context.Data.ResetActiveGraph();
+                    datasetOk = false;
+                }
+
+                // Reset Active Graph for the WHERE
+                if (defGraphOk)
+                {
+                    context.Data.ResetActiveGraph();
+                    defGraphOk = false;
+                }
+
+                // TODO: Need to detect when we create a Graph for Insertion but then fail to insert anything since in this case the Inserted Graph should be removed
+
+                // Get the Graph to which we are inserting Triples with no explicit Graph clause
+                IGraph g = null;
+                if (cmd.InsertPattern.TriplePatterns.Count > 0)
+                {
+                    if (context.Data.HasGraph(cmd.WithGraphName))
+                    {
+                        g = context.Data.GetModifiableGraph(cmd.WithGraphName);
+                    }
+                    else
+                    {
+                        // insertedGraphs.Add(this._graphUri);
+                        g = new Graph(cmd.WithGraphName);
+                        context.Data.AddGraph(g);
+                        g = context.Data.GetModifiableGraph(cmd.WithGraphName);
+                    }
+                }
+
+                // Keep a record of graphs to which we insert
+                var graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : 0), true, new UriComparer(), MultiDictionaryMode.AVL);
+
+                // Insert the Triples for each Solution
+                foreach (ISet s in results.Sets)
+                {
+                    var insertedTriples = new List<Triple>();
+
+                    try
+                    {
+                        // Create a new Construct Context for each Solution
+                        var constructContext = new ConstructContext(null, s, true);
+
+                        // Triples from raw Triple Patterns
+                        if (cmd.InsertPattern.TriplePatterns.Count > 0)
+                        {
+                            foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                            {
+                                try
+                                {
+                                    insertedTriples.Add(p.Construct(constructContext));
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    // If we throw an error this means we couldn't construct a specific Triple
+                                    // so we continue anyway
+                                }
+                            }
+                            g.Assert(insertedTriples);
+                        }
+
+                        // Triples from GRAPH clauses
+                        foreach (GraphPattern gp in cmd.InsertPattern.ChildGraphPatterns)
+                        {
+                            insertedTriples.Clear();
+                            try
+                            {
+                                string graphUri;
+                                switch (gp.GraphSpecifier.TokenType)
+                                {
+                                    case Token.URI:
+                                        graphUri = gp.GraphSpecifier.Value;
+                                        break;
+                                    case Token.VARIABLE:
+                                        var graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                        if (s.ContainsVariable(graphVar))
+                                        {
+                                            INode temp = s[graphVar];
+                                            if (temp == null)
+                                            {
+                                                // If the Variable is not bound then skip
+                                                continue;
+                                            }
+                                            if (temp.NodeType == NodeType.Uri)
+                                            {
+                                                graphUri = temp.ToSafeString();
+                                            }
+                                            else
+                                            {
+                                                // If the Variable is not bound to a URI then skip
+                                                continue;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // If the Variable is not bound for this solution then skip
+                                            continue;
+                                        }
+                                        break;
+                                    default:
+                                        // Any other Graph Specifier we have to ignore this solution
+                                        continue;
+                                }
+
+                                // Ensure the Graph we're inserting to exists in the dataset creating it if necessary
+                                IGraph h;
+                                Uri destUri = UriFactory.Root.Create(graphUri);
+                                IRefNode destName = new UriNode(destUri);
+                                if (graphs.ContainsKey(destUri))
+                                {
+                                    h = graphs[destUri];
+                                }
+                                else
+                                {
+                                    if (context.Data.HasGraph(destName))
+                                    {
+                                        h = context.Data.GetModifiableGraph(destName);
+                                    }
+                                    else
+                                    {
+                                        // insertedGraphs.Add(destUri);
+                                        h = new Graph(destName);
+                                        context.Data.AddGraph(h);
+                                        h = context.Data.GetModifiableGraph(destName);
+                                    }
+                                    graphs.Add(destUri, h);
+                                }
+
+                                // Do the actual Insertions
+                                foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                                {
+                                    try
+                                    {
+                                        Triple t = p.Construct(constructContext);
+                                        t = new Triple(t.Subject, t.Predicate, t.Object, destUri);
+                                        insertedTriples.Add(t);
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        // If we throw an error this means we couldn't construct a specific Triple
+                                        // so we continue anyway
+                                    }
+                                }
+                                h.Assert(insertedTriples);
+                            }
+                            catch (RdfQueryException)
+                            {
+                                // If we throw an error this means we couldn't construct for this solution so the
+                                // solution is ignored for this Graph
+                            }
+                        }
+                    }
+                    catch (RdfQueryException)
+                    {
+                        // If we throw an error this means we couldn't construct for this solution so the
+                        // solution is ignored for this graph
+                    }
+                }
+            }
+            finally
+            {
+                // If the Dataset was set and an error occurred in doing the WHERE clause then
+                // we'll need to Reset the Active Graph
+                if (datasetOk) context.Data.ResetActiveGraph();
+                if (defGraphOk) context.Data.ResetActiveGraph();
+            }
         }
 
         /// <summary>
@@ -479,7 +1168,73 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessInsertDataCommandInternal(InsertDataCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            // Split the Pattern into the set of Graph Patterns
+            var patterns = new List<GraphPattern>();
+            if (cmd.DataPattern.IsGraph)
+            {
+                patterns.Add(cmd.DataPattern);
+            }
+            else if (cmd.DataPattern.TriplePatterns.Count > 0 || cmd.DataPattern.HasChildGraphPatterns)
+            {
+                if (cmd.DataPattern.TriplePatterns.Count > 0)
+                {
+                    patterns.Add(new GraphPattern());
+                    cmd.DataPattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
+                }
+                cmd.DataPattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
+            }
+            else
+            {
+                // If no Triple Patterns and No Child Graph Patterns nothing to do
+                return;
+            }
+
+            var constructContext = new ConstructContext(null, null, false);
+            foreach (GraphPattern pattern in patterns)
+            {
+                if (!InsertDataCommand.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
+
+                // Get the Target Graph
+                IGraph target;
+                IRefNode graphName;
+                if (pattern.IsGraph)
+                {
+                    switch (pattern.GraphSpecifier.TokenType)
+                    {
+                        case Token.QNAME:
+                            throw new NotSupportedException("Graph Specifiers as QNames for INSERT DATA Commands are not supported - please specify an absolute URI instead");
+                        case Token.URI:
+                            graphName = new UriNode(UriFactory.Root.Create(pattern.GraphSpecifier.Value));
+                            break;
+                        default:
+                            throw new SparqlUpdateException("Cannot evaluate an INSERT DATA Command as the Graph Specifier is not a QName/URI");
+                    }
+                }
+                else
+                {
+                    graphName = null;
+                }
+                if (context.Data.HasGraph(graphName))
+                {
+                    target = context.Data.GetModifiableGraph(graphName);
+                }
+                else
+                {
+                    // If the Graph does not exist then it must be created
+                    target = new Graph(graphName);
+                    context.Data.AddGraph(target);
+                }
+
+                // Insert the actual Triples
+                foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                {
+                    INode subj = p.Subject.Construct(constructContext);
+                    INode pred = p.Predicate.Construct(constructContext);
+                    INode obj = p.Object.Construct(constructContext);
+
+                    target.Assert(new Triple(subj, pred, obj));
+                }
+            }
         }
 
         /// <summary>
@@ -498,7 +1253,37 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessLoadCommandInternal(LoadCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            // Q: Does LOAD into a named Graph require that Graph to be pre-existing?
+            // if (this._graphUri != null)
+            // {
+            //    //When adding to specific Graph need to ensure that Graph exists
+            //    //In the case when we're adding to the default graph we'll create it if it doesn't exist
+            //    if (!context.Data.HasGraph(this._graphUri))
+            //    {
+            //        throw new RdfUpdateException("Cannot LOAD into a Graph that does not exist in the Store");
+            //    }
+            // }
+
+            try
+            {
+                // Load from the URI
+                var g = new Graph(cmd.TargetGraphName);
+                cmd.Loader.LoadGraph(g, cmd.SourceUri);
+                if (context.Data.HasGraph(cmd.TargetGraphName))
+                {
+                    // Merge the Data into the existing Graph
+                    context.Data.GetModifiableGraph(cmd.TargetGraphName).Merge(g);
+                }
+                else
+                {
+                    // Add New Graph to the Dataset
+                    context.Data.AddGraph(g);
+                }
+            }
+            catch
+            {
+                if (!cmd.Silent) throw;
+            }
         }
 
         /// <summary>
@@ -517,7 +1302,319 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessModifyCommandInternal(ModifyCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            var datasetOk = false;
+            var defGraphOk = false;
+
+            try
+            {
+                // First evaluate the WHERE pattern to get the affected bindings
+                ISparqlAlgebra where = cmd.WherePattern.ToAlgebra();
+                if (context.Commands != null)
+                {
+                    where = context.Commands.ApplyAlgebraOptimisers(where);
+                }
+
+                // Set Active Graph for the WHERE
+                // Don't bother if there are USING URIs as these would override any Active Graph we set here
+                // so we can save ourselves the effort of doing this
+                if (!cmd.UsingUris.Any())
+                {
+                    if (cmd.WithGraphName != null)
+                    {
+                        context.Data.SetActiveGraph(cmd.WithGraphName);
+                        defGraphOk = true;
+                    }
+                    else
+                    {
+                        context.Data.SetActiveGraph((IRefNode)null);
+                        defGraphOk = true;
+                    }
+                }
+
+                // We need to make a dummy SparqlQuery object since if the Command has used any 
+                // USING NAMEDs along with GRAPH clauses then the algebra needs to have the
+                // URIs available to it which it gets from the Query property of the Context
+                // object
+                //var query = new SparqlQuery();
+                SparqlQuery query = QueryBuilder.SelectAll().BuildQuery();
+
+                foreach (Uri u in cmd.UsingUris)
+                {
+                    query.AddDefaultGraph(new UriNode(u));
+                }
+                foreach (Uri u in cmd.UsingNamedUris)
+                {
+                    query.AddNamedGraph(new UriNode(u));
+                }
+                var queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor, context.Options);
+                if (cmd.UsingUris.Any())
+                {
+                    // If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
+                    context.Data.SetActiveGraph(cmd.UsingUris.Select<Uri, IRefNode>(u => new UriNode(u)).ToList());
+                    datasetOk = true;
+                }
+                BaseMultiset results = queryContext.Evaluate(where);
+                if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
+                if (cmd.UsingUris.Any())
+                {
+                    // If there are USING URIs reset the Active Graph afterwards
+                    // Also flag the dataset as no longer being OK as this flag is used in the finally 
+                    // block to determine whether the Active Graph needs resetting which it may do if the
+                    // evaluation of the 
+                    context.Data.ResetActiveGraph();
+                    datasetOk = false;
+                }
+
+                // Reset Active Graph for the WHERE
+                if (defGraphOk)
+                {
+                    context.Data.ResetActiveGraph();
+                    defGraphOk = false;
+                }
+
+                // Get the Graph to which we are deleting and inserting
+                IGraph g;
+                var newGraph = false;
+                if (context.Data.HasGraph(cmd.WithGraphName))
+                {
+                    g = context.Data.GetModifiableGraph(cmd.WithGraphName);
+                }
+                else
+                {
+                    // Inserting into a new graph. This will raise an exception if the dataset is immutable
+                    context.Data.AddGraph(new Graph(cmd.WithGraphName));
+                    g = context.Data.GetModifiableGraph(cmd.WithGraphName);
+                    newGraph = true;
+                }
+
+                // Delete the Triples for each Solution
+                var deletedTriples = new List<Triple>();
+                foreach (ISet s in results.Sets)
+                {
+                    try
+                    {
+                        // If the Default Graph is non-existent then Deletions have no effect on it
+                        if (g != null)
+                        {
+                            var constructContext = new ConstructContext(g, s, true);
+                            foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                            {
+                                try
+                                {
+                                    deletedTriples.Add(p.Construct(constructContext));
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    // If we get an error here then we couldn't construct a specific
+                                    // triple so we continue anyway
+                                }
+                            }
+                            g.Retract(deletedTriples);
+                        }
+                    }
+                    catch (RdfQueryException)
+                    {
+                        // If we get an error here this means we couldn't construct for this solution so the
+                        // solution is ignored for this graph
+                    }
+
+                    // Triples from GRAPH clauses
+                    foreach (GraphPattern gp in cmd.DeletePattern.ChildGraphPatterns)
+                    {
+                        deletedTriples.Clear();
+                        try
+                        {
+                            string graphUri;
+                            switch (gp.GraphSpecifier.TokenType)
+                            {
+                                case Token.URI:
+                                    graphUri = gp.GraphSpecifier.Value;
+                                    break;
+                                case Token.VARIABLE:
+                                    var graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                    if (s.ContainsVariable(graphVar))
+                                    {
+                                        INode temp = s[graphVar];
+                                        if (temp == null)
+                                        {
+                                            // If the Variable is not bound then skip
+                                            continue;
+                                        }
+                                        else if (temp.NodeType == NodeType.Uri)
+                                        {
+                                            graphUri = temp.ToSafeString();
+                                        }
+                                        else
+                                        {
+                                            // If the Variable is not bound to a URI then skip
+                                            continue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // If the Variable is not bound for this solution then skip
+                                        continue;
+                                    }
+                                    break;
+                                default:
+                                    // Any other Graph Specifier we have to ignore this solution
+                                    continue;
+                            }
+
+                            var graphName = new UriNode(UriFactory.Root.Create(graphUri));
+                            // If the Dataset doesn't contain the Graph then no need to do the Deletions
+                            if (!context.Data.HasGraph(graphName)) continue;
+
+                            // Do the actual Deletions
+                            IGraph h = context.Data.GetModifiableGraph(graphName);
+                            var constructContext = new ConstructContext(h, s, true);
+                            foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                            {
+                                try
+                                {
+                                    deletedTriples.Add(p.Construct(constructContext));
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    // If we get an error here then we couldn't construct a specific triple
+                                    // so we continue anyway
+                                }
+                            }
+                            h.Retract(deletedTriples);
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // If we get an error here this means we couldn't construct for this solution so the
+                            // solution is ignore for this graph
+                        }
+                    }
+                }
+
+                // Insert the Triples for each Solution
+                foreach (ISet s in results.Sets)
+                {
+                    var insertedTriples = new List<Triple>();
+                    try
+                    {
+                        var constructContext = new ConstructContext(g, s, true);
+                        foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                        {
+                            try
+                            {
+                                insertedTriples.Add(p.Construct(constructContext));
+                            }
+                            catch (RdfQueryException)
+                            {
+                                // If we get an error here then we couldn't construct a specific triple
+                                // so we continue anyway
+                            }
+                        }
+                        //g.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(g)));
+                        g.Assert(insertedTriples);
+                    }
+                    catch (RdfQueryException)
+                    {
+                        // If we get an error here this means we couldn't construct for this solution so the
+                        // solution is ignored for this graph
+                    }
+
+                    if (insertedTriples.Count == 0 && newGraph && cmd.WithGraphName != null)
+                    {
+                        // Remove the named graph we added as we did not insert any triples
+                        context.Data.RemoveGraph(cmd.WithGraphName);
+                    }
+
+                    // Triples from GRAPH clauses
+                    foreach (GraphPattern gp in cmd.InsertPattern.ChildGraphPatterns)
+                    {
+                        insertedTriples.Clear();
+                        try
+                        {
+                            string graphUri;
+                            switch (gp.GraphSpecifier.TokenType)
+                            {
+                                case Token.URI:
+                                    graphUri = gp.GraphSpecifier.Value;
+                                    break;
+                                case Token.VARIABLE:
+                                    var graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                    if (s.ContainsVariable(graphVar))
+                                    {
+                                        INode temp = s[graphVar];
+                                        if (temp == null)
+                                        {
+                                            // If the Variable is not bound then skip
+                                            continue;
+                                        }
+                                        else if (temp.NodeType == NodeType.Uri)
+                                        {
+                                            graphUri = temp.ToSafeString();
+                                        }
+                                        else
+                                        {
+                                            // If the Variable is not bound to a URI then skip
+                                            continue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // If the Variable is not bound for this solution then skip
+                                        continue;
+                                    }
+                                    break;
+                                default:
+                                    // Any other Graph Specifier we have to ignore this solution
+                                    continue;
+                            }
+
+                            // Ensure the Graph we're inserting to exists in the dataset creating it if necessary
+                            IGraph h;
+                            IRefNode destGraph = new UriNode(UriFactory.Root.Create(graphUri));
+                            if (context.Data.HasGraph(destGraph))
+                            {
+                                h = context.Data.GetModifiableGraph(destGraph);
+                            }
+                            else
+                            {
+                                h = new Graph(destGraph);
+                                context.Data.AddGraph(h);
+                                h = context.Data.GetModifiableGraph(destGraph);
+                            }
+
+                            // Do the actual Insertions
+                            var constructContext = new ConstructContext(h, s, true);
+                            foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                            {
+                                try
+                                {
+                                    Triple t = p.Construct(constructContext);
+                                    t = new Triple(t.Subject, t.Predicate, t.Object);
+                                    insertedTriples.Add(t);
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    // If we get an error here this means we couldn't construct a specific
+                                    // triple so we continue anyway
+                                }
+                            }
+                            //h.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(h)));
+                            h.Assert(insertedTriples);
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // If we get an error here this means we couldn't construct for this solution so the
+                            // solution is ignored for this graph
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                // If the Dataset was set and an error occurred in doing the WHERE clause then
+                // we'll need to Reset the Active Graph
+                if (datasetOk) context.Data.ResetActiveGraph();
+                if (defGraphOk) context.Data.ResetActiveGraph();
+            }
         }
 
         /// <summary>
@@ -536,7 +1633,74 @@ namespace VDS.RDF.Update
         /// <param name="context">SPARQL Update Evaluation Context.</param>
         protected virtual void ProcessMoveCommandInternal(MoveCommand cmd, SparqlUpdateEvaluationContext context)
         {
-            cmd.Evaluate(context);
+            try
+            {
+                // If Source and Destination are same this is a no-op
+                if (EqualityHelper.AreRefNodesEqual(cmd.SourceGraphName, cmd.DestinationGraphName)) return;
+
+                if (context.Data.HasGraph(cmd.SourceGraphName))
+                {
+                    // Get the Source Graph
+                    IGraph source = context.Data.GetModifiableGraph(cmd.SourceGraphName);
+
+                    // Create/Delete/Clear the Destination Graph
+                    IGraph dest;
+                    if (context.Data.HasGraph(cmd.DestinationGraphName))
+                    {
+                        if (cmd.DestinationGraphName == null)
+                        {
+                            dest = context.Data.GetModifiableGraph(cmd.DestinationGraphName);
+                            dest.Clear();
+                        }
+                        else
+                        {
+                            context.Data.RemoveGraph(cmd.DestinationGraphName);
+                            dest = new Graph(cmd.DestinationGraphName);
+                            context.Data.AddGraph(dest);
+                            dest = context.Data.GetModifiableGraph(cmd.DestinationGraphName);
+                        }
+                    }
+                    else
+                    {
+                        dest = new Graph(cmd.DestinationGraphName);
+                        context.Data.AddGraph(dest);
+                    }
+
+                    // Move data from the Source into the Destination
+                    dest.Merge(source);
+
+                    // Delete/Clear the Source Graph
+                    if (cmd.SourceGraphName == null)
+                    {
+                        source.Clear();
+                    }
+                    else
+                    {
+                        context.Data.RemoveGraph(cmd.SourceGraphName);
+                    }
+                }
+                else
+                {
+                    // Only show error if not Silent
+                    if (!cmd.Silent)
+                    {
+                        if (cmd.SourceGraphName != null)
+                        {
+                            throw new SparqlUpdateException("Cannot MOVE from Graph " + cmd.SourceGraphName + " as it does not exist");
+                        }
+                        else
+                        {
+                            // This would imply a more fundamental issue with the Dataset not understanding that null means default graph
+                            throw new SparqlUpdateException("Cannot MOVE from the Default Graph as it does not exist");
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // If not silent throw the exception upwards
+                if (!cmd.Silent) throw;
+            }
         }
 
     }

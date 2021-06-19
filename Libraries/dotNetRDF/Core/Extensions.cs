@@ -684,7 +684,7 @@ namespace VDS.RDF
         /// <param name="str">String.</param>
         /// <param name="uriFactory">Factor to use when creating the URI. If not specified, the <see cref="UriFactory.Root"/> instance will be used.</param>
         /// <returns>Either null if the string is null/empty or a URI otherwise.</returns>
-        internal static Uri ToSafeUri(this string str, IUriFactory uriFactory = null)
+        public static Uri ToSafeUri(this string str, IUriFactory uriFactory = null)
         {
             return string.IsNullOrEmpty(str) ? null : (uriFactory ?? UriFactory.Root).Create(str);
         }
@@ -728,7 +728,7 @@ namespace VDS.RDF
         /// <remarks>
         /// Strings containing new lines are split over multiple lines.
         /// </remarks>
-        internal static void AppendLineIndented(this StringBuilder builder, string line, int indent)
+        public static void AppendLineIndented(this StringBuilder builder, string line, int indent)
         {
             if (line.Contains('\n'))
             {

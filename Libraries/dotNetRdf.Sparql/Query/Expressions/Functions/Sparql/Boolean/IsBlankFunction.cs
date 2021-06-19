@@ -41,31 +41,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public IsBlankFunction(ISparqlExpression expr) : base(expr) { }
 
         /// <summary>
-        /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode result = _expr.Evaluate(context, bindingID);
-            if (result == null)
-            {
-                return new BooleanNode(false);
-            }
-            else
-            {
-                return new BooleanNode(result.NodeType == NodeType.Blank);
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "ISBLANK(" + _expr.ToString() + ")";
+            return "ISBLANK(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessIsBlankFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitIsBlankFunction(this);
         }
 
         /// <summary>
@@ -97,7 +88,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IsBlankFunction(transformer.Transform(_expr));
+            return new IsBlankFunction(transformer.Transform(InnerExpression));
         }
     }
 }

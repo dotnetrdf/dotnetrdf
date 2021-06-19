@@ -60,31 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             _exprs.AddRange(expressions);
         }
 
-        /// <summary>
-        /// Gets the Value of the function as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            var output = new StringBuilder();
-            foreach (ISparqlExpression expr in _exprs)
-            {
-                IValuedNode temp = expr.Evaluate(context, bindingID);
-                if (temp == null) throw new RdfQueryException("Cannot evaluate the XPath concat() function when an argument evaluates to a Null");
-                switch (temp.NodeType)
-                {
-                    case NodeType.Literal:
-                        output.Append(temp.AsString());
-                        break;
-                    default:
-                        throw new RdfQueryException("Cannot evaluate the XPath concat() function when an argument is not a Literal Node");
-                }
-            }
-
-            return new StringNode(output.ToString(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-        }
+        public IEnumerable<ISparqlExpression> Expressions { get => _exprs; }
 
         /// <summary>
         /// Gets the Arguments the function applies to.
@@ -106,6 +82,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return _exprs.All(e => e.CanParallelise);
             }
+        }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessConcatFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitConcatFunction(this);
         }
 
         /// <summary>

@@ -77,87 +77,11 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Triple Patterns in the BGP.
         /// </summary>
-        public IEnumerable<ITriplePattern> TriplePatterns
+        public IReadOnlyList<ITriplePattern> TriplePatterns
         {
-            get { return _triplePatterns; }
+            get { return _triplePatterns.AsReadOnly(); }
         }
 
-        /// <summary>
-        /// Evaluates the BGP against the Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public virtual BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            if (_triplePatterns.Count > 0)
-            {
-                for (var i = 0; i < _triplePatterns.Count; i++)
-                {
-                    if (i == 0)
-                    {
-                        // If the 1st thing in a BGP is a BIND/LET/FILTER the Input becomes the Identity Multiset
-                        if (_triplePatterns[i].PatternType == TriplePatternType.Filter || _triplePatterns[i].PatternType == TriplePatternType.BindAssignment || _triplePatterns[i].PatternType == TriplePatternType.LetAssignment)
-                        {
-                            if (_triplePatterns[i].PatternType == TriplePatternType.BindAssignment)
-                            {
-                                if (context.InputMultiset.ContainsVariable(((IAssignmentPattern) _triplePatterns[i]).VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
-                            }
-                            else
-                            {
-                                context.InputMultiset = new IdentityMultiset();
-                            }
-                        }
-                    }
-
-                    // Create a new Output Multiset
-                    context.OutputMultiset = new Multiset();
-
-                    _triplePatterns[i].Evaluate(context);
-
-                    // If at any point we've got an Empty Multiset as our Output then we terminate BGP execution
-                    if (context.OutputMultiset.IsEmpty) break;
-
-                    // Check for Timeout before attempting the Join
-                    context.CheckTimeout();
-
-                    // If this isn't the first Pattern we do Join/Product the Output to the Input
-                    if (i > 0)
-                    {
-                        if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                        {
-                            // Disjoint so do a Product
-                            context.OutputMultiset = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
-                        }
-                        else
-                        {
-                            // Normal Join
-                            context.OutputMultiset = context.InputMultiset.Join(context.OutputMultiset);
-                        }
-                    }
-
-                    // Then the Input for the next Pattern is the Output from the previous Pattern
-                    context.InputMultiset = context.OutputMultiset;
-                }
-
-                if (context.TrimTemporaryVariables)
-                {
-                    // Trim the Multiset - this eliminates any temporary variables
-                    context.OutputMultiset.Trim();
-                }
-            }
-            else
-            {
-                // For an Empty BGP we just return the Identity Multiset
-                context.OutputMultiset = new IdentityMultiset();
-            }
-
-            // If we've ended with an Empty Multiset then we turn it into the Null Multiset
-            // to indicate that this BGP did not match anything
-            if (context.OutputMultiset is Multiset && context.OutputMultiset.IsEmpty) context.OutputMultiset = new NullMultiset();
-
-            // Return the Output Multiset
-            return context.OutputMultiset;
-        }
 
         /// <summary>
         /// Gets the Variables used in the Algebra.
@@ -202,7 +126,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the BGP is the emtpy BGP.
+        /// Gets whether the BGP is the empty BGP.
         /// </summary>
         public bool IsEmpty
         {
@@ -220,18 +144,28 @@ namespace VDS.RDF.Query.Algebra
                 case 0:
                     return "BGP()";
                 case 1:
-                    return "BGP(" + _triplePatterns[0].ToString() + ")";
+                    return "BGP(" + _triplePatterns[0] + ")";
                 default:
                     var builder = new StringBuilder();
                     builder.Append("BGP(");
                     for (var i = 0; i < _triplePatterns.Count; i++)
                     {
-                        builder.Append(_triplePatterns[i].ToString());
+                        builder.Append(_triplePatterns[i]);
                         if (i < _triplePatterns.Count - 1) builder.Append(", ");
                     }
                     builder.Append(")");
                     return builder.ToString();
             }
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessBgp(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitBgp(this);
         }
 
         /// <summary>

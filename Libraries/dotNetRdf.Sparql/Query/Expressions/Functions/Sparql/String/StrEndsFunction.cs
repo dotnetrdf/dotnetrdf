@@ -41,17 +41,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             : base(stringExpr, endsExpr) { }
 
         /// <summary>
-        /// Determines whether the given String Literal ends with the given Argument Literal.
-        /// </summary>
-        /// <param name="stringLit">String Literal.</param>
-        /// <param name="argLit">Argument Literal.</param>
-        /// <returns></returns>
-        protected override bool ValueInternal(ILiteralNode stringLit, ILiteralNode argLit)
-        {
-            return stringLit.Value.EndsWith(argLit.Value);
-        }
-
-        /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
         public override string Functor
@@ -69,6 +58,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrEnds + "(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessStrEndsFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitStrEndsFunction(this);
         }
 
         /// <summary>

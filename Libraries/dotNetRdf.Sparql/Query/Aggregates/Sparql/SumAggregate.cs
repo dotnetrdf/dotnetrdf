@@ -74,108 +74,11 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public SumAggregate(ISparqlExpression expr)
             : this(expr, false) { }
 
-        /// <summary>
-        /// Applies the Sum Aggregate function to the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            // Prep Variables
-            long lngtotal = 0;
-            var dectotal = 0.0m;
-            var flttotal = 0.0f;
-            var dbltotal = 0.0d;
-            SparqlNumericType maxtype = SparqlNumericType.NaN;
-            SparqlNumericType numtype;
-            var values = new HashSet<IValuedNode>();
-
-            foreach (var id in bindingIDs)
-            {
-                IValuedNode temp;
-                try
-                {
-                    temp = _expr.Evaluate(context, id);
-                    if (_distinct)
-                    {
-                        
-                        if (temp == null) continue;
-                        if (values.Contains(temp))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            values.Add(temp);
-                        }
-                    }
-                    numtype = temp.NumericType;
-                }
-                catch
-                {
-                    continue;
-                }
-
-                // Skip if Not a Number
-                if (numtype == SparqlNumericType.NaN) continue;
-
-                // Track the Numeric Type
-                if ((int)numtype > (int)maxtype)
-                {
-                    maxtype = numtype;
-                }
-
-                // Increment the Totals based on the current Numeric Type
-                switch (maxtype)
-                {
-                    case SparqlNumericType.Integer:
-                        lngtotal += temp.AsInteger();
-                        dectotal += temp.AsDecimal();
-                        flttotal += temp.AsFloat();
-                        dbltotal += temp.AsDouble();
-                        break;
-                    case SparqlNumericType.Decimal:
-                        dectotal += temp.AsDecimal();
-                        flttotal += temp.AsFloat();
-                        dbltotal += temp.AsDouble();
-                        break;
-                    case SparqlNumericType.Float:
-                        flttotal += temp.AsFloat();
-                        dbltotal += temp.AsDouble();
-                        break;
-                    case SparqlNumericType.Double:
-                        dbltotal += temp.AsDouble();
-                        break;
-                }
-            }
-
-            // Return the Sum
-            switch (maxtype)
-            {
-                case SparqlNumericType.NaN:
-                    // No Numeric Values
-                    return new LongNode(0);
-
-                case SparqlNumericType.Integer:
-                    // Integer Values
-                    return new LongNode(lngtotal);
-
-                case SparqlNumericType.Decimal:
-                    // Decimal Values
-                    return new DecimalNode(dectotal);
-
-                case SparqlNumericType.Float:
-                    // Float Values
-                    return new FloatNode(flttotal);
-
-                case SparqlNumericType.Double:
-                    // Double Values
-                    return new DoubleNode(dbltotal);
-
-                default:
-                    throw new RdfQueryException("Failed to calculate a valid Sum");
-            }
+            return processor.ProcessSum(this, context, bindings);
         }
 
         /// <summary>

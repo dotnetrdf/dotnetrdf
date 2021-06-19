@@ -51,15 +51,6 @@ namespace VDS.RDF.Query.Algebra
             _vars.AddRange(variables);
         }
 
-        /// <summary>
-        /// Evaluates the Null operator which of course always returns a <see cref="NullMultiset">NullMultiset</see>.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            return new NullMultiset();
-        }
 
         /// <summary>
         /// Gets the variables used in this algebra.
@@ -113,6 +104,16 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "NullOperator()";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessNullOperator(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitNullOperator(this);
         }
     }
 }

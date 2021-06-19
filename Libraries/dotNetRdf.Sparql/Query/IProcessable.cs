@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,13 +24,13 @@
 // </copyright>
 */
 
-namespace VDS.RDF.Query.Aggregates
+namespace VDS.RDF.Query
 {
-
-
-
-
-
-
-
+    /// <summary>
+    /// Interface to be implemented by classes that can be processed by an <see cref="ISparqlQueryAlgebraProcessor{TResult,TContext}"/>
+    /// </summary>
+    public interface IProcessable
+    {
+        TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context);
+    }
 }

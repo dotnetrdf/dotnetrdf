@@ -39,14 +39,8 @@ namespace VDS.RDF.Query.Patterns
     /// Interface for Triple Patterns.
     /// </summary>
     public interface ITriplePattern
-        : IComparable<ITriplePattern>
+        : IComparable<ITriplePattern>, IProcessable, IVisitable
     {
-        /// <summary>
-        /// Evaluates the Triple Pattern in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Query Evaluation Context.</param>
-        void Evaluate(SparqlEvaluationContext context);
-
         /// <summary>
         /// Gets the Pattern Type.
         /// </summary>
@@ -160,7 +154,7 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
-    /// Inteface for Triple Patterns that do simple pattern matching.
+    /// Interface for Triple Patterns that do simple pattern matching.
     /// </summary>
     public interface IMatchTriplePattern
         : ITriplePattern, IComparable<IMatchTriplePattern>
@@ -198,19 +192,12 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Triples that match this pattern.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        IEnumerable<Triple> GetTriples(SparqlEvaluationContext context);
-
-        /// <summary>
         /// Gets whether a given triple is accepted by this pattern.
         /// </summary>
         /// <param name="context">Context.</param>
         /// <param name="t">Triple.</param>
         /// <returns></returns>
-        bool Accepts(SparqlEvaluationContext context, Triple t);
+        bool Accepts(IPatternEvaluationContext context, Triple t);
 
         /// <summary>
         /// Creates a set from a Triple.

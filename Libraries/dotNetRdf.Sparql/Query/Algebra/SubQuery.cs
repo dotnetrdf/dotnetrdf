@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public class SubQuery : ITerminalOperator
     {
-        private readonly SparqlQuery _subquery;
+        public SparqlQuery Query { get; }
 
         /// <summary>
         /// Creates a new subquery operator.
@@ -44,68 +44,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="q">Subquery.</param>
         public SubQuery(SparqlQuery q)
         {
-            _subquery = q;
-        }
-
-        /// <summary>
-        /// Evaluates the subquery in the given context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            // Use the same algebra optimisers as the parent query (if any)
-            if (context.Query != null)
-            {
-                _subquery.AlgebraOptimisers = context.Query.AlgebraOptimisers;
-            }
-
-            if (context.InputMultiset is NullMultiset)
-            {
-                context.OutputMultiset = context.InputMultiset;
-            }
-            else if (context.InputMultiset.IsEmpty)
-            {
-                context.OutputMultiset = new NullMultiset();
-            }
-            else
-            {
-                var subcontext = new SparqlEvaluationContext(_subquery, context.Data, context.Processor, context.Options);
-
-                // Add any Named Graphs to the subquery
-                if (context.Query != null)
-                {
-                    foreach (IRefNode graphName in context.Query.NamedGraphNames)
-                    {
-                        _subquery.AddNamedGraph(graphName);
-                    }
-                }
-
-                ISparqlAlgebra query = _subquery.ToAlgebra();
-                try
-                {
-                    // Evaluate the Subquery
-                    context.OutputMultiset = subcontext.Evaluate(query);
-
-                    // If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
-                    if (context.OutputMultiset is GroupMultiset)
-                    {
-                        context.OutputMultiset = new Multiset((GroupMultiset)context.OutputMultiset);
-                    }
-
-                    // Strip out any Named Graphs from the subquery
-                    if (_subquery.NamedGraphNames.Any())
-                    {
-                        _subquery.ClearNamedGraphs();
-                    }
-                }
-                catch (RdfQueryException queryEx)
-                {
-                    throw new RdfQueryException("Query failed due to a failure in Subquery Execution:\n" + queryEx.Message, queryEx);
-                }
-            }
-
-            return context.OutputMultiset;
+            Query = q;
         }
 
         /// <summary>
@@ -115,19 +54,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             { 
-                return _subquery.Variables.Where(v => v.IsResultVariable).Select(v => v.Name); 
+                return Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name); 
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _subquery.ToAlgebra().FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return Query.ToAlgebra().FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _subquery.ToAlgebra().FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return Query.ToAlgebra().FixedVariables; } }
 
         /// <summary>
         /// Converts the algebra back into a Query.
@@ -147,7 +86,7 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             var gp = new GraphPattern();
-            gp.TriplePatterns.Add(new SubQueryPattern(_subquery));
+            gp.TriplePatterns.Add(new SubQueryPattern(Query));
             return gp;
         }
 
@@ -158,6 +97,16 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Subquery()";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessSubQuery(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitSubQuery(this);
         }
     }
 }

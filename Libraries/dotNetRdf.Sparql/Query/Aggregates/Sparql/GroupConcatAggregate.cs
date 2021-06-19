@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.Text;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -83,18 +82,6 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Applies the aggregate over the given bindings.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
-        {
-            IValuedNode n = base.Apply(context, bindingIDs);
-            return new StringNode(n.AsString());
-        }
-
-        /// <summary>
         /// Gets the String representation of the Aggregate.
         /// </summary>
         /// <returns></returns>
@@ -114,26 +101,6 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         }
 
         /// <summary>
-        /// Gets the value of the aggregate for the given binding.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        protected override string ValueInternal(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");
-            switch (temp.NodeType)
-            {
-                case NodeType.Literal:
-                case NodeType.Uri:
-                    return temp.AsString();
-                default:
-                    throw new RdfQueryException("Cannot do an XPath string-join on a non-Literal Node");
-            }
-        }
-
-        /// <summary>
         /// Gets the Functor of the Aggregate.
         /// </summary>
         public override string Functor
@@ -142,6 +109,12 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             {
                 return SparqlSpecsHelper.SparqlKeywordGroupConcat;
             }
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
+        {
+            return processor.ProcessGroupConcat(this, context, bindings);
         }
     }
 }

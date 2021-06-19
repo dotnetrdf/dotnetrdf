@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
@@ -45,14 +44,14 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        protected internal abstract bool Accepts(SparqlEvaluationContext context, INode obj);
+        public abstract bool Accepts(IPatternEvaluationContext context, INode obj);
 
         /// <summary>
         /// Constructs a Node based on this Pattern for the given Set.
         /// </summary>
         /// <param name="context">Construct Context.</param>
         /// <returns></returns>
-        protected internal abstract INode Construct(ConstructContext context);
+        public abstract INode Construct(ConstructContext context);
 
         /// <summary>
         /// Sets the Binding Context for the Pattern Item.

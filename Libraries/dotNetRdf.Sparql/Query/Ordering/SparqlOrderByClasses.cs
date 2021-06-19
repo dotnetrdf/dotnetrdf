@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
@@ -42,57 +41,15 @@ namespace VDS.RDF.Query.Ordering
         : ISparqlOrderBy
     {
         /// <summary>
-        /// Stores the Evaluation Context.
-        /// </summary>
-        protected SparqlEvaluationContext _context = null;
-        /// <summary>
-        /// Modifier used to make ordering Descending.
-        /// </summary>
-        /// <remarks>Implementations derived from this class should multiply their comparison results by the modifier to automatically provide Ascending/Descending order.</remarks>
-        protected int _modifier = 1;
-
-        /// <summary>
         /// Gets/Sets the Child Order By.
         /// </summary>
         public ISparqlOrderBy Child { get; set; } = null;
 
         /// <summary>
-        /// Sets the Evaluation Context for the Ordering.
-        /// </summary>
-        public SparqlEvaluationContext Context
-        {
-            set
-            {
-                _context = value;
-                if (Child != null)
-                {
-                    Child.Context = value;
-                }
-            }
-        }
-
-        /// <summary>
         /// Sets the Ordering to Descending.
         /// </summary>
-        public bool Descending
-        {
-            get
-            {
-                return (_modifier == -1);
-            }
-            set
-            {
-                if (value)
-                {
-                    _modifier = -1;
-                }
-                else
-                {
-                    _modifier = 1;
-                }
-            }
-        }
-
+        public bool Descending { get; set; }
+        
         /// <summary>
         /// Gets whether the Ordering is Simple.
         /// </summary>
@@ -118,14 +75,6 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
-        /// Abstract Compare method which derived classes should implement their ordering in.
-        /// </summary>
-        /// <param name="x">A Set.</param>
-        /// <param name="y">A Set.</param>
-        /// <returns></returns>
-        public abstract int Compare(ISet x, ISet y);
-
-        /// <summary>
         /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
         /// </summary>
         /// <param name="pattern">Triple Pattern.</param>
@@ -138,6 +87,7 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
     }
 
     /// <summary>
@@ -146,59 +96,17 @@ namespace VDS.RDF.Query.Ordering
     public class OrderByVariable
         : BaseOrderBy
     {
-        private string _varname = string.Empty;
-
         /// <summary>
         /// Creates a new Ordering based on the Value of a given Variable.
         /// </summary>
         /// <param name="name">Variable to order upon.</param>
         public OrderByVariable(string name)
         {
-            _varname = name.TrimStart('?', '$');
+            Variable = name.TrimStart('?', '$');
         }
 
-        /// <summary>
-        /// Compares Sets on the basis of their values for the Variable the class was instantiated with.
-        /// </summary>
-        /// <param name="x">A Set.</param>
-        /// <param name="y">A Set.</param>
-        /// <returns></returns>
-        public override int Compare(ISet x, ISet y)
-        {
-            INode xval;
-            xval = x[_varname];
-            if (xval == null)
-            {
-                if (y[_varname] == null)
-                {
-                    if (Child != null)
-                    {
-                        return Child.Compare(x, y);
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                }
-                else
-                {
-                    return _modifier * -1;
-                }
-            }
-            else
-            {
-                var c = _context.OrderingComparer.Compare(xval, y[_varname]);
+        public string Variable { get; }
 
-                if (c == 0 && Child != null)
-                {
-                    return Child.Compare(x, y);
-                }
-                else
-                {
-                    return _modifier * c;
-                }
-            }
-        }
 
         /// <summary>
         /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern.
@@ -211,15 +119,15 @@ namespace VDS.RDF.Query.Ordering
             var comparer = new SparqlOrderingComparer(nodeComparer);
             IComparer<Triple> child = Child?.GetComparer(pattern, nodeComparer);
             Func<Triple, Triple, int> compareFunc = null;
-            if (_varname.Equals(pattern.Subject.VariableName))
+            if (Variable.Equals(pattern.Subject.VariableName))
             {
                 compareFunc = (x, y) => comparer.Compare(x.Subject, y.Subject);
             }
-            else if (_varname.Equals(pattern.Predicate.VariableName))
+            else if (Variable.Equals(pattern.Predicate.VariableName))
             {
                 compareFunc = (x, y) => comparer.Compare(x.Predicate, y.Predicate);
             }
-            else if (_varname.Equals(pattern.Object.VariableName))
+            else if (Variable.Equals(pattern.Object.VariableName))
             {
                 compareFunc = (x, y) => comparer.Compare(x.Object, y.Object);
             }
@@ -246,8 +154,8 @@ namespace VDS.RDF.Query.Ordering
             get
             {
                 return Child != null
-                    ? _varname.AsEnumerable().Concat(Child.Variables).Distinct()
-                    : _varname.AsEnumerable();
+                    ? Variable.AsEnumerable().Concat(Child.Variables).Distinct()
+                    : Variable.AsEnumerable();
             }
         }
 
@@ -258,7 +166,7 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                return new VariableTerm(_varname); 
+                return new VariableTerm(Variable); 
             }
         }
 
@@ -269,16 +177,9 @@ namespace VDS.RDF.Query.Ordering
         public override string ToString()
         {
             var output = new StringBuilder();
-            if (_modifier == -1)
-            {
-                output.Append("DESC(");
-            }
-            else
-            {
-                output.Append("ASC(");
-            }
+            output.Append(Descending ? "DESC(" : "ASC(");
             output.Append("?");
-            output.Append(_varname);
+            output.Append(Variable);
             output.Append(")");
 
             if (Child != null)
@@ -310,84 +211,6 @@ namespace VDS.RDF.Query.Ordering
         public OrderByExpression(ISparqlExpression expr)
         {
             _expr = expr;
-        }
-
-        /// <summary>
-        /// Orders the sets based on the values resulting from evaluating the expression for both solutions.
-        /// </summary>
-        /// <param name="x">A Set.</param>
-        /// <param name="y">A Set.</param>
-        /// <returns></returns>
-        public override int Compare(ISet x, ISet y)
-        {
-            if (_context == null)
-            {
-                return 0;
-            }
-            else if (x.ID == y.ID)
-            {
-                return 0;
-            }
-            else
-            {
-                INode a, b;
-                try
-                {
-                    a = _expr.Evaluate(_context, x.ID);
-
-                    try
-                    {
-                        b = _expr.Evaluate(_context, y.ID);
-                    }
-                    catch
-                    {
-                        // If evaluating b errors consider this a NULL and rank a > b
-                        return _modifier * 1;
-                    }
-
-                    // If both give a value then compare
-                    if (a != null)
-                    {
-                        var c = _context.OrderingComparer.Compare(a, b);
-                        if (c == 0 && Child != null)
-                        {
-                            return Child.Compare(x, y);
-                        }
-                        else
-                        {
-                            return _modifier * c;
-                        }
-                    }
-                    else
-                    {
-                        // a is NULL so a < b
-                        return _modifier * -1;
-                    }
-                }
-                catch
-                {
-                    try
-                    {
-                        b = _expr.Evaluate(_context, y.ID);
-
-                        // If evaluating a errors but b evaluates correctly consider a to be NULL and rank a < b
-                        return _modifier * -1;
-                    }
-                    catch
-                    {
-                        // If both error then use child if any to evaluate, otherwise consider a = b
-                        if (Child != null)
-                        {
-                            return Child.Compare(x, y);
-                        }
-                        else
-                        {
-                            return 0;
-                        }
-                    }
-                }
-
-            }
         }
 
         /// <summary>
@@ -470,7 +293,7 @@ namespace VDS.RDF.Query.Ordering
         public override string ToString()
         {
             var output = new StringBuilder();
-            output.Append(_modifier == -1 ? "DESC(" : "ASC(");
+            output.Append(Descending ? "DESC(" : "ASC(");
             output.Append(_expr);
             output.Append(")");
 

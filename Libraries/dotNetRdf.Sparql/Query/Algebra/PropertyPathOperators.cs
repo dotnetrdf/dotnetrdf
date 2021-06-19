@@ -104,13 +104,6 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Property Path.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <returns></returns>
-        public abstract BaseMultiset Evaluate(SparqlEvaluationContext context);
-
-        /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
@@ -157,6 +150,8 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+        public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
+        public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context);
     }
 
     /// <summary>
@@ -173,149 +168,5 @@ namespace VDS.RDF.Query.Algebra
         public BaseArbitraryLengthPathOperator(PatternItem start, PatternItem end, ISparqlPath path)
             : base(start, path, end) {}
 
-        /// <summary>
-        /// Determines the starting points for Path evaluation.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="paths">Paths.</param>
-        /// <param name="reverse">Whether to evaluate Paths in reverse.</param>
-        protected void GetPathStarts(SparqlEvaluationContext context, List<List<INode>> paths, bool reverse)
-        {
-            var nodes = new HashSet<KeyValuePair<INode, INode>>();
-            if (Path is Property)
-            {
-                INode predicate = ((Property) Path).Predicate;
-                foreach (Triple t in context.Data.GetTriplesWithPredicate(predicate))
-                {
-                    if (reverse)
-                    {
-                        nodes.Add(new KeyValuePair<INode, INode>(t.Object, t.Subject));
-                    }
-                    else
-                    {
-                        nodes.Add(new KeyValuePair<INode, INode>(t.Subject, t.Object));
-                    }
-                }
-            }
-            else
-            {
-                BaseMultiset initialInput = context.InputMultiset;
-                context.InputMultiset = new IdentityMultiset();
-                var x = new VariablePattern("?x");
-                var y = new VariablePattern("?y");
-                var bgp = new Bgp(new PropertyPathPattern(x, Path, y));
-
-                BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
-                context.InputMultiset = initialInput;
-
-                if (!results.IsEmpty)
-                {
-                    foreach (ISet s in results.Sets)
-                    {
-                        if (s["x"] != null && s["y"] != null)
-                        {
-                            if (reverse)
-                            {
-                                nodes.Add(new KeyValuePair<INode, INode>(s["y"], s["x"]));
-                            }
-                            else
-                            {
-                                nodes.Add(new KeyValuePair<INode, INode>(s["x"], s["y"]));
-                            }
-                        }
-                    }
-                }
-            }
-
-            paths.AddRange(nodes.Select(kvp => new List<INode>(new INode[] {kvp.Key, kvp.Value})));
-        }
-
-        /// <summary>
-        /// Evaluates a setp of the Path.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="path">Paths.</param>
-        /// <param name="reverse">Whether to evaluate Paths in reverse.</param>
-        /// <returns></returns>
-        protected List<INode> EvaluateStep(SparqlEvaluationContext context, List<INode> path, bool reverse)
-        {
-            if (Path is Property)
-            {
-                var nodes = new HashSet<INode>();
-                INode predicate = ((Property) Path).Predicate;
-                IEnumerable<Triple> ts = (reverse ? context.Data.GetTriplesWithPredicateObject(predicate, path[path.Count - 1]) : context.Data.GetTriplesWithSubjectPredicate(path[path.Count - 1], predicate));
-                foreach (Triple t in ts)
-                {
-                    if (reverse)
-                    {
-                        if (!path.Contains(t.Subject))
-                        {
-                            nodes.Add(t.Subject);
-                        }
-                    }
-                    else
-                    {
-                        if (!path.Contains(t.Object))
-                        {
-                            nodes.Add(t.Object);
-                        }
-                    }
-                }
-                return nodes.ToList();
-            }
-            else
-            {
-                var nodes = new HashSet<INode>();
-
-                BaseMultiset initialInput = context.InputMultiset;
-                var currInput = new Multiset();
-                var x = new VariablePattern("?x");
-                var y = new VariablePattern("?y");
-                var temp = new Set();
-                if (reverse)
-                {
-                    temp.Add("y", path[path.Count - 1]);
-                }
-                else
-                {
-                    temp.Add("x", path[path.Count - 1]);
-                }
-                currInput.Add(temp);
-                context.InputMultiset = currInput;
-
-                var bgp = new Bgp(new PropertyPathPattern(x, Path, y));
-                BaseMultiset results = context.Evaluate(bgp); //bgp.Evaluate(context);
-                context.InputMultiset = initialInput;
-
-                if (!results.IsEmpty)
-                {
-                    foreach (ISet s in results.Sets)
-                    {
-                        if (reverse)
-                        {
-                            if (s["x"] != null)
-                            {
-                                if (!path.Contains(s["x"]))
-                                {
-                                    nodes.Add(s["x"]);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (s["y"] != null)
-                            {
-                                if (!path.Contains(s["y"]))
-                                {
-                                    nodes.Add(s["y"]);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return nodes.ToList();
-            }
-        }
     }
 }

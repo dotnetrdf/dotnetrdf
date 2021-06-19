@@ -63,25 +63,15 @@ namespace VDS.RDF.Query
     {
         private List<IRefNode> _defaultGraphs;
         private List<IRefNode> _namedGraphs;
-        private SparqlQueryType _type = SparqlQueryType.Unknown;
         private SparqlSpecialQueryType _specialType = SparqlSpecialQueryType.Unknown;
         private List<SparqlVariable> _vars;
         private List<IToken> _describeVars = new List<IToken>();
-        private GraphPattern _rootGraphPattern = null;
         private ISparqlOrderBy _orderBy = null;
-        private ISparqlGroupBy _groupBy = null;
-        private ISparqlFilter _having = null;
-        private GraphPattern _constructTemplate;
-        private BindingsPattern _bindings = null;
         private int _limit = -1;
         private int _offset = 0;
         private long _timeout = 0;
         private TimeSpan? _executionTime = null;
-        private bool _partialResultsOnTimeout = false;
-        private bool _optimised = false;
         private bool? _optimisableOrdering;
-        private bool _subquery = false;
-        private ISparqlDescribe _describer = null;
         private IEnumerable<IAlgebraOptimiser> _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
         private IEnumerable<ISparqlCustomExpressionFactory> _exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
         private IEnumerable<IPropertyFunctionFactory> _propFuncFactories = Enumerable.Empty<IPropertyFunctionFactory>();
@@ -95,7 +85,7 @@ namespace VDS.RDF.Query
             _vars = new List<SparqlVariable>();
             _defaultGraphs = new List<IRefNode>();
             _namedGraphs = new List<IRefNode>();
-            _subquery = subquery;
+            IsSubQuery = subquery;
         }
 
         /// <summary>
@@ -112,26 +102,25 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public SparqlQuery Copy()
         {
-            var q = new SparqlQuery(BaseUri, NamespaceMap, _subquery);
+            var q = new SparqlQuery(BaseUri, NamespaceMap, IsSubQuery);
             q._defaultGraphs = new List<IRefNode>(_defaultGraphs);
             q._namedGraphs = new List<IRefNode>(_namedGraphs);
-            q._type = _type;
+            q.QueryType = QueryType;
             q._specialType = _specialType;
             q._vars = new List<SparqlVariable>(_vars);
             q._describeVars = new List<IToken>(_describeVars);
-            if(_rootGraphPattern != null)
-                q._rootGraphPattern = new GraphPattern(_rootGraphPattern);
+            if(RootGraphPattern != null)
+                q.RootGraphPattern = new GraphPattern(RootGraphPattern);
             q._orderBy = _orderBy;
-            q._groupBy = _groupBy;
-            q._having = _having;
-            q._constructTemplate = _constructTemplate;
-            q._bindings = _bindings;
+            q.GroupBy = GroupBy;
+            q.Having = Having;
+            q.ConstructTemplate = ConstructTemplate;
+            q.Bindings = Bindings;
             q._limit = _limit;
             q._offset = _offset;
             q._timeout = _timeout;
-            q._partialResultsOnTimeout = _partialResultsOnTimeout;
-            q._optimised = _optimised;
-            q._describer = _describer;
+            q.PartialResultsOnTimeout = PartialResultsOnTimeout;
+            q.IsOptimised = IsOptimised;
             q._optimisers = new List<IAlgebraOptimiser>(_optimisers);
             q._exprFactories = new List<ISparqlCustomExpressionFactory>(_exprFactories);
             q._propFuncFactories = new List<IPropertyFunctionFactory>(_propFuncFactories);
@@ -176,11 +165,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the type of the Query.
         /// </summary>
-        public SparqlQueryType QueryType
-        {
-            get => _type;
-            internal set => _type = value;
-        }
+        public SparqlQueryType QueryType { get; internal set; } = SparqlQueryType.Unknown;
 
         /// <summary>
         /// Gets the Special Type of the Query (if any).
@@ -192,31 +177,31 @@ namespace VDS.RDF.Query
                 if (_specialType == SparqlSpecialQueryType.Unknown)
                 {
                     // Try and detect if Special Optimisations are possible
-                    if (_rootGraphPattern != null)
+                    if (RootGraphPattern != null)
                     {
-                        if (_type == SparqlQueryType.Ask)
+                        if (QueryType == SparqlQueryType.Ask)
                         {
-                            if (_rootGraphPattern.ChildGraphPatterns.Count == 0 &&
-                                _rootGraphPattern.TriplePatterns.Count == 1 &&
-                                _rootGraphPattern.TriplePatterns[0].IsAcceptAll &&
-                                !_rootGraphPattern.IsFiltered)
+                            if (RootGraphPattern.ChildGraphPatterns.Count == 0 &&
+                                RootGraphPattern.TriplePatterns.Count == 1 &&
+                                RootGraphPattern.TriplePatterns[0].IsAcceptAll &&
+                                !RootGraphPattern.IsFiltered)
                             {
                                 _specialType = SparqlSpecialQueryType.AskAnyTriples;
                             }
                         }
-                        else if (_type == SparqlQueryType.SelectDistinct)
+                        else if (QueryType == SparqlQueryType.SelectDistinct)
                         {
                             if (_defaultGraphs.Count == 0 &&
                                 _namedGraphs.Count == 0 &&
-                                _rootGraphPattern.TriplePatterns.Count == 0 &&
-                                _rootGraphPattern.ChildGraphPatterns.Count == 1 &&
-                                _rootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count == 1 &&
-                                _rootGraphPattern.ChildGraphPatterns[0].IsGraph &&
-                                !_rootGraphPattern.ChildGraphPatterns[0].IsFiltered &&
-                                _rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.TokenType == Token.VARIABLE &&
-                                _rootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].IsAcceptAll &&
+                                RootGraphPattern.TriplePatterns.Count == 0 &&
+                                RootGraphPattern.ChildGraphPatterns.Count == 1 &&
+                                RootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count == 1 &&
+                                RootGraphPattern.ChildGraphPatterns[0].IsGraph &&
+                                !RootGraphPattern.ChildGraphPatterns[0].IsFiltered &&
+                                RootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.TokenType == Token.VARIABLE &&
+                                RootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].IsAcceptAll &&
                                 _vars[0].IsResultVariable && 
-                                _rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.Value.Substring(1).Equals(_vars[0].Name) &&
+                                RootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.Value.Substring(1).Equals(_vars[0].Name) &&
                                 _vars.Count(v => v.IsResultVariable) == 1)
                             {
                                 _specialType = SparqlSpecialQueryType.DistinctGraphs;
@@ -240,20 +225,12 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the top level Graph Pattern of the Query.
         /// </summary>
-        public GraphPattern RootGraphPattern
-        {
-            get => _rootGraphPattern;
-            internal set => _rootGraphPattern = value;
-        }
+        public GraphPattern RootGraphPattern { get; internal set; } = null;
 
         /// <summary>
         /// Gets/Sets the Construct Template for a Construct Query.
         /// </summary>
-        public GraphPattern ConstructTemplate
-        {
-            get => _constructTemplate;
-            internal set => _constructTemplate = value;
-        }
+        public GraphPattern ConstructTemplate { get; internal set; }
 
         /// <summary>
         /// Gets/Sets the Ordering for the Query.
@@ -271,48 +248,17 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets/Sets the Grouping for the Query.
         /// </summary>
-        public ISparqlGroupBy GroupBy
-        {
-            get => _groupBy;
-            internal set => _groupBy = value;
-        }
+        public ISparqlGroupBy GroupBy { get; internal set; } = null;
 
         /// <summary>
         /// Gets/Sets the Having Clause for the Query.
         /// </summary>
-        public ISparqlFilter Having
-        {
-            get => _having;
-            internal set => _having = value;
-        }
+        public ISparqlFilter Having { get; internal set; } = null;
 
         /// <summary>
         /// Gets/Sets the VALUES Clause for the Query which are bindings that should be applied.
         /// </summary>
-        public BindingsPattern Bindings
-        {
-            get => _bindings;
-            internal set => _bindings = value;
-        }
-
-        /// <summary>
-        /// Gets/Sets the <see cref="ISparqlDescribe">ISparqlDescribe</see> which provides the Describe algorithm you wish to use.
-        /// </summary>
-        /// <remarks>
-        /// By default this will be the <see cref="ConciseBoundedDescription">ConciseBoundedDescription</see> (CBD) algorithm.
-        /// </remarks>
-        public ISparqlDescribe Describer
-        {
-            get
-            {
-                if (_describer == null)
-                {
-                    _describer = new ConciseBoundedDescription();
-                }
-                return _describer;
-            }
-            set => _describer = value;
-        }
+        public BindingsPattern Bindings { get; internal set; } = null;
 
         /// <summary>
         /// Gets/Sets the locally scoped Algebra Optimisers that are used to optimise the Query Algebra in addition to (but before) any global optimisers (specified by <see cref="SparqlOptimiser.AlgebraOptimisers">SparqlOptimiser.AlgebraOptimisers</see>) that are applied.
@@ -433,11 +379,7 @@ namespace VDS.RDF.Query
         /// Partial Results (typically) only applies when executing the Query in memory.  If you have an instance of this class and pass its string representation (using <see cref="SparqlQuery.ToString">ToString()</see>) you will lose the partial results information as this is not serialisable in SPARQL syntax.
         /// </para>
         /// </remarks>
-        public bool PartialResultsOnTimeout
-        {
-            get => _partialResultsOnTimeout;
-            set => _partialResultsOnTimeout = value;
-        }
+        public bool PartialResultsOnTimeout { get; set; } = false;
 
         /// <summary>
         /// Gets the Time taken to execute a Query.
@@ -463,7 +405,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return SparqlSpecsHelper.IsSelectQuery(_type) && _vars.Any(v => v.IsResultVariable && v.IsAggregate);
+                return SparqlSpecsHelper.IsSelectQuery(QueryType) && _vars.Any(v => v.IsResultVariable && v.IsAggregate);
             }
         }
 
@@ -473,12 +415,12 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// This only indicates that an Optimiser has been applied.  You can always reoptimise the query using a different optimiser by using the relevant overload of the <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
         /// </remarks>
-        public bool IsOptimised => _optimised;
+        public bool IsOptimised { get; private set; } = false;
 
         /// <summary>
         /// Gets whether this Query is a Sub-Query in another Query.
         /// </summary>
-        public bool IsSubQuery => _subquery;
+        public bool IsSubQuery { get; } = false;
 
         /// <summary>
         /// Gets whether a Query has a DISTINCT modifier.
@@ -487,7 +429,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                switch (_type)
+                switch (QueryType)
                 {
                     case SparqlQueryType.SelectAllDistinct:
                     case SparqlQueryType.SelectDistinct:
@@ -501,11 +443,12 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets whether the Query has a Solution Modifier (a GROUP BY, HAVING, ORDER BY, LIMIT or OFFSET).
         /// </summary>
-        public bool HasSolutionModifier => _groupBy != null || _having != null || _orderBy != null || _limit >= 0 || _offset > 0;
+        public bool HasSolutionModifier => GroupBy != null || Having != null || _orderBy != null || _limit >= 0 || _offset > 0;
 
         /// <summary>
         /// The number of results that would be returned without any limit clause to a query or -1 if not supported. Defaults to the same value as the Count member.
         /// </summary>
+        [Obsolete("This property is obsolete and is no longer set when a query is processed")]
         public int VirtualCount { get; internal set; } = -1;
 
         #endregion
@@ -529,7 +472,7 @@ namespace VDS.RDF.Query
         internal void AddVariable(string name, bool isResultVar)
         {
             var var = name.Substring(1);
-            if ((int)_type >= (int)SparqlQueryType.SelectAll) isResultVar = true;
+            if ((int)QueryType >= (int)SparqlQueryType.SelectAll) isResultVar = true;
 
             if (!_vars.Any(v => v.Name.Equals(var)))
             {
@@ -643,12 +586,12 @@ namespace VDS.RDF.Query
         public void Optimise(IQueryOptimiser optimiser)
         {
             if (optimiser == null) throw new ArgumentNullException(nameof(optimiser), "Cannot optimise a Query using a null optimiser");
-            if (_rootGraphPattern != null)
+            if (RootGraphPattern != null)
             {
-                optimiser.Optimise(_rootGraphPattern, Enumerable.Empty<string>());
+                optimiser.Optimise(RootGraphPattern, Enumerable.Empty<string>());
             }
 
-            _optimised = true;
+            IsOptimised = true;
         }
 
 
@@ -664,7 +607,7 @@ namespace VDS.RDF.Query
             var formatter = new SparqlFormatter();
 
             // Output the Base and Prefix Directives if not a sub-query
-            if (!_subquery)
+            if (!IsSubQuery)
             {
                 if (BaseUri != null)
                 {
@@ -691,7 +634,7 @@ namespace VDS.RDF.Query
                 }
             }
 
-            switch (_type)
+            switch (QueryType)
             {
                 case SparqlQueryType.Ask:
                     output.Append("ASK");
@@ -708,8 +651,8 @@ namespace VDS.RDF.Query
 
                 case SparqlQueryType.Construct:
                     output.Append("CONSTRUCT ");
-                    output.Append(_constructTemplate);
-                    if (_constructTemplate.TriplePatterns.Count > 1)
+                    output.Append(ConstructTemplate);
+                    if (ConstructTemplate.TriplePatterns.Count > 1)
                     {
                         output.AppendLine();
                     }
@@ -738,7 +681,7 @@ namespace VDS.RDF.Query
                         }
                     }
                     output.Append(@from);
-                    if (_rootGraphPattern != null)
+                    if (RootGraphPattern != null)
                     {
                         output.AppendLine("WHERE");
                     }
@@ -747,7 +690,7 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.DescribeAll:
                     output.Append("DESCRIBE * ");
                     output.Append(@from);
-                    if (_rootGraphPattern != null)
+                    if (RootGraphPattern != null)
                     {
                         output.Append("WHERE");
                     }
@@ -760,15 +703,15 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
                     output.Append("SELECT ");
-                    if (_type == SparqlQueryType.SelectAllDistinct || _type == SparqlQueryType.SelectDistinct)
+                    if (QueryType == SparqlQueryType.SelectAllDistinct || QueryType == SparqlQueryType.SelectDistinct)
                     {
                         output.Append("DISTINCT ");
                     }
-                    else if (_type == SparqlQueryType.SelectAllReduced || _type == SparqlQueryType.SelectReduced)
+                    else if (QueryType == SparqlQueryType.SelectAllReduced || QueryType == SparqlQueryType.SelectReduced)
                     {
                         output.Append("REDUCED ");
                     }
-                    if ((int)_type >= (int)SparqlQueryType.SelectAll)
+                    if ((int)QueryType >= (int)SparqlQueryType.SelectAll)
                     {
                         output.Append('*');
                         if (from.Length > 0) 
@@ -797,36 +740,36 @@ namespace VDS.RDF.Query
                     break;
             }
 
-            if (_rootGraphPattern != null)
+            if (RootGraphPattern != null)
             {
-                if (_rootGraphPattern.IsEmpty && (int)_type >= (int)SparqlQueryType.Select)
+                if (RootGraphPattern.IsEmpty && (int)QueryType >= (int)SparqlQueryType.Select)
                 {
                     output.Remove(output.Length - 2, 2);
                     output.Append(" ");
-                    output.Append(_rootGraphPattern);
+                    output.Append(RootGraphPattern);
                 }
-                else if (_rootGraphPattern.HasModifier)
+                else if (RootGraphPattern.HasModifier)
                 {
                     output.AppendLine("{");
-                    output.AppendLine(_rootGraphPattern.ToString());
+                    output.AppendLine(RootGraphPattern.ToString());
                     output.AppendLine("}");
                 }
                 else
                 {
-                    output.AppendLine(_rootGraphPattern.ToString());
+                    output.AppendLine(RootGraphPattern.ToString());
                 }
             }
 
-            if (_groupBy != null)
+            if (GroupBy != null)
             {
                 output.Append("GROUP BY ");
-                output.Append(_groupBy);
+                output.Append(GroupBy);
                 output.Append(' ');
             }
-            if (_having != null)
+            if (Having != null)
             {
                 output.Append("HAVING ");
-                var having = _having.ToString();
+                var having = Having.ToString();
                 if (having.StartsWith("FILTER"))
                 {
                     having = having.Substring(6);
@@ -849,10 +792,10 @@ namespace VDS.RDF.Query
             {
                 output.Append("OFFSET " + _offset);
             }
-            if (_bindings != null)
+            if (Bindings != null)
             {
                 output.AppendLine();
-                output.AppendLine(_bindings.ToString());
+                output.AppendLine(Bindings.ToString());
             }
 
             var preOutput = output.ToString();
@@ -888,7 +831,7 @@ namespace VDS.RDF.Query
 
             // Firstly Transform the Root Graph Pattern to SPARQL Algebra
             ISparqlAlgebra algebra;
-            if (_rootGraphPattern != null)
+            if (RootGraphPattern != null)
             {
                 if (optimise)
                 {
@@ -904,14 +847,14 @@ namespace VDS.RDF.Query
                         case SparqlSpecialQueryType.NotApplicable:
                         default:
                             // If not just use the standard transform
-                            algebra = _rootGraphPattern.ToAlgebra();
+                            algebra = RootGraphPattern.ToAlgebra();
                             break;
                     }
                 }
                 else
                 {
                     // If not using Algebra Optimisation just use the standard transform
-                    algebra = _rootGraphPattern.ToAlgebra();
+                    algebra = RootGraphPattern.ToAlgebra();
                 }
             }
             else
@@ -921,13 +864,13 @@ namespace VDS.RDF.Query
             }
 
             // If we have a top level VALUES clause then we'll add it into the algebra here
-            if (_bindings != null)
+            if (Bindings != null)
             {
-                algebra = Join.CreateJoin(algebra, new Bindings(_bindings));
+                algebra = Join.CreateJoin(algebra, new Bindings(Bindings));
             }
 
             // Then we apply any optimisers followed by relevant solution modifiers
-            switch (_type)
+            switch (QueryType)
             {
                 case SparqlQueryType.Ask:
                     // Apply Algebra Optimisation is enabled
@@ -949,13 +892,13 @@ namespace VDS.RDF.Query
                     // GROUP BY is the first thing applied
                     // This applies if there is a GROUP BY or if there are aggregates
                     // With no GROUP BY it produces a single group of all results
-                    if (_groupBy != null || _vars.Any(v => v.IsAggregate))
+                    if (GroupBy != null || _vars.Any(v => v.IsAggregate))
                     {
-                        algebra = new GroupBy(algebra, _groupBy, _vars.Where(v => v.IsAggregate));
+                        algebra = new GroupBy(algebra, GroupBy, _vars.Where(v => v.IsAggregate));
                     }
 
                     // Add HAVING clause immediately after the grouping
-                    if (_having != null) algebra = new Having(algebra, _having);
+                    if (Having != null) algebra = new Having(algebra, Having);
 
                     // After grouping we do projection
                     // We introduce an Extend for each Project Expression
@@ -977,9 +920,9 @@ namespace VDS.RDF.Query
                     // Select effectively trims the results so only result variables are left
                     // This doesn't apply to CONSTRUCT since any variable may be used in the Construct Template
                     // so we don't want to eliminate anything
-                    if (_type != SparqlQueryType.Construct)
+                    if (QueryType != SparqlQueryType.Construct)
                     {
-                        switch (_type)
+                        switch (QueryType)
                         {
                             case SparqlQueryType.Describe:
                             case SparqlQueryType.Select:
@@ -994,11 +937,11 @@ namespace VDS.RDF.Query
                     }
 
                     // If we have a Distinct/Reduced then we'll apply those after Selection
-                    if (_type == SparqlQueryType.SelectAllDistinct || _type == SparqlQueryType.SelectDistinct)
+                    if (QueryType == SparqlQueryType.SelectAllDistinct || QueryType == SparqlQueryType.SelectDistinct)
                     {
                         algebra = new Distinct(algebra);
                     }
-                    else if (_type == SparqlQueryType.SelectAllReduced || _type == SparqlQueryType.SelectReduced)
+                    else if (QueryType == SparqlQueryType.SelectAllReduced || QueryType == SparqlQueryType.SelectReduced)
                     {
                         algebra = new Reduced(algebra);
                     }
@@ -1083,14 +1026,14 @@ namespace VDS.RDF.Query
                         {
                             // Is the first pattern a TriplePattern
                             // Do all the Variables occur in the first pattern
-                            if (_rootGraphPattern != null)
+                            if (RootGraphPattern != null)
                             {
-                                if (_rootGraphPattern.TriplePatterns.Count > 0)
+                                if (RootGraphPattern.TriplePatterns.Count > 0)
                                 {
-                                    if (_rootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Match)
+                                    if (RootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Match)
                                     {
                                         // If all the Ordering variables occur in the 1st Triple Pattern then we can optimise
-                                        _optimisableOrdering = _orderBy.Variables.All(v => _rootGraphPattern.TriplePatterns[0].Variables.Contains(v));
+                                        _optimisableOrdering = _orderBy.Variables.All(v => RootGraphPattern.TriplePatterns[0].Variables.Contains(v));
                                     }
                                     else
                                     {
@@ -1140,6 +1083,23 @@ namespace VDS.RDF.Query
         /// </ul>
         /// </para>
         /// </remarks>
-        public bool UsesDefaultDataset => !_defaultGraphs.Any() && _rootGraphPattern.UsesDefaultDataset;
+        public bool UsesDefaultDataset => !_defaultGraphs.Any() && RootGraphPattern.UsesDefaultDataset;
+
+        /// <summary>
+        /// Create a query instance that can be passed to remote endpoint when processing a SERVICE clause
+        /// in a SPARQL Query.
+        /// </summary>
+        /// <param name="serviceGraphPattern">The root graph pattern of the SERVICE query</param>
+        /// <param name="limit">The limit on the number of results requested.</param>
+        /// <returns></returns>
+        public static SparqlQuery FromServiceQuery(GraphPattern serviceGraphPattern, int limit)
+        {
+            return new SparqlQuery
+            {
+                QueryType = SparqlQueryType.SelectAll,
+                Limit = limit,
+                RootGraphPattern = new GraphPattern(serviceGraphPattern) {IsService = false},
+            };
+        }
     }
 }

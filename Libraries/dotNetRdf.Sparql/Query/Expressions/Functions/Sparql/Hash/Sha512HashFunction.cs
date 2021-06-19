@@ -40,11 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// </summary>
         /// <param name="expr">Argument Expression.</param>
         public Sha512HashFunction(ISparqlExpression expr)
-#if NETCORE
-            :base(expr, SHA512.Create()) { }
-#else
-            : base(expr, new SHA512Managed()) { }
-#endif
+            : base(expr) { }
 
         /// <summary>
         /// Gets the Functor of the Expression.
@@ -63,7 +59,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + InnerExpression + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSha512HashFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSha512HashFunction(this);
         }
 
         /// <summary>
@@ -73,7 +79,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new Sha512HashFunction(transformer.Transform(_expr));
+            return new Sha512HashFunction(transformer.Transform(InnerExpression));
         }
     }
 }

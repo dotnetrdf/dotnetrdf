@@ -37,67 +37,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
     public abstract class BaseHashFunction 
         : BaseUnaryExpression
     {
-        private readonly HashAlgorithm _crypto;
 
         /// <summary>
         /// Creates a new Hash function.
         /// </summary>
         /// <param name="expr">Expression.</param>
-        /// <param name="hash">Hash Algorithm to use.</param>
-        protected BaseHashFunction(ISparqlExpression expr, HashAlgorithm hash)
+        protected BaseHashFunction(ISparqlExpression expr)
             : base(expr)
         {
-            _crypto = hash;
-        }
-
-        /// <summary>
-        /// Gets the value of the function in the given Evaluation Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp == null)
-            {
-                throw new RdfQueryException("Cannot calculate the Hash of a null");
-            }
-
-            switch (temp.NodeType)
-            {
-                case NodeType.Blank:
-                    throw new RdfQueryException("Cannot calculate the Hash of a Blank Node");
-                case NodeType.GraphLiteral:
-                    throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
-                case NodeType.Literal:
-                    return new StringNode(Hash(((ILiteralNode)temp).Value));
-                case NodeType.Uri:
-                    return new StringNode(Hash(temp.AsString()));
-                default:
-                    throw new RdfQueryException("Cannot calculate the Hash of an Unknown Node Type");
-            }
-        }
-
-        /// <summary>
-        /// Computes Hashes.
-        /// </summary>
-        /// <param name="input">Input String.</param>
-        /// <returns></returns>
-        protected virtual string Hash(string input)
-        {
-            byte[] inputBytes, hashBytes;
-            var output = new StringBuilder();
-
-            inputBytes = Encoding.UTF8.GetBytes(input);
-            hashBytes = _crypto.ComputeHash(inputBytes);
-
-            for (var i = 0; i < hashBytes.Length; i++)
-            {
-                output.Append(hashBytes[i].ToString("x2"));
-            }
-
-            return output.ToString();
         }
 
         /// <summary>

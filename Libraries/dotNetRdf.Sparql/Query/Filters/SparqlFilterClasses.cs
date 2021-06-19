@@ -24,12 +24,10 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Primary;
@@ -57,16 +55,14 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Evaluates a filter in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public abstract void Evaluate(SparqlEvaluationContext context);
-
-        /// <summary>
         /// Gets the String representation of the Filter.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context);
+
+        public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
 
         /// <summary>
         /// Gets the enumeration of Variables used in the Filter.
@@ -104,48 +100,6 @@ namespace VDS.RDF.Query.Filters
         public BoundFilter(VariableTerm varTerm)
             : base(varTerm) { }
 
-        /// <summary>
-        /// Evaluates a filter in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlEvaluationContext context)
-        {
-            if (context.InputMultiset is NullMultiset) return;
-            if (context.InputMultiset is IdentityMultiset)
-            {
-                // If the Input is the Identity Multiset then nothing is Bound so return the Null Multiset
-                context.InputMultiset = new NullMultiset();
-                return;
-            }
-
-            // BOUND is always safe to parallelise
-            if (context.Options.UsePLinqEvaluation)
-            {
-                context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
-            }
-            else
-            {
-                foreach (var id in context.InputMultiset.SetIDs.ToList())
-                {
-                    EvalFilter(context, id);
-                }
-            }
-        }
-
-        private void EvalFilter(SparqlEvaluationContext context, int id)
-        {
-            try
-            {
-                if (_arg.Evaluate(context, id) == null)
-                {
-                    context.InputMultiset.Remove(id);
-                }
-            }
-            catch
-            {
-                context.InputMultiset.Remove(id);
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of the Filter.
@@ -153,7 +107,17 @@ namespace VDS.RDF.Query.Filters
         /// <returns></returns>
         public override string ToString()
         {
-            return "FILTER(BOUND(" + _arg.ToString() + ")) ";
+            return "FILTER(BOUND(" + _arg + ")) ";
+        }
+
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessBoundFilter(this, context);
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitBoundFilter(this);
         }
     }
 
@@ -169,70 +133,6 @@ namespace VDS.RDF.Query.Filters
         /// <param name="expr">Expression to filter with.</param>
         public UnaryExpressionFilter(ISparqlExpression expr) : base(expr) { }
 
-        /// <summary>
-        /// Evaluates a filter in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlEvaluationContext context)
-        {
-            if (context.InputMultiset is NullMultiset) return;
-
-            if (context.InputMultiset is IdentityMultiset)
-            {
-                if (!Variables.Any())
-                {
-                    // If the Filter has no variables and is applied to an Identity Multiset then if the
-                    // Filter Expression evaluates to False then the Null Multiset is returned
-                    try
-                    {
-                        if (!_arg.Evaluate(context, 0).AsSafeBoolean())
-                        {
-                            context.InputMultiset = new NullMultiset();
-                        }
-                    }
-                    catch
-                    {
-                        // Error is treated as false for Filters so Null Multiset is returned
-                        context.InputMultiset = new NullMultiset();
-                    }
-                }
-                else
-                {
-                    // As no variables are in scope the effect is that the Null Multiset is returned
-                    context.InputMultiset = new NullMultiset();
-                }
-            }
-            else
-            {
-                // Remember that not all expressions are safe to parallelise
-                if (context.Options.UsePLinqEvaluation && _arg.CanParallelise)
-                {
-                    context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
-                }
-                else
-                {
-                    foreach (var id in context.InputMultiset.SetIDs.ToList())
-                    {
-                        EvalFilter(context, id);
-                    }
-                }
-            }
-        }
-
-        private void EvalFilter(SparqlEvaluationContext context, int id)
-        {
-            try
-            {
-                if (!_arg.Evaluate(context, id).AsSafeBoolean())
-                {
-                    context.InputMultiset.Remove(id);
-                }
-            }
-            catch
-            {
-                context.InputMultiset.Remove(id);
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of the Filter.
@@ -240,7 +140,17 @@ namespace VDS.RDF.Query.Filters
         /// <returns></returns>
         public override string ToString()
         {
-            return "FILTER(" + _arg.ToString() + ") ";
+            return "FILTER(" + _arg + ") ";
+        }
+
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessUnaryExpressionFilter(this, context);
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitUnaryExpressionFilter(this);
         }
     }
 
@@ -283,20 +193,6 @@ namespace VDS.RDF.Query.Filters
         }
 
         /// <summary>
-        /// Evaluates a filter in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public void Evaluate(SparqlEvaluationContext context)
-        {
-            if (context.InputMultiset is NullMultiset) return;
-
-            foreach (ISparqlFilter filter in _filters)
-            {
-                filter.Evaluate(context);
-            }
-        }
-
-        /// <summary>
         /// Adds an additional Filter to the Filter Chain.
         /// </summary>
         /// <param name="filter">A Filter to add.</param>
@@ -314,9 +210,19 @@ namespace VDS.RDF.Query.Filters
             var output = new StringBuilder();
             foreach (ISparqlFilter filter in _filters)
             {
-                output.Append(filter.ToString() + " ");
+                output.Append(filter + " ");
             }
             return output.ToString();
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessChainFilter(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitChainFilter(this);
         }
 
         /// <summary>
@@ -331,6 +237,8 @@ namespace VDS.RDF.Query.Filters
                         select v);
             }
         }
+
+        public IEnumerable<ISparqlFilter> Filters => _filters;
 
         /// <summary>
         /// Gets the Inner Expression used by the Chained Filters.

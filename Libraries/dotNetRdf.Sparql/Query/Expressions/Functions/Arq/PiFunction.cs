@@ -37,27 +37,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     public class PiFunction 
         : ISparqlExpression
     {
-        private IValuedNode _node;
-
-        /// <summary>
-        /// Creates a new ARQ Pi function.
-        /// </summary>
-        public PiFunction()
-        {
-            _node = new DoubleNode(Math.PI);
-        }
-
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            return _node;
-        }
-
         /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
@@ -76,6 +55,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Pi;
             }
+        }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessPiFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitPiFunction(this);
         }
 
         /// <summary>

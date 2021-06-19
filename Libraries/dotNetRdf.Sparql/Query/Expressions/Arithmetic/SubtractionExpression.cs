@@ -44,46 +44,6 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         public SubtractionExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) 
             : base(leftExpr, rightExpr) { }
 
-        /// <summary>
-        /// Calculates the Numeric Value of this Expression as evaluated for a given Binding.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode a = _leftExpr.Evaluate(context, bindingID);
-            IValuedNode b = _rightExpr.Evaluate(context, bindingID);
-
-            var inputs = new IValuedNode[] { a, b };
-            ISparqlOperator op = null;
-            if (SparqlOperators.TryGetOperator(SparqlOperatorType.Subtract, context.Options.StrictOperators, out op, inputs))
-            {
-                return op.Apply(inputs);
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot apply addition to the given inputs");
-            }
-
-            // if (a == null || b == null) throw new RdfQueryException("Cannot apply subtraction when one/both arguments are null");
-            
-            // SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
-
-            // switch (type)
-            // {
-            //    case SparqlNumericType.Integer:
-            //        return new LongNode(null, a.AsInteger() - b.AsInteger());
-            //    case SparqlNumericType.Decimal:
-            //        return new DecimalNode(null, a.AsDecimal() - b.AsDecimal());
-            //    case SparqlNumericType.Float:
-            //        return new FloatNode(null, a.AsFloat() - b.AsFloat());
-            //    case SparqlNumericType.Double:
-            //        return new DoubleNode(null, a.AsDouble() - b.AsDouble());
-            //    default:
-            //        throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            // }
-        }
 
         /// <summary>
         /// Gets the String representation of this Expression.
@@ -110,6 +70,16 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
                 output.Append(_rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSubtractionExpression(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSubtractionExpression(this);
         }
 
         /// <summary>

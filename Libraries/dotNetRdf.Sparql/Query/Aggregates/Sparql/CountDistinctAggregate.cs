@@ -24,11 +24,9 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -40,8 +38,6 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class CountDistinctAggregate
         : BaseAggregate
     {
-        private string _varname;
-
         /// <summary>
         /// Creates a new COUNT(DISTINCT ?x) Aggregate.
         /// </summary>
@@ -49,7 +45,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public CountDistinctAggregate(VariableTerm expr)
             : base(expr)
         {
-            _varname = expr.ToString().Substring(1);
+            Variable = expr.ToString().Substring(1);
         }
 
 
@@ -60,59 +56,13 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public CountDistinctAggregate(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Counts the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+        public string Variable { get; }
+
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            int c;
-            var values = new HashSet<IValuedNode>();
-
-            if (_varname != null)
-            {
-                // Ensure the COUNTed variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(_varname))
-                {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a COUNT Aggregate since the Variable does not occur in a Graph Pattern");
-                }
-
-                // Just Count the number of results where the variable is bound
-                var varExpr = (VariableTerm)_expr;
-
-                foreach (var id in bindingIDs)
-                {
-                    IValuedNode temp = varExpr.Evaluate(context, id);
-                    if (temp != null)
-                    {
-                        values.Add(temp);
-                    }
-                }
-                c = values.Count;
-            }
-            else
-            {
-                // Count the distinct non-null results
-                foreach (var id in bindingIDs)
-                {
-                    try
-                    {
-                        IValuedNode temp = _expr.Evaluate(context, id);
-                        if (temp != null)
-                        {
-                            values.Add(temp);
-                        }
-                    }
-                    catch
-                    {
-                        // Ignore errors
-                    }
-                }
-                c = values.Count;
-            }
-            return new LongNode(c);
+            return processor.ProcessCountDistinct(this, context, bindings);
         }
 
         /// <summary>

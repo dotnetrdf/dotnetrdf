@@ -249,7 +249,7 @@ namespace VDS.RDF.Update
             processor.ProcessCommandSet(this);
         }
 
-        internal ISparqlAlgebra ApplyAlgebraOptimisers(ISparqlAlgebra algebra)
+        public ISparqlAlgebra ApplyAlgebraOptimisers(ISparqlAlgebra algebra)
         {
             try
             {

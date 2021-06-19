@@ -37,15 +37,14 @@ namespace VDS.RDF.Query.Expressions.Primary
     public class AllModifier 
         : ISparqlExpression
     {
-        /// <summary>
-        /// Throws a <see cref="NotImplementedException">NotImplementedException</see> since this class is a placeholder and only used in parsing.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            throw new NotImplementedException("This class is a placeholder only - aggregates taking this as an argument should apply over all rows");
+            return processor.ProcessAllModifier(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitAllModifier(this);
         }
 
         /// <summary>

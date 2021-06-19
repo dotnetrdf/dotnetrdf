@@ -25,6 +25,7 @@
 */
 using System;
 using System.Globalization;
+using VDS.RDF.Query.Describe;
 
 namespace VDS.RDF.Query
 {
@@ -40,6 +41,7 @@ namespace VDS.RDF.Query
             Options.DefaultComparisonOptions // CompareOptions.Ordinal
             );
 #pragma warning restore CS0618 // Type or member is obsolete
+        private ISparqlDescribe _describer;
 
         /// <summary>
         /// Get or set the node comparer to use in evaluation.
@@ -113,5 +115,22 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <remarks>When querying an in-memory dataset, using the same URI factory as the graphs being queried, or a child of the URI factor of the graphs being queried will save memory.</remarks>
         public IUriFactory UriFactory { get; set; } = RDF.UriFactory.Root;
+
+        /// <summary>
+        /// Gets/Sets the <see cref="ISparqlDescribe">ISparqlDescribe</see> which provides the Describe algorithm you wish to use.
+        /// </summary>
+        /// <remarks>
+        /// By default this will be the <see cref="ConciseBoundedDescription">ConciseBoundedDescription</see> (CBD) algorithm.
+        /// </remarks>
+        public ISparqlDescribe Describer
+        {
+            get
+            {
+                return _describer ?? (_describer = new ConciseBoundedDescription());
+            }
+            set => _describer = value;
+        }
+
+
     }
 }

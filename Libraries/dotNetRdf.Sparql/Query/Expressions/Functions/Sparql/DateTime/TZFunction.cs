@@ -24,10 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Text.RegularExpressions;
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
 {
     /// <summary>
@@ -43,42 +39,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         public TZFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Gets the Timezone of the Argument Expression as evaluated for the given Binding in the given Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                DateTimeOffset dt = temp.AsDateTimeOffset();
-                // Regex based check to see if the value has a Timezone component
-                // If not then the result is a null
-                if (!Regex.IsMatch(temp.AsString(), "(Z|[+-]\\d{2}:\\d{2})$")) return new StringNode(null, string.Empty);
-
-                // Now we have a DateTime we can try and return the Timezone
-                if (dt.Offset.Equals(TimeSpan.Zero))
-                {
-                    // If Zero it was specified as Z (which means UTC so zero offset)
-                    return new StringNode(null, "Z");
-                }
-                else
-                {
-                    // If the Offset is outside the range -14 to 14 this is considered invalid
-                    if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
-
-                    // Otherwise it has an offset which is a given number of hours (and minutes)
-                    return new StringNode(null, dt.Offset.Hours.ToString("00") + ":" + dt.Offset.Minutes.ToString("00"));
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate a Date Time function on a null argument");
-            }
-        }
 
         /// <summary>
         /// Gets the Type of this Expression.
@@ -108,7 +68,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordTz + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordTz + "(" + InnerExpression + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessTZFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitTZFunction(this);
         }
 
         /// <summary>
@@ -118,7 +88,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new TZFunction(transformer.Transform(_expr));
+            return new TZFunction(transformer.Transform(InnerExpression));
         }
     }
 }

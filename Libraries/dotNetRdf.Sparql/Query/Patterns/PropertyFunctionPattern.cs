@@ -40,7 +40,6 @@ namespace VDS.RDF.Query.Patterns
     {
         private readonly List<ITriplePattern> _patterns;
         private readonly List<PatternItem> _lhsArgs, _rhsArgs;
-        private readonly ISparqlPropertyFunction _function;
 
         /// <summary>
         /// Creates a new Property Function pattern.
@@ -62,7 +61,7 @@ namespace VDS.RDF.Query.Patterns
             _patterns = origPatterns.ToList();
             _lhsArgs = lhsArgs.ToList();
             _rhsArgs = rhsArgs.ToList();
-            _function = propertyFunction;
+            PropertyFunction = propertyFunction;
 
             foreach (PatternItem item in _lhsArgs.Concat(_rhsArgs))
             {
@@ -117,13 +116,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the property function.
         /// </summary>
-        public ISparqlPropertyFunction PropertyFunction
-        {
-            get
-            {
-                return _function;
-            }
-        }
+        public ISparqlPropertyFunction PropertyFunction { get; }
 
         /// <summary>
         /// Returns the empty enumerable as cannot guarantee any variables are bound.
@@ -138,13 +131,14 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get { return _vars; } }
 
-        /// <summary>
-        /// Evaluates the property function.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlEvaluationContext context)
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
-            context.OutputMultiset = _function.Evaluate(context);
+            return processor.ProcessPropertyFunctionPattern(this, context);
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitPropertyFunctionPattern(this);
         }
 
         /// <summary>
@@ -211,7 +205,7 @@ namespace VDS.RDF.Query.Patterns
                 output.Append(_lhsArgs.First().ToString());
             }
             output.Append(" <");
-            output.Append(_function.FunctionUri);
+            output.Append(PropertyFunction.FunctionUri);
             output.Append("> ");
             if (_rhsArgs.Count > 1)
             {

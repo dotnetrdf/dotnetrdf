@@ -40,9 +40,6 @@ namespace VDS.RDF.Query.Patterns
     public class TriplePattern
         : BaseTriplePattern, IMatchTriplePattern, IConstructTriplePattern, IComparable<TriplePattern>
     {
-        private readonly TripleIndexType _indexType = TripleIndexType.None;
-        private readonly PatternItem _subj, _pred, _obj;
-
         /// <summary>
         /// Creates a new Triple Pattern.
         /// </summary>
@@ -51,64 +48,64 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="obj">Object Pattern.</param>
         public TriplePattern(PatternItem subj, PatternItem pred, PatternItem obj)
         {
-            _subj = subj;
+            Subject = subj;
             if (pred is BlankNodePattern)
             {
                 throw new RdfParseException("Cannot use a Triple Pattern with a Blank Node Predicate in a SPARQL Query");
             }
-            _pred = pred;
-            _obj = obj;
+            Predicate = pred;
+            Object = obj;
 
             // Decide on the Index Type
-            if (_subj is NodeMatchPattern)
+            if (Subject is NodeMatchPattern)
             {
-                if (_pred is NodeMatchPattern)
+                if (Predicate is NodeMatchPattern)
                 {
-                    _indexType = TripleIndexType.SubjectPredicate;
+                    IndexType = TripleIndexType.SubjectPredicate;
                 }
-                else if (_obj is NodeMatchPattern)
+                else if (Object is NodeMatchPattern)
                 {
-                    _indexType = TripleIndexType.SubjectObject;
+                    IndexType = TripleIndexType.SubjectObject;
                 }
                 else
                 {
-                    _indexType = TripleIndexType.Subject;
+                    IndexType = TripleIndexType.Subject;
                 }
             }
-            else if (_pred is NodeMatchPattern)
+            else if (Predicate is NodeMatchPattern)
             {
-                if (_obj is NodeMatchPattern)
+                if (Object is NodeMatchPattern)
                 {
-                    _indexType = TripleIndexType.PredicateObject;
+                    IndexType = TripleIndexType.PredicateObject;
                 }
                 else
                 {
-                    _indexType = TripleIndexType.Predicate;
+                    IndexType = TripleIndexType.Predicate;
                 }
             }
-            else if (_obj is NodeMatchPattern)
+            else if (Object is NodeMatchPattern)
             {
-                _indexType = TripleIndexType.Object;
+                IndexType = TripleIndexType.Object;
             }
 
             // Determine variables used
-            if (_subj.VariableName != null) _vars.Add(_subj.VariableName);
-            if (_pred.VariableName != null)
+            if (Subject.VariableName != null) _vars.Add(Subject.VariableName);
+            if (Predicate.VariableName != null)
             {
-                if (!_vars.Contains(_pred.VariableName))
+                if (!_vars.Contains(Predicate.VariableName))
                 {
-                    _vars.Add(_pred.VariableName);
+                    _vars.Add(Predicate.VariableName);
                 }
                 else
                 {
-                    _pred.Repeated = true;
+                    Predicate.Repeated = true;
                 }
             }
-            if (_obj.VariableName != null)
+            if (Object.VariableName != null)
             {
-                if (!_vars.Contains(_obj.VariableName))
+                if (!_vars.Contains(Object.VariableName))
                 {
-                    _vars.Add(_obj.VariableName);
+                    _vars.Add(Object.VariableName);
                 }
                 else
                 {
@@ -116,7 +113,7 @@ namespace VDS.RDF.Query.Patterns
                 }
             }
             _vars.Sort();
-            if (_vars.Count == 0) _indexType = TripleIndexType.NoVariables;
+            if (_vars.Count == 0) IndexType = TripleIndexType.NoVariables;
         }
 
         /// <summary>
@@ -125,23 +122,23 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Triple to test.</param>
         /// <returns></returns>
-        public bool Accepts(SparqlEvaluationContext context, Triple obj)
+        public bool Accepts(IPatternEvaluationContext context, Triple obj)
         {
-            if (!_pred.Repeated && !_obj.Repeated)
+            if (!Predicate.Repeated && !Object.Repeated)
             {
-                return (_subj.Accepts(context, obj.Subject) && _pred.Accepts(context, obj.Predicate) && _obj.Accepts(context, obj.Object));
+                return (Subject.Accepts(context, obj.Subject) && Predicate.Accepts(context, obj.Predicate) && Object.Accepts(context, obj.Object));
             }
-            else if (_pred.Repeated && !_obj.Repeated)
+            else if (Predicate.Repeated && !Object.Repeated)
             {
-                return (_subj.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && _obj.Accepts(context, obj.Object));
+                return (Subject.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && Object.Accepts(context, obj.Object));
             }
-            else if (!_pred.Repeated && _obj.Repeated)
+            else if (!Predicate.Repeated && Object.Repeated)
             {
-                return (_subj.Accepts(context, obj.Subject) && _pred.Accepts(context, obj.Predicate) && obj.Subject.Equals(obj.Object));
+                return (Subject.Accepts(context, obj.Subject) && Predicate.Accepts(context, obj.Predicate) && obj.Subject.Equals(obj.Object));
             }
             else
             {
-                return (_subj.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && obj.Subject.Equals(obj.Object));
+                return (Subject.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && obj.Subject.Equals(obj.Object));
             }
         }
 
@@ -159,46 +156,22 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Index Type we will use for this Pattern.
         /// </summary>
-        public TripleIndexType IndexType
-        {
-            get
-            {
-                return _indexType;
-            }
-        }
+        public TripleIndexType IndexType { get; } = TripleIndexType.None;
 
         /// <summary>
         /// Subject Pattern.
         /// </summary>
-        public PatternItem Subject
-        {
-            get
-            {
-                return _subj;
-            }
-        }
+        public PatternItem Subject { get; }
 
         /// <summary>
         /// Predicate Pattern.
         /// </summary>
-        public PatternItem Predicate
-        {
-            get
-            {
-                return _pred;
-            }
-        }
+        public PatternItem Predicate { get; }
 
         /// <summary>
         /// Object Pattern.
         /// </summary>
-        public PatternItem Object
-        {
-            get
-            {
-                return _obj;
-            }
-        }
+        public PatternItem Object { get; }
 
         /// <summary>
         /// Returns all variables mentioned as a match guarantees all variables are bound.
@@ -213,6 +186,16 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<string>(); } }
 
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessTriplePattern(this, context);
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitTriplePattern(this);
+        }
+
         /// <summary>
         /// Returns whether the Triple Pattern is an accept all.
         /// </summary>
@@ -223,335 +206,10 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (_subj is VariablePattern && _pred is VariablePattern && _obj is VariablePattern)  &&
-                    (_subj.VariableName != _pred.VariableName && _pred.VariableName != _obj.VariableName && _subj.VariableName != _obj.VariableName);
+                return (Subject is VariablePattern && Predicate is VariablePattern && Object is VariablePattern)  &&
+                    (Subject.VariableName != Predicate.VariableName && Predicate.VariableName != Object.VariableName && Subject.VariableName != Object.VariableName);
             }
 
-        }
-
-        /// <summary>
-        /// Evaluates a Triple Pattern in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlEvaluationContext context)
-        {
-            if (_indexType == TripleIndexType.NoVariables)
-            {
-                // If there are no variables then at least one Triple must match or we abort
-                INode s = ((NodeMatchPattern)_subj).Node;
-                INode p = ((NodeMatchPattern)_pred).Node;
-                INode o = ((NodeMatchPattern)_obj).Node;
-                if (context.Data.ContainsTriple(new Triple(s, p, o)))
-                {
-                    context.OutputMultiset = new IdentityMultiset();
-                }
-                else
-                {
-                    context.OutputMultiset = new NullMultiset();
-                }
-            }
-            else
-            {
-                FindResults(context, GetTriples(context));
-            }
-        }
-
-        /// <summary>
-        /// Gets the Enumeration of Triples that should be assessed for matching the pattern.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public IEnumerable<Triple> GetTriples(SparqlEvaluationContext context)
-        {
-            INode subj, pred, obj;
-
-            // Stuff for more precise indexing
-            IEnumerable<INode> values = null;
-            IEnumerable<ISet> valuePairs = null;
-            var subjVar = _subj.VariableName;
-            var predVar = _pred.VariableName;
-            var objVar = _obj.VariableName;
-            var boundSubj = (subjVar != null && context.InputMultiset.ContainsVariable(subjVar));
-            var boundPred = (predVar != null && context.InputMultiset.ContainsVariable(predVar));
-            var boundObj = (objVar != null && context.InputMultiset.ContainsVariable(objVar));
-
-            switch (_indexType)
-            {
-                case TripleIndexType.Subject:
-                    subj = ((NodeMatchPattern)_subj).Node;
-                    if (boundPred)
-                    {
-                        if (boundObj)
-                        {
-                            valuePairs = (from set in context.InputMultiset.Sets
-                                          where set.ContainsVariable(predVar) && set.ContainsVariable(objVar)
-                                          select set).Distinct(new SetDistinctnessComparer(new string[] { predVar, objVar }));
-                            return (from set in valuePairs
-                                    where set[predVar] != null && set[objVar] != null
-                                    select CreateTriple(subj, set[predVar], set[objVar])).Where(t => context.Data.ContainsTriple(t));
-                        }
-                        else
-                        {
-                            values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(predVar)
-                                      select set[predVar]).Distinct();
-                            return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithSubjectPredicate(subj, value)
-                                    select t);
-                        }
-                    }
-                    else if (boundObj)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(objVar)
-                                  select set[objVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                from t in context.Data.GetTriplesWithSubjectObject(subj, value)
-                                select t);
-                    }
-                    else
-                    {
-                        return context.Data.GetTriplesWithSubject(subj);
-                    }
-
-                case TripleIndexType.SubjectPredicate:
-                    subj = ((NodeMatchPattern)_subj).Node;
-                    pred = ((NodeMatchPattern)_pred).Node;
-
-                    if (boundObj)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(objVar)
-                                  select set[objVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                select CreateTriple(subj, pred, value)).Where(t => context.Data.ContainsTriple(t));
-                    }
-                    else
-                    {
-                        return context.Data.GetTriplesWithSubjectPredicate(subj, pred);
-                    }
-
-                case TripleIndexType.SubjectObject:
-                    subj = ((NodeMatchPattern)_subj).Node;
-                    obj = ((NodeMatchPattern)_obj).Node;
-
-                    if (boundPred)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(predVar)
-                                  select set[predVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                select CreateTriple(subj, value, obj)).Where(t => context.Data.ContainsTriple(t));
-                    }
-                    else
-                    {
-                        return context.Data.GetTriplesWithSubjectObject(subj, obj);
-                    }
-
-                case TripleIndexType.Predicate:
-                    pred = ((NodeMatchPattern)_pred).Node;
-                    if (boundSubj)
-                    {
-                        if (boundObj)
-                        {
-                            valuePairs = (from set in context.InputMultiset.Sets
-                                          where set.ContainsVariable(subjVar) && set.ContainsVariable(objVar)
-                                          select set).Distinct(new SetDistinctnessComparer(new string[] { subjVar, objVar }));
-                            return (from set in valuePairs
-                                    where set[subjVar] != null && set[objVar] != null
-                                    select CreateTriple(set[subjVar], pred, set[objVar])).Where(t => context.Data.ContainsTriple(t));
-                        }
-                        else
-                        {
-                            values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(subjVar)
-                                      select set[subjVar]).Distinct();
-                            return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithSubjectPredicate(value, pred)
-                                    select t);
-                        }
-                    }
-                    else if (boundObj)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(objVar)
-                                  select set[objVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                from t in context.Data.GetTriplesWithPredicateObject(pred, value)
-                                select t);
-                    }
-                    else
-                    {
-                        return context.Data.GetTriplesWithPredicate(pred);
-                    }
-
-                case TripleIndexType.PredicateObject:
-                    pred = ((NodeMatchPattern)_pred).Node;
-                    obj = ((NodeMatchPattern)_obj).Node;
-
-                    if (boundSubj)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(subjVar)
-                                  select set[subjVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                select CreateTriple(value, pred, obj)).Where(t => context.Data.ContainsTriple(t));
-                    }
-                    else
-                    {
-                        return context.Data.GetTriplesWithPredicateObject(pred, obj);
-                    }
-
-                case TripleIndexType.Object:
-                    obj = ((NodeMatchPattern)_obj).Node;
-                    if (boundSubj)
-                    {
-                        if (boundPred)
-                        {
-                            valuePairs = (from set in context.InputMultiset.Sets
-                                          where set.ContainsVariable(subjVar) && set.ContainsVariable(predVar)
-                                          select set).Distinct(new SetDistinctnessComparer(new string[] { subjVar, predVar }));
-                            return (from set in valuePairs
-                                    where set[subjVar] != null && set[predVar] != null
-                                    select CreateTriple(set[subjVar], set[predVar], obj)).Where(t => context.Data.ContainsTriple(t));
-                        }
-                        else
-                        {
-                            values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(subjVar)
-                                      select set[subjVar]).Distinct();
-                            return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithSubjectObject(value, obj)
-                                    select t);
-                        }
-                    }
-                    else if (boundPred)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(predVar)
-                                  select set[predVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                from t in context.Data.GetTriplesWithPredicateObject(value, obj)
-                                select t);
-                    }
-                    else
-                    {
-                        return context.Data.GetTriplesWithObject(obj);
-                    }
-
-                case TripleIndexType.NoVariables:
-                    // If there are no variables then at least one Triple must match or we abort
-                    INode s, p, o;
-                    s = ((NodeMatchPattern)_subj).Node;
-                    p = ((NodeMatchPattern)_pred).Node;
-                    o = ((NodeMatchPattern)_obj).Node;
-                    if (context.Data.ContainsTriple(new Triple(s, p, o)))
-                    {
-                        return new Triple(s, p, o).AsEnumerable();
-                    }
-                    else
-                    {
-                        return Enumerable.Empty<Triple>();
-                    }
-
-                case TripleIndexType.None:
-                    // This means we got a pattern like ?s ?p ?o so we want to use whatever bound variables 
-                    // we have to reduce the triples we return as far as possible
-                    // TODO: Add handling for all the cases here
-                    if (boundSubj)
-                    {
-                        if (boundPred)
-                        {
-                            return context.Data.Triples;
-                        }
-                        else if (boundObj)
-                        {
-                            return context.Data.Triples;
-                        }
-                        else
-                        {
-                            values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(subjVar)
-                                      select set[subjVar]).Distinct();
-                            return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithSubject(value)
-                                    select t);
-                        }
-                    }
-                    else if (boundPred)
-                    {
-                        if (boundObj)
-                        {
-                            return context.Data.Triples;
-                        }
-                        else
-                        {
-                            values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(predVar)
-                                      select set[predVar]).Distinct();
-                            return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithPredicate(value)
-                                    select t);
-                        }
-                    }
-                    else if (boundObj)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(objVar)
-                                  select set[objVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                from t in context.Data.GetTriplesWithObject(value)
-                                select t);
-                    }
-                    else
-                    {
-                        return context.Data.Triples;
-                    }
-
-                default:
-                    return context.Data.Triples;
-            }
-        }
-
-        private Triple CreateTriple(INode s, INode p, INode o)
-        {
-            // KA - simplified now that nodes are not bound to a graph - could be removed
-            //IGraph target = s.Graph;
-            //if (target == null)
-            //{
-            //    target = p.Graph;
-            //    if (target == null) target = o.Graph;
-            //}
-            //return new Triple(s.CopyNode(target), p.CopyNode(target), o.CopyNode(target));
-            return new Triple(s, p, o);
-        }
-
-        /// <summary>
-        /// Takes an enumerable and extracts Triples which match this pattern as results.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <param name="ts">Enumerable of Triples.</param>
-        private void FindResults(SparqlEvaluationContext context, IEnumerable<Triple> ts)
-        {
-            foreach (Triple t in ts)
-            {
-                if (Accepts(context, t))
-                {
-                    context.OutputMultiset.Add(CreateResult(t));
-                }
-            }
         }
 
         /// <summary>
@@ -562,17 +220,17 @@ namespace VDS.RDF.Query.Patterns
         public ISet CreateResult(Triple t)
         {
             var s = new Set();
-            if (_subj.VariableName != null)
+            if (Subject.VariableName != null)
             {
-                s.Add(_subj.VariableName, t.Subject);
+                s.Add(Subject.VariableName, t.Subject);
             }
-            if (_pred.VariableName != null && !_pred.Repeated)
+            if (Predicate.VariableName != null && !Predicate.Repeated)
             {
-                s.Add(_pred.VariableName, t.Predicate);
+                s.Add(Predicate.VariableName, t.Predicate);
             }
-            if (_obj.VariableName != null && !_obj.Repeated)
+            if (Object.VariableName != null && !Object.Repeated)
             {
-                s.Add(_obj.VariableName, t.Object);
+                s.Add(Object.VariableName, t.Object);
             }
             return s;
         }
@@ -584,7 +242,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public Triple Construct(ConstructContext context)
         {
-            return new Triple(_subj.Construct(context), _pred.Construct(context), _obj.Construct(context));
+            return new Triple(Subject.Construct(context), Predicate.Construct(context), Object.Construct(context));
         }
 
         /// <summary>
@@ -594,7 +252,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (_indexType == TripleIndexType.NoVariables);
+                return (IndexType == TripleIndexType.NoVariables);
             }
         }
 
@@ -605,9 +263,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (_subj is NodeMatchPattern || _subj is BlankNodePattern || _subj is FixedBlankNodePattern) &&
-                       (_pred is NodeMatchPattern || _pred is BlankNodePattern || _pred is FixedBlankNodePattern) &&
-                       (_obj is NodeMatchPattern || _obj is BlankNodePattern || _obj is FixedBlankNodePattern);
+                return (Subject is NodeMatchPattern || Subject is BlankNodePattern || Subject is FixedBlankNodePattern) &&
+                       (Predicate is NodeMatchPattern || Predicate is BlankNodePattern || Predicate is FixedBlankNodePattern) &&
+                       (Object is NodeMatchPattern || Object is BlankNodePattern || Object is FixedBlankNodePattern);
             }
         }
 
@@ -618,9 +276,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (_subj is NodeMatchPattern || _subj is VariablePattern || _subj is FixedBlankNodePattern) &&
-                       (_pred is NodeMatchPattern || _pred is VariablePattern || _pred is FixedBlankNodePattern) &&
-                       (_obj is NodeMatchPattern || _obj is VariablePattern || _obj is FixedBlankNodePattern);
+                return (Subject is NodeMatchPattern || Subject is VariablePattern || Subject is FixedBlankNodePattern) &&
+                       (Predicate is NodeMatchPattern || Predicate is VariablePattern || Predicate is FixedBlankNodePattern) &&
+                       (Object is NodeMatchPattern || Object is VariablePattern || Object is FixedBlankNodePattern);
             }
         }
 
@@ -650,7 +308,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return _subj.ToString() + " " + _pred.ToString() + " " + _obj.ToString();
+            return Subject.ToString() + " " + Predicate.ToString() + " " + Object.ToString();
         }
     }
 }

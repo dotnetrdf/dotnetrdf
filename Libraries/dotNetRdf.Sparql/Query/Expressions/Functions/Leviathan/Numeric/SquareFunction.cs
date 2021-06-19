@@ -43,44 +43,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             : base(expr) { }
 
         /// <summary>
-        /// Evaluates this expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = _expr.Evaluate(context, bindingID);
-            if (temp == null) throw new RdfQueryException("Cannot square a null");
-
-            switch (temp.NumericType)
-            {
-                case SparqlNumericType.Integer:
-                    var l = temp.AsInteger();
-                    return new LongNode(l * l);
-                case SparqlNumericType.Decimal:
-                    var d = temp.AsDecimal();
-                    return new DecimalNode(d * d);
-                case SparqlNumericType.Float:
-                    var f = temp.AsFloat();
-                    return new FloatNode(f * f);
-                case SparqlNumericType.Double:
-                    var dbl = temp.AsDouble();
-                    return new DoubleNode(Math.Pow(dbl, 2));
-                case SparqlNumericType.NaN:
-                default:
-                    throw new RdfQueryException("Cannot square a non-numeric argument");
-            }
-        }
-
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Square + ">(" + _expr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Square + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSquareFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSquareFunction(this);
         }
 
         /// <summary>
@@ -112,7 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new SquareFunction(transformer.Transform(_expr));
+            return new SquareFunction(transformer.Transform(InnerExpression));
         }
     }
 }

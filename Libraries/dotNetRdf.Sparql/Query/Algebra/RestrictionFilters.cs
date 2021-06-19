@@ -43,10 +43,6 @@ namespace VDS.RDF.Query.Algebra
     public abstract class VariableRestrictionFilter 
         : IFilter
     {
-        private readonly ISparqlAlgebra _pattern;
-        private readonly string _var;
-        private readonly ISparqlFilter _filter;
-
         /// <summary>
         /// Creates a new Variable Restriction Filter.
         /// </summary>
@@ -55,28 +51,15 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="filter">Filter to use.</param>
         public VariableRestrictionFilter(ISparqlAlgebra pattern, string var, ISparqlFilter filter)
         {
-            _pattern = pattern;
-            _var = var;
-            _filter = filter;
+            InnerAlgebra = pattern;
+            RestrictionVariable = var;
+            SparqlFilter = filter;
         }
-
-        /// <summary>
-        /// Evalutes the algebra for the given evaluation context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public abstract BaseMultiset Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
         /// Gets the Variable that this filter restricts the value of.
         /// </summary>
-        public string RestrictionVariable
-        {
-            get
-            {
-                return _var;
-            }
-        }
+        public string RestrictionVariable { get; }
 
         /// <summary>
         /// Gets the Variables used in the Algebra.
@@ -85,41 +68,29 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (_pattern.Variables.Concat(_filter.Variables)).Distinct();
+                return (InnerAlgebra.Variables.Concat(SparqlFilter.Variables)).Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
 
         /// <summary>
         /// Gets the Filter to be used.
         /// </summary>
-        public ISparqlFilter SparqlFilter
-        {
-            get
-            {
-                return _filter;
-            }
-        }
+        public ISparqlFilter SparqlFilter { get; }
 
         /// <summary>
         /// Gets the Inner Algebra.
         /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get
-            {
-                return _pattern;
-            }
-        }
+        public ISparqlAlgebra InnerAlgebra { get; }
 
         /// <summary>
         /// Gets the String representation of the FILTER.
@@ -127,10 +98,14 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            var filter = _filter.ToString();
+            var filter = SparqlFilter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
-            return GetType().Name + "(" + _pattern.ToString() + ", " + filter + ")";
+            return GetType().Name + "(" + InnerAlgebra.ToString() + ", " + filter + ")";
         }
+
+        public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context);
+
+        public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
 
         /// <summary>
         /// Converts the Algebra back to a SPARQL Query.
@@ -150,9 +125,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            var p = _pattern.ToGraphPattern();
+            var p = InnerAlgebra.ToGraphPattern();
             var f = new GraphPattern();
-            f.AddFilter(_filter);
+            f.AddFilter(SparqlFilter);
             p.AddGraphPattern(f);
             return p;
         }
@@ -171,8 +146,6 @@ namespace VDS.RDF.Query.Algebra
     public abstract class SingleValueRestrictionFilter 
         : VariableRestrictionFilter
     {
-        private ConstantTerm _term;
-
         /// <summary>
         /// Creates a new Single Value Restriction Filter.
         /// </summary>
@@ -183,112 +156,22 @@ namespace VDS.RDF.Query.Algebra
         public SingleValueRestrictionFilter(ISparqlAlgebra pattern, string var, ConstantTerm term, ISparqlFilter filter)
             : base(pattern, var, filter)
         {
-            _term = term;
+            RestrictionValue = term;
         }
 
         /// <summary>
         /// Gets the Value Restriction which this filter applies.
         /// </summary>
-        public ConstantTerm RestrictionValue
+        public ConstantTerm RestrictionValue { get; }
+
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
-            get
-            {
-                return _term;
-            }
+            return processor.ProcessSingleValueRestrictionFilter(this, context);
         }
 
-        /// <summary>
-        /// Applies the Filter over the results of evaluating the inner pattern.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public sealed override BaseMultiset Evaluate(SparqlEvaluationContext context)
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
-            INode term = _term.Evaluate(null, 0);
-
-            // First take appropriate pre-filtering actions
-            if (context.InputMultiset is IdentityMultiset)
-            {
-                // If the Input is Identity switch the input to be a Multiset containing a single Set
-                // where the variable is bound to the term
-                context.InputMultiset = new Multiset();
-                var s = new Set();
-                s.Add(RestrictionVariable, term);
-                context.InputMultiset.Add(s);
-            }
-            else if (context.InputMultiset is NullMultiset)
-            {
-                // If Input is Null then output is Null
-                context.OutputMultiset = context.InputMultiset;
-                return context.OutputMultiset;
-            }
-            else
-            {
-                if (context.InputMultiset.ContainsVariable(RestrictionVariable))
-                {
-                    // If the Input Multiset contains the variable then pre-filter
-                    foreach (var id in context.InputMultiset.SetIDs.ToList())
-                    {
-                        ISet x = context.InputMultiset[id];
-                        try
-                        {
-                            if (x.ContainsVariable(RestrictionVariable))
-                            {
-                                // If does exist check it has appropriate value and if not remove it
-                                if (!term.Equals(x[RestrictionVariable])) context.InputMultiset.Remove(id);
-                            }
-                            else
-                            {
-                                // If doesn't exist for this set then bind it to the term
-                                x.Add(RestrictionVariable, term);
-                            }
-                        }
-                        catch (RdfQueryException)
-                        {
-                            context.InputMultiset.Remove(id);
-                        }
-                    }
-                }
-                else
-                {
-                    // If it doesn't contain the variable then bind for each existing set
-                    foreach (ISet x in context.InputMultiset.Sets)
-                    {
-                        x.Add(RestrictionVariable, term);
-                    }
-                }
-            }
-
-            // Then evaluate the inner algebra
-            BaseMultiset results = context.Evaluate(InnerAlgebra);
-            if (results is NullMultiset || results is IdentityMultiset) return results;
-
-            // Filter the results to ensure that the variable is indeed bound to the term
-            foreach (var id in results.SetIDs.ToList())
-            {
-                ISet x = results[id];
-                try
-                {
-                    if (!term.Equals(x[RestrictionVariable]))
-                    {
-                        results.Remove(id);
-                    }
-                }
-                catch (RdfQueryException)
-                {
-                    results.Remove(id);
-                }
-            }
-
-            if (results.Count > 0)
-            {
-                context.OutputMultiset = results;
-            }
-            else
-            {
-                context.OutputMultiset = new NullMultiset();
-            }
-            return context.OutputMultiset;
+            return visitor.VisitSingleValueRestrictionFilter(this);
         }
     }
 

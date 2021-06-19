@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="expr">Expression.</param>
         /// <param name="baseContext">The base evaluation context providing access to the query evaluation options to use when evaluating the join.</param>
         /// <returns></returns>
-        public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext)
+        public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext, ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
         {
             // If the Other is the Identity/Null Multiset the result is this Multiset
             if (other is IdentityMultiset) return this;
@@ -211,7 +211,7 @@ namespace VDS.RDF.Query.Algebra
                 if (subcontext.Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
                     var partitionedSet = new PartitionedMultiset(Count, other.Count + 1);
-                    Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr, baseContext));
+                    Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr, baseContext, expressionProcessor));
                     return partitionedSet;
                 }
                 // Do a serial Left Join Product
@@ -227,7 +227,7 @@ namespace VDS.RDF.Query.Algebra
                         try
                         {
                             joinedSet.Add(z);
-                            if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                            if (!expr.Accept(expressionProcessor, subcontext, z.ID).AsSafeBoolean())
                             {
                                 joinedSet.Remove(z.ID);
                                 standalone = true;
@@ -288,21 +288,21 @@ namespace VDS.RDF.Query.Algebra
                 // Then do a pass over the LHS and work out the intersections
                 if (subcontext.Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
-                    Sets.AsParallel().ForAll(x => EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr));
+                    Sets.AsParallel().ForAll(x => EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr, expressionProcessor));
                 }
                 else
                 {
                     // Use a Serial Left Join
                     foreach (ISet x in Sets)
                     {
-                        EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr);
+                        EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr, expressionProcessor);
                     }
                 }
             }
             return joinedSet;
         }
 
-        private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr, SparqlEvaluationContext baseContext)
+        private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr, SparqlEvaluationContext baseContext, ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
         {
             var binder = new LeviathanLeftJoinBinder(partitionedSet);
             var subcontext = new SparqlEvaluationContext(binder, baseContext.Options);
@@ -317,7 +317,7 @@ namespace VDS.RDF.Query.Algebra
                 try
                 {
                     partitionedSet.Add(z);
-                    if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                    if (!expr.Accept(expressionProcessor, subcontext, z.ID).AsSafeBoolean())
                     {
                         partitionedSet.Remove(z.ID);
                         standalone = true;
@@ -341,7 +341,7 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
-        private void EvalLeftJoin(ISet x, BaseMultiset other, List<string> joinVars, List<MultiDictionary<INode, List<int>>> values, List<List<int>> nulls, BaseMultiset joinedSet, SparqlEvaluationContext subcontext, ISparqlExpression expr)
+        private void EvalLeftJoin(ISet x, BaseMultiset other, List<string> joinVars, List<MultiDictionary<INode, List<int>>> values, List<List<int>> nulls, BaseMultiset joinedSet, SparqlEvaluationContext subcontext, ISparqlExpression expr, ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
         {
             IEnumerable<int> possMatches = null;
             var i = 0;
@@ -386,7 +386,7 @@ namespace VDS.RDF.Query.Algebra
                     joinedSet.Add(z);
                     try
                     {
-                        if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                        if (!expr.Accept(expressionProcessor, subcontext, z.ID).AsSafeBoolean())
                         {
                             joinedSet.Remove(z.ID);
                         }

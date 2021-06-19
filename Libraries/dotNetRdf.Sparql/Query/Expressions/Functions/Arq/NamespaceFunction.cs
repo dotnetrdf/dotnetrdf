@@ -42,39 +42,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         public NamespaceFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Gets the value of the function in the given Evaluation Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode temp = _expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                if (temp.NodeType == NodeType.Uri)
-                {
-                    var u = (IUriNode)temp;
-                    if (!u.Uri.Fragment.Equals(string.Empty))
-                    {
-                        return new StringNode(null, u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('#') + 1));
-                    }
-                    else
-                    {
-                        return new StringNode(null, u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('/') + 1));
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot find the Local Name for a non-URI Node");
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot find the Local Name for a null");
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of the function.
@@ -82,7 +49,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace + ">(" + _expr.ToString() + ")";
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessNamespaceFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitNamespaceFunction(this);
         }
 
         /// <summary>
@@ -114,7 +91,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new NamespaceFunction(transformer.Transform(_expr));
+            return new NamespaceFunction(transformer.Transform(InnerExpression));
         }
     }
 }

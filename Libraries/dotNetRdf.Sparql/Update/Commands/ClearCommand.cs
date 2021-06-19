@@ -213,46 +213,6 @@ namespace VDS.RDF.Update.Commands
         public ClearMode Mode { get; }
 
         /// <summary>
-        /// Evaluates the Command in the given Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlUpdateEvaluationContext context)
-        {
-            try
-            {
-                switch (Mode)
-                {
-                    case ClearMode.Graph:
-                    case ClearMode.Default:
-                        if (context.Data.HasGraph(TargetGraphName))
-                        {
-                            context.Data.GetModifiableGraph(TargetGraphName).Clear();
-                        }
-                        break;
-                    case ClearMode.Named:
-                        foreach (IRefNode u in context.Data.GraphNames)
-                        {
-                            if (u != null)
-                            {
-                                context.Data.GetModifiableGraph(u).Clear();
-                            }
-                        }
-                        break;
-                    case ClearMode.All:
-                        foreach (IRefNode u in context.Data.GraphNames)
-                        {
-                                context.Data.GetModifiableGraph(u).Clear();
-                        }
-                        break;
-                }
-            }
-            catch
-            {
-                if (!Silent) throw;
-            }
-        }
-
-        /// <summary>
         /// Processes the Command using the given Update Processor.
         /// </summary>
         /// <param name="processor">SPARQL Update Processor.</param>

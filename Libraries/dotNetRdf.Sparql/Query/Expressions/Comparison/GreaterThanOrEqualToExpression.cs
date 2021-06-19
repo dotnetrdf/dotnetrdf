@@ -43,34 +43,6 @@ namespace VDS.RDF.Query.Expressions.Comparison
         public GreaterThanOrEqualToExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) : base(leftExpr, rightExpr) { }
 
         /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode a, b;
-            a = _leftExpr.Evaluate(context, bindingID);
-            b = _rightExpr.Evaluate(context, bindingID);
-
-            if (a == null)
-            {
-                if (b == null)
-                {
-                    return new BooleanNode(true);
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot evaluate a >= when one argument is null");
-                }
-            }
-
-            var compare = context.NodeComparer.Compare(a, b);// a.CompareTo(b);
-            return new BooleanNode(compare >= 0);
-        }
-
-        /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
@@ -95,6 +67,16 @@ namespace VDS.RDF.Query.Expressions.Comparison
                 output.Append(_rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessGreaterThanOrEqualToExpression(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitGreaterThanOrEqualToExpression(this);
         }
 
         /// <summary>

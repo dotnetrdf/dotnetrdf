@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Does this operator select all variables?.
         /// </summary>
-        public bool IsSelectAll { get; private set; }
+        public bool IsSelectAll { get; }
 
         /// <summary>
         /// Gets the Inner Algebra.
@@ -71,74 +71,6 @@ namespace VDS.RDF.Query.Algebra
             {
                 return _pattern;
             }
-        }
-
-        /// <summary>
-        /// Trims the Results of evaluating the inner pattern to remove Variables which are not Result Variables.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            try
-            {
-                context.InputMultiset = context.Evaluate(_pattern);
-            }
-            catch (RdfQueryTimeoutException)
-            {
-                // If not partial results throw the error
-                if (context.Query == null || !context.Query.PartialResultsOnTimeout) throw;
-            }
-
-            // Ensure expected variables are present
-            var vars = new HashSet<SparqlVariable>(_variables);
-            if (context.InputMultiset is NullMultiset)
-            {
-                context.InputMultiset = new Multiset(vars.Select(v => v.Name));
-            }
-            else if (context.InputMultiset is IdentityMultiset)
-            {
-                context.InputMultiset = new Multiset(vars.Select(v => v.Name));
-                context.InputMultiset.Add(new Set());
-            }
-            else if (context.InputMultiset.IsEmpty)
-            {
-                foreach (SparqlVariable var in vars)
-                {
-                    context.InputMultiset.AddVariable(var.Name);
-                }
-            }
-
-            // Trim Variables that aren't being SELECTed
-            if (!IsSelectAll)
-            {
-                foreach (var var in context.InputMultiset.Variables.ToList())
-                {
-                    if (!vars.Any(v => v.Name.Equals(var) && v.IsResultVariable))
-                    {
-                        // If not a Result variable then trim from results
-                        context.InputMultiset.Trim(var);
-                    }
-                }
-            }
-
-            // Ensure all SELECTed variables are present
-            foreach (SparqlVariable var in vars)
-            {
-                if (!context.InputMultiset.ContainsVariable(var.Name))
-                {
-                    context.InputMultiset.AddVariable(var.Name);
-                }
-            }
-
-            context.OutputMultiset = context.InputMultiset;
-
-            // Apply variable ordering if applicable
-            if (!IsSelectAll && (context.Query == null || SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType)))
-            {
-                context.OutputMultiset.SetVariableOrder(context.Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name));
-            }
-            return context.OutputMultiset;
         }
 
         /// <summary>
@@ -198,7 +130,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Select(" + _pattern.ToString() + ")";
+            return "Select(" + _pattern + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessSelect(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitSelect(this);
         }
 
         /// <summary>

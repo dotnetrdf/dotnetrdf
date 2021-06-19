@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using System.Security.Cryptography;
-
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
     /// <summary>
@@ -39,11 +37,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// </summary>
         /// <param name="expr">Argument Expression.</param>
         public Sha384HashFunction(ISparqlExpression expr)
-#if NETCORE
-            : base(expr, SHA384.Create()) { }
-#else
-            : base(expr, new SHA384Managed()) { }
-#endif
+            : base(expr) { }
         /// <summary>
         /// Gets the Functor of the Expression.
         /// </summary>
@@ -61,7 +55,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + InnerExpression + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSha384HashFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSha384HashFunction(this);
         }
 
         /// <summary>
@@ -71,7 +75,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new Sha384HashFunction(transformer.Transform(_expr));
+            return new Sha384HashFunction(transformer.Transform(InnerExpression));
         }
     }
 }

@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Paths;
 
 namespace VDS.RDF.Query.Patterns
@@ -95,52 +94,14 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get; } = Enumerable.Empty<string>();
 
-        /// <summary>
-        /// Evaluates a property path pattern.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlEvaluationContext context)
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
-            // Try and generate an Algebra expression
-            // Make sure we don't generate clashing temporary variable IDs over the life of the
-            // Evaluation
-            var transformContext = new PathTransformContext(Subject, Object);
-            if (context["PathTransformID"] != null)
-            {
-                transformContext.NextID = (int)context["PathTransformID"];
-            }
-            ISparqlAlgebra algebra = Path.ToAlgebra(transformContext);
-            context["PathTransformID"] = transformContext.NextID + 1;
+            return processor.ProcessPropertyPathPattern(this, context);
+        }
 
-            // Now we can evaluate the resulting algebra
-            BaseMultiset initialInput = context.InputMultiset;
-            var trimMode = context.TrimTemporaryVariables;
-            var rigMode = context.Options.RigorousEvaluation;
-            try
-            {
-                // Must enable rigorous evaluation or we get incorrect interactions between property and non-property path patterns
-                context.Options.RigorousEvaluation = true;
-
-                // Note: We may need to preserve Blank Node variables across evaluations
-                // which we usually don't do BUT because of the way we translate only part of the path
-                // into an algebra at a time and may need to do further nested translate calls we do
-                // need to do this here
-                context.TrimTemporaryVariables = false;
-                BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
-                // Also note that we don't trim temporary variables here even if we've set the setting back
-                // to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
-
-                // Once we have our results can join then into our input
-                context.OutputMultiset = result is NullMultiset ? new NullMultiset() : initialInput.Join(result);
-
-                // If we reach here we've successfully evaluated the simple pattern and can return
-                return;
-            }
-            finally
-            {
-                context.TrimTemporaryVariables = trimMode;
-                context.Options.RigorousEvaluation = rigMode;
-            }
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitPropertyPathPattern(this);
         }
 
         /// <summary>

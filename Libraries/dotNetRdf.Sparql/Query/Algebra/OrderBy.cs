@@ -54,31 +54,6 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Order By clause.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            context.InputMultiset = context.Evaluate(_pattern);//this._pattern.Evaluate(context);
-
-            if (context.Query != null)
-            {
-                if (context.Query.OrderBy != null)
-                {
-                    context.Query.OrderBy.Context = context;
-                    context.InputMultiset.Sort(context.Query.OrderBy);
-                }
-            }
-            else if (_ordering != null)
-            {
-                context.InputMultiset.Sort(_ordering);
-            }
-            context.OutputMultiset = context.InputMultiset;
-            return context.OutputMultiset;
-        }
-
-        /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
@@ -130,7 +105,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "OrderBy(" + _pattern.ToString() + ")";
+            return "OrderBy(" + _pattern + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessOrderBy(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitOrderBy(this);
         }
 
         /// <summary>

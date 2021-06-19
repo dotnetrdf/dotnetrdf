@@ -43,12 +43,7 @@ namespace VDS.RDF.Query.PropertyFunctions
             get;
         }
 
-        /// <summary>
-        /// Evaluates the function in the given context.
-        /// </summary>
-        /// <param name="context">Context.</param>
-        /// <returns></returns>
-        BaseMultiset Evaluate(SparqlEvaluationContext context);
+        
 
         /// <summary>
         /// Gets the variables used in the function.

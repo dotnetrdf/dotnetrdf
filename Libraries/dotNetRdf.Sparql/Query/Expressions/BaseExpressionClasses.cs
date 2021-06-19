@@ -24,10 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions
 {
@@ -38,32 +36,27 @@ namespace VDS.RDF.Query.Expressions
         : ISparqlExpression
     {
         /// <summary>
-        /// The sub-expression of this Expression.
-        /// </summary>
-        protected ISparqlExpression _expr;
-
-        /// <summary>
         /// Creates a new Base Unary Expression.
         /// </summary>
         /// <param name="expr">Expression.</param>
         public BaseUnaryExpression(ISparqlExpression expr)
         {
-            _expr = expr;
+            InnerExpression = expr;
         }
 
         /// <summary>
-        /// Evaluates the expression.
+        /// The sub-expression of this Expression.
         /// </summary>
-        /// <param name="context">Evaluuation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
+        public ISparqlExpression InnerExpression { get; }
 
         /// <summary>
         /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+        public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
         /// Gets an enumeration of all the Variables used in this expression.
@@ -72,7 +65,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return _expr.Variables;
+                return InnerExpression.Variables;
             }
         }
 
@@ -99,7 +92,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return _expr.AsEnumerable();
+                return InnerExpression.AsEnumerable();
             }
         }
 
@@ -110,7 +103,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return _expr.CanParallelise;
+                return InnerExpression.CanParallelise;
             }
         }
 
@@ -138,25 +131,31 @@ namespace VDS.RDF.Query.Expressions
         /// </summary>
         /// <param name="leftExpr">Left Expression.</param>
         /// <param name="rightExpr">Right Expression.</param>
-        public BaseBinaryExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr)
+        protected BaseBinaryExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr)
         {
             _leftExpr = leftExpr;
             _rightExpr = rightExpr;
         }
 
         /// <summary>
-        /// Evaluates the expression.
+        /// Get the sub-expression on the left-hand side of this expression.
         /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
+        public ISparqlExpression LeftExpression { get => _leftExpr; }
 
+        /// <summary>
+        /// Get the sub-expression on the right-hand side of this expression.
+        /// </summary>
+        public ISparqlExpression RightExpression { get => _rightExpr; }
+
+        
         /// <summary>
         /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+        public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
         /// Gets an enumeration of all the Variables used in this expression.

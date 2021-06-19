@@ -33,7 +33,10 @@ using System.Threading.Tasks;
 
 namespace VDS.RDF.Storage
 {
-    internal class GraphContent: HttpContent
+    /// <summary>
+    /// Represents and HTTP entity body that carries a serialization of an RDF graph.
+    /// </summary>
+    public class GraphContent: HttpContent
     {
         private readonly IGraph _graph;
         private readonly IRdfWriter _writer;
@@ -50,6 +53,12 @@ namespace VDS.RDF.Storage
 
         private MemoryStream _buffer;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="GraphContent"/> carrying
+        /// the specified RDF graph in the specified serialization.
+        /// </summary>
+        /// <param name="graph">The graph to be used for the payload content.</param>
+        /// <param name="contentType">The MIME type of the payload.</param>
         public GraphContent(IGraph graph, string contentType)
         {
             _graph = graph;
@@ -57,6 +66,11 @@ namespace VDS.RDF.Storage
             Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="GraphContent"/>.
+        /// </summary>
+        /// <param name="graph">The graph to be used for the payload content.</param>
+        /// <param name="writer">The writer to use to serialize the graph.</param>
         public GraphContent(IGraph graph, IRdfWriter writer)
         {
             _graph = graph;
@@ -64,6 +78,7 @@ namespace VDS.RDF.Storage
             Headers.ContentType = MediaTypeHeaderValue.Parse(MimeTypesHelper.GetMimeType(writer));
         }
 
+        /// <inheritdoc />
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
             return Task.Run(() =>
@@ -81,6 +96,7 @@ namespace VDS.RDF.Storage
             });
         }
 
+        /// <inheritdoc />
         protected override bool TryComputeLength(out long length)
         {
             if (ContentLengthRequired)
@@ -95,6 +111,7 @@ namespace VDS.RDF.Storage
             return false;
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)

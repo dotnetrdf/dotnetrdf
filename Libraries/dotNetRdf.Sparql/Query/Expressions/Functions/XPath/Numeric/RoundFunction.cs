@@ -24,10 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Globalization;
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 {
     /// <summary>
@@ -44,54 +40,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             : base(expr) { }
 
         /// <summary>
-        /// Gets the Numeric Value of the function as evaluated in the given Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode a = _expr.Evaluate(context, bindingID);
-            if (a == null) throw new RdfQueryException("Cannot calculate an arithmetic expression on a null");
-
-            switch (a.NumericType)
-            {
-                case SparqlNumericType.Integer:
-                    // Rounding an Integer has no effect
-                    return a;
-
-                case SparqlNumericType.Decimal:
-                    return new DecimalNode( Math.Round(a.AsDecimal(), MidpointRounding.AwayFromZero));
-
-                case SparqlNumericType.Float:
-                    try
-                    {
-                        return new FloatNode(Convert.ToSingle(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero), CultureInfo.InvariantCulture));
-                    }
-                    catch (RdfQueryException)
-                    {
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new RdfQueryException("Unable to cast the float value of a round to a float", ex);
-                    }
-
-                case SparqlNumericType.Double:
-                    return new DoubleNode(Math.Round(a.AsDouble(), MidpointRounding.AwayFromZero));
-
-                default:
-                    throw new RdfQueryException("Cannot evaluate an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Round + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Round + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessRoundFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitRoundFunction(this);
         }
 
         /// <summary>
@@ -123,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new RoundFunction(transformer.Transform(_expr));
+            return new RoundFunction(transformer.Transform(InnerExpression));
         }
     }
 }

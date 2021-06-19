@@ -40,12 +40,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
     {
         private string _pattern = null;
         private RegexOptions _options = RegexOptions.None;
-        private bool _fixedPattern = false, _fixedOptions = false;
+
         // private bool _useInStr = false;
-        private Regex _regex;
-        private ISparqlExpression _textExpr = null;
-        private ISparqlExpression _patternExpr = null;
-        private ISparqlExpression _optionExpr = null;
 
         /// <summary>
         /// Creates a new Regex() function expression.
@@ -63,14 +59,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <param name="options">Regular Expression Options.</param>
         public RegexFunction(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression options)
         {
-            _textExpr = text;
-            _patternExpr = pattern;
+            TextExpression = text;
+            PatternExpression = pattern;
 
             // Get the Pattern
-            if (pattern is ConstantTerm)
+            if (pattern is ConstantTerm constantPattern)
             {
                 // If the Pattern is a Node Expression Term then it is a fixed Pattern
-                INode n = pattern.Evaluate(null, 0);
+                INode n = constantPattern.Node;
                 if (n.NodeType == NodeType.Literal)
                 {
                     // Try to parse as a Regular Expression
@@ -80,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                         var temp = new Regex(p);
 
                         // It's a Valid Pattern
-                        _fixedPattern = true;
+                        FixedPattern = true;
                         // this._useInStr = p.ToCharArray().All(c => Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c));
                         _pattern = p;
                     }
@@ -94,29 +90,58 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             // Get the Options
             if (options != null)
             {
-                _optionExpr = options;
-                if (options is ConstantTerm)
+                OptionsExpression = options;
+                if (options is ConstantTerm constantOptions)
                 {
-                    ConfigureOptions(options.Evaluate(null, 0), false);
-                    _fixedOptions = true;
-                    if (_fixedPattern) _regex = new Regex(_pattern, _options);
+                    _options = GetOptions(constantOptions.Node, false);
+                    FixedOptions = true;
+                    if (FixedPattern) CompiledRegex = new Regex(_pattern, _options);
                 }
             }
             else
             {
-                if (_fixedPattern) _regex = new Regex(_pattern);
+                if (FixedPattern) CompiledRegex = new Regex(_pattern);
             }
         }
+
+        /// <summary>
+        /// Get the expression that yields the text to be tested.
+        /// </summary>
+        public ISparqlExpression TextExpression { get; } = null;
+
+        /// <summary>
+        /// Get the expression that yields the regular expression pattern to use.
+        /// </summary>
+        public ISparqlExpression PatternExpression { get; } = null;
+        /// <summary>
+        /// Get the expression that yields the options to apply to the regular expression evaulation.
+        /// </summary>
+        public ISparqlExpression OptionsExpression { get; } = null;
+        /// <summary>
+        /// True if <see cref="PatternExpression"/> is a constant.
+        /// </summary>
+        public bool FixedPattern { get; } = false;
+        /// <summary>
+        /// True if <see cref="OptionsExpression"/> is a constant.
+        /// </summary>
+        public bool FixedOptions { get; } = false;
+
+        /// <summary>
+        /// Get the compiled constant regular expression. This is only
+        /// non-null if the pattern expression is constant and the
+        /// options expression is either null or constant.
+        /// </summary>
+        public Regex CompiledRegex { get; }
 
         /// <summary>
         /// Configures the Options for the Regular Expression.
         /// </summary>
         /// <param name="n">Node detailing the Options.</param>
         /// <param name="throwErrors">Whether errors should be thrown or suppressed.</param>
-        private void ConfigureOptions(INode n, bool throwErrors)
+        public  static RegexOptions GetOptions(INode n, bool throwErrors)
         {
             // Start by resetting to no options
-            _options = RegexOptions.None;
+            RegexOptions options = RegexOptions.None;
 
             if (n == null)
             {
@@ -135,16 +160,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                         switch (c)
                         {
                             case 'i':
-                                _options |= RegexOptions.IgnoreCase;
+                                options |= RegexOptions.IgnoreCase;
                                 break;
                             case 'm':
-                                _options |= RegexOptions.Multiline;
+                                options |= RegexOptions.Multiline;
                                 break;
                             case 's':
-                                _options |= RegexOptions.Singleline;
+                                options |= RegexOptions.Singleline;
                                 break;
                             case 'x':
-                                _options |= RegexOptions.IgnorePatternWhitespace;
+                                options |= RegexOptions.IgnorePatternWhitespace;
                                 break;
                             default:
                                 if (throwErrors)
@@ -163,76 +188,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                     }
                 }
             }
+
+            return options;
         }
 
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            // Configure Options
-            if (_optionExpr != null && !_fixedOptions)
-            {
-                ConfigureOptions(_optionExpr.Evaluate(context, bindingID), true);
-            }
-
-            // Compile the Regex if necessary
-            if (!_fixedPattern)
-            {
-                // Regex is not pre-compiled
-                if (_patternExpr != null)
-                {
-                    IValuedNode p = _patternExpr.Evaluate(context, bindingID);
-                    if (p != null)
-                    {
-                        if (p.NodeType == NodeType.Literal)
-                        {
-                            _pattern = p.AsString();
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot parse a Pattern String from a non-Literal Node");
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Not a valid Pattern Expression");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Not a valid Pattern Expression or the fixed Pattern String was invalid");
-                }
-            }
-
-            // Execute the Regular Expression
-            IValuedNode textNode = _textExpr.Evaluate(context, bindingID);
-            if (textNode == null)
-            {
-                throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
-            }
-            if (textNode.NodeType == NodeType.Literal)
-            {
-                // Execute
-                var text = textNode.AsString();
-                if (_regex != null)
-                {
-                    return new BooleanNode(_regex.IsMatch(text));
-                }
-                else
-                {
-                    return new BooleanNode(Regex.IsMatch(text, _pattern, _options));
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot evaluate a Regular Expression against a non-Literal Node");
-            }
-
-        }
 
         /// <summary>
         /// Gets the String representation of this Expression.
@@ -242,9 +201,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             var output = new StringBuilder();
             output.Append("REGEX(");
-            output.Append(_textExpr.ToString());
+            output.Append(TextExpression.ToString());
             output.Append(",");
-            if (_fixedPattern)
+            if (FixedPattern)
             {
                 output.Append('"');
                 output.Append(_pattern);
@@ -252,15 +211,25 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
             else
             {
-                output.Append(_patternExpr.ToString());
+                output.Append(PatternExpression.ToString());
             }
-            if (_optionExpr != null)
+            if (OptionsExpression != null)
             {
-                output.Append("," + _optionExpr.ToString());
+                output.Append("," + OptionsExpression.ToString());
             }
             output.Append(")");
 
             return output.ToString();
+        }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessRegexFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitRegexFunction(this);
         }
 
         /// <summary>
@@ -271,9 +240,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             get
             {
                 var vs = new List<string>();
-                if (_textExpr != null) vs.AddRange(_textExpr.Variables);
-                if (_patternExpr != null) vs.AddRange(_patternExpr.Variables);
-                if (_optionExpr != null) vs.AddRange(_optionExpr.Variables);
+                if (TextExpression != null) vs.AddRange(TextExpression.Variables);
+                if (PatternExpression != null) vs.AddRange(PatternExpression.Variables);
+                if (OptionsExpression != null) vs.AddRange(OptionsExpression.Variables);
                 return vs;
             }
         }
@@ -307,13 +276,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             get
             {
-                if (_optionExpr != null)
+                if (OptionsExpression != null)
                 {
-                    return new ISparqlExpression[] { _textExpr, _patternExpr, _optionExpr };
+                    return new ISparqlExpression[] { TextExpression, PatternExpression, OptionsExpression };
                 }
                 else
                 {
-                    return new ISparqlExpression[] { _textExpr, _patternExpr };
+                    return new ISparqlExpression[] { TextExpression, PatternExpression };
                 }
             }
         }
@@ -325,7 +294,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             get
             {
-                return _textExpr.CanParallelise && _patternExpr.CanParallelise && (_optionExpr == null || _optionExpr.CanParallelise);
+                return TextExpression.CanParallelise && PatternExpression.CanParallelise && (OptionsExpression == null || OptionsExpression.CanParallelise);
             }
         }
 
@@ -336,13 +305,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (_optionExpr != null)
+            if (OptionsExpression != null)
             {
-                return new RegexFunction(transformer.Transform(_textExpr), transformer.Transform(_patternExpr), transformer.Transform(_optionExpr));
+                return new RegexFunction(transformer.Transform(TextExpression), transformer.Transform(PatternExpression), transformer.Transform(OptionsExpression));
             }
             else
             {
-                return new RegexFunction(transformer.Transform(_textExpr), transformer.Transform(_patternExpr));
+                return new RegexFunction(transformer.Transform(TextExpression), transformer.Transform(PatternExpression));
             }
         }
     }

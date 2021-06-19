@@ -38,9 +38,7 @@ namespace VDS.RDF.Query.Algebra
     public class Service
         : ITerminalOperator
     {
-        private readonly IToken _endpointSpecifier;
-        private readonly GraphPattern _pattern;
-        private readonly bool _silent;
+        public bool Silent { get; }
 
         /// <summary>
         /// Creates a new Service clause with the given Endpoint Specifier and Graph Pattern.
@@ -50,9 +48,9 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="silent">Whether Evaluation Errors are suppressed.</param>
         public Service(IToken endpointSpecifier, GraphPattern pattern, bool silent)
         {
-            _endpointSpecifier = endpointSpecifier;
-            _pattern = pattern;
-            _silent = silent;
+            EndpointSpecifier = endpointSpecifier;
+            Pattern = pattern;
+            Silent = silent;
         }
 
         /// <summary>
@@ -63,165 +61,6 @@ namespace VDS.RDF.Query.Algebra
         public Service(IToken endpointSpecifier, GraphPattern pattern)
             : this(endpointSpecifier, pattern, false) { }
 
-        /// <summary>
-        /// Evaluates the Service Clause by generating instance(s) of <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> as required and issuing the query to the remote endpoint(s).
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            SparqlRemoteEndpoint endpoint = GetRemoteEndpoint(context);
-            try
-            {
-                context.OutputMultiset = new Multiset();
-                foreach (var query in GetRemoteQueries(context, GetBindings(context)))
-                {
-                    // Try and get a Result Set from the Service
-                    SparqlResultSet results = endpoint.QueryWithResultSet(query.ToString());
-                    context.CheckTimeout();
-
-                    // Transform this Result Set back into a Multiset
-                    foreach (SparqlResult r in results)
-                    {
-                        context.OutputMultiset.Add(new Set(r));
-                    }
-                }
-                return context.OutputMultiset;
-            }
-            catch (Exception ex)
-            {
-                if (_silent)
-                {
-                    // If Evaluation Errors are SILENT is specified then a Multiset containing a single set with all values unbound is returned
-                    // Unless some of the SPARQL queries did return results in which we just return the results we did obtain
-                    if (context.OutputMultiset.IsEmpty)
-                    {
-                        Set s = new Set();
-                        foreach (String var in _pattern.Variables.Distinct())
-                        {
-                            s.Add(var, null);
-                        }
-                        context.OutputMultiset.Add(s);
-                    }
-                    return context.OutputMultiset;
-                }
-                else
-                {
-                    throw new RdfQueryException("Query execution failed because evaluating a SERVICE clause failed - this may be due to an error with the remote service", ex);
-                }
-            }
-        }
-
-        private SparqlRemoteEndpoint GetRemoteEndpoint(SparqlEvaluationContext context)
-        {
-            if (_endpointSpecifier.TokenType == Token.URI)
-            {
-                var baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.AbsoluteUri;
-                var endpointUri = context.UriFactory.Create(Tools.ResolveUri(_endpointSpecifier.Value, baseUri));
-                return new SparqlRemoteEndpoint(endpointUri);
-            }
-
-            if (_endpointSpecifier.TokenType == Token.VARIABLE)
-            {
-                // Get all the URIs that are bound to this Variable in the Input
-                String var = _endpointSpecifier.Value.Substring(1);
-                if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
-
-                var serviceEndpoints = context.InputMultiset.Sets
-                    .Select(set => set[var])
-                    .OfType<IUriNode>()
-                    .Distinct()
-                    .Select(u => new SparqlRemoteEndpoint(u.Uri));
-
-                return new FederatedSparqlRemoteEndpoint(serviceEndpoints);
-            }
-
-            throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + _endpointSpecifier.GetType().ToString() + " Token was provided");
-        }
-
-        private ISet[] GetBindings(SparqlEvaluationContext context)
-        {
-            var bindings = new HashSet<ISet>();
-            List<String> existingVars = (from v in _pattern.Variables
-                                         where context.InputMultiset.ContainsVariable(v)
-                                         select v).ToList();
-
-            if (existingVars.Any() || context.Query.Bindings != null)
-            {
-                // Build the set of possible bindings
-
-                if (context.Query.Bindings != null && !_pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
-                {
-                    // Possible Bindings comes from BINDINGS clause
-                    // In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
-                    foreach (BindingTuple tuple in context.Query.Bindings.Tuples)
-                    {
-                        bindings.Add(new Set(tuple));
-                    }
-                }
-                else
-                {
-                    // Possible Bindings get built from current input (if there was a BINDINGS clause the variables it defines are not in this SERVICE clause)
-                    // In this case each possibility only contains Variables bound so far
-                    foreach (ISet s in context.InputMultiset.Sets)
-                    {
-                        Set t = new Set();
-                        foreach (String var in existingVars)
-                        {
-                            t.Add(var, s[var]);
-                        }
-                        bindings.Add(t);
-                    }
-                }
-            }
-
-            return bindings.ToArray();
-        }
-
-        private IEnumerable<SparqlQuery> GetRemoteQueries(SparqlEvaluationContext context, ISet[] bindings)
-        {
-            if (bindings.Length == 0)
-            {
-                // No pre-bound variables/BINDINGS clause so just return the query
-                yield return GetRemoteQuery(context);
-            }
-            else
-            {
-                // Split bindings in chunks and inject them
-                foreach (var chunk in bindings.ChunkBy(100))
-                {
-                    var vars = chunk.SelectMany(x => x.Variables).Distinct();
-                    var data = new BindingsPattern(vars);
-                    foreach (var set in chunk)
-                    {
-                        var tuple = new BindingTuple(
-                            new List<string>(set.Variables),
-                            new List<PatternItem>(set.Values.Select(x => new NodeMatchPattern(x))));
-                        data.AddTuple(tuple);
-                    }
-                    var sparqlQuery = GetRemoteQuery(context);
-                    sparqlQuery.RootGraphPattern.AddInlineData(data);
-                    yield return sparqlQuery;
-                }
-            }
-        }
-
-        private SparqlQuery GetRemoteQuery(SparqlEvaluationContext context)
-        {
-            // Pass through LIMIT and OFFSET to the remote service
-
-            // Calculate a LIMIT which is the LIMIT plus the OFFSET
-            // We'll apply OFFSET locally so don't pass that through explicitly
-            var limit = context.Query.Limit;
-            if (context.Query.Offset > 0) limit += context.Query.Offset;
-
-            return new SparqlQuery
-            {
-                QueryType = SparqlQueryType.SelectAll,
-                Limit = limit,
-                RootGraphPattern = new GraphPattern(_pattern) { IsService = false },
-            };
-        }
 
         /// <summary>
         /// Gets the Variables used in the Algebra.
@@ -230,14 +69,14 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                if (_endpointSpecifier.TokenType == Token.VARIABLE)
+                if (EndpointSpecifier.TokenType == Token.VARIABLE)
                 {
-                    var serviceVar = ((VariableToken)_endpointSpecifier).Value.Substring(1);
-                    return _pattern.Variables.Concat(serviceVar.AsEnumerable()).Distinct();
+                    var serviceVar = ((VariableToken)EndpointSpecifier).Value.Substring(1);
+                    return Pattern.Variables.Concat(serviceVar.AsEnumerable()).Distinct();
                 }
                 else
                 {
-                    return _pattern.Variables.Distinct();
+                    return Pattern.Variables.Distinct();
                 }
             }
         }
@@ -262,24 +101,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Endpoint Specifier.
         /// </summary>
-        public IToken EndpointSpecifier
-        {
-            get
-            {
-                return _endpointSpecifier;
-            }
-        }
+        public IToken EndpointSpecifier { get; }
 
         /// <summary>
         /// Gets the Graph Pattern.
         /// </summary>
-        public GraphPattern Pattern
-        {
-            get
-            {
-                return _pattern;
-            }
-        }
+        public GraphPattern Pattern { get; }
 
         /// <summary>
         /// Gets the String representation of the Algebra.
@@ -287,7 +114,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Service(" + _endpointSpecifier.Value + ", " + _pattern + ")";
+            return "Service(" + EndpointSpecifier.Value + ", " + Pattern + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessService(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitService(this);
         }
 
         /// <summary>
@@ -307,16 +144,16 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            var p = new GraphPattern(_pattern);
+            var p = new GraphPattern(Pattern);
             if (!p.HasModifier)
             {
                 p.IsService = true;
-                p.GraphSpecifier = _endpointSpecifier;
+                p.GraphSpecifier = EndpointSpecifier;
                 return p;
             }
             else
             {
-                var parent = new GraphPattern {IsService = true, GraphSpecifier = _endpointSpecifier};
+                var parent = new GraphPattern {IsService = true, GraphSpecifier = EndpointSpecifier};
                 parent.AddGraphPattern(p);
                 return parent;
             }

@@ -24,10 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Text;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -39,8 +37,6 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class AverageAggregate
         : BaseAggregate
     {
-        private string _varname;
-
         /// <summary>
         /// Creates a new AVG Aggregate.
         /// </summary>
@@ -49,7 +45,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public AverageAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
-            _varname = expr.ToString().Substring(1);
+            Variable = expr.ToString().Substring(1);
         }
 
         /// <summary>
@@ -74,124 +70,12 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public AverageAggregate(ISparqlExpression expr)
             : this(expr, false) { }
 
-        /// <summary>
-        /// Applies the Average Aggregate function to the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+        public string Variable { get; }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            // Prep Variables
-            var values = new HashSet<IValuedNode>();
-            var count = 0;
-            // long lngtotal = 0;
-            var dectotal = 0.0m;
-            var flttotal = 0.0f;
-            var dbltotal = 0.0d;
-            SparqlNumericType maxtype = SparqlNumericType.NaN;
-            SparqlNumericType numtype;
-
-            foreach (var id in bindingIDs)
-            {
-                IValuedNode temp;
-                try
-                {
-                    temp = _expr.Evaluate(context, id);
-                    if (temp == null) return null;
-                    // Apply DISTINCT modifier if required
-                    if (_distinct)
-                    {
-                        if (values.Contains(temp))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            values.Add(temp);
-                        }
-                    }
-                    numtype = temp.NumericType;
-                }
-                catch
-                {
-                    // SPARQL Working Group changed spec so this should now return no binding
-                    return null;
-                }
-
-                // No result if anything resolves to non-numeric
-                if (numtype == SparqlNumericType.NaN) return null;
-
-                // Track the Numeric Type
-                if ((int)numtype > (int)maxtype)
-                {
-                    maxtype = numtype;
-                }
-
-                // Increment the Totals based on the current Numeric Type
-                switch (maxtype)
-                {
-                    case SparqlNumericType.Integer:
-                        // lngtotal += numExpr.IntegerValue(context, id);
-                        dectotal += temp.AsDecimal();
-                        flttotal += temp.AsFloat();
-                        dbltotal += temp.AsDouble();
-                        break;
-                    case SparqlNumericType.Decimal:
-                        dectotal += temp.AsDecimal();
-                        flttotal += temp.AsFloat();
-                        dbltotal += temp.AsDouble();
-                        break;
-                    case SparqlNumericType.Float:
-                        flttotal += temp.AsFloat();
-                        dbltotal += temp.AsDouble();
-                        break;
-                    case SparqlNumericType.Double:
-                        dbltotal += temp.AsDouble();
-                        break;
-                }
-
-                count++;
-            }
-
-            // Calculate the Average
-            if (count == 0)
-            {
-                return new LongNode(0);
-            }
-            else
-            {
-                // long lngavg;
-                decimal decavg;
-                float fltavg;
-                double dblavg;
-
-                switch (maxtype)
-                {
-                    case SparqlNumericType.Integer:
-                    ////Integer Values
-                    // lngavg = lngtotal / (long)count;
-                    // return new LiteralNode(null, lngavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
-
-                    case SparqlNumericType.Decimal:
-                        // Decimal Values
-                        decavg = dectotal / (decimal)count;
-                        return new DecimalNode(decavg);
-
-                    case SparqlNumericType.Float:
-                        // Float values
-                        fltavg = flttotal / (float)count;
-                        return new FloatNode(fltavg);
-
-                    case SparqlNumericType.Double:
-                        // Double Values
-                        dblavg = dbltotal / (double)count;
-                        return new DoubleNode(dblavg);
-
-                    default:
-                        throw new RdfQueryException("Failed to calculate a valid Average");
-                }
-            }
+            return processor.ProcessAverage(this, context, bindings);
         }
 
         /// <summary>

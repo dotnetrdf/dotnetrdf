@@ -39,9 +39,6 @@ namespace VDS.RDF.Query.Algebra
     public class PropertyFunction
         : IUnaryOperator
     {
-        private readonly ISparqlPropertyFunction _function;
-        private readonly ISparqlAlgebra _algebra;
-
         /// <summary>
         /// Creates a new Property function algebra.
         /// </summary>
@@ -49,20 +46,15 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="function">Property Function.</param>
         public PropertyFunction(ISparqlAlgebra algebra, ISparqlPropertyFunction function)
         {
-            _function = function;
-            _algebra = algebra;
+            Function = function;
+            InnerAlgebra = algebra;
         }
 
         /// <summary>
         /// Gets the Inner Algebra.
         /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get 
-            {
-                return _algebra;
-            }
-        }
+        public ISparqlAlgebra InnerAlgebra { get; }
+        public ISparqlPropertyFunction Function { get; }
 
         /// <summary>
         /// Transforms this algebra with the given optimiser.
@@ -71,18 +63,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new PropertyFunction(optimiser.Optimise(_algebra), _function);
-        }
-
-        /// <summary>
-        /// Evaluates the algebra in the given context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            context.InputMultiset = context.Evaluate(_algebra);
-            return _function.Evaluate(context);
+            return new PropertyFunction(optimiser.Optimise(InnerAlgebra), Function);
         }
 
         /// <summary>
@@ -92,7 +73,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return _algebra.Variables.Concat(_function.Variables).Distinct();
+                return InnerAlgebra.Variables.Concat(Function.Variables).Distinct();
             }
         }
 
@@ -105,14 +86,14 @@ namespace VDS.RDF.Query.Algebra
             {
                 // Floating variables includes those of the property function that aren't themselves fixed
                 var fixedVars = new HashSet<string>(FixedVariables);
-                return _algebra.FloatingVariables.Concat(_function.Variables.Where(v => !fixedVars.Contains(v))).Distinct();
+                return InnerAlgebra.FloatingVariables.Concat(Function.Variables.Where(v => !fixedVars.Contains(v))).Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _algebra.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
 
         /// <summary>
         /// Throws an error because property functions cannot be converted back to queries.
@@ -138,7 +119,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "PropertyFunction(" + _algebra.ToString() + "," + _function.FunctionUri + ")";
+            return "PropertyFunction(" + InnerAlgebra.ToString() + "," + Function.FunctionUri + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessPropertyFunction(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitPropertyFunction(this);
         }
     }
 }

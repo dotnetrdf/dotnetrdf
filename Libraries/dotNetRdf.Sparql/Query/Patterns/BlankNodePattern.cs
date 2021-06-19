@@ -74,13 +74,13 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
+        public override bool Accepts(IPatternEvaluationContext context, INode obj)
         {
-            if (context.Options.RigorousEvaluation || RigorousEvaluation)
+            if (context.RigorousEvaluation || RigorousEvaluation)
             {
-                if (context.InputMultiset.ContainsVariable(_name))
+                if (context.ContainsVariable(_name))
                 {
-                    return context.InputMultiset.ContainsValue(_name, obj);
+                    return context.ContainsValue(_name, obj);
                 }
                 else if (Repeated)
                 {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="context">Construct Context.</param>
         /// <returns></returns>
-        protected internal override INode Construct(ConstructContext context)
+        public override INode Construct(ConstructContext context)
         {
             return context.GetBlankNode(_name);
         }

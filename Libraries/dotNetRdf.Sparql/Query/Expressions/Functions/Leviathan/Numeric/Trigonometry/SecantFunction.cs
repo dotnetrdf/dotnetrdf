@@ -25,6 +25,7 @@
 */
 
 using System;
+using VDS.RDF.Query.Paths;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 {
@@ -34,7 +35,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
     public class SecantFunction
         : BaseTrigonometricFunction
     {
-        private bool _inverse = false;
         private static Func<double, double> _secant = (d => (1 / Math.Cos(d)));
         private static Func<double, double> _arcsecant = (d => Math.Acos(1 / d));
 
@@ -53,8 +53,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         public SecantFunction(ISparqlExpression expr, bool inverse)
             : base(expr)
         {
-            _inverse = inverse;
-            if (_inverse)
+            Inverse = inverse;
+            if (Inverse)
             {
                 _func = _arcsecant;
             }
@@ -64,20 +64,32 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             }
         }
 
+        public bool Inverse { get; }
+
         /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            if (_inverse)
+            if (Inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv + ">(" + _expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv + ">(" + InnerExpression.ToString() + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec + ">(" + _expr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec + ">(" + InnerExpression.ToString() + ")";
             }
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessSecantFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitSecantFunction(this);
         }
 
         /// <summary>
@@ -87,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             get
             {
-                if (_inverse)
+                if (Inverse)
                 {
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv;
                 }
@@ -105,7 +117,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new SecantFunction(transformer.Transform(_expr), _inverse);
+            return new SecantFunction(transformer.Transform(InnerExpression), Inverse);
         }
     }
 }

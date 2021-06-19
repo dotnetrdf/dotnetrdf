@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Expressions.Primary
 {
@@ -37,6 +38,7 @@ namespace VDS.RDF.Query.Expressions.Primary
     public class ConstantTerm
         : ISparqlExpression
     {
+        private static readonly SparqlFormatter Formatter = new SparqlFormatter();
         /// <summary>
         /// Node this Term represents.
         /// </summary>
@@ -58,16 +60,6 @@ namespace VDS.RDF.Query.Expressions.Primary
         public ConstantTerm(INode n)
             : this(n.AsValuedNode()) { }
 
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            return _node;
-        }
 
         /// <summary>
         /// Gets the String representation of this Expression.
@@ -75,7 +67,17 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.Formatter.Format(_node);
+            return Formatter.Format(_node);
+        }
+
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessConstantTerm(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitConstantTerm(this);
         }
 
         /// <summary>
@@ -136,7 +138,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <summary>
         /// Node this Term represents.
         /// </summary>
-        internal IValuedNode Node
+        public IValuedNode Node
         {
             get { return _node; }
         }

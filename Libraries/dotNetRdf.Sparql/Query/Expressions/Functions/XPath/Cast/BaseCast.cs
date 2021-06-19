@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 {
@@ -44,24 +43,24 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// Creates a new Base XPath Cast Expression.
         /// </summary>
         /// <param name="expr">Expression to be Cast.</param>
-        public BaseCast(ISparqlExpression expr)
+        protected BaseCast(ISparqlExpression expr)
         {
             _expr = expr;
         }
 
         /// <summary>
-        /// Gets the value of casting the result of the inner expression.
+        /// Get the expression to be cast by the cast function.
         /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
+        public ISparqlExpression InnerExpression { get => _expr; }
 
         /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+        public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
         /// Gets the enumeration of Variables involved in this expression.

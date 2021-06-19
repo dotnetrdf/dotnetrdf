@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using System;
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {
     /// <summary>
@@ -43,24 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public RootFunction(ISparqlExpression arg1, ISparqlExpression arg2)
             : base(arg1, arg2) { }
 
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode arg = _leftExpr.Evaluate(context, bindingID);
-            if (arg == null) throw new RdfQueryException("Cannot root a null");
-            IValuedNode root = _rightExpr.Evaluate(context, bindingID);
-            if (root == null) throw new RdfQueryException("Cannot root to a null root");
-
-            if (arg.NumericType == SparqlNumericType.NaN || root.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot root when one/both arguments are non-numeric");
-
-            return new DoubleNode(Math.Pow(arg.AsDouble(), (1d / root.AsDouble())));
-        }
-
+        
         /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
@@ -68,6 +48,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power + ">(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessRootFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitRootFunction(this);
         }
 
         /// <summary>

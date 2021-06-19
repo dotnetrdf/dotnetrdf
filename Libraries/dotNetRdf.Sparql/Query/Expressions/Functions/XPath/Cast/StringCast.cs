@@ -43,30 +43,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
             : base(expr) { }
 
         /// <summary>
-        /// Casts the results of the inner expression to a Literal Node typed xsd:string.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode n = _expr.Evaluate(context, bindingID);
-
-            if (n == null)
-            {
-                throw new RdfQueryException("Cannot cast a Null to a xsd:string");
-            }
-
-            return new StringNode(n.AsString(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-        }
-
-        /// <summary>
         /// Gets the String representation of the Expression.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeString + ">(" + _expr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessStringCast(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitStringCast(this);
         }
 
         /// <summary>

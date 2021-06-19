@@ -50,19 +50,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// </summary>
         /// <param name="expr">Expression.</param>
         /// <param name="set">Set.</param>
-        public BaseSetFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
+        protected BaseSetFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
         {
             _expr = expr;
             _expressions.AddRange(set);
         }
 
         /// <summary>
-        /// Gets the value of the function as evaluated for a given Binding in the given Context.
+        /// Get the expression term that the set function applies to.
         /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
+        public ISparqlExpression InnerExpression { get => _expr; }
+
+        /// <summary>
+        /// Get the expressions that make up the set used in the function.
+        /// </summary>
+        public IList<ISparqlExpression> SetExpressions { get => _expressions; }
+
+        public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+        public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
         /// Gets the Variable the function applies to.

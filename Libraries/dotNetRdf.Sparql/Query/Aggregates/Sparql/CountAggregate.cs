@@ -39,8 +39,6 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     public class CountAggregate
         : BaseAggregate
     {
-        private string _varname;
-
         /// <summary>
         /// Creates a new COUNT Aggregate.
         /// </summary>
@@ -48,7 +46,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public CountAggregate(VariableTerm expr)
             : base(expr)
         {
-            _varname = expr.ToString().Substring(1);
+            Variable = expr.ToString().Substring(1);
         }
 
         /// <summary>
@@ -58,41 +56,13 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public CountAggregate(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Counts the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
-        {
-            var c = 0;
-            if (_varname != null)
-            {
-                // Just Count the number of results where the variable is bound
-                var varExpr = (VariableTerm)_expr;
-                foreach (var id in bindingIDs)
-                {
-                    if (varExpr.Evaluate(context, id) != null) c++;
-                }
-            }
-            else
-            {
-                // Count the number of results where the result in not null/error
-                foreach (var id in bindingIDs)
-                {
-                    try
-                    {
-                        if (_expr.Evaluate(context, id) != null) c++;
-                    }
-                    catch
-                    {
-                        // Ignore errors
-                    }
-                }
-            }
+        public string Variable { get; }
 
-            return new LongNode(c);
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
+        {
+            return processor.ProcessCount(this, context, bindings);
         }
 
         /// <summary>

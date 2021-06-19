@@ -54,199 +54,6 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Evaluates the Graph Clause by setting up the dataset, applying the pattern and then generating additional bindings if necessary.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            // Q: Can we optimise GRAPH when the input is the Null Multiset to just return the Null Multiset?
-
-            var datasetOk = false;
-            try
-            {
-                var activeGraphs = new List<string>();
-
-                // Get the URIs of Graphs that should be evaluated over
-                if (_graphSpecifier.TokenType != Token.VARIABLE)
-                {
-                    switch (_graphSpecifier.TokenType)
-                    {
-                        case Token.URI:
-                        case Token.QNAME:
-                            IRefNode activeGraphName = new UriNode(context.UriFactory.Create(Tools.ResolveUriOrQName(_graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri)));
-                            if (context.Data.HasGraph(activeGraphName))
-                            {
-                                // If the Graph is explicitly specified and there are FROM/FROM NAMED present then the Graph 
-                                // URI must be in the graphs specified by a FROM/FROM NAMED or the result is null
-                                if (context.Query == null ||
-                                    (!context.Query.DefaultGraphNames.Any() && !context.Query.NamedGraphNames.Any()) || 
-                                    context.Query.NamedGraphNames.Contains(activeGraphName))
-                                {
-                                    // Either there was no Query 
-                                    // OR there were no Default/Named Graphs (hence any Graph URI is permitted) 
-                                    // OR the specified URI was a Named Graph URI
-                                    // In any case we can go ahead and set the active Graph
-                                    activeGraphs.Add(activeGraphName.ToSafeString());
-                                }
-                                else
-                                {
-                                    // The specified URI was not present in the Named Graphs so return null
-                                    context.OutputMultiset = new NullMultiset();
-                                    return context.OutputMultiset;
-                                }
-                            }
-                            else
-                            {
-                                // If specifies a specific Graph and not in the Dataset result is a null multiset
-                                context.OutputMultiset = new NullMultiset();
-                                return context.OutputMultiset;
-                            }
-                            break;
-                        default:
-                            throw new RdfQueryException("Cannot use a '" + _graphSpecifier.GetType() + "' Token to specify the Graph for a GRAPH clause");
-                    }
-                }
-                else
-                {
-                    var gvar = _graphSpecifier.Value.Substring(1);
-
-                    // Watch out for the case in which the Graph Variable is not bound for all Sets in which case
-                    // we still need to operate over all Graphs
-                    if (context.InputMultiset.ContainsVariable(gvar) && context.InputMultiset.Sets.All(s => s[gvar] != null))
-                    {
-                        // If there are already values bound to the Graph variable for all Input Solutions then we limit the Query to those Graphs
-                        var graphUris = new List<Uri>();
-                        foreach (ISet s in context.InputMultiset.Sets)
-                        {
-                            INode temp = s[gvar];
-                            if (temp == null) continue;
-                            if (temp.NodeType != NodeType.Uri) continue;
-                            activeGraphs.Add(temp.ToString());
-                            graphUris.Add(((IUriNode) temp).Uri);
-                        }
-                    }
-                    else
-                    {
-                        // Nothing yet bound to the Graph Variable so the Query is over all the named Graphs
-                        if (context.Query != null && context.Query.NamedGraphNames.Any())
-                        {
-                            // Query specifies one/more named Graphs
-                            activeGraphs.AddRange(context.Query.NamedGraphNames.Select(u => u.ToSafeString()));
-                        }
-                        else if (context.Query != null && context.Query.DefaultGraphNames.Any() && !context.Query.NamedGraphNames.Any())
-                        {
-                            // Gives null since the query dataset does not include any named graphs
-                            context.OutputMultiset = new NullMultiset();
-                            return context.OutputMultiset;
-                        }
-                        else
-                        {
-                            // Query is over entire dataset/default Graph since no named Graphs are explicitly specified
-                            activeGraphs.AddRange(context.Data.GraphNames.Select(u => u.ToSafeString()));
-                        }
-                    }
-                }
-
-                // Remove all duplicates from Active Graphs to avoid duplicate results
-                activeGraphs = activeGraphs.Distinct().ToList();
-
-                // Evaluate the inner pattern
-                BaseMultiset initialInput = context.InputMultiset;
-                BaseMultiset finalResult = new Multiset();
-
-                // Evaluate for each Graph URI and union the results
-                foreach (var uri in activeGraphs)
-                {
-                    // Always use the same Input for each Graph URI and set that Graph to be the Active Graph
-                    // Be sure to translate String.Empty back to the null URI to select the default graph
-                    // correctly
-                    context.InputMultiset = initialInput;
-                    IRefNode currGraphName = (uri.Equals(string.Empty)) ? null : 
-                        uri.StartsWith("_:") ? new BlankNode(uri) : new UriNode(context.UriFactory.Create(uri));
-
-                    // Set Active Graph
-                    if (currGraphName == null)
-                    {
-                        // GRAPH operates over named graphs only so default graph gets skipped
-                        continue;
-                    }
-                    // The result of the HasGraph() call is ignored we just make it so datasets with any kind of 
-                    // load on demand behaviour work properly
-                    context.Data.HasGraph(currGraphName);
-                    // All we actually care about is setting the active graph
-                    context.Data.SetActiveGraph(currGraphName);
-                    datasetOk = true;
-
-                    // Evaluate for the current Active Graph
-                    BaseMultiset result = context.Evaluate(_pattern);
-
-                    // Merge the Results into our overall Results
-                    if (result is NullMultiset)
-                    {
-                        // Don't do anything, adds nothing to the results
-                    }
-                    else if (result is IdentityMultiset)
-                    {
-                        // Adds a single row to the results
-                        if (_graphSpecifier.TokenType == Token.VARIABLE)
-                        {
-                            // Include graph variable if not yet bound
-                            INode currGraph = currGraphName;
-                            var s = new Set();
-                            s.Add(_graphSpecifier.Value.Substring(1), currGraph);
-                            finalResult.Add(s);
-                        }
-                        else
-                        {
-                            finalResult.Add(new Set());
-                        }
-                    }
-                    else
-                    {
-                        // If the Graph Specifier is a Variable then we must either bind the
-                        // variable or eliminate solutions which have an incorrect value for it
-                        if (_graphSpecifier.TokenType == Token.VARIABLE)
-                        {
-                            var gvar = _graphSpecifier.Value.Substring(1);
-                            foreach (var id in result.SetIDs.ToList())
-                            {
-                                ISet s = result[id];
-                                if (s[gvar] == null)
-                                {
-                                    // If Graph Variable is not yet bound for solution bind it
-                                    s.Add(gvar, currGraphName);
-                                }
-                                else if (!s[gvar].Equals(currGraphName))
-                                {
-                                    // If Graph Variable is bound for solution and doesn't match
-                                    // current Graph then we have to remove the solution
-                                    result.Remove(id);
-                                }
-                            }
-                        }
-                        // Union solutions into the Results
-                        finalResult.Union(result);
-                    }
-
-                    // Reset the Active Graph after each pass
-                    context.Data.ResetActiveGraph();
-                    datasetOk = false;
-                }
-
-                // Return the final result
-                if (finalResult.IsEmpty) finalResult = new NullMultiset();
-                context.OutputMultiset = finalResult;
-            }
-            finally
-            {
-                if (datasetOk) context.Data.ResetActiveGraph();
-            }
-
-            return context.OutputMultiset;
-        }
-
-        /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
         public IEnumerable<string> Variables
@@ -307,6 +114,16 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return $"Graph({_graphSpecifier.Value}, {_pattern})";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessGraph(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitGraph(this);
         }
 
         /// <summary>

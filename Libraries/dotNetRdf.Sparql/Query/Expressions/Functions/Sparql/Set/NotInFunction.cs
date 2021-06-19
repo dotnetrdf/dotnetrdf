@@ -45,48 +45,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public NotInFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
             : base(expr, set) { }
 
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            INode result = _expr.Evaluate(context, bindingID);
-            if (result != null)
-            {
-                if (_expressions.Count == 0) return new BooleanNode(true);
+            return processor.ProcessNotInFunction(this, context, binding);
+        }
 
-                // Have to use SPARQL Value Equality here
-                // If any expressions error and nothing in the set matches then an error is thrown
-                var errors = false;
-                foreach (ISparqlExpression expr in _expressions)
-                {
-                    try
-                    {
-                        INode temp = expr.Evaluate(context, bindingID);
-                        if (SparqlSpecsHelper.Equality(result, temp)) return new BooleanNode(false);
-                    }
-                    catch
-                    {
-                        errors = true;
-                    }
-                }
-
-                if (errors)
-                {
-                    throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
-                }
-                else
-                {
-                    return new BooleanNode(true);
-                }
-            }
-            else
-            {
-                return new BooleanNode(true);
-            }
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitNotInFunction(this);
         }
 
         /// <summary>

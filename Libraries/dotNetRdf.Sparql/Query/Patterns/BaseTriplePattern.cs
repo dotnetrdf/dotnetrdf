@@ -40,11 +40,10 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         protected List<string> _vars = new List<string>();
 
-        /// <summary>
-        /// Evaluates the Triple Pattern in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public abstract void Evaluate(SparqlEvaluationContext context);
+        public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor,
+            TContext context);
+
+        public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
 
         /// <summary>
         /// Returns whether the Triple Pattern is an accept all.

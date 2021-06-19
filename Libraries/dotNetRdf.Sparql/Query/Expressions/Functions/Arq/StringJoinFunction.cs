@@ -40,10 +40,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     public class StringJoinFunction 
         : ISparqlExpression
     {
-        private ISparqlExpression _sep;
-        private string _separator;
-        private bool _fixedSeparator = false;
-        private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
+        private readonly List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
+
+        public string Separator { get; }
+        public bool FixedSeparator { get; } = false;
+        public ISparqlExpression SeparatorExpression { get; }
+        public IList<ISparqlExpression> Expressions { get => _exprs; }
 
         /// <summary>
         /// Creates a new ARQ String Join function.
@@ -52,70 +54,28 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <param name="expressions">Expressions to concatentate.</param>
         public StringJoinFunction(ISparqlExpression sepExpr, IEnumerable<ISparqlExpression> expressions)
         {
-            if (sepExpr is ConstantTerm)
+            if (sepExpr is ConstantTerm ct && ct.Node.NodeType == NodeType.Literal)
             {
-                IValuedNode temp = sepExpr.Evaluate(null, 0);
-                if (temp.NodeType == NodeType.Literal)
-                {
-                    _separator = temp.AsString();
-                    _fixedSeparator = true;
-                }
-                else
-                {
-                    _sep = sepExpr;
-                }
+                Separator = ct.Node.AsString();
+                FixedSeparator = true;
             }
             else
             {
-                _sep = sepExpr;
+                SeparatorExpression = sepExpr;
             }
+
             _exprs.AddRange(expressions);
         }
 
-        /// <summary>
-        /// Gets the value of the function in the given Evaluation Context for the given Binding ID.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            var output = new StringBuilder();
-            for (var i = 0; i < _exprs.Count; i++)
-            {
-                IValuedNode temp = _exprs[i].Evaluate(context, bindingID);
-                if (temp == null) throw new RdfQueryException("Cannot evaluate the ARQ string-join() function when an argument evaluates to a Null");
-                switch (temp.NodeType)
-                {
-                    case NodeType.Literal:
-                        output.Append(temp.AsString());
-                        break;
-                    default:
-                        throw new RdfQueryException("Cannot evaluate the ARQ string-join() function when an argument is not a Literal Node");
-                }
-                if (i < _exprs.Count - 1)
-                {
-                    if (_fixedSeparator)
-                    {
-                        output.Append(_separator);
-                    }
-                    else
-                    {
-                        IValuedNode sep = _sep.Evaluate(context, bindingID);
-                        if (sep == null) throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a Null");
-                        if (sep.NodeType == NodeType.Literal)
-                        {
-                            output.Append(sep.AsString());
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a non-Literal Node");
-                        }
-                    }
-                }
-            }
 
-            return new StringNode(output.ToString(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+        public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessStringJoinFunction(this, context, binding);
+        }
+
+        public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitStringJoinFunction(this);
         }
 
         /// <summary>
@@ -142,7 +102,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             output.Append(ArqFunctionFactory.ArqFunctionsNamespace);
             output.Append(ArqFunctionFactory.StrJoin);
             output.Append(">(");
-            output.Append(_sep.ToString());
+            output.Append(SeparatorExpression.ToString());
             output.Append(",");
             for (var i = 0; i < _exprs.Count; i++)
             {
@@ -182,7 +142,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         {
             get
             {
-                return _sep.AsEnumerable().Concat(_exprs);
+                return SeparatorExpression.AsEnumerable().Concat(_exprs);
             }
         }
 
@@ -193,7 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         {
             get
             {
-                return _sep.CanParallelise && _exprs.All(e => e.CanParallelise);
+                return SeparatorExpression.CanParallelise && _exprs.All(e => e.CanParallelise);
             }
         }
 
@@ -204,7 +164,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StringJoinFunction(transformer.Transform(_sep), _exprs.Select(e => transformer.Transform(e)));
+            return new StringJoinFunction(transformer.Transform(SeparatorExpression), _exprs.Select(e => transformer.Transform(e)));
         }
     }
 }

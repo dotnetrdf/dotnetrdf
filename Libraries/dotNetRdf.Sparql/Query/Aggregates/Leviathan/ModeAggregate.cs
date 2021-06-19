@@ -40,8 +40,6 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
     public class ModeAggregate
         : BaseAggregate
     {
-        private string _varname;
-
         /// <summary>
         /// Creates a new MODE Aggregate.
         /// </summary>
@@ -64,7 +62,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public ModeAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
-            _varname = expr.ToString().Substring(1);
+            Variable = expr.ToString().Substring(1);
         }
         /// <summary>
         /// Creates a new MODE Aggregate.
@@ -74,63 +72,13 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public ModeAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
-        /// <summary>
-        /// Applies the Mode Aggregate function to the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+        public string Variable { get; }
+
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            if (_varname != null)
-            {
-                // Ensured the MODEd variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(_varname))
-                {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a MODE Aggregate since the Variable does not occur in a Graph Pattern");
-                }
-            }
-
-            var values = new Dictionary<IValuedNode, int>();
-            var nullCount = 0;
-            foreach (var id in bindingIDs)
-            {
-                try
-                {
-                    IValuedNode temp = _expr.Evaluate(context, id);
-                    if (temp == null)
-                    {
-                        nullCount++;
-                    }
-                    else
-                    {
-                        if (values.ContainsKey(temp))
-                        {
-                            values[temp]++;
-                        }
-                        else
-                        {
-                            values.Add(temp, 1);
-                        }
-                    }
-                }
-                catch
-                {
-                    // Errors count as nulls
-                    nullCount++;
-                }
-            }
-
-            var mostPopular = values.Values.Max();
-            if (mostPopular > nullCount)
-            {
-                return values.FirstOrDefault(p => p.Value == mostPopular).Key;
-            }
-            else
-            {
-                // Null is the most popular item
-                return null;
-            }
+            return processor.ProcessMode(this, context, bindings);
         }
 
         /// <summary>

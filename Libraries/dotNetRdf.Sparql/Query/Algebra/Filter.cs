@@ -41,9 +41,6 @@ namespace VDS.RDF.Query.Algebra
     public class Filter 
         : IFilter
     {
-        private readonly ISparqlAlgebra _pattern;
-        private readonly ISparqlFilter _filter;
-
         /// <summary>
         /// Creates a new Filter.
         /// </summary>
@@ -51,55 +48,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="filter">Filter to apply.</param>
         public Filter(ISparqlAlgebra pattern, ISparqlFilter filter)
         {
-            _pattern = pattern;
-            _filter = filter;
-        }
-
-        /// <summary>
-        /// Applies the Filter over the results of evaluating the inner pattern.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            // Apply the Pattern first
-            context.InputMultiset = context.Evaluate(_pattern);
-
-            if (context.InputMultiset is NullMultiset)
-            {
-                // If we get a NullMultiset then the FILTER has no effect since there are already no results
-            }
-            else if (context.InputMultiset is IdentityMultiset)
-            {
-                if (_filter.Variables.Any())
-                {
-                    // If we get an IdentityMultiset then the FILTER only has an effect if there are no
-                    // variables - otherwise it is not in scope and causes the Output to become Null
-                    context.InputMultiset = new NullMultiset();
-                }
-                else
-                {
-                    try
-                    {
-                        if (!_filter.Expression.Evaluate(context, 0).AsSafeBoolean())
-                        {
-                            context.OutputMultiset = new NullMultiset();
-                            return context.OutputMultiset;
-                        }
-                    }
-                    catch
-                    {
-                        context.OutputMultiset = new NullMultiset();
-                        return context.OutputMultiset;
-                    }
-                }
-            }
-            else
-            {
-                _filter.Evaluate(context);
-            }
-            context.OutputMultiset = context.InputMultiset;
-            return context.OutputMultiset;
+            InnerAlgebra = pattern;
+            SparqlFilter = filter;
         }
 
         /// <summary>
@@ -109,41 +59,29 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (_pattern.Variables.Concat(_filter.Variables)).Distinct();
+                return (InnerAlgebra.Variables.Concat(SparqlFilter.Variables)).Distinct();
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _pattern.FloatingVariables; } }
+        public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables; } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _pattern.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
 
         /// <summary>
         /// Gets the Filter to be used.
         /// </summary>
-        public ISparqlFilter SparqlFilter
-        {
-            get
-            {
-                return _filter;
-            }
-        }
+        public ISparqlFilter SparqlFilter { get; }
 
         /// <summary>
         /// Gets the Inner Algebra.
         /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get
-            {
-                return _pattern;
-            }
-        }
+        public ISparqlAlgebra InnerAlgebra { get; }
 
         /// <summary>
         /// Gets the String representation of the FILTER.
@@ -151,9 +89,19 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            var filter = _filter.ToString();
+            var filter = SparqlFilter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
-            return "Filter(" + _pattern.ToString() + ", " + filter + ")";
+            return "Filter(" + InnerAlgebra + ", " + filter + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessFilter(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitFilter(this);
         }
 
         /// <summary>
@@ -174,9 +122,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            var p = _pattern.ToGraphPattern();
+            var p = InnerAlgebra.ToGraphPattern();
             var f = new GraphPattern();
-            f.AddFilter(_filter);
+            f.AddFilter(SparqlFilter);
             p.AddGraphPattern(f);
             return p;
         }
@@ -188,14 +136,12 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            if (optimiser is IExpressionTransformer)
+            if (optimiser is IExpressionTransformer transformer)
             {
-                return new Filter(optimiser.Optimise(_pattern), new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(_filter.Expression)));
+                return new Filter(optimiser.Optimise(InnerAlgebra), new UnaryExpressionFilter(transformer.Transform(SparqlFilter.Expression)));
             }
-            else
-            {
-                return new Filter(optimiser.Optimise(_pattern), _filter);
-            }
+
+            return new Filter(optimiser.Optimise(InnerAlgebra), SparqlFilter);
         }
     }
 }

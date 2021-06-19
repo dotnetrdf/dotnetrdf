@@ -25,8 +25,10 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -131,6 +133,36 @@ namespace VDS.RDF.Query.Algebra
                 z.ID = id;
                 productSet.Add(z);
                 if (stop.ShouldStop) return;
+            }
+        }
+
+        /// <summary>
+        /// Converts a Bindings Clause to a Multiset.
+        /// </summary>
+        /// <returns></returns>
+        public static BaseMultiset ToMultiset(this BindingsPattern pattern)
+        {
+            if (pattern.Variables.Any())
+            {
+                var m = new Multiset();
+                foreach (var var in pattern.Variables)
+                {
+                    m.AddVariable(var);
+                }
+                foreach (BindingTuple tuple in pattern.Tuples)
+                {
+                    var set = new Set();
+                    foreach (KeyValuePair<string, PatternItem> binding in tuple.Values)
+                    {
+                        set.Add(binding.Key, tuple[binding.Key]);
+                    }
+                    m.Add(set);
+                }
+                return m;
+            }
+            else
+            {
+                return new IdentityMultiset();
             }
         }
     }

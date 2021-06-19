@@ -55,44 +55,6 @@ namespace VDS.RDF.Query.Patterns
             _vars.Sort();
         }
 
-        /// <summary>
-        /// Evaluates a Filter in the given Evaluation Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlEvaluationContext context)
-        {
-            if (context.InputMultiset is NullMultiset)
-            {
-                // If we get a NullMultiset then the FILTER has no effect since there are already no results
-            }
-            else if (context.InputMultiset is IdentityMultiset)
-            {
-                if (!_filter.Variables.Any())
-                {
-                    // If we get an IdentityMultiset then the FILTER only has an effect if there are no
-                    // variables - otherwise it is not in scope and is ignored
-
-                    try
-                    {
-                        if (!_filter.Expression.Evaluate(context, 0).AsSafeBoolean())
-                        {
-                            context.OutputMultiset = new NullMultiset();
-                            return;
-                        }
-                    }
-                    catch
-                    {
-                        context.OutputMultiset = new NullMultiset();
-                        return;
-                    }
-                }
-            }
-            else
-            {
-                _filter.Evaluate(context);
-            }
-            context.OutputMultiset = new IdentityMultiset();
-        }
 
         /// <summary>
         /// Gets the Pattern Type.
@@ -103,6 +65,16 @@ namespace VDS.RDF.Query.Patterns
             {
                 return TriplePatternType.Filter;
             }
+        }
+
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessFilterPattern(this, context);
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitFilterPattern(this);
         }
 
         /// <summary>

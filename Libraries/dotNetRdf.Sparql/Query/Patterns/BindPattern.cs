@@ -39,9 +39,6 @@ namespace VDS.RDF.Query.Patterns
     public class BindPattern
         : BaseTriplePattern, IComparable<BindPattern>, IAssignmentPattern
     {
-        private readonly string _var;
-        private readonly ISparqlExpression _expr;
-
         /// <summary>
         /// Creates a new BIND Pattern.
         /// </summary>
@@ -49,63 +46,22 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="expr">Expression which generates a value which will be assigned to the variable.</param>
         public BindPattern(string var, ISparqlExpression expr)
         {
-            _var = var;
-            _expr = expr;
-            _vars = _var.AsEnumerable().Concat(_expr.Variables).Distinct().ToList();
+            Variable = var;
+            InnerExpression = expr;
+            _vars = Variable.AsEnumerable().Concat(InnerExpression.Variables).Distinct().ToList();
             _vars.Sort();
         }
 
         /// <summary>
-        /// Evaluates a BIND assignment in the given Evaluation Context.
+        /// Get the variable to assign to.
         /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlEvaluationContext context)
-        {
-            if (context.InputMultiset is NullMultiset)
-            {
-                context.OutputMultiset = context.InputMultiset;
-            }
-            else if (context.InputMultiset is IdentityMultiset)
-            {
-                context.OutputMultiset.AddVariable(_var);
-                var s = new Set();
-                try
-                {
-                    INode temp = _expr.Evaluate(context, 0);
-                    s.Add(_var, temp);
-                }
-                catch
-                {
-                    // No assignment if there's an error
-                    s.Add(_var, null);
-                }
-                context.OutputMultiset.Add(s);
-            }
-            else
-            {
-                if (context.InputMultiset.ContainsVariable(_var))
-                {
-                    throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
-                }
+        public string Variable { get; }
 
-                context.OutputMultiset.AddVariable(_var);
-                foreach (var id in context.InputMultiset.SetIDs.ToList())
-                {
-                    ISet s = context.InputMultiset[id].Copy();
-                    try
-                    {
-                        // Make a new assignment
-                        INode temp = _expr.Evaluate(context, id);
-                        s.Add(_var, temp);
-                    }
-                    catch
-                    {
-                        // No assignment if there's an error but the solution is preserved
-                    }
-                    context.OutputMultiset.Add(s);
-                }
-            }
-        }
+        /// <summary>
+        /// Get the expressions which generates a value to be assigned to the variable.
+        /// </summary>
+        public ISparqlExpression InnerExpression { get; }
+
 
         /// <summary>
         /// Gets the Pattern Type.
@@ -116,6 +72,16 @@ namespace VDS.RDF.Query.Patterns
             {
                 return TriplePatternType.BindAssignment;
             }
+        }
+
+        public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessBindPattern(this, context);
+        }
+
+        public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitBindPattern(this);
         }
 
         /// <summary>
@@ -136,7 +102,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return _expr;
+                return InnerExpression;
             }
         }
 
@@ -147,7 +113,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return _var;
+                return Variable;
             }
         }
 
@@ -164,7 +130,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables
         {
-            get { return _var.AsEnumerable(); }
+            get { return Variable.AsEnumerable(); }
         }
 
         /// <summary>
@@ -174,7 +140,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return _expr.UsesDefaultDataset();
+                return InnerExpression.UsesDefaultDataset();
             }
         }
 
@@ -197,9 +163,9 @@ namespace VDS.RDF.Query.Patterns
         {
             var output = new StringBuilder();
             output.Append("BIND(");
-            output.Append(_expr.ToString());
+            output.Append(InnerExpression.ToString());
             output.Append(" AS ?");
-            output.Append(_var);
+            output.Append(Variable);
             output.Append(")");
 
             return output.ToString();

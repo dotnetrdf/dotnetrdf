@@ -44,30 +44,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             : base(arg1, arg2) { }
 
         /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode x = _leftExpr.Evaluate(context, bindingID);
-            if (x == null) throw new RdfQueryException("Cannot calculate distance of a null");
-            IValuedNode y = _rightExpr.Evaluate(context, bindingID);
-            if (y == null) throw new RdfQueryException("Cannot calculate distance of a null");
-
-            if (x.NumericType == SparqlNumericType.NaN || y.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot calculate distance when one/both arguments are non-numeric");
-
-            return new DoubleNode(Math.Sqrt(Math.Pow(x.AsDouble(), 2) + Math.Pow(y.AsDouble(), 2)));
-        }
-
-        /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras + ">(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessPythagoreanDistanceFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitPythagoreanDistanceFunction(this);
         }
 
         /// <summary>

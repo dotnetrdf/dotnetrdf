@@ -45,29 +45,6 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             : base(leftExpr, rightExpr) { }
 
         /// <summary>
-        /// Calculates the Numeric Value of this Expression as evaluated for a given Binding.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode a = _leftExpr.Evaluate(context, bindingID);
-            IValuedNode b = _rightExpr.Evaluate(context, bindingID);
-
-            var inputs = new IValuedNode[] { a, b };
-            ISparqlOperator op = null;
-            if (SparqlOperators.TryGetOperator(SparqlOperatorType.Divide, context.Options.StrictOperators, out op, inputs))
-            {
-                return op.Apply(inputs);
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot apply division to the given inputs");
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
         /// <returns></returns>
@@ -92,6 +69,16 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
                 output.Append(_rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessDivisionExpression(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitDivisionExpression(this);
         }
 
         /// <summary>

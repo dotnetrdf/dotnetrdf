@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using System;
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 {
     /// <summary>
@@ -43,64 +40,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         public StrDtFunction(ISparqlExpression stringExpr, ISparqlExpression dtExpr)
             : base(stringExpr, dtExpr) { }
 
-        /// <summary>
-        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            INode s = _leftExpr.Evaluate(context, bindingID);
-            INode dt = _rightExpr.Evaluate(context, bindingID);
-
-            if (s != null)
-            {
-                if (dt != null)
-                {
-                    Uri dtUri;
-                    if (dt.NodeType == NodeType.Uri)
-                    {
-                        dtUri = ((IUriNode)dt).Uri;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a datatyped literal when the datatype is a non-URI Node");
-                    }
-                    if (s.NodeType == NodeType.Literal)
-                    {
-                        var lit = (ILiteralNode)s;
-                        if (lit.DataType == null)
-                        {
-                            if (lit.Language.Equals(string.Empty))
-                            {
-                                return new StringNode(lit.Value, dtUri);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a datatyped literal from a language specified literal");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot create a datatyped literal from a typed literal");
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a datatyped literal from a non-literal Node");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot create a datatyped literal from a null string");
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot create a datatyped literal from a null string");
-            }
-        }
 
         /// <summary>
         /// Gets the String representation of this Expression.
@@ -108,7 +47,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override string ToString()
         {
-            return "STRDT(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
+            return "STRDT(" + _leftExpr + ", " + _rightExpr + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessStrDtFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitStrDtFunction(this);
         }
 
         /// <summary>

@@ -71,64 +71,6 @@ namespace VDS.RDF.Query
             }
         }
 
-        internal static void Apply(this ISparqlResultsHandler handler, SparqlEvaluationContext context)
-        {
-            try
-            {
-                handler.StartResults();
-
-                SparqlQuery q = context.Query;
-                SparqlQueryType type;
-                if (q == null)
-                {
-                    type = (context.OutputMultiset.Variables.Any() || context.OutputMultiset.Sets.Any() ? SparqlQueryType.Select : SparqlQueryType.Ask);
-                }
-                else
-                {
-                    type = q.QueryType;
-                }
-
-                if (type == SparqlQueryType.Ask)
-                {
-                    // ASK Query so get the handler to handle an appropriate boolean result
-                    if (context.OutputMultiset is IdentityMultiset)
-                    {
-                        handler.HandleBooleanResult(true);
-                    }
-                    else if (context.OutputMultiset is NullMultiset)
-                    {
-                        handler.HandleBooleanResult(false);
-                    }
-                    else
-                    {
-                        handler.HandleBooleanResult(!context.OutputMultiset.IsEmpty);
-                    }
-                }
-                else
-                {
-                    // SELECT Query so get the handler to handle variables and then handle results
-                    foreach (var var in context.OutputMultiset.Variables)
-                    {
-                        if (!handler.HandleVariable(var)) ParserHelper.Stop();
-                    }
-                    foreach (ISet s in context.OutputMultiset.Sets)
-                    {
-                        if (!handler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
-                    }
-                    q.VirtualCount = context.OutputMultiset.VirtualCount;
-                }
-
-                handler.EndResults(true);
-            }
-            catch (RdfParsingTerminatedException)
-            {
-                handler.EndResults(true);
-            }
-            catch
-            {
-                handler.EndResults(false);
-                throw;
-            }
-        }
+        
     }
 }

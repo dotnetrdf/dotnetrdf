@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="g">Graph to add.</param>
         /// <param name="mergeIfExists">Whether to merge the given Graph with any existing Graph with the same URI.</param>
         /// <exception cref="RdfException">Thrown if a Graph with the given URI already exists and the <paramref name="mergeIfExists">mergeIfExists</paramref> is set to false.</exception>
-        protected internal override bool Add(IGraph g, bool mergeIfExists)
+        public override bool Add(IGraph g, bool mergeIfExists)
         {
             if (Contains(g.Name))
             {

@@ -36,8 +36,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
     public class BNodeFunction 
         : BaseUnaryExpression
     {
-        private BNodeFunctionContext _funcContext;
-
         /// <summary>
         /// Creates a new BNode Function.
         /// </summary>
@@ -51,78 +49,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         public BNodeFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Gets the value of the expression as evaluated in a given Context for a given Binding.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            _funcContext = context[SparqlSpecsHelper.SparqlKeywordBNode] as BNodeFunctionContext;
-
-            if (_funcContext == null)
-            {
-                _funcContext = new BNodeFunctionContext(context.InputMultiset.GetHashCode());
-                context[SparqlSpecsHelper.SparqlKeywordBNode] = _funcContext;
-            }
-            else if (_funcContext.CurrentInput != context.InputMultiset.GetHashCode())
-            {
-                // Clear the Context
-                _funcContext.BlankNodes.Clear();
-                context[SparqlSpecsHelper.SparqlKeywordBNode] = _funcContext;
-            }
-
-            if (_expr == null)
-            {
-                // If no argument then always a fresh BNode
-                return _funcContext.Graph.CreateBlankNode().AsValuedNode();
-            }
-            else
-            {
-                INode temp = _expr.Evaluate(context, bindingID);
-                if (temp != null)
-                {
-                    if (temp.NodeType == NodeType.Literal)
-                    {
-                        var lit = (ILiteralNode)temp;
-
-                        if (lit.DataType == null)
-                        {
-                            if (lit.Language.Equals(string.Empty))
-                            {
-                                if (!_funcContext.BlankNodes.ContainsKey(bindingID))
-                                {
-                                    _funcContext.BlankNodes.Add(bindingID, new Dictionary<string, INode>());
-                                }
-
-                                if (!_funcContext.BlankNodes[bindingID].ContainsKey(lit.Value))
-                                {
-                                    _funcContext.BlankNodes[bindingID].Add(lit.Value, _funcContext.Graph.CreateBlankNode());
-                                }
-                                return _funcContext.BlankNodes[bindingID][lit.Value].AsValuedNode();
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a lanuage specified literal");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a typed literal node");
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a non-literal node");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to null");
-                }
-            }
-        }
+        
 
         /// <summary>
         /// Gets the Type of the Expression.
@@ -146,6 +73,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             }
         }
 
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitBNodeFunction(this);
+        }
+
         /// <summary>
         /// Gets the Variables used in the Expression.
         /// </summary>
@@ -153,7 +85,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         {
             get
             {
-                if (_expr == null) return Enumerable.Empty<string>();
+                if (InnerExpression == null) return Enumerable.Empty<string>();
                 return base.Variables;
             }
         }
@@ -165,7 +97,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         {
             get
             {
-                if (_expr == null) return Enumerable.Empty<ISparqlExpression>();
+                if (InnerExpression == null) return Enumerable.Empty<ISparqlExpression>();
                 return base.Arguments;
             }
         }
@@ -187,7 +119,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordBNode + "(" + _expr.ToSafeString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordBNode + "(" + InnerExpression.ToSafeString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessBNodeFunction(this, context, binding);
         }
 
         /// <summary>
@@ -197,47 +134,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new BNodeFunction(transformer.Transform(_expr));
+            return new BNodeFunction(transformer.Transform(InnerExpression));
         }
     }
 
-    class BNodeFunctionContext
-    {
-        private Dictionary<int, Dictionary<string, INode>> _bnodes = new Dictionary<int, Dictionary<string, INode>>();
-        private Graph _g = new Graph();
-        private int _currInput;
-
-        public BNodeFunctionContext(int currInput)
-        {
-            _currInput = currInput;
-        }
-
-        public int CurrentInput
-        {
-            get
-            {
-                return _currInput;
-            }
-        }
-
-        public IGraph Graph
-        {
-            get
-            {
-                return _g;
-            }
-        }
-
-        public Dictionary<int, Dictionary<string, INode>> BlankNodes
-        {
-            get
-            {
-                return _bnodes;
-            }
-            set
-            {
-                _bnodes = value;
-            }
-        }
-    }
 }

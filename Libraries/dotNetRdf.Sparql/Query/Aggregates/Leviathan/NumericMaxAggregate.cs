@@ -43,8 +43,6 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
     public class NumericMaxAggregate 
         : BaseAggregate
     {
-        private string _varname;
-
         /// <summary>
         /// Creates a new NMAX Aggregate.
         /// </summary>
@@ -67,7 +65,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public NumericMaxAggregate(VariableTerm expr, bool distinct)
             : base(expr, distinct)
         {
-            _varname = expr.ToString().Substring(1);
+            Variable = expr.ToString().Substring(1);
         }
 
         /// <summary>
@@ -78,157 +76,13 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public NumericMaxAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
-        /// <summary>
-        /// Applies the Numeric Max Aggregate function to the results.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingIDs">Binding IDs over which the Aggregate applies.</param>
-        /// <returns></returns>
-        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+        public string Variable { get; }
+
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
+            IEnumerable<TBinding> bindings)
         {
-            if (_varname != null)
-            {
-                // Ensured the MAXed variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(_varname))
-                {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a NMAX Aggregate since the Variable does not occur in a Graph Pattern");
-                }
-            }
-
-            // Prep Variables
-            long lngmax = 0;
-            var decmax = 0.0m;
-            var fltmax = 0.0f;
-            var dblmax = 0.0d;
-            SparqlNumericType maxtype = SparqlNumericType.NaN;
-            SparqlNumericType numtype;
-
-            foreach (var id in bindingIDs)
-            {
-                IValuedNode temp;
-                try
-                {
-                    temp = _expr.Evaluate(context, id);
-                    if (temp == null) continue;
-                    numtype = temp.NumericType;
-                }
-                catch
-                {
-                    continue;
-                }
-
-                // Skip if Not a Number
-                if (numtype == SparqlNumericType.NaN) continue;
-
-                // Track the Numeric Type
-                if ((int)numtype > (int)maxtype)
-                {
-                    if (maxtype == SparqlNumericType.NaN)
-                    {
-                        // Initialise Maximums
-                        switch (numtype)
-                        {
-                            case SparqlNumericType.Integer:
-                                lngmax = temp.AsInteger();
-                                decmax = temp.AsDecimal();
-                                fltmax = temp.AsFloat();
-                                dblmax = temp.AsDouble();
-                                break;
-                            case SparqlNumericType.Decimal:
-                                decmax = temp.AsDecimal();
-                                fltmax = temp.AsFloat();
-                                dblmax = temp.AsDouble();
-                                break;
-                            case SparqlNumericType.Float:
-                                fltmax = temp.AsFloat();
-                                dblmax = temp.AsDouble();
-                                break;
-                            case SparqlNumericType.Double:
-                                dblmax = temp.AsDouble();
-                                break;
-                        }
-                        maxtype = numtype;
-                        continue;
-                    }
-                    else
-                    {
-                        maxtype = numtype;
-                    }
-                }
-
-                long lngval;
-                decimal decval;
-                float fltval;
-                double dblval;
-                switch (maxtype)
-                {
-                    case SparqlNumericType.Integer:
-                        lngval = temp.AsInteger();
-
-                        if (lngval > lngmax)
-                        {
-                            lngmax = lngval;
-                            decmax = temp.AsDecimal();
-                            fltmax = temp.AsFloat();
-                            dblmax = temp.AsDouble();
-                        }
-                        break;
-                    case SparqlNumericType.Decimal:
-                        decval = temp.AsDecimal();
-
-                        if (decval > decmax)
-                        {
-                            decmax = decval;
-                            fltmax = temp.AsFloat();
-                            dblmax = temp.AsDouble();
-                        }
-                        break;
-                    case SparqlNumericType.Float:
-                        fltval = temp.AsFloat();
-
-                        if (fltval > fltmax)
-                        {
-                            fltmax = fltval;
-                            dblmax = temp.AsDouble();
-                        }
-                        break;
-                    case SparqlNumericType.Double:
-                        dblval = temp.AsDouble();
-
-                        if (dblval > dblmax)
-                        {
-                            dblmax = dblval;
-                        }
-                        break;
-                }
-            }
-
-            // Return the Max
-            switch (maxtype)
-            {
-                case SparqlNumericType.NaN:
-                    // No Numeric Values
-                    return null;
-
-                case SparqlNumericType.Integer:
-                    // Integer Values
-                    return new LongNode(lngmax);
-
-                case SparqlNumericType.Decimal:
-                    // Decimal Values
-                    return new DecimalNode(decmax);
-
-                case SparqlNumericType.Float:
-                    // Float values
-                    return new FloatNode(fltmax);
-
-                case SparqlNumericType.Double:
-                    // Double Values
-                    return new DoubleNode(dblmax);
-
-                default:
-                    throw new RdfQueryException("Failed to calculate a valid Maximum");
-            }
+            return processor.ProcessNumericMax(this, context, bindings);
         }
 
         /// <summary>

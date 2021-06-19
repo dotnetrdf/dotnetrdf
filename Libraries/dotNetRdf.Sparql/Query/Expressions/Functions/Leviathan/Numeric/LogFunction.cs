@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -36,8 +35,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
     public class LogFunction
         : BaseBinaryExpression
     {
-        private bool _log10 = false;
-
         /// <summary>
         /// Creates a new Leviathan Log Function.
         /// </summary>
@@ -45,7 +42,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public LogFunction(ISparqlExpression arg)
             : base(arg, new ConstantTerm(new DoubleNode(10)))
         {
-            _log10 = true;
+            Log10 = true;
         }
 
         /// <summary>
@@ -56,23 +53,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public LogFunction(ISparqlExpression arg, ISparqlExpression logBase)
             : base(arg, logBase) { }
 
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode arg = _leftExpr.Evaluate(context, bindingID);
-            if (arg == null) throw new RdfQueryException("Cannot log a null");
-            IValuedNode logBase = _rightExpr.Evaluate(context, bindingID);
-            if (logBase == null) throw new RdfQueryException("Cannot log to a null base");
-
-            if (arg.NumericType == SparqlNumericType.NaN || logBase.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot log when one/both arguments are non-numeric");
-
-            return new DoubleNode(Math.Log(arg.AsDouble(), logBase.AsDouble()));
-        }
+        public bool Log10 { get; }
 
         /// <summary>
         /// Gets the String representation of the function.
@@ -80,7 +61,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            if (_log10)
+            if (Log10)
             {
                 return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr.ToString() + ")";
             }
@@ -88,6 +69,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             {
                 return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
             }
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessLogFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitLogFunction(this);
         }
 
         /// <summary>
@@ -119,14 +110,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (_log10)
-            {
-                return new LogFunction(transformer.Transform(_leftExpr));
-            }
-            else
-            {
-                return new LogFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-            }
+            return Log10
+                ? new LogFunction(transformer.Transform(_leftExpr))
+                : new LogFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

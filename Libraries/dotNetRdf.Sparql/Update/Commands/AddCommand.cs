@@ -61,54 +61,6 @@ namespace VDS.RDF.Update.Commands
         public AddCommand(Uri sourceUri, Uri destUri)
             : base(SparqlUpdateCommandType.Add, sourceUri, destUri) { }
 
-        /// <summary>
-        /// Evaluates the Command in the given Context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        public override void Evaluate(SparqlUpdateEvaluationContext context)
-        {
-            try
-            {
-                if (context.Data.HasGraph(SourceGraphName))
-                {
-                    // Get the Source Graph
-                    IGraph source = context.Data.GetModifiableGraph(SourceGraphName);
-
-                    // Get the Destination Graph
-                    IGraph dest;
-                    if (!context.Data.HasGraph(DestinationGraphName))
-                    {
-                        dest = new Graph(DestinationGraphName);
-                        context.Data.AddGraph(dest);
-                    }
-                    dest = context.Data.GetModifiableGraph(DestinationGraphName);
-
-                    // Move data from the Source into the Destination
-                    dest.Merge(source);
-                }
-                else
-                {
-                    // Only show error if not Silent
-                    if (!_silent)
-                    {
-                        if (SourceGraphName != null)
-                        {
-                            throw new SparqlUpdateException("Cannot ADD from Graph " + SourceGraphName + " as it does not exist");
-                        }
-                        else
-                        {
-                            // This would imply a more fundamental issue with the Dataset not understanding that null means default graph
-                            throw new SparqlUpdateException("Cannot ADD from the Default Graph as it does not exist");
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // If not silent throw the exception upwards
-                if (!_silent) throw;
-            }
-        }
 
         /// <summary>
         /// Processes the Command using the given Update Processor.

@@ -25,7 +25,6 @@
 */
 
 using System.Text;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Comparison
 {
@@ -41,21 +40,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
         /// <param name="leftExpr">Left Hand Expression.</param>
         /// <param name="rightExpr">Right Hand Expression.</param>
         public NotEqualsExpression(ISparqlExpression leftExpr, ISparqlExpression rightExpr) : base(leftExpr, rightExpr) { }
-
-        /// <summary>
-        /// Evaluates the expression.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="bindingID">Binding ID.</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode x = _leftExpr.Evaluate(context, bindingID);
-            IValuedNode y = _rightExpr.Evaluate(context, bindingID);
-
-            return new BooleanNode(SparqlSpecsHelper.Inequality(x, y));
-        }
-
+        
         /// <summary>
         /// Gets the String representation of this Expression.
         /// </summary>
@@ -81,6 +66,16 @@ namespace VDS.RDF.Query.Expressions.Comparison
                 output.Append(_rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessNotEqualsExpression(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitNotEqualsExpression(this);
         }
 
         /// <summary>

@@ -36,21 +36,6 @@ namespace VDS.RDF.Query.Grouping
     public interface ISparqlGroupBy
     {
         /// <summary>
-        /// Applies the Grouping to a Result Binder.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        List<BindingGroup> Apply(SparqlEvaluationContext context);
-
-        /// <summary>
-        /// Applies the Grouping to a Result Binder subdividing the Groups from the previous Group By clause into further Groups.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <param name="groups">Groups.</param>
-        /// <returns></returns>
-        List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups);
-
-        /// <summary>
         /// Gets/Sets the child GROUP BY Clause.
         /// </summary>
         ISparqlGroupBy Child

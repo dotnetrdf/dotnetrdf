@@ -21,6 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Client\dotNetRdf.Client.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
     <ProjectReference Include="..\dotNetRDF.Connectors.Tests\dotNetRDF.Connectors.Tests.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />

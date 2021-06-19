@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Expressions;
@@ -39,10 +38,6 @@ namespace VDS.RDF.Query.Algebra
     public class Extend
         : IUnaryOperator
     {
-        private readonly ISparqlAlgebra _inner;
-        private readonly string _var;
-        private readonly ISparqlExpression _expr;
-
         /// <summary>
         /// Creates a new Extend operator.
         /// </summary>
@@ -51,11 +46,11 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="var">Variable to bind to.</param>
         public Extend(ISparqlAlgebra pattern, ISparqlExpression expr, string var)
         {
-            _inner = pattern;
-            _expr = expr;
-            _var = var;
+            InnerAlgebra = pattern;
+            AssignExpression = expr;
+            VariableName = var;
 
-            if (_inner.Variables.Contains(_var))
+            if (InnerAlgebra.Variables.Contains(VariableName))
             {
                 throw new RdfQueryException("Cannot create an Extend() operator which extends the results of the inner algebra with a variable that is already used in the inner algebra");
             }
@@ -64,35 +59,17 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variable Name to be bound.
         /// </summary>
-        public string VariableName
-        {
-            get
-            {
-                return _var;
-            }
-        }
+        public string VariableName { get; }
 
         /// <summary>
         /// Gets the Assignment Expression.
         /// </summary>
-        public ISparqlExpression AssignExpression
-        {
-            get
-            {
-                return _expr;
-            }
-        }
+        public ISparqlExpression AssignExpression { get; }
 
         /// <summary>
         /// Gets the Inner Algebra.
         /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get 
-            { 
-                return _inner; 
-            }
-        }
+        public ISparqlAlgebra InnerAlgebra { get; }
 
         /// <summary>
         /// Transforms the Inner Algebra using the given Optimiser.
@@ -103,84 +80,12 @@ namespace VDS.RDF.Query.Algebra
         {
             if (optimiser is IExpressionTransformer)
             {
-                return new Extend(optimiser.Optimise(_inner), ((IExpressionTransformer)optimiser).Transform(_expr), _var);
+                return new Extend(optimiser.Optimise(InnerAlgebra), ((IExpressionTransformer)optimiser).Transform(AssignExpression), VariableName);
             }
             else
             {
-                return new Extend(optimiser.Optimise(_inner), _expr, _var);
+                return new Extend(optimiser.Optimise(InnerAlgebra), AssignExpression, VariableName);
             }
-        }
-
-        /// <summary>
-        /// Evaluates the Algebra in the given context.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            // First evaluate the inner algebra
-            BaseMultiset results = context.Evaluate(_inner);
-            context.OutputMultiset = new Multiset();
-
-            if (results is NullMultiset)
-            {
-                context.OutputMultiset = results;
-            }
-            else if (results is IdentityMultiset)
-            {
-                context.OutputMultiset.AddVariable(_var);
-                var s = new Set();
-                try
-                {
-                    INode temp = _expr.Evaluate(context, 0);
-                    s.Add(_var, temp);
-                }
-                catch
-                {
-                    // No assignment if there's an error
-                    s.Add(_var, null);
-                }
-                context.OutputMultiset.Add(s.Copy());
-            }
-            else
-            {
-                if (results.ContainsVariable(_var))
-                {
-                    throw new RdfQueryException("Cannot assign to the variable ?" + _var + "since it has previously been used in the Query");
-                }
-
-                context.InputMultiset = results;
-                context.OutputMultiset.AddVariable(_var);
-                if (context.Options.UsePLinqEvaluation && _expr.CanParallelise)
-                {
-                    results.SetIDs.AsParallel().ForAll(id => EvalExtend(context, results, id));
-                }
-                else
-                {
-                    foreach (var id in results.SetIDs)
-                    {
-                        EvalExtend(context, results, id);
-                    }
-                }
-            }
-
-            return context.OutputMultiset;
-        }
-
-        private void EvalExtend(SparqlEvaluationContext context, BaseMultiset results, int id)
-        {
-            ISet s = results[id].Copy();
-            try
-            {
-                // Make a new assignment
-                INode temp = _expr.Evaluate(context, id);
-                s.Add(_var, temp);
-            }
-            catch
-            {
-                // No assignment if there's an error but the solution is preserved
-            }
-            context.OutputMultiset.Add(s);
         }
 
         /// <summary>
@@ -190,19 +95,19 @@ namespace VDS.RDF.Query.Algebra
         {
             get 
             {
-                return _inner.Variables.Concat(_var.AsEnumerable()); 
+                return InnerAlgebra.Variables.Concat(VariableName.AsEnumerable()); 
             }
         }
 
         /// <summary>
         /// Gets the enumeration of floating variables in the algebra i.e. variables that are not guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FloatingVariables { get { return _inner.FloatingVariables.Concat(_var.AsEnumerable()); } }
+        public IEnumerable<string> FloatingVariables { get { return InnerAlgebra.FloatingVariables.Concat(VariableName.AsEnumerable()); } }
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
         /// </summary>
-        public IEnumerable<string> FixedVariables { get { return _inner.FixedVariables; } }
+        public IEnumerable<string> FixedVariables { get { return InnerAlgebra.FixedVariables; } }
 
         /// <summary>
         /// Converts the Algebra to a Query.
@@ -219,17 +124,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            var gp = _inner.ToGraphPattern();
+            var gp = InnerAlgebra.ToGraphPattern();
             if (gp.HasModifier)
             {
                 var p = new GraphPattern();
                 p.AddGraphPattern(gp);
-                p.AddAssignment(new BindPattern(_var, _expr));
+                p.AddAssignment(new BindPattern(VariableName, AssignExpression));
                 return p;
             }
             else
             {
-                gp.AddAssignment(new BindPattern(_var, _expr));
+                gp.AddAssignment(new BindPattern(VariableName, AssignExpression));
                 return gp;
             }
         }
@@ -240,7 +145,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Extend(" + _inner.ToSafeString() + ", " + _expr.ToString() + " AS ?" + _var + ")";
+            return "Extend(" + InnerAlgebra.ToSafeString() + ", " + AssignExpression + " AS ?" + VariableName + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessExtend(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitExtend(this);
         }
     }
 }

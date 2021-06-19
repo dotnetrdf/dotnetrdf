@@ -38,8 +38,6 @@ namespace VDS.RDF.Query.Algebra
     public class Minus 
         : IMinus
     {
-        private readonly ISparqlAlgebra _lhs, _rhs;
-
         /// <summary>
         /// Creates a new Minus join.
         /// </summary>
@@ -47,50 +45,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="rhs">RHS Pattern.</param>
         public Minus(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
-            _lhs = lhs;
-            _rhs = rhs;
-        }
-
-        /// <summary>
-        /// Evaluates the Minus join by evaluating the LHS and RHS and substracting the RHS results from the LHS.
-        /// </summary>
-        /// <param name="context">Evaluation Context.</param>
-        /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
-        {
-            BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResult = context.Evaluate(_lhs);//this._lhs.Evaluate(context);
-            context.CheckTimeout();
-
-            if (lhsResult is NullMultiset)
-            {
-                context.OutputMultiset = lhsResult;
-            }
-            else if (lhsResult.IsEmpty)
-            {
-                context.OutputMultiset = new NullMultiset();
-            }
-            else if (_lhs.Variables.IsDisjoint(_rhs.Variables))
-            {
-                // If the RHS is disjoint then there is no need to evaluate the RHS
-                context.OutputMultiset = lhsResult;
-            }
-            else
-            {
-                // If we get here then the RHS is not disjoint so it does affect the ouput
-
-                // Only execute the RHS if the LHS had results
-                // context.InputMultiset = lhsResult;
-                context.InputMultiset = initialInput;
-                BaseMultiset rhsResult = context.Evaluate(_rhs);//this._rhs.Evaluate(context);
-                context.CheckTimeout();
-
-                context.OutputMultiset = lhsResult.MinusJoin(rhsResult);
-                context.CheckTimeout();
-            }
-
-            context.InputMultiset = context.OutputMultiset;
-            return context.OutputMultiset;
+            Lhs = lhs;
+            Rhs = rhs;
         }
 
         /// <summary>
@@ -100,7 +56,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (_lhs.Variables.Concat(_rhs.Variables)).Distinct();
+                return (Lhs.Variables.Concat(Rhs.Variables)).Distinct();
             }
         }
 
@@ -109,7 +65,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<string> FloatingVariables
         {
-            get { return _lhs.FloatingVariables; }
+            get { return Lhs.FloatingVariables; }
         }
 
         /// <summary>
@@ -117,30 +73,18 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public IEnumerable<string> FixedVariables
         {
-            get { return _lhs.FixedVariables; }
+            get { return Lhs.FixedVariables; }
         }
 
         /// <summary>
         /// Gets the LHS of the Join.
         /// </summary>
-        public ISparqlAlgebra Lhs
-        {
-            get
-            {
-                return _lhs;
-            }
-        }
+        public ISparqlAlgebra Lhs { get; }
 
         /// <summary>
         /// Gets the RHS of the Join.
         /// </summary>
-        public ISparqlAlgebra Rhs
-        {
-            get
-            {
-                return _rhs;
-            }
-        }
+        public ISparqlAlgebra Rhs { get; }
 
         /// <summary>
         /// Gets the string representation of the Algebra.
@@ -148,7 +92,17 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Minus(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "Minus(" + Lhs + ", " + Rhs + ")";
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            return processor.ProcessMinus(this, context);
+        }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            return visitor.VisitMinus(this);
         }
 
         /// <summary>
@@ -169,8 +123,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            var p = _lhs.ToGraphPattern();
-            var opt = _rhs.ToGraphPattern();
+            var p = Lhs.ToGraphPattern();
+            var opt = Rhs.ToGraphPattern();
             if (!opt.HasModifier)
             {
                 opt.IsMinus = true;
@@ -193,7 +147,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Minus(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs));
+            return new Minus(optimiser.Optimise(Lhs), optimiser.Optimise(Rhs));
         }
 
         /// <summary>
@@ -203,7 +157,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new Minus(optimiser.Optimise(_lhs), _rhs);
+            return new Minus(optimiser.Optimise(Lhs), Rhs);
         }
 
         /// <summary>
@@ -213,7 +167,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new Minus(_lhs, optimiser.Optimise(_rhs));
+            return new Minus(Lhs, optimiser.Optimise(Rhs));
         }
     }
 }

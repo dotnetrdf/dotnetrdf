@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using System;
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
 {
     /// <summary>
@@ -42,23 +39,24 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         public MonthFromDateTimeFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        /// <summary>
-        /// Calculates the numeric value of the function from the given Date Time.
-        /// </summary>
-        /// <param name="dateTime">Date Time.</param>
-        /// <returns></returns>
-        protected override IValuedNode ValueInternal(DateTimeOffset dateTime)
-        {
-            return new LongNode(Convert.ToInt64(dateTime.Month));
-        }
-
+        
         /// <summary>
         /// Gets the String representation of the function.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime + ">(" + InnerExpression.ToString() + ")";
+        }
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            return processor.ProcessMonthFromDateTimeFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitMonthFromDateTimeFunction(this);
         }
 
         /// <summary>
@@ -79,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new MonthFromDateTimeFunction(transformer.Transform(_expr));
+            return new MonthFromDateTimeFunction(transformer.Transform(InnerExpression));
         }
     }
 }

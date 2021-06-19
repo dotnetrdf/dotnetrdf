@@ -42,30 +42,15 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public ContainsFunction(ISparqlExpression stringExpr, ISparqlExpression searchExpr)
             : base(stringExpr, searchExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
 
-        /// <summary>
-        /// Gets the Value of the function as applied to the given String Literal and Argument.
-        /// </summary>
-        /// <param name="context">Evaluation context.</param>
-        /// <param name="stringLit">Simple/String typed Literal.</param>
-        /// <param name="arg">Argument.</param>
-        /// <returns></returns>
-        public override IValuedNode ValueInternal(SparqlEvaluationContext context, ILiteralNode stringLit, ILiteralNode arg)
+
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            if (stringLit.Value.Equals(string.Empty))
-            {
-                // Empty string cannot contain anything
-                return new BooleanNode(false);
-            }
-            else if (arg.Value.Equals(string.Empty))
-            {
-                // Any non-empty string contains the empty string
-                return new BooleanNode(true);
-            }
-            else
-            {
-                // Evalute the Contains
-                return new BooleanNode(stringLit.Value.Contains(arg.Value));
-            }
+            return processor.ProcessContainsFunction(this, context, binding);
+        }
+
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            return visitor.VisitContainsFunction(this);
         }
 
         /// <summary>
