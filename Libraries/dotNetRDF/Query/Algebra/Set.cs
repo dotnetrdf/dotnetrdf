@@ -124,10 +124,8 @@ namespace VDS.RDF.Query.Algebra
                 {
                     return _values[variable];
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
         }
 

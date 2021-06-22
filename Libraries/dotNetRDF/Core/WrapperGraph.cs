@@ -531,10 +531,8 @@ namespace VDS.RDF
                 Dictionary<INode, INode> temp;
                 return Equals((IGraph)obj, out temp);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>

@@ -261,10 +261,8 @@ namespace VDS.RDF.Storage
             {
                 return results;
             }
-            else
-            {
-                return g;
-            }
+
+            return g;
         }
 
         /// <summary>
@@ -713,10 +711,8 @@ namespace VDS.RDF.Storage
                     }
                     return graphs;
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+
+                return Enumerable.Empty<Uri>();
             }
             catch (Exception ex)
             {
@@ -842,7 +838,6 @@ namespace VDS.RDF.Storage
                                 // Deletes failed
                                 // Invoke callback and bail out
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("An error occurred while trying to asyncrhonously delete triples from the Store, see inner exception for details", args.Error)), state);
-                                return;
                             }
                             else
                             {

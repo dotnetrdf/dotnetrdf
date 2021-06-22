@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "LANGMATCHES(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+            return "LANGMATCHES(" + _leftExpr + "," + _rightExpr + ")";
         }
 
         /// <summary>

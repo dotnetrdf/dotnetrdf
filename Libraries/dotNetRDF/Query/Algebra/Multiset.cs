@@ -123,10 +123,8 @@ namespace VDS.RDF.Query.Algebra
                 // return this._sets.Values.Any(s => n.Equals(s[var]));
                 return _containsCache[var].Contains(n);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -309,18 +307,16 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public override IEnumerable<ISet> Sets
         {
-            get 
+            get
             {
                 if (_orderedIDs == null)
                 {
                     return (from s in _sets.Values
                             select s);
                 }
-                else
-                {
-                    return (from id in _orderedIDs
-                            select _sets[id]);
-                }
+
+                return (from id in _orderedIDs
+                    select _sets[id]);
             }
         }
 
@@ -329,17 +325,15 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public override IEnumerable<int> SetIDs
         {
-            get 
+            get
             {
                 if (_orderedIDs == null)
                 {
                     return (from id in _sets.Keys
                             select id);
                 }
-                else
-                {
-                    return _orderedIDs;
-                }
+
+                return _orderedIDs;
             }
         }
 
@@ -357,10 +351,8 @@ namespace VDS.RDF.Query.Algebra
                 {
                     return s;
                 }
-                else
-                {
-                    throw new RdfQueryException("A Set with ID " + id + " does not exist in this Multiset");
-                }
+
+                throw new RdfQueryException("A Set with ID " + id + " does not exist in this Multiset");
             }
         } 
 

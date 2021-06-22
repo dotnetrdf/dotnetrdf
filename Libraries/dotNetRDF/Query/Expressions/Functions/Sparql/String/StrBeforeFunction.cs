@@ -76,31 +76,25 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 {
                     return new StringNode(null, resultValue, datatype);
                 }
-                else if (!lang.Equals(string.Empty))
+
+                if (!lang.Equals(string.Empty))
                 {
                     return new StringNode(null, resultValue, lang);
                 }
-                else
-                {
-                    return new StringNode(null, resultValue);
-                }
+                return new StringNode(null, resultValue);
             }
-            else if (ends.Value.Equals(string.Empty))
+
+            if (ends.Value.Equals(string.Empty))
             {
                 if (datatype != null)
                 {
                     return new StringNode(null, string.Empty, datatype);
 
                 }
-                else
-                {
-                    return new StringNode(null, string.Empty, lang);
-                }
+
+                return new StringNode(null, string.Empty, lang);
             }
-            else
-            {
-                return new StringNode(null, string.Empty);
-            }
+            return new StringNode(null, string.Empty);
         }
 
         private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
@@ -123,30 +117,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                             // Appropriately typed literals are fine
                             return lit;
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate as one of the argument expressions returned a typed literal with an invalid type");
-                        }
+
+                        throw new RdfQueryException("Unable to evaluate as one of the argument expressions returned a typed literal with an invalid type");
                     }
-                    else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
+
+                    if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
                     {
                         // Untyped Literals are treated as Strings and may be returned when the argument allows strings
                         return lit;
                     }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evalaute as one of the argument expressions returned an untyped literal");
-                    }
+                    throw new RdfQueryException("Unable to evalaute as one of the argument expressions returned an untyped literal");
                 }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate as one of the argument expressions returned a non-literal");
-                }
+
+                throw new RdfQueryException("Unable to evaluate as one of the argument expressions returned a non-literal");
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate as one of the argument expressions evaluated to null");
-            }
+
+            throw new RdfQueryException("Unable to evaluate as one of the argument expressions evaluated to null");
         }
 
         /// <summary>
@@ -168,19 +154,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     if (!argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
                     return true;
                 }
-                else if (argLit.Language.Equals(string.Empty))
+
+                if (argLit.Language.Equals(string.Empty))
                 {
                     // If 2nd argument does not have a DataType but 1st does then 2nd argument must have no
                     // Language Tag
                     return true;
                 }
-                else
-                {
-                    // 2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
-                    return false;
-                }
+                // 2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
+                return false;
             }
-            else if (!stringLit.Language.Equals(string.Empty))
+
+            if (!stringLit.Language.Equals(string.Empty))
             {
                 if (argLit.DataType != null)
                 {
@@ -188,36 +173,29 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     // to be valid
                     return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
                 }
-                else if (argLit.Language.Equals(string.Empty) || stringLit.Language.Equals(argLit.Language))
+
+                if (argLit.Language.Equals(string.Empty) || stringLit.Language.Equals(argLit.Language))
                 {
                     // If 1st argument has a Language Tag then 2nd Argument must have same Language Tag 
                     // or no Language Tag in order to be valid
                     return true;
                 }
-                else
-                {
-                    // Otherwise Invalid
-                    return false;
-                }
+                // Otherwise Invalid
+                return false;
             }
-            else
+            if (argLit.DataType != null)
             {
-                if (argLit.DataType != null)
-                {
-                    // If 1st argument is plain literal then 2nd argument must be xsd:string if typed
-                    return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
-                }
-                else if (argLit.Language.Equals(string.Empty))
-                {
-                    // If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
-                    return true;
-                }
-                else
-                {
-                    // If 1st argument is plain literal and 2nd has language tag then invalid
-                    return false;
-                }
+                // If 1st argument is plain literal then 2nd argument must be xsd:string if typed
+                return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
             }
+
+            if (argLit.Language.Equals(string.Empty))
+            {
+                // If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
+                return true;
+            }
+            // If 1st argument is plain literal and 2nd has language tag then invalid
+            return false;
         }
 
         /// <summary>
@@ -260,7 +238,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return new ISparqlExpression[] { _stringExpr, _endsExpr };
+                return new[] { _stringExpr, _endsExpr };
             }
         }
 
@@ -291,7 +269,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + _stringExpr.ToString() + ", " + _endsExpr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + _stringExpr + ", " + _endsExpr + ")";
         }
     }
 }

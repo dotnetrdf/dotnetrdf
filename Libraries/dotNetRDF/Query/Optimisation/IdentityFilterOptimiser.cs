@@ -74,29 +74,23 @@ namespace VDS.RDF.Query.Optimisation
                             {
                                 return new IdentityFilter(Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
                             }
-                            else
-                            {
-                                return new SameTermFilter(Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
-                            }
+
+                            return new SameTermFilter(Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
                         }
                     }
-                    else
-                    {
-                        return f.Transform(this);
-                    }
+
+                    return f.Transform(this);
                 }
-                else if (algebra is IAbstractJoin)
+
+                if (algebra is IAbstractJoin)
                 {
                     return ((IAbstractJoin)algebra).Transform(this);
                 }
-                else if (algebra is IUnaryOperator)
+                if (algebra is IUnaryOperator)
                 {
                     return ((IUnaryOperator)algebra).Transform(this);
                 }
-                else
-                {
-                    return algebra;
-                }
+                return algebra;
             }
             catch
             {
@@ -146,17 +140,14 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
+
                     return false;
                 }
+
+                return false;
             }
-            else if (lhs.GetType().Equals(_exprType))
+
+            if (lhs.GetType().Equals(_exprType))
             {
                 if (rhs is VariableTerm)
                 {
@@ -166,20 +157,13 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
+
                     return false;
                 }
-            }
-            else
-            {
+
                 return false;
             }
+            return false;
         }
 
         /// <summary>

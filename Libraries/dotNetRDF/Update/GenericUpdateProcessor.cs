@@ -445,7 +445,7 @@ namespace VDS.RDF.Update
                     }
 
                     // First build and make the query to get a Result Set
-                    String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
+                    String queryText = "SELECT * WHERE " + cmd.WherePattern;
                     SparqlQueryParser parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
                     if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
@@ -515,7 +515,8 @@ namespace VDS.RDF.Update
                                                     // If the Variable is not bound then skip
                                                     continue;
                                                 }
-                                                else if (temp.NodeType == NodeType.Uri)
+
+                                                if (temp.NodeType == NodeType.Uri)
                                                 {
                                                     graphUri = temp.ToSafeString();
                                                 }
@@ -840,7 +841,7 @@ namespace VDS.RDF.Update
                     }
 
                     // First build and make the query to get a Result Set
-                    String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
+                    String queryText = "SELECT * WHERE " + cmd.WherePattern;
                     SparqlQueryParser parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
                     if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
@@ -910,7 +911,8 @@ namespace VDS.RDF.Update
                                                     // If the Variable is not bound then skip
                                                     continue;
                                                 }
-                                                else if (temp.NodeType == NodeType.Uri)
+
+                                                if (temp.NodeType == NodeType.Uri)
                                                 {
                                                     graphUri = temp.ToSafeString();
                                                 }
@@ -1192,7 +1194,7 @@ namespace VDS.RDF.Update
                     }
 
                     // First build and make the query to get a Result Set
-                    String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
+                    String queryText = "SELECT * WHERE " + cmd.WherePattern;
                     SparqlQueryParser parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
                     if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
@@ -1262,7 +1264,8 @@ namespace VDS.RDF.Update
                                                     // If the Variable is not bound then skip
                                                     continue;
                                                 }
-                                                else if (temp.NodeType == NodeType.Uri)
+
+                                                if (temp.NodeType == NodeType.Uri)
                                                 {
                                                     graphUri = temp.ToSafeString();
                                                 }
@@ -1357,7 +1360,8 @@ namespace VDS.RDF.Update
                                                     // If the Variable is not bound then skip
                                                     continue;
                                                 }
-                                                else if (temp.NodeType == NodeType.Uri)
+
+                                                if (temp.NodeType == NodeType.Uri)
                                                 {
                                                     graphUri = temp.ToSafeString();
                                                 }
@@ -1536,18 +1540,16 @@ namespace VDS.RDF.Update
                 // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
                 return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables);
             }
-            else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
+
+            if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
             {
                 // EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
                 return false;
             }
-            else
-            {
-                // For other patterns all Triple patterns must be constructable with no explicit variables
-                // If top level then any Child Graph Patterns must be valid
-                // Otherwise must have no Child Graph Patterns
-                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
-            }
+            // For other patterns all Triple patterns must be constructable with no explicit variables
+            // If top level then any Child Graph Patterns must be valid
+            // Otherwise must have no Child Graph Patterns
+            return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
         }
     }
 }

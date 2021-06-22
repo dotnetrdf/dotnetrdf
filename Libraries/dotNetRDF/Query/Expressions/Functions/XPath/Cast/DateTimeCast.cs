@@ -87,13 +87,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 // Parsed OK
                                 return new DateTimeNode(lit.Graph, d);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid lexical form for xsd:dateTime");
-                            }
-                            
+
+                            throw new RdfQueryException("Invalid lexical form for xsd:dateTime");
+
                         }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+
+                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                         {
                             DateTimeOffset d;
                             if (DateTimeOffset.TryParse(lit.Value, out d))
@@ -101,15 +100,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 // Parsed OK
                                 return new DateTimeNode(lit.Graph, d);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double");
-                            }
+
+                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double");
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast a Literal typed <" + dt + "> to a xsd:dateTime");
-                        }
+                        throw new RdfQueryException("Cannot cast a Literal typed <" + dt + "> to a xsd:dateTime");
                     }
                     else
                     {
@@ -119,10 +113,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             // Parsed OK
                             return new DateTimeNode(lit.Graph, d);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:dateTime");
-                        }
+
+                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:dateTime");
                     }
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:string");
@@ -135,7 +127,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDateTime + ">(" + _expr.ToString() + ")";
+            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDateTime + ">(" + _expr + ")";
         }
 
         /// <summary>

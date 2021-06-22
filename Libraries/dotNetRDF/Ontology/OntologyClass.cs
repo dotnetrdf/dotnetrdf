@@ -698,10 +698,8 @@ namespace VDS.RDF.Ontology
                 OntologyClass other = (OntologyClass)obj;
                 return other.Resource.Equals(_resource) && ReferenceEquals(other.Graph, _graph);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
     }
 }

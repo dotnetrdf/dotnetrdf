@@ -216,10 +216,8 @@ namespace VDS.RDF.Nodes
                                     {
                                         return new LongNode(n.Graph, l, lit.Value, lit.DataType);
                                     }
-                                    else
-                                    {
-                                        return new StringNode(n.Graph, lit.Value, lit.DataType);
-                                    }
+
+                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
                                 }
                                 else
                                 {

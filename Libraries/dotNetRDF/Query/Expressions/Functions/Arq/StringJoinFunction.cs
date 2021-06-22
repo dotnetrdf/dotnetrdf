@@ -142,11 +142,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             output.Append(ArqFunctionFactory.ArqFunctionsNamespace);
             output.Append(ArqFunctionFactory.StrJoin);
             output.Append(">(");
-            output.Append(_sep.ToString());
+            output.Append(_sep);
             output.Append(",");
             for (int i = 0; i < _exprs.Count; i++)
             {
-                output.Append(_exprs[i].ToString());
+                output.Append(_exprs[i]);
                 if (i < _exprs.Count - 1) output.Append(',');
             }
             output.Append(")");

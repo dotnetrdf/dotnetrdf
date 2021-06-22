@@ -70,16 +70,14 @@ namespace VDS.RDF.Query.Datasets
 
         public override Triple this[Triple t]
         {
-            get 
+            get
             {
                 if (_dataset.ContainsQuad(_graphUri, t))
                 {
                     return t;
                 }
-                else
-                {
-                    throw new KeyNotFoundException("Given Triple does not exist in the Graph");
-                }
+
+                throw new KeyNotFoundException("Given Triple does not exist in the Graph");
             }
         }
 

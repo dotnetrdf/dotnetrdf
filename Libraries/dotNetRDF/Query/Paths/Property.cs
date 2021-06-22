@@ -340,7 +340,7 @@ namespace VDS.RDF.Query.Paths
                     else if (lit.DataType != null)
                     {
                         output.Append("^^<");
-                        output.Append(lit.DataType.ToString());
+                        output.Append(lit.DataType);
                         output.Append(">");
                     }
 

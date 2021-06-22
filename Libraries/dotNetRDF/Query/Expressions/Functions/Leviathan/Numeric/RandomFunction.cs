@@ -107,12 +107,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             switch (_args)
             {
                 case 1:
-                    output.Append(_rightExpr.ToString());
+                    output.Append(_rightExpr);
                     break;
                 case 2:
-                    output.Append(_leftExpr.ToString());
+                    output.Append(_leftExpr);
                     output.Append(',');
-                    output.Append(_rightExpr.ToString());
+                    output.Append(_rightExpr);
                     break;
             }
             output.Append(')');

@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">Stream to read Tokens from.</param>
         /// <param name="syntax">Syntax.</param>
         public TriGTokeniser(ParsingTextReader input, TriGSyntax syntax)
-            : this(input) 
+            : this(input)
         {
             _syntax = syntax;
         }
@@ -104,218 +104,211 @@ namespace VDS.RDF.Parsing.Tokens
                 _lasttokentype = Token.BOF;
                 return new BOFToken();
             }
-            else
+
+            // Reading has started
+            StartNewToken();
+
+            try
             {
-                // Reading has started
-                StartNewToken();
-
-                try
+                // Certain Last Tokens restrict what we expect next
+                if (LastTokenType == Token.BOF && _in.EndOfStream)
                 {
-                    // Certain Last Tokens restrict what we expect next
-                    if (LastTokenType == Token.BOF && _in.EndOfStream)
-                    {
-                        // Empty File
-                        return new EOFToken(0, 0);
-                    }
-                    else if (_lasttokentype == Token.PREFIXDIRECTIVE)
-                    {
-                        // Discard any white space first
-                        DiscardWhiteSpace();
-
-                        // Get Prefix
-                        return TryGetPrefix();
-                    }
-                    else if (_lasttokentype == Token.HATHAT)
-                    {
-                        // Get DataType
-                        return TryGetDataType();
-                    }
-
-                    do
-                    {
-                        // Check for EOF
-                        if (_in.EndOfStream)
-                        {
-                            if (Length == 0)
-                            {
-                                // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(CurrentLine, CurrentPosition);
-                            }
-                            else
-                            {
-                                // We're at the End of the Stream and part-way through reading a Token
-                                // Raise an error
-                                throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + Value);
-                            }
-                        }
-
-                        char next = Peek();
-
-                        // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                        if (next == Char.MaxValue && _in.EndOfStream)
-                        {
-                            if (Length == 0)
-                            {
-                                // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(CurrentLine, CurrentPosition);
-                            }
-                            else
-                            {
-                                // We're at the End of the Stream and part-way through reading a Token
-                                // Raise an error
-                                throw UnexpectedEndOfInput("Token");
-                            }
-                        }
-
-                        if (Char.IsWhiteSpace(next))
-                        {
-                            // Discard white space between Tokens
-                            DiscardWhiteSpace();
-                        }
-                        else if (Char.IsDigit(next) || next == '-' || next == '+')
-                        {
-                            // Start of a Numeric Plain Literal
-                            return TryGetNumericLiteral();
-                        }
-                        else if (Char.IsLetter(next))
-                        {
-                            // Start of a Plain Literal
-                            return TryGetPlainLiteralOrQName();
-                        }
-                        else
-                        {
-                            switch (next)
-                            {
-                                case '#':
-                                    // Comment
-                                    return TryGetComment();
-
-                                case '@':
-                                    // Start of a Keyword or Language Specifier
-                                    return TryGetKeywordOrLangSpec();
-
-                                case '=':
-                                    // Equality
-                                    ConsumeCharacter();
-                                    _lasttokentype = Token.EQUALS;
-                                    return new EqualityToken(CurrentLine, StartPosition);
-
-                                #region URIs, QNames and Literals
-
-                                case '<':
-                                    // Start of a Uri
-                                    return TryGetUri();
-
-                                case '_':
-                                case ':':
-                                    // Start of a  QName
-                                    return TryGetQName();
-
-                                case '"':
-                                    // Start of a Literal
-                                    return TryGetLiteral();
-
-                                case '^':
-                                    // Data Type Specifier
-                                    ConsumeCharacter();
-                                    next = Peek();
-                                    if (next == '^')
-                                    {
-                                        ConsumeCharacter();
-                                        _lasttokentype = Token.HATHAT;
-                                        return new HatHatToken(CurrentLine, StartPosition);
-                                    }
-                                    else
-                                    {
-                                        throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered, expected the second ^ as part of a ^^ Data Type Specifier");
-                                    }
-
-                                #endregion
-
-                                #region Line Terminators
-
-                                case '.':
-                                    // Dot Terminator
-                                    ConsumeCharacter();
-                                    if (!_in.EndOfStream && Char.IsDigit(Peek()))
-                                    {
-                                        return TryGetNumericLiteral();
-                                    }
-                                    else
-                                    {
-                                        _lasttokentype = Token.DOT;
-                                        return new DotToken(CurrentLine, StartPosition);
-                                    }
-                                case ';':
-                                    // Semicolon Terminator
-                                    ConsumeCharacter();
-                                    _lasttokentype = Token.SEMICOLON;
-                                    return new SemicolonToken(CurrentLine, StartPosition);
-                                case ',':
-                                    // Comma Terminator
-                                    ConsumeCharacter();
-                                    _lasttokentype = Token.COMMA;
-                                    return new CommaToken(CurrentLine, StartPosition);
-
-                                #endregion
-
-                                #region Collections and Graphs
-
-                                case '[':
-                                    // Blank Node Collection
-                                    ConsumeCharacter();
-                                    _lasttokentype = Token.LEFTSQBRACKET;
-                                    return new LeftSquareBracketToken(CurrentLine, StartPosition);
-                                case ']':
-                                    // Blank Node Collection
-                                    ConsumeCharacter();
-                                    _lasttokentype = Token.RIGHTSQBRACKET;
-                                    return new RightSquareBracketToken(CurrentLine, StartPosition);
-                                case '{':
-                                    // Graph
-                                    ConsumeCharacter();
-                                    _lasttokentype = Token.LEFTCURLYBRACKET;
-                                    return new LeftCurlyBracketToken(CurrentLine, StartPosition);
-                                case '}':
-                                    // Graph
-                                    ConsumeCharacter();
-                                    _lasttokentype = Token.RIGHTCURLYBRACKET;
-                                    return new RightCurlyBracketToken(CurrentLine, StartPosition);
-                                case '(':
-                                    // Collection
-                                    ConsumeCharacter();
-                                    _lasttokentype = Token.LEFTBRACKET;
-                                    return new LeftBracketToken(CurrentLine, StartPosition);
-                                case ')':
-                                    // Collection
-                                    ConsumeCharacter();
-                                    _lasttokentype = Token.RIGHTBRACKET;
-                                    return new RightBracketToken(CurrentLine, StartPosition);
-
-                                #endregion
-
-                                default:
-                                    // Unexpected Character
-                                    throw UnexpectedCharacter(next, String.Empty);
-                            }
-                        }
-                    } while (true);
-
+                    // Empty File
+                    return new EOFToken(0, 0);
                 }
-                catch (IOException)
+
+                if (_lasttokentype == Token.PREFIXDIRECTIVE)
                 {
-                    // End Of Stream Check
+                    // Discard any white space first
+                    DiscardWhiteSpace();
+
+                    // Get Prefix
+                    return TryGetPrefix();
+                }
+                if (_lasttokentype == Token.HATHAT)
+                {
+                    // Get DataType
+                    return TryGetDataType();
+                }
+
+                do
+                {
+                    // Check for EOF
                     if (_in.EndOfStream)
                     {
-                        // At End of Stream so produce the EOFToken
-                        return new EOFToken(CurrentLine, CurrentPosition);
+                        if (Length == 0)
+                        {
+                            // We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(CurrentLine, CurrentPosition);
+                        }
+
+                        // We're at the End of the Stream and part-way through reading a Token
+                        // Raise an error
+                        throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + Value);
+                    }
+
+                    char next = Peek();
+
+                    // Always need to do a check for End of Stream after Peeking to handle empty files OK
+                    if (next == Char.MaxValue && _in.EndOfStream)
+                    {
+                        if (Length == 0)
+                        {
+                            // We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(CurrentLine, CurrentPosition);
+                        }
+
+                        // We're at the End of the Stream and part-way through reading a Token
+                        // Raise an error
+                        throw UnexpectedEndOfInput("Token");
+                    }
+
+                    if (Char.IsWhiteSpace(next))
+                    {
+                        // Discard white space between Tokens
+                        DiscardWhiteSpace();
+                    }
+                    else if (Char.IsDigit(next) || next == '-' || next == '+')
+                    {
+                        // Start of a Numeric Plain Literal
+                        return TryGetNumericLiteral();
+                    }
+                    else if (Char.IsLetter(next))
+                    {
+                        // Start of a Plain Literal
+                        return TryGetPlainLiteralOrQName();
                     }
                     else
                     {
-                        // Some other Error so throw
-                        throw;
+                        switch (next)
+                        {
+                            case '#':
+                                // Comment
+                                return TryGetComment();
+
+                            case '@':
+                                // Start of a Keyword or Language Specifier
+                                return TryGetKeywordOrLangSpec();
+
+                            case '=':
+                                // Equality
+                                ConsumeCharacter();
+                                _lasttokentype = Token.EQUALS;
+                                return new EqualityToken(CurrentLine, StartPosition);
+
+                            #region URIs, QNames and Literals
+
+                            case '<':
+                                // Start of a Uri
+                                return TryGetUri();
+
+                            case '_':
+                            case ':':
+                                // Start of a  QName
+                                return TryGetQName();
+
+                            case '"':
+                                // Start of a Literal
+                                return TryGetLiteral();
+
+                            case '^':
+                                // Data Type Specifier
+                                ConsumeCharacter();
+                                next = Peek();
+                                if (next == '^')
+                                {
+                                    ConsumeCharacter();
+                                    _lasttokentype = Token.HATHAT;
+                                    return new HatHatToken(CurrentLine, StartPosition);
+                                }
+                                else
+                                {
+                                    throw Error("Unexpected Character (Code " + (int)next + ") " + next + " was encountered, expected the second ^ as part of a ^^ Data Type Specifier");
+                                }
+
+                            #endregion
+
+                            #region Line Terminators
+
+                            case '.':
+                                // Dot Terminator
+                                ConsumeCharacter();
+                                if (!_in.EndOfStream && Char.IsDigit(Peek()))
+                                {
+                                    return TryGetNumericLiteral();
+                                }
+                                else
+                                {
+                                    _lasttokentype = Token.DOT;
+                                    return new DotToken(CurrentLine, StartPosition);
+                                }
+                            case ';':
+                                // Semicolon Terminator
+                                ConsumeCharacter();
+                                _lasttokentype = Token.SEMICOLON;
+                                return new SemicolonToken(CurrentLine, StartPosition);
+                            case ',':
+                                // Comma Terminator
+                                ConsumeCharacter();
+                                _lasttokentype = Token.COMMA;
+                                return new CommaToken(CurrentLine, StartPosition);
+
+                            #endregion
+
+                            #region Collections and Graphs
+
+                            case '[':
+                                // Blank Node Collection
+                                ConsumeCharacter();
+                                _lasttokentype = Token.LEFTSQBRACKET;
+                                return new LeftSquareBracketToken(CurrentLine, StartPosition);
+                            case ']':
+                                // Blank Node Collection
+                                ConsumeCharacter();
+                                _lasttokentype = Token.RIGHTSQBRACKET;
+                                return new RightSquareBracketToken(CurrentLine, StartPosition);
+                            case '{':
+                                // Graph
+                                ConsumeCharacter();
+                                _lasttokentype = Token.LEFTCURLYBRACKET;
+                                return new LeftCurlyBracketToken(CurrentLine, StartPosition);
+                            case '}':
+                                // Graph
+                                ConsumeCharacter();
+                                _lasttokentype = Token.RIGHTCURLYBRACKET;
+                                return new RightCurlyBracketToken(CurrentLine, StartPosition);
+                            case '(':
+                                // Collection
+                                ConsumeCharacter();
+                                _lasttokentype = Token.LEFTBRACKET;
+                                return new LeftBracketToken(CurrentLine, StartPosition);
+                            case ')':
+                                // Collection
+                                ConsumeCharacter();
+                                _lasttokentype = Token.RIGHTBRACKET;
+                                return new RightBracketToken(CurrentLine, StartPosition);
+
+                            #endregion
+
+                            default:
+                                // Unexpected Character
+                                throw UnexpectedCharacter(next, String.Empty);
+                        }
                     }
+                } while (true);
+
+            }
+            catch (IOException)
+            {
+                // End Of Stream Check
+                if (_in.EndOfStream)
+                {
+                    // At End of Stream so produce the EOFToken
+                    return new EOFToken(CurrentLine, CurrentPosition);
                 }
+
+                // Some other Error so throw
+                throw;
             }
         }
 
@@ -383,21 +376,19 @@ namespace VDS.RDF.Parsing.Tokens
                 _lasttokentype = Token.PREFIXDIRECTIVE;
                 return new PrefixDirectiveToken(CurrentLine, StartPosition);
             }
-            else if (output.Equals("@base"))
+
+            if (output.Equals("@base"))
             {
                 if (_syntax == TriGSyntax.Original) throw new RdfParseException("The @base directive is not permitted in this version of TriG, later versions of TriG support this feature and may be enabled by changing your syntax setting when you create a TriG Parser");
                 _lasttokentype = Token.BASEDIRECTIVE;
                 return new BaseDirectiveToken(CurrentLine, StartPosition);
             }
-            else if (RdfSpecsHelper.IsValidLangSpecifier(output))
+            if (RdfSpecsHelper.IsValidLangSpecifier(output))
             {
                 _lasttokentype = Token.LANGSPEC;
                 return new LanguageSpecifierToken(output.Substring(1), CurrentLine, StartPosition, EndPosition);
             }
-            else
-            {
-                throw Error("Unexpected Content '" + output + "' encountered, expected an @prefix/@base keyword or a Language Specifier");
-            }
+            throw Error("Unexpected Content '" + output + "' encountered, expected an @prefix/@base keyword or a Language Specifier");
         }
 
         private IToken TryGetUri()
@@ -465,18 +456,15 @@ namespace VDS.RDF.Parsing.Tokens
                 // Blank Node ID
                 _lasttokentype = Token.BLANKNODEWITHID;
                 return new BlankNodeWithIDToken(Value, CurrentLine, StartPosition, EndPosition);
-            } 
-            else if (TurtleSpecsHelper.IsValidQName(Value, _syntax == TriGSyntax.Recommendation ? TurtleSyntax.W3C : TurtleSyntax.Original))
+            }
+
+            if (TurtleSpecsHelper.IsValidQName(Value, _syntax == TriGSyntax.Recommendation ? TurtleSyntax.W3C : TurtleSyntax.Original))
             {
                 // QName
                 _lasttokentype = Token.QNAME;
                 return new QNameToken(Value, CurrentLine, StartPosition, EndPosition);
             }
-            else
-            {
-                throw Error("The input '" + Value + "' is not a valid QName in {0}");
-            }
-
+            throw Error("The input '" + Value + "' is not a valid QName in {0}");
         }
 
         private IToken TryGetLiteral()
@@ -548,24 +536,17 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 return new LongLiteralToken(Value, StartLine, EndLine, StartPosition, EndPosition);
                             }
-                            else
-                            {
-                                // Not a triple quote so continue
-                                continue;
-                            }
+
+                            // Not a triple quote so continue
                         }
-                        else
-                        {
-                            // Not a Triple quote so continue
-                            continue;
-                        }
+
+                        // Not a Triple quote so continue
+                        continue;
                     }
-                    else
-                    {
-                        // End of Literal
-                        _lasttokentype = Token.LITERAL;
-                        return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
-                    }
+
+                    // End of Literal
+                    _lasttokentype = Token.LITERAL;
+                    return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
                 }
 
                 // Continue Reading
@@ -621,10 +602,8 @@ namespace VDS.RDF.Parsing.Tokens
                 _lasttokentype = Token.PLAINLITERAL;
                 return new PlainLiteralToken(Value, CurrentLine, StartPosition, EndPosition);
             }
-            else
-            {
-                throw Error("The input '" + Value + "' is not a valid Plain Literal in {0}");
-            }
+
+            throw Error("The input '" + Value + "' is not a valid Plain Literal in {0}");
         }
 
         private IToken TryGetPlainLiteralOrQName()
@@ -664,23 +643,21 @@ namespace VDS.RDF.Parsing.Tokens
                 _lasttokentype = Token.KEYWORDA;
                 return new KeywordAToken(CurrentLine, StartPosition);
             }
-            else if (value.Equals("true") || value.Equals("false"))
+
+            if (value.Equals("true") || value.Equals("false"))
             {
                 // Boolean Plain Literal
                 _lasttokentype = Token.PLAINLITERAL;
                 return new PlainLiteralToken(Value, CurrentLine, StartPosition, EndPosition);
             }
-            else if (TurtleSpecsHelper.IsValidQName(value, _syntax == TriGSyntax.Recommendation ? TurtleSyntax.W3C : TurtleSyntax.Original))
+            if (TurtleSpecsHelper.IsValidQName(value, _syntax == TriGSyntax.Recommendation ? TurtleSyntax.W3C : TurtleSyntax.Original))
             {
                 // QName
                 _lasttokentype = Token.QNAME;
                 return new QNameToken(Value, CurrentLine, StartPosition, EndPosition);
             }
-            else
-            {
-                // Error
-                throw Error("Unexpected input '" + value + "', expected a QName, the 'a' Keyword or a Plain Literal");
-            }
+            // Error
+            throw Error("Unexpected input '" + value + "', expected a QName, the 'a' Keyword or a Plain Literal");
         }
 
         private IToken TryGetDataType()
@@ -691,19 +668,15 @@ namespace VDS.RDF.Parsing.Tokens
                 // Uri for Data Type
                 return TryGetUri();
             }
-            else
+
+            // Should be a QName
+            IToken qname = TryGetQName();
+            if (qname.TokenType != Token.QNAME)
             {
-                // Should be a QName
-                IToken qname = TryGetQName();
-                if (qname.TokenType != Token.QNAME)
-                {
-                    throw Error("Unexpected Token '" + qname.GetType().ToString() + "' parsed when a QName Token to specify a Data Type was expected");
-                }
-                else
-                {
-                    return qname;
-                }
+                throw Error("Unexpected Token '" + qname.GetType() + "' parsed when a QName Token to specify a Data Type was expected");
             }
+
+            return qname;
         }
     }
 }

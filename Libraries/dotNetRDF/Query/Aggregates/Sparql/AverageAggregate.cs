@@ -106,10 +106,8 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                         {
                             continue;
                         }
-                        else
-                        {
-                            values.Add(temp);
-                        }
+
+                        values.Add(temp);
                     }
                     numtype = temp.NumericType;
                 }
@@ -159,38 +157,36 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             {
                 return new LongNode(null, 0);
             }
-            else
+
+            // long lngavg;
+            decimal decavg;
+            float fltavg;
+            double dblavg;
+
+            switch (maxtype)
             {
-                // long lngavg;
-                decimal decavg;
-                float fltavg;
-                double dblavg;
+                case SparqlNumericType.Integer:
+                ////Integer Values
+                // lngavg = lngtotal / (long)count;
+                // return new LiteralNode(null, lngavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
-                switch (maxtype)
-                {
-                    case SparqlNumericType.Integer:
-                    ////Integer Values
-                    // lngavg = lngtotal / (long)count;
-                    // return new LiteralNode(null, lngavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+                case SparqlNumericType.Decimal:
+                    // Decimal Values
+                    decavg = dectotal / count;
+                    return new DecimalNode(null, decavg);
 
-                    case SparqlNumericType.Decimal:
-                        // Decimal Values
-                        decavg = dectotal / (decimal)count;
-                        return new DecimalNode(null, decavg);
+                case SparqlNumericType.Float:
+                    // Float values
+                    fltavg = flttotal / count;
+                    return new FloatNode(null, fltavg);
 
-                    case SparqlNumericType.Float:
-                        // Float values
-                        fltavg = flttotal / (float)count;
-                        return new FloatNode(null, fltavg);
+                case SparqlNumericType.Double:
+                    // Double Values
+                    dblavg = dbltotal / count;
+                    return new DoubleNode(null, dblavg);
 
-                    case SparqlNumericType.Double:
-                        // Double Values
-                        dblavg = dbltotal / (double)count;
-                        return new DoubleNode(null, dblavg);
-
-                    default:
-                        throw new RdfQueryException("Failed to calculate a valid Average");
-                }
+                default:
+                    throw new RdfQueryException("Failed to calculate a valid Average");
             }
         }
 
@@ -203,7 +199,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             StringBuilder output = new StringBuilder();
             output.Append("AVG(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString() + ")");
+            output.Append(_expr + ")");
             return output.ToString();
         }
 

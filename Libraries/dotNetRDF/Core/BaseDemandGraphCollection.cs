@@ -61,17 +61,15 @@ namespace VDS.RDF
                 {
                     return true;
                 }
-                else
-                {
-                    // Try to do on-demand loading
-                    IGraph g = LoadOnDemand(graphUri);
 
-                    // Remember to set the Graph URI to the URI being asked for prior to adding it to the underlying collection
-                    // in case the loading process sets it otherwise
-                    g.BaseUri = graphUri;
-                    Add(g, false);
-                    return true;
-                }
+                // Try to do on-demand loading
+                IGraph g = LoadOnDemand(graphUri);
+
+                // Remember to set the Graph URI to the URI being asked for prior to adding it to the underlying collection
+                // in case the loading process sets it otherwise
+                g.BaseUri = graphUri;
+                Add(g, false);
+                return true;
             }
             catch
             {
@@ -126,10 +124,8 @@ namespace VDS.RDF
                     throw new RdfException("The Graph with the URI " + graphUri.AbsoluteUri + " does not exist in this collection");
                 }
             }
-            else
-            {
-                throw new RdfException("The Graph with the URI does not exist in this collection");
-            }
+
+            throw new RdfException("The Graph with the URI does not exist in this collection");
         }
     }
 
@@ -174,10 +170,8 @@ namespace VDS.RDF
                     throw new RdfException("The Graph with the URI " + graphUri.AbsoluteUri + " does not exist in this collection");
                 }
             }
-            else
-            {
-                throw new RdfException("The Graph with the URI " + graphUri.AbsoluteUri + " does not exist in this collection");
-            }
+
+            throw new RdfException("The Graph with the URI " + graphUri.AbsoluteUri + " does not exist in this collection");
         }
     }
 }

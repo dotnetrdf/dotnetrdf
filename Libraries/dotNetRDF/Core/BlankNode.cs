@@ -25,7 +25,6 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
@@ -158,11 +157,9 @@ namespace VDS.RDF
             {
                 return Equals((INode)obj);
             }
-            else
-            {
-                // Can only be equal to things which are Nodes
-                return false;
-            }
+
+            // Can only be equal to things which are Nodes
+            return false;
         }
 
         /// <summary>
@@ -175,7 +172,7 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Equals(INode other)
         {
-            if ((Object)other == null) return false;
+            if (other == null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -185,11 +182,9 @@ namespace VDS.RDF
 
                 return EqualityHelper.AreBlankNodesEqual(this, temp);
             }
-            else
-            {
-                // Can only be equal to Blank Nodes
-                return false;
-            }
+
+            // Can only be equal to Blank Nodes
+            return false;
         }
 
         /// <summary>
@@ -271,22 +266,20 @@ namespace VDS.RDF
                 // So we return a 1 to indicate we're greater than it
                 return 1;
             }
-            else if (other.NodeType == NodeType.Variable)
+
+            if (other.NodeType == NodeType.Variable)
             {
                 // Blank Nodes are considered greater than Variables
                 return 1;
             }
-            else if (other.NodeType == NodeType.Blank)
+            if (other.NodeType == NodeType.Blank)
             {
                 // Order Blank Nodes lexically by their ID
                 return ComparisonHelper.CompareBlankNodes(this, (IBlankNode)other);
             }
-            else
-            {
-                // Anything else is greater than a Blank Node
-                // So we return a -1 to indicate we are less than the other Node
-                return -1;
-            }
+            // Anything else is greater than a Blank Node
+            // So we return a -1 to indicate we are less than the other Node
+            return -1;
         }
 
         /// <summary>
@@ -302,11 +295,9 @@ namespace VDS.RDF
                 // We are always greater than nulls
                 return 1;
             }
-            else
-            {
-                // Order lexically on ID
-                return ComparisonHelper.CompareBlankNodes(this, other);
-            }
+
+            // Order lexically on ID
+            return ComparisonHelper.CompareBlankNodes(this, other);
         }
 
         /// <summary>
@@ -322,11 +313,9 @@ namespace VDS.RDF
                 // We are always greater than nulls
                 return 1;
             }
-            else
-            {
-                // We are less than Graph Literal Nodes
-                return -1;
-            }
+
+            // We are less than Graph Literal Nodes
+            return -1;
         }
 
         /// <summary>
@@ -342,11 +331,9 @@ namespace VDS.RDF
                 // We are always greater than nulls
                 return 1;
             }
-            else
-            {
-                // We are less than Literal Nodes
-                return -1;
-            }
+
+            // We are less than Literal Nodes
+            return -1;
         }
 
         /// <summary>
@@ -362,11 +349,9 @@ namespace VDS.RDF
                 // We are always greater than nulls
                 return 1;
             }
-            else
-            {
-                // We are less than URI Nodes
-                return -1;
-            }
+
+            // We are less than URI Nodes
+            return -1;
         }
 
         /// <summary>

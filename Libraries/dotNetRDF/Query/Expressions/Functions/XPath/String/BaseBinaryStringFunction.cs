@@ -100,44 +100,34 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 {
                     return ValueInternal((ILiteralNode)temp);
                 }
-                else
+
+                // Need to validate the argument
+                INode tempArg = _arg.Evaluate(context, bindingID);
+                if (tempArg != null)
                 {
-                    // Need to validate the argument
-                    INode tempArg = _arg.Evaluate(context, bindingID);
-                    if (tempArg != null)
+                    if (tempArg.NodeType == NodeType.Literal)
                     {
-                        if (tempArg.NodeType == NodeType.Literal)
+                        ILiteralNode litArg = (ILiteralNode)tempArg;
+                        if (_argumentTypeValidator(litArg.DataType))
                         {
-                            ILiteralNode litArg = (ILiteralNode)tempArg;
-                            if (_argumentTypeValidator(litArg.DataType))
-                            {
-                                return ValueInternal((ILiteralNode)temp, litArg);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Unable to evaluate an XPath String function since the type of the argument is not supported by this function");
-                            }
+                            return ValueInternal((ILiteralNode)temp, litArg);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an XPath String function where the argument is a non-Literal");
-                        }
+
+                        throw new RdfQueryException("Unable to evaluate an XPath String function since the type of the argument is not supported by this function");
                     }
-                    else if (_allowNullArgument)
-                    {
-                        // Null argument permitted so just invoke the non-argument version of the function
-                        return ValueInternal((ILiteralNode)temp);
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evaluate an XPath String function since the argument expression evaluated to a null and a null argument is not permitted by this function");
-                    }
+
+                    throw new RdfQueryException("Unable to evaluate an XPath String function where the argument is a non-Literal");
                 }
+
+                if (_allowNullArgument)
+                {
+                    // Null argument permitted so just invoke the non-argument version of the function
+                    return ValueInternal((ILiteralNode)temp);
+                }
+                throw new RdfQueryException("Unable to evaluate an XPath String function since the argument expression evaluated to a null and a null argument is not permitted by this function");
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
-            }
+
+            throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
         }
 
         /// <summary>
@@ -151,10 +141,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 throw new RdfQueryException("This XPath function requires a non-null argument in addition to an input string");
             }
-            else
-            {
-                throw new RdfQueryException("Derived classes which are functions which permit a null argument must override this method");
-            }
+
+            throw new RdfQueryException("Derived classes which are functions which permit a null argument must override this method");
         }
 
         /// <summary>
@@ -176,10 +164,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 {
                     return _expr.Variables;
                 }
-                else
-                {
-                    return _expr.Variables.Concat(_arg.Variables);
-                }
+
+                return _expr.Variables.Concat(_arg.Variables);
             }
         }
 
@@ -215,7 +201,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return new ISparqlExpression[] { _expr, _arg };
+                return new[] { _expr, _arg };
             }
         }
 

@@ -304,7 +304,8 @@ namespace VDS.RDF.Writing
                     {
                         throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
                     }
-                    else if (lastSubj.NodeType == NodeType.Variable)
+
+                    if (lastSubj.NodeType == NodeType.Variable)
                     {
                         throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable("RDF/XML"));
                     }

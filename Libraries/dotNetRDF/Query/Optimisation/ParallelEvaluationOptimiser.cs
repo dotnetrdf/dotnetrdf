@@ -62,29 +62,23 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         return new ParallelJoin(Optimise(join.Lhs), Optimise(join.Rhs));
                     }
-                    else
-                    {
-                        return join.Transform(this);
-                    }
+
+                    return @join.Transform(this);
                 }
-                else if (algebra is Union)
+
+                if (algebra is Union)
                 {
                     Union u = (Union)algebra;
                     return new ParallelUnion(Optimise(u.Lhs), Optimise(u.Rhs));
                 }
-                else
-                {
-                    return ((IAbstractJoin)algebra).Transform(this);
-                }
+                return ((IAbstractJoin)algebra).Transform(this);
             }
-            else if (algebra is IUnaryOperator)
+
+            if (algebra is IUnaryOperator)
             {
                 return ((IUnaryOperator)algebra).Transform(this);
             }
-            else
-            {
-                return algebra;
-            }
+            return algebra;
         }
 
         /// <summary>

@@ -79,12 +79,10 @@ namespace VDS.RDF.Query.Algebra
                 if (other is NullMultiset) return other;
                 return this;
             }
-            else
-            {
-                if (other is NullMultiset) return this;
-                if (other is IdentityMultiset) return new NullMultiset();
-                return this;
-            }
+
+            if (other is NullMultiset) return this;
+            if (other is IdentityMultiset) return new NullMultiset();
+            return this;
         }
 
         /// <summary>

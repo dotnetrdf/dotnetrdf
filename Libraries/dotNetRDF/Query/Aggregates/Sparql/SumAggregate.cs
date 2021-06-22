@@ -105,10 +105,8 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                         {
                             continue;
                         }
-                        else
-                        {
-                            values.Add(temp);
-                        }
+
+                        values.Add(temp);
                     }
                     numtype = temp.NumericType;
                 }
@@ -187,7 +185,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             StringBuilder output = new StringBuilder();
             output.Append("SUM(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString() + ")");
+            output.Append(_expr + ")");
             return output.ToString();
         }
 

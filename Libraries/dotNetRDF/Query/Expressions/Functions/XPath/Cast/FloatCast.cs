@@ -84,28 +84,24 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 // Parsed OK
                                 return new FloatNode(lit.Graph, f);
                             }
-                            else
+
+                            throw new RdfQueryException("Invalid lexical form for a xsd:float");
+                        }
+
+                        {
+                            if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                             {
-                                throw new RdfQueryException("Invalid lexical form for a xsd:float");
+                                // DateTime cast forbidden
+                                throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:float");
                             }
-                        }
-                        else if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            // DateTime cast forbidden
-                            throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:float");
-                        }
-                        else
-                        {
                             float f;
                             if (Single.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out f))
                             {
                                 // Parsed OK
                                 return new FloatNode(lit.Graph, f);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float");
-                            }
+
+                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float");
                         }
                     }
                     else
@@ -116,10 +112,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             // Parsed OK
                             return new FloatNode(lit.Graph, f);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float");
-                        }
+
+                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float");
                     }
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:float");
@@ -132,7 +126,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeFloat + ">(" + _expr.ToString() + ")";
+            return "<" + XmlSpecsHelper.XmlSchemaDataTypeFloat + ">(" + _expr + ")";
         }
 
         /// <summary>

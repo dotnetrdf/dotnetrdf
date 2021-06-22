@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             output.Append("COALESCE(");
             for (int i = 0; i < _expressions.Count; i++)
             {
-                output.Append(_expressions[i].ToString());
+                output.Append(_expressions[i]);
                 if (i < _expressions.Count - 1)
                 {
                     output.Append(", ");

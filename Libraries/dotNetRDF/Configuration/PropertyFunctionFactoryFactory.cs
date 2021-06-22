@@ -26,7 +26,6 @@
 
 using System;
 using System.Linq;
-using System.Reflection;
 using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Configuration

@@ -175,13 +175,11 @@ namespace VDS.RDF
                 {
                     return _store[graphUri];
                 }
-                else
-                {
-                    Graph g = new Graph();
-                    g.BaseUri = graphUri;
-                    _store.Add(g);
-                    return g;
-                }
+
+                Graph g = new Graph();
+                g.BaseUri = graphUri;
+                _store.Add(g);
+                return g;
             }
         }
 
@@ -211,14 +209,12 @@ namespace VDS.RDF
                 created = false;
                 return _store[graphUri];
             }
-            else
-            {
-                created = true;
-                Graph g = new Graph();
-                g.BaseUri = graphUri;
-                _store.Add(g);
-                return g;
-            }
+
+            created = true;
+            Graph g = new Graph();
+            g.BaseUri = graphUri;
+            _store.Add(g);
+            return g;
         }
 
         /// <summary>

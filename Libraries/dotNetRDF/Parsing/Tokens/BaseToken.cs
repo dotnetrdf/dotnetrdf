@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         public override string ToString()
         {
-            return GetType().ToString() + " " + _value;
+            return GetType() + " " + _value;
         }
 
         /// <summary>

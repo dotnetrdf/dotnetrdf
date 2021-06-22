@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 // Ensured the MEDIANed variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(_varname))
                 {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a MEDIAN Aggregate since the Variable does not occur in a Graph Pattern");
+                    throw new RdfQueryException("Cannot use the Variable " + _expr + " in a MEDIAN Aggregate since the Variable does not occur in a Graph Pattern");
                 }
             }
 
@@ -108,10 +108,8 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                             {
                                 continue;
                             }
-                            else
-                            {
-                                distinctValues.Add(temp);
-                            }
+
+                            distinctValues.Add(temp);
                         }
                         else if (!nullSeen)
                         {
@@ -150,7 +148,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             output.Append(LeviathanFunctionFactory.Median);
             output.Append(">(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(')');
             return output.ToString();
         }

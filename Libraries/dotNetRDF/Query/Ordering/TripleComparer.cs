@@ -57,25 +57,19 @@ namespace VDS.RDF.Query.Ordering
             {
                 return 0;
             }
-            else
+
+            int c = _compareFunc(x, y);
+            if (c == 0)
             {
-                int c = _compareFunc(x, y);
-                if (c == 0)
+                if (_child != null)
                 {
-                    if (_child != null)
-                    {
-                        return _modifier * _child.Compare(x, y);
-                    }
-                    else
-                    {
-                        return _modifier * c;
-                    }
+                    return _modifier * _child.Compare(x, y);
                 }
-                else
-                {
-                    return _modifier * c;
-                }
+
+                return _modifier * c;
             }
+
+            return _modifier * c;
         }
     }
 }

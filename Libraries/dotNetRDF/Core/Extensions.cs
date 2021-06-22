@@ -368,12 +368,10 @@ namespace VDS.RDF
             {
                 return g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
             }
-            else
-            {
-                INode listRoot = g.CreateBlankNode();
-                AssertList<T>(g, listRoot, objects, mapFunc);
-                return listRoot;
-            }
+
+            INode listRoot = g.CreateBlankNode();
+            AssertList(g, listRoot, objects, mapFunc);
+            return listRoot;
         }
 
         /// <summary>
@@ -561,7 +559,7 @@ namespace VDS.RDF
             g.Assert(new Triple(listTail, rdfRest, newRoot));
 
             // Then assert the new list
-            AssertList<T>(g, newRoot, objects, mapFunc);
+            AssertList(g, newRoot, objects, mapFunc);
         }
 
         /// <summary>
@@ -805,49 +803,45 @@ namespace VDS.RDF
                 {
                     return @"\\";
                 }
-                else
-                {
-                    return value;
-                }
+
+                return value;
             }
-            else
+
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < value.Length; i++)
             {
-                StringBuilder output = new StringBuilder();
-                for (int i = 0; i < value.Length; i++)
+                if (value[i] == '\\')
                 {
-                    if (value[i] == '\\')
+                    if (i < value.Length - 1)
                     {
-                        if (i < value.Length - 1)
+                        // Not at end of the input so check whether the next character is a valid escape
+                        char next = value[i + 1];
+                        if (cs.Contains(next))
                         {
-                            // Not at end of the input so check whether the next character is a valid escape
-                            char next = value[i + 1];
-                            if (cs.Contains(next))
-                            {
-                                // Valid Escape
-                                output.Append(value[i]);
-                                output.Append(next);
-                                i++;
-                            }
-                            else
-                            {
-                                // Not a Valid Escape so escape the backslash
-                                output.Append(@"\\");
-                            }
+                            // Valid Escape
+                            output.Append(value[i]);
+                            output.Append(next);
+                            i++;
                         }
                         else
                         {
-                            // At the end of the input and found a trailing backslash
+                            // Not a Valid Escape so escape the backslash
                             output.Append(@"\\");
-                            break;
                         }
                     }
                     else
                     {
-                        output.Append(value[i]);
+                        // At the end of the input and found a trailing backslash
+                        output.Append(@"\\");
+                        break;
                     }
                 }
-                return output.ToString();
+                else
+                {
+                    output.Append(value[i]);
+                }
             }
+            return output.ToString();
         }
 
         /// <summary>
@@ -950,68 +944,66 @@ namespace VDS.RDF
             if (value.Length == 0) return value;
             if (value.Length == 1)
             {
-                if (value[0] == toEscape) return new String(new char[] { '\\', toEscape });
+                if (value[0] == toEscape) return new String(new[] { '\\', toEscape });
                 return value;
             }
-            else
+
+            // Work through the characters in pairs
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < value.Length; i += 2)
             {
-                // Work through the characters in pairs
-                StringBuilder output = new StringBuilder();
-                for (int i = 0; i < value.Length; i += 2)
+                char c = value[i];
+                if (i < value.Length - 1)
                 {
-                    char c = value[i];
-                    if (i < value.Length - 1)
+                    char d = value[i + 1];
+                    if (c == toEscape)
                     {
-                        char d = value[i + 1];
-                        if (c == toEscape)
-                        {
-                            // Must escape this
-                            output.Append('\\');
-                            output.Append(escapeAs);
-                            // Reduce index by 1 as next character is now start of next pair
-                            i--;
-                        }
-                        else if (c == '\\')
-                        {
-                            // Regardless of the next character we append this to the output since it is an escape
-                            // of some kind - whether it relates to the character we want to escape or not is
-                            // irrelevant in this case
-                            output.Append(c);
-                            output.Append(d);
-                        }
-                        else if (d == toEscape)
-                        {
-                            // If d is the character to be escaped and we get to this case then it isn't escaped
-                            // currently so we must escape it
-                            output.Append(c);
-                            output.Append('\\');
-                            output.Append(escapeAs);
-                        }
-                        else if (d == '\\')
-                        {
-                            // If d is a backslash shift the index back by 1 so that this will be the first
-                            // character of the next character pair we assess
-                            output.Append(c);
-                            i--;
-                        }
-                        else
-                        {
-                            output.Append(c);
-                            output.Append(d);
-                        }
+                        // Must escape this
+                        output.Append('\\');
+                        output.Append(escapeAs);
+                        // Reduce index by 1 as next character is now start of next pair
+                        i--;
+                    }
+                    else if (c == '\\')
+                    {
+                        // Regardless of the next character we append this to the output since it is an escape
+                        // of some kind - whether it relates to the character we want to escape or not is
+                        // irrelevant in this case
+                        output.Append(c);
+                        output.Append(d);
+                    }
+                    else if (d == toEscape)
+                    {
+                        // If d is the character to be escaped and we get to this case then it isn't escaped
+                        // currently so we must escape it
+                        output.Append(c);
+                        output.Append('\\');
+                        output.Append(escapeAs);
+                    }
+                    else if (d == '\\')
+                    {
+                        // If d is a backslash shift the index back by 1 so that this will be the first
+                        // character of the next character pair we assess
+                        output.Append(c);
+                        i--;
                     }
                     else
                     {
-                        // If trailing character is character to escape then do so
-                        if (c == toEscape)
-                        {
-                            output.Append('\\');
-                        }
                         output.Append(c);
+                        output.Append(d);
                     }
                 }
-                return output.ToString();
+                else
+                {
+                    // If trailing character is character to escape then do so
+                    if (c == toEscape)
+                    {
+                        output.Append('\\');
+                    }
+                    output.Append(c);
+                }
             }
+            return output.ToString();
         }
 
 #endregion
@@ -1283,11 +1275,9 @@ namespace VDS.RDF
             {
                 throw new ArgumentNullException(nameof(writer));
             }
-            else
-            {
-                var graphWriter = new SingleGraphWriter(writer);
-                graphWriter.Save(g, file);
-            }
+
+            var graphWriter = new SingleGraphWriter(writer);
+            graphWriter.Save(g, file);
         }
 
         /// <summary>
@@ -1526,10 +1516,8 @@ namespace VDS.RDF
                 // while .Net byte has range 0-255
                 return factory.CreateLiteralNode(XmlConvert.ToString(b), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte));
             }
-            else
-            {
-                return factory.CreateLiteralNode(XmlConvert.ToString(b), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeByte));
-            }
+
+            return factory.CreateLiteralNode(XmlConvert.ToString(b), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeByte));
         }
 
         /// <summary>

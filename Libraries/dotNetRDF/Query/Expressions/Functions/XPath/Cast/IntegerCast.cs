@@ -85,28 +85,24 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             {
                                 return new LongNode(lit.Graph, i);
                             }
-                            else
+
+                            throw new RdfQueryException("Invalid lexical form for xsd:integer");
+                        }
+
+                        {
+                            if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                             {
-                                throw new RdfQueryException("Invalid lexical form for xsd:integer");
+                                // DateTime cast forbidden
+                                throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:integer");
                             }
-                        }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            // DateTime cast forbidden
-                            throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:integer");
-                        }
-                        else
-                        {
                             Int64 i;
                             if (Int64.TryParse(lit.Value, out i))
                             {
                                 // Parsed OK
                                 return new LongNode(lit.Graph, i);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer");
-                            }
+
+                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer");
                         }
                     }
                     else
@@ -117,10 +113,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             // Parsed OK
                             return new LongNode(lit.Graph, i);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer");
-                        }
+
+                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:integer");
                     }
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:integer");
@@ -133,7 +127,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeInteger + ">(" + _expr.ToString() + ")";
+            return "<" + XmlSpecsHelper.XmlSchemaDataTypeInteger + ">(" + _expr + ")";
         }
 
         /// <summary>

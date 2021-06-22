@@ -468,7 +468,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
 
             if (context.TraceParsing)
             {
-                Console.Write(nesting + " " + evt.GetType().ToString());
+                Console.Write(nesting + " " + evt.GetType());
             }
 
             // Iterate over Children where present
@@ -487,7 +487,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 // No End after a RootEvent
                 return;
             }
-            else if (evt is ElementEvent)
+
+            if (evt is ElementEvent)
             {
                 ElementEvent element = (ElementEvent)evt;
                 if (context.TraceParsing)
@@ -536,7 +537,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     ElementEvent temp = (ElementEvent)evt;
                     endDescrip = " " + temp.QName;
                 }
-                Console.WriteLine(nesting + " " + end.GetType().ToString() + endDescrip);
+                Console.WriteLine(nesting + " " + end.GetType() + endDescrip);
             }
         }
     }

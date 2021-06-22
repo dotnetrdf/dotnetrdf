@@ -70,25 +70,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                         {
                             return ValueInternal(lit);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evalaute an XPath String function on a non-string typed Literal");
-                        }
+
+                        throw new RdfQueryException("Unable to evalaute an XPath String function on a non-string typed Literal");
                     }
-                    else
-                    {
-                        return ValueInternal(lit);
-                    }
+
+                    return ValueInternal(lit);
                 }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
-                }
+
+                throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
-            }
+
+            throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
         }
 
         /// <summary>

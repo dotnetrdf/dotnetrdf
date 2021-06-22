@@ -69,11 +69,9 @@ namespace VDS.RDF.JsonLd
                 {
                     return LoadJson(new Uri(remoteRef, alternateLink.LinkValue), loaderOptions);
                 }
-                else
-                {
-                    throw new JsonLdProcessorException(JsonLdErrorCode.LoadingDocumentFailed,
-                        "Loading document failed. The server did not respond with a processable JSON document.");
-                }
+
+                throw new JsonLdProcessorException(JsonLdErrorCode.LoadingDocumentFailed,
+                    "Loading document failed. The server did not respond with a processable JSON document.");
             }
 
             // If content type is application/ld+json the context link header is ignored

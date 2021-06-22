@@ -331,12 +331,13 @@ namespace VDS.RDF.Parsing
                 // Probably RDF/XML
                 return new RdfXmlParser();
             }
-            else if (data.Contains("<html"))
+
+            if (data.Contains("<html"))
             {
                 // HTML (possibly containing RDFa)
                 return new RdfAParser();
             }
-            else if (data.Contains("@prefix") || data.Contains("@base"))
+            if (data.Contains("@prefix") || data.Contains("@base"))
             {
                 // Turtle/Notation 3
                 if (data.Contains("@keywords") || data.Contains("@forall") || data.Contains("@forsome"))
@@ -344,28 +345,23 @@ namespace VDS.RDF.Parsing
                     // Notation 3
                     return new Notation3Parser();
                 }
-                else
-                {
-                    // Probably Turtle
-                    return new TurtleParser();
-                }
+
+                // Probably Turtle
+                return new TurtleParser();
             }
-            else if (data.Contains("\"value\"") &&
-                       data.Contains("\"type\"") &&
-                       data.Contains("{") &&
-                       data.Contains("}") &&
-                       data.Contains("[") &&
-                       data.Contains("]"))
+            if (data.Contains("\"value\"") &&
+                data.Contains("\"type\"") &&
+                data.Contains("{") &&
+                data.Contains("}") &&
+                data.Contains("[") &&
+                data.Contains("]"))
             {
                 // If we have all those things then it's very likely RDF/Json
                 return new RdfJsonParser();
             }
-            else
-            {
-                // Take a stab at it being NTriples
-                // No real way to test as there's nothing particularly distinctive in NTriples
-                return new NTriplesParser();
-            }
+            // Take a stab at it being NTriples
+            // No real way to test as there's nothing particularly distinctive in NTriples
+            return new NTriplesParser();
         }
 
         /// <summary>
@@ -382,17 +378,15 @@ namespace VDS.RDF.Parsing
                 // Probably TriX
                 return new TriXParser();
             }
-            else if (data.Contains("@prefix") || data.Contains("{") || data.Contains("}"))
+
+            if (data.Contains("@prefix") || data.Contains("{") || data.Contains("}"))
             {
                 // Probably TriG
                 return new TriGParser();
             }
-            else
-            {
-                // Take a stab at it being NQuads
-                // No real way to test as there's nothing particularly distinctive in NQuads
-                return new NQuadsParser();
-            }
+            // Take a stab at it being NQuads
+            // No real way to test as there's nothing particularly distinctive in NQuads
+            return new NQuadsParser();
         }
 
         /// <summary>
@@ -409,20 +403,18 @@ namespace VDS.RDF.Parsing
                 // Probably XML
                 return new SparqlXmlParser();
             }
-            else if (data.Contains("\"head\"") &&
-               (data.Contains("\"results\"") || data.Contains("\"boolean\"")) &&
-               data.Contains("{") &&
-               data.Contains("}") &&
-               data.Contains("[") &&
-               data.Contains("]"))
+
+            if (data.Contains("\"head\"") &&
+                (data.Contains("\"results\"") || data.Contains("\"boolean\"")) &&
+                data.Contains("{") &&
+                data.Contains("}") &&
+                data.Contains("[") &&
+                data.Contains("]"))
             {
                 // If we have all those things then it's very likely JSON
                 return new SparqlJsonParser();
             }
-            else
-            {
-                throw new RdfParserSelectionException("StringParser is unable to detect the SPARQL Results Format as the given String does not appear to be SPARQL Results in either XML or JSON format");
-            }
+            throw new RdfParserSelectionException("StringParser is unable to detect the SPARQL Results Format as the given String does not appear to be SPARQL Results in either XML or JSON format");
         }
     }
 }

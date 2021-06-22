@@ -198,7 +198,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Select(" + _pattern.ToString() + ")";
+            return "Select(" + _pattern + ")";
         }
 
         /// <summary>

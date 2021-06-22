@@ -201,14 +201,14 @@ namespace VDS.RDF.Query.Patterns
                 output.Append("( ");
                 foreach (PatternItem arg in _lhsArgs)
                 {
-                    output.Append(arg.ToString());
+                    output.Append(arg);
                     output.Append(' ');
                 }
                 output.Append(')');
             }
             else
             {
-                output.Append(_lhsArgs.First().ToString());
+                output.Append(_lhsArgs.First());
             }
             output.Append(" <");
             output.Append(_function.FunctionUri);
@@ -218,14 +218,14 @@ namespace VDS.RDF.Query.Patterns
                 output.Append("( ");
                 foreach (PatternItem arg in _rhsArgs)
                 {
-                    output.Append(arg.ToString());
+                    output.Append(arg);
                     output.Append(' ');
                 }
                 output.Append(')');
             }
             else
             {
-                output.Append(_rhsArgs.First().ToString());
+                output.Append(_rhsArgs.First());
             }
             output.Append(" .");
             return output.ToString();

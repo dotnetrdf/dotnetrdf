@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 // Ensured the MAXed variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(_varname))
                 {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a MAX Aggregate since the Variable does not occur in a Graph Pattern");
+                    throw new RdfQueryException("Cannot use the Variable " + _expr + " in a MAX Aggregate since the Variable does not occur in a Graph Pattern");
                 }
             }
 
@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             StringBuilder output = new StringBuilder();
             output.Append("MAX(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString() + ")");
+            output.Append(_expr + ")");
             return output.ToString();
         }
 

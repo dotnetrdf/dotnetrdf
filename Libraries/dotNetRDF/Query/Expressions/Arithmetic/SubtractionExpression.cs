@@ -55,16 +55,14 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             IValuedNode a = _leftExpr.Evaluate(context, bindingID);
             IValuedNode b = _rightExpr.Evaluate(context, bindingID);
 
-            IValuedNode[] inputs = new IValuedNode[] { a, b };
+            IValuedNode[] inputs = new[] { a, b };
             ISparqlOperator op = null;
             if (SparqlOperators.TryGetOperator(SparqlOperatorType.Subtract, out op, inputs))
             {
                 return op.Apply(inputs);
             }
-            else
-            {
-                throw new RdfQueryException("Cannot apply addition to the given inputs");
-            }
+
+            throw new RdfQueryException("Cannot apply addition to the given inputs");
 
             // if (a == null || b == null) throw new RdfQueryException("Cannot apply subtraction when one/both arguments are null");
             
@@ -94,20 +92,20 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             StringBuilder output = new StringBuilder();
             if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + _leftExpr.ToString() + ")");
+                output.Append("(" + _leftExpr + ")");
             }
             else
             {
-                output.Append(_leftExpr.ToString());
+                output.Append(_leftExpr);
             }
             output.Append(" - ");
             if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + _rightExpr.ToString() + ")");
+                output.Append("(" + _rightExpr + ")");
             }
             else
             {
-                output.Append(_rightExpr.ToString());
+                output.Append(_rightExpr);
             }
             return output.ToString();
         }

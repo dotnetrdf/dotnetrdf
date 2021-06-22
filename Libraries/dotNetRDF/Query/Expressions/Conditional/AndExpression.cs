@@ -61,11 +61,9 @@ namespace VDS.RDF.Query.Expressions.Conditional
                     // If the LHS is false then no subsequent results matter
                     return new BooleanNode(null, false);
                 }
-                else
-                {
-                    // If the LHS is true then we have to continue by evaluating the RHS
-                    return new BooleanNode(null, _rightExpr.Evaluate(context, bindingID).AsBoolean());
-                }
+
+                // If the LHS is true then we have to continue by evaluating the RHS
+                return new BooleanNode(null, _rightExpr.Evaluate(context, bindingID).AsBoolean());
             }
             catch (Exception ex)
             {
@@ -76,17 +74,13 @@ namespace VDS.RDF.Query.Expressions.Conditional
                 {
                     return new BooleanNode(null, false);
                 }
-                else
+
+                if (ex is RdfQueryException)
                 {
-                    if (ex is RdfQueryException)
-                    {
-                        throw;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Error evaluating AND expression", ex);
-                    }
+                    throw;
                 }
+
+                throw new RdfQueryException("Error evaluating AND expression", ex);
             }
         }
 
@@ -99,20 +93,20 @@ namespace VDS.RDF.Query.Expressions.Conditional
             StringBuilder output = new StringBuilder();
             if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + _leftExpr.ToString() + ")");
+                output.Append("(" + _leftExpr + ")");
             }
             else
             {
-                output.Append(_leftExpr.ToString());
+                output.Append(_leftExpr);
             }
             output.Append(" && ");
             if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + _rightExpr.ToString() + ")");
+                output.Append("(" + _rightExpr + ")");
             }
             else
             {
-                output.Append(_rightExpr.ToString());
+                output.Append(_rightExpr);
             }
             return output.ToString();
         }

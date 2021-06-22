@@ -105,10 +105,8 @@ namespace VDS.RDF.Query.Algebra
                     }
                     return context.OutputMultiset;
                 }
-                else
-                {
-                    throw new RdfQueryException("Query execution failed because evaluating a SERVICE clause failed - this may be due to an error with the remote service", ex);
-                }
+
+                throw new RdfQueryException("Query execution failed because evaluating a SERVICE clause failed - this may be due to an error with the remote service", ex);
             }
         }
 
@@ -136,7 +134,7 @@ namespace VDS.RDF.Query.Algebra
                 return new FederatedSparqlRemoteEndpoint(serviceEndpoints);
             }
 
-            throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + _endpointSpecifier.GetType().ToString() + " Token was provided");
+            throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + _endpointSpecifier.GetType() + " Token was provided");
         }
 
         private ISet[] GetBindings(SparqlEvaluationContext context)
@@ -235,10 +233,8 @@ namespace VDS.RDF.Query.Algebra
                     String serviceVar = ((VariableToken)_endpointSpecifier).Value.Substring(1);
                     return _pattern.Variables.Concat(serviceVar.AsEnumerable()).Distinct();
                 }
-                else
-                {
-                    return _pattern.Variables.Distinct();
-                }
+
+                return _pattern.Variables.Distinct();
             }
         }
 
@@ -287,7 +283,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Service(" + _endpointSpecifier.Value + ", " + _pattern.ToString() + ")";
+            return "Service(" + _endpointSpecifier.Value + ", " + _pattern + ")";
         }
 
         /// <summary>
@@ -315,14 +311,12 @@ namespace VDS.RDF.Query.Algebra
                 p.GraphSpecifier = _endpointSpecifier;
                 return p;
             }
-            else
-            {
-                GraphPattern parent = new GraphPattern();
-                parent.IsService = true;
-                parent.GraphSpecifier = _endpointSpecifier;
-                parent.AddGraphPattern(p);
-                return parent;
-            }
+
+            GraphPattern parent = new GraphPattern();
+            parent.IsService = true;
+            parent.GraphSpecifier = _endpointSpecifier;
+            parent.AddGraphPattern(p);
+            return parent;
         }
     }
 }

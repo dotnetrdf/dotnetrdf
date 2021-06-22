@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -33,7 +33,7 @@ namespace VDS.RDF.Parsing.Tokens
     /// <summary>
     /// Basic Token Queue which provides no Buffering except in the sense that it queues all possible Tokens when the InitialiseBuffer method is called.
     /// </summary>
-    public class TokenQueue 
+    public class TokenQueue
         : BaseTokenQueue
     {
         /// <summary>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         public override int Count
         {
-            get 
+            get
             {
                 return _tokens.Count;
             }
@@ -143,7 +143,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         public override Queue<IToken> Tokens
         {
-            get 
+            get
             {
                 return _tokens;
             }
@@ -214,7 +214,6 @@ namespace VDS.RDF.Parsing.Tokens
         public override void InitialiseBuffer()
         {
             // Does nothing for this Token Queue as this Queue is designed to be populated explicitly
-            return;
         }
     }
 
@@ -256,14 +255,12 @@ namespace VDS.RDF.Parsing.Tokens
                 // Return first thing in the Buffer
                 return base.Dequeue();
             }
-            else
-            {
-                // Buffer something from the Tokeniser
-                BufferInternal();
 
-                // Return first thing in the Buffer
-                return base.Dequeue();
-            }
+            // Buffer something from the Tokeniser
+            BufferInternal();
+
+            // Return first thing in the Buffer
+            return base.Dequeue();
         }
 
         /// <summary>
@@ -278,14 +275,12 @@ namespace VDS.RDF.Parsing.Tokens
                 // Return first thing in the Buffer
                 return _tokens.Peek();
             }
-            else
-            {
-                // Buffer something from the Tokeniser
-                BufferInternal();
 
-                // Return first thing in the Buffer
-                return _tokens.Peek();
-            }
+            // Buffer something from the Tokeniser
+            BufferInternal();
+
+            // Return first thing in the Buffer
+            return _tokens.Peek();
         }
 
         /// <summary>
@@ -386,25 +381,23 @@ namespace VDS.RDF.Parsing.Tokens
                     Monitor.Exit(_tokens);
                 }
             }
-            else
+
+            if (!_finished)
             {
-                if (!_finished)
+                // Wait for something to be Tokenised
+                while (_tokens.Count == 0)
                 {
-                    // Wait for something to be Tokenised
-                    while (_tokens.Count == 0)
-                    {
-                        Thread.Sleep(50);
-                    }
+                    Thread.Sleep(50);
                 }
-                try
-                {
-                    Monitor.Enter(_tokens);
-                    return base.Dequeue();
-                }
-                finally
-                {
-                    Monitor.Exit(_tokens);
-                }
+            }
+            try
+            {
+                Monitor.Enter(_tokens);
+                return base.Dequeue();
+            }
+            finally
+            {
+                Monitor.Exit(_tokens);
             }
         }
 
@@ -426,25 +419,23 @@ namespace VDS.RDF.Parsing.Tokens
                     Monitor.Enter(_tokens);
                 }
             }
-            else
+
+            if (!_finished)
             {
-                if (!_finished)
+                // Wait for something to be Tokenised
+                while (_tokens.Count == 0)
                 {
-                    // Wait for something to be Tokenised
-                    while (_tokens.Count == 0)
-                    {
-                        Thread.Sleep(50);
-                    }
+                    Thread.Sleep(50);
                 }
-                try
-                {
-                    Monitor.Enter(_tokens);
-                    return base.Peek();
-                }
-                finally
-                {
-                    Monitor.Enter(_tokens);
-                }
+            }
+            try
+            {
+                Monitor.Enter(_tokens);
+                return base.Peek();
+            }
+            finally
+            {
+                Monitor.Enter(_tokens);
             }
         }
 

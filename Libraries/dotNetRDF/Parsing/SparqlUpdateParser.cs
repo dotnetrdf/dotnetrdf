@@ -328,7 +328,7 @@ namespace VDS.RDF.Parsing
                     next = context.Tokens.Dequeue();
                     if (next.TokenType != Token.SEMICOLON && next.TokenType != Token.EOF)
                     {
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a semicolon separator or EOF after a command", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a semicolon separator or EOF after a command", next);
                     }
 
                     commandParsed = false;
@@ -445,7 +445,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to CLEAR or one of the DEFAULT/NAMED/ALL keywords", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a GRAPH <URI> to specify the Graph to CLEAR or one of the DEFAULT/NAMED/ALL keywords", next);
             }
         }
 
@@ -482,7 +482,7 @@ namespace VDS.RDF.Parsing
             // Followed by a mandatory GRAPH Keyword
             if (next.TokenType != Token.GRAPH)
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the CREATE command", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a GRAPH Keyword as part of the CREATE command", next);
             }
 
             // Then MUST have a URI
@@ -561,7 +561,7 @@ namespace VDS.RDF.Parsing
                 insertCmd.UsingNamedUris.ToList().ForEach(u => cmd.AddUsingNamedUri(u));
                 return cmd;
             }
-            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a DELETE command", next);
+            throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a WHERE keyword as part of a DELETE command", next);
         }
 
         private SparqlUpdateCommand TryParseDeleteDataCommand(SparqlUpdateParserContext context)
@@ -584,25 +584,27 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfParseException("A FILTER Clause cannot occur in a DELETE DATA Command");
             }
-            else if (gp.IsOptional)
+
+            if (gp.IsOptional)
             {
                 throw new RdfParseException("An OPTIONAL Clause cannot occur in a DELETE DATA Command");
             }
-            else if (gp.IsUnion)
+            if (gp.IsUnion)
             {
                 throw new RdfParseException("A UNION Clause cannot occur in a DELETE DATA Command");
             }
-            else if (gp.HasChildGraphPatterns)
+            if (gp.HasChildGraphPatterns)
             {
                 if (!gp.ChildGraphPatterns.All(p => (p.IsGraph && p.GraphSpecifier.TokenType != Token.VARIABLE) || (!p.IsExists && !p.IsMinus && !p.IsNotExists && !p.IsOptional && !p.IsOptional && !p.IsService && !p.IsSubQuery && !p.IsUnion && !p.IsGraph)))
                 {
                     throw new RdfParseException("A DELETE DATA Command may only contain a combination of Triple Patterns and GRAPH clauses, GRAPH clauses must specify a Graph URI");
                 }
-                else if (gp.ChildGraphPatterns.Any(p => p.HasChildGraphPatterns))
+
+                if (gp.ChildGraphPatterns.Any(p => p.HasChildGraphPatterns))
                 {
                     throw new RdfParseException("A DELETE DATA Command may not contain nested Graph Patterns");
                 }
-                else if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph && gp.TriplePatterns.Count == 0)
+                if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph && gp.TriplePatterns.Count == 0)
                 {
                     cmd = new DeleteDataCommand(gp.ChildGraphPatterns[0]);
                 }
@@ -657,7 +659,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to DROP or one of the DEFAULT/NAMED/ALL keywords", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a GRAPH <URI> to specify the Graph to DROP or one of the DEFAULT/NAMED/ALL keywords", next);
             }
         }
         
@@ -696,7 +698,7 @@ namespace VDS.RDF.Parsing
                 }
                 next = context.Tokens.Dequeue();
             }
-            if (next.TokenType != Token.WHERE) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
+            if (next.TokenType != Token.WHERE) throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
             
             // Now parse the WHERE pattern
             SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
@@ -749,10 +751,8 @@ namespace VDS.RDF.Parsing
                     {
                         throw new RdfParseException("An INSERT DATA command used the BNode " + var + " which has been used in previous INSERT DATA commands and is not permitted per Section 19.6 of the specification");
                     }
-                    else
-                    {
-                        context.DataBNodes.Add(var);
-                    }
+
+                    context.DataBNodes.Add(var);
                 }
             }
 
@@ -762,25 +762,27 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfParseException("A FILTER Clause cannot occur in a INSERT DATA Command");
             }
-            else if (gp.IsOptional)
+
+            if (gp.IsOptional)
             {
                 throw new RdfParseException("An OPTIONAL Clause cannot occur in a INSERT DATA Command");
             }
-            else if (gp.IsUnion)
+            if (gp.IsUnion)
             {
                 throw new RdfParseException("A UNION Clause cannot occur in a INSERT DATA Command");
             }
-            else if (gp.HasChildGraphPatterns)
+            if (gp.HasChildGraphPatterns)
             {
                 if (!gp.ChildGraphPatterns.All(p => (p.IsGraph && p.GraphSpecifier.TokenType != Token.VARIABLE) || (!p.IsExists && !p.IsMinus && !p.IsNotExists && !p.IsOptional && !p.IsOptional && !p.IsService && !p.IsSubQuery && !p.IsUnion && !p.IsGraph)))
                 {
                     throw new RdfParseException("An INSERT DATA Command may only contain a combination of Triple Patterns and GRAPH clauses, GRAPH clauses must specify a Graph URI");
                 }
-                else if (gp.ChildGraphPatterns.Any(p => p.HasChildGraphPatterns))
+
+                if (gp.ChildGraphPatterns.Any(p => p.HasChildGraphPatterns))
                 {
                     throw new RdfParseException("An INSERT DATA Command may not contain nested Graph Patterns");
                 }
-                else if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph && gp.TriplePatterns.Count == 0)
+                if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph && gp.TriplePatterns.Count == 0)
                 {
                     cmd = new InsertDataCommand(gp.ChildGraphPatterns[0]);
                 }
@@ -833,7 +835,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH keyword after the INTO keyword for a LOAD command", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a GRAPH keyword after the INTO keyword for a LOAD command", next);
                     }
                 }
                 else
@@ -885,7 +887,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an INSERT/DELETE keyword", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected an INSERT/DELETE keyword", next);
             }
         }
 
@@ -906,30 +908,25 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfParseException("A FILTER Clause cannot occur in a Modify Template");
             }
-            else if (gp.IsOptional)
+
+            if (gp.IsOptional)
             {
                 throw new RdfParseException("An OPTIONAL Clause cannot occur in a Modify Template");
             }
-            else if (gp.IsUnion)
+            if (gp.IsUnion)
             {
                 throw new RdfParseException("A UNION Clause cannot occur in a Modify Template");
             }
-            else if (gp.HasChildGraphPatterns)
+            if (gp.HasChildGraphPatterns)
             {
                 if (gp.ChildGraphPatterns.All(p => p.IsGraph && !p.IsFiltered && !p.IsOptional && !p.IsUnion && !p.HasChildGraphPatterns))
                 {
                     return gp;
                 }
-                else
-                {
-                    throw new RdfParseException("Nested Graph Patterns cannot occur in a Modify Template");
-                }
-            }
-            else
-            {
-                return gp;
-            }
 
+                throw new RdfParseException("Nested Graph Patterns cannot occur in a Modify Template");
+            }
+            return gp;
         }
 
         private void TryParseMoveCommand(SparqlUpdateParserContext context)
@@ -994,16 +991,12 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI as part of a USING statement", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a URI as part of a USING statement", next);
                     }
 
                     // Peek at the next thing in case it's a further USING
                     next = context.Tokens.Peek();
                 } while (next.TokenType == Token.USING);
-            }
-            else
-            {
-                yield break;
             }
         }
 
@@ -1092,7 +1085,7 @@ namespace VDS.RDF.Parsing
                 case Token.QNAME:
                     return UriFactory.Create(Tools.ResolveQName(next.Value, context.NamespaceMap, context.BaseUri));
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName Token " + expected, next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a URI/QName Token " + expected, next);
             }
         }
 

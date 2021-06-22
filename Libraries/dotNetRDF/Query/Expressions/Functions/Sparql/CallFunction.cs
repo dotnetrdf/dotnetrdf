@@ -87,10 +87,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
                 // Now invoke the function
                 return func.Evaluate(context, bindingID);
             }
-            else
-            {
-                throw new RdfQueryException("Function identifier is not a URI");
-            }
+
+            throw new RdfQueryException("Function identifier is not a URI");
         }
 
         /// <summary>
@@ -116,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             output.Append("CALL(");
             for (int i = 0; i < _args.Count; i++)
             {
-                output.Append(_args[i].ToString());
+                output.Append(_args[i]);
                 if (i < _args.Count - 1)
                 {
                     output.Append(", ");

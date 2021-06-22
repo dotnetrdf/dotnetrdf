@@ -78,15 +78,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
                 {
                     throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
                 }
-                else
-                {
-                    return new BooleanNode(null, true);
-                }
-            }
-            else
-            {
+
                 return new BooleanNode(null, true);
             }
+
+            return new BooleanNode(null, true);
         }
 
         /// <summary>
@@ -107,11 +103,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(" NOT IN (");
             for (int i = 0; i < _expressions.Count; i++)
             {
-                output.Append(_expressions[i].ToString());
+                output.Append(_expressions[i]);
                 if (i < _expressions.Count - 1)
                 {
                     output.Append(" , ");

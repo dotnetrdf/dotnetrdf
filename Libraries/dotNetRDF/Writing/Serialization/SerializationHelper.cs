@@ -28,8 +28,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
@@ -94,10 +92,8 @@ namespace VDS.RDF.Writing.Serialization
             {
                 return (INode)temp;
             }
-            else
-            {
-                throw new RdfParseException("Failed to deserialize a node correctly");
-            }
+
+            throw new RdfParseException("Failed to deserialize a node correctly");
         }
 
         internal static void SerializeGraph(this IGraph g, XmlWriter writer)
@@ -112,10 +108,8 @@ namespace VDS.RDF.Writing.Serialization
             {
                 return (IGraph)temp;
             }
-            else
-            {
-                throw new RdfParseException("Failed to deserialize a graph correctly");
-            }
+
+            throw new RdfParseException("Failed to deserialize a graph correctly");
         }
 
         internal static void SerializeResult(this SparqlResult result, XmlWriter writer)
@@ -130,10 +124,8 @@ namespace VDS.RDF.Writing.Serialization
             {
                 return (SparqlResult)temp;
             }
-            else
-            {
-                throw new RdfParseException("Failed to deserialize a SPARQL Result correctly");
-            }
+
+            throw new RdfParseException("Failed to deserialize a SPARQL Result correctly");
         }
     }
 }

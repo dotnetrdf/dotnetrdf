@@ -25,7 +25,6 @@
 */
 
 using System;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query

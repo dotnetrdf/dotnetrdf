@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Parsing.Handlers;
@@ -222,10 +221,8 @@ namespace VDS.RDF.Parsing
                 if (_nocache.Contains(u.GetSha256Hash())) return false;
                 return _etags.ContainsKey(u.GetEnhancedHashCode()) && HasLocalCopy(u, false);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -244,15 +241,11 @@ namespace VDS.RDF.Parsing
                 {
                     return _etags[id];
                 }
-                else
-                {
-                    throw new KeyNotFoundException("No ETag was found for the URI " + u.AbsoluteUri);
-                }
-            }
-            else
-            {
+
                 throw new KeyNotFoundException("No ETag was found for the URI " + u.AbsoluteUri);
             }
+
+            throw new KeyNotFoundException("No ETag was found for the URI " + u.AbsoluteUri);
         }
 
         /// <summary>
@@ -337,25 +330,17 @@ namespace VDS.RDF.Parsing
                                 File.Delete(graph);
                                 return false;
                             }
-                            else
-                            {
-                                return true;
-                            }
-                        }
-                        else
-                        {
+
                             return true;
                         }
+
+                        return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
+
                     return false;
                 }
+
+                return false;
             }
             catch
             {
@@ -383,15 +368,11 @@ namespace VDS.RDF.Parsing
                 {
                     return graph;
                 }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
+
                 return null;
             }
+
+            return null;
         }
 
         public IRdfHandler ToCache(Uri requestUri, Uri responseUri, String etag)
@@ -474,7 +455,7 @@ namespace VDS.RDF.Parsing
                         // We should use the original handler in its capacity as node factory,
                         // otherwise there might be unexpected differences between its output
                         // and that of the MultiHandler's
-                        handler = new MultiHandler(new IRdfHandler[] { handler, new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append, FileAccess.Write)), true) }, handler);
+                        handler = new MultiHandler(new[] { handler, new WriteThroughHandler(_formatterType, new StreamWriter(File.Open(graph, FileMode.Append, FileAccess.Write)), true) }, handler);
                     }
                 }
             }

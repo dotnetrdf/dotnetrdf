@@ -79,10 +79,8 @@ namespace VDS.RDF.Parsing.Contexts
                 {
                     return new PositionInfo(1, 1);
                 }
-                else
-                {
-                    return new PositionInfo(_input.LineNumber, _input.LinePosition);
-                }
+
+                return new PositionInfo(_input.LineNumber, _input.LinePosition);
             }
         }
 

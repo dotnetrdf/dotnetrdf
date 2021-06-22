@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append("COUNT(" + _expr.ToString() + ")");
+            output.Append("COUNT(" + _expr + ")");
             return output.ToString();
         }
 

@@ -67,10 +67,8 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return ((IThreadSafeDataset)_dataset).Lock;
                 }
-                else
-                {
-                    return _lock;
-                }
+
+                return _lock;
             }
         }
 

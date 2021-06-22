@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "ExistsJoin(" + _lhs.ToString() + ", " + _rhs.ToString() + ", " + _mustExist + ")";
+            return "ExistsJoin(" + _lhs + ", " + _rhs + ", " + _mustExist + ")";
         }
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace VDS.RDF.Query.Algebra
         {
             String filter = _filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
-            return "LeftJoin(" + _lhs.ToString() + ", " + _rhs.ToString() + ", " + filter + ")";
+            return "LeftJoin(" + _lhs + ", " + _rhs + ", " + filter + ")";
         }
 
         /// <summary>
@@ -458,10 +458,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 return new LeftJoin(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(_filter.Expression)));
             }
-            else
-            {
-                return new LeftJoin(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), _filter);
-            }
+
+            return new LeftJoin(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), _filter);
         }
 
         /// <summary>
@@ -475,10 +473,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 return new LeftJoin(optimiser.Optimise(_lhs), _rhs, new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(_filter.Expression)));
             }
-            else
-            {
-                return new LeftJoin(optimiser.Optimise(_lhs), _rhs, _filter);
-            }
+
+            return new LeftJoin(optimiser.Optimise(_lhs), _rhs, _filter);
         }
 
         /// <summary>
@@ -492,10 +488,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 return new LeftJoin(_lhs, optimiser.Optimise(_rhs), new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(_filter.Expression)));
             }
-            else
-            {
-                return new LeftJoin(_lhs, optimiser.Optimise(_rhs), _filter);
-            }
+
+            return new LeftJoin(_lhs, optimiser.Optimise(_rhs), _filter);
         }
     }
 
@@ -532,37 +526,29 @@ namespace VDS.RDF.Query.Algebra
                 {
                     return rhs;
                 }
-                else if (rhs is Bgp)
+
+                if (rhs is Bgp)
                 {
                     if (((Bgp)rhs).IsEmpty)
                     {
                         return lhs;
                     }
-                    else
-                    {
-                        return new Join(lhs, rhs);
-                    }
-                }
-                else
-                {
+
                     return new Join(lhs, rhs);
                 }
+                return new Join(lhs, rhs);
             }
-            else if (rhs is Bgp)
+
+            if (rhs is Bgp)
             {
                 if (((Bgp)rhs).IsEmpty)
                 {
                     return lhs;
                 }
-                else
-                {
-                    return new Join(lhs, rhs);
-                }
-            }
-            else
-            {
+
                 return new Join(lhs, rhs);
             }
+            return new Join(lhs, rhs);
         }
 
         /// <summary>
@@ -664,7 +650,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Join(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "Join(" + _lhs + ", " + _rhs + ")";
         }
 
         /// <summary>
@@ -829,7 +815,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Union(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "Union(" + _lhs + ", " + _rhs + ")";
         }
 
         /// <summary>

@@ -60,15 +60,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 {
                     return new BooleanNode(null, true);
                 }
-                else
-                {
-                    return new BooleanNode(null, false);
-                }
+
+                return new BooleanNode(null, false);
             }
-            else
-            {
-                return new BooleanNode(null, a.Equals(b));
-            }
+
+            return new BooleanNode(null, a.Equals(b));
         }
 
         /// <summary>
@@ -77,7 +73,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "SAMETERM(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+            return "SAMETERM(" + _leftExpr + "," + _rightExpr + ")";
         }
 
         /// <summary>

@@ -67,30 +67,24 @@ namespace VDS.RDF.Query.Optimisation
                             IBgp bgp = (IBgp)f.InnerAlgebra;
                             return new FilteredProduct(new Bgp(bgp.TriplePatterns.Take(splitPoint)), new Bgp(bgp.TriplePatterns.Skip(splitPoint)), f.SparqlFilter.Expression);
                         }
-                        else
-                        {
-                            // Means that the inner algebra is a Join where the sides are disjoint
-                            IJoin join = (IJoin)f.InnerAlgebra;
-                            return new FilteredProduct(join.Lhs, join.Rhs, f.SparqlFilter.Expression);
-                        }
+
+                        // Means that the inner algebra is a Join where the sides are disjoint
+                        IJoin join = (IJoin)f.InnerAlgebra;
+                        return new FilteredProduct(@join.Lhs, @join.Rhs, f.SparqlFilter.Expression);
                     }
-                    else
-                    {
-                        return f.Transform(this);
-                    }
+
+                    return f.Transform(this);
                 }
-                else if (algebra is IAbstractJoin)
+
+                if (algebra is IAbstractJoin)
                 {
                     return ((IAbstractJoin)algebra).Transform(this);
                 }
-                else if (algebra is IUnaryOperator)
+                if (algebra is IUnaryOperator)
                 {
                     return ((IUnaryOperator)algebra).Transform(this);
                 }
-                else
-                {
-                    return algebra;
-                }
+                return algebra;
             }
             catch
             {
@@ -136,7 +130,6 @@ namespace VDS.RDF.Query.Optimisation
                     }
                     else if (p.PatternType == TriplePatternType.Filter)
                     {
-                        continue;
                     }
                     else
                     {
@@ -146,24 +139,20 @@ namespace VDS.RDF.Query.Optimisation
                 // If we get all the way here then not a product
                 return false;
             }
-            else if (algebra is IJoin)
+
+            if (algebra is IJoin)
             {
                 IJoin join = (IJoin)algebra;
-                if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+                if (@join.Lhs.Variables.IsDisjoint(@join.Rhs.Variables))
                 {
                     // There a product between the two sides of the join but are the variables spead over different sides of that join?
                     // If all variables occur on one side then this is not a filtered product
-                    return !filterVars.All(v => join.Lhs.Variables.Contains(v)) && !filterVars.All(v => join.Rhs.Variables.Contains(v));
+                    return !filterVars.All(v => @join.Lhs.Variables.Contains(v)) && !filterVars.All(v => @join.Rhs.Variables.Contains(v));
                 }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
+
                 return false;
             }
+            return false;
         }
 
         /// <summary>

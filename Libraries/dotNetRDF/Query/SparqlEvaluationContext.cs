@@ -268,18 +268,14 @@ namespace VDS.RDF.Query
                 {
                     return 0;
                 }
-                else
+
+                long timeout = _timeout - QueryTime;
+                if (timeout <= 0)
                 {
-                    long timeout = _timeout - QueryTime;
-                    if (timeout <= 0)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        return timeout;
-                    }
+                    return 1;
                 }
+
+                return timeout;
             }
         }
 
@@ -337,10 +333,8 @@ namespace VDS.RDF.Query
                 {
                     return _functionContexts[key];
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
             set
             {
@@ -366,10 +360,8 @@ namespace VDS.RDF.Query
             {
                 return algebra.Evaluate(this);
             }
-            else
-            {
-                return _processor.ProcessAlgebra(algebra, this);
-            }
+
+            return _processor.ProcessAlgebra(algebra, this);
         }
     }
 }

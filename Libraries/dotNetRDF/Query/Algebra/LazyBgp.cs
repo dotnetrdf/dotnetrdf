@@ -303,7 +303,8 @@ namespace VDS.RDF.Query.Algebra
                     {
                         return results;
                     }
-                    else if (halt)
+
+                    if (halt)
                     {
                         if (results.Count == 0)
                         {
@@ -384,38 +385,32 @@ namespace VDS.RDF.Query.Algebra
                             results = StreamingEvaluate(context, pattern + 1, out halt);
                             return results;
                         }
-                        else
+
+                        // We don't affect the input in any way so just return it
+                        return context.InputMultiset;
+                    }
+
+                    // No Variables so have to evaluate it to see if it gives true otherwise
+                    try
+                    {
+                        if (filterExpr.Evaluate(context, 0).AsSafeBoolean())
                         {
-                            // We don't affect the input in any way so just return it
+                            if (pattern < _triplePatterns.Count - 1)
+                            {
+                                // Recurse and return
+                                results = StreamingEvaluate(context, pattern + 1, out halt);
+                                return results;
+                            }
+
+                            // Last Pattern and we evaluate to true so can return the input as-is
+                            halt = true;
                             return context.InputMultiset;
                         }
                     }
-                    else
+                    catch (RdfQueryException)
                     {
-                        // No Variables so have to evaluate it to see if it gives true otherwise
-                        try
-                        {
-                            if (filterExpr.Evaluate(context, 0).AsSafeBoolean())
-                            {
-                                if (pattern < _triplePatterns.Count - 1)
-                                {
-                                    // Recurse and return
-                                    results = StreamingEvaluate(context, pattern + 1, out halt);
-                                    return results;
-                                }
-                                else
-                                {
-                                    // Last Pattern and we evaluate to true so can return the input as-is
-                                    halt = true;
-                                    return context.InputMultiset;
-                                }
-                            }
-                        }
-                        catch (RdfQueryException)
-                        {
-                            // Evaluates to false so eliminates all solutions (use an empty Multiset)
-                            return new Multiset();
-                        }
+                        // Evaluates to false so eliminates all solutions (use an empty Multiset)
+                        return new Multiset();
                     }
                 }
                 else
@@ -451,14 +446,12 @@ namespace VDS.RDF.Query.Algebra
 
                         return results;
                     }
-                    else
-                    {
-                        halt = true;
 
-                        // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
-                        // for us to filter
-                        return context.OutputMultiset;
-                    }
+                    halt = true;
+
+                    // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
+                    // for us to filter
+                    return context.OutputMultiset;
                 }
             }
             else if (temp is BindPattern)
@@ -472,45 +465,41 @@ namespace VDS.RDF.Query.Algebra
                     throw new RdfQueryException(
                         "Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
                 }
-                else
+
+                // Compute the Binding for every value
+                context.OutputMultiset.AddVariable(bindVar);
+                foreach (ISet s in context.InputMultiset.Sets)
                 {
-                    // Compute the Binding for every value
-                    context.OutputMultiset.AddVariable(bindVar);
-                    foreach (ISet s in context.InputMultiset.Sets)
+                    ISet x = s.Copy();
+                    try
                     {
-                        ISet x = s.Copy();
-                        try
-                        {
-                            INode val = bindExpr.Evaluate(context, s.ID);
-                            x.Add(bindVar, val);
-                        }
-                        catch (RdfQueryException)
-                        {
-                            // Equivalent to no assignment but the solution is preserved
-                        }
-                        context.OutputMultiset.Add(x.Copy());
+                        INode val = bindExpr.Evaluate(context, s.ID);
+                        x.Add(bindVar, val);
                     }
-
-                    // Remember to check for Timeouts during Lazy Evaluation
-                    context.CheckTimeout();
-
-                    // Decide whether to recurse or not
-                    resultsFound = context.OutputMultiset.Count;
-                    if (pattern < _triplePatterns.Count - 1)
+                    catch (RdfQueryException)
                     {
-                        // Recurse then return
-                        results = StreamingEvaluate(context, pattern + 1, out halt);
-                        return results;
+                        // Equivalent to no assignment but the solution is preserved
                     }
-                    else
-                    {
-                        halt = true;
-
-                        // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
-                        // for us to extend
-                        return context.OutputMultiset;
-                    }
+                    context.OutputMultiset.Add(x.Copy());
                 }
+
+                // Remember to check for Timeouts during Lazy Evaluation
+                context.CheckTimeout();
+
+                // Decide whether to recurse or not
+                resultsFound = context.OutputMultiset.Count;
+                if (pattern < _triplePatterns.Count - 1)
+                {
+                    // Recurse then return
+                    results = StreamingEvaluate(context, pattern + 1, out halt);
+                    return results;
+                }
+
+                halt = true;
+
+                // However many results we need we'll halt - previous patterns can call us again if they find more potential solutions
+                // for us to extend
+                return context.OutputMultiset;
             }
             else
             {
@@ -523,28 +512,26 @@ namespace VDS.RDF.Query.Algebra
             {
                 return new NullMultiset();
             }
-            else
-            {
-                // Remember to check for Timeouts during Lazy Evaluation
-                context.CheckTimeout();
 
-                // Generate the final output and return it
-                if (!modifies)
+            // Remember to check for Timeouts during Lazy Evaluation
+            context.CheckTimeout();
+
+            // Generate the final output and return it
+            if (!modifies)
+            {
+                if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
                 {
-                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                    {
-                        // Disjoint so do a Product
-                        results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
-                    }
-                    else
-                    {
-                        // Normal Join
-                        results = context.InputMultiset.Join(context.OutputMultiset);
-                    }
-                    context.OutputMultiset = results;
+                    // Disjoint so do a Product
+                    results = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
                 }
-                return context.OutputMultiset;
+                else
+                {
+                    // Normal Join
+                    results = context.InputMultiset.Join(context.OutputMultiset);
+                }
+                context.OutputMultiset = results;
             }
+            return context.OutputMultiset;
         }
 
         /// <summary>
@@ -681,7 +668,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "LazyUnion(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "LazyUnion(" + _lhs + ", " + _rhs + ")";
         }
 
         /// <summary>

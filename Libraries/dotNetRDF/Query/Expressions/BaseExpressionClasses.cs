@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Expressions
         {
             get
             {
-                return new ISparqlExpression[] { _leftExpr, _rightExpr };
+                return new[] { _leftExpr, _rightExpr };
             }
         }
 

@@ -59,10 +59,8 @@ namespace VDS.RDF.Query.Algebra
                 {
                     return new IdentityMultiset();
                 }
-                else
-                {
-                    return new NullMultiset();
-                }
+
+                return new NullMultiset();
             }
 
             String subjVar = PathStart.VariableName;
@@ -208,14 +206,12 @@ namespace VDS.RDF.Query.Algebra
             {
                 return ((NodeMatchPattern)PathStart).Node.Equals(((NodeMatchPattern)PathEnd).Node);
             }
-            else if (PathStart is FixedBlankNodePattern && PathEnd is FixedBlankNodePattern)
+
+            if (PathStart is FixedBlankNodePattern && PathEnd is FixedBlankNodePattern)
             {
                 return ((FixedBlankNodePattern)PathStart).InternalID.Equals(((FixedBlankNodePattern)PathEnd).InternalID);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -224,7 +220,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "ZeroLengthPath(" + PathStart.ToString() + ", " + Path.ToString() + ", " + PathEnd.ToString() + ")";
+            return "ZeroLengthPath(" + PathStart + ", " + Path.ToString() + ", " + PathEnd + ")";
         }
 
         /// <summary>

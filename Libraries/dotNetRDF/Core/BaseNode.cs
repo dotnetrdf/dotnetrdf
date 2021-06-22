@@ -177,10 +177,8 @@ namespace VDS.RDF
                 if (((Object)b) == null) return true;
                 return false;
             }
-            else
-            {
-                return a.Equals(b);
-            }
+
+            return a.Equals(b);
         }
 
         /// <summary>
@@ -197,10 +195,8 @@ namespace VDS.RDF
                 if (((Object)b) == null) return false;
                 return true;
             }
-            else
-            {
-                return !a.Equals(b);
-            }
+
+            return !a.Equals(b);
         }
 
         /// <summary>

@@ -213,7 +213,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     default:
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered", next);
                 }
 
                 // Stop when we've hit the End of the Line/File
@@ -314,7 +314,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     default:
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered", next);
                  }
 
                 // Stop when we've hit the End of the Line/File

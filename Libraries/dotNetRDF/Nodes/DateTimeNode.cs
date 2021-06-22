@@ -257,15 +257,13 @@ namespace VDS.RDF.Nodes
             {
                 return _offsetValue.Value;
             }
-            else
-            {
-                // Create the offset
-                DateTimeOffset offset;
-                _offsetValue = DateTimeOffset.TryParse(Value, null, DateTimeStyles.AssumeUniversal, out offset)
-                                        ? offset
-                                        : new DateTimeOffset(_value);
-                return _offsetValue.Value;
-            }
+
+            // Create the offset
+            DateTimeOffset offset;
+            _offsetValue = DateTimeOffset.TryParse(Value, null, DateTimeStyles.AssumeUniversal, out offset)
+                ? offset
+                : new DateTimeOffset(_value);
+            return _offsetValue.Value;
         }
 
         /// <summary>

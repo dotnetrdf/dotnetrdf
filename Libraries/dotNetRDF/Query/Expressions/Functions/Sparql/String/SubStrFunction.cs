@@ -91,78 +91,62 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                         {
                             return new StringNode(null, string.Empty, input.DataType);
                         }
-                        else
-                        {
-                            return new StringNode(null, string.Empty, input.Language);
-                        }
+
+                        return new StringNode(null, string.Empty, input.Language);
                     }
-                    else if ((s - 1) > input.Value.Length)
+
+                    if ((s - 1) > input.Value.Length)
                     {
                         // If the start is after the end of the string the empty string is returned
                         if (input.DataType != null)
                         {
                             return new StringNode(null, string.Empty, input.DataType);
                         }
-                        else
-                        {
-                            return new StringNode(null, string.Empty, input.Language);
-                        }
+
+                        return new StringNode(null, string.Empty, input.Language);
                     }
-                    else
+                    if (((s - 1) + l) > input.Value.Length)
                     {
-                        if (((s - 1) + l) > input.Value.Length)
+                        // If the start plus the length is greater than the length of the string the string from the starts onwards is returned
+                        if (input.DataType != null)
                         {
-                            // If the start plus the length is greater than the length of the string the string from the starts onwards is returned
-                            if (input.DataType != null)
-                            {
-                                return new StringNode(null, input.Value.Substring(s - 1), input.DataType);
-                            }
-                            else
-                            {
-                                return new StringNode(null, input.Value.Substring(s - 1), input.Language);
-                            }
+                            return new StringNode(null, input.Value.Substring(s - 1), input.DataType);
                         }
-                        else
-                        {
-                            // Otherwise do normal substring
-                            if (input.DataType != null)
-                            {
-                                return new StringNode(null, input.Value.Substring(s - 1, l), input.DataType);
-                            }
-                            else
-                            {
-                                return new StringNode(null, input.Value.Substring(s - 1, l), input.Language);
-                            }
-                        }
+
+                        return new StringNode(null, input.Value.Substring(s - 1), input.Language);
                     }
+
+                    // Otherwise do normal substring
+                    if (input.DataType != null)
+                    {
+                        return new StringNode(null, input.Value.Substring(s - 1, l), input.DataType);
+                    }
+
+                    return new StringNode(null, input.Value.Substring(s - 1, l), input.Language);
                 }
                 catch
                 {
                     throw new RdfQueryException("Unable to convert the Start/Length argument to an Integer");
                 }
             }
-            else
+
+            if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+
+            try
             {
-                if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                int s = Convert.ToInt32(start.AsInteger());
+                if (s < 1) s = 1;
 
-                try
+                if (input.DataType != null)
                 {
-                    int s = Convert.ToInt32(start.AsInteger());
-                    if (s < 1) s = 1;
+                    return new StringNode(null, input.Value.Substring(s - 1), input.DataType);
+                }
 
-                    if (input.DataType != null)
-                    {
-                        return new StringNode(null, input.Value.Substring(s - 1), input.DataType);
-                    }
-                    else
-                    {
-                        return new StringNode(null, input.Value.Substring(s - 1), input.Language);
-                    }
-                }
-                catch
-                {
-                    throw new RdfQueryException("Unable to convert the Start argument to an Integer");
-                }
+                return new StringNode(null, input.Value.Substring(s - 1), input.Language);
+            }
+            catch
+            {
+                throw new RdfQueryException("Unable to convert the Start argument to an Integer");
             }
         }
 
@@ -186,30 +170,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                             // Appropriately typed literals are fine
                             return temp;
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a typed literal with an invalid type");
-                        }
+
+                        throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a typed literal with an invalid type");
                     }
-                    else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
+
+                    if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
                     {
                         // Untyped Literals are treated as Strings and may be returned when the argument allows strings
                         return temp;
                     }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evalaute a substring as one of the argument expressions returned an untyped literal");
-                    }
+                    throw new RdfQueryException("Unable to evalaute a substring as one of the argument expressions returned an untyped literal");
                 }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a non-literal");
-                }
+
+                throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions returned a non-literal");
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions evaluated to null");
-            }
+
+            throw new RdfQueryException("Unable to evaluate a substring as one of the argument expressions evaluated to null");
         }
 
         /// <summary>
@@ -223,10 +199,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 {
                     return _expr.Variables.Concat(_start.Variables).Concat(_length.Variables);
                 }
-                else
-                {
-                    return _expr.Variables.Concat(_start.Variables);
-                }
+
+                return _expr.Variables.Concat(_start.Variables);
             }
         }
 
@@ -238,12 +212,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             if (_length != null)
             {
-                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + _expr.ToString() + "," + _start.ToString() + "," + _length.ToString() + ")";
+                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + _expr + "," + _start + "," + _length + ")";
             }
-            else
-            {
-                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + _expr.ToString() + "," + _start.ToString() + ")";
-            }
+
+            return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + _expr + "," + _start + ")";
         }
 
         /// <summary>
@@ -277,12 +249,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 if (_length != null)
                 {
-                    return new ISparqlExpression[] { _expr, _start, _length };
+                    return new[] { _expr, _start, _length };
                 }
-                else
-                {
-                    return new ISparqlExpression[] { _expr, _start };
-                }
+
+                return new[] { _expr, _start };
             }
         }
 
@@ -308,10 +278,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return new SubStrFunction(transformer.Transform(_expr), transformer.Transform(_start), transformer.Transform(_length));
             }
-            else
-            {
-                return new SubStrFunction(transformer.Transform(_expr), transformer.Transform(_start));
-            }
+
+            return new SubStrFunction(transformer.Transform(_expr), transformer.Transform(_start));
         }
     }
 }

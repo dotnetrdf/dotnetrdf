@@ -102,7 +102,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+                    throw Error("Unexpected Token '" + t.GetType() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
             }
         }
 
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+                    throw Error("Unexpected Token '" + t.GetType() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
             }
         }
 
@@ -182,7 +182,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+                    throw Error("Unexpected Token '" + t.GetType() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
             }
         }
 
@@ -206,7 +206,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+                    throw Error("Unexpected Token '" + t.GetType() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
             }
         }
 
@@ -259,7 +259,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+                    throw Error("Unexpected Token '" + t.GetType() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
             }
         }
 
@@ -303,7 +303,7 @@ namespace VDS.RDF.Parsing
                     }
 
                 default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+                    throw Error("Unexpected Token '" + t.GetType() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
             }
         }
 
@@ -374,10 +374,8 @@ namespace VDS.RDF.Parsing
             {
                 return new RdfParseException(output.ToString(), evt.Position);
             }
-            else
-            {
-                return new RdfParseException(output.ToString());
-            }
+
+            return new RdfParseException(output.ToString());
         }
 
         /// <summary>

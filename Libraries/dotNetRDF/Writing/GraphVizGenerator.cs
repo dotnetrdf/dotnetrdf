@@ -25,9 +25,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
 using System.IO;
 
@@ -153,8 +150,9 @@ namespace VDS.RDF.Writing
                 {
                     _graphvizdir = folder;
                     return;
-                } 
-                else if (File.Exists(folder + "\\dot.exe")) 
+                }
+
+                if (File.Exists(folder + "\\dot.exe")) 
                 {
                     _graphvizdir = folder + "\\";
                     return;

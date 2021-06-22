@@ -150,10 +150,8 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 return new SimpleVirtualGraphLiteralNode(target, VirtualID, Provider, (IGraphLiteralNode)_value);
             }
-            else
-            {
-                return new SimpleVirtualGraphLiteralNode(target, VirtualID, Provider);
-            }
+
+            return new SimpleVirtualGraphLiteralNode(target, VirtualID, Provider);
         }
 
         /// <summary>
@@ -223,10 +221,8 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 return new SimpleVirtualLiteralNode(target, VirtualID, Provider, (ILiteralNode)_value);
             }
-            else
-            {
-                return new SimpleVirtualLiteralNode(target, VirtualID, Provider);
-            }
+
+            return new SimpleVirtualLiteralNode(target, VirtualID, Provider);
         }
 
         /// <summary>
@@ -296,10 +292,8 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 return new SimpleVirtualUriNode(target, VirtualID, Provider, (IUriNode)_value);
             }
-            else
-            {
-                return new SimpleVirtualUriNode(target, VirtualID, Provider);
-            }
+
+            return new SimpleVirtualUriNode(target, VirtualID, Provider);
         }
 
         /// <summary>
@@ -369,10 +363,8 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 return new SimpleVirtualVariableNode(target, VirtualID, Provider, (IVariableNode)_value);
             }
-            else
-            {
-                return new SimpleVirtualVariableNode(target, VirtualID, Provider);
-            }
+
+            return new SimpleVirtualVariableNode(target, VirtualID, Provider);
         }
 
         /// <summary>

@@ -90,19 +90,20 @@ namespace VDS.RDF.Query.Optimisation
                 // If we reach here than optimization is not applicable
                 return ((Distinct)algebra).Transform(this);
             }
-            else if (algebra is Reduced)
+
+            if (algebra is Reduced)
             {
                 Reduced reduced = (Reduced)algebra;
                 if (reduced.InnerAlgebra is Select)
                 {
                     Select select = (Select)reduced.InnerAlgebra;
-                    if (!select.IsSelectAll)
+                    if (!@select.IsSelectAll)
                     {
-                        if (select.InnerAlgebra is OrderBy)
+                        if (@select.InnerAlgebra is OrderBy)
                         {
                             bool ok = true;
-                            OrderBy orderBy = (OrderBy)select.InnerAlgebra;
-                            List<String> projectVars = select.SparqlVariables.Select(v => v.Name).ToList();
+                            OrderBy orderBy = (OrderBy)@select.InnerAlgebra;
+                            List<String> projectVars = @select.SparqlVariables.Select(v => v.Name).ToList();
                             foreach (String var in orderBy.Ordering.Variables)
                             {
                                 if (!projectVars.Contains(var))
@@ -115,7 +116,7 @@ namespace VDS.RDF.Query.Optimisation
                             if (ok)
                             {
                                 // Safe to apply the optimization
-                                Select newSelect = new Select(orderBy.InnerAlgebra, false, select.SparqlVariables);
+                                Select newSelect = new Select(orderBy.InnerAlgebra, false, @select.SparqlVariables);
                                 Reduced newReduced = new Reduced(newSelect);
                                 return new OrderBy(newReduced, orderBy.Ordering);
                             }
@@ -127,22 +128,19 @@ namespace VDS.RDF.Query.Optimisation
                 // If we reach here than optimization is not applicable
                 return ((Reduced)algebra).Transform(this);
             }
-            else if (algebra is ITerminalOperator)
+            if (algebra is ITerminalOperator)
             {
                 return algebra;
             }
-            else if (algebra is IUnaryOperator)
+            if (algebra is IUnaryOperator)
             {
                 return ((IUnaryOperator)algebra).Transform(this);
             }
-            else if (algebra is IAbstractJoin)
+            if (algebra is IAbstractJoin)
             {
                 return ((IAbstractJoin)algebra).Transform(this);
             }
-            else
-            {
-                return algebra;
-            }
+            return algebra;
         }
 
         /// <summary>

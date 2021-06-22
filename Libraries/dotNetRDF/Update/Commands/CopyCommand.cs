@@ -104,11 +104,9 @@ namespace VDS.RDF.Update.Commands
                         {
                             throw new SparqlUpdateException("Cannot COPY from Graph <" + _sourceUri.AbsoluteUri + "> as it does not exist");
                         }
-                        else
-                        {
-                            // This would imply a more fundamental issue with the Dataset not understanding that null means default graph
-                            throw new SparqlUpdateException("Cannot COPY from the Default Graph as it does not exist");
-                        }
+
+                        // This would imply a more fundamental issue with the Dataset not understanding that null means default graph
+                        throw new SparqlUpdateException("Cannot COPY from the Default Graph as it does not exist");
                     }
                 }
             }

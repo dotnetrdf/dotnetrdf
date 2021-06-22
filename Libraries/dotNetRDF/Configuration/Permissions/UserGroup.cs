@@ -163,18 +163,16 @@ namespace VDS.RDF.Configuration.Permissions
                 }
                 return false;
             }
-            else
+
+            // Is it denied?
+            ok = !_deniedActions.Any(p => p.IsPermissionFor(action));
+            if (!ok)
             {
-                // Is it denied?
-                ok = !_deniedActions.Any(p => p.IsPermissionFor(action));
-                if (!ok)
-                {
-                    // If it is also allowed then Allow takes precedence
-                    ok = _allowedActions.Any(p => p.IsPermissionFor(action));
-                    return ok;
-                }
-                return true;
+                // If it is also allowed then Allow takes precedence
+                ok = _allowedActions.Any(p => p.IsPermissionFor(action));
+                return ok;
             }
+            return true;
         }
     }
 }

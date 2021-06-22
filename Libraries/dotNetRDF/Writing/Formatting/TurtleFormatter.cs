@@ -84,8 +84,8 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         protected List<string[]> _longLitMustEscape = new List<string[]>
         { 
-            new string[] { @"\", @"\\" }, 
-            new string[] { "\"", "\\\"" },
+            new[] { @"\", @"\\" }, 
+            new[] { "\"", "\\\"" },
         };
 
         /// <summary>
@@ -93,11 +93,11 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         protected List<string[]> _litMustEscape = new List<string[]>
         { 
-            new string[] { @"\", @"\\" }, 
-            new string[] { "\"", "\\\"" },
-            new string[] { "\n", @"\n" },
-            new string[] { "\r", @"\r" },
-            new string[] { "\t", @"\t" },
+            new[] { @"\", @"\\" }, 
+            new[] { "\"", "\\\"" },
+            new[] { "\n", @"\n" },
+            new[] { "\r", @"\r" },
+            new[] { "\t", @"\t" },
         };
 
         /// <summary>

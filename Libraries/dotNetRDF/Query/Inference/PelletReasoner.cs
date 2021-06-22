@@ -106,10 +106,8 @@ namespace VDS.RDF.Query.Inference
                 QueryService svc = (QueryService)_kb.GetService(svcType);
                 return svc.Query(sparqlQuery);
             }
-            else
-            {
-                throw new NotSupportedException("The Knowledge Base does not support the SPARQL Query service");
-            }
+
+            throw new NotSupportedException("The Knowledge Base does not support the SPARQL Query service");
         }
 
         /// <summary>
@@ -176,10 +174,8 @@ namespace VDS.RDF.Query.Inference
                 ClassifyService svc = (ClassifyService)_kb.GetService(svcType);
                 return svc.Classify().Triples;
             }
-            else
-            {
-                throw new NotSupportedException("The Knowledge Base does not support the Classify service");
-            }
+
+            throw new NotSupportedException("The Knowledge Base does not support the Classify service");
         }
 
         /// <summary>
@@ -194,10 +190,8 @@ namespace VDS.RDF.Query.Inference
                 RealizeService svc = (RealizeService)_kb.GetService(svcType);
                 return svc.Realize().Triples;
             }
-            else
-            {
-                throw new NotSupportedException("The Knowledge Base does not support the Realize service");
-            }
+
+            throw new NotSupportedException("The Knowledge Base does not support the Realize service");
         }
 
         /// <summary>
@@ -212,10 +206,8 @@ namespace VDS.RDF.Query.Inference
                 ConsistencyService svc = (ConsistencyService)_kb.GetService(svcType);
                 return svc.IsConsistent();
             }
-            else
-            {
-                throw new NotSupportedException("The Knowledge Base does not support the Consistency service");
-            }
+
+            throw new NotSupportedException("The Knowledge Base does not support the Consistency service");
         }
 
         /// <summary>

@@ -227,7 +227,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            paths.AddRange(nodes.Select(kvp => new List<INode>(new INode[] {kvp.Key, kvp.Value})));
+            paths.AddRange(nodes.Select(kvp => new List<INode>(new[] {kvp.Key, kvp.Value})));
         }
 
         /// <summary>

@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
@@ -1001,36 +1000,28 @@ namespace VDS.RDF.Parsing
                 {
                     return context.Handler.CreateBlankNode("_");
                 }
-                else
-                {
-                    return context.Handler.CreateBlankNode(curie.Substring(2));
-                }
+
+                return context.Handler.CreateBlankNode(curie.Substring(2));
             }
-            else
+
+            // CURIE is for a URI
+            if (context.Syntax == RdfASyntax.RDFa_1_0)
             {
-                // CURIE is for a URI
-                if (context.Syntax == RdfASyntax.RDFa_1_0)
+                // RDFa 1.0
+                if (curie.StartsWith(":"))
                 {
-                    // RDFa 1.0
-                    if (curie.StartsWith(":"))
-                    {
-                        return context.Handler.CreateUriNode(UriFactory.Create(XHtmlVocabNamespace + curie.Substring(1)));
-                    }
-                    else if (curie.Contains(":"))
-                    {
-                        return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
-                    }
-                    else
-                    {
-                        throw new RdfParseException("The value '" + curie + "' is not valid as a CURIE as it does not have a prefix");
-                    }
+                    return context.Handler.CreateUriNode(UriFactory.Create(XHtmlVocabNamespace + curie.Substring(1)));
                 }
-                else
+
+                if (curie.Contains(":"))
                 {
-                    // RDFa 1.1
                     return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
                 }
+                throw new RdfParseException("The value '" + curie + "' is not valid as a CURIE as it does not have a prefix");
             }
+
+            // RDFa 1.1
+            return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
         }
 
         /// <summary>
@@ -1050,16 +1041,14 @@ namespace VDS.RDF.Parsing
                     var curie = uriref.Substring(1, uriref.Length - 2);
                     return ResolveCurie(context, evalContext, curie);
                 }
-                else if (IsCurie(evalContext, uriref))
+
+                if (IsCurie(evalContext, uriref))
                 {
                     // CURIE
                     return ResolveCurie(context, evalContext, uriref);
                 }
-                else
-                {
-                    // URI
-                    return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(uriref, evalContext.BaseUri.ToSafeString())));
-                }
+                // URI
+                return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(uriref, evalContext.BaseUri.ToSafeString())));
             }
             catch (RdfException)
             {
@@ -1085,78 +1074,62 @@ namespace VDS.RDF.Parsing
                 {
                     return context.Handler.CreateUriNode(UriFactory.Create(vocab.ResolveTerm(curie.Substring(1))));
                 }
-                else if (curie.Contains(":"))
+
+                if (curie.Contains(":"))
                 {
                     return ResolveCurie(context, evalContext, curie);
                 }
-                else
+                if (vocab.HasTerm(curie))
                 {
-                    if (vocab.HasTerm(curie))
-                    {
-                        return context.Handler.CreateUriNode(UriFactory.Create(vocab.ResolveTerm(curie)));
-                    }
-                    else
-                    {
-                        throw new RdfParseException("Cannot use an unprefixed CURIE in RDFa 1.0 - only reserved XHTML terms are permitted");
-                    }
+                    return context.Handler.CreateUriNode(UriFactory.Create(vocab.ResolveTerm(curie)));
                 }
+
+                throw new RdfParseException("Cannot use an unprefixed CURIE in RDFa 1.0 - only reserved XHTML terms are permitted");
             }
-            else
+
+            // RDFa 1.1
+            if (curie.StartsWith(":"))
             {
-                // RDFa 1.1
-                if (curie.StartsWith(":"))
+                if (evalContext.LocalVocabulary != null)
                 {
-                    if (evalContext.LocalVocabulary != null)
+                    if (evalContext.LocalVocabulary.HasTerm(curie.Substring(1)) || !evalContext.LocalVocabulary.VocabularyUri.Equals(string.Empty))
                     {
-                        if (evalContext.LocalVocabulary.HasTerm(curie.Substring(1)) || !evalContext.LocalVocabulary.VocabularyUri.Equals(string.Empty))
-                        {
-                            return context.Handler.CreateUriNode(UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie.Substring(1))));
-                        }
-                        else if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie.Substring(1)))
-                        {
-                            return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie.Substring(1))));
-                        }
-                        else
-                        {
-                            return ResolveCurie(context, evalContext, curie);
-                        }
+                        return context.Handler.CreateUriNode(UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie.Substring(1))));
                     }
-                    else if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie.Substring(1)))
+
+                    if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie.Substring(1)))
                     {
                         return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie.Substring(1))));
                     }
-                    else
-                    {
-                        return ResolveCurie(context, evalContext, curie);
-                    }
+                    return ResolveCurie(context, evalContext, curie);
                 }
-                else
+
+                if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie.Substring(1)))
                 {
-                    if (evalContext.LocalVocabulary != null)
-                    {
-                        if (evalContext.LocalVocabulary.HasTerm(curie) || !evalContext.LocalVocabulary.VocabularyUri.Equals(string.Empty))
-                        {
-                            return context.Handler.CreateUriNode(UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie)));
-                        }
-                        else if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie))
-                        {
-                            return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
-                        }
-                        else
-                        {
-                            throw new RdfParseException("Unable to resolve a Term since there is no appropriate Local/Default Vocabulary in scope");
-                        }
-                    }
-                    else if (context.DefaultVocabulary != null)
-                    {
-                        return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
-                    }
-                    else
-                    {
-                        throw new RdfParseException("Unable to resolve a Term since there is no appropriate Local/Default Vocabularly in scope");
-                    }
+                    return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie.Substring(1))));
                 }
+                return ResolveCurie(context, evalContext, curie);
             }
+
+            if (evalContext.LocalVocabulary != null)
+            {
+                if (evalContext.LocalVocabulary.HasTerm(curie) || !evalContext.LocalVocabulary.VocabularyUri.Equals(string.Empty))
+                {
+                    return context.Handler.CreateUriNode(UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie)));
+                }
+
+                if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie))
+                {
+                    return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
+                }
+                throw new RdfParseException("Unable to resolve a Term since there is no appropriate Local/Default Vocabulary in scope");
+            }
+
+            if (context.DefaultVocabulary != null)
+            {
+                return context.Handler.CreateUriNode(UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
+            }
+            throw new RdfParseException("Unable to resolve a Term since there is no appropriate Local/Default Vocabularly in scope");
         }
 
         private INode ResolveTermOrCurieOrUri(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string value)
@@ -1165,14 +1138,12 @@ namespace VDS.RDF.Parsing
             {
                 return ResolveTermOrCurie(context, evalContext, value);
             }
-            else if (IsCurie(evalContext, value))
+
+            if (IsCurie(evalContext, value))
             {
                 return ResolveCurie(context, evalContext, value);
             }
-            else
-            {
-                return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(value, evalContext.BaseUri.ToSafeString())));
-            }
+            return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveUri(value, evalContext.BaseUri.ToSafeString())));
         }
 
         /// <summary>
@@ -1196,7 +1167,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                values = new string[] { value };
+                values = new[] { value };
             }
             foreach (var val in values)
             {
@@ -1234,7 +1205,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                values = new string[] { value };
+                values = new[] { value };
             }
             foreach (var val in values)
             {
@@ -1277,13 +1248,11 @@ namespace VDS.RDF.Parsing
                     reader.Read();
                     if (reader.Peek() == -1)
                     {
-                        OnWarning("Aborted parsing a prefix attribute since failed to find a prefix of the form prefix: from the following content: " + prefixData.ToString());
+                        OnWarning("Aborted parsing a prefix attribute since failed to find a prefix of the form prefix: from the following content: " + prefixData);
                         return;
                     }
-                    else
-                    {
-                        next = (char)reader.Peek();
-                    }
+
+                    next = (char)reader.Peek();
                 }
 
                 // Discard the colon
@@ -1296,13 +1265,11 @@ namespace VDS.RDF.Parsing
                     reader.Read();
                     if (reader.Peek() == -1)
                     {
-                        OnWarning("Aborted parsing a prefix attribute since reached the end of the attribute without finding a URI to go with the prefix '" + prefixData.ToString() + ":'");
+                        OnWarning("Aborted parsing a prefix attribute since reached the end of the attribute without finding a URI to go with the prefix '" + prefixData + ":'");
                         return;
                     }
-                    else
-                    {
-                        next = (char)reader.Peek();
-                    }
+
+                    next = (char)reader.Peek();
                 }
 
                 // Grab the URI - characters up to the next whitespace or end of string
@@ -1317,10 +1284,8 @@ namespace VDS.RDF.Parsing
                         canExit = true;
                         break;
                     }
-                    else
-                    {
-                        next = (char)reader.Peek();
-                    }
+
+                    next = (char)reader.Peek();
                 }
 
                 // Now resolve the URI and apply it
@@ -1346,7 +1311,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                profiles = new string[] { GetAttributeValue(attr) };
+                profiles = new[] { GetAttributeValue(attr) };
             }
 
             var prefixQuery = "PREFIX rdfa: <" + RdfANamespace + "> SELECT SAMPLE(?prefix) AS ?NamespacePrefix SAMPLE(?uri) AS ?NamespaceURI WHERE { ?s rdfa:prefix ?prefix ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?prefix) = 1 && COUNT(?uri) = 1)";
@@ -1502,16 +1467,14 @@ namespace VDS.RDF.Parsing
                 var reference = value.Substring(1);
                 return evalContext.NamespaceMap.HasNamespace(string.Empty) && IriSpecsHelper.IsIrelativeRef(value);
             }
-            else if (value.Contains(':'))
+
+            if (value.Contains(':'))
             {
                 var prefix = value.Substring(0, value.IndexOf(':'));
                 var reference = value.Substring(value.IndexOf(':') + 1);
                 return (XmlSpecsHelper.IsNCName(prefix) || prefix.Equals("_")) && evalContext.NamespaceMap.HasNamespace(prefix) && IriSpecsHelper.IsIrelativeRef(reference);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>

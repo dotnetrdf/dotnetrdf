@@ -327,10 +327,8 @@ namespace VDS.RDF.Storage
             {
                 throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
             }
-            else
-            {
-                UpdateGraph(graphUri.ToString(), additions, removals);
-            }
+
+            UpdateGraph(graphUri.ToString(), additions, removals);
         }
 
         /// <summary>
@@ -348,67 +346,65 @@ namespace VDS.RDF.Storage
             {
                 throw new RdfStorageException("4store does not support Triple level updates");
             }
-            else if (graphUri.Equals(String.Empty))
+
+            if (graphUri.Equals(String.Empty))
             {
                 throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
             }
-            else
+            try
             {
-                try
+                StringBuilder delete = new StringBuilder();
+                if (removals != null)
                 {
-                    StringBuilder delete = new StringBuilder();
-                    if (removals != null)
+                    if (removals.Any())
                     {
-                        if (removals.Any())
+                        // Build up the DELETE command and execute
+                        delete.AppendLine("DELETE DATA");
+                        delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
+                        foreach (Triple t in removals)
                         {
-                            // Build up the DELETE command and execute
-                            delete.AppendLine("DELETE DATA");
-                            delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                            foreach (Triple t in removals)
-                            {
-                                delete.AppendLine(t.ToString(_formatter));
-                            }
-                            delete.AppendLine("}}");
+                            delete.AppendLine(t.ToString(_formatter));
                         }
-                    }
-
-                    StringBuilder insert = new StringBuilder();
-                    if (additions != null)
-                    {
-                        if (additions.Any())
-                        {
-                            // Build up the INSERT command and execute
-                            insert.AppendLine("INSERT DATA");
-                            insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                            foreach (Triple t in additions)
-                            {
-                                insert.AppendLine(t.ToString(_formatter));
-                            }
-                            insert.AppendLine("}}");
-                        }
-                    }
-
-                    // Use Update() method to send the updates
-                    if (delete.Length > 0)
-                    {
-                        if (insert.Length > 0)
-                        {
-                            Update(delete.ToString() + "\n;\n"  + insert.ToString());
-                        }
-                        else
-                        {
-                            Update(delete.ToString());
-                        }
-                    }
-                    else if (insert.Length > 0)
-                    {
-                        Update(insert.ToString());
+                        delete.AppendLine("}}");
                     }
                 }
-                catch (WebException webEx)
+
+                StringBuilder insert = new StringBuilder();
+                if (additions != null)
                 {
-                    throw StorageHelper.HandleHttpError(webEx, "updating a Graph in");
+                    if (additions.Any())
+                    {
+                        // Build up the INSERT command and execute
+                        insert.AppendLine("INSERT DATA");
+                        insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
+                        foreach (Triple t in additions)
+                        {
+                            insert.AppendLine(t.ToString(_formatter));
+                        }
+                        insert.AppendLine("}}");
+                    }
                 }
+
+                // Use Update() method to send the updates
+                if (delete.Length > 0)
+                {
+                    if (insert.Length > 0)
+                    {
+                        Update(delete + "\n;\n"  + insert);
+                    }
+                    else
+                    {
+                        Update(delete.ToString());
+                    }
+                }
+                else if (insert.Length > 0)
+                {
+                    Update(insert.ToString());
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw StorageHelper.HandleHttpError(webEx, "updating a Graph in");
             }
         }
 
@@ -430,10 +426,8 @@ namespace VDS.RDF.Storage
             {
                 return results;
             }
-            else
-            {
-                return g;
-            }
+
+            return g;
         }
 
         /// <summary>
@@ -484,10 +478,8 @@ namespace VDS.RDF.Storage
             {
                 throw new RdfStorageException("You must specify a valid URI in order to delete a Graph from 4store");
             }
-            else
-            {
-                DeleteGraph(graphUri.AbsoluteUri);
-            }
+
+            DeleteGraph(graphUri.AbsoluteUri);
         }
 
         /// <summary>
@@ -554,10 +546,8 @@ namespace VDS.RDF.Storage
                     }
                     return graphs;
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+
+                return Enumerable.Empty<Uri>();
             }
             catch (Exception ex)
             {
@@ -640,81 +630,79 @@ namespace VDS.RDF.Storage
             {
                 throw new RdfStorageException("4store does not support Triple level updates");
             }
-            else if (graphUri.Equals(String.Empty))
+
+            if (graphUri.Equals(String.Empty))
             {
                 throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
             }
-            else
+            try
             {
-                try
+                StringBuilder delete = new StringBuilder();
+                if (removals != null)
                 {
-                    StringBuilder delete = new StringBuilder();
-                    if (removals != null)
+                    if (removals.Any())
                     {
-                        if (removals.Any())
+                        // Build up the DELETE command and execute
+                        delete.AppendLine("DELETE DATA");
+                        delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
+                        foreach (Triple t in removals)
                         {
-                            // Build up the DELETE command and execute
-                            delete.AppendLine("DELETE DATA");
-                            delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                            foreach (Triple t in removals)
-                            {
-                                delete.AppendLine(t.ToString(_formatter));
-                            }
-                            delete.AppendLine("}}");
+                            delete.AppendLine(t.ToString(_formatter));
                         }
+                        delete.AppendLine("}}");
                     }
+                }
 
-                    StringBuilder insert = new StringBuilder();
-                    if (additions != null)
+                StringBuilder insert = new StringBuilder();
+                if (additions != null)
+                {
+                    if (additions.Any())
                     {
-                        if (additions.Any())
+                        // Build up the INSERT command and execute
+                        insert.AppendLine("INSERT DATA");
+                        insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
+                        foreach (Triple t in additions)
                         {
-                            // Build up the INSERT command and execute
-                            insert.AppendLine("INSERT DATA");
-                            insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                            foreach (Triple t in additions)
-                            {
-                                insert.AppendLine(t.ToString(_formatter));
-                            }
-                            insert.AppendLine("}}");
+                            insert.AppendLine(t.ToString(_formatter));
                         }
+                        insert.AppendLine("}}");
                     }
+                }
 
-                    // Use Update() method to send the updates
-                    if (delete.Length > 0)
+                // Use Update() method to send the updates
+                if (delete.Length > 0)
+                {
+                    if (insert.Length > 0)
                     {
-                        if (insert.Length > 0)
-                        {
-                            Update(delete.ToString() + "\n;\n" + insert.ToString(), (sender, args, st) =>
-                                {
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
-                                }, state);
-                        }
-                        else
-                        {
-                            Update(delete.ToString(), (sender, args, st) =>
-                                {
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
-                                }, state);
-                        }
-                    }
-                    else if (insert.Length > 0)
-                    {
-                        Update(insert.ToString(), (sender, args, st) =>
+                        Update(delete + "\n;\n" + insert, (sender, args, st) =>
                         {
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
                         }, state);
                     }
                     else
                     {
-                        // Nothing to do
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                        Update(delete.ToString(), (sender, args, st) =>
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
+                        }, state);
                     }
                 }
-                catch (WebException webEx)
+                else if (insert.Length > 0)
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), StorageHelper.HandleHttpError(webEx, "updating a Graph asynchronously in")), state);
+                    Update(insert.ToString(), (sender, args, st) =>
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
+                    }, state);
                 }
+                else
+                {
+                    // Nothing to do
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                }
+            }
+            catch (WebException webEx)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), StorageHelper.HandleHttpError(webEx, "updating a Graph asynchronously in")), state);
             }
         }
 

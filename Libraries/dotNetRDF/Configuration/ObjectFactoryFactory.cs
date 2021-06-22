@@ -84,10 +84,8 @@ namespace VDS.RDF.Configuration
                 {
                     return c.IsPublic;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
             return false;
         }

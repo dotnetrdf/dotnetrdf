@@ -75,10 +75,8 @@ namespace VDS.RDF.Query.Patterns
             {
                 return ((IBlankNode)obj).InternalID.Equals(_id);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -94,15 +92,11 @@ namespace VDS.RDF.Query.Patterns
                 {
                     return b;
                 }
-                else
-                {
-                    return context.Graph.CreateBlankNode(_id);
-                }
+
+                return context.Graph.CreateBlankNode(_id);
             }
-            else
-            {
-                return new BlankNode(context.Graph, _id);
-            }
+
+            return new BlankNode(context.Graph, _id);
         }
 
         /// <summary>

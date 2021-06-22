@@ -92,10 +92,8 @@ namespace VDS.RDF.Query.Aggregates.XPath
                         {
                             continue;
                         }
-                        else
-                        {
-                            values.Add(temp);
-                        }
+
+                        values.Add(temp);
                     }
                     output.Append(temp);
                 }
@@ -134,20 +132,14 @@ namespace VDS.RDF.Query.Aggregates.XPath
                     {
                         return temp.AsString();
                     }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot do an XPath string-join on a Literal which is not typed as a String");
-                    }
+
+                    throw new RdfQueryException("Cannot do an XPath string-join on a Literal which is not typed as a String");
                 }
-                else
-                {
-                    return temp.AsString();
-                }
+
+                return temp.AsString();
             }
-            else
-            {
-                throw new RdfQueryException("Cannot do an XPath string-join on a non-Literal Node");
-            }
+
+            throw new RdfQueryException("Cannot do an XPath string-join on a non-Literal Node");
         }
 
         /// <summary>
@@ -163,7 +155,8 @@ namespace VDS.RDF.Query.Aggregates.XPath
             {
                 return String.Empty;
             }
-            else if (temp.NodeType == NodeType.Literal)
+
+            if (temp.NodeType == NodeType.Literal)
             {
                 ILiteralNode l = (ILiteralNode)temp;
                 if (l.DataType != null)
@@ -172,20 +165,13 @@ namespace VDS.RDF.Query.Aggregates.XPath
                     {
                         return l.Value;
                     }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot evaluate an XPath string-join since the separator expression returns a typed Literal which is not a String");
-                    }
+
+                    throw new RdfQueryException("Cannot evaluate an XPath string-join since the separator expression returns a typed Literal which is not a String");
                 }
-                else
-                {
-                    return l.Value;
-                }
+
+                return l.Value;
             }
-            else
-            {
-                throw new RdfQueryException("Cannot evaluate an XPath string-join since the separator expression does not return a Literal");
-            }
+            throw new RdfQueryException("Cannot evaluate an XPath string-join since the separator expression does not return a Literal");
         }
 
         /// <summary>
@@ -200,10 +186,10 @@ namespace VDS.RDF.Query.Aggregates.XPath
             output.Append(XPathFunctionFactory.StringJoin);
             output.Append(">(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             if (_customSep)
             {
-                output.Append(_sep.ToString());
+                output.Append(_sep);
             }
             output.Append(')');
             return output.ToString();

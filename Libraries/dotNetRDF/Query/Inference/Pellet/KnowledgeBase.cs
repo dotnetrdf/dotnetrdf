@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Inference.Pellet
             {
                 if (target.Equals(svc.GetType())) return (T)svc;
             }
-            return (T)null;
+            return null;
         }
 
         /// <summary>

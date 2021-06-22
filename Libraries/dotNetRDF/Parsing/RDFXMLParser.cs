@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -259,7 +259,7 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (document == null) throw new RdfParseException("Cannot read RDF from a null XML Document");
 
-            try 
+            try
             {
                 // Create a new Parser Context and Parse
                 RdfXmlParserContext context = new RdfXmlParserContext(g, document, _traceparsing);
@@ -397,8 +397,8 @@ namespace VDS.RDF.Parsing
             // if (root.Children[0].QName.Equals("rdf:RDF") || root.Children[0].QName.Equals(":RDF"))
             String localName = root.Children[0].LocalName;
             String prefix = root.Children[0].Namespace;
-            if (localName.Equals("RDF") && 
-                ((context.Namespaces.HasNamespace(prefix) && context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri.Equals(NamespaceMapper.RDF)) 
+            if (localName.Equals("RDF") &&
+                ((context.Namespaces.HasNamespace(prefix) && context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri.Equals(NamespaceMapper.RDF))
                  || root.DocumentElement.NamespaceAttributes.Any(ns => ns.Prefix.Equals(prefix) && ns.Uri.Equals(NamespaceMapper.RDF))))
             {
                 GrammarProductionRDF(context, root.Children[0]);
@@ -429,8 +429,8 @@ namespace VDS.RDF.Parsing
             // Check Uri is correct
             String localName = element.LocalName;
             String prefix = element.Namespace;
-            if (localName.Equals("RDF") || 
-                ((context.Namespaces.HasNamespace(prefix) && context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri.Equals(NamespaceMapper.RDF)) 
+            if (localName.Equals("RDF") ||
+                ((context.Namespaces.HasNamespace(prefix) && context.Namespaces.GetNamespaceUri(prefix).AbsoluteUri.Equals(NamespaceMapper.RDF))
                  || element.NamespaceAttributes.Any(ns => ns.Prefix.Equals(prefix) && ns.Uri.Equals(NamespaceMapper.RDF))))
             {
                 // This is OK
@@ -461,7 +461,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent next = context.Events.Dequeue();
             if (!(next is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', an EndElementEvent was expected", "RDF", element);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', an EndElementEvent was expected", "RDF", element);
             }
 
             // Exit the current namespace scope
@@ -484,7 +484,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent next;
 
             // Want to break up into a number of sublists
-            while (eventlist.Count > 0) 
+            while (eventlist.Count > 0)
             {
                 // Create a new Sublist
                 IEventQueue<IRdfXmlEvent> subevents = new EventQueue<IRdfXmlEvent>();
@@ -531,7 +531,7 @@ namespace VDS.RDF.Parsing
             if (!(first is ElementEvent))
             {
                 // Unexpected Event
-                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType().ToString() + "'", "Node Element", first);
+                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType() + "'", "Node Element", first);
             }
 
             // Check it has a valid Uri
@@ -629,7 +629,7 @@ namespace VDS.RDF.Parsing
                 {
                     throw ParserHelper.Error("Unexpected Subject generated for a Triple", "Node Element", element.Subject);
                 }
-            } 
+            }
             else
             {
                 subj = element.SubjectNode;
@@ -702,7 +702,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent last = eventlist.Dequeue();
             if (!(last is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + last.GetType().ToString() + "', expected an EndElement Event", "NodeElement", last);
+                throw ParserHelper.Error("Unexpected Event '" + last.GetType() + "', expected an EndElement Event", "NodeElement", last);
             }
 
             // Exit the current namespace scope
@@ -775,7 +775,7 @@ namespace VDS.RDF.Parsing
             if (!(first is ElementEvent))
             {
                 // Unexpected Event
-                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType().ToString() + "'", "PropertyElement", first);
+                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType() + "'", "PropertyElement", first);
             }
 
             // Validate the Uri
@@ -892,22 +892,21 @@ namespace VDS.RDF.Parsing
             {
                 throw ParserHelper.Error("A Resource Property Element contains too many Attributes, only rdf:ID is permitted", element);
             }
-            else if (element.Attributes.Count == 1)
+
+            if (element.Attributes.Count == 1)
             {
                 if (!RdfXmlSpecsHelper.IsIDAttribute(element.Attributes.First(), context.Namespaces))
                 {
                     throw ParserHelper.Error("A Resource Property Element was encountered with a single attribute which was not rdf:ID, only rdf:ID is permitted", element);
                 }
-                else
-                {
-                    ID = element.Attributes.First().Value;
-                }
+
+                ID = element.Attributes.First().Value;
             }
 
             // Next must be an ElementEvent
             if (!(next is ElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an ElementEvent as the first Event in a Resource Property Elements Event list", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an ElementEvent as the first Event in a Resource Property Elements Event list", next);
             }
 
             // Get list of Sub Events
@@ -922,7 +921,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent last = eventlist.Dequeue();
             if (!(last is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + last.GetType().ToString() + "', expected an EndElement Event", last);
+                throw ParserHelper.Error("Unexpected Event '" + last.GetType() + "', expected an EndElement Event", last);
             }
 
             // Now we can generate the relevant RDF
@@ -931,7 +930,7 @@ namespace VDS.RDF.Parsing
             // Validate the Type of the Parent
             if (!(parent is ElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Parent Event '" + parent.GetType().ToString() + "', expected an ElementEvent", parent);
+                throw ParserHelper.Error("Unexpected Parent Event '" + parent.GetType() + "', expected an ElementEvent", parent);
             }
             ElementEvent parentEl = (ElementEvent)parent;
 
@@ -1006,7 +1005,7 @@ namespace VDS.RDF.Parsing
             // Validate that the middle event is a TextEvent
             if (!(middle is TextEvent))
             {
-                throw ParserHelper.Error("Unexpected event '" + middle.GetType().ToString() + "', expected a TextEvent in a Literal Property Element", middle);
+                throw ParserHelper.Error("Unexpected event '" + middle.GetType() + "', expected a TextEvent in a Literal Property Element", middle);
             }
             TextEvent text = (TextEvent)middle;
 
@@ -1017,28 +1016,26 @@ namespace VDS.RDF.Parsing
             {
                 throw ParserHelper.Error("A Literal Property Element contains too many attributes, only rdf:ID and rdf:datatype are permitted", element);
             }
-            else
+
+            // Only rdf:ID and rdf:datatype allowed
+            foreach (AttributeEvent a in element.Attributes)
             {
-                // Only rdf:ID and rdf:datatype allowed
-                foreach (AttributeEvent a in element.Attributes)
+                if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces)) {
+                    ID = "#" + a.Value;
+                }
+                else if (RdfXmlSpecsHelper.IsDataTypeAttribute(a, context.Namespaces))
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces)) {
-                        ID = "#" + a.Value;
-                    }
-                    else if (RdfXmlSpecsHelper.IsDataTypeAttribute(a, context.Namespaces))
-                    {
-                        datatype = a.Value;
-                    } 
-                    else 
-                    {
-                        throw ParserHelper.Error("A Literal Property Element contains an unexpected attribute, only rdf:ID and rdf:datatype are permitted", element);
-                    }
+                    datatype = a.Value;
+                }
+                else
+                {
+                    throw ParserHelper.Error("A Literal Property Element contains an unexpected attribute, only rdf:ID and rdf:datatype are permitted", element);
                 }
             }
 
             // Create the Nodes for the Graph
             INode subj, pred, obj;
-            
+
             // Get the Subject from the Parent
             ElementEvent parentEl = (ElementEvent)parent;
             subj = parentEl.SubjectNode;
@@ -1123,24 +1120,22 @@ namespace VDS.RDF.Parsing
                 // Can't be more than 2 Attributes, only allowed an optional rdf:ID and a required rdf:parseType
                 throw ParserHelper.Error("An Property Element with Parse Type 'Literal' was encountered with too many Attributes.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Literal'", "Parse Type Literal Property Element", element);
             }
-            else
+
+            // Check the attributes that do exist
+            foreach (AttributeEvent a in element.Attributes)
             {
-                // Check the attributes that do exist
-                foreach (AttributeEvent a in element.Attributes)
+                if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
-                    {
-                        ID = "#" + a.Value;
-                    }
-                    else if (RdfXmlSpecsHelper.IsParseTypeAttribute(a, context.Namespaces))
-                    {
-                        // OK
-                    }
-                    else
-                    {
-                        // Invalid Attribute
-                        throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Literal'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Literal'", "Parse Type Literal Property Element", element);
-                    }
+                    ID = "#" + a.Value;
+                }
+                else if (RdfXmlSpecsHelper.IsParseTypeAttribute(a, context.Namespaces))
+                {
+                    // OK
+                }
+                else
+                {
+                    // Invalid Attribute
+                    throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Literal'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Literal'", "Parse Type Literal Property Element", element);
                 }
             }
 
@@ -1149,7 +1144,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent lit = eventlist.Dequeue();
             if (!(lit is TypedLiteralEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + lit.GetType().ToString() + "', expected a TypedLiteralEvent after a Property Element with Parse Type 'Literal'", "Parse Type Literal Property Element", lit);
+                throw ParserHelper.Error("Unexpected Event '" + lit.GetType() + "', expected a TypedLiteralEvent after a Property Element with Parse Type 'Literal'", "Parse Type Literal Property Element", lit);
             }
 
             // Get the Subject from the Parent
@@ -1190,7 +1185,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent next = eventlist.Dequeue();
             if (!(next is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Literal Property Element!", "Parse Type Literal Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Literal Property Element!", "Parse Type Literal Property Element", next);
             }
 
             // End the namespace scope
@@ -1227,24 +1222,22 @@ namespace VDS.RDF.Parsing
                 // Can't be more than 2 Attributes, only allowed an optional rdf:ID and a required rdf:parseType
                 throw ParserHelper.Error("An Property Element with Parse Type 'Resource' was encountered with too many Attributes.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Resource'", "Parse Type Resource Property Element", element);
             }
-            else
+
+            // Check the attributes that do exist
+            foreach (AttributeEvent a in element.Attributes)
             {
-                // Check the attributes that do exist
-                foreach (AttributeEvent a in element.Attributes)
+                if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
-                    {
-                        ID = "#" + a.Value;
-                    }
-                    else if (RdfXmlSpecsHelper.IsParseTypeAttribute(a, context.Namespaces))
-                    {
-                        // OK
-                    }
-                    else
-                    {
-                        // Invalid Attribute
-                        throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Resource'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Resource'", "Parse Type Resource Property Element", element);
-                    }
+                    ID = "#" + a.Value;
+                }
+                else if (RdfXmlSpecsHelper.IsParseTypeAttribute(a, context.Namespaces))
+                {
+                    // OK
+                }
+                else
+                {
+                    // Invalid Attribute
+                    throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Resource'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Resource'", "Parse Type Resource Property Element", element);
                 }
             }
 
@@ -1319,13 +1312,13 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an ElementEvent or EndElementEvent after a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an ElementEvent or EndElementEvent after a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
             }
 
             // Check for the last thing being an EndElement Event
             if (!(next is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
             }
 
             // End the namespace scope
@@ -1362,24 +1355,22 @@ namespace VDS.RDF.Parsing
                 // Can't be more than 2 Attributes, only allowed an optional rdf:ID and a required rdf:parseType
                 throw ParserHelper.Error("An Property Element with Parse Type 'Collection' was encountered with too many Attributes.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Collection'", "Parse Type Collection Property Element", element);
             }
-            else
+
+            // Check the attributes that do exist
+            foreach (AttributeEvent a in element.Attributes)
             {
-                // Check the attributes that do exist
-                foreach (AttributeEvent a in element.Attributes)
+                if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
                 {
-                    if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces))
-                    {
-                        ID = "#" + a.Value;
-                    }
-                    else if (RdfXmlSpecsHelper.IsParseTypeAttribute(a, context.Namespaces))
-                    {
-                        // OK
-                    }
-                    else
-                    {
-                        // Invalid Attribute
-                        throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Collection'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Collection'", "Parse Type Collection Property Element", element);
-                    }
+                    ID = "#" + a.Value;
+                }
+                else if (RdfXmlSpecsHelper.IsParseTypeAttribute(a, context.Namespaces))
+                {
+                    // OK
+                }
+                else
+                {
+                    // Invalid Attribute
+                    throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Collection'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Collection'", "Parse Type Collection Property Element", element);
                 }
             }
 
@@ -1514,7 +1505,7 @@ namespace VDS.RDF.Parsing
             next = eventlist.Dequeue();
             if (!(next is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Collection Property Element!", "Parse Type Collection Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Collection Property Element!", "Parse Type Collection Property Element", next);
             }
 
             // End the current namespace scope
@@ -1709,24 +1700,22 @@ namespace VDS.RDF.Parsing
                         {
                             throw ParserHelper.Error("Encountered a Property Attribute '" + a.QName + "' whose value was not correctly normalized in Unicode Normal Form C", "Empty Property Element", a);
                         }
+
+                        // Create the Predicate from the Attribute QName
+                        pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(a.QName, context.Namespaces, null)));
+
+                        // Create the Object from the Attribute Value
+                        if (element.Language.Equals(String.Empty))
+                        {
+                            obj = context.Handler.CreateLiteralNode(a.Value);
+                        }
                         else
                         {
-                            // Create the Predicate from the Attribute QName
-                            pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(a.QName, context.Namespaces, null)));
-
-                            // Create the Object from the Attribute Value
-                            if (element.Language.Equals(String.Empty))
-                            {
-                                obj = context.Handler.CreateLiteralNode(a.Value);
-                            }
-                            else
-                            {
-                                obj = context.Handler.CreateLiteralNode(a.Value, element.Language);
-                            }
-
-                            // Assert the Property Triple
-                            if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
+                            obj = context.Handler.CreateLiteralNode(a.Value, element.Language);
                         }
+
+                        // Assert the Property Triple
+                        if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                     }
                     else if (RdfXmlSpecsHelper.IsIDAttribute(a, context.Namespaces) || RdfXmlSpecsHelper.IsNodeIDAttribute(a, context.Namespaces) || RdfXmlSpecsHelper.IsResourceAttribute(a, context.Namespaces))
                     {
@@ -1874,10 +1863,8 @@ namespace VDS.RDF.Parsing
                 // Return the new Uri Reference
                 return u;
             }
-            else
-            {
-                throw ParserHelper.Error("Cannot perform List Expansion on an Event which is not an ElementEvent", evt);
-            }
+
+            throw ParserHelper.Error("Cannot perform List Expansion on an Event which is not an ElementEvent", evt);
         }
 
         /// <summary>
@@ -1901,10 +1888,8 @@ namespace VDS.RDF.Parsing
                 {
                     throw new RdfParseException("An rdf:ID must be unique to a Node within a File, the rdf:ID '" + id + "' has already been used for a Node in this RDF/XML File!");
                 }
-                else
-                {
-                    context.IDs[id].Add(subj);
-                }
+
+                context.IDs[id].Add(subj);
             }
             else
             {
@@ -1959,15 +1944,14 @@ namespace VDS.RDF.Parsing
             {
                 case RdfXmlParserMode.DOM:
                     return "RDF/XML (DOM)";
-                case RdfXmlParserMode.Streaming:
                 default:
                     return "RDF/XML (Streaming)";
             }
         }
         private static bool ElementHasName(ElementEvent el, string localName, string namespaceUri, RdfXmlParserContext context)
         {
-            return el.LocalName.Equals(localName) && 
-                   context.Namespaces.HasNamespace(el.Namespace) && 
+            return el.LocalName.Equals(localName) &&
+                   context.Namespaces.HasNamespace(el.Namespace) &&
                    context.Namespaces.GetNamespaceUri(el.Namespace).ToString().Equals(namespaceUri);
         }
     }

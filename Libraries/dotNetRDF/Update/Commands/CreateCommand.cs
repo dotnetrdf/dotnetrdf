@@ -79,10 +79,8 @@ namespace VDS.RDF.Update.Commands
             {
                 return true;
             }
-            else
-            {
-                return _graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
-            }
+
+            return _graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
         }
 
         /// <summary>

@@ -133,7 +133,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Array of Constants for Data Types that are supported by the Literal Node CompareTo method.
         /// </summary>
-        public static String[] SupportedTypes = new String[] {
+        public static String[] SupportedTypes = new[] {
             XmlSchemaDataTypeAnyUri,
             XmlSchemaDataTypeBase64Binary,
             XmlSchemaDataTypeBoolean,
@@ -223,35 +223,33 @@ namespace VDS.RDF.Parsing
                 // NameStartChar's allowed
                 return true;
             }
-            else if (Char.IsDigit(c))
+
+            if (Char.IsDigit(c))
             {
                 // Digits allowed
                 return true;
             }
-            else if (c == '.' || c == '-')
+            if (c == '.' || c == '-')
             {
                 // Period and Hyphen allowed
                 return true;
             }
-            else if (c == 0xB7) {
+            if (c == 0xB7) {
                 // This Hex Character allowed
                 return true;
             }
-            else if (c >= 0x0300 && c <= 0x036F)
+            if (c >= 0x0300 && c <= 0x036F)
             {
                 // This Hex Range allowed
                 return true;
             }
-            else if (c >= 0x203F && c <= 0x2040)
+            if (c >= 0x203F && c <= 0x2040)
             {
                 // This Hex Range allowed
                 return true;
             }
-            else
-            {
-                // Anything else forbidden
-                return false;
-            }
+            // Anything else forbidden
+            return false;
         }
 
         /// <summary>
@@ -267,41 +265,39 @@ namespace VDS.RDF.Parsing
                 // Underscore and Colon Allowed
                 return true;
             }
-            else if (c >= 'a' && c <= 'z')
+
+            if (c >= 'a' && c <= 'z')
             {
                 return true;
             }
-            else if (c >= 'A' && c <= 'Z')
+            if (c >= 'A' && c <= 'Z')
             {
                 return true;
             }
-            else if ((c >= 0xC0 && c <= 0xD6) ||
-                       (c >= 0xD8 && c <= 0xF6) ||
-                       (c >= 0xF8 && c <= 0x2FF) ||
-                       (c >= 0x370 && c <= 0x37D) ||
-                       (c >= 0x37F && c <= 0x1FFF) ||
-                       (c >= 0x200C && c <= 0x200D) ||
-                       (c >= 0x2070 && c <= 0x218F) ||
-                       (c >= 0x2C00 && c <= 0x2FEF) ||
-                       (c >= 0x3001 && c <= 0xD7FF) ||
-                       (c >= 0xF900 && c <= 0xFDCF) ||
-                       (c >= 0xFDF0 && c <= 0xFFFD))
+            if ((c >= 0xC0 && c <= 0xD6) ||
+                (c >= 0xD8 && c <= 0xF6) ||
+                (c >= 0xF8 && c <= 0x2FF) ||
+                (c >= 0x370 && c <= 0x37D) ||
+                (c >= 0x37F && c <= 0x1FFF) ||
+                (c >= 0x200C && c <= 0x200D) ||
+                (c >= 0x2070 && c <= 0x218F) ||
+                (c >= 0x2C00 && c <= 0x2FEF) ||
+                (c >= 0x3001 && c <= 0xD7FF) ||
+                (c >= 0xF900 && c <= 0xFDCF) ||
+                (c >= 0xFDF0 && c <= 0xFFFD))
             {
                 // Whole load of Hex Ranges are allowed
                 return true;
             }
-            else
+            // Have to cast to an Integer because the next Hex Range is out of the range of Character
+            int i = c;
+            if (i >= 0x10000 && i <= 0xEFFFF)
             {
-                // Have to cast to an Integer because the next Hex Range is out of the range of Character
-                int i = (int)c;
-                if (i >= 0x10000 && i <= 0xEFFFF)
-                {
-                    // This Hex Range is also allowed
-                    return true;
-                }
-                // Anything else is forbidden
-                return false;
+                // This Hex Range is also allowed
+                return true;
             }
+            // Anything else is forbidden
+            return false;
         }
 
         #endregion
@@ -358,10 +354,8 @@ namespace VDS.RDF.Parsing
                         {
                             throw new RdfException("Literals with Language Specifiers do not have a Data Type");
                         }
-                        else
-                        {
-                            return XmlSchemaDataTypeString;
-                        }
+
+                        return XmlSchemaDataTypeString;
                     }
                     else
                     {
@@ -370,10 +364,8 @@ namespace VDS.RDF.Parsing
                         {
                             return type;
                         }
-                        else
-                        {
-                            return String.Empty;
-                        }
+
+                        return String.Empty;
                     }
                 default:
                     throw new RdfException("Data Type cannot be determined for unknown Node types");
@@ -447,51 +439,45 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfException("Unknown Types are not compatible");
             }
-            else if (type1.Equals(type2))
+
+            if (type1.Equals(type2))
             {
                 return type1;
             }
-            else
+            switch (type1)
             {
-                switch (type1)
-                {
-                    // TODO: Implement type compatability detection for numeric types
+                // TODO: Implement type compatability detection for numeric types
 
-                    case XmlSchemaDataTypeDate:
-                        if (type2.Equals(XmlSchemaDataTypeDateTime))
+                case XmlSchemaDataTypeDate:
+                    if (type2.Equals(XmlSchemaDataTypeDateTime))
+                    {
+                        if (widen)
                         {
-                            if (widen)
-                            {
-                                return XmlSchemaDataTypeDateTime;
-                            }
-                            else
-                            {
-                                return XmlSchemaDataTypeDate;
-                            }
+                            return XmlSchemaDataTypeDateTime;
                         }
-                        else
-                        {
-                            return String.Empty;
-                        }
-                    case XmlSchemaDataTypeDateTime:
-                        if (type2.Equals(XmlSchemaDataTypeDate))
-                        {
-                            if (widen)
-                            {
-                                return XmlSchemaDataTypeDateTime;
-                            }
-                            else
-                            {
-                                return XmlSchemaDataTypeDate;
-                            }
-                        }
-                        else
-                        {
-                            return String.Empty;
-                        }
-                    default:
+
+                        return XmlSchemaDataTypeDate;
+                    }
+                    else
+                    {
                         return String.Empty;
-                }
+                    }
+                case XmlSchemaDataTypeDateTime:
+                    if (type2.Equals(XmlSchemaDataTypeDate))
+                    {
+                        if (widen)
+                        {
+                            return XmlSchemaDataTypeDateTime;
+                        }
+
+                        return XmlSchemaDataTypeDate;
+                    }
+                    else
+                    {
+                        return String.Empty;
+                    }
+                default:
+                    return String.Empty;
             }
         }
     }

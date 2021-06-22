@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Datasets
             Stack<IEnumerable<Uri>> s = new Stack<IEnumerable<Uri>>();
             if (!_unionDefaultGraph)
             {
-                s.Push(new Uri[] { _defaultGraphUri });
+                s.Push(new[] { _defaultGraphUri });
             }
             return s;
         }
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Datasets
             }
             else
             {
-                _activeGraphs.Value.Push(new Uri[] { graphUri });
+                _activeGraphs.Value.Push(new[] { graphUri });
             }
         }
 
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI.</param>
         public void SetDefaultGraph(Uri graphUri)
         {
-            _defaultGraphs.Value.Push(new Uri[] { graphUri });
+            _defaultGraphs.Value.Push(new[] { graphUri });
         }
 
         /// <summary>
@@ -166,20 +166,18 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public IEnumerable<Uri> DefaultGraphUris
         {
-            get 
+            get
             {
                 if (_defaultGraphs.Value.Count > 0)
                 {
                     return _defaultGraphs.Value.Peek();
                 }
-                else if (_unionDefaultGraph)
+
+                if (_unionDefaultGraph)
                 {
                     return GraphUris;
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+                return Enumerable.Empty<Uri>();
             }
         }
 
@@ -188,16 +186,14 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public IEnumerable<Uri> ActiveGraphUris
         {
-            get 
+            get
             {
                 if (_activeGraphs.Value.Count > 0)
                 {
                     return _activeGraphs.Value.Peek();
                 }
-                else
-                {
-                    return DefaultGraphUris;
-                }
+
+                return DefaultGraphUris;
             }
         }
 
@@ -271,15 +267,11 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return true;
                 }
-                else
-                {
-                    return HasGraphInternal(null);
-                }
+
+                return HasGraphInternal(null);
             }
-            else
-            {
-                return HasGraphInternal(graphUri);
-            }
+
+            return HasGraphInternal(graphUri);
         }
 
         /// <summary>
@@ -331,22 +323,16 @@ namespace VDS.RDF.Query.Datasets
                         {
                             return new Graph(new QuadDatasetTripleCollection(this, DefaultGraphUris.First()));
                         }
-                        else
-                        {
-                            IEnumerable<IGraph> gs = (from u in DefaultGraphUris
-                                                      select new Graph(new QuadDatasetTripleCollection(this, u))).OfType<IGraph>();
-                            return new UnionGraph(gs.First(), gs.Skip(1));
-                        }
+
+                        IEnumerable<IGraph> gs = (from u in DefaultGraphUris
+                            select new Graph(new QuadDatasetTripleCollection(this, u))).OfType<IGraph>();
+                        return new UnionGraph(gs.First(), gs.Skip(1));
                     }
-                    else
-                    {
-                        return GetGraphInternal(null);
-                    }
+
+                    return GetGraphInternal(null);
                 }
-                else
-                {
-                    return GetGraphInternal(graphUri);
-                }
+
+                return GetGraphInternal(graphUri);
             }
         }
 
@@ -695,12 +681,10 @@ namespace VDS.RDF.Query.Datasets
                             _actions.Add(new GraphPersistenceAction(wrapper, GraphPersistenceActionType.Modified));
                             return true;
                         }
-                        else
-                        {
-                            // Other Graphs get actually deleted
-                            _actions.Add(new GraphPersistenceAction(this[u], GraphPersistenceActionType.Deleted));
-                            return true;
-                        }
+
+                        // Other Graphs get actually deleted
+                        _actions.Add(new GraphPersistenceAction(this[u], GraphPersistenceActionType.Deleted));
+                        return true;
                     }
                 }
                 else if (HasGraph(graphUri))
@@ -740,30 +724,24 @@ namespace VDS.RDF.Query.Datasets
                         {
                             return new Graph(new QuadDatasetTripleCollection(this, DefaultGraphUris.First()));
                         }
-                        else
-                        {
-                            IEnumerable<IGraph> gs = (from u in DefaultGraphUris
-                                                      select new Graph(new QuadDatasetTripleCollection(this, u))).OfType<IGraph>();
-                            return new UnionGraph(gs.First(), gs.Skip(1));
-                        }
+
+                        IEnumerable<IGraph> gs = (from u in DefaultGraphUris
+                            select new Graph(new QuadDatasetTripleCollection(this, u))).OfType<IGraph>();
+                        return new UnionGraph(gs.First(), gs.Skip(1));
                     }
-                    else if (_modifiableGraphs.HasGraph(graphUri))
+
+                    if (_modifiableGraphs.HasGraph(graphUri))
                     {
                         return _modifiableGraphs[graphUri];
                     }
-                    else
-                    {
-                        return GetGraphInternal(null);
-                    }
+                    return GetGraphInternal(null);
                 }
-                else if (_modifiableGraphs.HasGraph(graphUri))
+
+                if (_modifiableGraphs.HasGraph(graphUri))
                 {
                     return _modifiableGraphs[graphUri];
                 }
-                else
-                {
-                    return GetGraphInternal(graphUri);
-                }
+                return GetGraphInternal(graphUri);
             }
         }
 

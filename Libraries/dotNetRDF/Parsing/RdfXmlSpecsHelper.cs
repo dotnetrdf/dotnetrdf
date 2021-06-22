@@ -172,11 +172,9 @@ namespace VDS.RDF.Parsing
             {
                 return false;
             }
-            else
-            {
-                // Any other URIs are allowed
-                return true;
-            }
+
+            // Any other URIs are allowed
+            return true;
         }
 
         /// <summary>
@@ -194,11 +192,9 @@ namespace VDS.RDF.Parsing
             {
                 return false;
             }
-            else
-            {
-                // Any other URIs are allowed
-                return true;
-            }
+
+            // Any other URIs are allowed
+            return true;
         }
 
         /// <summary>
@@ -214,11 +210,9 @@ namespace VDS.RDF.Parsing
             {
                 return false;
             }
-            else
-            {
-                // Any other URIs are allowed
-                return true;
-            }
+
+            // Any other URIs are allowed
+            return true;
         }
 
         /// <summary>
@@ -269,11 +263,9 @@ namespace VDS.RDF.Parsing
             {
                 return false;
             }
-            else
-            {
-                // Any other URIs are allowed
-                return true;
-            }
+
+            // Any other URIs are allowed
+            return true;
         }
 
         /// <summary>
@@ -289,11 +281,9 @@ namespace VDS.RDF.Parsing
             {
                 return false;
             }
-            else
-            {
-                // Any other URIs are allowed
-                return true;
-            }
+
+            // Any other URIs are allowed
+            return true;
         }
 
         /// <summary>
@@ -329,10 +319,8 @@ namespace VDS.RDF.Parsing
             {
                 return false;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         /// <summary>
@@ -350,15 +338,11 @@ namespace VDS.RDF.Parsing
                     // Empty Prefix is permitted
                     return XmlSpecsHelper.IsNCName(parts[1]);
                 }
-                else
-                {
-                    return XmlSpecsHelper.IsNCName(parts[0]) && XmlSpecsHelper.IsNCName(parts[1]);
-                }
+
+                return XmlSpecsHelper.IsNCName(parts[0]) && XmlSpecsHelper.IsNCName(parts[1]);
             }
-            else
-            {
-                return XmlSpecsHelper.IsNCName(qname);
-            }
+
+            return XmlSpecsHelper.IsNCName(qname);
         }
 
         #endregion
@@ -384,16 +368,12 @@ namespace VDS.RDF.Parsing
                     // OK
                     return true;
                 }
-                else
-                {
-                    // Invalid RDF ID so Error
-                    throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:ID is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
-                }
+
+                // Invalid RDF ID so Error
+                throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:ID is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -416,16 +396,12 @@ namespace VDS.RDF.Parsing
                     // OK
                     return true;
                 }
-                else
-                {
-                    // Invalid RDF ID so Error
-                    throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:ID is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
-                }
+
+                // Invalid RDF ID so Error
+                throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:ID is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -459,16 +435,12 @@ namespace VDS.RDF.Parsing
                     // OK
                     return true;
                 }
-                else
-                {
-                    // Invalid RDF ID so Error
-                    throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:id is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
-                }
+
+                // Invalid RDF ID so Error
+                throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:id is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -489,16 +461,12 @@ namespace VDS.RDF.Parsing
                     // OK
                     return true;
                 }
-                else
-                {
-                    // Invalid RDF ID so Error
-                    throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:id is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
-                }
+
+                // Invalid RDF ID so Error
+                throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:id is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -515,10 +483,8 @@ namespace VDS.RDF.Parsing
                 // Must be a valid RDF Uri Reference
                 return IsRdfUriReference(attr.Value);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -537,10 +503,8 @@ namespace VDS.RDF.Parsing
                 // Must be a valid RDF Uri Reference
                 return IsRdfUriReference(attr.Value);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -597,10 +561,8 @@ namespace VDS.RDF.Parsing
                 // Must be a valid RDF Uri Reference
                 return IsRdfUriReference(attr.Value);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -619,10 +581,8 @@ namespace VDS.RDF.Parsing
                 // Must be a valid RDF Uri Reference
                 return IsRdfUriReference(attr.Value);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -639,10 +599,8 @@ namespace VDS.RDF.Parsing
                 // Must be a valid RDF Uri Reference
                 return IsRdfUriReference(attr.Value);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -659,10 +617,8 @@ namespace VDS.RDF.Parsing
                 // Must be a valid RDF Uri Reference
                 return IsRdfUriReference(attr.Value);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>

@@ -78,94 +78,84 @@ namespace VDS.RDF.Query
                         // If RDF Term equality returns true then we return that they are equal
                         return 0;
                     }
-                    else
+
+                    // If RDF Term equality returns false then we error
+                    // UNLESS they have the same Datatype
+                    throw new RdfQueryException("Unable to determine ordering since one/both arguments has an Unknown Type");
+                }
+
+                // Both have known types
+                SparqlNumericType xnumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(xtype);
+                SparqlNumericType ynumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(ytype);
+                SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                if (numtype != SparqlNumericType.NaN)
+                {
+                    if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
                     {
-                        // If RDF Term equality returns false then we error
-                        // UNLESS they have the same Datatype
-                        throw new RdfQueryException("Unable to determine ordering since one/both arguments has an Unknown Type");
+                        // If one is non-numeric then we can't assume non-equality
+                        throw new RdfQueryException("Unable to determine ordering since one/both arguments does not return a Number");
+                    }
+
+                    // Both are Numeric so use Numeric ordering
+                    try
+                    {
+                        return NumericCompare(x, y, numtype);
+                    }
+                    catch (FormatException)
+                    {
+                        if (x.Equals(y)) return 0;
+                        throw new RdfQueryException("Unable to determine ordering since one/both arguments does not contain a valid value for it's type");
+                    }
+                    catch (RdfQueryException)
+                    {
+                        // If this errors try RDF Term equality since 
+                        if (x.Equals(y)) return 0;
+                        throw new RdfQueryException("Unable to determine ordering since one/both arguments was not a valid numeric");
                     }
                 }
-                else
-                {
-                    // Both have known types
-                    SparqlNumericType xnumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(xtype);
-                    SparqlNumericType ynumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(ytype);
-                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
-                    if (numtype != SparqlNumericType.NaN)
-                    {
-                        if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
-                        {
-                            // If one is non-numeric then we can't assume non-equality
-                            throw new RdfQueryException("Unable to determine ordering since one/both arguments does not return a Number");
-                        }
 
-                        // Both are Numeric so use Numeric ordering
-                        try
-                        {
-                            return NumericCompare(x, y, numtype);
-                        }
-                        catch (FormatException)
-                        {
-                            if (x.Equals(y)) return 0;
-                            throw new RdfQueryException("Unable to determine ordering since one/both arguments does not contain a valid value for it's type");
-                        }
-                        catch (RdfQueryException)
-                        {
-                            // If this errors try RDF Term equality since 
-                            if (x.Equals(y)) return 0;
-                            throw new RdfQueryException("Unable to determine ordering since one/both arguments was not a valid numeric");
-                        }
-                    }
-                    else if (xtype.Equals(ytype))
+                if (xtype.Equals(ytype))
+                {
+                    switch (xtype)
                     {
-                        switch (xtype)
-                        {
-                            case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                return DateCompare(x, y);
-                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                return DateTimeCompare(x, y);
-                            case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                // Both Strings so use Lexical string ordering
+                        case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                            return DateCompare(x, y);
+                        case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                            return DateTimeCompare(x, y);
+                        case XmlSpecsHelper.XmlSchemaDataTypeString:
+                            // Both Strings so use Lexical string ordering
 #if NETCORE
                                 return Options.DefaultCulture.CompareInfo.Compare(((ILiteralNode) x).Value,
                                     ((ILiteralNode) y).Value, Options.DefaultComparisonOptions);
 #else
-                                return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
+                            return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
 #endif
-                            default:
-                                // Use node ordering
-                                return x.CompareTo(y);
-                        }
-                    }
-                    else
-                    {
-                        String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
-                        if (commontype.Equals(String.Empty))
-                        {
-                            // Use Node ordering
+                        default:
+                            // Use node ordering
                             return x.CompareTo(y);
-                        }
-                        else
-                        {
-                            switch (commontype)
-                            {
-                                case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                    return DateCompare(x, y);
-                                case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                    return DateTimeCompare(x, y);
-                                default:
-                                    // Use Node ordering
-                                    return x.CompareTo(y);
-                            }
-                        }
                     }
                 }
+                String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
+                if (commontype.Equals(String.Empty))
+                {
+                    // Use Node ordering
+                    return x.CompareTo(y);
+                }
+
+                switch (commontype)
+                {
+                    case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                        return DateCompare(x, y);
+                    case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                        return DateTimeCompare(x, y);
+                    default:
+                        // Use Node ordering
+                        return x.CompareTo(y);
+                }
             }
-            else
-            {
-                // If not Literals use Node ordering
-                return x.CompareTo(y);
-            }
+
+            // If not Literals use Node ordering
+            return x.CompareTo(y);
         }
 
         /// <summary>
@@ -206,93 +196,83 @@ namespace VDS.RDF.Query
                         // If RDF Term equality returns true then we return that they are equal
                         return 0;
                     }
-                    else
+
+                    // If RDF Term equality returns false then we error
+                    // UNLESS they have the same Datatype
+                    throw new RdfQueryException("Unable to determine ordering since one/both arguments has an Unknown Type");
+                }
+
+                // Both have known types
+                SparqlNumericType xnumtype = x.NumericType;
+                SparqlNumericType ynumtype = y.NumericType;
+                SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                if (numtype != SparqlNumericType.NaN)
+                {
+                    if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
                     {
-                        // If RDF Term equality returns false then we error
-                        // UNLESS they have the same Datatype
-                        throw new RdfQueryException("Unable to determine ordering since one/both arguments has an Unknown Type");
+                        // If one is non-numeric then we can't assume non-equality
+                        throw new RdfQueryException("Unable to determine ordering since one/both arguments does not return a Number");
+                    }
+
+                    // Both are Numeric so use Numeric ordering
+                    try
+                    {
+                        return NumericCompare(x, y, numtype);
+                    }
+                    catch (FormatException)
+                    {
+                        if (x.Equals(y)) return 0;
+                        throw new RdfQueryException("Unable to determine ordering since one/both arguments does not contain a valid value for it's type");
+                    }
+                    catch (RdfQueryException)
+                    {
+                        // If this errors try RDF Term equality since 
+                        if (x.Equals(y)) return 0;
+                        throw new RdfQueryException("Unable to determine ordering since one/both arguments was not a valid numeric");
                     }
                 }
-                else
-                {
-                    // Both have known types
-                    SparqlNumericType xnumtype = x.NumericType;
-                    SparqlNumericType ynumtype = y.NumericType;
-                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
-                    if (numtype != SparqlNumericType.NaN)
-                    {
-                        if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
-                        {
-                            // If one is non-numeric then we can't assume non-equality
-                            throw new RdfQueryException("Unable to determine ordering since one/both arguments does not return a Number");
-                        }
 
-                        // Both are Numeric so use Numeric ordering
-                        try
-                        {
-                            return NumericCompare(x, y, numtype);
-                        }
-                        catch (FormatException)
-                        {
-                            if (x.Equals(y)) return 0;
-                            throw new RdfQueryException("Unable to determine ordering since one/both arguments does not contain a valid value for it's type");
-                        }
-                        catch (RdfQueryException)
-                        {
-                            // If this errors try RDF Term equality since 
-                            if (x.Equals(y)) return 0;
-                            throw new RdfQueryException("Unable to determine ordering since one/both arguments was not a valid numeric");
-                        }
-                    }
-                    else if (xtype.Equals(ytype))
+                if (xtype.Equals(ytype))
+                {
+                    switch (xtype)
                     {
-                        switch (xtype)
-                        {
-                            case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                return DateCompare(x, y);
-                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                return DateTimeCompare(x, y);
-                            case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                // Both Strings so use Lexical string ordering
+                        case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                            return DateCompare(x, y);
+                        case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                            return DateTimeCompare(x, y);
+                        case XmlSpecsHelper.XmlSchemaDataTypeString:
+                            // Both Strings so use Lexical string ordering
 #if NETCORE
                                 return Options.DefaultCulture.CompareInfo.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultComparisonOptions);
 #else
-                                return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
+                            return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
 #endif
-                            default:
-                                // Use node ordering
-                                return x.CompareTo(y);
-                        }
-                    }
-                    else
-                    {
-                        String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
-                        if (commontype.Equals(String.Empty))
-                        {
-                            // Use Node ordering
+                        default:
+                            // Use node ordering
                             return x.CompareTo(y);
-                        }
-                        else
-                        {
-                            switch (commontype)
-                            {
-                                case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                    return DateCompare(x, y);
-                                case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                    return DateTimeCompare(x, y);
-                                default:
-                                    // Use Node ordering
-                                    return x.CompareTo(y);
-                            }
-                        }
                     }
                 }
+                String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
+                if (commontype.Equals(String.Empty))
+                {
+                    // Use Node ordering
+                    return x.CompareTo(y);
+                }
+
+                switch (commontype)
+                {
+                    case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                        return DateCompare(x, y);
+                    case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                        return DateTimeCompare(x, y);
+                    default:
+                        // Use Node ordering
+                        return x.CompareTo(y);
+                }
             }
-            else
-            {
-                // If not Literals use standard Node ordering
-                return x.CompareTo(y);
-            }
+
+            // If not Literals use standard Node ordering
+            return x.CompareTo(y);
         }
 
         /// <summary>
@@ -495,90 +475,83 @@ namespace VDS.RDF.Query
                             // If RDF Term equality returns true then we return that they are equal
                             return 0;
                         }
-                        else
+
+                        // If RDF Term equality returns false then we fall back to Node Ordering
+                        return x.CompareTo(y);
+                    }
+
+                    // Both have known types
+                    SparqlNumericType xnumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(xtype);
+                    SparqlNumericType ynumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(ytype);
+                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                    if (numtype != SparqlNumericType.NaN)
+                    {
+                        if (xnumtype == SparqlNumericType.NaN)
                         {
-                            // If RDF Term equality returns false then we fall back to Node Ordering
+                            return 1;
+                        }
+
+                        if (ynumtype == SparqlNumericType.NaN)
+                        {
+                            return -1;
+                        }
+
+                        // Both are Numeric so use Numeric ordering
+                        try
+                        {
+                            return NumericCompare(x, y, numtype);
+                        }
+                        catch (FormatException)
+                        {
+                            if (x.Equals(y)) return 0;
+                            // Otherwise fall back to Node Ordering
+                            return x.CompareTo(y);
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // If this errors try RDF Term equality since that might still give equality
+                            if (x.Equals(y)) return 0;
+                            // Otherwise fall back to Node Ordering
                             return x.CompareTo(y);
                         }
                     }
-                    else
-                    {
-                        // Both have known types
-                        SparqlNumericType xnumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(xtype);
-                        SparqlNumericType ynumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(ytype);
-                        SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
-                        if (numtype != SparqlNumericType.NaN)
-                        {
-                            if (xnumtype == SparqlNumericType.NaN)
-                            {
-                                return 1;
-                            } 
-                            else if (ynumtype == SparqlNumericType.NaN)
-                            {
-                                return -1;
-                            }
 
-                            // Both are Numeric so use Numeric ordering
-                            try
-                            {
-                                return NumericCompare(x, y, numtype);
-                            }
-                            catch (FormatException)
-                            {
-                                if (x.Equals(y)) return 0;
-                                // Otherwise fall back to Node Ordering
-                                return x.CompareTo(y);
-                            }
-                            catch (RdfQueryException)
-                            {
-                                // If this errors try RDF Term equality since that might still give equality
-                                if (x.Equals(y)) return 0;
-                                // Otherwise fall back to Node Ordering
-                                return x.CompareTo(y);
-                            }
-                        }
-                        else if (xtype.Equals(ytype))
+                    if (xtype.Equals(ytype))
+                    {
+                        switch (xtype)
                         {
-                            switch (xtype)
-                            {
-                                case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                    return DateCompare(x, y);
-                                case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                    return DateTimeCompare(x, y);
-                                case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                    // Both Strings so use Lexical string ordering
+                            case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                                return DateCompare(x, y);
+                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                                return DateTimeCompare(x, y);
+                            case XmlSpecsHelper.XmlSchemaDataTypeString:
+                                // Both Strings so use Lexical string ordering
 #if NETCORE
                                     return Options.DefaultCulture.CompareInfo.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultComparisonOptions);
 #else
-                                    return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
+                                return String.Compare(((ILiteralNode)x).Value, ((ILiteralNode)y).Value, Options.DefaultCulture, Options.DefaultComparisonOptions);
 #endif
-                                default:
-                                    // Use node ordering
-                                    return x.CompareTo(y);
-                            }
-                        }
-                        else
-                        {
-                            String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
-                            if (commontype.Equals(String.Empty))
-                            {
-                                // Use Node ordering
+                            default:
+                                // Use node ordering
                                 return x.CompareTo(y);
-                            }
-                            else
-                            {
-                                switch (commontype)
-                                {
-                                    case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                        return DateCompare(x, y);
-                                    case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                        return DateTimeCompare(x, y);
-                                    default:
-                                        // Use Node ordering
-                                        return x.CompareTo(y);
-                                }
-                            }
                         }
+                    }
+                    String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
+                    if (commontype.Equals(String.Empty))
+                    {
+                        // Use Node ordering
+                        return x.CompareTo(y);
+                    }
+
+                    switch (commontype)
+                    {
+                        case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                            return DateCompare(x, y);
+                        case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                            return DateTimeCompare(x, y);
+                        default:
+                            // Use Node ordering
+                            return x.CompareTo(y);
                     }
                 }
                 catch
@@ -587,11 +560,9 @@ namespace VDS.RDF.Query
                     return x.CompareTo(y);
                 }
             }
-            else
-            {
-                // If not Literals use Node ordering
-                return x.CompareTo(y);
-            }
+
+            // If not Literals use Node ordering
+            return x.CompareTo(y);
         }
 
         /// <summary>
@@ -635,86 +606,79 @@ namespace VDS.RDF.Query
                             // If RDF Term equality returns true then we return that they are equal
                             return 0;
                         }
-                        else
+
+                        // If RDF Term equality returns false then we fall back to Node Ordering
+                        return x.CompareTo(y);
+                    }
+
+                    // Both have known types
+                    SparqlNumericType xnumtype = x.NumericType;
+                    SparqlNumericType ynumtype = y.NumericType;
+                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                    if (numtype != SparqlNumericType.NaN)
+                    {
+                        if (xnumtype == SparqlNumericType.NaN)
                         {
-                            // If RDF Term equality returns false then we fall back to Node Ordering
+                            return 1;
+                        }
+
+                        if (ynumtype == SparqlNumericType.NaN)
+                        {
+                            return -1;
+                        }
+
+                        // Both are Numeric so use Numeric ordering
+                        try
+                        {
+                            return NumericCompare(x, y, numtype);
+                        }
+                        catch (FormatException)
+                        {
+                            if (x.Equals(y)) return 0;
+                            // Otherwise fall back to Node Ordering
+                            return x.CompareTo(y);
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // If this errors try RDF Term equality since that might still give equality
+                            if (x.Equals(y)) return 0;
+                            // Otherwise fall back to Node Ordering
                             return x.CompareTo(y);
                         }
                     }
-                    else
-                    {
-                        // Both have known types
-                        SparqlNumericType xnumtype = x.NumericType;
-                        SparqlNumericType ynumtype = y.NumericType;
-                        SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
-                        if (numtype != SparqlNumericType.NaN)
-                        {
-                            if (xnumtype == SparqlNumericType.NaN)
-                            {
-                                return 1;
-                            }
-                            else if (ynumtype == SparqlNumericType.NaN)
-                            {
-                                return -1;
-                            }
 
-                            // Both are Numeric so use Numeric ordering
-                            try
-                            {
-                                return NumericCompare(x, y, numtype);
-                            }
-                            catch (FormatException)
-                            {
-                                if (x.Equals(y)) return 0;
-                                // Otherwise fall back to Node Ordering
-                                return x.CompareTo(y);
-                            }
-                            catch (RdfQueryException)
-                            {
-                                // If this errors try RDF Term equality since that might still give equality
-                                if (x.Equals(y)) return 0;
-                                // Otherwise fall back to Node Ordering
-                                return x.CompareTo(y);
-                            }
-                        }
-                        else if (xtype.Equals(ytype))
+                    if (xtype.Equals(ytype))
+                    {
+                        switch (xtype)
                         {
-                            switch (xtype)
-                            {
-                                case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                    return DateCompare(x, y);
-                                case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                    return DateTimeCompare(x, y);
-                                case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                    // Both Strings so use Lexical string ordering
-                                    return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
-                                default:
-                                    // Use node ordering
-                                    return x.CompareTo(y);
-                            }
-                        }
-                        else
-                        {
-                            String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
-                            if (commontype.Equals(String.Empty))
-                            {
-                                // Use Node ordering
+                            case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                                return DateCompare(x, y);
+                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                                return DateTimeCompare(x, y);
+                            case XmlSpecsHelper.XmlSchemaDataTypeString:
+                                // Both Strings so use Lexical string ordering
+                                return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
+                            default:
+                                // Use node ordering
                                 return x.CompareTo(y);
-                            }
-                            else
-                            {
-                                switch (commontype)
-                                {
-                                    case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                        return DateCompare(x, y);
-                                    case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                        return DateTimeCompare(x, y);
-                                    default:
-                                        // Use Node ordering
-                                        return x.CompareTo(y);
-                                }
-                            }
                         }
+                    }
+                    String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
+                    if (commontype.Equals(String.Empty))
+                    {
+                        // Use Node ordering
+                        return x.CompareTo(y);
+                    }
+
+                    switch (commontype)
+                    {
+                        case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                            return DateCompare(x, y);
+                        case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                            return DateTimeCompare(x, y);
+                        default:
+                            // Use Node ordering
+                            return x.CompareTo(y);
                     }
                 }
                 catch
@@ -723,11 +687,9 @@ namespace VDS.RDF.Query
                     return x.CompareTo(y);
                 }
             }
-            else
-            {
-                // If not Literals use Node ordering
-                return x.CompareTo(y);
-            }
+
+            // If not Literals use Node ordering
+            return x.CompareTo(y);
         }
 
         /// <summary>

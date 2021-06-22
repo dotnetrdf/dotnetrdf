@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append('(');
             for (int i = 0; i < _args.Count; i++)
             {
-                output.Append(_args[i].ToString());
+                output.Append(_args[i]);
 
                 if (i < _args.Count - 1)
                 {

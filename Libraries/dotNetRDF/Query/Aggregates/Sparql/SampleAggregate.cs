@@ -79,12 +79,10 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         {
             if (_distinct)
             {
-                return "SAMPLE(DISTINCT " + _expr.ToString() + ")";
+                return "SAMPLE(DISTINCT " + _expr + ")";
             }
-            else
-            {
-                return "SAMPLE(" + _expr.ToString() + ")";
-            }
+
+            return "SAMPLE(" + _expr + ")";
         }
 
         /// <summary>

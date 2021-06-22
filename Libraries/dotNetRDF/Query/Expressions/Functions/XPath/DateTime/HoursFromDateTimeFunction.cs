@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.HoursFromDateTime + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.HoursFromDateTime + ">(" + _expr + ")";
         }
 
         /// <summary>

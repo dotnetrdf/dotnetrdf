@@ -80,31 +80,30 @@ namespace VDS.RDF
                     report.AreDifferentSizes = false;
                     return report;
                 }
-                else
+
+                // A is null and B is non-null so considered non-equal with everything from B listed as added
+                report.AreEqual = false;
+                report.AreDifferentSizes = true;
+                foreach (Triple t in b.Triples)
                 {
-                    // A is null and B is non-null so considered non-equal with everything from B listed as added
-                    report.AreEqual = false;
-                    report.AreDifferentSizes = true;
-                    foreach (Triple t in b.Triples)
+                    if (t.IsGroundTriple)
                     {
-                        if (t.IsGroundTriple)
-                        {
-                            report.AddAddedTriple(t);
-                        }
-                        else
-                        {
-                            _rhsUnassigned.Add(t);
-                        }
+                        report.AddAddedTriple(t);
                     }
-                    ComputeMSGs(b, _rhsUnassigned, _rhsMSGs);
-                    foreach (IGraph msg in _rhsMSGs)
+                    else
                     {
-                        report.AddAddedMSG(msg);
+                        _rhsUnassigned.Add(t);
                     }
-                    return report;
                 }
+                ComputeMSGs(b, _rhsUnassigned, _rhsMSGs);
+                foreach (IGraph msg in _rhsMSGs)
+                {
+                    report.AddAddedMSG(msg);
+                }
+                return report;
             }
-            else if (b == null)
+
+            if (b == null)
             {
                 // A is non-null and B is null so considered non-equal with everything from A listed as removed
                 report.AreEqual = false;

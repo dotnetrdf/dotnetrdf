@@ -1053,7 +1053,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Literal] " + _value.ToString();
+            return "[Literal] " + _value;
         }
     }
 

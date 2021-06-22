@@ -116,7 +116,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "GZipped " + _writer.ToString();
+            return "GZipped " + _writer;
         }
     }
 

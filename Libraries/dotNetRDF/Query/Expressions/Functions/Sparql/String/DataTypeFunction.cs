@@ -55,31 +55,27 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
             }
-            else
+
+            switch (result.NodeType)
             {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)result;
-                        if (lit.DataType == null)
+                case NodeType.Literal:
+                    ILiteralNode lit = (ILiteralNode)result;
+                    if (lit.DataType == null)
+                    {
+                        if (!lit.Language.Equals(string.Empty))
                         {
-                            if (!lit.Language.Equals(string.Empty))
-                            {
-                                throw new RdfQueryException("Cannot return the Data Type URI of Language Specified Literals in SPARQL 1.0");
-                            }
-                            else
-                            {
-                                return new UriNode(null, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                            }
-                        }
-                        else
-                        {
-                            return new UriNode(null, lit.DataType);
+                            throw new RdfQueryException("Cannot return the Data Type URI of Language Specified Literals in SPARQL 1.0");
                         }
 
-                    default:
-                        throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
-                }
+                        return new UriNode(null, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    }
+                    else
+                    {
+                        return new UriNode(null, lit.DataType);
+                    }
+
+                default:
+                    throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
             }
         }
 
@@ -89,7 +85,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "DATATYPE(" + _expr.ToString() + ")";
+            return "DATATYPE(" + _expr + ")";
         }
 
         /// <summary>
@@ -154,31 +150,27 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 throw new RdfQueryException("Cannot return the Data Type URI of a NULL");
             }
-            else
+
+            switch (result.NodeType)
             {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)result;
-                        if (lit.DataType == null)
+                case NodeType.Literal:
+                    ILiteralNode lit = (ILiteralNode)result;
+                    if (lit.DataType == null)
+                    {
+                        if (!lit.Language.Equals(string.Empty))
                         {
-                            if (!lit.Language.Equals(string.Empty))
-                            {
-                                return new UriNode(null, UriFactory.Create(RdfSpecsHelper.RdfLangString));
-                            }
-                            else
-                            {
-                                return new UriNode(null, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                            }
-                        }
-                        else
-                        {
-                            return new UriNode(null, lit.DataType);
+                            return new UriNode(null, UriFactory.Create(RdfSpecsHelper.RdfLangString));
                         }
 
-                    default:
-                        throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
-                }
+                        return new UriNode(null, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    }
+                    else
+                    {
+                        return new UriNode(null, lit.DataType);
+                    }
+
+                default:
+                    throw new RdfQueryException("Cannot return the Data Type URI of Nodes which are not Literal Nodes");
             }
         }
     }

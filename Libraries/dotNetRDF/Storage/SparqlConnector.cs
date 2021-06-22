@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -44,7 +44,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Controls how the <see cref="SparqlConnector">SparqlConnector</see> loads Graphs from the Endpoint.
     /// </summary>
-    public enum SparqlConnectorLoadMethod 
+    public enum SparqlConnectorLoadMethod
     {
         /// <summary>
         /// Graphs are loaded by issuing a DESCRIBE query using the Graph URI
@@ -159,11 +159,11 @@ namespace VDS.RDF.Storage
         /// </summary>
         public virtual int Timeout
         {
-            get 
+            get
             {
                 return _timeout;
             }
-            set 
+            set
             {
                 _timeout = value;
                 _endpoint.Timeout = value;
@@ -174,9 +174,9 @@ namespace VDS.RDF.Storage
         /// Gets the underlying <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> which this class is a wrapper around.
         /// </summary>
         [Description("The Remote Endpoint to which queries are sent using HTTP."),TypeConverter(typeof(ExpandableObjectConverter))]
-        public SparqlRemoteEndpoint Endpoint 
+        public SparqlRemoteEndpoint Endpoint
         {
-            get 
+            get
             {
                 return _endpoint;
             }
@@ -197,10 +197,8 @@ namespace VDS.RDF.Storage
             {
                 return results;
             }
-            else
-            {
-                return g;
-            }
+
+            return g;
         }
 
         /// <summary>
@@ -240,7 +238,6 @@ namespace VDS.RDF.Storage
                         _endpoint.QueryWithResultGraph(rdfHandler, sparqlQuery);
                         break;
 
-                    case SparqlQueryType.Unknown:
                     default:
                         // Error
                         throw new RdfQueryException("Unknown Query Type was used, unable to determine how to process the response");
@@ -320,10 +317,8 @@ namespace VDS.RDF.Storage
                 {
                     throw new RdfStorageException("Cannot retrieve the Default Graph when the Load Method is Describe");
                 }
-                else
-                {
-                    query = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
-                }
+
+                query = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
             }
             else
             {
@@ -332,7 +327,6 @@ namespace VDS.RDF.Storage
                     case SparqlConnectorLoadMethod.Describe:
                         query = "DESCRIBE <" + graphUri.Replace(">", "\\>") + ">";
                         break;
-                    case SparqlConnectorLoadMethod.Construct:
                     default:
                         query = "CONSTRUCT {?s ?p ?o} FROM <" + graphUri.Replace(">", "\\>") + "> WHERE {?s ?p ?o}";
                         break;
@@ -391,7 +385,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         public virtual bool UpdateSupported
         {
-            get 
+            get
             {
                 return false;
             }
@@ -455,10 +449,8 @@ namespace VDS.RDF.Storage
                     }
                     return graphs;
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+
+                return Enumerable.Empty<Uri>();
             }
             catch (Exception ex)
             {
@@ -482,9 +474,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         public virtual bool IsReady
         {
-            get 
+            get
             {
-                return true; 
+                return true;
             }
         }
 
@@ -493,9 +485,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         public virtual bool IsReadOnly
         {
-            get 
+            get
             {
-                return true; 
+                return true;
             }
         }
 
@@ -559,7 +551,7 @@ namespace VDS.RDF.Storage
                 INode endpointUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryEndpointUri));
                 INode defGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri));
                 INode namedGraphUri = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri));
-                
+
                 context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(_endpoint.Uri.AbsoluteUri)));
                 foreach (String u in _endpoint.DefaultGraphs)
                 {

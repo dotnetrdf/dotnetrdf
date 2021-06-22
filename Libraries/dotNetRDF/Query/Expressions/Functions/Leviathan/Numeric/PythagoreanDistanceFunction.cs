@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras + ">(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras + ">(" + _leftExpr + "," + _rightExpr + ")";
         }
 
         /// <summary>

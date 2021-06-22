@@ -67,10 +67,8 @@ namespace VDS.RDF.Configuration
             {
                 return Equals((CachedObjectKey)obj);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>

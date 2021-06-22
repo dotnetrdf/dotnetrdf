@@ -306,8 +306,6 @@ namespace VDS.RDF.Writing
 
                 // Terminate Triples
                 if (ts.Count > 0) context.Output.WriteLine(".");
-
-                return;
             }
 
         }
@@ -374,7 +372,7 @@ namespace VDS.RDF.Writing
                         if (!contextWritten && t.Context != null && t.Context is VariableContext)
                         {
                             contextWritten = GenerateVariableQuantificationOutput(subcontext, (VariableContext)t.Context);
-                            if (contextWritten) output.Append(temp.ToString());
+                            if (contextWritten) output.Append(temp);
                         }
 
                         output.Append(GenerateNodeOutput(subcontext, t.Subject, TripleSegment.Subject, 0));
@@ -485,7 +483,8 @@ namespace VDS.RDF.Writing
             {
                 return false;
             }
-            else if (varContext.Type == VariableContextType.Existential)
+
+            if (varContext.Type == VariableContextType.Existential)
             {
                 context.Output.Write("@forSome ");
             }

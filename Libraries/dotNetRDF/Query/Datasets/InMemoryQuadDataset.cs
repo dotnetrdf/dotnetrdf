@@ -141,10 +141,8 @@ namespace VDS.RDF.Query.Datasets
                 }
                 return false;
             }
-            else
-            {
-                return _store.Remove(graphUri);
-            }
+
+            return _store.Remove(graphUri);
         }
 
         /// <summary>
@@ -236,10 +234,8 @@ namespace VDS.RDF.Query.Datasets
             {
                 return _store[graphUri].ContainsTriple(t);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -253,10 +249,8 @@ namespace VDS.RDF.Query.Datasets
             {
                 return _store[graphUri].Triples;
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -271,10 +265,8 @@ namespace VDS.RDF.Query.Datasets
             {
                 return _store[graphUri].GetTriplesWithObject(obj);
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -289,10 +281,8 @@ namespace VDS.RDF.Query.Datasets
             {
                 return _store[graphUri].GetTriplesWithPredicate(pred);
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -308,10 +298,8 @@ namespace VDS.RDF.Query.Datasets
             {
                 return _store[graphUri].GetTriplesWithPredicateObject(pred, obj);
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -326,10 +314,8 @@ namespace VDS.RDF.Query.Datasets
             {
                 return _store[graphUri].GetTriplesWithSubject(subj);
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -345,10 +331,8 @@ namespace VDS.RDF.Query.Datasets
             {
                 return _store[graphUri].GetTriplesWithSubjectObject(subj, obj);
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -364,10 +348,8 @@ namespace VDS.RDF.Query.Datasets
             {
                 return _store[graphUri].GetTriplesWithSubjectPredicate(subj, pred);
             }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>

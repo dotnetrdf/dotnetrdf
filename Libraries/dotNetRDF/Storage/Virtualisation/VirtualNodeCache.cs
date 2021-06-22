@@ -60,10 +60,8 @@ namespace VDS.RDF.Storage.Virtualisation
                 {
                     return temp;
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
             set
             {

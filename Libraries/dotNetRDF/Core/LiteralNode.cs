@@ -256,11 +256,9 @@ namespace VDS.RDF
             {
                 return Equals((INode)obj);
             }
-            else
-            {
-                // Can only be equal to other Nodes
-                return false;
-            }
+
+            // Can only be equal to other Nodes
+            return false;
         }
 
         /// <summary>
@@ -279,7 +277,7 @@ namespace VDS.RDF
         /// </remarks>
         public override bool Equals(INode other)
         {
-            if ((Object)other == null) return false;
+            if (other == null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -287,11 +285,9 @@ namespace VDS.RDF
             {
                 return Equals((ILiteralNode)other);
             }
-            else
-            {
-                // Can only be equal to a LiteralNode
-                return false;
-            }
+
+            // Can only be equal to a LiteralNode
+            return false;
         }
 
         /// <summary>
@@ -404,22 +400,20 @@ namespace VDS.RDF
                 // Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable || other.NodeType == NodeType.Uri)
+
+            if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable || other.NodeType == NodeType.Uri)
             {
                 // Literal Nodes are greater than Blank, Variable and Uri Nodes
                 // Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType == NodeType.Literal)
+            if (other.NodeType == NodeType.Literal)
             {
                 return CompareTo((ILiteralNode)other);
             }
-            else
-            {
-                // Anything else is considered greater than a Literal Node
-                // Return -1 to indicate this
-                return -1;
-            }
+            // Anything else is considered greater than a Literal Node
+            // Return -1 to indicate this
+            return -1;
         }
 
         /// <summary>
@@ -458,11 +452,9 @@ namespace VDS.RDF
                 // We are always greater than nulls
                 return 1;
             }
-            else
-            {
-                // Graph Literals are always greater than us
-                return -1;
-            }
+
+            // Graph Literals are always greater than us
+            return -1;
         }
 
         /// <summary>

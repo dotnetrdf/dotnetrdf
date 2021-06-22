@@ -100,7 +100,7 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public class XHtmlRdfAVocabulary : IRdfAVocabulary
     {
-        private String[] _terms = new String[]
+        private String[] _terms = new[]
         {
             "alternate",
             "appendix",
@@ -297,15 +297,12 @@ namespace VDS.RDF.Parsing
             {
                 return _terms[term];
             }
-            else if (!_vocabUri.Equals(String.Empty))
+
+            if (!_vocabUri.Equals(String.Empty))
             {
                 return _vocabUri + term;
             }
-            else
-            {
-                throw new RdfParseException("The Term '" + term + "' cannot be resolved to a valid URI as it is not a term in this vocabularly nor is there a vocabulary URI defined");
-            }
-
+            throw new RdfParseException("The Term '" + term + "' cannot be resolved to a valid URI as it is not a term in this vocabularly nor is there a vocabulary URI defined");
         }
 
         /// <summary>

@@ -539,10 +539,8 @@ namespace VDS.RDF.Query
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -621,23 +619,21 @@ namespace VDS.RDF.Query
             {
                 // Must have a Colon in a QName
                 return false;
-            } 
-            else
-            {
-                // Split into Prefix and Local Name
-                String[] parts = value.Split(':');
-
-                // If SPARQL 1.0 then can only have two sections
-                if (syntax == SparqlQuerySyntax.Sparql_1_0 && parts.Length > 2) return false;
-
-                // All sections ending in a colon (i.e. all but the last) must match PN_PREFIX production
-                for (int i = 0; i < parts.Length - 1; i++)
-                {
-                    if (!IsPNPrefix(parts[i].ToCharArray())) return false;
-                }
-                // Final section must match PN_LOCAL
-                return IsPNLocal(parts[parts.Length - 1].ToCharArray(), syntax);
             }
+
+            // Split into Prefix and Local Name
+            String[] parts = value.Split(':');
+
+            // If SPARQL 1.0 then can only have two sections
+            if (syntax == SparqlQuerySyntax.Sparql_1_0 && parts.Length > 2) return false;
+
+            // All sections ending in a colon (i.e. all but the last) must match PN_PREFIX production
+            for (int i = 0; i < parts.Length - 1; i++)
+            {
+                if (!IsPNPrefix(parts[i].ToCharArray())) return false;
+            }
+            // Final section must match PN_LOCAL
+            return IsPNLocal(parts[parts.Length - 1].ToCharArray(), syntax);
         }
 
         /// <summary>
@@ -672,15 +668,11 @@ namespace VDS.RDF.Query
                     }
                     return true;
                 }
-                else
-                {
-                    return true;
-                }
+
+                return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -750,29 +742,27 @@ namespace VDS.RDF.Query
             {
                 return true;
             }
-            else if (c >= 'a' && c <= 'z')
+
+            if (c >= 'a' && c <= 'z')
             {
                 return true;
             }
-            else if ((c >= 0x00c0 && c <= 0x00d6) ||
-                     (c >= 0x00d8 && c <= 0x00f6) ||
-                     (c >= 0x00f8 && c <= 0x02ff) ||
-                     (c >= 0x0370 && c <= 0x037d) ||
-                     (c >= 0x037f && c <= 0x1fff) ||
-                     (c >= 0x200c && c <= 0x200d) ||
-                     (c >= 0x2070 && c <= 0x218f) ||
-                     (c >= 0x2c00 && c <= 0x2fef) ||
-                     (c >= 0x3001 && c <= 0xd7ff) ||
-                     (c >= 0xf900 && c <= 0xfdcf) ||
-                     (c >= 0xfdf0 && c <= 0xfffd) /*||
+            if ((c >= 0x00c0 && c <= 0x00d6) ||
+                (c >= 0x00d8 && c <= 0x00f6) ||
+                (c >= 0x00f8 && c <= 0x02ff) ||
+                (c >= 0x0370 && c <= 0x037d) ||
+                (c >= 0x037f && c <= 0x1fff) ||
+                (c >= 0x200c && c <= 0x200d) ||
+                (c >= 0x2070 && c <= 0x218f) ||
+                (c >= 0x2c00 && c <= 0x2fef) ||
+                (c >= 0x3001 && c <= 0xd7ff) ||
+                (c >= 0xf900 && c <= 0xfdcf) ||
+                (c >= 0xfdf0 && c <= 0xfffd) /*||
                      (c >= 0x10000 && c <= 0xeffff)*/)
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -796,23 +786,21 @@ namespace VDS.RDF.Query
             {
                 return true;
             }
-            else if (c == 0x00b7)
+
+            if (c == 0x00b7)
             {
                 return true;
             }
-            else if (IsPNCharsU(c))
+            if (IsPNCharsU(c))
             {
                 return true;
             }
-            else if ((c >= 0x0300 && c <= 0x036f) ||
-                     (c >= 0x204f && c <= 0x2040))
+            if ((c >= 0x0300 && c <= 0x036f) ||
+                (c >= 0x204f && c <= 0x2040))
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -882,15 +870,11 @@ namespace VDS.RDF.Query
                     // Should never get here but have to add this to keep compiler happy
                     throw new RdfParseException("Local Name validation error in SparqlSpecsHelper.IsPNLocal(char[] cs)");
                 }
-                else
-                {
-                    return true;
-                }
+
+                return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -929,15 +913,11 @@ namespace VDS.RDF.Query
                     // Should never get here but have to add this to keep compiler happy
                     throw new RdfParseException("Namespace Prefix validation error in SparqlSpecsHelper.IsPNPrefix(char[] cs)");
                 }
-                else
-                {
-                    return true;
-                }
+
+                return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -957,66 +937,58 @@ namespace VDS.RDF.Query
                     // If we saw a base % but there are not two subsequent characters not a valid PLX escape
                     return false;
                 }
-                else
+
+                char a = cs[startIndex + 1];
+                char b = cs[startIndex + 2];
+                if (IsHex(a) && IsHex(b))
                 {
-                    char a = cs[startIndex + 1];
-                    char b = cs[startIndex + 2];
-                    if (IsHex(a) && IsHex(b))
-                    {
-                        // Valid % encoding
-                        endIndex = startIndex + 2;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    // Valid % encoding
+                    endIndex = startIndex + 2;
+                    return true;
                 }
+
+                return false;
             }
-            else if (cs[startIndex] == '\\')
+
+            if (cs[startIndex] == '\\')
             {
                 if (startIndex >= cs.Length - 1)
                 {
                     // If we saw a backslash but no subsequent character not a valid PLX escape
                     return false;
                 }
-                else
+
+                char c = cs[startIndex + 1];
+                switch (c)
                 {
-                    char c = cs[startIndex + 1];
-                    switch (c)
-                    {
-                        case '_':
-                        case '~':
-                        case '-':
-                        case '.':
-                        case '!':
-                        case '$':
-                        case '&':
-                        case '\'':
-                        case '(':
-                        case ')':
-                        case '*':
-                        case '+':
-                        case ',':
-                        case ';':
-                        case '=':
-                        case '/':
-                        case '?':
-                        case '#':
-                        case '@':
-                        case '%':
-                            // Valid Escape
-                            endIndex = startIndex + 1;
-                            return true;
-                        default:
-                            return false;
-                    }
+                    case '_':
+                    case '~':
+                    case '-':
+                    case '.':
+                    case '!':
+                    case '$':
+                    case '&':
+                    case '\'':
+                    case '(':
+                    case ')':
+                    case '*':
+                    case '+':
+                    case ',':
+                    case ';':
+                    case '=':
+                    case '/':
+                    case '?':
+                    case '#':
+                    case '@':
+                    case '%':
+                        // Valid Escape
+                        endIndex = startIndex + 1;
+                        return true;
+                    default:
+                        return false;
                 }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -1030,25 +1002,23 @@ namespace VDS.RDF.Query
             {
                 return true;
             }
-            else
+
+            switch (c)
             {
-                switch (c)
-                {
-                    case 'A':
-                    case 'a':
-                    case 'B':
-                    case 'b':
-                    case 'C':
-                    case 'c':
-                    case 'D':
-                    case 'd':
-                    case 'E':
-                    case 'f':
-                    case 'F':
-                        return true;
-                    default:
-                        return false;
-                }
+                case 'A':
+                case 'a':
+                case 'B':
+                case 'b':
+                case 'C':
+                case 'c':
+                case 'D':
+                case 'd':
+                case 'E':
+                case 'f':
+                case 'F':
+                    return true;
+                default:
+                    return false;
             }
         }
 
@@ -1107,18 +1077,14 @@ namespace VDS.RDF.Query
                         {
                             throw new RdfParseException("Invalid % to start a percent encoded character in a Local Name, two hex digits are required after a %, use \\% to denote a percent character directly");
                         }
-                        else
+
+                        if (!IsHex(cs[i + 1]) || !IsHex(cs[i + 2]))
                         {
-                            if (!IsHex(cs[i + 1]) || !IsHex(cs[i + 2]))
-                            {
-                                throw new RdfParseException("Invalid % encoding, % character was not followed by two hex digits, use \\% to denote a percent character directly");
-                            }
-                            else
-                            {
-                                output.Append(cs, i, 3);
-                                i += 2;
-                            }
+                            throw new RdfParseException("Invalid % encoding, % character was not followed by two hex digits, use \\% to denote a percent character directly");
                         }
+
+                        output.Append(cs, i, 3);
+                        i += 2;
                     }
                     else
                     {
@@ -1127,10 +1093,8 @@ namespace VDS.RDF.Query
                 }
                 return output.ToString();
             }
-            else
-            {
-                return value;
-            }
+
+            return value;
         }
 
         #endregion
@@ -1212,22 +1176,20 @@ namespace VDS.RDF.Query
             {
                 return SparqlNumericType.Double;
             }
-            else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
+
+            if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
             {
                 return SparqlNumericType.Float;
             }
-            else if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
+            if (dtUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
             {
                 return SparqlNumericType.Decimal;
             }
-            else if (IntegerDataTypes.Contains(dtUri))
+            if (IntegerDataTypes.Contains(dtUri))
             {
                 return SparqlNumericType.Integer;
             }
-            else
-            {
-                return SparqlNumericType.NaN;
-            }
+            return SparqlNumericType.NaN;
         }
 
         #endregion
@@ -1244,145 +1206,127 @@ namespace VDS.RDF.Query
                 // Nulls give Type Error
                 throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a null value");
             }
-            else
+
+            if (n.NodeType == NodeType.Literal)
             {
-                if (n.NodeType == NodeType.Literal)
+                ILiteralNode lit = (ILiteralNode)n;
+
+                if (lit.DataType == null)
                 {
-                    ILiteralNode lit = (ILiteralNode)n;
-
-                    if (lit.DataType == null)
+                    if (lit.Value == String.Empty)
                     {
-                        if (lit.Value == String.Empty)
-                        {
-                            // Empty String Literals have EBV of False
-                            return false;
-                        }
-                        else
-                        {
-                            // Non-Empty String Literals have EBV of True
-                            return true;
-                        }
+                        // Empty String Literals have EBV of False
+                        return false;
                     }
-                    else
-                    {
-                        // EBV is dependent on the Data Type for Typed Literals
-                        String dt = lit.DataType.ToString();
 
-                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+                    // Non-Empty String Literals have EBV of True
+                    return true;
+                }
+
+                // EBV is dependent on the Data Type for Typed Literals
+                String dt = lit.DataType.ToString();
+
+                if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+                {
+                    // Boolean Typed Literal
+                    if (bool.TryParse(lit.Value, out var b))
+                    {
+                        // Valid Booleans have EBV of their value
+                        return b;
+                    }
+                    // Invalid Booleans have EBV of false
+                    return false;
+                }
+
+                if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                {
+                    // String Typed Literal
+                    if (lit.Value == String.Empty)
+                    {
+                        // Empty String Literals have EBV of False
+                        return false;
+                    }
+
+                    // Non-Empty String Literals have EBV of True
+                    return true;
+                }
+                // Is it a Number?
+                SparqlNumericType numType = GetNumericTypeFromDataTypeUri(dt);
+                switch (numType)
+                {
+                    case SparqlNumericType.Decimal:
+                        // Should be a decimal
+                        Decimal dec;
+                        if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
                         {
-                            // Boolean Typed Literal
-                            if (bool.TryParse(lit.Value, out var b))
+                            if (dec == Decimal.Zero)
                             {
-                                // Valid Booleans have EBV of their value
-                                return b;
-                            }
-                            // Invalid Booleans have EBV of false
-                            return false;
-                        }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            // String Typed Literal
-                            if (lit.Value == String.Empty)
-                            {
-                                // Empty String Literals have EBV of False
+                                // Zero gives EBV of false
                                 return false;
                             }
-                            else
-                            {
-                                // Non-Empty String Literals have EBV of True
-                                return true;
-                            }
+
+                            // Non-Zero gives EBV of true
+                            return true;
                         }
                         else
                         {
-                            // Is it a Number?
-                            SparqlNumericType numType = GetNumericTypeFromDataTypeUri(dt);
-                            switch (numType)
-                            {
-                                case SparqlNumericType.Decimal:
-                                    // Should be a decimal
-                                    Decimal dec;
-                                    if (Decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
-                                    {
-                                        if (dec == Decimal.Zero)
-                                        {
-                                            // Zero gives EBV of false
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            // Non-Zero gives EBV of true
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Invalid Numerics have EBV of false
-                                        return false;
-                                    }
-
-                                case SparqlNumericType.Float:
-                                case SparqlNumericType.Double:
-                                    // Should be a double
-                                    Double dbl;
-                                    if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
-                                    {
-                                        if (dbl == 0.0d || double.IsNaN(dbl))
-                                        {
-                                            // Zero/NaN gives EBV of false
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            // Non-Zero gives EBV of true
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Invalid Numerics have EBV of false
-                                        return false;
-                                    }
-
-                                case SparqlNumericType.Integer:
-                                    // Should be an Integer
-                                    long l;
-                                    if (Int64.TryParse(lit.Value, out l))
-                                    {
-                                        if (l == 0)
-                                        {
-                                            // Zero gives EBV of false
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            // Non-Zero gives EBV of true
-                                            return true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Invalid Numerics have EBV of false
-                                        return false;
-                                    }
-
-                                case SparqlNumericType.NaN:
-                                    // If not a Numeric Type then Type error
-                                    throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
-
-                                default:
-                                    // Shouldn't hit this case but included to keep compiler happy
-                                    throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
-                            }
+                            // Invalid Numerics have EBV of false
+                            return false;
                         }
-                    }
-                }
-                else
-                {
-                    // Non-Literal Nodes give type error
-                    throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a non-literal RDF Term");
+
+                    case SparqlNumericType.Float:
+                    case SparqlNumericType.Double:
+                        // Should be a double
+                        Double dbl;
+                        if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
+                        {
+                            if (dbl == 0.0d || double.IsNaN(dbl))
+                            {
+                                // Zero/NaN gives EBV of false
+                                return false;
+                            }
+
+                            // Non-Zero gives EBV of true
+                            return true;
+                        }
+                        else
+                        {
+                            // Invalid Numerics have EBV of false
+                            return false;
+                        }
+
+                    case SparqlNumericType.Integer:
+                        // Should be an Integer
+                        long l;
+                        if (Int64.TryParse(lit.Value, out l))
+                        {
+                            if (l == 0)
+                            {
+                                // Zero gives EBV of false
+                                return false;
+                            }
+
+                            // Non-Zero gives EBV of true
+                            return true;
+                        }
+                        else
+                        {
+                            // Invalid Numerics have EBV of false
+                            return false;
+                        }
+
+                    case SparqlNumericType.NaN:
+                        // If not a Numeric Type then Type error
+                        throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
+
+                    default:
+                        // Shouldn't hit this case but included to keep compiler happy
+                        throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
                 }
             }
+
+            // Non-Literal Nodes give type error
+            throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a non-literal RDF Term");
         }
 
         /// <summary>
@@ -1421,12 +1365,13 @@ namespace VDS.RDF.Query
                 // Nulls can't be equal to each other
                 throw new RdfQueryException("Cannot evaluate equality when one/both arguments are null");
             }
-            else if (x.NodeType != y.NodeType)
+
+            if (x.NodeType != y.NodeType)
             {
                 // Different Type Nodes are never equal to each other
                 return false;
             }
-            else if (x.NodeType == NodeType.Literal)
+            if (x.NodeType == NodeType.Literal)
             {
                 // Do they have supported Data Types?
                 String xtype, ytype;
@@ -1449,76 +1394,65 @@ namespace VDS.RDF.Query
                         // If RDF Term equality returns true then we return true;
                         return true;
                     }
-                    else
-                    {
-                        // If RDF Term equality returns false then we error
-                        throw new RdfQueryException("Unable to determine equality since one/both arguments has an Unknown Type");
-                    }
+
+                    // If RDF Term equality returns false then we error
+                    throw new RdfQueryException("Unable to determine equality since one/both arguments has an Unknown Type");
                 }
-                else
+
+                // Both have known types
+                SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)GetNumericTypeFromDataTypeUri(xtype), (int)GetNumericTypeFromDataTypeUri(ytype));
+                if (numtype != SparqlNumericType.NaN)
                 {
-                    // Both have known types
-                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)GetNumericTypeFromDataTypeUri(xtype), (int)GetNumericTypeFromDataTypeUri(ytype));
-                    if (numtype != SparqlNumericType.NaN)
+                    // Both are Numeric so use Numeric equality
+                    try
                     {
-                        // Both are Numeric so use Numeric equality
-                        try
-                        {
-                            return NumericEquality(x, y, numtype);
-                        }
-                        catch (FormatException)
-                        {
-                            return x.Equals(y);
-                        }
-                        catch (RdfQueryException)
-                        {
-                            // If this errors try RDF Term equality since 
-                            return x.Equals(y);
-                        }
+                        return NumericEquality(x, y, numtype);
                     }
-                    else if (xtype.Equals(ytype))
+                    catch (FormatException)
                     {
-                        switch (xtype) 
-                        {
-                            case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                return DateEquality(x, y);
-                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                return DateTimeEquality(x, y);
-                            case XmlSpecsHelper.XmlSchemaDataTypeDuration:
-                                return TimeSpanEquality(x, y);
-                            case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                // Both Strings so use Lexical string equality
-                                return ((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
-                            default:
-                                // Use value equality
-                                return (x.CompareTo(y) == 0);
-                        }
+                        return x.Equals(y);
                     }
-                    else
+                    catch (RdfQueryException)
                     {
-                        String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype);
-                        if (commontype.Equals(String.Empty))
-                        {
-                            return false;
-                        }
-                        else
-                        {
-                            switch (commontype)
-                            {
-                                case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                    return DateTimeEquality(x, y);
-                                default:
-                                    return false;
-                            }
-                        }
+                        // If this errors try RDF Term equality since 
+                        return x.Equals(y);
                     }
                 }
+
+                if (xtype.Equals(ytype))
+                {
+                    switch (xtype) 
+                    {
+                        case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                            return DateEquality(x, y);
+                        case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                            return DateTimeEquality(x, y);
+                        case XmlSpecsHelper.XmlSchemaDataTypeDuration:
+                            return TimeSpanEquality(x, y);
+                        case XmlSpecsHelper.XmlSchemaDataTypeString:
+                            // Both Strings so use Lexical string equality
+                            return ((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
+                        default:
+                            // Use value equality
+                            return (x.CompareTo(y) == 0);
+                    }
+                }
+                String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype);
+                if (commontype.Equals(String.Empty))
+                {
+                    return false;
+                }
+
+                switch (commontype)
+                {
+                    case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                        return DateTimeEquality(x, y);
+                    default:
+                        return false;
+                }
             }
-            else
-            {
-                // For any other Node types equality is RDF Term equality
-                return x.Equals(y);
-            }
+            // For any other Node types equality is RDF Term equality
+            return x.Equals(y);
         }
 
         /// <summary>
@@ -1534,12 +1468,13 @@ namespace VDS.RDF.Query
                 // Nulls can't be equal to each other
                 throw new RdfQueryException("Cannot evaluate inequality when one/both arguments are null");
             }
-            else if (x.NodeType != y.NodeType)
+
+            if (x.NodeType != y.NodeType)
             {
                 // Different Type Nodes are never equal to each other
                 return true;
             }
-            else if (x.NodeType == NodeType.Literal)
+            if (x.NodeType == NodeType.Literal)
             {
                 // Do they have supported Data Types?
                 String xtype, ytype;
@@ -1562,122 +1497,111 @@ namespace VDS.RDF.Query
                         // If RDF Term equality returns true then we return false
                         return false;
                     }
-                    else
+
+                    // If RDF Term equality returns false then we error
+                    throw new RdfQueryException("Unable to determine inequality since one/both arguments has an Unknown Type");
+                }
+
+                // Both have known types
+                SparqlNumericType xnumtype = GetNumericTypeFromDataTypeUri(xtype);
+                SparqlNumericType ynumtype = GetNumericTypeFromDataTypeUri(ytype);
+                SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                if (numtype != SparqlNumericType.NaN)
+                {
+                    if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
                     {
-                        // If RDF Term equality returns false then we error
-                        throw new RdfQueryException("Unable to determine inequality since one/both arguments has an Unknown Type");
+                        // If one is non-numeric then we can't assume non-equality
+                        return false;
+                    }
+
+                    // Both are Numeric so use Numeric equality
+                    try
+                    {
+                        return !NumericEquality(x, y, numtype);
+                    }
+                    catch (FormatException)
+                    {
+                        if (x.Equals(y)) return false;
+                        return false;
+                    }
+                    catch (RdfQueryException)
+                    {
+                        // If this errors try RDF Term equality since 
+                        return !x.Equals(y);
                     }
                 }
-                else
-                {
-                    // Both have known types
-                    SparqlNumericType xnumtype = GetNumericTypeFromDataTypeUri(xtype);
-                    SparqlNumericType ynumtype = GetNumericTypeFromDataTypeUri(ytype);
-                    SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
-                    if (numtype != SparqlNumericType.NaN)
-                    {
-                        if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
-                        {
-                            // If one is non-numeric then we can't assume non-equality
-                            return false;
-                        }
 
-                        // Both are Numeric so use Numeric equality
+                if (xtype.Equals(ytype))
+                {
+                    switch (xtype)
+                    {
+                        case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                            try
+                            {
+                                return !DateEquality(x, y);
+                            }
+                            catch (RdfQueryException)
+                            {
+                                return true;
+                            }
+                        case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                            try
+                            {
+                                return !DateTimeEquality(x, y);
+                            }
+                            catch (RdfQueryException)
+                            {
+                                return true;
+                            }
+                        case XmlSpecsHelper.XmlSchemaDataTypeDuration:
+                            try
+                            {
+                                return !TimeSpanEquality(x, y);
+                            }
+                            catch (RdfQueryException)
+                            {
+                                return true;
+                            }
+                        case XmlSpecsHelper.XmlSchemaDataTypeString:
+                            // Both Strings so use Lexical string equality
+                            return !((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
+                        default:
+                            // Use value equality
+                            return (x.CompareTo(y) != 0);
+                    }
+                }
+                String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype);
+                if (commontype.Equals(String.Empty))
+                {
+                    return true;
+                }
+
+                switch (commontype)
+                {
+                    case XmlSpecsHelper.XmlSchemaDataTypeDate:
                         try
                         {
-                            return !NumericEquality(x, y, numtype);
-                        }
-                        catch (FormatException)
-                        {
-                            if (x.Equals(y)) return false;
-                            return false;
+                            return !DateEquality(x, y);
                         }
                         catch (RdfQueryException)
                         {
-                            // If this errors try RDF Term equality since 
-                            return !x.Equals(y);
+                            return true;
                         }
-                    }
-                    else if (xtype.Equals(ytype))
-                    {
-                        switch (xtype)
+                    case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                        try
                         {
-                            case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                try
-                                {
-                                    return !DateEquality(x, y);
-                                }
-                                catch (RdfQueryException)
-                                {
-                                    return true;
-                                }
-                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                try
-                                {
-                                    return !DateTimeEquality(x, y);
-                                }
-                                catch (RdfQueryException)
-                                {
-                                    return true;
-                                }
-                            case XmlSpecsHelper.XmlSchemaDataTypeDuration:
-                                try
-                                {
-                                    return !TimeSpanEquality(x, y);
-                                }
-                                catch (RdfQueryException)
-                                {
-                                    return true;
-                                }
-                            case XmlSpecsHelper.XmlSchemaDataTypeString:
-                                // Both Strings so use Lexical string equality
-                                return !((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
-                            default:
-                                // Use value equality
-                                return (x.CompareTo(y) != 0);
+                            return !DateTimeEquality(x, y);
                         }
-                    }
-                    else
-                    {
-                        String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype);
-                        if (commontype.Equals(String.Empty))
+                        catch (RdfQueryException)
                         {
                             return true;
                         }
-                        else
-                        {
-                            switch (commontype)
-                            {
-                                case XmlSpecsHelper.XmlSchemaDataTypeDate:
-                                    try
-                                    {
-                                        return !DateEquality(x, y);
-                                    }
-                                    catch (RdfQueryException)
-                                    {
-                                        return true;
-                                    }
-                                case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
-                                    try
-                                    {
-                                        return !DateTimeEquality(x, y);
-                                    }
-                                    catch (RdfQueryException)
-                                    {
-                                        return true;
-                                    }
-                                default:
-                                    return true;
-                            }
-                        }
-                    }
+                    default:
+                        return true;
                 }
             }
-            else
-            {
-                // For any other Node types equality is RDF Term equality
-                return !x.Equals(y);
-            }
+            // For any other Node types equality is RDF Term equality
+            return !x.Equals(y);
         }
 
         /// <summary>

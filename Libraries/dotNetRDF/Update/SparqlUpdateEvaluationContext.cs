@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Diagnostics;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -182,18 +181,14 @@ namespace VDS.RDF.Update
                 {
                     return 0;
                 }
-                else
+
+                long timeout = _timeout - UpdateTime;
+                if (timeout <= 0)
                 {
-                    long timeout = _timeout - UpdateTime;
-                    if (timeout <= 0)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        return timeout;
-                    }
+                    return 1;
                 }
+
+                return timeout;
             }
         }
 

@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Minus(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "Minus(" + _lhs + ", " + _rhs + ")";
         }
 
         /// <summary>

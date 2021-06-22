@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordSeconds + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordSeconds + "(" + _expr + ")";
         }
 
         /// <summary>

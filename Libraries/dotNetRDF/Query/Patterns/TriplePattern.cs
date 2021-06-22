@@ -145,18 +145,16 @@ namespace VDS.RDF.Query.Patterns
             {
                 return (_subj.Accepts(context, obj.Subject) && _pred.Accepts(context, obj.Predicate) && _obj.Accepts(context, obj.Object));
             }
-            else if (_pred.Repeated && !_obj.Repeated)
+
+            if (_pred.Repeated && !_obj.Repeated)
             {
                 return (_subj.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && _obj.Accepts(context, obj.Object));
             }
-            else if (!_pred.Repeated && _obj.Repeated)
+            if (!_pred.Repeated && _obj.Repeated)
             {
                 return (_subj.Accepts(context, obj.Subject) && _pred.Accepts(context, obj.Predicate) && obj.Subject.Equals(obj.Object));
             }
-            else
-            {
-                return (_subj.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && obj.Subject.Equals(obj.Object));
-            }
+            return (_subj.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && obj.Subject.Equals(obj.Object));
         }
 
         /// <summary>
@@ -299,20 +297,20 @@ namespace VDS.RDF.Query.Patterns
                         {
                             valuePairs = (from set in context.InputMultiset.Sets
                                           where set.ContainsVariable(predVar) && set.ContainsVariable(objVar)
-                                          select set).Distinct(new SetDistinctnessComparer(new String[] { predVar, objVar }));
+                                          select set).Distinct(new SetDistinctnessComparer(new[] { predVar, objVar }));
                             return (from set in valuePairs
                                     where set[predVar] != null && set[objVar] != null
                                     select CreateTriple(subj, set[predVar], set[objVar])).Where(t => context.Data.ContainsTriple(t));
                         }
-                        else
+
                         {
                             values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(predVar)
-                                      select set[predVar]).Distinct();
+                                where set.ContainsVariable(predVar)
+                                select set[predVar]).Distinct();
                             return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithSubjectPredicate(subj, value)
-                                    select t);
+                                where value != null
+                                from t in context.Data.GetTriplesWithSubjectPredicate(subj, value)
+                                select t);
                         }
                     }
                     else if (boundObj)
@@ -374,20 +372,20 @@ namespace VDS.RDF.Query.Patterns
                         {
                             valuePairs = (from set in context.InputMultiset.Sets
                                           where set.ContainsVariable(subjVar) && set.ContainsVariable(objVar)
-                                          select set).Distinct(new SetDistinctnessComparer(new String[] { subjVar, objVar }));
+                                          select set).Distinct(new SetDistinctnessComparer(new[] { subjVar, objVar }));
                             return (from set in valuePairs
                                     where set[subjVar] != null && set[objVar] != null
                                     select CreateTriple(set[subjVar], pred, set[objVar])).Where(t => context.Data.ContainsTriple(t));
                         }
-                        else
+
                         {
                             values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(subjVar)
-                                      select set[subjVar]).Distinct();
+                                where set.ContainsVariable(subjVar)
+                                select set[subjVar]).Distinct();
                             return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithSubjectPredicate(value, pred)
-                                    select t);
+                                where value != null
+                                from t in context.Data.GetTriplesWithSubjectPredicate(value, pred)
+                                select t);
                         }
                     }
                     else if (boundObj)
@@ -431,20 +429,20 @@ namespace VDS.RDF.Query.Patterns
                         {
                             valuePairs = (from set in context.InputMultiset.Sets
                                           where set.ContainsVariable(subjVar) && set.ContainsVariable(predVar)
-                                          select set).Distinct(new SetDistinctnessComparer(new String[] { subjVar, predVar }));
+                                          select set).Distinct(new SetDistinctnessComparer(new[] { subjVar, predVar }));
                             return (from set in valuePairs
                                     where set[subjVar] != null && set[predVar] != null
                                     select CreateTriple(set[subjVar], set[predVar], obj)).Where(t => context.Data.ContainsTriple(t));
                         }
-                        else
+
                         {
                             values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(subjVar)
-                                      select set[subjVar]).Distinct();
+                                where set.ContainsVariable(subjVar)
+                                select set[subjVar]).Distinct();
                             return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithSubjectObject(value, obj)
-                                    select t);
+                                where value != null
+                                from t in context.Data.GetTriplesWithSubjectObject(value, obj)
+                                select t);
                         }
                     }
                     else if (boundPred)
@@ -487,20 +485,18 @@ namespace VDS.RDF.Query.Patterns
                         {
                             return context.Data.Triples;
                         }
-                        else if (boundObj)
+
+                        if (boundObj)
                         {
                             return context.Data.Triples;
                         }
-                        else
-                        {
-                            values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(subjVar)
-                                      select set[subjVar]).Distinct();
-                            return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithSubject(value)
-                                    select t);
-                        }
+                        values = (from set in context.InputMultiset.Sets
+                            where set.ContainsVariable(subjVar)
+                            select set[subjVar]).Distinct();
+                        return (from value in values
+                            where value != null
+                            from t in context.Data.GetTriplesWithSubject(value)
+                            select t);
                     }
                     else if (boundPred)
                     {
@@ -508,16 +504,14 @@ namespace VDS.RDF.Query.Patterns
                         {
                             return context.Data.Triples;
                         }
-                        else
-                        {
-                            values = (from set in context.InputMultiset.Sets
-                                      where set.ContainsVariable(predVar)
-                                      select set[predVar]).Distinct();
-                            return (from value in values
-                                    where value != null
-                                    from t in context.Data.GetTriplesWithPredicate(value)
-                                    select t);
-                        }
+
+                        values = (from set in context.InputMultiset.Sets
+                            where set.ContainsVariable(predVar)
+                            select set[predVar]).Distinct();
+                        return (from value in values
+                            where value != null
+                            from t in context.Data.GetTriplesWithPredicate(value)
+                            select t);
                     }
                     else if (boundObj)
                     {
@@ -662,7 +656,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return _subj.ToString() + " " + _pred.ToString() + " " + _obj.ToString();
+            return _subj + " " + _pred + " " + _obj;
         }
     }
 }

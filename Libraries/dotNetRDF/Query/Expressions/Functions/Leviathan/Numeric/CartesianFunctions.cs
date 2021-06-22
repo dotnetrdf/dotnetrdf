@@ -90,10 +90,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             {
                 return CartesianDistance3D(context, bindingID);
             }
-            else
-            {
-                return CartesianDistance2D(context, bindingID);
-            }
+
+            return CartesianDistance2D(context, bindingID);
         }
 
         /// <summary>
@@ -158,10 +156,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
                 {
                     return _x1.Variables.Concat(_y1.Variables).Concat(_z1.Variables).Concat(_x2.Variables).Concat(_y2.Variables).Concat(_z2.Variables);
                 }
-                else
-                {
-                    return _x1.Variables.Concat(_y1.Variables).Concat(_x2.Variables).Concat(_y2.Variables);
-                }
+
+                return _x1.Variables.Concat(_y1.Variables).Concat(_x2.Variables).Concat(_y2.Variables);
             }
         }
 
@@ -173,22 +169,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             StringBuilder output = new StringBuilder();
             output.Append("<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cartesian + ">(");
-            output.Append(_x1.ToString());
+            output.Append(_x1);
             output.Append(',');
-            output.Append(_y1.ToString());
+            output.Append(_y1);
             output.Append(',');
             if (_3d)
             {
-                output.Append(_z1.ToString());
+                output.Append(_z1);
                 output.Append(',');
             }
-            output.Append(_x2.ToString());
+            output.Append(_x2);
             output.Append(',');
-            output.Append(_y2.ToString());
+            output.Append(_y2);
             if (_3d)
             {
                 output.Append(',');
-                output.Append(_z2.ToString());
+                output.Append(_z2);
             }
             output.Append(')');
             return output.ToString();
@@ -221,16 +217,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
-            get 
+            get
             {
                 if (_3d)
                 {
-                    return new ISparqlExpression[] { _x1, _y1, _z1, _x2, _y2, _z2 };
+                    return new[] { _x1, _y1, _z1, _x2, _y2, _z2 };
                 }
-                else
-                {
-                    return new ISparqlExpression[] { _x1, _y1, _x2, _y2 };
-                }
+
+                return new[] { _x1, _y1, _x2, _y2 };
             }
         }
 
@@ -245,10 +239,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
                 {
                     return _x1.CanParallelise && _y1.CanParallelise && _z1.CanParallelise && _x1.CanParallelise && _y2.CanParallelise && _z2.CanParallelise;
                 }
-                else
-                {
-                    return _x1.CanParallelise && _y1.CanParallelise && _x2.CanParallelise && _y2.CanParallelise;
-                }
+
+                return _x1.CanParallelise && _y1.CanParallelise && _x2.CanParallelise && _y2.CanParallelise;
             }
         }
 
@@ -263,10 +255,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             {
                 return new CartesianFunction(transformer.Transform(_x1), transformer.Transform(_y1), transformer.Transform(_z1), transformer.Transform(_x2), transformer.Transform(_y2), transformer.Transform(_z2));
             }
-            else
-            {
-                return new CartesianFunction(transformer.Transform(_x1), transformer.Transform(_y1), transformer.Transform(_x2), transformer.Transform(_y2));
-            }
+
+            return new CartesianFunction(transformer.Transform(_x1), transformer.Transform(_y1), transformer.Transform(_x2), transformer.Transform(_y2));
         }
     }
 }

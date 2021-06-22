@@ -195,11 +195,9 @@ namespace VDS.RDF.Query
                     // In this case the _result field contains the boolean result
                     return _result;
                 }
-                else
-                {
-                    // In any other case then it will contain true even if the result set was empty
-                    return true;
-                }
+
+                // In any other case then it will contain true even if the result set was empty
+                return true;
             }
         }
 
@@ -426,10 +424,8 @@ namespace VDS.RDF.Query
                 IGraph h = writer.GenerateOutput(other);
                 return g.Equals(h);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>

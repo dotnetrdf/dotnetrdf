@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -80,7 +80,6 @@ namespace VDS.RDF.Update.Protocol
                 // If the GetGraph() method errors this implies that the Store does not contain the Graph
                 // In such a case we should return a 404
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return;
             }
         }
 
@@ -102,7 +101,7 @@ namespace VDS.RDF.Update.Protocol
             // Get the Graph URI of the Graph to be added
             Uri graphUri = ResolveGraphUri(context, g);
 
-            // First we need a 
+            // First we need a
 
             // Generate an INSERT DATA command for the POST
             StringBuilder insert = new StringBuilder();
@@ -226,7 +225,7 @@ namespace VDS.RDF.Update.Protocol
             {
                 // If any error occurs assume the Graph doesn't exist and so we'll return a 201 created
                 created = true;
-            }            
+            }
 
             // Generate a set of commands based upon this
             StringBuilder cmdSequence = new StringBuilder();
@@ -342,7 +341,6 @@ namespace VDS.RDF.Update.Protocol
                 // If the GetGraph() method errors this implies that the Store does not contain the Graph
                 // In such a case we should return a 404
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return;
             }
         }
 
@@ -382,21 +380,18 @@ namespace VDS.RDF.Update.Protocol
                         // One/More commands either do no affect a Single Graph or don't affect the Graph
                         // implied by the HTTP Request so give a 422 response
                         context.Response.StatusCode = 422;
-                        return;
                     }
                 }
                 else
                 {
                     // Don't understand other forms of PATCH requests
                     context.Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
-                    return;
                 }
             }
             else
             {
                 // Empty Request is a Bad Request
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return;
             }
         }
 
@@ -426,10 +421,8 @@ namespace VDS.RDF.Update.Protocol
             {
                 return (IGraph)results;
             }
-            else
-            {
-                throw new SparqlHttpProtocolException("Failed to retrieve a Graph since the query processor did not return a valid Graph as expected");
-            }
+
+            throw new SparqlHttpProtocolException("Failed to retrieve a Graph since the query processor did not return a valid Graph as expected");
         }
 
         /// <summary>
@@ -458,10 +451,8 @@ namespace VDS.RDF.Update.Protocol
             {
                 return ((SparqlResultSet)results).Result;
             }
-            else
-            {
-                throw new SparqlHttpProtocolException("Failed to retrieve a Boolean Result since the query processor did not return a valid SPARQL Result Set as expected");
-            }
+
+            throw new SparqlHttpProtocolException("Failed to retrieve a Boolean Result since the query processor did not return a valid SPARQL Result Set as expected");
         }
     }
 }

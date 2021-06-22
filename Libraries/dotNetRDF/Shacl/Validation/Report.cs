@@ -30,7 +30,6 @@ namespace VDS.RDF.Shacl.Validation
     using System.Linq;
     using VDS.RDF.Nodes;
     using VDS.RDF.Parsing;
-    using VDS.RDF.Query.Builder;
 
     /// <summary>
     /// Represents a SHACL validation report.

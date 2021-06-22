@@ -105,10 +105,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 return new Extend(optimiser.Optimise(_inner), ((IExpressionTransformer)optimiser).Transform(_expr), _var);
             }
-            else
-            {
-                return new Extend(optimiser.Optimise(_inner), _expr, _var);
-            }
+
+            return new Extend(optimiser.Optimise(_inner), _expr, _var);
         }
 
         /// <summary>
@@ -227,11 +225,9 @@ namespace VDS.RDF.Query.Algebra
                 p.AddAssignment(new BindPattern(_var, _expr));
                 return p;
             }
-            else
-            {
-                gp.AddAssignment(new BindPattern(_var, _expr));
-                return gp;
-            }
+
+            gp.AddAssignment(new BindPattern(_var, _expr));
+            return gp;
         }
 
         /// <summary>
@@ -240,7 +236,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Extend(" + _inner.ToSafeString() + ", " + _expr.ToString() + " AS ?" + _var + ")";
+            return "Extend(" + _inner.ToSafeString() + ", " + _expr + " AS ?" + _var + ")";
         }
     }
 }

@@ -194,10 +194,8 @@ namespace VDS.RDF.Update.Commands
             {
                 return "LOAD " + silent + "<" + _sourceUri.AbsoluteUri.Replace(">", "\\>") + ">";
             }
-            else
-            {
-                return "LOAD " + silent + "<" + _sourceUri.AbsoluteUri.Replace(">", "\\>") + "> INTO <" + _graphUri.AbsoluteUri.Replace(">", "\\>") + ">";
-            }
+
+            return "LOAD " + silent + "<" + _sourceUri.AbsoluteUri.Replace(">", "\\>") + "> INTO <" + _graphUri.AbsoluteUri.Replace(">", "\\>") + ">";
         }
     }
 }

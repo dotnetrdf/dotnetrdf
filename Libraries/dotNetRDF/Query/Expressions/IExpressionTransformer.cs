@@ -56,10 +56,8 @@ namespace VDS.RDF.Query.Expressions
             {
                 return SubstitutePrimaryExpression(expr);
             }
-            else
-            {
-                return expr.Transform(this);
-            }
+
+            return expr.Transform(this);
         }
 
         /// <summary>

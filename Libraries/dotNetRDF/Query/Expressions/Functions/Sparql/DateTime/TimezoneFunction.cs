@@ -56,11 +56,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
                 // Unlike base function must error if no timezone component
                 throw new RdfQueryException("Cannot get the Timezone from a Date Time that does not have a timezone component");
             }
-            else
-            {
-                // Otherwise the base value is fine
-                return temp;
-            }
+
+            // Otherwise the base value is fine
+            return temp;
         }
 
         /// <summary>
@@ -80,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordTimezone + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordTimezone + "(" + _expr + ")";
         }
 
         /// <summary>

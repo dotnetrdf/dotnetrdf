@@ -127,10 +127,8 @@ namespace VDS.RDF.Query.Paths
 
                 return context.ToAlgebra();
             }
-            else
-            {
-                return new ZeroLengthPath(context.Subject, context.Object, _path);
-            }
+
+            return new ZeroLengthPath(context.Subject, context.Object, _path);
         }
 
         /// <summary>

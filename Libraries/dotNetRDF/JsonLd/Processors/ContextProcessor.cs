@@ -228,7 +228,8 @@ namespace VDS.RDF.JsonLd.Processors
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidRemoteContext,
                             "The value of the @context of the remote document referenced by @import must be a map.");
                     }
-                    else if (importContext.ContainsKey("@import"))
+
+                    if (importContext.ContainsKey("@import"))
                     {
                         // 5.6.7 - If import context has a @import entry, an invalid context entry error has been detected and processing is aborted.
                         throw new JsonLdProcessorException(JsonLdErrorCode.InvalidContextEntry,

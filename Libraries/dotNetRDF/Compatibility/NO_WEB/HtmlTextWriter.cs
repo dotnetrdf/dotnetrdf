@@ -24,12 +24,9 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Web;
-using VDS.RDF;
 using VDS.RDF.Writing;
 
 namespace System.Web.UI

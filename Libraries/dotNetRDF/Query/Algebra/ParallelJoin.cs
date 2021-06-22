@@ -299,7 +299,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "ParallelJoin(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "ParallelJoin(" + _lhs + ", " + _rhs + ")";
         }
 
         /// <summary>

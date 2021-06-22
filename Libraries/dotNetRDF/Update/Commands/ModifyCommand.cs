@@ -325,7 +325,8 @@ namespace VDS.RDF.Update.Commands
                                             // If the Variable is not bound then skip
                                             continue;
                                         }
-                                        else if (temp.NodeType == NodeType.Uri)
+
+                                        if (temp.NodeType == NodeType.Uri)
                                         {
                                             graphUri = temp.ToSafeString();
                                         }
@@ -429,7 +430,8 @@ namespace VDS.RDF.Update.Commands
                                             // If the Variable is not bound then skip
                                             continue;
                                         }
-                                        else if (temp.NodeType == NodeType.Uri)
+
+                                        if (temp.NodeType == NodeType.Uri)
                                         {
                                             graphUri = temp.ToSafeString();
                                         }

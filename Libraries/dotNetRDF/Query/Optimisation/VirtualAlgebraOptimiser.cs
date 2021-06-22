@@ -71,134 +71,122 @@ namespace VDS.RDF.Query.Optimisation
             {
                 return ((IAbstractJoin)algebra).Transform(this);
             }
-            else if (algebra is IUnaryOperator)
+
+            if (algebra is IUnaryOperator)
             {
                 return ((IUnaryOperator)algebra).Transform(this);
             }
-            else if (algebra is IBgp)
+            if (algebra is IBgp)
             {
                 IBgp current = (IBgp)algebra;
                 if (current.PatternCount == 0)
                 {
                     return current;
                 }
-                else
-                {
-                    ISparqlAlgebra result = new Bgp();
-                    List<ITriplePattern> patterns = new List<ITriplePattern>();
-                    List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
-                    TNodeID nullID = _provider.NullID;
 
-                    for (int i = 0; i < current.PatternCount; i++)
+                ISparqlAlgebra result = new Bgp();
+                List<ITriplePattern> patterns = new List<ITriplePattern>();
+                List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
+                TNodeID nullID = _provider.NullID;
+
+                for (int i = 0; i < current.PatternCount; i++)
+                {
+                    if (ps[i].PatternType == TriplePatternType.Filter || ps[i].PatternType == TriplePatternType.BindAssignment || ps[i].PatternType == TriplePatternType.LetAssignment)
                     {
-                        if (ps[i].PatternType == TriplePatternType.Filter || ps[i].PatternType == TriplePatternType.BindAssignment || ps[i].PatternType == TriplePatternType.LetAssignment)
+                        // First ensure that if we've found any other Triple Patterns up to this point
+                        // we dump this into a BGP and join with the result so far
+                        if (patterns.Count > 0)
                         {
-                            // First ensure that if we've found any other Triple Patterns up to this point
-                            // we dump this into a BGP and join with the result so far
-                            if (patterns.Count > 0)
-                            {
-                                result = Join.CreateJoin(result, new Bgp(patterns));
-                                patterns.Clear();
-                            }
-                            if (ps[i].PatternType == TriplePatternType.Filter)
-                            {
-                                result = new Filter(result, new UnaryExpressionFilter(Transform(((IFilterPattern)ps[i]).Filter.Expression)));
-                            }
-                            else
-                            {
-                                IAssignmentPattern bind = (IAssignmentPattern)ps[i];
-                                result = new Extend(result, Transform(bind.AssignExpression), bind.VariableName);
-                            }
+                            result = Join.CreateJoin(result, new Bgp(patterns));
+                            patterns.Clear();
                         }
-                        else if (ps[i].PatternType == TriplePatternType.Match)
+                        if (ps[i].PatternType == TriplePatternType.Filter)
                         {
-                            // Convert Terms in the Pattern into Virtual Nodes
-                            IMatchTriplePattern tp = (IMatchTriplePattern)ps[i];
-                            PatternItem subj, pred, obj;
-                            if (tp.Subject is NodeMatchPattern)
-                            {
-                                TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Subject).Node);
-                                if (id == null || id.Equals(nullID))
-                                {
-                                    result = new NullOperator(current.Variables);
-                                    break;
-                                }
-                                else
-                                {
-                                    subj = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Subject).Node));
-                                }
-                            }
-                            else
-                            {
-                                subj = tp.Subject;
-                            }
-                            if (tp.Predicate is NodeMatchPattern)
-                            {
-                                TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Predicate).Node);
-                                if (id == null || id.Equals(nullID))
-                                {
-                                    result = new NullOperator(current.Variables);
-                                    break;
-                                }
-                                else
-                                {
-                                    pred = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Predicate).Node));
-                                }
-                            }
-                            else
-                            {
-                                pred = tp.Predicate;
-                            }
-                            if (tp.Object is NodeMatchPattern)
-                            {
-                                TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Object).Node);
-                                if (id == null || id.Equals(nullID))
-                                {
-                                    result = new NullOperator(current.Variables);
-                                    break;
-                                }
-                                else
-                                {
-                                    obj = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Object).Node));
-                                }
-                            }
-                            else
-                            {
-                                obj = tp.Object;
-                            }
-                            patterns.Add(new TriplePattern(subj, pred, obj));
+                            result = new Filter(result, new UnaryExpressionFilter(Transform(((IFilterPattern)ps[i]).Filter.Expression)));
                         }
                         else
                         {
-                            // Can't optimize if other pattern types involved
-                            return current;
+                            IAssignmentPattern bind = (IAssignmentPattern)ps[i];
+                            result = new Extend(result, Transform(bind.AssignExpression), bind.VariableName);
                         }
                     }
+                    else if (ps[i].PatternType == TriplePatternType.Match)
+                    {
+                        // Convert Terms in the Pattern into Virtual Nodes
+                        IMatchTriplePattern tp = (IMatchTriplePattern)ps[i];
+                        PatternItem subj, pred, obj;
+                        if (tp.Subject is NodeMatchPattern)
+                        {
+                            TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Subject).Node);
+                            if (id == null || id.Equals(nullID))
+                            {
+                                result = new NullOperator(current.Variables);
+                                break;
+                            }
 
-                    if (result is NullOperator)
-                    {
-                        return result;
-                    }
-                    else if (patterns.Count > 0)
-                    {
-                        // If any patterns left at end join as a BGP with result so far
-                        result = Join.CreateJoin(result, new Bgp(patterns));
-                        return result;
+                            subj = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Subject).Node));
+                        }
+                        else
+                        {
+                            subj = tp.Subject;
+                        }
+                        if (tp.Predicate is NodeMatchPattern)
+                        {
+                            TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Predicate).Node);
+                            if (id == null || id.Equals(nullID))
+                            {
+                                result = new NullOperator(current.Variables);
+                                break;
+                            }
+
+                            pred = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Predicate).Node));
+                        }
+                        else
+                        {
+                            pred = tp.Predicate;
+                        }
+                        if (tp.Object is NodeMatchPattern)
+                        {
+                            TNodeID id = _provider.GetID(((NodeMatchPattern)tp.Object).Node);
+                            if (id == null || id.Equals(nullID))
+                            {
+                                result = new NullOperator(current.Variables);
+                                break;
+                            }
+
+                            obj = new NodeMatchPattern(CreateVirtualNode(id, ((NodeMatchPattern)tp.Object).Node));
+                        }
+                        else
+                        {
+                            obj = tp.Object;
+                        }
+                        patterns.Add(new TriplePattern(subj, pred, obj));
                     }
                     else
                     {
-                        return result;
+                        // Can't optimize if other pattern types involved
+                        return current;
                     }
                 }
+
+                if (result is NullOperator)
+                {
+                    return result;
+                }
+
+                if (patterns.Count > 0)
+                {
+                    // If any patterns left at end join as a BGP with result so far
+                    result = Join.CreateJoin(result, new Bgp(patterns));
+                    return result;
+                }
+                return result;
             }
-            else if (algebra is ITerminalOperator)
+            if (algebra is ITerminalOperator)
             {
                 return algebra;
             }
-            else
-            {
-                return algebra;
-            }
+            return algebra;
         }
 
         /// <summary>
@@ -214,10 +202,8 @@ namespace VDS.RDF.Query.Optimisation
                 {
                     return SubstitutePrimaryExpression(expr);
                 }
-                else
-                {
-                    return expr.Transform(this);
-                }
+
+                return expr.Transform(this);
             }
             catch
             {
@@ -241,10 +227,8 @@ namespace VDS.RDF.Query.Optimisation
                 INode virt = CreateVirtualNode(id, curr);
                 return new ConstantTerm(virt);
             }
-            else
-            {
-                return expr;
-            }
+
+            return expr;
         }
 
         /// <summary>

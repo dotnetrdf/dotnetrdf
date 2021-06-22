@@ -49,10 +49,8 @@ namespace VDS.RDF
             {
                 return false;
             }
-            else
-            {
-                return baseUri.IsAbsoluteUri;
-            }
+
+            return baseUri.IsAbsoluteUri;
         }
 
         /// <summary>
@@ -76,10 +74,8 @@ namespace VDS.RDF
                 }
                 return uriref;
             }
-            else
-            {
-                return uriref;
-            }
+
+            return uriref;
         }
 
         /// <summary>
@@ -93,12 +89,10 @@ namespace VDS.RDF
             {
                 return u;
             }
-            else
-            {
-                String temp = u.AbsoluteUri;
-                temp = temp.Substring(0, temp.Length - u.Fragment.Length);
-                return UriFactory.Create(temp);
-            }
+
+            String temp = u.AbsoluteUri;
+            temp = temp.Substring(0, temp.Length - u.Fragment.Length);
+            return UriFactory.Create(temp);
         }
 
         /// <summary>
@@ -118,52 +112,44 @@ namespace VDS.RDF
                     // Empty Uri reference refers to the Base Uri
                     return UriFactory.Create(FixMalformedUriStrings(baseUri)).AbsoluteUri;
                 }
-                else
-                {
-                    // Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
-                    Uri u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
-                    if (u.IsAbsoluteUri) 
-                    {
-                        // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
-                        return u.AbsoluteUri;
-                    } 
-                    else 
-                    {
-                        Uri b = UriFactory.Create(FixMalformedUriStrings(baseUri));
 
-                        // Check that the Base Uri is valid for resolving Relative URIs
-                        // If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
-                        // We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
-                        if (u.ToString().StartsWith("#"))
-                        {
-                            return ResolveUri(u, b).AbsoluteUri;
-                        }
-                        else if (IsValidBaseUri(b))
-                        {
-                            return ResolveUri(u, b).AbsoluteUri;
-                        }
-                        else
-                        {
-                            throw new RdfParseException("Cannot resolve a URI since the Base URI is not a valid for resolving Relative URIs against");
-                        }
-                    }
+                // Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
+                Uri u = new Uri(FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
+                if (u.IsAbsoluteUri) 
+                {
+                    // Uri Reference is an Absolute Uri so no need to resolve against Base Uri
+                    return u.AbsoluteUri;
                 }
+
+                Uri b = UriFactory.Create(FixMalformedUriStrings(baseUri));
+
+                // Check that the Base Uri is valid for resolving Relative URIs
+                // If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
+                // We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
+                if (u.ToString().StartsWith("#"))
+                {
+                    return ResolveUri(u, b).AbsoluteUri;
+                }
+
+                if (IsValidBaseUri(b))
+                {
+                    return ResolveUri(u, b).AbsoluteUri;
+                }
+                throw new RdfParseException("Cannot resolve a URI since the Base URI is not a valid for resolving Relative URIs against");
             }
-            else
-            {
-                if (uriref.Equals(String.Empty))
-                {
-                    throw new RdfParseException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
-                }
 
-                try
-                {
-                    return new Uri(FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
-                }
-                catch (UriFormatException)
-                {
-                    throw new RdfParseException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
-                }
+            if (uriref.Equals(String.Empty))
+            {
+                throw new RdfParseException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
+            }
+
+            try
+            {
+                return new Uri(FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
+            }
+            catch (UriFormatException)
+            {
+                throw new RdfParseException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
             }
         }
 
@@ -242,7 +228,7 @@ namespace VDS.RDF
             else
             {
                 // QName in some other Namespace
-                String[] parts = qname.Split(new char[] { ':' }, 2);
+                String[] parts = qname.Split(new[] { ':' }, 2);
                 if (parts.Length == 1)
                 {
                     output = nsmap.GetNamespaceUri(String.Empty).AbsoluteUri + parts[0];
@@ -269,15 +255,13 @@ namespace VDS.RDF
             {
                 return ResolveQName(t.Value, nsmap, baseUri);
             }
-            else if (t.TokenType == Token.URI)
+
+            if (t.TokenType == Token.URI)
             {
                 String uriBase = (baseUri == null) ? String.Empty : baseUri.AbsoluteUri;
                 return ResolveUri(t.Value, uriBase);
             }
-            else
-            {
-                throw new RdfParseException("Unable to resolve a '" + t.GetType().ToString() + "' Token into a URI", t);
-            }
+            throw new RdfParseException("Unable to resolve a '" + t.GetType() + "' Token into a URI", t);
         }
 
         /// <summary>
@@ -293,12 +277,10 @@ namespace VDS.RDF
             {
                 return CopyNode(original, target);
             }
-            else
-            {
-                INode temp = CopyNode(original, target);
-                temp.GraphUri = original.GraphUri;
-                return temp;
-            }
+
+            INode temp = CopyNode(original, target);
+            temp.GraphUri = original.GraphUri;
+            return temp;
         }
 
         /// <summary>
@@ -330,7 +312,8 @@ namespace VDS.RDF
 
                 return u2;
             }
-            else if (original.NodeType == NodeType.Literal)
+
+            if (original.NodeType == NodeType.Literal)
             {
                 ILiteralNode l = (ILiteralNode)original;
                 ILiteralNode l2;
@@ -352,7 +335,7 @@ namespace VDS.RDF
 
                 return l2;
             }
-            else if (original.NodeType == NodeType.Blank)
+            if (original.NodeType == NodeType.Blank)
             {
                 IBlankNode b = (IBlankNode)original;
                 IBlankNode b2;
@@ -360,15 +343,12 @@ namespace VDS.RDF
                 b2 = new BlankNode(target, b.InternalID);
                 return b2;
             }
-            else if (original.NodeType == NodeType.Variable)
+            if (original.NodeType == NodeType.Variable)
             {
                 IVariableNode v = (IVariableNode)original;
                 return new VariableNode(target, v.VariableName);
             }
-            else
-            {
-                throw new RdfException("Unable to Copy '" + original.GetType().ToString() + "' Nodes between Graphs");
-            }
+            throw new RdfException("Unable to Copy '" + original.GetType() + "' Nodes between Graphs");
         }
 
         /// <summary>
@@ -411,7 +391,7 @@ namespace VDS.RDF
                 case NodeType.Variable:
                     return target.CreateVariableNode(((IVariableNode)original).VariableName);
                 default:
-                    throw new RdfException("Unable to Copy '" + original.GetType().ToString() + "' Nodes between Node Factories");
+                    throw new RdfException("Unable to Copy '" + original.GetType() + "' Nodes between Node Factories");
             }
         }
 

@@ -105,10 +105,8 @@ namespace VDS.RDF.Configuration
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>

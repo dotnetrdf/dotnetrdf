@@ -61,15 +61,11 @@ namespace VDS.RDF.Parsing
                 {
                     return new NonBlockingTextReader(input, bufferSize);
                 }
-                else
-                {
-                    return new BlockingTextReader(input, bufferSize);
-                }
-            }
-            else
-            {
+
                 return new BlockingTextReader(input, bufferSize);
             }
+
+            return new BlockingTextReader(input, bufferSize);
         }
 
         /// <summary>
@@ -95,10 +91,8 @@ namespace VDS.RDF.Parsing
             {
                 return CreateNonBlocking(new StreamReader(input), bufferSize);
             }
-            else
-            {
-                return CreateBlocking(new StreamReader(input), bufferSize);
-            }
+
+            return CreateBlocking(new StreamReader(input), bufferSize);
         }
 
         /// <summary>
@@ -243,44 +237,40 @@ namespace VDS.RDF.Parsing
                 _pos += count;
                 return count;
             }
-            else
-            {
-                int copied = 0;
-                while (copied < count)
-                {
-                    int available = _bufferAmount - _pos;
-                    if (count < copied + available)
-                    {
-                        // We can finish fufilling this request this round
-                        int toCopy = Math.Min(available, count - copied);
-                        Array.Copy(_buffer, _pos, buffer, index + copied, toCopy);
-                        copied += toCopy;
-                        _pos += toCopy;
-                        return copied;
-                    }
-                    else
-                    {
-                        // Copy everything we currently have available
-                        Array.Copy(_buffer, _pos, buffer, index + copied, available);
-                        copied += available;
-                        _pos = _bufferAmount;
 
-                        if (!_finished)
-                        {
-                            // If we haven't reached the end of the input refill our buffer and continue
-                            FillBuffer();
-                            if (EndOfStream) return copied;
-                            _pos = 0;
-                        }
-                        else
-                        {
-                            // Otherwise we have reached the end of the input so just return what we've managed to copy
-                            return copied;
-                        }
-                    }
+            int copied = 0;
+            while (copied < count)
+            {
+                int available = _bufferAmount - _pos;
+                if (count < copied + available)
+                {
+                    // We can finish fufilling this request this round
+                    int toCopy = Math.Min(available, count - copied);
+                    Array.Copy(_buffer, _pos, buffer, index + copied, toCopy);
+                    copied += toCopy;
+                    _pos += toCopy;
+                    return copied;
                 }
-                return copied;
+
+                // Copy everything we currently have available
+                Array.Copy(_buffer, _pos, buffer, index + copied, available);
+                copied += available;
+                _pos = _bufferAmount;
+
+                if (!_finished)
+                {
+                    // If we haven't reached the end of the input refill our buffer and continue
+                    FillBuffer();
+                    if (EndOfStream) return copied;
+                    _pos = 0;
+                }
+                else
+                {
+                    // Otherwise we have reached the end of the input so just return what we've managed to copy
+                    return copied;
+                }
             }
+            return copied;
         }
 
         /// <summary>
@@ -315,7 +305,7 @@ namespace VDS.RDF.Parsing
             }
 
             _pos++;
-            return (int)_buffer[_pos];
+            return _buffer[_pos];
         }
 
         /// <summary>
@@ -337,7 +327,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            return (int)_buffer[_pos + 1];
+            return _buffer[_pos + 1];
         }
 
         /// <summary>

@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
-using VDS.Common.Collections.Enumerations;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
@@ -430,11 +429,9 @@ namespace VDS.RDF.Query.Algebra
                     // If an EXISTS and disjoint then result is this
                     return this;
                 }
-                else
-                {
-                    // If a NOT EXISTS and disjoint then result is null
-                    return new NullMultiset();
-                }
+
+                // If a NOT EXISTS and disjoint then result is null
+                return new NullMultiset();
             }
 
             // Start building the Joined Set
@@ -527,29 +524,25 @@ namespace VDS.RDF.Query.Algebra
                 {
                     return this;
                 }
+
+                return new NullMultiset();
+            }
+
+            // Otherwise iterate
+            foreach (ISet x in Sets)
+            {
+                if (mustExist)
+                {
+                    if (exists.Contains(x.ID))
+                    {
+                        joinedSet.Add(x.Copy());
+                    }
+                }
                 else
                 {
-                    return new NullMultiset();
-                }
-            }
-            else
-            {
-                // Otherwise iterate
-                foreach (ISet x in Sets)
-                {
-                    if (mustExist)
+                    if (!exists.Contains(x.ID))
                     {
-                        if (exists.Contains(x.ID))
-                        {
-                            joinedSet.Add(x.Copy());
-                        }
-                    }
-                    else
-                    {
-                        if (!exists.Contains(x.ID))
-                        {
-                            joinedSet.Add(x.Copy());
-                        }
+                        joinedSet.Add(x.Copy());
                     }
                 }
             }
@@ -661,15 +654,13 @@ namespace VDS.RDF.Query.Algebra
                 // If number of sets to minus is equal to number of sets then we're minusing everything
                 return new NullMultiset();
             }
-            else
+
+            // Otherwise iterate
+            foreach (ISet x in Sets)
             {
-                // Otherwise iterate
-                foreach (ISet x in Sets)
+                if (!toMinus.Contains(x.ID))
                 {
-                    if (!toMinus.Contains(x.ID))
-                    {
-                        joinedSet.Add(x.Copy());
-                    }
+                    joinedSet.Add(x.Copy());
                 }
             }
 
@@ -704,19 +695,17 @@ namespace VDS.RDF.Query.Algebra
                 }
                 return partitionedSet;
             }
-            else
+
+            // Use serial calculation which is likely to really suck for big products
+            Multiset productSet = new Multiset();
+            foreach (ISet x in this.Sets)
             {
-                // Use serial calculation which is likely to really suck for big products
-                Multiset productSet = new Multiset();
-                foreach (ISet x in this.Sets)
+                foreach (ISet y in other.Sets)
                 {
-                    foreach (ISet y in other.Sets)
-                    {
-                        productSet.Add(x.Join(y));
-                    }
+                    productSet.Add(x.Join(y));
                 }
-                return productSet;
             }
+            return productSet;
         }
 
         private void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet)

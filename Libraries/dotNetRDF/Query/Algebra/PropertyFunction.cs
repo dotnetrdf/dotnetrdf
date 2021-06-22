@@ -138,7 +138,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "PropertyFunction(" + _algebra.ToString() + "," + _function.FunctionUri + ")";
+            return "PropertyFunction(" + _algebra + "," + _function.FunctionUri + ")";
         }
     }
 }

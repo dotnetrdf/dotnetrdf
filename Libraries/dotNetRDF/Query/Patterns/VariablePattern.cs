@@ -77,19 +77,15 @@ namespace VDS.RDF.Query.Patterns
                 {
                     return context.InputMultiset.ContainsValue(_varname, obj);
                 }
-                else if (Repeated)
+
+                if (Repeated)
                 {
                     return true;
                 }
-                else
-                {
-                    return true;
-                }
-            }
-            else
-            {
                 return true;
             }
+
+            return true;
         }
 
         /// <summary>
@@ -113,10 +109,8 @@ namespace VDS.RDF.Query.Patterns
                         {
                             return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
                         }
-                        else
-                        {
-                            return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + hash);
-                        }
+
+                        return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + hash);
                     }
                     else
                     {

@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordSha1 + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordSha1 + "(" + _expr + ")";
         }
 
         /// <summary>

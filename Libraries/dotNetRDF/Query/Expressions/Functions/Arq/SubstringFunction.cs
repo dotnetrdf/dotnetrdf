@@ -89,45 +89,39 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                         // If no/negative characters are being selected the empty string is returned
                         return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
-                    else if (s > input.Value.Length)
+
+                    if (s > input.Value.Length)
                     {
                         // If the start is after the end of the string the empty string is returned
                         return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
-                    else
+                    if (e > input.Value.Length)
                     {
-                        if (e > input.Value.Length)
-                        {
-                            // If the end is greater than the length of the string the string from the starts onwards is returned
-                            return new StringNode(null, input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                        }
-                        else
-                        {
-                            // Otherwise do normal substring
-                            return new StringNode(null, input.Value.Substring(s, e - s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                        }
+                        // If the end is greater than the length of the string the string from the starts onwards is returned
+                        return new StringNode(null, input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
+
+                    // Otherwise do normal substring
+                    return new StringNode(null, input.Value.Substring(s, e - s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 catch
                 {
                     throw new RdfQueryException("Unable to convert the Start/End argument to an Integer");
                 }
             }
-            else
+
+            if (input.Value.Equals(String.Empty)) return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+
+            try
             {
-                if (input.Value.Equals(String.Empty)) return new StringNode(null, String.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                int s = Convert.ToInt32(start.AsInteger());
+                if (s < 0) s = 0;
 
-                try
-                {
-                    int s = Convert.ToInt32(start.AsInteger());
-                    if (s < 0) s = 0;
-
-                    return new StringNode(null, input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                }
-                catch
-                {
-                    throw new RdfQueryException("Unable to convert the Start argument to an Integer");
-                }
+                return new StringNode(null, input.Value.Substring(s), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            }
+            catch
+            {
+                throw new RdfQueryException("Unable to convert the Start argument to an Integer");
             }
         }
 
@@ -151,30 +145,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                             // Appropriately typed literals are fine
                             return temp;
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions returned a typed literal with an invalid type");
-                        }
+
+                        throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions returned a typed literal with an invalid type");
                     }
-                    else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
+
+                    if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
                     {
                         // Untyped Literals are treated as Strings and may be returned when the argument allows strings
                         return temp;
                     }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evalaute an ARQ substring as one of the argument expressions returned an untyped literal");
-                    }
+                    throw new RdfQueryException("Unable to evalaute an ARQ substring as one of the argument expressions returned an untyped literal");
                 }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions returned a non-literal");
-                }
+
+                throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions returned a non-literal");
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions evaluated to null");
-            }
+
+            throw new RdfQueryException("Unable to evaluate an ARQ substring as one of the argument expressions evaluated to null");
         }
 
         /// <summary>
@@ -188,10 +174,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                 {
                     return _expr.Variables.Concat(_start.Variables).Concat(_end.Variables);
                 }
-                else
-                {
-                    return _expr.Variables.Concat(_start.Variables);
-                }
+
+                return _expr.Variables.Concat(_start.Variables);
             }
         }
 
@@ -203,12 +187,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         {
             if (_end != null)
             {
-                return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + _expr.ToString() + "," + _start.ToString() + "," + _end.ToString() + ")";
+                return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + _expr + "," + _start + "," + _end + ")";
             }
-            else
-            {
-                return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + _expr.ToString() + "," + _start.ToString() + ")";
-            }
+
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + _expr + "," + _start + ")";
         }
 
         /// <summary>
@@ -242,12 +224,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 if (_end != null)
                 {
-                    return new ISparqlExpression[] { _expr, _start, _end };
+                    return new[] { _expr, _start, _end };
                 }
-                else
-                {
-                    return new ISparqlExpression[] { _end, _start };
-                }
+
+                return new[] { _end, _start };
             }
         }
 
@@ -273,10 +253,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             {
                 return new SubstringFunction(transformer.Transform(_expr), transformer.Transform(_start), transformer.Transform(_end));
             }
-            else
-            {
-                return new SubstringFunction(transformer.Transform(_end), transformer.Transform(_start));
-            }
+
+            return new SubstringFunction(transformer.Transform(_end), transformer.Transform(_start));
         }
     }
 }

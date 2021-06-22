@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Sha256Hash + ">(" + _expr.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Sha256Hash + ">(" + _expr + ")";
         }
 
         /// <summary>

@@ -197,7 +197,7 @@ namespace VDS.RDF.Query.Patterns
         {
             StringBuilder output = new StringBuilder();
             output.Append("BIND(");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(" AS ?");
             output.Append(_var);
             output.Append(")");

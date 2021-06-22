@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "OneOrMorePath(" + PathStart.ToString() + ", " + Path.ToString() + ", " + PathEnd.ToString() + ")";
+            return "OneOrMorePath(" + PathStart + ", " + Path.ToString() + ", " + PathEnd + ")";
         }
 
         /// <summary>

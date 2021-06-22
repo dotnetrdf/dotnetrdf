@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Algebra
         {
             String filter = _filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
-            return GetType().Name + "(" + _pattern.ToString() + ", " + filter + ")";
+            return GetType().Name + "(" + _pattern + ", " + filter + ")";
         }
 
         /// <summary>
@@ -318,10 +318,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 return new IdentityFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(RestrictionValue));
             }
-            else
-            {
-                return new IdentityFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
-            }
+
+            return new IdentityFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
         }
     }
 
@@ -351,10 +349,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 return new SameTermFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(RestrictionValue));
             }
-            else
-            {
-                return new SameTermFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
-            }
+
+            return new SameTermFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
         }
     }
 }

@@ -222,15 +222,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 {
                     return new BooleanNode(null, _regex.IsMatch(text));
                 }
-                else
-                {
-                    return new BooleanNode(null, Regex.IsMatch(text, _pattern, _options));
-                }
+
+                return new BooleanNode(null, Regex.IsMatch(text, _pattern, _options));
             }
-            else
-            {
-                throw new RdfQueryException("Cannot evaluate a Regular Expression against a non-Literal Node");
-            }
+
+            throw new RdfQueryException("Cannot evaluate a Regular Expression against a non-Literal Node");
 
         }
 
@@ -242,7 +238,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             StringBuilder output = new StringBuilder();
             output.Append("REGEX(");
-            output.Append(_textExpr.ToString());
+            output.Append(_textExpr);
             output.Append(",");
             if (_fixedPattern)
             {
@@ -252,11 +248,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
             else
             {
-                output.Append(_patternExpr.ToString());
+                output.Append(_patternExpr);
             }
             if (_optionExpr != null)
             {
-                output.Append("," + _optionExpr.ToString());
+                output.Append("," + _optionExpr);
             }
             output.Append(")");
 
@@ -309,12 +305,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 if (_optionExpr != null)
                 {
-                    return new ISparqlExpression[] { _textExpr, _patternExpr, _optionExpr };
+                    return new[] { _textExpr, _patternExpr, _optionExpr };
                 }
-                else
-                {
-                    return new ISparqlExpression[] { _textExpr, _patternExpr };
-                }
+
+                return new[] { _textExpr, _patternExpr };
             }
         }
 
@@ -340,10 +334,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return new RegexFunction(transformer.Transform(_textExpr), transformer.Transform(_patternExpr), transformer.Transform(_optionExpr));
             }
-            else
-            {
-                return new RegexFunction(transformer.Transform(_textExpr), transformer.Transform(_patternExpr));
-            }
+
+            return new RegexFunction(transformer.Transform(_textExpr), transformer.Transform(_patternExpr));
         }
     }
 }

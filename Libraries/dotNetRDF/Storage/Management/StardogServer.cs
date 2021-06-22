@@ -255,7 +255,7 @@ namespace VDS.RDF.Storage.Management
                         // Boundary
                         stream.Write(boundaryBytes, 0, boundaryBytes.Length);
                         // Then the root Item
-                        String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
+                        String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate);
                         byte[] itemBytes = Encoding.UTF8.GetBytes(templateItem);
                         stream.Write(itemBytes, 0, itemBytes.Length);
                         // Then terminating boundary
@@ -280,10 +280,8 @@ namespace VDS.RDF.Storage.Management
                     throw StorageHelper.HandleHttpError(webEx, "creating a new Store '" + template.ID + "' in");
                 }
             }
-            else
-            {
-                throw new RdfStorageException("Invalid template, templates must derive from BaseStardogTemplate");
-            }
+
+            throw new RdfStorageException("Invalid template, templates must derive from BaseStardogTemplate");
         }
 
         /// <summary>
@@ -463,7 +461,7 @@ namespace VDS.RDF.Storage.Management
                                     // Boundary
                                     stream.Write(boundaryBytes, 0, boundaryBytes.Length);
                                     // Then the root Item
-                                    String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
+                                    String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate);
                                     byte[] itemBytes = Encoding.UTF8.GetBytes(templateItem);
                                     stream.Write(itemBytes, 0, itemBytes.Length);
                                     // Then terminating boundary
@@ -810,17 +808,15 @@ namespace VDS.RDF.Storage.Management
                 {
                     return true;
                 }
-                else
+
+                try
                 {
-                    try
-                    {
-                        Uri u = new Uri(uri);
-                        return u.IsAbsoluteUri;
-                    }
-                    catch (UriFormatException)
-                    {
-                        return false;
-                    }
+                    Uri u = new Uri(uri);
+                    return u.IsAbsoluteUri;
+                }
+                catch (UriFormatException)
+                {
+                    return false;
                 }
             }
 

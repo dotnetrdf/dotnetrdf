@@ -49,11 +49,12 @@ namespace VDS.RDF.Query.Optimisation
             {
                 return ((IAbstractJoin)algebra).Transform(this);
             }
-            else if (algebra is IUnaryOperator)
+
+            if (algebra is IUnaryOperator)
             {
                 return ((IUnaryOperator)algebra).Transform(this);
             }
-            else if (algebra is IBgp)
+            if (algebra is IBgp)
             {
                 // Don't integerfer with other optimisers which have added custom BGP implementations
                 if (!(algebra is Bgp)) return algebra;
@@ -63,85 +64,78 @@ namespace VDS.RDF.Query.Optimisation
                 {
                     return current;
                 }
-                else
+
+                ISparqlAlgebra result = new Bgp();
+                List<ITriplePattern> patterns = new List<ITriplePattern>();
+                List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
+                for (int i = 0; i < current.PatternCount; i++)
                 {
-                    ISparqlAlgebra result = new Bgp();
-                    List<ITriplePattern> patterns = new List<ITriplePattern>();
-                    List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
-                    for (int i = 0; i < current.PatternCount; i++)
-                    {
-                        // Can't split the BGP if there are Blank Nodes present
-                        if (!ps[i].HasNoBlankVariables) return current;
+                    // Can't split the BGP if there are Blank Nodes present
+                    if (!ps[i].HasNoBlankVariables) return current;
 
-                        if (ps[i].PatternType != TriplePatternType.Match)
+                    if (ps[i].PatternType != TriplePatternType.Match)
+                    {
+                        // First ensure that if we've found any other Triple Patterns up to this point
+                        // we dump this into a BGP and join with the result so far
+                        if (patterns.Count > 0)
                         {
-                            // First ensure that if we've found any other Triple Patterns up to this point
-                            // we dump this into a BGP and join with the result so far
-                            if (patterns.Count > 0)
-                            {
-                                result = Join.CreateJoin(result, new Bgp(patterns));
-                                patterns.Clear();
-                            }
-
-                            // Then generate the appropriate strict algebra operator
-                            switch (ps[i].PatternType)
-                            {
-                                case TriplePatternType.Filter:
-                                    result = new Filter(result, ((IFilterPattern)ps[i]).Filter);
-                                    break;
-                                case TriplePatternType.BindAssignment:
-                                case TriplePatternType.LetAssignment:
-                                    IAssignmentPattern assignment = (IAssignmentPattern)ps[i];
-                                    result = new Extend(result, assignment.AssignExpression, assignment.VariableName);
-                                    break;
-                                case TriplePatternType.SubQuery:
-                                    ISubQueryPattern sq = (ISubQueryPattern)ps[i];
-                                    result = Join.CreateJoin(result, new SubQuery(sq.SubQuery));
-                                    break;
-                                case TriplePatternType.Path:
-                                    IPropertyPathPattern pp = (IPropertyPathPattern)ps[i];
-                                    result = Join.CreateJoin(result, new PropertyPath(pp.Subject, pp.Path, pp.Object));
-                                    break;
-                                case TriplePatternType.PropertyFunction:
-                                    IPropertyFunctionPattern pf = (IPropertyFunctionPattern)ps[i];
-                                    result = new PropertyFunction(result, pf.PropertyFunction);
-                                    break;
-                                default:
-                                    throw new RdfQueryException("Cannot apply strict algebra form to a BGP containing a unknown triple pattern type");
-                            }
+                            result = Join.CreateJoin(result, new Bgp(patterns));
+                            patterns.Clear();
                         }
-                        else
+
+                        // Then generate the appropriate strict algebra operator
+                        switch (ps[i].PatternType)
                         {
-                            patterns.Add(ps[i]);
+                            case TriplePatternType.Filter:
+                                result = new Filter(result, ((IFilterPattern)ps[i]).Filter);
+                                break;
+                            case TriplePatternType.BindAssignment:
+                            case TriplePatternType.LetAssignment:
+                                IAssignmentPattern assignment = (IAssignmentPattern)ps[i];
+                                result = new Extend(result, assignment.AssignExpression, assignment.VariableName);
+                                break;
+                            case TriplePatternType.SubQuery:
+                                ISubQueryPattern sq = (ISubQueryPattern)ps[i];
+                                result = Join.CreateJoin(result, new SubQuery(sq.SubQuery));
+                                break;
+                            case TriplePatternType.Path:
+                                IPropertyPathPattern pp = (IPropertyPathPattern)ps[i];
+                                result = Join.CreateJoin(result, new PropertyPath(pp.Subject, pp.Path, pp.Object));
+                                break;
+                            case TriplePatternType.PropertyFunction:
+                                IPropertyFunctionPattern pf = (IPropertyFunctionPattern)ps[i];
+                                result = new PropertyFunction(result, pf.PropertyFunction);
+                                break;
+                            default:
+                                throw new RdfQueryException("Cannot apply strict algebra form to a BGP containing a unknown triple pattern type");
                         }
-                    }
-
-                    if (patterns.Count == current.PatternCount)
-                    {
-                        // If count of remaining patterns same as original pattern count there was no optimisation
-                        // to do so return as is
-                        return current;
-                    }
-                    else if (patterns.Count > 0)
-                    {
-                        // If any patterns left at end join as a BGP with result so far
-                        result = Join.CreateJoin(result, new Bgp(patterns));
-                        return result;
                     }
                     else
                     {
-                        return result;
+                        patterns.Add(ps[i]);
                     }
                 }
+
+                if (patterns.Count == current.PatternCount)
+                {
+                    // If count of remaining patterns same as original pattern count there was no optimisation
+                    // to do so return as is
+                    return current;
+                }
+
+                if (patterns.Count > 0)
+                {
+                    // If any patterns left at end join as a BGP with result so far
+                    result = Join.CreateJoin(result, new Bgp(patterns));
+                    return result;
+                }
+                return result;
             }
-            else if (algebra is ITerminalOperator)
+            if (algebra is ITerminalOperator)
             {
                 return algebra;
             }
-            else
-            {
-                return algebra;
-            }
+            return algebra;
         }
 
         /// <summary>

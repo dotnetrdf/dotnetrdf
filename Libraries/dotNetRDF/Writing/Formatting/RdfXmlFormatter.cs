@@ -129,7 +129,6 @@ namespace VDS.RDF.Writing.Formatting
             {
                 // Succesfully reduced to a QName using the known namespaces
                 ns = String.Empty;
-                return;
             }
             else if (!u.Fragment.Equals(String.Empty))
             {

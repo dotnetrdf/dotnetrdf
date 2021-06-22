@@ -65,18 +65,16 @@ namespace VDS.RDF.Update.Commands
                 // If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
                 return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoVariables);
             }
-            else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
+
+            if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
             {
                 // EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
                 return false;
             }
-            else
-            {
-                // For other patterns all Triple patterns must be constructable with no explicit variables
-                // If top level then any Child Graph Patterns must be valid
-                // Otherwise must have no Child Graph Patterns
-                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
-            }
+            // For other patterns all Triple patterns must be constructable with no explicit variables
+            // If top level then any Child Graph Patterns must be valid
+            // Otherwise must have no Child Graph Patterns
+            return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
         }
 
         /// <summary>
@@ -101,23 +99,21 @@ namespace VDS.RDF.Update.Commands
                 {
                     return true;
                 }
+
+                List<String> affectedUris = new List<string>();
+                if (_pattern.IsGraph)
+                {
+                    affectedUris.Add(_pattern.GraphSpecifier.Value);
+                }
                 else
                 {
-                    List<String> affectedUris = new List<string>();
-                    if (_pattern.IsGraph)
-                    {
-                        affectedUris.Add(_pattern.GraphSpecifier.Value);
-                    }
-                    else
-                    {
-                        affectedUris.Add(null);
-                    }
-                    affectedUris.AddRange(from p in _pattern.ChildGraphPatterns
-                                          where p.IsGraph
-                                          select p.GraphSpecifier.Value);
-
-                    return affectedUris.Distinct().Count() <= 1;
+                    affectedUris.Add(null);
                 }
+                affectedUris.AddRange(from p in _pattern.ChildGraphPatterns
+                    where p.IsGraph
+                    select p.GraphSpecifier.Value);
+
+                return affectedUris.Distinct().Count() <= 1;
             }
         }
 

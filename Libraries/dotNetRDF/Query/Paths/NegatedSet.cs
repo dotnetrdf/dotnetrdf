@@ -84,20 +84,18 @@ namespace VDS.RDF.Query.Paths
             {
                 return new NegatedPropertySet(context.Subject, context.Object, _properties);
             }
-            else if (_properties.Count == 0 && _inverseProperties.Count > 0)
+
+            if (_properties.Count == 0 && _inverseProperties.Count > 0)
             {
                 return new NegatedPropertySet(context.Object, context.Subject, _inverseProperties, true);
             }
-            else
-            {
-                PathTransformContext lhsContext = new PathTransformContext(context);
-                PathTransformContext rhsContext = new PathTransformContext(context);
-                lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(_properties, Enumerable.Empty<Property>()), lhsContext.Object));
-                rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet(Enumerable.Empty<Property>(), _inverseProperties), rhsContext.Object));
-                ISparqlAlgebra lhs = lhsContext.ToAlgebra();
-                ISparqlAlgebra rhs = rhsContext.ToAlgebra();
-                return new Union(lhs, rhs);
-            }
+            PathTransformContext lhsContext = new PathTransformContext(context);
+            PathTransformContext rhsContext = new PathTransformContext(context);
+            lhsContext.AddTriplePattern(new PropertyPathPattern(lhsContext.Subject, new NegatedSet(_properties, Enumerable.Empty<Property>()), lhsContext.Object));
+            rhsContext.AddTriplePattern(new PropertyPathPattern(rhsContext.Subject, new NegatedSet(Enumerable.Empty<Property>(), _inverseProperties), rhsContext.Object));
+            ISparqlAlgebra lhs = lhsContext.ToAlgebra();
+            ISparqlAlgebra rhs = rhsContext.ToAlgebra();
+            return new Union(lhs, rhs);
         }
 
         /// <summary>
@@ -112,7 +110,7 @@ namespace VDS.RDF.Query.Paths
 
             for (int i = 0; i < _properties.Count; i++)
             {
-                output.Append(_properties[i].ToString());
+                output.Append(_properties[i]);
                 if (i < _properties.Count - 1 || _inverseProperties.Count > 0)
                 {
                     output.Append(" | ");
@@ -120,7 +118,7 @@ namespace VDS.RDF.Query.Paths
             }
             for (int i = 0; i < _inverseProperties.Count; i++)
             {
-                output.Append(_inverseProperties[i].ToString());
+                output.Append(_inverseProperties[i]);
                 if (i < _inverseProperties.Count - 1)
                 {
                     output.Append(" | ");

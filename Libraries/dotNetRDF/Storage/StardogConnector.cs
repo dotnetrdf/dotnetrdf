@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -97,7 +97,7 @@ namespace VDS.RDF.Storage
     /// Has full support for Stardog Transactions, connection is in auto-commit mode by default i.e. all write operations (Delete/Save/Update) will create and use a dedicated transaction for their operation, if the operation fails the transaction will automatically be rolled back.  You can manage Transactions using the <see cref="BaseStardogConnector.Begin()">Begin()</see>, <see cref="BaseStardogConnector.Commit()">Commit()</see> and <see cref="BaseStardogConnector.Rollback()">Rollback()</see> methods.
     /// </para>
     /// <para>
-    /// The connector maintains a single transaction which is shared across all threads since Stardog is currently provides only MRSW (Multiple Reader Single Writer) concurrency and does not permit multiple transactions to occur simultaneously.  
+    /// The connector maintains a single transaction which is shared across all threads since Stardog is currently provides only MRSW (Multiple Reader Single Writer) concurrency and does not permit multiple transactions to occur simultaneously.
     /// </para>
     /// </remarks>
     public abstract class BaseStardogConnector
@@ -318,10 +318,8 @@ namespace VDS.RDF.Storage
             {
                 return results;
             }
-            else
-            {
-                return g;
-            }
+
+            return g;
         }
 
         /// <summary>
@@ -340,10 +338,8 @@ namespace VDS.RDF.Storage
             {
                 return results;
             }
-            else
-            {
-                return g;
-            }
+
+            return g;
         }
 
 
@@ -470,7 +466,7 @@ namespace VDS.RDF.Storage
                     if (reasoning)
                     {
                         postData.Append("reasoning=");
-                        postData.Append(reasoning.ToString() + "&");
+                        postData.Append(reasoning + "&");
                     }
                     postData.Append("query=");
                     postData.Append(HttpUtility.UrlEncode(sparqlQuery));
@@ -915,10 +911,8 @@ namespace VDS.RDF.Storage
                     }
                     return graphs;
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+
+                return Enumerable.Empty<Uri>();
             }
             catch (Exception ex)
             {
@@ -2781,7 +2775,6 @@ namespace VDS.RDF.Storage
                     return "reasoning=RDFS";
                 case StardogReasoningMode.SL:
                     return "reasoning=SL";
-                case StardogReasoningMode.None:
                 default:
                     return string.Empty;
             }

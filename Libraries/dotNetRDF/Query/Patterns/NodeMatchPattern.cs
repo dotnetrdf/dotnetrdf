@@ -68,10 +68,8 @@ namespace VDS.RDF.Query.Patterns
             {
                 return _node.Equals(obj);
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         /// <summary>

@@ -141,10 +141,8 @@ namespace VDS.RDF.Query.Datasets
                 }
                 return false;
             }
-            else
-            {
-                return _store.Remove(graphUri);
-            }
+
+            return _store.Remove(graphUri);
         }
 
         /// <summary>

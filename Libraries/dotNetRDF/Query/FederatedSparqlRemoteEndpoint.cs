@@ -247,7 +247,8 @@ namespace VDS.RDF.Query
                         count = active;
                         break;
                     }
-                    else if (active > count)
+
+                    if (active > count)
                     {
                         // There are more active requests then we thought
                         count = active;

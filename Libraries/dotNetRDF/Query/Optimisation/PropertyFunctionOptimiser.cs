@@ -92,22 +92,20 @@ namespace VDS.RDF.Query.Optimisation
                 // Return a new BGP
                 return new Bgp(ps);
             }
-            else if (algebra is ITerminalOperator)
+
+            if (algebra is ITerminalOperator)
             {
                 return algebra;
             }
-            else if (algebra is IAbstractJoin)
+            if (algebra is IAbstractJoin)
             {
                 return ((IAbstractJoin)algebra).Transform(this);
             }
-            else if (algebra is IUnaryOperator)
+            if (algebra is IUnaryOperator)
             {
                 return ((IUnaryOperator)algebra).Transform(this);
             }
-            else
-            {
-                return algebra;
-            }
+            return algebra;
         }
 
         /// <summary>

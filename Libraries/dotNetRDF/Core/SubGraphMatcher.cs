@@ -263,11 +263,9 @@ namespace VDS.RDF
                 {
                     return false;
                 }
-                else
-                {
-                    // Otherwise we can mark that Node as Bound
-                    _unbound.Remove(_mapping[pair.Key]);
-                }
+
+                // Otherwise we can mark that Node as Bound
+                _unbound.Remove(_mapping[pair.Key]);
             }
 
             // If all the Nodes were used only once and we mapped them all then it's a sub-graph
@@ -503,11 +501,9 @@ namespace VDS.RDF
                         _unbound.Remove(target.Y);
                         break;
                     }
-                    else
-                    {
-                        if (!xbound) _mapping.Remove(dependency.X);
-                        if (!ybound) _mapping.Remove(dependency.Y);
-                    }
+
+                    if (!xbound) _mapping.Remove(dependency.X);
+                    if (!ybound) _mapping.Remove(dependency.Y);
                 }
             }
 
@@ -520,16 +516,12 @@ namespace VDS.RDF
                 {
                     return true;
                 }
-                else
-                {
-                    _mapping = baseMapping;
-                    return TryBruteForceMapping(subgraph, parent, subNodes, parentNodes, subDependencies, parentDependencies);
-                }
-            }
-            else
-            {
+
+                _mapping = baseMapping;
                 return TryBruteForceMapping(subgraph, parent, subNodes, parentNodes, subDependencies, parentDependencies);
             }
+
+            return TryBruteForceMapping(subgraph, parent, subNodes, parentNodes, subDependencies, parentDependencies);
         }
 
         /// <summary>
@@ -549,7 +541,7 @@ namespace VDS.RDF
             // Populate existing Mappings
             foreach (KeyValuePair<INode,INode> fixedMapping in _mapping) 
             {
-                possibleMappings.Add(fixedMapping.Key, new List<INode>(fixedMapping.Value.AsEnumerable<INode>()));
+                possibleMappings.Add(fixedMapping.Key, new List<INode>(fixedMapping.Value.AsEnumerable()));
             }
 
             // Populate possibilities for each Node
@@ -628,7 +620,6 @@ namespace VDS.RDF
                                         MappingPair targetDependency = new MappingPair(n[dependency.X], n[dependency.Y], dependency.Type);
                                         if (!parentDependencies.Contains(targetDependency))
                                         {
-                                            continue;
                                         }
                                     }
                                 }
@@ -660,7 +651,6 @@ namespace VDS.RDF
 
                             if (xs.Count != ys.Count())
                             {
-                                continue;
                             }
                         }
                     }

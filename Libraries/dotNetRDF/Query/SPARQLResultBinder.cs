@@ -87,10 +87,8 @@ namespace VDS.RDF.Query
                     return (from g in _groups.Values
                             select g);
                 }
-                else
-                {
-                    return Enumerable.Empty<BindingGroup>();
-                }
+
+                return Enumerable.Empty<BindingGroup>();
             }
         }
 
@@ -115,15 +113,11 @@ namespace VDS.RDF.Query
                 {
                     return _groups[groupID];
                 }
-                else
-                {
-                    throw new RdfQueryException("The Group with ID " + groupID + " does not exist in the Result Binder");
-                }
+
+                throw new RdfQueryException("The Group with ID " + groupID + " does not exist in the Result Binder");
             }
-            else
-            {
-                throw new RdfQueryException("Cannot lookup a Group when the Query has not been executed or does not contain Groups as part of it's Results");
-            }
+
+            throw new RdfQueryException("Cannot lookup a Group when the Query has not been executed or does not contain Groups as part of it's Results");
         }
 
         /// <summary>
@@ -137,10 +131,8 @@ namespace VDS.RDF.Query
             {
                 return false;
             }
-            else
-            {
-                return _groups.ContainsKey(groupID);
-            }
+
+            return _groups.ContainsKey(groupID);
         }
 
         /// <summary>
@@ -223,10 +215,8 @@ namespace VDS.RDF.Query
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -241,14 +231,12 @@ namespace VDS.RDF.Query
                 GroupMultiset groupSet = (GroupMultiset)_context.InputMultiset;
                 return groupSet.Group(groupID);
             }
-            else if (_groupSet != null)
+
+            if (_groupSet != null)
             {
                 return _groupSet.Group(groupID);
             }
-            else
-            {
-                throw new RdfQueryException("Cannot retrieve a Group when the Input Multiset is not a Group Multiset");
-            }
+            throw new RdfQueryException("Cannot retrieve a Group when the Input Multiset is not a Group Multiset");
         }
 
         /// <summary>

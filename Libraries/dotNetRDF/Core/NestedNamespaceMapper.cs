@@ -123,10 +123,8 @@ namespace VDS.RDF
             {
                 return _uris[prefix].Last().Uri;
             }
-            else
-            {
-                throw new RdfException("The Namespace URI for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper");
-            }
+
+            throw new RdfException("The Namespace URI for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper");
         }
 
         /// <summary>
@@ -141,10 +139,8 @@ namespace VDS.RDF
             {
                 return _prefixes[hash].Last().Prefix;
             }
-            else
-            {
-                throw new RdfException("The Prefix for the given URI '" + uri.AbsoluteUri + "' is not known by the in-scope NamespaceMapper");
-            }
+
+            throw new RdfException("The Prefix for the given URI '" + uri.AbsoluteUri + "' is not known by the in-scope NamespaceMapper");
         }
 
         /// <summary>
@@ -158,10 +154,8 @@ namespace VDS.RDF
             {
                 return _uris[prefix].Last().Level;
             }
-            else
-            {
-                throw new RdfException("The Nesting Level for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper");
-            }
+
+            throw new RdfException("The Nesting Level for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper");
         }
 
         /// <summary>

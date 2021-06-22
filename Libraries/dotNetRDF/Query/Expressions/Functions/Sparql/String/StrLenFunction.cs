@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordStrLen + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordStrLen + "(" + _expr + ")";
         }
 
         /// <summary>

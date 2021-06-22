@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 // Ensured the MINed variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(_varname))
                 {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a MIN Aggregate since the Variable does not occur in a Graph Pattern");
+                    throw new RdfQueryException("Cannot use the Variable " + _expr + " in a MIN Aggregate since the Variable does not occur in a Graph Pattern");
                 }
             }
 
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             StringBuilder output = new StringBuilder();
             output.Append("MIN(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString() + ")");
+            output.Append(_expr + ")");
             return output.ToString();
         }
 

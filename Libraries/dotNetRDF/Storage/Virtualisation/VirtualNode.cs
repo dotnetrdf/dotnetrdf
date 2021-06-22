@@ -91,7 +91,7 @@ namespace VDS.RDF.Storage.Virtualisation
             : this(g, type, id, provider)
         {
             this._value = value;
-            if (this._value.NodeType != this._type) throw new RdfException("Cannot create a pre-materialised Virtual Node where the materialised value is a Node of the wrong type! Expected " + this._type.ToString() + " but got " + this._value.NodeType.ToString());
+            if (this._value.NodeType != this._type) throw new RdfException("Cannot create a pre-materialised Virtual Node where the materialised value is a Node of the wrong type! Expected " + this._type + " but got " + this._value.NodeType);
             this.OnMaterialise();
         }
 
@@ -104,7 +104,7 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 // Materialise the value
                 this._value = this._provider.GetValue(this._g, this._id);
-                if (this._value.NodeType != this._type) throw new RdfException("The Virtual RDF Provider materialised a Node of the wrong type! Expected " + this._type.ToString() + " but got " + this._value.NodeType.ToString());
+                if (this._value.NodeType != this._type) throw new RdfException("The Virtual RDF Provider materialised a Node of the wrong type! Expected " + this._type + " but got " + this._value.NodeType);
                 this.OnMaterialise();
             }
         }
@@ -248,10 +248,8 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 return 0;
             }
-            else
-            {
-                return this.CompareTo((INode)other);
-            }
+
+            return this.CompareTo((INode)other);
         }
 
         /// <summary>
@@ -451,10 +449,8 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 return this.Equals((INode)obj);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -505,18 +501,16 @@ namespace VDS.RDF.Storage.Virtualisation
                 // Non-equal node types cannot be equal
                 return false;
             }
-            else if (this.TryVirtualEquality(other, out areEqual))
+
+            if (this.TryVirtualEquality(other, out areEqual))
             {
                 // If Virtual Nodes originate from same virtual RDF provider can compare based on their virtual Node IDs
                 return areEqual;
             }
-            else
-            {
-                // If not both virtual and are of the same type the only way to determine equality is to
-                // materialise the value of this node and then check that against the other node
-                if (this._value == null) this.MaterialiseValue();
-                return this._value.Equals(other);
-            }
+            // If not both virtual and are of the same type the only way to determine equality is to
+            // materialise the value of this node and then check that against the other node
+            if (this._value == null) this.MaterialiseValue();
+            return this._value.Equals(other);
         }
 
         /// <summary>
@@ -533,10 +527,8 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 return this.Equals(other);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -558,15 +550,11 @@ namespace VDS.RDF.Storage.Virtualisation
                     areEqual = this._id.Equals(virt.VirtualID);
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
+
                 return false;
             }
+
+            return false;
         }
 
         /// <summary>

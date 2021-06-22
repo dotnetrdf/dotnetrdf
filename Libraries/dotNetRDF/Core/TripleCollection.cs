@@ -114,10 +114,8 @@ namespace VDS.RDF
                 {
                     return actual;
                 }
-                else
-                {
-                    throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
-                }
+
+                throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
             }
         }
 

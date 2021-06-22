@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
@@ -918,38 +917,36 @@ namespace VDS.RDF.Writing
             {
                 return _nodeComparer.Compare(x, y);
             }
-            else
+
+            switch (x.NodeType)
             {
-                switch (x.NodeType)
-                {
-                    case NodeType.Uri:
-                        // URIs are less than everything
+                case NodeType.Uri:
+                    // URIs are less than everything
+                    return -1;
+                case NodeType.Blank:
+                    if (y.NodeType == NodeType.Uri)
+                    {
+                        // Blanks and greater than URIs
+                        return 1;
+                    }
+                    else
+                    {
+                        // Blanks are less than everything else
                         return -1;
-                    case NodeType.Blank:
-                        if (y.NodeType == NodeType.Uri)
-                        {
-                            // Blanks and greater than URIs
-                            return 1;
-                        }
-                        else
-                        {
-                            // Blanks are less than everything else
-                            return -1;
-                        }
-                    case NodeType.Literal:
-                        if (y.NodeType == NodeType.Uri || y.NodeType == NodeType.Blank)
-                        {
-                            // Literals are greater than Blanks and URIs
-                            return 1;
-                        }
-                        else
-                        {
-                            // Literals are less than than everything else
-                            return -1;
-                        }
-                    default:
-                        throw new RdfOutputException("Cannot output an RDF Graph containing non-standard Node types as RDF/XML");
-                }
+                    }
+                case NodeType.Literal:
+                    if (y.NodeType == NodeType.Uri || y.NodeType == NodeType.Blank)
+                    {
+                        // Literals are greater than Blanks and URIs
+                        return 1;
+                    }
+                    else
+                    {
+                        // Literals are less than than everything else
+                        return -1;
+                    }
+                default:
+                    throw new RdfOutputException("Cannot output an RDF Graph containing non-standard Node types as RDF/XML");
             }
         }
     }

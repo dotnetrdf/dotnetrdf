@@ -378,14 +378,12 @@ namespace VDS.RDF.Parsing
                                     }
                                     return;
                                 }
-                                else
-                                {
-                                    // If the local copy didn't exist then we need to redo the response without
-                                    // the ETag as we've lost the cached copy somehow
-                                    _cache.RemoveETag(u);
-                                    Load(handler, u, parser);
-                                    return;
-                                }
+
+                                // If the local copy didn't exist then we need to redo the response without
+                                // the ETag as we've lost the cached copy somehow
+                                _cache.RemoveETag(u);
+                                Load(handler, u, parser);
+                                return;
                             }
                             // If we didn't get a Not-Modified response then we'll continue and parse the new response
                         }
@@ -411,7 +409,7 @@ namespace VDS.RDF.Parsing
                                 // We should use the original handler in its capacity as node factory,
                                 // otherwise there might be unexpected differences between its output
                                 // and that of the MultiHandler's
-                                handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler }, handler);
+                                handler = new MultiHandler(new[] { handler, cacheHandler }, handler);
                             }
                             else
                             {
@@ -472,14 +470,12 @@ namespace VDS.RDF.Parsing
                                 }
                                 return;
                             }
-                            else
-                            {
-                                // If the local copy didn't exist then we need to redo the response without
-                                // the ETag as we've lost the cached copy somehow
-                                _cache.RemoveETag(u);
-                                Load(handler, u, parser);
-                                return;
-                            }
+
+                            // If the local copy didn't exist then we need to redo the response without
+                            // the ETag as we've lost the cached copy somehow
+                            _cache.RemoveETag(u);
+                            Load(handler, u, parser);
+                            return;
                         }
                     }
                 }

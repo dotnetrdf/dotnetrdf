@@ -163,14 +163,14 @@ namespace VDS.RDF.Query
             if (_aggregate != null)
             {
                 output.Append('(');
-                output.Append(_aggregate.ToString());
+                output.Append(_aggregate);
                 output.Append(" AS ?" + _name);
                 output.Append(')');
             }
             else if (_expr != null)
             {
                 output.Append('(');
-                output.Append(_expr.ToString());
+                output.Append(_expr);
                 output.Append(" AS ?" + _name);
                 output.Append(')');
             }

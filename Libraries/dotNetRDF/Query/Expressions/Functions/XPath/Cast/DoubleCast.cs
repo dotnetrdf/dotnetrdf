@@ -86,28 +86,24 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 // Parsed OK
                                 return new DoubleNode(lit.Graph, d);
                             }
-                            else
+
+                            throw new RdfQueryException("Invalid lexical form for xsd:double");
+                        }
+
+                        {
+                            if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                             {
-                                throw new RdfQueryException("Invalid lexical form for xsd:double");
+                                // DateTime cast forbidden
+                                throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:double");
                             }
-                        }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            // DateTime cast forbidden
-                            throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:double");
-                        }
-                        else
-                        {
                             double d;
                             if (Double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
                                 return new DoubleNode(lit.Graph, d);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double");
-                            }
+
+                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double");
                         }
                     }
                     else
@@ -118,10 +114,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             // Parsed OK
                             return new DoubleNode(lit.Graph, d);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double");
-                        }
+
+                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:double");
                     }
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:double");
@@ -134,7 +128,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDouble + ">(" + _expr.ToString() + ")";
+            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDouble + ">(" + _expr + ")";
         }
 
         /// <summary>

@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Algebra
                             }
                             break;
                         default:
-                            throw new RdfQueryException("Cannot use a '" + _graphSpecifier.GetType().ToString() + "' Token to specify the Graph for a GRAPH clause");
+                            throw new RdfQueryException("Cannot use a '" + _graphSpecifier.GetType() + "' Token to specify the Graph for a GRAPH clause");
                     }
                 }
                 else
@@ -307,7 +307,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Graph(" + _graphSpecifier.Value + ", " + _pattern.ToString() + ")";
+            return "Graph(" + _graphSpecifier.Value + ", " + _pattern + ")";
         }
 
         /// <summary>

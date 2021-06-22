@@ -118,11 +118,9 @@ namespace VDS.RDF.Parsing
             if (value.Equals("true", comparison) || value.Equals("false", comparison))
             {
                 return true;
-            } 
-            else 
-            {
-                return (_validDecimal.IsMatch(value) || _validInteger.IsMatch(value) || _validDouble.IsMatch(value));
             }
+
+            return (_validDecimal.IsMatch(value) || _validInteger.IsMatch(value) || _validDouble.IsMatch(value));
         }
 
         /// <summary>
@@ -139,22 +137,20 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
-            else if (_validDecimal.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
+
+            if (_validDecimal.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
             {
                 return true;
             }
-            else if (_validInteger.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
+            if (_validInteger.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
             {
                 return true;
             }
-            else if (_validDouble.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
+            if (_validDouble.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -503,66 +499,58 @@ namespace VDS.RDF.Parsing
                     // If we saw a base % but there are not two subsequent characters not a valid PLX escape
                     return false;
                 }
-                else
+
+                char a = cs[startIndex + 1];
+                char b = cs[startIndex + 2];
+                if (IsHex(a) && IsHex(b))
                 {
-                    char a = cs[startIndex + 1];
-                    char b = cs[startIndex + 2];
-                    if (IsHex(a) && IsHex(b))
-                    {
-                        // Valid % encoding
-                        endIndex = startIndex + 2;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    // Valid % encoding
+                    endIndex = startIndex + 2;
+                    return true;
                 }
+
+                return false;
             }
-            else if (cs[startIndex] == '\\')
+
+            if (cs[startIndex] == '\\')
             {
                 if (startIndex >= cs.Length - 1)
                 {
                     // If we saw a backslash but no subsequent character not a valid PLX escape
                     return false;
                 }
-                else
+
+                char c = cs[startIndex + 1];
+                switch (c)
                 {
-                    char c = cs[startIndex + 1];
-                    switch (c)
-                    {
-                        case '_':
-                        case '~':
-                        case '-':
-                        case '.':
-                        case '!':
-                        case '$':
-                        case '&':
-                        case '\'':
-                        case '(':
-                        case ')':
-                        case '*':
-                        case '+':
-                        case ',':
-                        case ';':
-                        case '=':
-                        case '/':
-                        case '?':
-                        case '#':
-                        case '@':
-                        case '%':
-                            // Valid Escape
-                            endIndex = startIndex + 1;
-                            return true;
-                        default:
-                            return false;
-                    }
+                    case '_':
+                    case '~':
+                    case '-':
+                    case '.':
+                    case '!':
+                    case '$':
+                    case '&':
+                    case '\'':
+                    case '(':
+                    case ')':
+                    case '*':
+                    case '+':
+                    case ',':
+                    case ';':
+                    case '=':
+                    case '/':
+                    case '?':
+                    case '#':
+                    case '@':
+                    case '%':
+                        // Valid Escape
+                        endIndex = startIndex + 1;
+                        return true;
+                    default:
+                        return false;
                 }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -576,25 +564,23 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
-            else
+
+            switch (c)
             {
-                switch (c)
-                {
-                    case 'A':
-                    case 'a':
-                    case 'B':
-                    case 'b':
-                    case 'C':
-                    case 'c':
-                    case 'D':
-                    case 'd':
-                    case 'E':
-                    case 'f':
-                    case 'F':
-                        return true;
-                    default:
-                        return false;
-                }
+                case 'A':
+                case 'a':
+                case 'B':
+                case 'b':
+                case 'C':
+                case 'c':
+                case 'D':
+                case 'd':
+                case 'E':
+                case 'f':
+                case 'F':
+                    return true;
+                default:
+                    return false;
             }
         }
 
@@ -648,25 +634,23 @@ namespace VDS.RDF.Parsing
                 // Is a Boolean
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
             }
-            else if (_validInteger.IsMatch(value)) 
+
+            if (_validInteger.IsMatch(value)) 
             {
                 // Is an Integer
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger);
             }
-            else if (_validDecimal.IsMatch(value))
+            if (_validDecimal.IsMatch(value))
             {
                 // Is a Decimal
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
             }
-            else if (_validDouble.IsMatch(value))
+            if (_validDouble.IsMatch(value))
             {
                 // Is a Double
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble);
             }
-            else
-            {
-                throw new RdfParseException("Unable to automatically Infer a Type for this PlainLiteralToken.  Plain Literals may only be Booleans, Integers, Decimals or Doubles");
-            }
+            throw new RdfParseException("Unable to automatically Infer a Type for this PlainLiteralToken.  Plain Literals may only be Booleans, Integers, Decimals or Doubles");
         }
 
         #region W3C Standardised Turtle Character Productions
@@ -682,28 +666,26 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
-            else if (c >= 'A' && c <= 'Z')
+
+            if (c >= 'A' && c <= 'Z')
             {
                 return true;
             }
-            else if ((c >= 0x00c0 && c <= 0x00d6) ||
-                     (c >= 0x00d8 && c <= 0x00f6) ||
-                     (c >= 0x00f8 && c <= 0x02ff) ||
-                     (c >= 0x0370 && c <= 0x037d) ||
-                     (c >= 0x037f && c <= 0x1fff) ||
-                     (c >= 0x200c && c <= 0x200d) ||
-                     (c >= 0x2070 && c <= 0x218f) ||
-                     (c >= 0x2c00 && c <= 0x2fef) ||
-                     (c >= 0x3001 && c <= 0xd7ff) ||
-                     (c >= 0xf900 && c <= 0xfdcf) ||
-                     (c >= 0xfdf0 && c <= 0xfffd))
+            if ((c >= 0x00c0 && c <= 0x00d6) ||
+                (c >= 0x00d8 && c <= 0x00f6) ||
+                (c >= 0x00f8 && c <= 0x02ff) ||
+                (c >= 0x0370 && c <= 0x037d) ||
+                (c >= 0x037f && c <= 0x1fff) ||
+                (c >= 0x200c && c <= 0x200d) ||
+                (c >= 0x2070 && c <= 0x218f) ||
+                (c >= 0x2c00 && c <= 0x2fef) ||
+                (c >= 0x3001 && c <= 0xd7ff) ||
+                (c >= 0xf900 && c <= 0xfdcf) ||
+                (c >= 0xfdf0 && c <= 0xfffd))
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -719,10 +701,8 @@ namespace VDS.RDF.Parsing
                 int codepoint = UnicodeSpecsHelper.ConvertToUtf32(c, d);
                 return (codepoint >= 0x10000 && codepoint <= 0xeffff);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -737,30 +717,28 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
-            else if (Char.IsDigit(c))
+
+            if (Char.IsDigit(c))
             {
                 return true;
             }
-            else if (c == 0x00b7)
+            if (c == 0x00b7)
             {
                 return true;
             }
-            else if (c >= 0x0300 && c <= 0x036f)
+            if (c >= 0x0300 && c <= 0x036f)
             {
                 return true;
             }
-            else if (c >= 0x203f && c <= 0x2040)
+            if (c >= 0x203f && c <= 0x2040)
             {
                 return true;
             }
-            else if (IsPNCharsU(c))
+            if (IsPNCharsU(c))
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -814,32 +792,30 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
-            else if (c >= 'a' && c <= 'z')
+
+            if (c >= 'a' && c <= 'z')
             {
                 return true;
             }
-            else if (c == '_')
+            if (c == '_')
             {
                 return true;
             }
-            else if ((c >= 0x00c0 && c <= 0x00d6) ||
-                     (c >= 0x00d8 && c <= 0x00f6) ||
-                     (c >= 0x00f8 && c <= 0x02ff) ||
-                     (c >= 0x0370 && c <= 0x037d) ||
-                     (c >= 0x037f && c <= 0x1fff) ||
-                     (c >= 0x200c && c <= 0x200d) ||
-                     (c >= 0x2070 && c <= 0x218f) ||
-                     (c >= 0x2c00 && c <= 0x2fef) ||
-                     (c >= 0x3001 && c <= 0xd7ff) ||
-                     (c >= 0xf900 && c <= 0xfdcf) ||
-                     (c >= 0xfdf0 && c <= 0xfffd))
+            if ((c >= 0x00c0 && c <= 0x00d6) ||
+                (c >= 0x00d8 && c <= 0x00f6) ||
+                (c >= 0x00f8 && c <= 0x02ff) ||
+                (c >= 0x0370 && c <= 0x037d) ||
+                (c >= 0x037f && c <= 0x1fff) ||
+                (c >= 0x200c && c <= 0x200d) ||
+                (c >= 0x2070 && c <= 0x218f) ||
+                (c >= 0x2c00 && c <= 0x2fef) ||
+                (c >= 0x3001 && c <= 0xd7ff) ||
+                (c >= 0xf900 && c <= 0xfdcf) ||
+                (c >= 0xfdf0 && c <= 0xfffd))
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -855,10 +831,8 @@ namespace VDS.RDF.Parsing
                 int codepoint = UnicodeSpecsHelper.ConvertToUtf32(c, d);
                 return (codepoint >= 0x10000 && codepoint <= 0xeffff);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -873,22 +847,20 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
-            else if (Char.IsDigit(c))
+
+            if (Char.IsDigit(c))
             {
                 return true;
             }
-            else if (c == 0x00b7)
+            if (c == 0x00b7)
             {
                 return true;
             }
-            else if ((c >= 0x0300 && c <= 0x036f) || (c >= 0x203f && c <= 0x2040))
+            if ((c >= 0x0300 && c <= 0x036f) || (c >= 0x203f && c <= 0x2040))
             {
                 return true;
             }
-            else
-            {
-                return IsNameStartChar(c);
-            }
+            return IsNameStartChar(c);
         }
 
         /// <summary>

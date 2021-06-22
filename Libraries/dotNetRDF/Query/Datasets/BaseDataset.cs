@@ -101,10 +101,8 @@ namespace VDS.RDF.Query.Datasets
             {
                 return null;
             }
-            else
-            {
-                return GetGraphInternal(_defaultGraphUri);
-            }
+
+            return GetGraphInternal(_defaultGraphUri);
         }
 
         private Stack<IGraph> InitGraphStack()
@@ -117,7 +115,7 @@ namespace VDS.RDF.Query.Datasets
             Stack<IEnumerable<Uri>> s = new Stack<IEnumerable<Uri>>();
             if (!_unionDefaultGraph)
             {
-                s.Push(new Uri[] { _defaultGraphUri });
+                s.Push(new[] { _defaultGraphUri });
             }
             return s;
         }
@@ -159,7 +157,7 @@ namespace VDS.RDF.Query.Datasets
             if (HasGraph(graphUri))
             {
                 SetDefaultGraphInternal(this[graphUri]);
-                _defaultGraphUris.Value.Push(new Uri[] { graphUri });
+                _defaultGraphUris.Value.Push(new[] { graphUri });
             }
             else
             {
@@ -230,7 +228,7 @@ namespace VDS.RDF.Query.Datasets
             else if (HasGraph(graphUri))
             {
                 SetActiveGraphInternal(this[graphUri]);
-                _activeGraphUris.Value.Push(new Uri[] { graphUri });
+                _activeGraphUris.Value.Push(new[] { graphUri });
             }
             else
             {
@@ -316,10 +314,8 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return _defaultGraphUris.Value.Peek();
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+
+                return Enumerable.Empty<Uri>();
             }
         }
 
@@ -334,10 +330,8 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return _activeGraphUris.Value.Peek();
                 }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+
+                return Enumerable.Empty<Uri>();
             }
         }
 
@@ -375,7 +369,8 @@ namespace VDS.RDF.Query.Datasets
                     _defaultGraph.Value.Clear();
                     return true;
                 }
-                else if (HasGraph(graphUri))
+
+                if (HasGraph(graphUri))
                 {
                     return RemoveGraphInternal(graphUri);
                 }
@@ -406,15 +401,11 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return true;
                 }
-                else
-                {
-                    return HasGraphInternal(null);
-                }
+
+                return HasGraphInternal(null);
             }
-            else
-            {
-                return HasGraphInternal(graphUri);
-            }
+
+            return HasGraphInternal(graphUri);
         }
 
         /// <summary>
@@ -460,15 +451,11 @@ namespace VDS.RDF.Query.Datasets
                     {
                         return _defaultGraph.Value;
                     }
-                    else
-                    {
-                        return GetGraphInternal(null);
-                    }
+
+                    return GetGraphInternal(null);
                 }
-                else
-                {
-                    return GetGraphInternal(graphUri);
-                }
+
+                return GetGraphInternal(graphUri);
             }
         }
 
@@ -515,15 +502,11 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return ContainsTripleInternal(t);
                 }
-                else
-                {
-                    return _defaultGraph.Value.ContainsTriple(t);
-                }
+
+                return _defaultGraph.Value.ContainsTriple(t);
             }
-            else
-            {
-                return _activeGraph.Value.ContainsTriple(t);
-            }
+
+            return _activeGraph.Value.ContainsTriple(t);
         }
 
         /// <summary>
@@ -547,17 +530,13 @@ namespace VDS.RDF.Query.Datasets
                         // No specific Active Graph which implies that the Default Graph is the entire Triple Store
                         return GetAllTriples();
                     }
-                    else
-                    {
-                        // Specific Default Graph so return that
-                        return _defaultGraph.Value.Triples;
-                    }
+
+                    // Specific Default Graph so return that
+                    return _defaultGraph.Value.Triples;
                 }
-                else
-                {
-                    // Active Graph is used (which may happen to be the Default Graph)
-                    return _activeGraph.Value.Triples;
-                }
+
+                // Active Graph is used (which may happen to be the Default Graph)
+                return _activeGraph.Value.Triples;
             }
         }
 
@@ -580,15 +559,11 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return GetTriplesWithSubjectInternal(subj);
                 }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithSubject(subj);
-                }
+
+                return _defaultGraph.Value.GetTriplesWithSubject(subj);
             }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithSubject(subj);
-            }
+
+            return _activeGraph.Value.GetTriplesWithSubject(subj);
         }
 
         /// <summary>
@@ -611,15 +586,11 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return GetTriplesWithPredicateInternal(pred);
                 }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithPredicate(pred);
-                }
+
+                return _defaultGraph.Value.GetTriplesWithPredicate(pred);
             }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithPredicate(pred);
-            }
+
+            return _activeGraph.Value.GetTriplesWithPredicate(pred);
         }
 
         /// <summary>
@@ -642,15 +613,11 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return GetTriplesWithObjectInternal(obj);
                 }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithObject(obj);
-                }
+
+                return _defaultGraph.Value.GetTriplesWithObject(obj);
             }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithObject(obj);
-            }
+
+            return _activeGraph.Value.GetTriplesWithObject(obj);
         }
 
         /// <summary>
@@ -674,15 +641,11 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return GetTriplesWithSubjectPredicateInternal(subj, pred);
                 }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithSubjectPredicate(subj, pred);
-                }
+
+                return _defaultGraph.Value.GetTriplesWithSubjectPredicate(subj, pred);
             }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithSubjectPredicate(subj, pred);
-            }
+
+            return _activeGraph.Value.GetTriplesWithSubjectPredicate(subj, pred);
         }
 
         /// <summary>
@@ -707,15 +670,11 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return GetTriplesWithSubjectObjectInternal(subj, obj);
                 }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithSubjectObject(subj, obj);
-                }
+
+                return _defaultGraph.Value.GetTriplesWithSubjectObject(subj, obj);
             }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithSubjectObject(subj, obj);
-            }
+
+            return _activeGraph.Value.GetTriplesWithSubjectObject(subj, obj);
         }
 
         /// <summary>
@@ -740,15 +699,11 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return GetTriplesWithPredicateObjectInternal(pred, obj);
                 }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithPredicateObject(pred, obj);
-                }
+
+                return _defaultGraph.Value.GetTriplesWithPredicateObject(pred, obj);
             }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithPredicateObject(pred, obj);
-            }
+
+            return _activeGraph.Value.GetTriplesWithPredicateObject(pred, obj);
         }
 
         /// <summary>
@@ -898,7 +853,8 @@ namespace VDS.RDF.Query.Datasets
                     _actions.Add(new GraphPersistenceAction(wrapper, GraphPersistenceActionType.Modified));
                     return true;
                 }
-                else if (HasGraph(graphUri))
+
+                if (HasGraph(graphUri))
                 {
                     _actions.Add(new GraphPersistenceAction(this[graphUri], GraphPersistenceActionType.Deleted));
                     return RemoveGraphInternal(graphUri);
@@ -930,23 +886,19 @@ namespace VDS.RDF.Query.Datasets
                     {
                         return InternalDefaultGraph;
                     }
-                    else if (_modifiableGraphs.HasGraph(graphUri))
+
+                    if (_modifiableGraphs.HasGraph(graphUri))
                     {
                         return _modifiableGraphs[graphUri];
                     }
-                    else
-                    {
-                        return GetGraphInternal(null);
-                    }
+                    return GetGraphInternal(null);
                 }
-                else if (_modifiableGraphs.HasGraph(graphUri))
+
+                if (_modifiableGraphs.HasGraph(graphUri))
                 {
                     return _modifiableGraphs[graphUri];
                 }
-                else
-                {
-                    return GetGraphInternal(graphUri);
-                }
+                return GetGraphInternal(graphUri);
             }
         }
 

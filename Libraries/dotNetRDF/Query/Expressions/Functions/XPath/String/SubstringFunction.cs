@@ -87,24 +87,20 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     // If no/negative characters are being selected the empty string is returned
                     return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
-                else if ((s - 1) > input.Value.Length)
+
+                if ((s - 1) > input.Value.Length)
                 {
                     // If the start is after the end of the string the empty string is returned
                     return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
-                else
+                if (((s - 1) + l) > input.Value.Length)
                 {
-                    if (((s - 1) + l) > input.Value.Length)
-                    {
-                        // If the start plus the length is greater than the length of the string the string from the starts onwards is returned
-                        return new StringNode(null, input.Value.Substring(s - 1), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                    }
-                    else
-                    {
-                        // Otherwise do normal substring
-                        return new StringNode(null, input.Value.Substring(s - 1, l), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                    }
+                    // If the start plus the length is greater than the length of the string the string from the starts onwards is returned
+                    return new StringNode(null, input.Value.Substring(s - 1), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
+
+                // Otherwise do normal substring
+                return new StringNode(null, input.Value.Substring(s - 1, l), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
             else
             {
@@ -137,30 +133,22 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                             // Appropriately typed literals are fine
                             return temp;
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a typed literal with an invalid type");
-                        }
+
+                        throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a typed literal with an invalid type");
                     }
-                    else if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
+
+                    if (argumentTypeValidator(UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString)))
                     {
                         // Untyped Literals are treated as Strings and may be returned when the argument allows strings
                         return temp;
                     }
-                    else
-                    {
-                        throw new RdfQueryException("Unable to evalaute an XPath substring as one of the argument expressions returned an untyped literal");
-                    }
+                    throw new RdfQueryException("Unable to evalaute an XPath substring as one of the argument expressions returned an untyped literal");
                 }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a non-literal");
-                }
+
+                throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions returned a non-literal");
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions evaluated to null");
-            }
+
+            throw new RdfQueryException("Unable to evaluate an XPath substring as one of the argument expressions evaluated to null");
         }
 
         /// <summary>
@@ -174,10 +162,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 {
                     return _expr.Variables.Concat(_start.Variables).Concat(_length.Variables);
                 }
-                else
-                {
-                    return _expr.Variables.Concat(_start.Variables);
-                }
+
+                return _expr.Variables.Concat(_start.Variables);
             }
         }
 
@@ -189,12 +175,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             if (_length != null)
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + _expr.ToString() + "," + _start.ToString() + "," + _length.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + _expr + "," + _start + "," + _length + ")";
             }
-            else
-            {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + _expr.ToString() + "," + _start.ToString() + ")";
-            }
+
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + _expr + "," + _start + ")";
         }
 
         /// <summary>
@@ -228,12 +212,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 if (_length != null)
                 {
-                    return new ISparqlExpression[] { _expr, _start, _length };
+                    return new[] { _expr, _start, _length };
                 }
-                else
-                {
-                    return new ISparqlExpression[] { _expr, _start };
-                }
+
+                return new[] { _expr, _start };
             }
         }
 
@@ -259,10 +241,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return new SubstringFunction(transformer.Transform(_expr), transformer.Transform(_start), transformer.Transform(_length));
             }
-            else
-            {
-                return new SubstringFunction(transformer.Transform(_expr), transformer.Transform(_start));
-            }
+
+            return new SubstringFunction(transformer.Transform(_expr), transformer.Transform(_start));
         }
     }
 }

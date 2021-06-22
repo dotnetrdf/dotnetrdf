@@ -115,10 +115,8 @@ namespace VDS.RDF.Query.Patterns
                 }
                 return m;
             }
-            else
-            {
-                return new IdentityMultiset();
-            }
+
+            return new IdentityMultiset();
         }
 
         /// <summary>
@@ -137,7 +135,7 @@ namespace VDS.RDF.Query.Patterns
             output.AppendLine("{");
             foreach (BindingTuple t in _tuples)
             {
-                output.AppendLine("  " + t.ToString());
+                output.AppendLine("  " + t);
             }
             output.AppendLine("}");
 
@@ -191,10 +189,8 @@ namespace VDS.RDF.Query.Patterns
                 {
                     return ((NodeMatchPattern)temp).Node;
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
         }
 

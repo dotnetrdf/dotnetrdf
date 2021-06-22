@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml;
 
 namespace VDS.RDF.Parsing.Events.RdfXml
@@ -123,7 +122,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if NETCORE 
+#if NETCORE
             settings.DtdProcessing = DtdProcessing.Ignore;
 #elif NET40 || NETSTANDARD2_0
             settings.DtdProcessing = DtdProcessing.Parse;
@@ -201,7 +200,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
 
                             if (root.BaseUri.Equals(String.Empty))
                             {
-                                root.BaseUri = _currentBaseUri;                                
+                                root.BaseUri = _currentBaseUri;
                             }
 
                             return root;
@@ -248,13 +247,11 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         return GetNextEvent();
 
                     default:
-                        throw new RdfParseException("Unexpected XML Node Type " + _reader.NodeType.ToString() + " encountered");
+                        throw new RdfParseException("Unexpected XML Node Type " + _reader.NodeType + " encountered");
                 }
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         private String GetBaseUri()
@@ -264,10 +261,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             {
                 return _currentBaseUri;
             }
-            else
-            {
-                return _reader.BaseURI;
-            }
+
+            return _reader.BaseURI;
         }
 
         private IRdfXmlEvent GetNextAttribute()
@@ -278,29 +273,28 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                 // Generate an event for xml:lang
                 return new LanguageAttributeEvent(_reader.Value, _reader.Value, GetPosition());
             }
-            else if (IsName("base", XmlSpecsHelper.NamespaceXml))
+
+            if (IsName("base", XmlSpecsHelper.NamespaceXml))
             {
                 // Generate an event for xml:base
                 return new XmlBaseAttributeEvent(_reader.Value, _reader.Value, GetPosition());
             }
-            else if (IsInNamespace(XmlSpecsHelper.NamespaceXmlNamespaces))
+            if (IsInNamespace(XmlSpecsHelper.NamespaceXmlNamespaces))
             {
                 // Return a Namespace Attribute Event
                 if (_reader.LocalName.Equals("xmlns"))
                 {
                     return new NamespaceAttributeEvent(String.Empty, _reader.Value, _reader.Value, GetPosition());
                 }
-                else
-                {
-                    return new NamespaceAttributeEvent(_reader.LocalName, _reader.Value, _reader.Value, GetPosition());
-                }
+
+                return new NamespaceAttributeEvent(_reader.LocalName, _reader.Value, _reader.Value, GetPosition());
             }
-            else if (IsInNamespace(XmlSpecsHelper.NamespaceXml) || (_reader.NamespaceURI.Equals(String.Empty) && _reader.Name.StartsWith("xml")))
+            if (IsInNamespace(XmlSpecsHelper.NamespaceXml) || (_reader.NamespaceURI.Equals(String.Empty) && _reader.Name.StartsWith("xml")))
             {
                 // Ignore other XML reserved names
                 return null;
             }
-            else if (IsName("parseType", NamespaceMapper.RDF))
+            if (IsName("parseType", NamespaceMapper.RDF))
             {
                 // Support Parse Type by returning an appropriate event
                 switch (_reader.Value)
@@ -309,22 +303,18 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         return new ParseTypeAttributeEvent(RdfXmlParseType.Resource, _reader.Value, GetPosition());
                     case "Collection":
                         return new ParseTypeAttributeEvent(RdfXmlParseType.Collection, _reader.Value, GetPosition());
-                    case "Literal":
                     default:
                         _parseLiteral = true;
                         return new ParseTypeAttributeEvent(RdfXmlParseType.Literal, _reader.Value, GetPosition());
                 }
             }
-            else
+            if (string.IsNullOrEmpty(_reader.NamespaceURI) &&
+                RdfXmlSpecsHelper.IsAmbigiousAttributeName(_reader.LocalName))
             {
-                if (string.IsNullOrEmpty(_reader.NamespaceURI) &&
-                    RdfXmlSpecsHelper.IsAmbigiousAttributeName(_reader.LocalName))
-                {
-                    throw new RdfParseException("An Attribute with an ambiguous name '" + _reader.LocalName + "' was encountered.  The following attribute names MUST have the rdf: prefix - about, aboutEach, ID, bagID, type, resource, parseType");
-                }
-                // Normal attribute
-                return new AttributeEvent(_reader.Name, _reader.Value, _reader.Value, GetPosition());
+                throw new RdfParseException("An Attribute with an ambiguous name '" + _reader.LocalName + "' was encountered.  The following attribute names MUST have the rdf: prefix - about, aboutEach, ID, bagID, type, resource, parseType");
             }
+            // Normal attribute
+            return new AttributeEvent(_reader.Name, _reader.Value, _reader.Value, GetPosition());
         }
 
         private IRdfXmlEvent GetElement()
@@ -395,10 +385,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             {
                 return new PositionInfo((IXmlLineInfo)_reader);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         private bool IsName(String localName, String namespaceUri)

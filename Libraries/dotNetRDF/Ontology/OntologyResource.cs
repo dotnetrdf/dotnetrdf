@@ -144,7 +144,7 @@ namespace VDS.RDF.Ontology
         /// <param name="propertyUri">Property URI.</param>
         /// <param name="value">Literal Value.</param>
         /// <param name="persist">Whether the new value should be added to the Graph.</param>
-        public bool AddLiteralProperty(String propertyUri, ILiteralNode value, bool persist) 
+        public bool AddLiteralProperty(String propertyUri, ILiteralNode value, bool persist)
         {
             if (_literalProperties.ContainsKey(propertyUri))
             {
@@ -154,17 +154,13 @@ namespace VDS.RDF.Ontology
                     if (persist) _graph.Assert(new Triple(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
-            else
-            {
-                _literalProperties.Add(propertyUri, new List<ILiteralNode>() { value });
-                if (persist) _graph.Assert(new Triple(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
-                return true;
-            }
+
+            _literalProperties.Add(propertyUri, new List<ILiteralNode>() { value });
+            if (persist) _graph.Assert(new Triple(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
+            return true;
         }
 
         /// <summary>
@@ -195,17 +191,13 @@ namespace VDS.RDF.Ontology
                     if (persist) _graph.Assert(new Triple(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
-            else
-            {
-                _resourceProperties.Add(propertyUri, new HashSet<INode>() { value });
-                if (persist) _graph.Assert(new Triple(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
-                return true;
-            }
+
+            _resourceProperties.Add(propertyUri, new HashSet<INode>() { value });
+            if (persist) _graph.Assert(new Triple(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
+            return true;
         }
 
         /// <summary>
@@ -233,10 +225,8 @@ namespace VDS.RDF.Ontology
                 if (persist) _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri))).ToList());
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -263,10 +253,8 @@ namespace VDS.RDF.Ontology
                 if (persist) _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri))).ToList());
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -296,15 +284,11 @@ namespace VDS.RDF.Ontology
                     if (persist) _graph.Retract(new Triple(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
+
                 return false;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -335,15 +319,11 @@ namespace VDS.RDF.Ontology
                     if (persist) _graph.Retract(new Triple(_resource, _graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
+
                 return false;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -909,10 +889,8 @@ namespace VDS.RDF.Ontology
             {
                 return _literalProperties[propertyUri];
             }
-            else
-            {
-                return Enumerable.Empty<ILiteralNode>();
-            }
+
+            return Enumerable.Empty<ILiteralNode>();
         }
 
         /// <summary>
@@ -937,10 +915,8 @@ namespace VDS.RDF.Ontology
             {
                 return _resourceProperties[propertyUri];
             }
-            else
-            {
-                return Enumerable.Empty<INode>();
-            }
+
+            return Enumerable.Empty<INode>();
         }
 
         /// <summary>
@@ -1105,10 +1081,8 @@ namespace VDS.RDF.Ontology
             {
                 return Label.First().ToString();
             }
-            else
-            {
-                return _resource.ToString();
-            }
+
+            return _resource.ToString();
         }
 
         /// <summary>
@@ -1152,16 +1126,14 @@ namespace VDS.RDF.Ontology
             {
                 return (Graph)results;
             }
-            else if (results is IGraph)
+
+            if (results is IGraph)
             {
                 Graph g = new Graph();
                 g.Merge((IGraph)results);
                 return g;
             }
-            else
-            {
-                throw new InvalidCastException("Unable to cast this Resource to a valid Graph");
-            }
+            throw new InvalidCastException("Unable to cast this Resource to a valid Graph");
         }
     }
 }

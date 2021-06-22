@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordEncodeForUri + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordEncodeForUri + "(" + _expr + ")";
         }
 
         /// <summary>

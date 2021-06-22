@@ -260,7 +260,6 @@ namespace VDS.RDF.Update.Protocol
                 // If the GetGraph() method errors this implies that the Store does not contain the Graph
                 // In such a case we should return a 404
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return;
             }
         }
 
@@ -302,21 +301,18 @@ namespace VDS.RDF.Update.Protocol
                         // One/More commands either do no affect a Single Graph or don't affect the Graph
                         // implied by the HTTP Request so give a 422 response
                         context.Response.StatusCode = 422;
-                        return;
                     }
                 }
                 else
                 {
                     // Don't understand other forms of PATCH requests
                     context.Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
-                    return;
                 }
             }
             else
             {
                 // Empty Request is a Bad Request
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return;
             }
         }
 
@@ -358,16 +354,12 @@ namespace VDS.RDF.Update.Protocol
                 {
                     return ((SparqlResultSet)results).Result;
                 }
-                else
-                {
-                    throw new SparqlHttpProtocolException("Failed to retrieve a Boolean Result since the query processor did not return a valid SPARQL Result Set as expected");
-                }
+
+                throw new SparqlHttpProtocolException("Failed to retrieve a Boolean Result since the query processor did not return a valid SPARQL Result Set as expected");
             }
-            else
-            {
-                IGraph g = GetGraph(graphUri);
-                return !g.IsEmpty;
-            }
+
+            IGraph g = GetGraph(graphUri);
+            return !g.IsEmpty;
         }
     }
 }

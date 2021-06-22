@@ -120,74 +120,68 @@ namespace VDS.RDF.Query.Expressions
                 {
                     return new BooleanCast(arg);
                 }
-                else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
+
+                if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                 {
                     return new DateTimeCast(arg);
                 }
-                else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
+                if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
                 {
                     return new DecimalCast(arg);
                 }
-                else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
+                if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
                 {
                     return new DoubleCast(arg);
                 }
-                else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
+                if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
                 {
                     return new FloatCast(arg);
                 }
-                else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger) || cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeInt))
+                if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger) || cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeInt))
                 {
                     return new IntegerCast(arg);
                 }
-                else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                 {
                     return new StringCast(arg);
                 }
-                else
-                {
-                    throw new RdfParseException("Unable to parse a supported XPath Cast Function with IRI <" + u.AbsoluteUri + ">, it appears to be a valid Cast function URI but it couldn't be parsed");
-                }
+                throw new RdfParseException("Unable to parse a supported XPath Cast Function with IRI <" + u.AbsoluteUri + ">, it appears to be a valid Cast function URI but it couldn't be parsed");
             }
-            else
+
+            // Try to use the Global Custom Factories to generate the Expression
+            ISparqlExpression expr = null;
+            foreach (ISparqlCustomExpressionFactory customFactory in CustomFactories)
             {
-                // Try to use the Global Custom Factories to generate the Expression
-                ISparqlExpression expr = null;
-                foreach (ISparqlCustomExpressionFactory customFactory in CustomFactories)
+                if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr))
                 {
-                    if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr))
-                    {
-                        // If the Factory succesfully creates an expression we'll return it
-                        return expr;
-                    }
+                    // If the Factory succesfully creates an expression we'll return it
+                    return expr;
                 }
-
-                // If we have any locally scoped factories then we can now use these to try and generate the Expression
-                foreach (ISparqlCustomExpressionFactory customFactory in factories)
-                {
-                    if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr)) 
-                    {
-                        // If the Factory creates an expression we'll return it
-                        return expr;
-                    }
-                }
-
-                // If we're allowing Unknown functions return an UnknownFunction
-                if (Options.QueryAllowUnknownFunctions)
-                {
-                    if (args.Count == 0)
-                    {
-                        return new UnknownFunction(u);
-                    }
-                    else
-                    {
-                        return new UnknownFunction(u, args);
-                    }
-                }
-
-                // If we get here we haven't been able to create an expression so we error
-                throw new RdfParseException("Unable to parse a SPARQL Extension Function with IRI <" + u.AbsoluteUri + ">, it is not a supported Casting function and no Custom Expression Factories are able to generate an Expression from this IRI");
             }
+
+            // If we have any locally scoped factories then we can now use these to try and generate the Expression
+            foreach (ISparqlCustomExpressionFactory customFactory in factories)
+            {
+                if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr)) 
+                {
+                    // If the Factory creates an expression we'll return it
+                    return expr;
+                }
+            }
+
+            // If we're allowing Unknown functions return an UnknownFunction
+            if (Options.QueryAllowUnknownFunctions)
+            {
+                if (args.Count == 0)
+                {
+                    return new UnknownFunction(u);
+                }
+
+                return new UnknownFunction(u, args);
+            }
+
+            // If we get here we haven't been able to create an expression so we error
+            throw new RdfParseException("Unable to parse a SPARQL Extension Function with IRI <" + u.AbsoluteUri + ">, it is not a supported Casting function and no Custom Expression Factories are able to generate an Expression from this IRI");
         }
 
         /// <summary>

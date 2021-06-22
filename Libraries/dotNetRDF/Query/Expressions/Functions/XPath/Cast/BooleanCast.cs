@@ -86,10 +86,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             {
                                 return new BooleanNode(lit.Graph, b);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid Lexical Form for xsd:boolean");
-                            }
+
+                            throw new RdfQueryException("Invalid Lexical Form for xsd:boolean");
                         }
 
                         // Cast based on Numeric Type
@@ -105,10 +103,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     {
                                         return new BooleanNode(lit.Graph, false);
                                     }
-                                    else
-                                    {
-                                        return new BooleanNode(lit.Graph, true);
-                                    }
+
+                                    return new BooleanNode(lit.Graph, true);
                                 }
                                 else
                                 {
@@ -123,10 +119,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     {
                                         return new BooleanNode(lit.Graph, false);
                                     }
-                                    else
-                                    {
-                                        return new BooleanNode(lit.Graph, true);
-                                    }
+
+                                    return new BooleanNode(lit.Graph, true);
                                 }
                                 else
                                 {
@@ -141,10 +135,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     {
                                         return new BooleanNode(lit.Graph, false);
                                     }
-                                    else
-                                    {
-                                        return new BooleanNode(lit.Graph, true);
-                                    }
+
+                                    return new BooleanNode(lit.Graph, true);
                                 }
                                 else
                                 {
@@ -164,10 +156,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                     {
                                         return new BooleanNode(lit.Graph, b);
                                     }
-                                    else
-                                    {
-                                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
-                                    }
+
+                                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
                                 }
 
                             default:
@@ -181,10 +171,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         {
                             return new BooleanNode(lit.Graph, b);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
-                        }
+
+                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:boolean");
                     }
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:decimal");
@@ -197,7 +185,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">(" + _expr.ToString() + ")";
+            return "<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">(" + _expr + ")";
         }
 
         /// <summary>

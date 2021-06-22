@@ -626,10 +626,8 @@ namespace VDS.RDF
                 mapping = matcher.Mapping;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         #endregion
@@ -663,10 +661,8 @@ namespace VDS.RDF
                 mapping = matcher.Mapping;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -885,10 +881,8 @@ namespace VDS.RDF
                 d(this, args);
                 return !args.Cancel;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         /// <summary>
@@ -912,10 +906,8 @@ namespace VDS.RDF
                 d(this, args);
                 return !args.Cancel;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         /// <summary>

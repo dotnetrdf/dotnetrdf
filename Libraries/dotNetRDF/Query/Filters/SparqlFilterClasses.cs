@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Filters
         /// <returns></returns>
         public override string ToString()
         {
-            return "FILTER(BOUND(" + _arg.ToString() + ")) ";
+            return "FILTER(BOUND(" + _arg + ")) ";
         }
     }
 
@@ -240,7 +240,7 @@ namespace VDS.RDF.Query.Filters
         /// <returns></returns>
         public override string ToString()
         {
-            return "FILTER(" + _arg.ToString() + ") ";
+            return "FILTER(" + _arg + ") ";
         }
     }
 
@@ -314,7 +314,7 @@ namespace VDS.RDF.Query.Filters
             StringBuilder output = new StringBuilder();
             foreach (ISparqlFilter filter in _filters)
             {
-                output.Append(filter.ToString() + " ");
+                output.Append(filter + " ");
             }
             return output.ToString();
         }

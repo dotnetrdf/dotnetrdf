@@ -119,10 +119,8 @@ namespace VDS.RDF.Shacl
             {
                 return new Property(node);
             }
-            else
-            {
-                return new Node(node);
-            }
+
+            return new Node(node);
         }
 
         internal bool Validate(IGraph dataGragh, Report report)

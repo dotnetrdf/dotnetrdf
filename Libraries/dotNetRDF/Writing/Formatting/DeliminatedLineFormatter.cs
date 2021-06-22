@@ -70,15 +70,15 @@ namespace VDS.RDF.Writing.Formatting
             _fullLiteralOutput = fullLiteralOutput;
 
             _delimEscapes = new List<string[]>();
-            _delimEscapes.Add(new String[] { new String(new char[] { _deliminatorChar }), new String(new char[] { _escapeChar, _deliminatorChar }) });
-            _delimEscapes.Add(new String[] { new String(new char[] { '\n' }), new String(new char[] { _escapeChar, 'n' }) });
-            _delimEscapes.Add(new String[] { new String(new char[] { '\r' }), new String(new char[] { _escapeChar, 'r' }) });
-            _delimEscapes.Add(new String[] { new String(new char[] { '\t' }), new String(new char[] { _escapeChar, 't' }) });
+            _delimEscapes.Add(new[] { new String(new[] { _deliminatorChar }), new String(new[] { _escapeChar, _deliminatorChar }) });
+            _delimEscapes.Add(new[] { new String(new[] { '\n' }), new String(new[] { _escapeChar, 'n' }) });
+            _delimEscapes.Add(new[] { new String(new[] { '\r' }), new String(new[] { _escapeChar, 'r' }) });
+            _delimEscapes.Add(new[] { new String(new[] { '\t' }), new String(new[] { _escapeChar, 't' }) });
 
             // TODO: Need to handle difference between standard and long literals better
             if (_literalWrapperChar.HasValue)
             {
-                _delimEscapes.Add(new String[] { new String(new char[] { _literalWrapperChar.Value }), new String(new char[] { _escapeChar, _literalWrapperChar.Value }) });
+                _delimEscapes.Add(new[] { new String(new[] { _literalWrapperChar.Value }), new String(new[] { _escapeChar, _literalWrapperChar.Value }) });
             }
         }
 
@@ -151,7 +151,7 @@ namespace VDS.RDF.Writing.Formatting
                         if (_literalWrapperChar == null && _longLiteralWrapperChar == null)
                         {
                             // Replace the deliminator
-                            value = value.Replace(new String(new char[] { _deliminatorChar }), new String(new char[] { _escapeChar, _deliminatorChar }));
+                            value = value.Replace(new String(new[] { _deliminatorChar }), new String(new[] { _escapeChar, _deliminatorChar }));
                         }
                     }
 
@@ -219,12 +219,10 @@ namespace VDS.RDF.Writing.Formatting
         {
             if (_uriEndChar != null)
             {
-                return u.Replace(new String(new char[] { (char)_uriEndChar }), new String(new char[] { _escapeChar, (char)_uriEndChar }));
+                return u.Replace(new String(new[] { (char)_uriEndChar }), new String(new[] { _escapeChar, (char)_uriEndChar }));
             }
-            else
-            {
-                return u;
-            }
+
+            return u;
         }
     }
 }

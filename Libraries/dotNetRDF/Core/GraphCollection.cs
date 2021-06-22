@@ -84,19 +84,15 @@ namespace VDS.RDF
                     _graphs[g.BaseUri].Merge(g);
                     return true;
                 }
-                else
-                {
-                    // Not allowed
-                    throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
-                }
+
+                // Not allowed
+                throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
             }
-            else
-            {
-                // Safe to add a new Graph
-                _graphs.Add(g.BaseUri, g);
-                RaiseGraphAdded(g);
-                return true;
-            }
+
+            // Safe to add a new Graph
+            _graphs.Add(g.BaseUri, g);
+            RaiseGraphAdded(g);
+            return true;
         }
 
         /// <summary>
@@ -154,10 +150,8 @@ namespace VDS.RDF
                 {
                     return g;
                 }
-                else
-                {
-                    throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");
-                }
+
+                throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");
             }
         }
 

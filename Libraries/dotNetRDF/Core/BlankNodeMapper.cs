@@ -158,27 +158,23 @@ namespace VDS.RDF
                         _remappings.Add(id, new BlankNodeIDAssigment(id, false));
                         return id;
                     }
-                    else
-                    {
-                        // Our ID has already been remapped from another ID so we need to remap ourselves
-                        String remappedID = GetNextID();
-                        _remappings.Add(id, new BlankNodeIDAssigment(remappedID, false));
-                        return remappedID;
-                    }
-                }
-                else 
-                {
-                    return _remappings[id].ID;
+
+                    // Our ID has already been remapped from another ID so we need to remap ourselves
+                    String remappedID = GetNextID();
+                    _remappings.Add(id, new BlankNodeIDAssigment(remappedID, false));
+                    return remappedID;
                 }
 
-            }
-            else if (_remappings.ContainsKey(id))
-            {
-                // Already validated/remapped
                 return _remappings[id].ID;
-            } 
-            else
+
+            }
+
             {
+                if (_remappings.ContainsKey(id))
+                {
+                    // Already validated/remapped
+                    return _remappings[id].ID;
+                }
                 // Not valid for outputting so need to remap
                 String remappedID = GetNextID();
                 _remappings.Add(id, new BlankNodeIDAssigment(remappedID, true));

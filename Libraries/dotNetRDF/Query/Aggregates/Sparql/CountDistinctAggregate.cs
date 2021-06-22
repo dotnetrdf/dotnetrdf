@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 // Ensure the COUNTed variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(_varname))
                 {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a COUNT Aggregate since the Variable does not occur in a Graph Pattern");
+                    throw new RdfQueryException("Cannot use the Variable " + _expr + " in a COUNT Aggregate since the Variable does not occur in a Graph Pattern");
                 }
 
                 // Just Count the number of results where the variable is bound
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append("COUNT(DISTINCT " + _expr.ToString() + ")");
+            output.Append("COUNT(DISTINCT " + _expr + ")");
             return output.ToString();
         }
 

@@ -197,19 +197,15 @@ namespace VDS.RDF.Query.Algebra
                     {
                         return _start.VariableName.AsEnumerable().Concat(_end.VariableName.AsEnumerable());
                     }
-                    else
-                    {
-                        return _start.VariableName.AsEnumerable();
-                    }
+
+                    return _start.VariableName.AsEnumerable();
                 }
-                else if (_end.VariableName != null)
+
+                if (_end.VariableName != null)
                 {
                     return _end.VariableName.AsEnumerable();
                 }
-                else
-                {
-                    return Enumerable.Empty<String>();
-                }
+                return Enumerable.Empty<String>();
             }
         }
 
@@ -268,7 +264,7 @@ namespace VDS.RDF.Query.Algebra
         {
             StringBuilder output = new StringBuilder();
             output.Append("NegatedPropertySet(");
-            output.Append(_start.ToString());
+            output.Append(_start);
             output.Append(", {");
             for (int i = 0; i < _properties.Count; i++)
             {
@@ -279,7 +275,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
             output.Append("}, ");
-            output.Append(_end.ToString());
+            output.Append(_end);
             output.Append(')');
 
             return output.ToString();

@@ -171,10 +171,8 @@ namespace VDS.RDF.Query.Paths
                 PotentialPath other = (PotentialPath)obj;
                 return (_start.Equals(other.Start) && _current.Equals(other.Current));
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>

@@ -58,15 +58,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     IBlankNode b = (IBlankNode)temp;
                     return new StringNode(null, b.InternalID);
                 }
-                else
-                {
-                    throw new RdfQueryException("Cannot find the BNode Label for a non-Blank Node");
-                }
+
+                throw new RdfQueryException("Cannot find the BNode Label for a non-Blank Node");
             }
-            else
-            {
-                throw new RdfQueryException("Cannot find the BNode Label for a null");
-            }
+
+            throw new RdfQueryException("Cannot find the BNode Label for a null");
         }
 
         /// <summary>
@@ -75,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode + ">(" + _expr.ToString() + ")";
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode + ">(" + _expr + ")";
         }
 
         /// <summary>

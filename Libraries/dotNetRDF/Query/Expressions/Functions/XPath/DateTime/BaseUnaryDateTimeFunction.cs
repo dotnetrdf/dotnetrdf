@@ -55,10 +55,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             {
                 return ValueInternal(temp.AsDateTimeOffset());
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
-            }
+
+            throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
         }
 
         /// <summary>

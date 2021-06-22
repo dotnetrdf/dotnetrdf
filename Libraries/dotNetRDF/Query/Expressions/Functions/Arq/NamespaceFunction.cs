@@ -60,20 +60,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     {
                         return new StringNode(null, u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('#') + 1));
                     }
-                    else
-                    {
-                        return new StringNode(null, u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('/') + 1));
-                    }
+
+                    return new StringNode(null, u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('/') + 1));
                 }
-                else
-                {
-                    throw new RdfQueryException("Cannot find the Local Name for a non-URI Node");
-                }
+
+                throw new RdfQueryException("Cannot find the Local Name for a non-URI Node");
             }
-            else
-            {
-                throw new RdfQueryException("Cannot find the Local Name for a null");
-            }
+
+            throw new RdfQueryException("Cannot find the Local Name for a null");
         }
 
         /// <summary>
@@ -82,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace + ">(" + _expr.ToString() + ")";
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace + ">(" + _expr + ")";
         }
 
         /// <summary>

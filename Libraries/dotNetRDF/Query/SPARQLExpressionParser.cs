@@ -204,16 +204,12 @@ namespace VDS.RDF.Query
                 if (next.TokenType == Token.OR) 
                 {
                     return new OrExpression(firstTerm, TryParseConditionalOrExpression(tokens));
-                } 
-                else 
-                {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Conditional Or expression", next);
                 }
-            } 
-            else 
-            {
-                return firstTerm;
+
+                throw Error("Unexpected Token '" + next.GetType() + "' encountered while trying to parse a Conditional Or expression", next);
             }
+
+            return firstTerm;
         }
 
         private ISparqlExpression TryParseConditionalAndExpression(Queue<IToken> tokens)
@@ -230,16 +226,12 @@ namespace VDS.RDF.Query
                     tokens.Dequeue();
                     return new AndExpression(firstTerm, TryParseConditionalAndExpression(tokens));
                 }
-                else
-                {
-                    return firstTerm;
-                    // throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Conditional And expression");
-                }
-            }
-            else
-            {
+
                 return firstTerm;
+                // throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Conditional And expression");
             }
+
+            return firstTerm;
         }
 
         private ISparqlExpression TryParseValueLogical(Queue<IToken> tokens)
@@ -282,10 +274,8 @@ namespace VDS.RDF.Query
                         return firstTerm;
                 }
             }
-            else
-            {
-                return firstTerm;
-            }
+
+            return firstTerm;
         }
 
         private ISparqlExpression TryParseNumericExpression(Queue<IToken> tokens)
@@ -315,10 +305,8 @@ namespace VDS.RDF.Query
                         return firstTerm;
                 }
             }
-            else
-            {
-                return firstTerm;
-            }
+
+            return firstTerm;
         }
 
         private ISparqlExpression TryParseMultiplicativeExpression(Queue<IToken> tokens)
@@ -459,7 +447,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, Aggregates are not permitted in this Expression or you have attempted to nest aggregates", next);
+                        throw Error("Unexpected Token '" + next.GetType() + "' encountered, Aggregates are not permitted in this Expression or you have attempted to nest aggregates", next);
                     }
 
                 case Token.URI:
@@ -478,7 +466,7 @@ namespace VDS.RDF.Query
                     return new VariableTerm(next.Value);
 
                 default:
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Primary Expression",next);
+                    throw Error("Unexpected Token '" + next.GetType() + "' encountered while trying to parse a Primary Expression",next);
             }
         }
 
@@ -512,7 +500,7 @@ namespace VDS.RDF.Query
                 next = tokens.Dequeue();
                 if (next.TokenType != Token.LEFTBRACKET)
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Bracket to start a Bracketted Expression",next);
+                    throw Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Left Bracket to start a Bracketted Expression",next);
                 }
             }
 
@@ -552,10 +540,8 @@ namespace VDS.RDF.Query
                         commaTerminated = true;
                         return new DistinctModifier();
                     }
-                    else
-                    {
-                        throw Error("Unexpected DISTINCT Keyword Token encountered, DISTINCT modifier keyword may only occur as the first argument to an aggregate function", next);
-                    }
+
+                    throw Error("Unexpected DISTINCT Keyword Token encountered, DISTINCT modifier keyword may only occur as the first argument to an aggregate function", next);
                 }
 
                 if (openBrackets > 0)
@@ -570,10 +556,8 @@ namespace VDS.RDF.Query
                 // Recurse to invoke self
                 return Parse(exprTerms);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         private ISparqlExpression TryParseBuiltInCall(Queue<IToken> tokens)
@@ -604,19 +588,15 @@ namespace VDS.RDF.Query
                             {
                                 return new BoundFunction(varExpr);
                             }
-                            else
-                            {
-                                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Right Bracket to end a BOUND function call was expected",next);
-                            }
+
+                            throw Error("Unexpected Token '" + next.GetType() + "' encountered, a Right Bracket to end a BOUND function call was expected",next);
                         }
-                        else
-                        {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Variable Token for a BOUND function call was expected", next);
-                        }
+
+                        throw Error("Unexpected Token '" + next.GetType() + "' encountered, a Variable Token for a BOUND function call was expected", next);
                     }
                     else
                     {
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Left Bracket to start a BOUND function call was expected", next);
+                        throw Error("Unexpected Token '" + next.GetType() + "' encountered, a Left Bracket to start a BOUND function call was expected", next);
                     }
 
                 case Token.CALL:
@@ -820,7 +800,7 @@ namespace VDS.RDF.Query
                     return new ExistsFunction(_parser.TryParseGraphPattern(tempcontext, true), mustExist);
 
                 default:
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Built-in Function call", next);
+                    throw Error("Unexpected Token '" + next.GetType() + "' encountered while trying to parse a Built-in Function call", next);
             }
         }
 
@@ -846,10 +826,8 @@ namespace VDS.RDF.Query
                 ISparqlExpression optionExpr = TryParseBrackettedExpression(tokens, false);
                 return new RegexFunction(textExpr, patternExpr, optionExpr);
             }
-            else
-            {
-                return new RegexFunction(textExpr, patternExpr);
-            }
+
+            return new RegexFunction(textExpr, patternExpr);
         }
 
         private ISparqlExpression TryParseIriRefOrFunction(Queue<IToken> tokens)
@@ -899,21 +877,17 @@ namespace VDS.RDF.Query
                     ISparqlExpression expr = SparqlExpressionFactory.CreateExpression(u, args, _factories);
                     if (expr is AggregateTerm)
                     {
-                        if (!_allowAggregates) throw new RdfParseException("Aggregate Expression '" + expr.ToString() + "' encountered but aggregates are not permitted in this Expression");
+                        if (!_allowAggregates) throw new RdfParseException("Aggregate Expression '" + expr + "' encountered but aggregates are not permitted in this Expression");
                     }
                     return expr;
                 }
-                else
-                {
-                    // Just an IRIRef
-                    return new ConstantTerm(new UriNode(null, u));
-                }
-            }
-            else
-            {
+
                 // Just an IRIRef
                 return new ConstantTerm(new UriNode(null, u));
             }
+
+            // Just an IRIRef
+            return new ConstantTerm(new UriNode(null, u));
         }
 
         private ISparqlExpression TryParseRdfLiteral(Queue<IToken> tokens)
@@ -930,7 +904,8 @@ namespace VDS.RDF.Query
                     tokens.Dequeue();
                     return new ConstantTerm(new LiteralNode(null, str.Value, next.Value));
                 }
-                else if (next.TokenType == Token.HATHAT)
+
+                if (next.TokenType == Token.HATHAT)
                 {
                     tokens.Dequeue();
 
@@ -954,7 +929,8 @@ namespace VDS.RDF.Query
                         // Should be a Number
                         return TryParseNumericLiteral(dtlit, tokens, false);
                     }
-                    else if (XmlSpecsHelper.XmlSchemaDataTypeBoolean.Equals(u.AbsoluteUri))
+
+                    if (XmlSpecsHelper.XmlSchemaDataTypeBoolean.Equals(u.AbsoluteUri))
                     {
                         // Appears to be a Boolean
                         bool b;
@@ -962,26 +938,16 @@ namespace VDS.RDF.Query
                         {
                             return new ConstantTerm(new BooleanNode(null, b));
                         }
-                        else
-                        {
-                            return new ConstantTerm(new StringNode(null, dtlit.Value, dtlit.DataType));
-                        }
+
+                        return new ConstantTerm(new StringNode(null, dtlit.Value, dtlit.DataType));
                     }
-                    else
-                    {
-                        // Just a datatyped Literal Node
-                        return new ConstantTerm(new LiteralNode(null, str.Value, u));
-                    }
+                    // Just a datatyped Literal Node
+                    return new ConstantTerm(new LiteralNode(null, str.Value, u));
                 }
-                else
-                {
-                    return new ConstantTerm(new LiteralNode(null, str.Value));
-                }
-            }
-            else
-            {
                 return new ConstantTerm(new LiteralNode(null, str.Value));
             }
+
+            return new ConstantTerm(new LiteralNode(null, str.Value));
 
         }
 
@@ -994,14 +960,12 @@ namespace VDS.RDF.Query
             {
                 return new ConstantTerm(new BooleanNode(null, true));
             }
-            else if (lit.Value.Equals("false"))
+
+            if (lit.Value.Equals("false"))
             {
                 return new ConstantTerm(new BooleanNode(null, false));
             }
-            else
-            {
-                return TryParseNumericLiteral(lit, tokens, true);
-            }
+            return TryParseNumericLiteral(lit, tokens, true);
         }
 
         private ISparqlExpression TryParseNumericLiteral(IToken literal, Queue<IToken> tokens, bool requireValidLexicalForm)
@@ -1089,7 +1053,7 @@ namespace VDS.RDF.Query
                     }
 
                 default:
-                    throw Error("Unexpected Token '" + literal.GetType().ToString() + "' encountered while trying to parse a Numeric Literal", literal);
+                    throw Error("Unexpected Token '" + literal.GetType() + "' encountered while trying to parse a Numeric Literal", literal);
             }
         }
 
@@ -1110,7 +1074,7 @@ namespace VDS.RDF.Query
             IToken next = tokens.Dequeue();
             if (next.TokenType != Token.LEFTBRACKET)
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "', expected a Left Bracket after an Aggregate Keyword", next);
+                throw Error("Unexpected Token '" + next.GetType() + "', expected a Left Bracket after an Aggregate Keyword", next);
             }
 
             // Then a possible DISTINCT/ALL
@@ -1131,13 +1095,14 @@ namespace VDS.RDF.Query
             // If we've seen an ALL then we need the closing bracket
             if (all && next.TokenType != Token.RIGHTBRACKET)
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "', expected a Right Bracket after the * specifier in an aggregate to terminate the aggregate", next);
+                throw Error("Unexpected Token '" + next.GetType() + "', expected a Right Bracket after the * specifier in an aggregate to terminate the aggregate", next);
             }
-            else if (all && agg.TokenType != Token.COUNT)
+
+            if (all && agg.TokenType != Token.COUNT)
             {
                 throw new RdfQueryException("Cannot use the * specifier in aggregates other than COUNT");
             }
-            else if (!all)
+            if (!all)
             {
                 // If it's not an all then we expect some expression(s)
                 // Gather the Tokens and parse the Expression
@@ -1236,10 +1201,8 @@ namespace VDS.RDF.Query
                         {
                             return new AggregateTerm(new CountAllDistinctAggregate());
                         }
-                        else
-                        {
-                            return new AggregateTerm(new CountAllAggregate());
-                        }
+
+                        return new AggregateTerm(new CountAllAggregate());
                     }
                     else if (aggExpr is VariableTerm)
                     {
@@ -1247,10 +1210,8 @@ namespace VDS.RDF.Query
                         {
                             return new AggregateTerm(new CountDistinctAggregate((VariableTerm)aggExpr));
                         }
-                        else
-                        {
-                            return new AggregateTerm(new CountAggregate((VariableTerm)aggExpr));
-                        }
+
+                        return new AggregateTerm(new CountAggregate((VariableTerm)aggExpr));
                     }
                     else
                     {
@@ -1258,10 +1219,8 @@ namespace VDS.RDF.Query
                         {
                             return new AggregateTerm(new CountDistinctAggregate(aggExpr));
                         }
-                        else
-                        {
-                            return new AggregateTerm(new CountAggregate(aggExpr));
-                        }
+
+                        return new AggregateTerm(new CountAggregate(aggExpr));
                     }
                 case Token.GROUPCONCAT:
                     if (scalarArgs)
@@ -1362,7 +1321,7 @@ namespace VDS.RDF.Query
 
                 default:
                     // Should have already handled this but have to have it to keep the compiler happy
-                    throw Error("Cannot parse an Aggregate since '" + agg.GetType().ToString() + "' is not an Aggregate Keyword Token", agg);
+                    throw Error("Cannot parse an Aggregate since '" + agg.GetType() + "' is not an Aggregate Keyword Token", agg);
             }
         }
 
@@ -1409,7 +1368,7 @@ namespace VDS.RDF.Query
                         break;
 
                     default:
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Keyword/QName/URI for the Scalar Argument Name", next);
+                        throw Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Keyword/QName/URI for the Scalar Argument Name", next);
                 }
                 tokens.Dequeue();
 
@@ -1417,7 +1376,7 @@ namespace VDS.RDF.Query
                 next = tokens.Peek();
                 if (next.TokenType != Token.EQUALS)
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a = after a Scalar Argument name in an aggregate", next);
+                    throw Error("Unexpected Token '" + next.GetType() + "' encountered, expected a = after a Scalar Argument name in an aggregate", next);
                 }
                 tokens.Dequeue();
 
@@ -1499,10 +1458,8 @@ namespace VDS.RDF.Query
             {
                 return new InFunction(expr, expressions);
             }
-            else
-            {
-                return new NotInFunction(expr, expressions);
-            }
+
+            return new NotInFunction(expr, expressions);
         }
 
         /// <summary>
@@ -1515,7 +1472,7 @@ namespace VDS.RDF.Query
         {
             StringBuilder output = new StringBuilder();
             output.Append("[");
-            output.Append(t.GetType().ToString());
+            output.Append(t.GetType());
             output.Append(" at Line ");
             output.Append(t.StartLine);
             output.Append(" Column ");

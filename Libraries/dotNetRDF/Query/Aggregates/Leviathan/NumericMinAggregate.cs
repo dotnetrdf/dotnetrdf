@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 // Ensured the MINed variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(_varname))
                 {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a NMIN Aggregate since the Variable does not occur in a Graph Pattern");
+                    throw new RdfQueryException("Cannot use the Variable " + _expr + " in a NMIN Aggregate since the Variable does not occur in a Graph Pattern");
                 }
             }
 
@@ -150,10 +150,8 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                         mintype = numtype;
                         continue;
                     }
-                    else
-                    {
-                        mintype = numtype;
-                    }
+
+                    mintype = numtype;
                 }
 
                 long lngval;
@@ -243,7 +241,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             output.Append(LeviathanFunctionFactory.NumericMin);
             output.Append(">(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(')');
             return output.ToString();
         }

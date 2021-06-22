@@ -234,7 +234,6 @@ namespace VDS.RDF.Query
                                     {
                                         // If we get an error here this means we couldn't construct for this solution so the
                                         // entire solution is discarded
-                                        continue;
                                     }
                                     // h.Assert(constructedTriples);
                                 }
@@ -374,10 +373,8 @@ namespace VDS.RDF.Query
             {
                 return null;
             }
-            else
-            {
-                return this;
-            }
+
+            return this;
         }
 
         #region Algebra Processor Implementation
@@ -393,115 +390,113 @@ namespace VDS.RDF.Query
             {
                 return ProcessAsk((Ask)algebra, context);
             }
-            else if (algebra is IBgp)
+
+            if (algebra is IBgp)
             {
                 return ProcessBgp((IBgp)algebra, context);
             }
-            else if (algebra is Bindings)
+            if (algebra is Bindings)
             {
                 return ProcessBindings((Bindings)algebra, context);
             }
-            else if (algebra is Distinct)
+            if (algebra is Distinct)
             {
                 return ProcessDistinct((Distinct)algebra, context);
             }
-            else if (algebra is Extend)
+            if (algebra is Extend)
             {
                 return ProcessExtend((Extend)algebra, context);
             }
-            else if (algebra is IExistsJoin)
+            if (algebra is IExistsJoin)
             {
                 return ProcessExistsJoin((IExistsJoin)algebra, context);
             }
-            else if (algebra is IFilter)
+            if (algebra is IFilter)
             {
                 return ProcessFilter((IFilter)algebra, context);
             }
-            else if (algebra is Algebra.Graph)
+            if (algebra is Algebra.Graph)
             {
                 return ProcessGraph((Algebra.Graph)algebra, context);
             }
-            else if (algebra is GroupBy)
+            if (algebra is GroupBy)
             {
                 return ProcessGroupBy((GroupBy)algebra, context);
             }
-            else if (algebra is Having)
+            if (algebra is Having)
             {
                 return ProcessHaving((Having)algebra, context);
             }
-            else if (algebra is IJoin)
+            if (algebra is IJoin)
             {
                 return ProcessJoin((IJoin)algebra, context);
             }
-            else if (algebra is ILeftJoin)
+            if (algebra is ILeftJoin)
             {
                 return ProcessLeftJoin((ILeftJoin)algebra, context);
             }
-            else if (algebra is IMinus)
+            if (algebra is IMinus)
             {
                 return ProcessMinus((IMinus)algebra, context);
             }
-            else if (algebra is NegatedPropertySet)
+            if (algebra is NegatedPropertySet)
             {
                 return ProcessNegatedPropertySet((NegatedPropertySet)algebra, context);
             }
-            else if (algebra is NullOperator)
+            if (algebra is NullOperator)
             {
                 return ProcessNullOperator((NullOperator)algebra, context);
             }
-            else if (algebra is OneOrMorePath)
+            if (algebra is OneOrMorePath)
             {
                 return ProcessOneOrMorePath((OneOrMorePath)algebra, context);
             }
-            else if (algebra is OrderBy)
+            if (algebra is OrderBy)
             {
                 return ProcessOrderBy((OrderBy)algebra, context);
             }
-            else if (algebra is PropertyPath)
+            if (algebra is PropertyPath)
             {
                 return ProcessPropertyPath((PropertyPath)algebra, context);
             }
-            else if (algebra is Reduced)
+            if (algebra is Reduced)
             {
                 return ProcessReduced((Reduced)algebra, context);
             }
-            else if (algebra is Select)
+            if (algebra is Select)
             {
                 return ProcessSelect((Select)algebra, context);
             }
-            else if (algebra is SelectDistinctGraphs)
+            if (algebra is SelectDistinctGraphs)
             {
                 return ProcessSelectDistinctGraphs((SelectDistinctGraphs)algebra, context);
             }
-            else if (algebra is Service)
+            if (algebra is Service)
             {
                 return ProcessService((Service)algebra, context);
             }
-            else if (algebra is Slice)
+            if (algebra is Slice)
             {
                 return ProcessSlice((Slice)algebra, context);
             }
-            else if (algebra is SubQuery)
+            if (algebra is SubQuery)
             {
                 return ProcessSubQuery((SubQuery)algebra, context);
             }
-            else if (algebra is IUnion)
+            if (algebra is IUnion)
             {
                 return ProcessUnion((IUnion)algebra, context);
             }
-            else if (algebra is ZeroLengthPath)
+            if (algebra is ZeroLengthPath)
             {
                 return ProcessZeroLengthPath((ZeroLengthPath)algebra, context);
             }
-            else if (algebra is ZeroOrMorePath)
+            if (algebra is ZeroOrMorePath)
             {
                 return ProcessZeroOrMorePath((ZeroOrMorePath)algebra, context);
             }
-            else
-            {
-                // Unknown Algebra
-                return ProcessUnknownOperator(algebra, context);
-            }
+            // Unknown Algebra
+            return ProcessUnknownOperator(algebra, context);
         }
 
         /// <summary>

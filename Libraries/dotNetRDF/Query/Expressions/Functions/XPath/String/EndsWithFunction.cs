@@ -57,22 +57,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     // The Empty String ends with the Empty String
                     return new BooleanNode(null, true);
                 }
-                else
-                {
-                    // Empty String doesn't end with a non-empty string
-                    return new BooleanNode(null, false);
-                }
+
+                // Empty String doesn't end with a non-empty string
+                return new BooleanNode(null, false);
             }
-            else if (arg.Value.Equals(string.Empty))
+
+            if (arg.Value.Equals(string.Empty))
             {
                 // Any non-empty string ends with the empty string
                 return new BooleanNode(null, true);
             }
-            else
-            {
-                // Otherwise evalute the EndsWith
-                return new BooleanNode(null, stringLit.Value.EndsWith(arg.Value));
-            }
+            // Otherwise evalute the EndsWith
+            return new BooleanNode(null, stringLit.Value.EndsWith(arg.Value));
         }
 
         /// <summary>
@@ -81,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith + ">(" + _expr + "," + _arg + ")";
         }
 
         /// <summary>

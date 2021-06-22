@@ -184,7 +184,7 @@ namespace VDS.RDF.Parsing
                 IToken first = context.Tokens.Dequeue();
                 if (first.TokenType != Token.BOF)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + first.GetType().ToString() + "' encountered, expected a BOF Token", first);
+                    throw ParserHelper.Error("Unexpected Token '" + first.GetType() + "' encountered, expected a BOF Token", first);
                 }
 
                 // Expect either a Directive or a Graph
@@ -241,7 +241,7 @@ namespace VDS.RDF.Parsing
                             break;
 
                         default:
-                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered", next);
                     }
                 } while (next.TokenType != Token.EOF);
                 
@@ -299,7 +299,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + baseUri.GetType().ToString() + "' encountered, expected a URI Token after a @base directive", baseUri);
+                    throw ParserHelper.Error("Unexpected Token '" + baseUri.GetType() + "' encountered, expected a URI Token after a @base directive", baseUri);
                 }
             }
             else if (directive.TokenType == Token.PREFIXDIRECTIVE)
@@ -326,24 +326,24 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw ParserHelper.Error("Unexpected Token '" + prefix.GetType().ToString() + "' encountered, expected a URI Token after a Prefix Token", uri);
+                        throw ParserHelper.Error("Unexpected Token '" + prefix.GetType() + "' encountered, expected a URI Token after a Prefix Token", uri);
                     }
                 }
                 else
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + prefix.GetType().ToString() + "' encountered, expected a Prefix Token after a Prefix Directive Token", prefix);
+                    throw ParserHelper.Error("Unexpected Token '" + prefix.GetType() + "' encountered, expected a Prefix Token after a Prefix Directive Token", prefix);
                 }
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + directive.GetType().ToString() + "' encountered, expected a Base/Prefix Directive Token", directive);
+                throw ParserHelper.Error("Unexpected Token '" + directive.GetType() + "' encountered, expected a Base/Prefix Directive Token", directive);
             }
 
             // Expect a DOT to Terminate
             IToken dot = context.Tokens.Dequeue();
             if (dot.TokenType != Token.DOT)
             {
-                throw ParserHelper.Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate a Base/Prefix Directive", dot);
+                throw ParserHelper.Error("Unexpected Token '" + dot.GetType() + "' encountered, expected a Dot (Line Terminator) Token to terminate a Base/Prefix Directive", dot);
             }
         }
 
@@ -412,7 +412,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket to start a Graph", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Left Curly Bracket to start a Graph", next);
             }
 
             // May optionally end with a Dot Token
@@ -500,7 +500,7 @@ namespace VDS.RDF.Parsing
 
                     default:
                         // Unexpected Token
-                        throw ParserHelper.Error("Unexpected Token '" + subj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Subject of a Triple", subj);
+                        throw ParserHelper.Error("Unexpected Token '" + subj.GetType() + "' encountered, expected a URI/QName/Blank Node as the Subject of a Triple", subj);
                 }
 
                 // Parse the Predicate Object List
@@ -513,7 +513,7 @@ namespace VDS.RDF.Parsing
                     IToken dot = context.Tokens.Dequeue();
                     if (dot.TokenType != Token.DOT && dot.TokenType != Token.RIGHTCURLYBRACKET)
                     {
-                        throw ParserHelper.Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate Triples", dot);
+                        throw ParserHelper.Error("Unexpected Token '" + dot.GetType() + "' encountered, expected a Dot (Line Terminator) Token to terminate Triples", dot);
                     }
                 }
 
@@ -573,20 +573,20 @@ namespace VDS.RDF.Parsing
                     case Token.RIGHTCURLYBRACKET:
                         if (!ok)
                         {
-                            throw ParserHelper.Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered before a Predicate Object list was parsed", pred);
+                            throw ParserHelper.Error("Unexpected Token '" + pred.GetType() + "' encountered before a Predicate Object list was parsed", pred);
                         }
                         return;
 
                     case Token.RIGHTSQBRACKET:
                         if (!ok)
                         {
-                            throw ParserHelper.Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered before a Predicate Object list of a Blank Node Collection was parsed", pred);
+                            throw ParserHelper.Error("Unexpected Token '" + pred.GetType() + "' encountered before a Predicate Object list of a Blank Node Collection was parsed", pred);
                         }
                         return;
 
                     default:
                         // Unexpected Token
-                        throw ParserHelper.Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered, expected a URI/QName as the Predicate of a Triple", pred);
+                        throw ParserHelper.Error("Unexpected Token '" + pred.GetType() + "' encountered, expected a URI/QName as the Predicate of a Triple", pred);
                 }
 
                 ok = true;
@@ -666,7 +666,7 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token", next);
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token", next);
                             }
                         }
                         else
@@ -710,7 +710,7 @@ namespace VDS.RDF.Parsing
                         // End of Blank Node Collection
                         if (!ok)
                         {
-                            throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered before an Object list of a Blank Node Collection was parsed", obj);
+                            throw ParserHelper.Error("Unexpected Token '" + obj.GetType() + "' encountered before an Object list of a Blank Node Collection was parsed", obj);
                         }
                         return;
 
@@ -741,13 +741,13 @@ namespace VDS.RDF.Parsing
                     case Token.SEMICOLON:
                         if (!ok)
                         {
-                            throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered before an Object list was parsed", obj);
+                            throw ParserHelper.Error("Unexpected Token '" + obj.GetType() + "' encountered before an Object list was parsed", obj);
                         }
                         return;
 
                     default:
                         // Unexpected Token
-                        throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Object of a Triple", obj);
+                        throw ParserHelper.Error("Unexpected Token '" + obj.GetType() + "' encountered, expected a URI/QName/Blank Node as the Object of a Triple", obj);
                 }
 
                 ok = true;
@@ -804,7 +804,7 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token", next);
+                                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token", next);
                                 }
                                 break;
                             default:
@@ -860,7 +860,7 @@ namespace VDS.RDF.Parsing
 
                     default:
                         // Unexpected Token
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName/Literal/Blank Node as an item in a Collection", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a URI/QName/Literal/Blank Node as an item in a Collection", next);
                 }
 
                 // Create the subj rdf:first item Triple
@@ -874,13 +874,11 @@ namespace VDS.RDF.Parsing
                     if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, graphUri))) ParserHelper.Stop();
                     return;
                 }
-                else
-                {
-                    // Continuing Collection
-                    temp = context.Handler.CreateBlankNode();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, temp, graphUri))) ParserHelper.Stop();
-                    subj = temp;
-                }
+
+                // Continuing Collection
+                temp = context.Handler.CreateBlankNode();
+                if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, temp, graphUri))) ParserHelper.Stop();
+                subj = temp;
             } while (true);
 
         }

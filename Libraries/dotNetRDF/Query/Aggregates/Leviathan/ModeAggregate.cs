@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
                 // Ensured the MODEd variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(_varname))
                 {
-                    throw new RdfQueryException("Cannot use the Variable " + _expr.ToString() + " in a MODE Aggregate since the Variable does not occur in a Graph Pattern");
+                    throw new RdfQueryException("Cannot use the Variable " + _expr + " in a MODE Aggregate since the Variable does not occur in a Graph Pattern");
                 }
             }
 
@@ -126,11 +126,9 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             {
                 return values.FirstOrDefault(p => p.Value == mostPopular).Key;
             }
-            else
-            {
-                // Null is the most popular item
-                return null;
-            }
+
+            // Null is the most popular item
+            return null;
         }
 
         /// <summary>
@@ -145,7 +143,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             output.Append(LeviathanFunctionFactory.Mode);
             output.Append(">(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(')');
             return output.ToString();
         }

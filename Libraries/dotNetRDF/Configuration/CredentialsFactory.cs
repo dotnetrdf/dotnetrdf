@@ -52,11 +52,9 @@ namespace VDS.RDF.Configuration
                 obj = new NetworkCredential(user, pwd);
                 return true;
             }
-            else
-            {
-                obj = null;
-                return false;
-            }
+
+            obj = null;
+            return false;
         }
 
         /// <summary>

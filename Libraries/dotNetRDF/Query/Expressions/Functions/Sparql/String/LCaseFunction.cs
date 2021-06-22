@@ -53,10 +53,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return new StringNode(null, stringLit.Value.ToLower(), stringLit.DataType);
             }
-            else
-            {
-                return new StringNode(null, stringLit.Value.ToLower(), stringLit.Language);
-            }
+
+            return new StringNode(null, stringLit.Value.ToLower(), stringLit.Language);
         }
 
         /// <summary>
@@ -76,7 +74,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordLCase + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordLCase + "(" + _expr + ")";
         }
 
         /// <summary>

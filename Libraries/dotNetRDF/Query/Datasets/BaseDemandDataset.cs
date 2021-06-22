@@ -58,15 +58,11 @@ namespace VDS.RDF.Query.Datasets
                     AddGraph(g);
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         /// <summary>

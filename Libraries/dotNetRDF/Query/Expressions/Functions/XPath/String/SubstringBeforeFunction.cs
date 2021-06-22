@@ -56,20 +56,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 // The substring before the empty string is the empty string
                 return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
-            else
+
+            // Does the String contain the search string?
+            if (stringLit.Value.Contains(arg.Value))
             {
-                // Does the String contain the search string?
-                if (stringLit.Value.Contains(arg.Value))
-                {
-                    string result = stringLit.Value.Substring(0, stringLit.Value.IndexOf(arg.Value));
-                    return new StringNode(null, result, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                }
-                else
-                {
-                    // If it doesn't contain the search string the empty string is returned
-                    return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
-                }
+                string result = stringLit.Value.Substring(0, stringLit.Value.IndexOf(arg.Value));
+                return new StringNode(null, result, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
+
+            // If it doesn't contain the search string the empty string is returned
+            return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>
@@ -78,7 +74,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringBefore + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringBefore + ">(" + _expr + "," + _arg + ")";
         }
 
         /// <summary>

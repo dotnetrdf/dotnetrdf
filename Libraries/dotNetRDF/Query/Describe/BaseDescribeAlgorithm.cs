@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Describe
                         break;
 
                     default:
-                        throw new RdfQueryException("Unexpected Token '" + t.GetType().ToString() + "' in DESCRIBE Variables list");
+                        throw new RdfQueryException("Unexpected Token '" + t.GetType() + "' in DESCRIBE Variables list");
                 }
             }
             return nodes;

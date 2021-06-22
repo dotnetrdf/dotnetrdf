@@ -520,7 +520,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "AskUnion(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "AskUnion(" + _lhs + ", " + _rhs + ")";
         }
 
         /// <summary>

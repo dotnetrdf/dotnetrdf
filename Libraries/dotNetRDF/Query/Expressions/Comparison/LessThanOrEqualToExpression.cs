@@ -63,10 +63,8 @@ namespace VDS.RDF.Query.Expressions.Comparison
                 {
                     return new BooleanNode(null, true);
                 }
-                else
-                {
-                    throw new RdfQueryException("Cannot evaluate a <= when one argument is a Null");
-                }
+
+                throw new RdfQueryException("Cannot evaluate a <= when one argument is a Null");
             }
 
             int compare = _comparer.Compare(a, b);
@@ -82,20 +80,20 @@ namespace VDS.RDF.Query.Expressions.Comparison
             StringBuilder output = new StringBuilder();
             if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + _leftExpr.ToString() + ")");
+                output.Append("(" + _leftExpr + ")");
             }
             else
             {
-                output.Append(_leftExpr.ToString());
+                output.Append(_leftExpr);
             }
             output.Append(" <= ");
             if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + _rightExpr.ToString() + ")");
+                output.Append("(" + _rightExpr + ")");
             }
             else
             {
-                output.Append(_rightExpr.ToString());
+                output.Append(_rightExpr);
             }
             return output.ToString();
         }

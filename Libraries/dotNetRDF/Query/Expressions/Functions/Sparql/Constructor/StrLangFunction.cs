@@ -91,30 +91,20 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                             {
                                 return new StringNode(null, lit.Value, langSpec);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a language specified literal from a language specified literal");
-                            }
+
+                            throw new RdfQueryException("Cannot create a language specified literal from a language specified literal");
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot create a language specified literal from a typed literal");
-                        }
+
+                        throw new RdfQueryException("Cannot create a language specified literal from a typed literal");
                     }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a language specified literal from a non-literal Node");
-                    }
+
+                    throw new RdfQueryException("Cannot create a language specified literal from a non-literal Node");
                 }
-                else
-                {
-                    throw new RdfQueryException("Cannot create a language specified literal from a null string");
-                }
-            }
-            else
-            {
+
                 throw new RdfQueryException("Cannot create a language specified literal from a null string");
             }
+
+            throw new RdfQueryException("Cannot create a language specified literal from a null string");
         }
 
         /// <summary>
@@ -123,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override string ToString()
         {
-            return "STRLANG(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
+            return "STRLANG(" + _leftExpr + ", " + _rightExpr + ")";
         }
 
         /// <summary>

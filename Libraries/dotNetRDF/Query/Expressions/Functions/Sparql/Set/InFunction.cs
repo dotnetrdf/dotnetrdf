@@ -78,15 +78,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
                 {
                     throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
                 }
-                else
-                {
-                    return new BooleanNode(null, false);
-                }
-            }
-            else
-            {
+
                 return new BooleanNode(null, false);
             }
+
+            return new BooleanNode(null, false);
         }
 
         /// <summary>
@@ -108,12 +104,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         {
             StringBuilder output = new StringBuilder();
             if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append('(');
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append(')');
             output.Append(" IN (");
             for (int i = 0; i < _expressions.Count; i++)
             {
-                output.Append(_expressions[i].ToString());
+                output.Append(_expressions[i]);
                 if (i < _expressions.Count - 1)
                 {
                     output.Append(" , ");

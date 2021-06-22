@@ -659,10 +659,8 @@ namespace VDS.RDF
                 Dictionary<INode, INode> temp;
                 return Equals((IGraph)obj, out temp);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -942,10 +940,8 @@ namespace VDS.RDF
                 d(this, args);
                 return !args.Cancel;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         /// <summary>
@@ -973,10 +969,8 @@ namespace VDS.RDF
                 d(this, args);
                 return !args.Cancel;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         /// <summary>

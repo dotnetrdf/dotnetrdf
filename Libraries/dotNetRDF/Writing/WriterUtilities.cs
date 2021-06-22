@@ -341,26 +341,21 @@ namespace VDS.RDF.Writing
                 // Can't be null
                 return false;
             }
-            else if (id.Equals(string.Empty))
+
+            if (id.Equals(string.Empty))
             {
                 // Can't be empty
                 return false;
             }
-            else
+            char[] cs = id.ToCharArray();
+            if (char.IsDigit(cs[0]) || cs[0] == '-' || cs[0] == '_')
             {
-                char[] cs = id.ToCharArray();
-                if (char.IsDigit(cs[0]) || cs[0] == '-' || cs[0] == '_')
-                {
-                    // Can't start with a Digit, Hyphen or Underscore
-                    return false;
-                }
-                else
-                {
-                    // Otherwise OK
-                    return true;
-                }
+                // Can't start with a Digit, Hyphen or Underscore
+                return false;
             }
 
+            // Otherwise OK
+            return true;
         }
 
         /// <summary>
@@ -375,17 +370,15 @@ namespace VDS.RDF.Writing
                 // Can't be null
                 return false;
             }
-            else if (id.Equals(string.Empty))
+
+            if (id.Equals(string.Empty))
             {
                 // Can't be empty
                 return false;
             }
-            else
-            {
-                // All characters must be alphanumeric and not start with a digit in NTriples
-                char[] cs = id.ToCharArray();
-                return char.IsLetter(cs[0]) && cs.All(c => char.IsLetterOrDigit(c) && c <= 127);
-            }
+            // All characters must be alphanumeric and not start with a digit in NTriples
+            char[] cs = id.ToCharArray();
+            return char.IsLetter(cs[0]) && cs.All(c => char.IsLetterOrDigit(c) && c <= 127);
         }
 
         /// <summary>
@@ -448,7 +441,8 @@ namespace VDS.RDF.Writing
                         // Strange error
                         throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
                     }
-                    else if (firsts.Length == 1)
+
+                    if (firsts.Length == 1)
                     {
                         // Stick this item onto the Stack
                         temp = firsts[0];
@@ -475,7 +469,8 @@ namespace VDS.RDF.Writing
                                 // Strange error
                                 throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
                             }
-                            else if (firsts.Length == 1)
+
+                            if (firsts.Length == 1)
                             {
                                 // Stick this item onto the Stack
                                 temp = firsts[0];

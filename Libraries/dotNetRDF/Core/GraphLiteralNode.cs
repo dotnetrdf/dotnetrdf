@@ -121,11 +121,9 @@ namespace VDS.RDF
             {
                 return Equals((INode)obj);
             }
-            else
-            {
-                // Can only be equal to other Nodes
-                return false;
-            }
+
+            // Can only be equal to other Nodes
+            return false;
         }
 
         /// <summary>
@@ -135,7 +133,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(INode other)
         {
-            if ((Object)other == null) return false;
+            if (other == null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -143,11 +141,9 @@ namespace VDS.RDF
             {
                 return EqualityHelper.AreGraphLiteralsEqual(this, (IGraphLiteralNode)other);
             }
-            else
-            {
-                // Can only be equal to a Graph Literal Node
-                return false;
-            }
+
+            // Can only be equal to a Graph Literal Node
+            return false;
         }
 
         /// <summary>
@@ -229,7 +225,7 @@ namespace VDS.RDF
             // Add all the Triples in the Subgraph
             foreach (Triple t in _subgraph.Triples)
             {
-                output.Append(t.ToString());
+                output.Append(t);
             }
 
             output.Append("}");
@@ -254,21 +250,19 @@ namespace VDS.RDF
                 // Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType != NodeType.GraphLiteral)
+
+            if (other.NodeType != NodeType.GraphLiteral)
             {
                 // Graph Literal Nodes are greater than Blank, Variable, Uri and Literal Nodes
                 // Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType == NodeType.GraphLiteral)
+            if (other.NodeType == NodeType.GraphLiteral)
             {
                 return ComparisonHelper.CompareGraphLiterals(this, (IGraphLiteralNode)other);
             }
-            else
-            {
-                // Anything else is Greater Than us
-                return -1;
-            }
+            // Anything else is Greater Than us
+            return -1;
         }
 
         /// <summary>
@@ -291,7 +285,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
-            return ComparisonHelper.CompareGraphLiterals(this, (IGraphLiteralNode)other);
+            return ComparisonHelper.CompareGraphLiterals(this, other);
         }
 
         /// <summary>

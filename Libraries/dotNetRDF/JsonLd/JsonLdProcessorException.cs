@@ -25,7 +25,6 @@
 */
 
 using System;
-using VDS.RDF.JsonLd.Syntax;
 
 namespace VDS.RDF.JsonLd
 {

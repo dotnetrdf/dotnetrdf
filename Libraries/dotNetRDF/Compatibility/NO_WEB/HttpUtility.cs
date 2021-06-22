@@ -25,7 +25,6 @@
 */
 
 #if !NETSTANDARD2_0
-using System;
 using System.Text;
 using VDS.RDF.Parsing;
 
@@ -72,52 +71,50 @@ namespace System.Web
             {
                 return value;
             }
-            else
+
+            char c, d, e;
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < value.Length; i++)
             {
-                char c, d, e;
-                StringBuilder output = new StringBuilder();
-                for (int i = 0; i < value.Length; i++)
+                c = value[i];
+                if (!IsSafeCharacter(c))
                 {
-                    c = value[i];
-                    if (!IsSafeCharacter(c))
+                    if (c == '%')
                     {
-                        if (c == '%')
+                        if (i <= value.Length - 2)
                         {
-                            if (i <= value.Length - 2)
+                            d = value[i + 1];
+                            e = value[i + 2];
+                            if (IriSpecsHelper.IsHexDigit(d) && IriSpecsHelper.IsHexDigit(e))
                             {
-                                d = value[i + 1];
-                                e = value[i + 2];
-                                if (IriSpecsHelper.IsHexDigit(d) && IriSpecsHelper.IsHexDigit(e))
-                                {
-                                    // Has valid hex digits after it so continue encoding normally
-                                    output.Append(c);
-                                }
-                                else
-                                {
-                                    // Need to encode a bare percent character
-                                    output.Append(PercentEncode(c));
-                                }
+                                // Has valid hex digits after it so continue encoding normally
+                                output.Append(c);
                             }
                             else
                             {
-                                // Not enough characters after a % to use as a valid escape so encode the percent
+                                // Need to encode a bare percent character
                                 output.Append(PercentEncode(c));
                             }
                         }
                         else
                         {
-                            // Contains an unsafe character so percent encode
+                            // Not enough characters after a % to use as a valid escape so encode the percent
                             output.Append(PercentEncode(c));
                         }
                     }
                     else
                     {
-                        // No need to encode safe characters
-                        output.Append(c);
+                        // Contains an unsafe character so percent encode
+                        output.Append(PercentEncode(c));
                     }
                 }
-                return output.ToString();
+                else
+                {
+                    // No need to encode safe characters
+                    output.Append(c);
+                }
             }
+            return output.ToString();
         }
 
         /// <summary>
@@ -148,7 +145,6 @@ namespace System.Web
                             if (IriSpecsHelper.IsHexDigit(d) && IriSpecsHelper.IsHexDigit(e))
                             {
                                 i += 2;
-                                continue;
                             }
                             else
                             {
@@ -183,10 +179,8 @@ namespace System.Web
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         private static String PercentEncode(char c)
@@ -198,22 +192,20 @@ namespace System.Web
                 {
                     return "%" + ((int)c).ToString("X2");
                 }
-                else
+
+                byte[] codepoints = Encoding.UTF8.GetBytes(new[] { c });
+                StringBuilder output = new StringBuilder();
+                foreach (byte b in codepoints)
                 {
-                    byte[] codepoints = Encoding.UTF8.GetBytes(new char[] { c });
-                    StringBuilder output = new StringBuilder();
-                    foreach (byte b in codepoints)
-                    {
-                        output.Append("%");
-                        output.Append(((int)b).ToString("X2"));
-                    }
-                    return output.ToString();
+                    output.Append("%");
+                    output.Append(((int)b).ToString("X2"));
                 }
+                return output.ToString();
             }
-            else
+
             {
                 // Unicode character so requires more than one percent encode
-                byte[] codepoints = Encoding.UTF8.GetBytes(new char[] { c });
+                byte[] codepoints = Encoding.UTF8.GetBytes(new[] { c });
                 StringBuilder output = new StringBuilder();
                 foreach (byte b in codepoints)
                 {

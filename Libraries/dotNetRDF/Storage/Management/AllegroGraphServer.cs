@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -43,14 +43,14 @@ namespace VDS.RDF.Storage.Management
     {
         private String _agraphBase;
         private String _catalog;
-         
+
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store.
         /// </summary>
         /// <param name="baseUri">Base URI for the Store.</param>
         /// <param name="catalogID">Catalog ID.</param>
         public AllegroGraphServer(String baseUri, String catalogID)
-            : this(baseUri, catalogID, (String)null, (String)null) { }
+            : this(baseUri, catalogID, null, (String)null) { }
 
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher).
@@ -132,7 +132,7 @@ namespace VDS.RDF.Storage.Management
         /// <param name="proxy">Proxy Server.</param>
         public AllegroGraphServer(String baseUri,  String username, String password, IWebProxy proxy)
             : this(baseUri, null, username, password, proxy) { }
-        
+
         /// <summary>
         /// Gets a default template for creating a new Store.
         /// </summary>
@@ -180,7 +180,7 @@ namespace VDS.RDF.Storage.Management
                 if (webEx.Response != null)
                 {
                     if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    
+
                     // Got a Response so we can analyse the Response Code
                     response = (HttpWebResponse)webEx.Response;
                     int code = (int)response.StatusCode;
@@ -189,15 +189,11 @@ namespace VDS.RDF.Storage.Management
                         // OK - Just means the Store already exists
                         return true;
                     }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                else
-                {
+
                     throw;
                 }
+
+                throw;
             }
         }
         /// <summary>
@@ -380,7 +376,7 @@ namespace VDS.RDF.Storage.Management
                         if (webEx.Response != null)
                         {
                             if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                            
+
                             // Got a Response so we can analyse the Response Code
                             var response = (HttpWebResponse)webEx.Response;
                             var code = (int)response.StatusCode;
@@ -410,7 +406,7 @@ namespace VDS.RDF.Storage.Management
                 if (webEx.Response != null)
                 {
                     if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    
+
                     // Got a Response so we can analyse the Response Code
                     HttpWebResponse response = (HttpWebResponse)webEx.Response;
                     int code = (int)response.StatusCode;
@@ -455,7 +451,7 @@ namespace VDS.RDF.Storage.Management
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
                         Tools.HttpDebugResponse(response);
-                        
+
                         // If we get here then the operation completed OK
                         response.Close();
                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeId), state);

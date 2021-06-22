@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Resets the set of Unplaced Filters to be a new set of. 
+        /// Resets the set of Unplaced Filters to be a new set of.
         /// </summary>
         /// <param name="filters">Filters.</param>
         internal void ResetFilters(IEnumerable<ISparqlFilter> filters)
@@ -432,15 +432,11 @@ namespace VDS.RDF.Query.Patterns
                     {
                         return new ChainFilter(_unplacedFilters);
                     }
-                    else
-                    {
-                        return new ChainFilter(_filter, _unplacedFilters);
-                    }
+
+                    return new ChainFilter(_filter, _unplacedFilters);
                 }
-                else
-                {
-                    return _filter;
-                }
+
+                return _filter;
             }
             internal set
             {
@@ -694,7 +690,6 @@ namespace VDS.RDF.Query.Patterns
                         output.Append(_graphSpecifier.Value);
                         output.Append('>');
                         break;
-                    case Token.VARIABLE:
                     default:
                         output.Append(_graphSpecifier.Value);
                         break;
@@ -755,7 +750,7 @@ namespace VDS.RDF.Query.Patterns
             // Unplaced Assignments
             foreach (IAssignmentPattern ap in _unplacedAssignments)
             {
-                output.Append(ap.ToString());
+                output.Append(ap);
                 if (linebreaks) output.AppendLine();
             }
             // Inline Data
@@ -804,13 +799,13 @@ namespace VDS.RDF.Query.Patterns
             if (_filter != null)
             {
                 output.Append(indent);
-                output.Append(_filter.ToString());
+                output.Append(_filter);
                 if (linebreaks) output.AppendLine();
             }
             foreach (ISparqlFilter filter in _unplacedFilters)
             {
                 output.Append(indent);
-                output.Append(filter.ToString());
+                output.Append(filter);
                 if (linebreaks) output.AppendLine();
             }
             output.Append("}");
@@ -966,25 +961,19 @@ namespace VDS.RDF.Query.Patterns
                     // apply over the LeftJoin and is applied elsewhere in the Algebra transform
                     return complex;
                 }
-                else
+
+                if (_filter != null || _unplacedFilters.Count > 0)
                 {
-                    if (_filter != null || _unplacedFilters.Count > 0)
-                    {
-                        // If there's an unplaced FILTER and we're not an OPTIONAL pattern we apply
-                        // the FILTER here
-                        return new Filter(complex, Filter);
-                    }
-                    else
-                    {
-                        return complex;
-                    }
+                    // If there's an unplaced FILTER and we're not an OPTIONAL pattern we apply
+                    // the FILTER here
+                    return new Filter(complex, Filter);
                 }
-            }
-            else
-            {
-                // If no FILTER just return the transform
+
                 return complex;
             }
+
+            // If no FILTER just return the transform
+            return complex;
 
         }
 

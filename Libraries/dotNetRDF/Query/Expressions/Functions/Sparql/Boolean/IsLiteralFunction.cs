@@ -54,10 +54,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return new BooleanNode(null, false);
             }
-            else
-            {
-                return new BooleanNode(null, result.NodeType == NodeType.Literal);
-            }
+
+            return new BooleanNode(null, result.NodeType == NodeType.Literal);
         }
 
         /// <summary>
@@ -66,7 +64,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "ISLITERAL(" + _expr.ToString() + ")";
+            return "ISLITERAL(" + _expr + ")";
         }
 
         /// <summary>

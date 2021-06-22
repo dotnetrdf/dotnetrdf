@@ -25,8 +25,6 @@
 */
 
 using System;
-using System.Threading.Tasks;
-using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 

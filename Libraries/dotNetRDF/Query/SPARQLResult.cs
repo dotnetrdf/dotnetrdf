@@ -112,10 +112,8 @@ namespace VDS.RDF.Query
             {
                 return _resultValues[variable];
             }
-            else
-            {
-                throw new RdfException("This result does not have any value bound to the variable '" + variable + "'");
-            }
+
+            throw new RdfException("This result does not have any value bound to the variable '" + variable + "'");
         }
 
         /// <summary>
@@ -149,10 +147,8 @@ namespace VDS.RDF.Query
                 {
                     throw new IndexOutOfRangeException("There is no variable at Index " + index);
                 }
-                else
-                {
-                    return _resultValues[_variables[index]];
-                }
+
+                return _resultValues[_variables[index]];
             }
         }
 
@@ -169,11 +165,9 @@ namespace VDS.RDF.Query
                 value = this[variable];
                 return true;
             }
-            else
-            {
-                value = null;
-                return false;
-            }
+
+            value = null;
+            return false;
         }
 
         /// <summary>
@@ -189,11 +183,9 @@ namespace VDS.RDF.Query
                 value = this[variable];
                 return value != null;
             }
-            else
-            {
-                value = null;
-                return false;
-            }
+
+            value = null;
+            return false;
         }
 
         /// <summary>
@@ -329,10 +321,8 @@ namespace VDS.RDF.Query
             {
                 return outString.Substring(0, outString.Length - 3);
             }
-            else
-            {
-                return String.Empty;
-            }
+
+            return String.Empty;
         }
 
         /// <summary>
@@ -363,10 +353,8 @@ namespace VDS.RDF.Query
             {
                 return outString.Substring(0, outString.Length - 3);
             }
-            else
-            {
-                return String.Empty;
-            }
+
+            return String.Empty;
         }
 
         /// <summary>
@@ -397,9 +385,9 @@ namespace VDS.RDF.Query
                         {
                             return false;
                         }
-                        else if (_resultValues[v] == null && other[v] == null)
+
+                        if (_resultValues[v] == null && other[v] == null)
                         {
-                            continue;
                         }
                         else if (!_resultValues[v].Equals(other[v]))
                         {
@@ -414,10 +402,8 @@ namespace VDS.RDF.Query
                 return true;
 
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>

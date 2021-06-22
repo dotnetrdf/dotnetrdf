@@ -63,15 +63,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 {
                     return new BooleanNode(null, ValueInternal(stringLit, argLit));
                 }
-                else
-                {
-                    throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
-                }
+
+                throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
             }
-            else
-            {
-                throw new RdfQueryException("Arguments to a SPARQL String function must both be Literal Nodes");
-            }
+
+            throw new RdfQueryException("Arguments to a SPARQL String function must both be Literal Nodes");
         }
 
         /// <summary>
@@ -101,19 +97,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     if (!argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
                     return true;
                 }
-                else if (argLit.Language.Equals(string.Empty))
+
+                if (argLit.Language.Equals(string.Empty))
                 {
                     // If 2nd argument does not have a DataType but 1st does then 2nd argument must have no
                     // Language Tag
                     return true;
                 }
-                else
-                {
-                    // 2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
-                    return false;
-                }
+                // 2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
+                return false;
             }
-            else if (!stringLit.Language.Equals(string.Empty))
+
+            if (!stringLit.Language.Equals(string.Empty))
             {
                 if (argLit.DataType != null)
                 {
@@ -121,36 +116,29 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     // to be valid
                     return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
                 }
-                else if (argLit.Language.Equals(string.Empty) || stringLit.Language.Equals(argLit.Language))
+
+                if (argLit.Language.Equals(string.Empty) || stringLit.Language.Equals(argLit.Language))
                 {
                     // If 1st argument has a Language Tag then 2nd Argument must have same Language Tag 
                     // or no Language Tag in order to be valid
                     return true;
                 }
-                else
-                {
-                    // Otherwise Invalid
-                    return false;
-                }
+                // Otherwise Invalid
+                return false;
             }
-            else
+            if (argLit.DataType != null)
             {
-                if (argLit.DataType != null)
-                {
-                    // If 1st argument is plain literal then 2nd argument must be xsd:string if typed
-                    return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
-                }
-                else if (argLit.Language.Equals(string.Empty))
-                {
-                    // If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
-                    return true;
-                }
-                else
-                {
-                    // If 1st argument is plain literal and 2nd has language tag then invalid
-                    return false;
-                }
+                // If 1st argument is plain literal then 2nd argument must be xsd:string if typed
+                return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
             }
+
+            if (argLit.Language.Equals(string.Empty))
+            {
+                // If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
+                return true;
+            }
+            // If 1st argument is plain literal and 2nd has language tag then invalid
+            return false;
         }
 
         /// <summary>

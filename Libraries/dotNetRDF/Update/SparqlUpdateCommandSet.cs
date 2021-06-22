@@ -95,15 +95,11 @@ namespace VDS.RDF.Update
                     {
                         throw new IndexOutOfRangeException(index + " is not a valid index into the Command Set, the Set contains " + _commands.Count + " Commands so only indexes in the range 0-" + (_commands.Count - 1) + " are valid");
                     }
-                    else
-                    {
-                        throw new IndexOutOfRangeException(index + " is not a valid index into the Command Set since it is an empty Command Set");
-                    }
+
+                    throw new IndexOutOfRangeException(index + " is not a valid index into the Command Set since it is an empty Command Set");
                 }
-                else
-                {
-                    return _commands[index];
-                }
+
+                return _commands[index];
             }
         }
 
@@ -183,10 +179,8 @@ namespace VDS.RDF.Update
                 {
                     throw new InvalidOperationException("Cannot inspect the Update Time as the Command Set has not yet been processed");
                 }
-                else
-                {
-                    return _executionTime;
-                }
+
+                return _executionTime;
             }
             set
             {
@@ -309,7 +303,7 @@ namespace VDS.RDF.Update
 
             for (int i = 0; i < _commands.Count; i++)
             {
-                output.Append(_commands[i].ToString());
+                output.Append(_commands[i]);
                 if (i < _commands.Count - 1)
                 {
                     output.AppendLine(";");

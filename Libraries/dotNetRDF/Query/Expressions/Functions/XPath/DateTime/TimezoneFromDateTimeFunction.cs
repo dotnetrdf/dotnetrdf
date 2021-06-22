@@ -74,24 +74,20 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
                     // If Zero it was specified as Z (which means UTC so zero offset)
                     return new StringNode(null, "PT0S", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
                 }
-                else
-                {
-                    // If the Offset is outside the range -14 to 14 this is considered invalid
-                    if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
 
-                    // Otherwise it has an offset which is a given number of hours and minutse
-                    string offset = "PT" + Math.Abs(dt.Offset.Hours) + "H";
-                    if (dt.Offset.Hours < 0) offset = "-" + offset;
-                    if (dt.Offset.Minutes != 0) offset = offset + Math.Abs(dt.Offset.Minutes) + "M";
-                    if (dt.Offset.Hours == 0 && dt.Offset.Minutes < 0) offset = "-" + offset;
+                // If the Offset is outside the range -14 to 14 this is considered invalid
+                if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
 
-                    return new StringNode(null, offset, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
-                }
+                // Otherwise it has an offset which is a given number of hours and minutse
+                string offset = "PT" + Math.Abs(dt.Offset.Hours) + "H";
+                if (dt.Offset.Hours < 0) offset = "-" + offset;
+                if (dt.Offset.Minutes != 0) offset = offset + Math.Abs(dt.Offset.Minutes) + "M";
+                if (dt.Offset.Hours == 0 && dt.Offset.Minutes < 0) offset = "-" + offset;
+
+                return new StringNode(null, offset, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
-            }
+
+            throw new RdfQueryException("Unable to evaluate an XPath Date Time function on a null argument");
         }
 
         /// <summary>
@@ -122,7 +118,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.TimezoneFromDateTime + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.TimezoneFromDateTime + ">(" + _expr + ")";
         }
 
         /// <summary>

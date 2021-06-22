@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Having(" + _pattern.ToString() + ")";
+            return "Having(" + _pattern + ")";
         }
 
         /// <summary>

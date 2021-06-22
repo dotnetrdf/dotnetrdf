@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         {
             get
             {
-                return _expr.AsEnumerable<ISparqlExpression>().Concat(_expressions);
+                return _expr.AsEnumerable().Concat(_expressions);
             }
         }
 

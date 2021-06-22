@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Distinct(" + _pattern.ToString() + ")";
+            return "Distinct(" + _pattern + ")";
         }
 
         /// <summary>
@@ -218,22 +218,20 @@ namespace VDS.RDF.Query.Algebra
                 context.OutputMultiset = context.InputMultiset;
                 return context.OutputMultiset;
             }
+
+            if (context.Query.Limit > 0)
+            {
+                context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
+                foreach (ISet s in context.InputMultiset.Sets.Distinct())
+                {
+                    context.OutputMultiset.Add(s.Copy());
+                }
+            }
             else
             {
-                if (context.Query.Limit > 0)
-                {
-                    context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-                    foreach (ISet s in context.InputMultiset.Sets.Distinct())
-                    {
-                        context.OutputMultiset.Add(s.Copy());
-                    }
-                }
-                else
-                {
-                    context.OutputMultiset = context.InputMultiset;
-                }
-                return context.OutputMultiset;
+                context.OutputMultiset = context.InputMultiset;
             }
+            return context.OutputMultiset;
         }
 
         /// <summary>
@@ -274,7 +272,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Reduced(" + _pattern.ToString() + ")";
+            return "Reduced(" + _pattern + ")";
         }
 
         /// <summary>

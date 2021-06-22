@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -223,7 +223,6 @@ namespace VDS.RDF.Parsing
                     case TokenQueueMode.QueueAllBeforeParsing:
                         tokens = new TokenQueue(tokeniser);
                         break;
-                    case TokenQueueMode.SynchronousBufferDuringParsing:
                     default:
                         tokens = new BufferedTokenQueue(tokeniser);
                         break;
@@ -276,7 +275,7 @@ namespace VDS.RDF.Parsing
                 next = tokens.Dequeue();
                 if (next.TokenType != Token.BOF)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a BOF token at the start of the input", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a BOF token at the start of the input", next);
                 }
 
                 do
@@ -319,7 +318,7 @@ namespace VDS.RDF.Parsing
                     return next;
 
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", next);
             }
         }
 
@@ -332,7 +331,7 @@ namespace VDS.RDF.Parsing
                     // OK
                     return next;
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI as the Predicate of a Triple", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a URI as the Predicate of a Triple", next);
             }
         }
 
@@ -366,7 +365,7 @@ namespace VDS.RDF.Parsing
                         return next;
                     }
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", next);
             }
         }
 
@@ -407,14 +406,14 @@ namespace VDS.RDF.Parsing
                     }
                     break;
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Context of the Triple", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Blank Node/Literal/URI as the Context of the Triple", next);
             }
 
             // Ensure we then see a . to terminate the Quad
             next = tokens.Dequeue();
             if (next.TokenType != Token.DOT)
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Dot Token (Line Terminator) to terminate a Triple", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Dot Token (Line Terminator) to terminate a Triple", next);
             }
 
             // Finally return the Context URI
@@ -422,18 +421,16 @@ namespace VDS.RDF.Parsing
             {
                 return ((IUriNode) context).Uri;
             }
-            else if (context.NodeType == NodeType.Blank)
+
+            if (context.NodeType == NodeType.Blank)
             {
                 return UriFactory.Create("nquads:bnode:" + context.GetHashCode());
             }
-            else if (context.NodeType == NodeType.Literal)
+            if (context.NodeType == NodeType.Literal)
             {
                 return UriFactory.Create("nquads:literal:" + context.GetHashCode());
             }
-            else
-            {
-                throw ParserHelper.Error("Cannot turn a Node of type '" + context.GetType().ToString() + "' into a Context URI for a Triple", next);
-            }
+            throw ParserHelper.Error("Cannot turn a Node of type '" + context.GetType() + "' into a Context URI for a Triple", next);
         }
 
         private void TryParseTriple(IRdfHandler handler, IToken s, IToken p, IToken o, Uri graphUri)
@@ -449,7 +446,7 @@ namespace VDS.RDF.Parsing
                     subj = TryParseUri(handler, s.Value);
                     break;
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + s.GetType().ToString() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", s);
+                    throw ParserHelper.Error("Unexpected Token '" + s.GetType() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", s);
             }
 
             switch (p.TokenType)
@@ -458,7 +455,7 @@ namespace VDS.RDF.Parsing
                     pred = ParserHelper.TryResolveUri(handler, p);
                     break;
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + p.GetType().ToString() + "' encountered, expected a URI as the Predicate of a Triple", p);
+                    throw ParserHelper.Error("Unexpected Token '" + p.GetType() + "' encountered, expected a URI as the Predicate of a Triple", p);
             }
 
             switch (o.TokenType)
@@ -480,7 +477,7 @@ namespace VDS.RDF.Parsing
                     obj = TryParseUri(handler, o.Value);
                     break;
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + o.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", o);
+                    throw ParserHelper.Error("Unexpected Token '" + o.GetType() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", o);
             }
 
             if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) ParserHelper.Stop();

@@ -81,7 +81,6 @@ namespace VDS.RDF.Query.Optimisation
                                 if (currVariables.Count == 0)
                                 {
                                     gp.TriplePatterns[i].Variables.ForEach(v => currVariables.Add(v));
-                                    continue;
                                 }
                                 else if (currVariables.IsDisjoint(gp.TriplePatterns[i].Variables))
                                 {

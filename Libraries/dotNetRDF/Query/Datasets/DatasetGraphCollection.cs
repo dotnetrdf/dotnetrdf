@@ -75,22 +75,18 @@ namespace VDS.RDF.Query.Datasets
                     _dataset.Flush();
                     return true;
                 }
-                else
-                {
-                    throw new RdfException("Cannot add this Graph as a Graph with the URI '" + g.BaseUri.ToSafeString() + "' already exists in the Collection and mergeIfExists was set to false");
-                }
+
+                throw new RdfException("Cannot add this Graph as a Graph with the URI '" + g.BaseUri.ToSafeString() + "' already exists in the Collection and mergeIfExists was set to false");
             }
-            else
+
+            // Safe to add a new Graph
+            if (_dataset.AddGraph(g))
             {
-                // Safe to add a new Graph
-                if (_dataset.AddGraph(g))
-                {
-                    _dataset.Flush();
-                    RaiseGraphAdded(g);
-                    return true;
-                }
-                return false;
+                _dataset.Flush();
+                RaiseGraphAdded(g);
+                return true;
             }
+            return false;
         }
 
         /// <summary>
@@ -140,16 +136,14 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IGraph this[Uri graphUri]
         {
-            get 
+            get
             {
                 if (_dataset.HasGraph(graphUri))
                 {
                     return _dataset[graphUri];
                 }
-                else
-                {
-                    throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");
-                }
+
+                throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");
             }
         }
 

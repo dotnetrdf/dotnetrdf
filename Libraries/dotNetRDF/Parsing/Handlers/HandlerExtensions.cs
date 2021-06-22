@@ -47,22 +47,18 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 return ((GraphHandler)handler).BaseUri;
             }
-            else if (handler is IWrappingRdfHandler)
+
+            if (handler is IWrappingRdfHandler)
             {
                 IRdfHandler temp = ((IWrappingRdfHandler)handler).InnerHandlers.FirstOrDefault(h => h.GetBaseUri() != null);
                 if (temp == null)
                 {
                     return null;
                 }
-                else 
-                {
-                   return temp.GetBaseUri();
-                }
+
+                return temp.GetBaseUri();
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         /// <summary>

@@ -228,105 +228,95 @@ namespace VDS.RDF.Parsing
                                         context.Handler.HandleBooleanResult(b);
                                         return;
                                     }
-                                    else
-                                    {
-                                        throw new RdfParseException("Result Set has a boolean result which is a Literal typed as boolean but which does not contain a valid boolean value");
-                                    }
+
+                                    throw new RdfParseException("Result Set has a boolean result which is a Literal typed as boolean but which does not contain a valid boolean value");
                                 }
-                                else
-                                {
-                                    throw new RdfParseException("Result Set has a boolean result which is a Literal which is not boolean typed");
-                                }
+
+                                throw new RdfParseException("Result Set has a boolean result which is a Literal which is not boolean typed");
+                            }
+
+                            throw new RdfParseException("Result Set has a boolean result which is a Literal which is not typed as a boolean");
+                        }
+
+                        throw new RdfParseException("Result Set has a boolean result which is not a Literal Node");
+                    }
+
+                    // We're expected one/more variables
+                    temp = context.Graph.Triples.WithSubjectPredicate(rsetID, resultVariable).ToList();
+                    if (temp.Count > 0)
+                    {
+                        foreach (Triple t in temp)
+                        {
+                            if (t.Object.NodeType == NodeType.Literal)
+                            {
+                                if (!context.Handler.HandleVariable(((ILiteralNode)t.Object).Value)) ParserHelper.Stop();
+                                context.Variables.Add(((ILiteralNode)t.Object).Value);
                             }
                             else
                             {
-                                throw new RdfParseException("Result Set has a boolean result which is a Literal which is not typed as a boolean");
+                                throw new RdfParseException("Result Set has a result variable definition which is not a Literal Node");
                             }
-                        }
-                        else
-                        {
-                            throw new RdfParseException("Result Set has a boolean result which is not a Literal Node");
                         }
                     }
                     else
                     {
-                        // We're expected one/more variables
-                        temp = context.Graph.Triples.WithSubjectPredicate(rsetID, resultVariable).ToList();
-                        if (temp.Count > 0)
+                        throw new RdfParseException("Result Set does not define any result variables or a boolean result");
+                    }
+
+                    // Then we're expecting some Solutions
+                    temp = context.Graph.Triples.WithSubjectPredicate(rsetID, solution).ToList();
+                    foreach (Triple slnTriple in temp)
+                    {
+                        // Each Solution has some Bindings
+                        INode slnID = slnTriple.Object;
+                        bool ok = false;
+                        SparqlResult r = new SparqlResult();
+
+                        foreach (Triple bindingTriple in context.Graph.Triples.WithSubjectPredicate(slnID, binding))
                         {
-                            foreach (Triple t in temp)
+                            // Each Binding has a Variable and a Value
+                            ok = true;
+                            INode bindingID = bindingTriple.Object;
+                            String var = String.Empty;
+                            INode val = null;
+
+                            // Retrieve the Variable and the Bound Value
+                            foreach (Triple valueTriple in context.Graph.Triples.WithSubject(bindingID))
                             {
-                                if (t.Object.NodeType == NodeType.Literal)
+                                if (valueTriple.Predicate.Equals(variable))
                                 {
-                                    if (!context.Handler.HandleVariable(((ILiteralNode)t.Object).Value)) ParserHelper.Stop();
-                                    context.Variables.Add(((ILiteralNode)t.Object).Value);
+                                    if (!var.Equals(String.Empty)) throw new RdfParseException("Result Set contains a Binding which refers to more than one Variable");
+                                    if (valueTriple.Object.NodeType != NodeType.Literal) throw new RdfParseException("Result Set contains a Binding which refers to a Variable but not by a Literal Node as required");
+                                    var = ((ILiteralNode)valueTriple.Object).Value;
                                 }
-                                else
+                                else if (valueTriple.Predicate.Equals(value))
                                 {
-                                    throw new RdfParseException("Result Set has a result variable definition which is not a Literal Node");
+                                    if (val != null) throw new RdfParseException("Result Set contains a Binding which has more than one Value");
+                                    val = valueTriple.Object;
                                 }
                             }
-                        }
-                        else
-                        {
-                            throw new RdfParseException("Result Set does not define any result variables or a boolean result");
-                        }
+                            if (var.Equals(String.Empty) || val == null) throw new RdfParseException("Result Set contains a Binding which doesn't contain both a Variable and a Value");
 
-                        // Then we're expecting some Solutions
-                        temp = context.Graph.Triples.WithSubjectPredicate(rsetID, solution).ToList();
-                        foreach (Triple slnTriple in temp)
-                        {
-                            // Each Solution has some Bindings
-                            INode slnID = slnTriple.Object;
-                            bool ok = false;
-                            SparqlResult r = new SparqlResult();
-
-                            foreach (Triple bindingTriple in context.Graph.Triples.WithSubjectPredicate(slnID, binding))
+                            // Check that the Variable was defined in the Header
+                            if (!context.Variables.Contains(var))
                             {
-                                // Each Binding has a Variable and a Value
-                                ok = true;
-                                INode bindingID = bindingTriple.Object;
-                                String var = String.Empty;
-                                INode val = null;
-
-                                // Retrieve the Variable and the Bound Value
-                                foreach (Triple valueTriple in context.Graph.Triples.WithSubject(bindingID))
-                                {
-                                    if (valueTriple.Predicate.Equals(variable))
-                                    {
-                                        if (!var.Equals(String.Empty)) throw new RdfParseException("Result Set contains a Binding which refers to more than one Variable");
-                                        if (valueTriple.Object.NodeType != NodeType.Literal) throw new RdfParseException("Result Set contains a Binding which refers to a Variable but not by a Literal Node as required");
-                                        var = ((ILiteralNode)valueTriple.Object).Value;
-                                    }
-                                    else if (valueTriple.Predicate.Equals(value))
-                                    {
-                                        if (val != null) throw new RdfParseException("Result Set contains a Binding which has more than one Value");
-                                        val = valueTriple.Object;
-                                    }
-                                }
-                                if (var.Equals(String.Empty) || val == null) throw new RdfParseException("Result Set contains a Binding which doesn't contain both a Variable and a Value");
-
-                                // Check that the Variable was defined in the Header
-                                if (!context.Variables.Contains(var))
-                                {
-                                    throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element attempts to bind a value to the variable '" + var + "' which is not defined in the <head> by a <variable> element!");
-                                }
-
-                                r.SetValue(var, val);
-                            }
-                            if (!ok) throw new RdfParseException("Result Set contains a Solution which has no Bindings");
-
-                            // Check that all Variables are bound for a given result binding nulls where appropriate
-                            foreach (String v in context.Variables)
-                            {
-                                if (!r.HasValue(v))
-                                {
-                                    r.SetValue(v, null);
-                                }
+                                throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element attempts to bind a value to the variable '" + var + "' which is not defined in the <head> by a <variable> element!");
                             }
 
-                            if (!context.Handler.HandleResult(r)) ParserHelper.Stop();
+                            r.SetValue(var, val);
                         }
+                        if (!ok) throw new RdfParseException("Result Set contains a Solution which has no Bindings");
+
+                        // Check that all Variables are bound for a given result binding nulls where appropriate
+                        foreach (String v in context.Variables)
+                        {
+                            if (!r.HasValue(v))
+                            {
+                                r.SetValue(v, null);
+                            }
+                        }
+
+                        if (!context.Handler.HandleResult(r)) ParserHelper.Stop();
                     }
                 }
                 else
@@ -373,12 +363,10 @@ namespace VDS.RDF.Parsing
         {
             if (_parser != null)
             {
-                return "SPARQL Results in RDF (" + _parser.ToString() + ")";
+                return "SPARQL Results in RDF (" + _parser + ")";
             }
-            else
-            {
-                return "SPARQL Results in RDF (Auto-detect)";
-            }
+
+            return "SPARQL Results in RDF (Auto-detect)";
         }
     }
 }

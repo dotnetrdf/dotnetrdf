@@ -118,10 +118,8 @@ namespace VDS.RDF
             {
                 return _prefixes[hash][0];
             }
-            else
-            {
-                throw new RdfException("The Prefix for the given URI '" + uri.AbsoluteUri + "' is not known by the in-scope NamespaceMapper");
-            }
+
+            throw new RdfException("The Prefix for the given URI '" + uri.AbsoluteUri + "' is not known by the in-scope NamespaceMapper");
         }
 
         /// <summary>
@@ -129,16 +127,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="prefix">The Prefix to lookup the Namespace URI for.</param>
         /// <returns>URI for the Namespace.</returns>
-        public virtual Uri GetNamespaceUri(string prefix) 
+        public virtual Uri GetNamespaceUri(string prefix)
         {
             if (_uris.ContainsKey(prefix))
             {
                 return _uris[prefix];
             }
-            else
-            {
-                throw new RdfException("The Namespace URI for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper.  Did you forget to define a namespace for this prefix?");
-            }
+
+            throw new RdfException("The Namespace URI for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper.  Did you forget to define a namespace for this prefix?");
         }
 
         /// <summary>
@@ -707,7 +703,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            return _u.ToString();
+            return _u;
         }
 
         /// <summary>
@@ -722,10 +718,8 @@ namespace VDS.RDF
             {
                 return ToString().Equals(obj.ToString(), StringComparison.Ordinal);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
     }
 }

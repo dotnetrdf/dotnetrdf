@@ -76,10 +76,8 @@ namespace VDS.RDF.Query.Paths
             {
                 return new Bgp(_patterns);
             }
-            else
-            {
-                throw new RdfQueryException("Unexpected Error: Path Transform returned no Patterns");
-            }
+
+            throw new RdfQueryException("Unexpected Error: Path Transform returned no Patterns");
         }
 
         /// <summary>
@@ -198,10 +196,8 @@ namespace VDS.RDF.Query.Paths
                 NodeMatchPattern nodeMatch = new NodeMatchPattern(((Property)path).Predicate, true);
                 return new TriplePattern(subj, nodeMatch, obj);
             }
-            else
-            {
-                return new PropertyPathPattern(subj, path, obj);
-            }
+
+            return new PropertyPathPattern(subj, path, obj);
         }
     }
 }

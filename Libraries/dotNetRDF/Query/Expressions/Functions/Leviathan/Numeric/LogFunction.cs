@@ -82,12 +82,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             if (_log10)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr + ")";
             }
-            else
-            {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
-            }
+
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr + "," + _rightExpr + ")";
         }
 
         /// <summary>
@@ -123,10 +121,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             {
                 return new LogFunction(transformer.Transform(_leftExpr));
             }
-            else
-            {
-                return new LogFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
-            }
+
+            return new LogFunction(transformer.Transform(_leftExpr), transformer.Transform(_rightExpr));
         }
     }
 }

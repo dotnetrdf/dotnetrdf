@@ -213,7 +213,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     default:
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered", next);
                 }
 
                 // Stop when we've hit the End of the Line/File
@@ -302,7 +302,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     default:
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered", next);
                  }
 
                 // Stop when we've hit the End of the Line/File
@@ -333,11 +333,9 @@ namespace VDS.RDF.Parsing
                 {
                     return context.Handler.CreateLiteralNode(value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
                 }
-                else
-                {
-                    Uri plUri = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)t, TurtleSyntax.Original);
-                    return context.Handler.CreateLiteralNode(value, plUri);
-                }
+
+                Uri plUri = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)t, TurtleSyntax.Original);
+                return context.Handler.CreateLiteralNode(value, plUri);
             }
 
             // Check for DataType/Language Specifier
@@ -348,15 +346,13 @@ namespace VDS.RDF.Parsing
                 Uri dtUri = UriFactory.Create(next.Value.Substring(1, next.Length - 2));
                 return context.Handler.CreateLiteralNode(value, dtUri);
             }
-            else if (next.TokenType == Token.LANGSPEC)
+
+            if (next.TokenType == Token.LANGSPEC)
             {
                 next = context.Tokens.Dequeue();
                 return context.Handler.CreateLiteralNode(value, next.Value);
             }
-            else
-            {
-                return context.Handler.CreateLiteralNode(value);
-            }
+            return context.Handler.CreateLiteralNode(value);
         }
 
         /// <summary>

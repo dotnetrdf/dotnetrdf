@@ -182,10 +182,8 @@ namespace VDS.RDF.Parsing
                             {
                                 throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <sparql> element has an incorrect Namespace!");
                             }
-                            else
-                            {
-                                nsfound = true;
-                            }
+
+                            nsfound = true;
                         }
                     }
                 }
@@ -217,13 +215,11 @@ namespace VDS.RDF.Parsing
                             {
                                 throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <variable> element has too few/many attributes, only a 'name' attribute should be present!");
                             }
-                            else
-                            {
-                                // Add the Variable to the list
-                                context.Input.MoveToNextAttribute();
-                                if (!context.Handler.HandleVariable(context.Input.Value)) ParserHelper.Stop();
-                                context.Variables.Add(context.Input.Value);
-                            }
+
+                            // Add the Variable to the list
+                            context.Input.MoveToNextAttribute();
+                            if (!context.Handler.HandleVariable(context.Input.Value)) ParserHelper.Stop();
+                            context.Variables.Add(context.Input.Value);
                         }
                         else if (context.Input.Name.Equals("link"))
                         {
@@ -378,14 +374,16 @@ namespace VDS.RDF.Parsing
             {
                 return ParserHelper.TryResolveUri(context, context.Input.ReadElementContentAsString());
             }
-            else if (context.Input.Name.Equals("literal"))
+
+            if (context.Input.Name.Equals("literal"))
             {
                 if (context.Input.AttributeCount == 0)
                 {
                     // Literal with no Data Type/Language Specifier
                     return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
                 }
-                else if (context.Input.AttributeCount >= 1)
+
+                if (context.Input.AttributeCount >= 1)
                 {
                     String lang = null;
                     Uri dt = null;
@@ -413,52 +411,42 @@ namespace VDS.RDF.Parsing
                     if (lang != null)
                     {
                         return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), lang);
-                    } 
-                    else if (dt != null)
+                    }
+
+                    if (dt != null)
                     {
                         return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), dt);
                     }
-                    else
-                    {
-                        // Just a plain literal with lots of custom attributes
-                        return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
-                    }
+                    // Just a plain literal with lots of custom attributes
+                    return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
                 }
-                else
-                {
-                    throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <literal> element has too many Attributes, only 1 of 'xml:lang' or 'datatype' may be specified!");
-                }
+                throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <literal> element has too many Attributes, only 1 of 'xml:lang' or 'datatype' may be specified!");
             }
-            else if (context.Input.Name.Equals("bnode"))
+            if (context.Input.Name.Equals("bnode"))
             {
                 String bnodeID = context.Input.ReadElementContentAsString();
                 if (bnodeID.StartsWith("_:"))
                 {
                     return context.Handler.CreateBlankNode(bnodeID.Substring(2));
                 }
-                else if (bnodeID.Contains("://"))
+
+                if (bnodeID.Contains("://"))
                 {
                     return context.Handler.CreateBlankNode(bnodeID.Substring(bnodeID.IndexOf("://") + 3));
                 }
-                else if (bnodeID.Contains(":"))
+                if (bnodeID.Contains(":"))
                 {
                     return context.Handler.CreateBlankNode(bnodeID.Substring(bnodeID.LastIndexOf(':') + 1));
                 }
-                else
-                {
-                    return context.Handler.CreateBlankNode(bnodeID);
-                }
+                return context.Handler.CreateBlankNode(bnodeID);
             }
-            else if (context.Input.Name.Equals("unbound"))
+            if (context.Input.Name.Equals("unbound"))
             {
                 // HACK: This is a really ancient feature of the SPARQL Results XML format (from Working Draft in 2005) which we support to ensure compatability with old pre-standardisation SPARQL endpoints (like 3store based ones)
                 context.Input.ReadInnerXml();
                 return null;
             }
-            else
-            {
-                throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element contains an unexpected element <" + context.Input.Name + ">!");
-            }
+            throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element contains an unexpected element <" + context.Input.Name + ">!");
         }
 
         /// <summary>

@@ -78,50 +78,40 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                 // If no argument then always a fresh BNode
                 return _funcContext.Graph.CreateBlankNode().AsValuedNode();
             }
-            else
+
+            INode temp = _expr.Evaluate(context, bindingID);
+            if (temp != null)
             {
-                INode temp = _expr.Evaluate(context, bindingID);
-                if (temp != null)
+                if (temp.NodeType == NodeType.Literal)
                 {
-                    if (temp.NodeType == NodeType.Literal)
-                    {
-                        ILiteralNode lit = (ILiteralNode)temp;
+                    ILiteralNode lit = (ILiteralNode)temp;
 
-                        if (lit.DataType == null)
-                        {
-                            if (lit.Language.Equals(string.Empty))
-                            {
-                                if (!_funcContext.BlankNodes.ContainsKey(bindingID))
-                                {
-                                    _funcContext.BlankNodes.Add(bindingID, new Dictionary<string, INode>());
-                                }
-
-                                if (!_funcContext.BlankNodes[bindingID].ContainsKey(lit.Value))
-                                {
-                                    _funcContext.BlankNodes[bindingID].Add(lit.Value, _funcContext.Graph.CreateBlankNode());
-                                }
-                                return _funcContext.BlankNodes[bindingID][lit.Value].AsValuedNode();
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a lanuage specified literal");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a typed literal node");
-                        }
-                    }
-                    else
+                    if (lit.DataType == null)
                     {
-                        throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a non-literal node");
+                        if (lit.Language.Equals(string.Empty))
+                        {
+                            if (!_funcContext.BlankNodes.ContainsKey(bindingID))
+                            {
+                                _funcContext.BlankNodes.Add(bindingID, new Dictionary<string, INode>());
+                            }
+
+                            if (!_funcContext.BlankNodes[bindingID].ContainsKey(lit.Value))
+                            {
+                                _funcContext.BlankNodes[bindingID].Add(lit.Value, _funcContext.Graph.CreateBlankNode());
+                            }
+                            return _funcContext.BlankNodes[bindingID][lit.Value].AsValuedNode();
+                        }
+
+                        throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a lanuage specified literal");
                     }
+
+                    throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a typed literal node");
                 }
-                else
-                {
-                    throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to null");
-                }
+
+                throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a non-literal node");
             }
+
+            throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to null");
         }
 
         /// <summary>

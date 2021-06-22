@@ -82,10 +82,8 @@ namespace VDS.RDF.Storage
                 BatchTriple other = (BatchTriple)obj;
                 return _graphID == other.GraphID && _t.Equals(other.Triple);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>

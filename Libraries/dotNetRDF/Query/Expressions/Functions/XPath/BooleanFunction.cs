@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean + ">(" + _expr + ")";
         }
 
         /// <summary>

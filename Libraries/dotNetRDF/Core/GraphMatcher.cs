@@ -304,13 +304,11 @@ namespace VDS.RDF
                 // Try to do a Rules Based Mapping
                 return TryRulesBasedMapping(g, h, gNodes, hNodes, gDegrees, hDegrees);
             }
-            else
-            {
-                // There are degree classifications that don't have the same number of BNodes with that degree 
-                // or the degree classification is not in the other Graph
-                Debug.WriteLine("[NOT EQUAL] Degree classification of Blank Nodes indicates no possible equality mapping");
-                return false;
-            }
+
+            // There are degree classifications that don't have the same number of BNodes with that degree 
+            // or the degree classification is not in the other Graph
+            Debug.WriteLine("[NOT EQUAL] Degree classification of Blank Nodes indicates no possible equality mapping");
+            return false;
 
         }
 
@@ -701,11 +699,9 @@ namespace VDS.RDF
                         }
                         break;
                     }
-                    else
-                    {
-                        if (!xbound) _mapping.Remove(dependency.X);
-                        if (!ybound) _mapping.Remove(dependency.Y);
-                    }
+
+                    if (!xbound) _mapping.Remove(dependency.X);
+                    if (!ybound) _mapping.Remove(dependency.Y);
                 }
             }
             Debug.WriteLine("Dependency information allowed us to map a further " + (_mapping.Count - mappedSoFar) + " nodes, we now have a possible mapping with " + _mapping.Count + " blank nodes mapped (" + baseMapping.Count + " confirmed mappings) out of a total " + gNodes.Count + " blank nodes");
@@ -720,19 +716,15 @@ namespace VDS.RDF
                     Debug.WriteLine("[EQUAL] Generated a rules based mapping successfully");
                     return true;
                 }
-                else
-                {
-                    // Fall back should to a divide and conquer mapping
-                    Debug.WriteLine("Had a potential rules based mapping but it was invalid, falling back to divide and conquer mapping with base mapping of " + baseMapping.Count + " nodes");
-                    _mapping = baseMapping;
-                    return TryDivideAndConquerMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
-                }
-            }
-            else
-            {
-                Debug.WriteLine("Rules based mapping did not generate a complete mapping, falling back to divide and conquer mapping");
+
+                // Fall back should to a divide and conquer mapping
+                Debug.WriteLine("Had a potential rules based mapping but it was invalid, falling back to divide and conquer mapping with base mapping of " + baseMapping.Count + " nodes");
+                _mapping = baseMapping;
                 return TryDivideAndConquerMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
             }
+
+            Debug.WriteLine("Rules based mapping did not generate a complete mapping, falling back to divide and conquer mapping");
+            return TryDivideAndConquerMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
         }
 
         /// <summary>
@@ -770,7 +762,8 @@ namespace VDS.RDF
                 _mapping = null;
                 return false;
             }
-            else if (gMsgs.Count == 1)
+
+            if (gMsgs.Count == 1)
             {
                 Debug.WriteLine("Blank Node potions of graphs did not decompose into isolated sub-graphs, falling back to brute force mapping");
                 return TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
@@ -844,7 +837,8 @@ namespace VDS.RDF
                         _mapping = null;
                         return false;
                     }
-                    else if (partialMappings.Count == 1)
+
+                    if (partialMappings.Count == 1)
                     {
                         // Only one possible match
                         foreach (KeyValuePair<INode, INode> kvp in partialMappings[0])
@@ -855,10 +849,8 @@ namespace VDS.RDF
                                 _mapping = null;
                                 return false;
                             }
-                            else
-                            {
-                                _mapping.Add(kvp.Key, kvp.Value);
-                            }
+
+                            _mapping.Add(kvp.Key, kvp.Value);
                         }
                         Debug.WriteLine("Divide and conquer found a unique mapping for an isolated sub-graph and confirmed an additional " + partialMappings[0].Count + " blank node mappings");
 
@@ -897,20 +889,16 @@ namespace VDS.RDF
                     Debug.WriteLine("[EQUAL] Generated a divide and conquer based mapping successfully");
                     return true;
                 }
-                else
-                {
-                    // Invalid mapping
-                    Debug.WriteLine("[NOT EQUAL] Divide and conquer led to an invalid mapping");
-                    _mapping = null;
-                    return false;
-                }
+
+                // Invalid mapping
+                Debug.WriteLine("[NOT EQUAL] Divide and conquer led to an invalid mapping");
+                _mapping = null;
+                return false;
             }
-            else
-            {
-                // If dvide and conquer fails fall back to brute force
-                Debug.WriteLine("Divide and conquer based mapping did not succeed in mapping everything, have " + _mapping.Count + " confirmed mappings out of " + gNodes.Count + " total blank nodes, falling back to brute force mapping");
-                return TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
-            }
+
+            // If dvide and conquer fails fall back to brute force
+            Debug.WriteLine("Divide and conquer based mapping did not succeed in mapping everything, have " + _mapping.Count + " confirmed mappings out of " + gNodes.Count + " total blank nodes, falling back to brute force mapping");
+            return TryBruteForceMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
         }
 
         /// <summary>
@@ -1113,10 +1101,8 @@ namespace VDS.RDF
                 MappingPair p = (MappingPair)obj;
                 return (_x.Equals(p.X) && _y.Equals(p.Y) && _type == p.Type);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public override int GetHashCode()

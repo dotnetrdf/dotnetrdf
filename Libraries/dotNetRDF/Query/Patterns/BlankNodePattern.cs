@@ -82,19 +82,15 @@ namespace VDS.RDF.Query.Patterns
                 {
                     return context.InputMultiset.ContainsValue(_name, obj);
                 }
-                else if (Repeated)
+
+                if (Repeated)
                 {
                     return true;
                 }
-                else
-                {
-                    return true;
-                }
-            }
-            else
-            {
                 return true;
             }
+
+            return true;
         }
 
         /// <summary>

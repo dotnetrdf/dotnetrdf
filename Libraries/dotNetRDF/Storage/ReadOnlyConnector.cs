@@ -259,7 +259,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Read Only]" + _manager.ToString();
+            return "[Read Only]" + _manager;
         }
 
         /// <summary>
@@ -348,36 +348,32 @@ namespace VDS.RDF.Storage
                 // Use the base classes ListGraphs method if it provides one
                 return base.ListGraphs();
             }
-            else
+
+            try
             {
-                try
+                Object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                if (results is SparqlResultSet)
                 {
-                    Object results = Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
-                    if (results is SparqlResultSet)
+                    List<Uri> graphs = new List<Uri>();
+                    foreach (SparqlResult r in ((SparqlResultSet)results))
                     {
-                        List<Uri> graphs = new List<Uri>();
-                        foreach (SparqlResult r in ((SparqlResultSet)results))
+                        if (r.HasValue("g"))
                         {
-                            if (r.HasValue("g"))
+                            INode temp = r["g"];
+                            if (temp.NodeType == NodeType.Uri)
                             {
-                                INode temp = r["g"];
-                                if (temp.NodeType == NodeType.Uri)
-                                {
-                                    graphs.Add(((IUriNode)temp).Uri);
-                                }
+                                graphs.Add(((IUriNode)temp).Uri);
                             }
                         }
-                        return graphs;
                     }
-                    else
-                    {
-                        return Enumerable.Empty<Uri>();
-                    }
+                    return graphs;
                 }
-                catch (Exception ex)
-                {
-                    throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
-                }
+
+                return Enumerable.Empty<Uri>();
+            }
+            catch (Exception ex)
+            {
+                throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
             }
         }
 

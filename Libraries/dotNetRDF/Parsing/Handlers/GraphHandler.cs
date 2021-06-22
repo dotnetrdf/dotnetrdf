@@ -58,10 +58,8 @@ namespace VDS.RDF.Parsing.Handlers
                 {
                     return _target.BaseUri;
                 }
-                else
-                {
-                    return _g.BaseUri;
-                }
+
+                return _g.BaseUri;
             }
         }
 

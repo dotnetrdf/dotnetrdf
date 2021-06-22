@@ -187,10 +187,8 @@ namespace VDS.RDF.Query.Grouping
             {
                 return outGroups;
             }
-            else
-            {
-                return _child.Apply(context, outGroups);
-            }
+
+            return _child.Apply(context, outGroups);
         }
 
         /// <summary>
@@ -246,10 +244,8 @@ namespace VDS.RDF.Query.Grouping
             {
                 return outgroups;
             }
-            else
-            {
-                return _child.Apply(context, outgroups);
-            }
+
+            return _child.Apply(context, outgroups);
         }
 
         /// <summary>
@@ -257,16 +253,14 @@ namespace VDS.RDF.Query.Grouping
         /// </summary>
         public override IEnumerable<string> Variables
         {
-            get 
+            get
             {
                 if (_child == null)
                 {
-                    return _name.AsEnumerable<String>();
+                    return _name.AsEnumerable();
                 }
-                else
-                {
-                    return _child.Variables.Concat(_name.AsEnumerable<String>());
-                }
+
+                return _child.Variables.Concat(_name.AsEnumerable());
             }
         }
 
@@ -320,7 +314,7 @@ namespace VDS.RDF.Query.Grouping
             if (_child != null)
             {
                 output.Append(' ');
-                output.Append(_child.ToString());
+                output.Append(_child);
             }
 
             return output.ToString();
@@ -403,10 +397,8 @@ namespace VDS.RDF.Query.Grouping
             {
                 return _child.Apply(context, parentGroups);
             }
-            else
-            {
-                return parentGroups;
-            }
+
+            return parentGroups;
         }
 
         /// <summary>
@@ -479,10 +471,8 @@ namespace VDS.RDF.Query.Grouping
             {
                 return outgroups;
             }
-            else
-            {
-                return _child.Apply(context, outgroups);
-            }
+
+            return _child.Apply(context, outgroups);
         }
 
         /// <summary>
@@ -496,10 +486,8 @@ namespace VDS.RDF.Query.Grouping
                 {
                     return _expr.Variables;
                 }
-                else
-                {
-                    return _expr.Variables.Concat(_child.Variables);
-                }
+
+                return _expr.Variables.Concat(_child.Variables);
             }
         }
 
@@ -541,7 +529,7 @@ namespace VDS.RDF.Query.Grouping
         {
             StringBuilder output = new StringBuilder();
             output.Append('(');
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             if (AssignVariable != null)
             {
                 output.Append(" AS ?");
@@ -552,7 +540,7 @@ namespace VDS.RDF.Query.Grouping
             if (_child != null)
             {
                 output.Append(' ');
-                output.Append(_child.ToString());
+                output.Append(_child);
             }
 
             return output.ToString();

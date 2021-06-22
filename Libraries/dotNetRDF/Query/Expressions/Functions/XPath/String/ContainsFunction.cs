@@ -55,16 +55,14 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 // Empty string cannot contain anything
                 return new BooleanNode(null, false);
             }
-            else if (arg.Value.Equals(string.Empty))
+
+            if (arg.Value.Equals(string.Empty))
             {
                 // Any non-empty string contains the empty string
                 return new BooleanNode(null, true);
             }
-            else
-            {
-                // Evalute the Contains
-                return new BooleanNode(null, stringLit.Value.Contains(arg.Value));
-            }
+            // Evalute the Contains
+            return new BooleanNode(null, stringLit.Value.Contains(arg.Value));
         }
 
         /// <summary>
@@ -73,7 +71,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains + ">(" + _expr + "," + _arg + ")";
         }
 
         /// <summary>

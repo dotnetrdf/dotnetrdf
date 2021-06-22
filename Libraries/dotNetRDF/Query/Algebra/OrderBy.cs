@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "OrderBy(" + _pattern.ToString() + ")";
+            return "OrderBy(" + _pattern + ")";
         }
 
         /// <summary>

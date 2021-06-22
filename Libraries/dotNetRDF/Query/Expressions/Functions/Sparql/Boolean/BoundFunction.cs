@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "BOUND(" + _expr.ToString() + ")";
+            return "BOUND(" + _expr + ")";
         }
 
         /// <summary>

@@ -75,10 +75,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
                         throw new RdfQueryException("Cannot calculate the Hash of an Unknown Node Type");
                 }
             }
-            else
-            {
-                throw new RdfQueryException("Cannot calculate the Hash of a null");
-            }
+
+            throw new RdfQueryException("Cannot calculate the Hash of a null");
         }
 
         /// <summary>

@@ -149,7 +149,7 @@ namespace VDS.RDF.Parsing
                 StringWriter temp = new StringWriter();
                 foreach (byte b in Convert.FromBase64String(data))
                 {
-                    temp.Write((char)((int)b));
+                    temp.Write((char)b);
                 }
                 data = temp.ToString();
             }

@@ -154,39 +154,36 @@ namespace VDS.RDF.Parsing
                     // Resource did not exist in this assembly
                     throw new RdfParseException("The Embedded Resource '" + resource + "' does not exist inside of " + GetAssemblyName(asm));
                 }
+                // Resource exists
+
+                // Did we get a defined parser to use?
+                if (parser != null)
+                {
+                    parser.Load(handler, new StreamReader(s));
+                }
                 else
                 {
-                    // Resource exists
-
-                    // Did we get a defined parser to use?
-                    if (parser != null)
+                    // Need to select a Parser or use StringParser
+                    String ext = MimeTypesHelper.GetTrueResourceExtension(resource);
+                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
+                    if (def != null)
                     {
+                        // Resource has an appropriate file extension and we've found a candidate parser for it
+                        parser = def.GetRdfParser();
                         parser.Load(handler, new StreamReader(s));
                     }
                     else
                     {
-                        // Need to select a Parser or use StringParser
-                        String ext = MimeTypesHelper.GetTrueResourceExtension(resource);
-                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
-                        if (def != null)
+                        // Resource did not have a file extension or we didn't have a parser associated with the extension
+                        // Try using StringParser instead
+                        String data;
+                        using (StreamReader reader = new StreamReader(s))
                         {
-                            // Resource has an appropriate file extension and we've found a candidate parser for it
-                            parser = def.GetRdfParser();
-                            parser.Load(handler, new StreamReader(s));
+                            data = reader.ReadToEnd();
+                            reader.Close();
                         }
-                        else
-                        {
-                            // Resource did not have a file extension or we didn't have a parser associated with the extension
-                            // Try using StringParser instead
-                            String data;
-                            using (StreamReader reader = new StreamReader(s))
-                            {
-                                data = reader.ReadToEnd();
-                                reader.Close();
-                            }
-                            parser = StringParser.GetParser(data);
-                            parser.Load(handler, new StringReader(data));
-                        }
+                        parser = StringParser.GetParser(data);
+                        parser.Load(handler, new StringReader(data));
                     }
                 }
             }
@@ -304,47 +301,45 @@ namespace VDS.RDF.Parsing
                     // Resource did not exist in this assembly
                     throw new RdfParseException("The Embedded Resource '" + resource + "' does not exist inside of " + GetAssemblyName(asm));
                 }
+
+                // Resource exists
+                // Do we have a predefined Parser?
+                if (parser != null)
+                {
+                    parser.Load(handler, new StreamReader(s));
+                }
                 else
                 {
-                    // Resource exists
-                    // Do we have a predefined Parser?
-                    if (parser != null)
+                    // Need to select a Parser or use StringParser
+                    String ext =  MimeTypesHelper.GetTrueResourceExtension(resource);
+                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdfDatasets);
+                    if (def != null)
                     {
+                        // Resource has an appropriate file extension and we've found a candidate parser for it
+                        parser = def.GetRdfDatasetParser();
                         parser.Load(handler, new StreamReader(s));
                     }
                     else
                     {
-                        // Need to select a Parser or use StringParser
-                        String ext =  MimeTypesHelper.GetTrueResourceExtension(resource);
-                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdfDatasets);
+                        // See if the format was actually an RDF graph instead
+                        def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
                         if (def != null)
                         {
-                            // Resource has an appropriate file extension and we've found a candidate parser for it
-                            parser = def.GetRdfDatasetParser();
-                            parser.Load(handler, new StreamReader(s));
+                            IRdfReader rdfParser = def.GetRdfParser();
+                            rdfParser.Load(handler, new StreamReader(s));
                         }
                         else
                         {
-                            // See if the format was actually an RDF graph instead
-                            def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
-                            if (def != null)
+                            // Resource did not have a file extension or we didn't have a parser associated with the extension
+                            // Try using StringParser instead
+                            String data;
+                            using (StreamReader reader = new StreamReader(s))
                             {
-                                IRdfReader rdfParser = def.GetRdfParser();
-                                rdfParser.Load(handler, new StreamReader(s));
+                                data = reader.ReadToEnd();
+                                reader.Close();
                             }
-                            else
-                            {
-                                // Resource did not have a file extension or we didn't have a parser associated with the extension
-                                // Try using StringParser instead
-                                String data;
-                                using (StreamReader reader = new StreamReader(s))
-                                {
-                                    data = reader.ReadToEnd();
-                                    reader.Close();
-                                }
-                                parser = StringParser.GetDatasetParser(data);
-                                parser.Load(handler, new StringReader(data));
-                            }
+                            parser = StringParser.GetDatasetParser(data);
+                            parser.Load(handler, new StringReader(data));
                         }
                     }
                 }

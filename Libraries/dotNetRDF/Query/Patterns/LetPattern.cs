@@ -215,7 +215,7 @@ namespace VDS.RDF.Query.Patterns
             output.Append("?");
             output.Append(_var);
             output.Append(" := ");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(")");
 
             return output.ToString();

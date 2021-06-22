@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + _expr + ")";
         }
 
         /// <summary>

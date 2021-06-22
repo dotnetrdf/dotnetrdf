@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Algebra
         {
             String filter = _filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
-            return "Filter(" + _pattern.ToString() + ", " + filter + ")";
+            return "Filter(" + _pattern + ", " + filter + ")";
         }
 
         /// <summary>
@@ -192,10 +192,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 return new Filter(optimiser.Optimise(_pattern), new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(_filter.Expression)));
             }
-            else
-            {
-                return new Filter(optimiser.Optimise(_pattern), _filter);
-            }
+
+            return new Filter(optimiser.Optimise(_pattern), _filter);
         }
     }
 }

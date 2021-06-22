@@ -208,10 +208,8 @@ namespace VDS.RDF.Query.Optimisation
                 temp = Math.Max(1, temp);
                 return 1d - (1d / temp);
             }
-            else
-            {
-                return 1d - _defSubjWeight;
-            }
+
+            return 1d - _defSubjWeight;
         }
 
         public double PredicateWeighting(INode n)
@@ -222,10 +220,8 @@ namespace VDS.RDF.Query.Optimisation
                 temp = Math.Max(1, temp);
                 return 1d - (1d / temp);
             }
-            else
-            {
-                return 1d - _defPredWeight;
-            }
+
+            return 1d - _defPredWeight;
         }
 
         public double ObjectWeighting(INode n)
@@ -236,10 +232,8 @@ namespace VDS.RDF.Query.Optimisation
                 temp = Math.Max(1, temp);
                 return 1d - (1d / temp);
             }
-            else
-            {
-                return 1d - _defObjWeight;
-            }
+
+            return 1d - _defObjWeight;
         }
 
         public double DefaultSubjectWeighting

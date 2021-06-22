@@ -159,19 +159,20 @@ namespace VDS.RDF.Query.Optimisation
                 }
                 return new Bgp(ps);
             }
-            else if (algebra is Service)
+
+            if (algebra is Service)
             {
                 throw new RdfQueryException("Cannot do variable substitution when a SERVICE clause is present");
             }
-            else if (algebra is SubQuery)
+            if (algebra is SubQuery)
             {
                 throw new RdfQueryException("Cannot do variable substitution when a sub-query is present");
             }
-            else if (algebra is IPathOperator)
+            if (algebra is IPathOperator)
             {
                 throw new RdfQueryException("Cannot do variable substitution when a property path is present");
             }
-            else if (algebra is Algebra.Graph)
+            if (algebra is Algebra.Graph)
             {
                 Algebra.Graph g = (Algebra.Graph)((IUnaryOperator)algebra).Transform(this);
                 if (g.GraphSpecifier is VariableToken && g.GraphSpecifier.Value.Equals("?" + _findVar))
@@ -180,32 +181,25 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         return new Algebra.Graph(g.InnerAlgebra, _replaceToken);
                     }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot do a variable substitution when the variable is used for a GRAPH specifier and the replacement term is not a URI");
-                    }
+
+                    throw new RdfQueryException("Cannot do a variable substitution when the variable is used for a GRAPH specifier and the replacement term is not a URI");
                 }
-                else
-                {
-                    return g;
-                }
+
+                return g;
             }
-            else if (algebra is IUnaryOperator)
+            if (algebra is IUnaryOperator)
             {
                 return ((IUnaryOperator)algebra).Transform(this);
             }
-            else if (algebra is IAbstractJoin)
+            if (algebra is IAbstractJoin)
             {
                 return ((IAbstractJoin)algebra).Transform(this);
             }
-            else if (algebra is ITerminalOperator)
+            if (algebra is ITerminalOperator)
             {
                 return algebra;
             }
-            else
-            {
-                throw new RdfQueryException("Cannot do variable substitution on unknown algebra");
-            }               
+            throw new RdfQueryException("Cannot do variable substitution on unknown algebra");
         }
 
         /// <summary>
@@ -241,22 +235,18 @@ namespace VDS.RDF.Query.Optimisation
                 {
                     return _replaceExpr;
                 }
-                else
-                {
-                    return expr;
-                }
+
+                return expr;
             }
-            else if (expr is GraphPatternTerm)
+
+            if (expr is GraphPatternTerm)
             {
                 GraphPatternTerm gp = (GraphPatternTerm)expr;
                 ISparqlAlgebra alg = gp.Pattern.ToAlgebra();
                 alg = Optimise(alg);
                 return new GraphPatternTerm(alg.ToGraphPattern());
             }
-            else
-            {
-                return expr;
-            }
+            return expr;
         }
     }
 }

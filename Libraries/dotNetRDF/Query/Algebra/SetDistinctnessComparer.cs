@@ -73,11 +73,9 @@ namespace VDS.RDF.Query.Algebra
                 // i.e. compare for equality across all variables in the sets
                 return x.Equals(y);
             }
-            else
-            {
-                // Otherwise compare for equality on specified variables
-                return _vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
-            }
+
+            // Otherwise compare for equality on specified variables
+            return _vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
         }
 
         /// <summary>
@@ -93,17 +91,15 @@ namespace VDS.RDF.Query.Algebra
             {
                 return obj.GetHashCode();
             }
-            else
+
+            StringBuilder output = new StringBuilder();
+            foreach (String var in _vars)
             {
-                StringBuilder output = new StringBuilder();
-                foreach (String var in _vars)
-                {
-                    output.Append("?" + var + " = " + obj[var].ToSafeString());
-                    output.Append(" , ");
-                }
-                output.Remove(output.Length - 3, 3);
-                return output.ToString().GetHashCode();
+                output.Append("?" + var + " = " + obj[var].ToSafeString());
+                output.Append(" , ");
             }
+            output.Remove(output.Length - 3, 3);
+            return output.ToString().GetHashCode();
         }
     }
 }

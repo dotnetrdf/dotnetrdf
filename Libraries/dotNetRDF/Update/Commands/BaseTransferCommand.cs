@@ -128,10 +128,8 @@ namespace VDS.RDF.Update.Commands
             {
                 return (_destUri == null || _sourceUri == null);
             }
-            else
-            {
-                return graphUri.AbsoluteUri.Equals(_sourceUri.ToSafeString()) || graphUri.AbsoluteUri.Equals(_destUri.ToSafeString());
-            }
+
+            return graphUri.AbsoluteUri.Equals(_sourceUri.ToSafeString()) || graphUri.AbsoluteUri.Equals(_destUri.ToSafeString());
         }
 
         /// <summary>

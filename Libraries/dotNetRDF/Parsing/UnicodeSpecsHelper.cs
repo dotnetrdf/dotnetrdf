@@ -207,11 +207,9 @@ namespace VDS.RDF.Parsing
                     // UTF-32 character so down-convert to UTF-16
                     return Char.ConvertFromUtf32(i).ToCharArray();
                 }
-                else
-                {
-                    // Within single character range
-                    return new char[] { (char)i };
-                }
+
+                // Within single character range
+                return new[] { (char)i };
             }
             catch (Exception ex)
             {

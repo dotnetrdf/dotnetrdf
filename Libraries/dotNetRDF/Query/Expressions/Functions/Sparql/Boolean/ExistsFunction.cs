@@ -92,11 +92,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                     // If Disjoint and must exist then true since
                     return new BooleanNode(null, true);
                 }
-                else
-                {
-                    // If Disjoint and must not exist then false
-                    return new BooleanNode(null, false);
-                }
+
+                // If Disjoint and must not exist then false
+                return new BooleanNode(null, false);
             }
 
             ISet x = context.InputMultiset[bindingID];
@@ -107,11 +105,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 // If an EXISTS then return the value of exists i.e. are there any compatible solutions
                 return new BooleanNode(null, exists);
             }
-            else
-            {
-                // If a NOT EXISTS then return the negation of exists i.e. if compatible solutions exist then we must return false, if none we return true
-                return new BooleanNode(null, !exists);
-            }
+
+            // If a NOT EXISTS then return the negation of exists i.e. if compatible solutions exist then we must return false, if none we return true
+            return new BooleanNode(null, !exists);
         }
 
         /// <summary>
@@ -258,7 +254,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 output.Append("NOT EXISTS ");
             }
-            output.Append(_pattern.ToString());
+            output.Append(_pattern);
             return output.ToString();
         }
 
@@ -284,10 +280,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 {
                     return SparqlSpecsHelper.SparqlKeywordExists;
                 }
-                else
-                {
-                    return SparqlSpecsHelper.SparqlKeywordNotExists;
-                }
+
+                return SparqlSpecsHelper.SparqlKeywordNotExists;
             }
         }
 
@@ -314,10 +308,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 return new ExistsFunction(((GraphPatternTerm)temp).Pattern, _mustExist);
             }
-            else
-            {
-                throw new RdfQueryException("Unable to transform an EXISTS/NOT EXISTS function since the expression transformer in use failed to transform the inner Graph Pattern Expression to another Graph Pattern Expression");
-            }
+
+            throw new RdfQueryException("Unable to transform an EXISTS/NOT EXISTS function since the expression transformer in use failed to transform the inner Graph Pattern Expression to another Graph Pattern Expression");
         }
     }
 }

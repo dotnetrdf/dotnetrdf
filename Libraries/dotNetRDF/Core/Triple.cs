@@ -69,19 +69,17 @@ namespace VDS.RDF
             {
                 throw new RdfException("Subject, Predicate and Object Nodes must all come from the same Graph/Node Factory - use Tools.CopyNode() to transfer nodes between Graphs");
             }
-            else
-            {
-                // Set the Graph property from the Subject
-                _g = subj.Graph;
 
-                // Store the Three Nodes of the Triple
-                _subject = subj;
-                _predicate = pred;
-                _object = obj;
+            // Set the Graph property from the Subject
+            _g = subj.Graph;
 
-                // Compute Hash Code
-                _hashcode = (_subject.GetHashCode().ToString() + _predicate.GetHashCode().ToString() + _object.GetHashCode().ToString()).GetHashCode();
-            }
+            // Store the Three Nodes of the Triple
+            _subject = subj;
+            _predicate = pred;
+            _object = obj;
+
+            // Compute Hash Code
+            _hashcode = (_subject.GetHashCode() + _predicate.GetHashCode().ToString() + _object.GetHashCode()).GetHashCode();
         }
 
         /// <summary>
@@ -156,7 +154,7 @@ namespace VDS.RDF
             _object = (INode)info.GetValue("o", typeof(INode));
 
             // Compute Hash Code
-            _hashcode = (_subject.GetHashCode().ToString() + _predicate.GetHashCode().ToString() + _object.GetHashCode().ToString()).GetHashCode();
+            _hashcode = (_subject.GetHashCode() + _predicate.GetHashCode().ToString() + _object.GetHashCode()).GetHashCode();
         }
 #endif
 
@@ -217,14 +215,12 @@ namespace VDS.RDF
                 {
                     return _u;
                 }
-                else if (_g == null)
+
+                if (_g == null)
                 {
                     return null;
                 }
-                else
-                {
-                    return _g.BaseUri;
-                }
+                return _g.BaseUri;
             }
         }
 
@@ -364,11 +360,9 @@ namespace VDS.RDF
                        && (_object.Equals(temp.Object) || (_object.NodeType == NodeType.Blank && temp.Object.NodeType == NodeType.Blank && _object.ToString().Equals(temp.Object.ToString())));
 
              }
-            else
-            {
-                // Can only be equal to other Triples
-                return false;
-            }
+
+            // Can only be equal to other Triples
+            return false;
         }
 
         /// <summary>
@@ -415,11 +409,9 @@ namespace VDS.RDF
             {
                 return ToString();
             }
-            else
-            {
-                TurtleFormatter formatter = new TurtleFormatter(_g.NamespaceMap);
-                return formatter.Format(this);
-            }
+
+            TurtleFormatter formatter = new TurtleFormatter(_g.NamespaceMap);
+            return formatter.Format(this);
         }
 
         /// <summary>
@@ -446,31 +438,25 @@ namespace VDS.RDF
                 // Return a 1 to indicate this
                 return 1;
             }
-            else
-            {
-                int s, p;
 
-                // Compare Subjects
-                s = Subject.CompareTo(other.Subject);
-                if (s == 0)
+            int s, p;
+
+            // Compare Subjects
+            s = Subject.CompareTo(other.Subject);
+            if (s == 0)
+            {
+                // Compare Predicates
+                p = Predicate.CompareTo(other.Predicate);
+                if (p == 0)
                 {
-                    // Compare Predicates
-                    p = Predicate.CompareTo(other.Predicate);
-                    if (p == 0)
-                    {
-                        // Compare Objects
-                        return Object.CompareTo(other.Object);
-                    }
-                    else
-                    {
-                        return p;
-                    }
+                    // Compare Objects
+                    return Object.CompareTo(other.Object);
                 }
-                else
-                {
-                    return s;
-                }
+
+                return p;
             }
+
+            return s;
         }
 
 #if !NETCORE
@@ -514,7 +500,7 @@ namespace VDS.RDF
             _object = reader.DeserializeNode();
 
             // Compute Hash Code
-            _hashcode = (_subject.GetHashCode().ToString() + _predicate.GetHashCode().ToString() + _object.GetHashCode().ToString()).GetHashCode();
+            _hashcode = (_subject.GetHashCode() + _predicate.GetHashCode().ToString() + _object.GetHashCode()).GetHashCode();
         }
 
         /// <summary>

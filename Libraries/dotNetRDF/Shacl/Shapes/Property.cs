@@ -30,7 +30,6 @@ namespace VDS.RDF.Shacl.Shapes
     using System.Diagnostics;
     using System.Linq;
     using VDS.RDF.Shacl.Validation;
-    using VDS.RDF.Writing.Formatting;
 
     internal class Property : Shape
     {

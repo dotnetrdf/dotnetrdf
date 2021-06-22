@@ -220,13 +220,13 @@ namespace VDS.RDF.Query.Algebra
                 case 0:
                     return "BGP()";
                 case 1:
-                    return "BGP(" + _triplePatterns[0].ToString() + ")";
+                    return "BGP(" + _triplePatterns[0] + ")";
                 default:
                     StringBuilder builder = new StringBuilder();
                     builder.Append("BGP(");
                     for (int i = 0; i < _triplePatterns.Count; i++)
                     {
-                        builder.Append(_triplePatterns[i].ToString());
+                        builder.Append(_triplePatterns[i]);
                         if (i < _triplePatterns.Count - 1) builder.Append(", ");
                     }
                     builder.Append(")");

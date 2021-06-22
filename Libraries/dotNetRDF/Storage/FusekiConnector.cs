@@ -73,7 +73,7 @@ namespace VDS.RDF.Storage
         public FusekiConnector(String serviceUri, MimeTypeDefinition writerMimeTypeDefinition = null)
             : base(serviceUri, writerMimeTypeDefinition) 
         {
-            if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
+            if (!serviceUri.EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
 
             _updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
             _queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
@@ -156,10 +156,8 @@ namespace VDS.RDF.Storage
                     }
                     return uris;
                 }
-                else
-                {
-                    throw new RdfStorageException("Tried to list graphs from Fuseki but failed to get a SPARQL Result Set as expected");
-                }
+
+                throw new RdfStorageException("Tried to list graphs from Fuseki but failed to get a SPARQL Result Set as expected");
             }
             catch (RdfStorageException)
             {
@@ -275,10 +273,8 @@ namespace VDS.RDF.Storage
             {
                 return results;
             }
-            else
-            {
-                return g;
-            }
+
+            return g;
         }
 
         /// <summary>

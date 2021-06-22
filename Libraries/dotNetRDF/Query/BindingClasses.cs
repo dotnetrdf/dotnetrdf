@@ -119,10 +119,8 @@ namespace VDS.RDF.Query
             {
                 throw new RdfQueryException("Cannot assign the value of a GROUP BY expression to a Variable assigned to by an earlier GROUP BY");
             }
-            else
-            {
-                _assignments.Add(variable, value);
-            }
+
+            _assignments.Add(variable, value);
         }
 
         /// <summary>

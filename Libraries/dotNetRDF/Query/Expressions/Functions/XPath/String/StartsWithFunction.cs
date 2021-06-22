@@ -57,22 +57,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     // The Empty String starts with the Empty String
                     return new BooleanNode(null, true);
                 }
-                else
-                {
-                    // Empty String doesn't start with a non-empty string
-                    return new BooleanNode(null, false);
-                }
+
+                // Empty String doesn't start with a non-empty string
+                return new BooleanNode(null, false);
             }
-            else if (arg.Value.Equals(string.Empty))
+
+            if (arg.Value.Equals(string.Empty))
             {
                 // Any non-empty string starts with the empty string
                 return new BooleanNode(null, true);
             }
-            else
-            {
-                // Otherwise evalute the StartsWith
-                return new BooleanNode(null, stringLit.Value.StartsWith(arg.Value));
-            }
+            // Otherwise evalute the StartsWith
+            return new BooleanNode(null, stringLit.Value.StartsWith(arg.Value));
         }
 
         /// <summary>
@@ -81,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith + ">(" + _expr + "," + _arg + ")";
         }
 
         /// <summary>

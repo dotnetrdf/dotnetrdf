@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -45,7 +45,7 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for formatting Nodes for use in SPARQL and for formatting SPARQL Queries.
     /// </summary>
-    public class SparqlFormatter 
+    public class SparqlFormatter
         : TurtleFormatter, IQueryFormatter, IResultFormatter
     {
         private Uri _tempBaseUri;
@@ -299,7 +299,7 @@ namespace VDS.RDF.Writing.Formatting
                     if (cgp.HasModifier)
                     {
                         String formatted = Format(cgp);
-                        formatted = formatted.TrimEnd(new char[] { '\n', '\r' });
+                        formatted = formatted.TrimEnd(new[] { '\n', '\r' });
                         if (formatted.Contains("\n"))
                         {
                             output.AppendLine("{");
@@ -322,7 +322,8 @@ namespace VDS.RDF.Writing.Formatting
                 }
                 return output.ToString();
             }
-            else if (gp.IsGraph || gp.IsService)
+
+            if (gp.IsGraph || gp.IsService)
             {
                 if (gp.IsGraph)
                 {
@@ -357,7 +358,6 @@ namespace VDS.RDF.Writing.Formatting
                         output.Append('>');
                         break;
 
-                    case Token.VARIABLE:
                     default:
                         output.Append(gp.GraphSpecifier.Value);
                         break;
@@ -571,12 +571,13 @@ namespace VDS.RDF.Writing.Formatting
             {
                 return item.ToString();
             }
-            else if (item is NodeMatchPattern)
+
+            if (item is NodeMatchPattern)
             {
                 NodeMatchPattern match = (NodeMatchPattern)item;
                 return Format(match.Node, segment);
             }
-            else if (item is FixedBlankNodePattern)
+            if (item is FixedBlankNodePattern)
             {
                 if (segment != null)
                 {
@@ -585,14 +586,11 @@ namespace VDS.RDF.Writing.Formatting
 
                 return item.ToString();
             }
-            else if (item is BlankNodePattern)
+            if (item is BlankNodePattern)
             {
                 return item.ToString();
             }
-            else
-            {
-                throw new RdfOutputException("Unable to Format an unknown PatternItem implementation as a String");
-            }
+            throw new RdfOutputException("Unable to Format an unknown PatternItem implementation as a String");
         }
 
         #region Protected Helper functions which can be overridden to change specific parts of the formatting
@@ -633,7 +631,7 @@ namespace VDS.RDF.Writing.Formatting
                 else
                 {
                     onLine += 1;
-                    output.Append(v.ToString());
+                    output.Append(v);
                 }
 
                 // Maximum of 6 things per line (aggregates worth 2 and expression worth 3)
@@ -737,7 +735,7 @@ namespace VDS.RDF.Writing.Formatting
                         }
                         else
                         {
-                            output.Append(expr.ToString());
+                            output.Append(expr);
                         }
                         break;
 
@@ -837,7 +835,7 @@ namespace VDS.RDF.Writing.Formatting
                         }
                         else
                         {
-                            output.Append(expr.ToString());
+                            output.Append(expr);
                         }
                         break;
 
@@ -1099,7 +1097,7 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append(FormatExpression(orderBy.Expression));
                 output.Append(')');
             }
-            else 
+            else
             {
                 output.Append("ASC(");
                 output.Append(FormatExpression(orderBy.Expression));

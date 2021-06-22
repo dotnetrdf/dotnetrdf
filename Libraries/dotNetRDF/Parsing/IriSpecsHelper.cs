@@ -57,13 +57,12 @@ namespace VDS.RDF.Parsing
                         String fragment = value.Substring(query.Length + 2);
                         return IsIQuery(query) && IsIFragment(fragment);
                     }
-                    else
-                    {
-                        // Just a querystring
-                        return IsIQuery(value.Substring(1));
-                    }
+
+                    // Just a querystring
+                    return IsIQuery(value.Substring(1));
                 }
-                else if (value.Contains("?"))
+
+                if (value.Contains("?"))
                 {
                     // Path and querystring plus possibly a fragment
                     String part = value.Substring(0, value.IndexOf('?'));
@@ -75,31 +74,26 @@ namespace VDS.RDF.Parsing
                         String fragment = rest.Substring(query.Length + 1);
                         return IsIPath(part) && IsIQuery(query) && IsIFragment(fragment);
                     }
-                    else
-                    {
-                        // Just a path and querystring
-                        return IsIPath(part) && IsIQuery(rest);
-                    }
+
+                    // Just a path and querystring
+                    return IsIPath(part) && IsIQuery(rest);
                 }
-                else if (value.StartsWith("#"))
+                if (value.StartsWith("#"))
                 {
                     // Just a fragment
                     return IsIFragment(value.Substring(1));
                 }
-                else if (value.Contains("#"))
+                if (value.Contains("#"))
                 {
                     // Path and fragment
                     String part = value.Substring(0, value.IndexOf('#'));
                     String fragment = value.Substring(part.Length + 1);
                     return IsIPath(part) && IsIFragment(fragment);
                 }
-                else
-                {
-                    // Assume a relative path
-                    return IsIPath(value);
-                }
+                // Assume a relative path
+                return IsIPath(value);
             }
-            else
+
             {
                 // Has a scheme
                 String scheme = value.Substring(0, value.IndexOf(':'));
@@ -117,25 +111,21 @@ namespace VDS.RDF.Parsing
                         fragment = queryAndFragment.Substring(queryAndFragment.IndexOf('#') + 1);
                         return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query) && IsIFragment(fragment);
                     }
-                    else
-                    {
-                        // Has a path and querystring
-                        query = queryAndFragment;
-                        return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query);
-                    }
+
+                    // Has a path and querystring
+                    query = queryAndFragment;
+                    return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query);
                 }
-                else if (rest.Contains('#'))
+
+                if (rest.Contains('#'))
                 {
                     // Has a path and fragment
                     String part = rest.Substring(0, rest.IndexOf('#'));
                     String fragment = rest.Substring(rest.IndexOf('#') + 1);
                     return IsScheme(scheme) && IsIHierPart(part) && IsIFragment(fragment);
                 }
-                else
-                {
-                    // Has a path
-                    return IsScheme(scheme) && IsIHierPart(rest);
-                }
+                // Has a path
+                return IsScheme(scheme) && IsIHierPart(rest);
             }
         }
 
@@ -155,15 +145,11 @@ namespace VDS.RDF.Parsing
                     String path = value.Substring(value.IndexOf('/') + 1);
                     return IsIAuthority(auth) && IsIPathAbEmpty(path);
                 }
-                else
-                {
-                    return IsIAuthority(reference);
-                }
+
+                return IsIAuthority(reference);
             }
-            else
-            {
-                return IsIPathAbsolute(value) || IsIPathRootless(value) || IsIPathEmpty(value);
-            }
+
+            return IsIPathAbsolute(value) || IsIPathRootless(value) || IsIPathEmpty(value);
         }
 
         /// <summary>
@@ -192,10 +178,8 @@ namespace VDS.RDF.Parsing
                 String query = rest.Substring(rest.IndexOf('?') + 1);
                 return IsScheme(scheme) && IsIHierPart(part) && IsIQuery(query);
             }
-            else
-            {
-                return IsScheme(scheme) && IsIHierPart(rest);
-            }
+
+            return IsScheme(scheme) && IsIHierPart(rest);
         }
 
         /// <summary>
@@ -215,21 +199,17 @@ namespace VDS.RDF.Parsing
                     String fragment = rest.Substring(rest.IndexOf('#') + 1);
                     return IsIrelativePart(reference) && IsIQuery(query) && IsIFragment(fragment);
                 }
-                else
-                {
-                    return IsIrelativePart(reference) && IsIQuery(rest);
-                }
+
+                return IsIrelativePart(reference) && IsIQuery(rest);
             }
-            else if (value.Contains('#'))
+
+            if (value.Contains('#'))
             {
                 String reference = value.Substring(0, value.IndexOf('#'));
                 String fragment = value.Substring(value.IndexOf('#') + 1);
                 return IsIrelativePart(reference) && IsIFragment(fragment);
             }
-            else
-            {
-                return IsIrelativePart(value);
-            }
+            return IsIrelativePart(value);
         }
 
         /// <summary>
@@ -248,15 +228,11 @@ namespace VDS.RDF.Parsing
                     String path = value.Substring(value.IndexOf('/') + 1);
                     return IsIAuthority(auth) && IsIPathAbEmpty(path);
                 }
-                else
-                {
-                    return IsIAuthority(reference);
-                }
+
+                return IsIAuthority(reference);
             }
-            else
-            {
-                return IsIPathAbsolute(value) || IsIPathNoScheme(value) || IsIPathEmpty(value);
-            }
+
+            return IsIPathAbsolute(value) || IsIPathNoScheme(value) || IsIPathEmpty(value);
         }
 
         /// <summary>
@@ -276,24 +252,18 @@ namespace VDS.RDF.Parsing
                     String port = rest.Substring(rest.IndexOf(':') + 1);
                     return IsIUserInfo(userinfo) && IsIHost(host) && IsPort(port);
                 }
-                else
-                {
-                    return IsIUserInfo(userinfo) && IsIHost(rest);
-                }
+
+                return IsIUserInfo(userinfo) && IsIHost(rest);
             }
-            else
+
+            if (value.Contains(":"))
             {
-                if (value.Contains(":"))
-                {
-                    String host = value.Substring(0, value.IndexOf(':'));
-                    String port = value.Substring(value.IndexOf(':') + 1);
-                    return IsIHost(host) && IsPort(port);
-                }
-                else
-                {
-                    return IsIHost(value);
-                }
+                String host = value.Substring(0, value.IndexOf(':'));
+                String port = value.Substring(value.IndexOf(':') + 1);
+                return IsIHost(host) && IsPort(port);
             }
+
+            return IsIHost(value);
         }
 
         /// <summary>
@@ -313,7 +283,7 @@ namespace VDS.RDF.Parsing
                 }
                 else if (cs[i] == '%')
                 {
-                    if (!IsPctEncoded(new String(new char[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
+                    if (!IsPctEncoded(new String(new[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
                     i += 2;
                 }
                 else if (!IsUnreserved(cs[i]) && !IsSubDelims(cs[i]))
@@ -348,7 +318,7 @@ namespace VDS.RDF.Parsing
             {
                 if (cs[i] == '%')
                 {
-                    if (!IsPctEncoded(new String(new char[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
+                    if (!IsPctEncoded(new String(new[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
                     i += 2;
                 }
                 else if (!IsUnreserved(cs[i]) && !IsSubDelims(cs[i]))
@@ -399,23 +369,17 @@ namespace VDS.RDF.Parsing
                 {
                     return true;
                 }
-                else
+
+                String[] segments = value.Substring(1).Split('/');
+                if (segments.Length == 1)
                 {
-                    String[] segments = value.Substring(1).Split('/');
-                    if (segments.Length == 1)
-                    {
-                        return IsISegmentNz(segments[0]);
-                    }
-                    else
-                    {
-                        return IsISegmentNz(segments[0]) && segments.Skip(1).All(s => IsISegment(s));
-                    }
+                    return IsISegmentNz(segments[0]);
                 }
+
+                return IsISegmentNz(segments[0]) && segments.Skip(1).All(s => IsISegment(s));
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -430,10 +394,8 @@ namespace VDS.RDF.Parsing
                 String[] segments = value.Split('/');
                 return IsISegmentNzNc(segments[0]) && segments.Skip(1).All(s => IsISegmentNzNc(s));
             }
-            else
-            {
-                return IsISegmentNzNc(value);
-            }
+
+            return IsISegmentNzNc(value);
         }
 
         /// <summary>
@@ -448,10 +410,8 @@ namespace VDS.RDF.Parsing
                 String[] segments = value.Split('/');
                 return IsISegmentNz(segments[0]) && segments.Skip(1).All(s => IsISegment(s));
             }
-            else
-            {
-                return IsISegmentNz(value);
-            }
+
+            return IsISegmentNz(value);
         }
 
         /// <summary>
@@ -490,7 +450,7 @@ namespace VDS.RDF.Parsing
             {
                 if (cs[i] == '%')
                 {
-                    if (!IsIpChar(new String(new char[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
+                    if (!IsIpChar(new String(new[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
                     i += 2;
                 }
                 else
@@ -517,7 +477,7 @@ namespace VDS.RDF.Parsing
             {
                 if (cs[i] == '%')
                 {
-                    if (!IsIpChar(new String(new char[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
+                    if (!IsIpChar(new String(new[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
                     i += 2;
                 }
                 else
@@ -543,23 +503,19 @@ namespace VDS.RDF.Parsing
                 {
                     return true;
                 }
-                else if (IsSubDelims(c))
+
+                if (IsSubDelims(c))
                 {
                     return true;
                 }
-                else if (IsIUnreserved(c))
+                if (IsIUnreserved(c))
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
-            else
-            {
-                return IsPctEncoded(value);
-            }
+
+            return IsPctEncoded(value);
         }
 
         /// <summary>
@@ -579,7 +535,7 @@ namespace VDS.RDF.Parsing
                 }
                 else if (cs[i] == '%')
                 {
-                    if (!IsPctEncoded(new String(new char[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
+                    if (!IsPctEncoded(new String(new[] { cs[i], cs[i + 1], cs[i + 2] }))) return false;
                     i += 2;
                 }
                 else if (!IsIpChar(new String(cs[i], 1)))
@@ -608,7 +564,7 @@ namespace VDS.RDF.Parsing
                 }
                 else if (cs[i] == '%')
                 {
-                    if (!IsPctEncoded(new String(new char[] {cs[i], cs[i + 1], cs[i + 2]}))) return false;
+                    if (!IsPctEncoded(new String(new[] {cs[i], cs[i + 1], cs[i + 2]}))) return false;
                     i += 2;
                 }
                 else if (!IsIpChar(new String(cs[i],1)))
@@ -630,19 +586,17 @@ namespace VDS.RDF.Parsing
             if (Char.IsLetterOrDigit(c))
             {
                 return true;
-            } 
-            else if (c == '-' || c == '.' || c == '_' || c == '~')
+            }
+
+            if (c == '-' || c == '.' || c == '_' || c == '~')
             {
                 return true;
             }
-            else if (IsUcsChar(c))
+            if (IsUcsChar(c))
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -704,10 +658,8 @@ namespace VDS.RDF.Parsing
                 String literal = value.Substring(1, value.Length - 2);
                 return IsIPv6Address(literal) || IsIPvFuture(literal);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -739,7 +691,7 @@ namespace VDS.RDF.Parsing
                     case 1:
                     case 2:
                     case 3:
-                        String[] restChunks = rest.Split(new char[] { ':' }, 6 - startChunks.Length);
+                        String[] restChunks = rest.Split(new[] { ':' }, 6 - startChunks.Length);
                         return restChunks.Take(restChunks.Length - 1).All(c => IsH16(c)) && IsLs32(restChunks[restChunks.Length - 1]);
                     case 4:
                         if (!rest.Contains(':')) return false;
@@ -754,12 +706,10 @@ namespace VDS.RDF.Parsing
                         return false;
                 }
             }
-            else
-            {
-                String[] chunks = value.Split(new char[] { ':' }, 7);
-                if (chunks.Length < 7) return false;
-                return chunks.Take(6).All(c => IsH16(c)) && IsLs32(chunks[6]);
-            }
+
+            String[] chunks = value.Split(new[] { ':' }, 7);
+            if (chunks.Length < 7) return false;
+            return chunks.Take(6).All(c => IsH16(c)) && IsLs32(chunks[6]);
         }
 
         /// <summary>
@@ -786,10 +736,8 @@ namespace VDS.RDF.Parsing
                 String b = value.Substring(value.IndexOf(':') + 1);
                 return IsH16(a) && IsH16(b);
             }
-            else
-            {
-                return IsIPv4Address(value);
-            }
+
+            return IsIPv4Address(value);
         }
 
         /// <summary>
@@ -805,10 +753,8 @@ namespace VDS.RDF.Parsing
                 if (octets.Length != 4) return false;
                 return octets.All(o => IsDecOctet(o));
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -846,15 +792,11 @@ namespace VDS.RDF.Parsing
                 {
                     return IsHexDigit(value[1]) && IsHexDigit(value[2]);
                 }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
+
                 return false;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -868,18 +810,16 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
-            else
+
+            switch (c)
             {
-                switch (c)
-                {
-                    case '-':
-                    case '.':
-                    case '_':
-                    case '~':
-                        return true;
-                    default:
-                        return false;
-                }
+                case '-':
+                case '.':
+                case '_':
+                case '~':
+                    return true;
+                default:
+                    return false;
             }
         }
 

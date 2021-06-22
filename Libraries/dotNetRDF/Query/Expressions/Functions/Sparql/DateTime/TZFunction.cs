@@ -65,19 +65,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
                     // If Zero it was specified as Z (which means UTC so zero offset)
                     return new StringNode(null, "Z");
                 }
-                else
-                {
-                    // If the Offset is outside the range -14 to 14 this is considered invalid
-                    if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
 
-                    // Otherwise it has an offset which is a given number of hours (and minutes)
-                    return new StringNode(null, dt.Offset.Hours.ToString("00") + ":" + dt.Offset.Minutes.ToString("00"));
-                }
+                // If the Offset is outside the range -14 to 14 this is considered invalid
+                if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
+
+                // Otherwise it has an offset which is a given number of hours (and minutes)
+                return new StringNode(null, dt.Offset.Hours.ToString("00") + ":" + dt.Offset.Minutes.ToString("00"));
             }
-            else
-            {
-                throw new RdfQueryException("Unable to evaluate a Date Time function on a null argument");
-            }
+
+            throw new RdfQueryException("Unable to evaluate a Date Time function on a null argument");
         }
 
         /// <summary>
@@ -108,7 +104,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordTz + "(" + _expr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordTz + "(" + _expr + ")";
         }
 
         /// <summary>

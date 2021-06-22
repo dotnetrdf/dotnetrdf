@@ -97,11 +97,9 @@ namespace VDS.RDF
                     // Return the Property
                     return _properties[name];
                 }
-                else
-                {
-                    // Return a Null when the Property doesn't exist
-                    return null;
-                }
+
+                // Return a Null when the Property doesn't exist
+                return null;
             }
             set
             {

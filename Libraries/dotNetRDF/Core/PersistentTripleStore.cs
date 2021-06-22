@@ -165,10 +165,8 @@ namespace VDS.RDF
             {
                 return results;
             }
-            else
-            {
-                return g;
-            }
+
+            return g;
         }
 
         /// <summary>
@@ -319,7 +317,8 @@ namespace VDS.RDF
             {
                 return true;
             }
-            else if (!_removedGraphs.Contains(uri))
+
+            if (!_removedGraphs.Contains(uri))
             {
                 // Try and load the Graph and return true if anything is returned
                 Graph g = new Graph();
@@ -334,10 +333,8 @@ namespace VDS.RDF
                         Add(g, true);
                         return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
+
+                    return false;
                 }
                 catch
                 {
@@ -345,10 +342,7 @@ namespace VDS.RDF
                     return false;
                 }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         protected internal override bool Remove(Uri graphUri)
@@ -368,10 +362,8 @@ namespace VDS.RDF
                 {
                     return _manager.ListGraphs().Concat(base.GraphUris).Distinct();
                 }
-                else
-                {
-                    return base.GraphUris;
-                }
+
+                return base.GraphUris;
             }
         }
 
@@ -383,10 +375,8 @@ namespace VDS.RDF
                 {
                     return base[graphUri];
                 }
-                else
-                {
-                    throw new RdfException("The Graph with the given URI does not exist in the Graph Collection");
-                }
+
+                throw new RdfException("The Graph with the given URI does not exist in the Graph Collection");
             }
         }
 

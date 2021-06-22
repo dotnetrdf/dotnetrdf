@@ -202,10 +202,8 @@ namespace VDS.RDF.Query.Operators
                     }
                     return false;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
         }
     }

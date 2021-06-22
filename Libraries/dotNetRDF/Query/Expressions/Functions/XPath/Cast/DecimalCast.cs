@@ -87,28 +87,24 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                                 // Parsed OK
                                 return new DecimalNode(lit.Graph, d);
                             }
-                            else
+
+                            throw new RdfQueryException("Invalid lexical form for xsd:decimal");
+                        }
+
+                        {
+                            if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                             {
-                                throw new RdfQueryException("Invalid lexical form for xsd:decimal");
+                                // DateTime cast forbidden
+                                throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:decimal");
                             }
-                        }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            // DateTime cast forbidden
-                            throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:decimal");
-                        }
-                        else
-                        {
                             decimal d;
                             if (Decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out d))
                             {
                                 // Parsed OK
                                 return new DecimalNode(lit.Graph, d);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
-                            }
+
+                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
                         }
                     }
                     else
@@ -119,10 +115,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             // Parsed OK
                             return new DecimalNode(lit.Graph, d);
                         }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
-                        }
+
+                        throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
                     }
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:decimal");
@@ -135,7 +129,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDecimal + ">(" + _expr.ToString() + ")";
+            return "<" + XmlSpecsHelper.XmlSchemaDataTypeDecimal + ">(" + _expr + ")";
         }
 
         /// <summary>

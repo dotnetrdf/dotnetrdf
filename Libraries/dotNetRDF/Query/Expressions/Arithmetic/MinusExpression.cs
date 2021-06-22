@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         /// <returns></returns>
         public override string ToString()
         {
-            return "-" + _expr.ToString();
+            return "-" + _expr;
         }
 
         /// <summary>

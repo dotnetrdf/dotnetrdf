@@ -288,10 +288,8 @@ namespace VDS.RDF
                 {
                     return actual;
                 }
-                else
-                {
-                    throw new KeyNotFoundException("Given triple does not exist in this collection");
-                }
+
+                throw new KeyNotFoundException("Given triple does not exist in this collection");
             }
         }
 
@@ -309,15 +307,11 @@ namespace VDS.RDF
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return _triples.Keys.Where(t => t.Object.Equals(obj));
-            }
+
+            return _triples.Keys.Where(t => t.Object.Equals(obj));
         }
 
         /// <summary>
@@ -334,15 +328,11 @@ namespace VDS.RDF
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return _triples.Keys.Where(t => t.Predicate.Equals(pred));
-            }
+
+            return _triples.Keys.Where(t => t.Predicate.Equals(pred));
         }
 
         /// <summary>
@@ -359,15 +349,11 @@ namespace VDS.RDF
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return _triples.Keys.Where(t => t.Subject.Equals(subj));
-            }
+
+            return _triples.Keys.Where(t => t.Subject.Equals(subj));
         }
 
         /// <summary>
@@ -385,15 +371,11 @@ namespace VDS.RDF
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return WithPredicate(pred).Where(t => t.Object.Equals(obj));
-            }
+
+            return WithPredicate(pred).Where(t => t.Object.Equals(obj));
         }
 
         /// <summary>
@@ -411,15 +393,11 @@ namespace VDS.RDF
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return WithSubject(subj).Where(t => t.Object.Equals(obj));
-            }
+
+            return WithSubject(subj).Where(t => t.Object.Equals(obj));
         }
 
         /// <summary>
@@ -437,15 +415,11 @@ namespace VDS.RDF
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
-                else
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+
+                return Enumerable.Empty<Triple>();
             }
-            else
-            {
-                return WithSubject(subj).Where(t => t.Predicate.Equals(pred));
-            }
+
+            return WithSubject(subj).Where(t => t.Predicate.Equals(pred));
         }
 
         /// <summary>
@@ -453,16 +427,14 @@ namespace VDS.RDF
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
-            get 
+            get
             {
                 if (_o != null)
                 {
                     return _o.Keys;
                 }
-                else
-                {
-                    return _triples.Keys.Select(t => t.Object);
-                }
+
+                return _triples.Keys.Select(t => t.Object);
             }
         }
 
@@ -477,10 +449,8 @@ namespace VDS.RDF
                 {
                     return _p.Keys;
                 }
-                else
-                {
-                    return _triples.Keys.Select(t => t.Predicate);
-                }
+
+                return _triples.Keys.Select(t => t.Predicate);
             }
         }
 
@@ -489,16 +459,14 @@ namespace VDS.RDF
         /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
-            get 
+            get
             {
                 if (_s != null)
                 {
                     return _s.Keys;
                 }
-                else
-                {
-                    return _triples.Keys.Select(t => t.Subject);
-                }
+
+                return _triples.Keys.Select(t => t.Subject);
             }
         }
 

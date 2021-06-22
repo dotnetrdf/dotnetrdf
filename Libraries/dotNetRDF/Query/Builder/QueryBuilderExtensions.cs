@@ -52,10 +52,8 @@ namespace VDS.RDF.Query.Builder
                 queryBuilder.Root.Where(new SubQueryPattern(childBuilder.BuildQuery()));
                 return queryBuilder;
             }
-            else
-            {
-                throw new ArgumentException("Invalid query type: " + childBuilder.QueryType + "; only Select queries may be used as sub-queries.");
-            }
+
+            throw new ArgumentException("Invalid query type: " + childBuilder.QueryType + "; only Select queries may be used as sub-queries.");
         }
 
         /// <summary>

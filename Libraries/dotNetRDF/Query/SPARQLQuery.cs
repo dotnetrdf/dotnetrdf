@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -302,7 +302,7 @@ namespace VDS.RDF.Query
                                 !_rootGraphPattern.ChildGraphPatterns[0].IsFiltered &&
                                 _rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.TokenType == Token.VARIABLE &&
                                 _rootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].IsAcceptAll &&
-                                _vars[0].IsResultVariable && 
+                                _vars[0].IsResultVariable &&
                                 _rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.Value.Substring(1).Equals(_vars[0].Name) &&
                                 _vars.Count(v => v.IsResultVariable) == 1)
                             {
@@ -889,7 +889,7 @@ namespace VDS.RDF.Query
                     output.Append("ASK");
                     if (from.Length > 0)
                     {
-                        output.Append(from.ToString());
+                        output.Append(@from);
                     }
                     else
                     {
@@ -900,7 +900,7 @@ namespace VDS.RDF.Query
 
                 case SparqlQueryType.Construct:
                     output.Append("CONSTRUCT ");
-                    output.Append(_constructTemplate.ToString());
+                    output.Append(_constructTemplate);
                     if (_constructTemplate.TriplePatterns.Count > 1)
                     {
                         output.AppendLine();
@@ -909,7 +909,7 @@ namespace VDS.RDF.Query
                     {
                         output.Append(' ');
                     }
-                    output.Append(from.ToString());
+                    output.Append(@from);
                     output.AppendLine("WHERE ");
                     break;
 
@@ -922,14 +922,12 @@ namespace VDS.RDF.Query
                             case Token.URI:
                                 output.Append("<" + dvar.Value + "> ");
                                 break;
-                            case Token.QNAME:
-                            case Token.VARIABLE:
                             default:
                                 output.Append(dvar.Value + " ");
                                 break;
                         }
                     }
-                    output.Append(from.ToString());
+                    output.Append(@from);
                     if (_rootGraphPattern != null)
                     {
                         output.AppendLine("WHERE");
@@ -938,7 +936,7 @@ namespace VDS.RDF.Query
 
                 case SparqlQueryType.DescribeAll:
                     output.Append("DESCRIBE * ");
-                    output.Append(from.ToString());
+                    output.Append(@from);
                     if (_rootGraphPattern != null)
                     {
                         output.Append("WHERE");
@@ -963,11 +961,11 @@ namespace VDS.RDF.Query
                     if ((int)_type >= (int)SparqlQueryType.SelectAll)
                     {
                         output.Append('*');
-                        if (from.Length > 0) 
+                        if (from.Length > 0)
                         {
-                            output.Append(from.ToString());
-                        } 
-                        else 
+                            output.Append(@from);
+                        }
+                        else
                         {
                             output.Append(' ');
                         }
@@ -979,12 +977,12 @@ namespace VDS.RDF.Query
                         {
                             if (var.IsResultVariable)
                             {
-                                output.Append(var.ToString());
+                                output.Append(var);
                                 output.Append(' ');
                             }
                         }
                         if (from.Length > 0) output.Append(from.ToString().Substring(1));
-                        output.AppendLine("WHERE");                       
+                        output.AppendLine("WHERE");
                     }
                     break;
             }
@@ -995,7 +993,7 @@ namespace VDS.RDF.Query
                 {
                     output.Remove(output.Length - 2, 2);
                     output.Append(" ");
-                    output.Append(_rootGraphPattern.ToString());
+                    output.Append(_rootGraphPattern);
                 }
                 else if (_rootGraphPattern.HasModifier)
                 {
@@ -1012,7 +1010,7 @@ namespace VDS.RDF.Query
             if (_groupBy != null)
             {
                 output.Append("GROUP BY ");
-                output.Append(_groupBy.ToString());
+                output.Append(_groupBy);
                 output.Append(' ');
             }
             if (_having != null)
@@ -1030,7 +1028,7 @@ namespace VDS.RDF.Query
             if (_orderBy != null)
             {
                 output.Append("ORDER BY ");
-                output.Append(_orderBy.ToString());
+                output.Append(_orderBy);
             }
 
             if (_limit > -1)
@@ -1092,7 +1090,6 @@ namespace VDS.RDF.Query
                         case SparqlSpecialQueryType.AskAnyTriples:
                             algebra = new AskAnyTriples();
                             break;
-                        case SparqlSpecialQueryType.NotApplicable:
                         default:
                             // If not just use the standard transform
                             algebra = _rootGraphPattern.ToAlgebra();
@@ -1136,7 +1133,7 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllDistinct:
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:                   
+                case SparqlQueryType.SelectReduced:
                     // GROUP BY is the first thing applied
                     // This applies if there is a GROUP BY or if there are aggregates
                     // With no GROUP BY it produces a single group of all results
@@ -1268,47 +1265,45 @@ namespace VDS.RDF.Query
                         // If there's no ordering then of course it's optimisable
                         return true;
                     }
-                    else
+
+                    if (_orderBy.IsSimple)
                     {
-                        if (_orderBy.IsSimple)
+                        // Is the first pattern a TriplePattern
+                        // Do all the Variables occur in the first pattern
+                        if (_rootGraphPattern != null)
                         {
-                            // Is the first pattern a TriplePattern
-                            // Do all the Variables occur in the first pattern
-                            if (_rootGraphPattern != null)
+                            if (_rootGraphPattern.TriplePatterns.Count > 0)
                             {
-                                if (_rootGraphPattern.TriplePatterns.Count > 0)
+                                if (_rootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Match)
                                 {
-                                    if (_rootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Match)
-                                    {
-                                        // If all the Ordering variables occur in the 1st Triple Pattern then we can optimise
-                                        _optimisableOrdering = _orderBy.Variables.All(v => _rootGraphPattern.TriplePatterns[0].Variables.Contains(v));
-                                    }
-                                    else
-                                    {
-                                        // Not a Triple Pattern as the first pattern in Root Graph Pattern then can't optimise
-                                        _optimisableOrdering = false;
-                                    }
+                                    // If all the Ordering variables occur in the 1st Triple Pattern then we can optimise
+                                    _optimisableOrdering = _orderBy.Variables.All(v => _rootGraphPattern.TriplePatterns[0].Variables.Contains(v));
                                 }
                                 else
                                 {
-                                    // Empty Root Graph Pattern => Optimisable
-                                    // Like the No Root Graph Pattern case this is somewhat defunct
-                                    _optimisableOrdering = true;
+                                    // Not a Triple Pattern as the first pattern in Root Graph Pattern then can't optimise
+                                    _optimisableOrdering = false;
                                 }
                             }
                             else
                             {
-                                // No Root Graph Pattern => Optimisable
-                                // Though this is somewhat defunct as Queries without a Root Graph Pattern should
-                                // never result in a call to this property
+                                // Empty Root Graph Pattern => Optimisable
+                                // Like the No Root Graph Pattern case this is somewhat defunct
                                 _optimisableOrdering = true;
                             }
                         }
                         else
                         {
-                            // If the ordering is not simple then it's not optimisable
-                            _optimisableOrdering = false;
+                            // No Root Graph Pattern => Optimisable
+                            // Though this is somewhat defunct as Queries without a Root Graph Pattern should
+                            // never result in a call to this property
+                            _optimisableOrdering = true;
                         }
+                    }
+                    else
+                    {
+                        // If the ordering is not simple then it's not optimisable
+                        _optimisableOrdering = false;
                     }
                 }
                 return (bool)_optimisableOrdering;

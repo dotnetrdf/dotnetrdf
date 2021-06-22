@@ -67,86 +67,78 @@ namespace VDS.RDF.Parsing.Tokens
                 LastTokenType = Token.BOF;
                 return new BOFToken();
             }
-            else
+
+            try
             {
-                try
+                // Reading has started
+                StartNewToken();
+
+                // Check for EOF
+                if (_in.EndOfStream)
                 {
-                    // Reading has started
-                    StartNewToken();
-
-                    // Check for EOF
-                    if (_in.EndOfStream)
+                    if (Length == 0)
                     {
-                        if (Length == 0)
-                        {
-                            // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(CurrentLine, CurrentPosition);
-                        }
-                        else
-                        {
-                            // We're at the End of the Stream and part-way through reading a Token
-                            // Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
-                    }
-
-                    char next = Peek();
-
-                    // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                    if (next == Char.MaxValue && _in.EndOfStream)
-                    {
-                        if (Length == 0)
-                        {
-                            // We're at the End of the Stream and not part-way through reading a Token
-                            return new EOFToken(CurrentLine, CurrentPosition);
-                        }
-                        else
-                        {
-                            // We're at the End of the Stream and part-way through reading a Token
-                            // Raise an error
-                            throw UnexpectedEndOfInput("Token");
-                        }
-                    }
-
-                    switch (next)
-                    {
-                        case ',':
-                            // Comma
-                            ConsumeCharacter();
-                            LastTokenType = Token.COMMA;
-                            return new CommaToken(StartLine, StartPosition);
-
-                        case '\r':
-                        case '\n':
-                            // New Line
-                            ConsumeNewLine(true);
-                            LastTokenType = Token.EOL;
-                            return new EOLToken(StartLine, StartPosition);
-
-                        case '"':
-                            // Start of a Quoted Field
-                            return TryGetQuotedField();
-
-                        default:
-                            // Start of an Unquoted Field
-                            return TryGetUnquotedField();
-                    }
-
-                }
-                catch (IOException)
-                {
-                    // End Of Stream Check
-                    if (_in.EndOfStream)
-                    {
-                        // At End of Stream so produce the EOFToken
+                        // We're at the End of the Stream and not part-way through reading a Token
                         return new EOFToken(CurrentLine, CurrentPosition);
                     }
-                    else
-                    {
-                        // Some other Error so throw
-                        throw;
-                    }
+
+                    // We're at the End of the Stream and part-way through reading a Token
+                    // Raise an error
+                    throw UnexpectedEndOfInput("Token");
                 }
+
+                char next = Peek();
+
+                // Always need to do a check for End of Stream after Peeking to handle empty files OK
+                if (next == Char.MaxValue && _in.EndOfStream)
+                {
+                    if (Length == 0)
+                    {
+                        // We're at the End of the Stream and not part-way through reading a Token
+                        return new EOFToken(CurrentLine, CurrentPosition);
+                    }
+
+                    // We're at the End of the Stream and part-way through reading a Token
+                    // Raise an error
+                    throw UnexpectedEndOfInput("Token");
+                }
+
+                switch (next)
+                {
+                    case ',':
+                        // Comma
+                        ConsumeCharacter();
+                        LastTokenType = Token.COMMA;
+                        return new CommaToken(StartLine, StartPosition);
+
+                    case '\r':
+                    case '\n':
+                        // New Line
+                        ConsumeNewLine(true);
+                        LastTokenType = Token.EOL;
+                        return new EOLToken(StartLine, StartPosition);
+
+                    case '"':
+                        // Start of a Quoted Field
+                        return TryGetQuotedField();
+
+                    default:
+                        // Start of an Unquoted Field
+                        return TryGetUnquotedField();
+                }
+
+            }
+            catch (IOException)
+            {
+                // End Of Stream Check
+                if (_in.EndOfStream)
+                {
+                    // At End of Stream so produce the EOFToken
+                    return new EOFToken(CurrentLine, CurrentPosition);
+                }
+
+                // Some other Error so throw
+                throw;
             }
         }
 
@@ -163,10 +155,8 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 return new BlankNodeWithIDToken(Value, StartLine, StartPosition, EndPosition);
             }
-            else
-            {
-                return new PlainLiteralToken(Value, StartLine, StartPosition, EndPosition);
-            }
+
+            return new PlainLiteralToken(Value, StartLine, StartPosition, EndPosition);
         }
 
         private IToken TryGetQuotedField()

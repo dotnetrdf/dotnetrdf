@@ -284,10 +284,11 @@ namespace VDS.RDF.JsonLd.Processors
                     continue;
                 }
                 // 12.6 - Otherwise, if expanded property is @direction, @index, @language, or @value: 
-                else if ("@direction".Equals(expandedProperty) ||
-                           "@index".Equals(expandedProperty) ||
-                           "@language".Equals(expandedProperty) ||
-                           "@value".Equals(expandedProperty))
+
+                if ("@direction".Equals(expandedProperty) ||
+                    "@index".Equals(expandedProperty) ||
+                    "@language".Equals(expandedProperty) ||
+                    "@value".Equals(expandedProperty))
                 {
                     // 12.6.1 - Initialize alias by IRI compacting expanded property.
                     var alias = CompactIri(activeContext, expandedProperty, vocab: true);

@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
@@ -74,35 +73,33 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return ValueInternal(stringLit);
             }
-            else
+
+            string normalized = stringLit.Value;
+
+            switch (arg.Value)
             {
-                string normalized = stringLit.Value;
-
-                switch (arg.Value)
-                {
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormC:
-                        normalized = normalized.Normalize();
-                        break;
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormD:
-                        normalized = normalized.Normalize(NormalizationForm.FormD);
-                        break;
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormFull:
-                        throw new RdfQueryException(".Net does not support Fully Normalized Unicode Form");
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormKC:
-                        normalized = normalized.Normalize(NormalizationForm.FormKC);
-                        break;
-                    case XPathFunctionFactory.XPathUnicodeNormalizationFormKD:
-                        normalized = normalized.Normalize(NormalizationForm.FormKD);
-                        break;
-                    case "":
-                        // No Normalization
-                        break;
-                    default:
-                        throw new RdfQueryException("'" + arg.Value + "' is not a valid Normalization Form as defined by the XPath specification");
-                }
-
-                return new StringNode(null, normalized, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormC:
+                    normalized = normalized.Normalize();
+                    break;
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormD:
+                    normalized = normalized.Normalize(NormalizationForm.FormD);
+                    break;
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormFull:
+                    throw new RdfQueryException(".Net does not support Fully Normalized Unicode Form");
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormKC:
+                    normalized = normalized.Normalize(NormalizationForm.FormKC);
+                    break;
+                case XPathFunctionFactory.XPathUnicodeNormalizationFormKD:
+                    normalized = normalized.Normalize(NormalizationForm.FormKD);
+                    break;
+                case "":
+                    // No Normalization
+                    break;
+                default:
+                    throw new RdfQueryException("'" + arg.Value + "' is not a valid Normalization Form as defined by the XPath specification");
             }
+
+            return new StringNode(null, normalized, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>
@@ -113,12 +110,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             if (_arg != null)
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr + "," + _arg + ")";
             }
-            else
-            {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr.ToString() + ")";
-            }
+
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr + ")";
         }
 
         /// <summary>
@@ -143,10 +138,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 return new NormalizeUnicodeFunction(transformer.Transform(_expr), transformer.Transform(_arg));
             }
-            else
-            {
-                return new NormalizeUnicodeFunction(transformer.Transform(_expr));
-            }
+
+            return new NormalizeUnicodeFunction(transformer.Transform(_expr));
         }
     }
 }

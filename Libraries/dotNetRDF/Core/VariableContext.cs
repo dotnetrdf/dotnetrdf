@@ -116,10 +116,8 @@ namespace VDS.RDF
             {
                 return _vars.Contains(var);
             }
-            else
-            {
-                return _vars.Contains(var) || InnerContext.IsVariable(var);
-            }
+
+            return _vars.Contains(var) || InnerContext.IsVariable(var);
         }
 
         /// <summary>

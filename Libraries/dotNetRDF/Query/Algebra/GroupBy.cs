@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "GroupBy(" + _pattern.ToString() + ")";
+            return "GroupBy(" + _pattern + ")";
         }
 
         /// <summary>

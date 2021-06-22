@@ -56,40 +56,36 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             {
                 throw new RdfQueryException("Cannot create an IRI from a null");
             }
-            else
+
+            switch (result.NodeType)
             {
-                switch (result.NodeType)
-                {
-                    case NodeType.Literal:
-                        ILiteralNode lit = (ILiteralNode)result;
-                        string baseUri = string.Empty;
-                        if (context.Query != null) baseUri = context.Query.BaseUri.ToSafeString();
-                        string uri;
-                        if (lit.DataType == null)
+                case NodeType.Literal:
+                    ILiteralNode lit = (ILiteralNode)result;
+                    string baseUri = string.Empty;
+                    if (context.Query != null) baseUri = context.Query.BaseUri.ToSafeString();
+                    string uri;
+                    if (lit.DataType == null)
+                    {
+                        uri = Tools.ResolveUri(lit.Value, baseUri);
+                        return new UriNode(null, UriFactory.Create(uri));
+                    }
+                    else
+                    {
+                        string dt = lit.DataType.AbsoluteUri;
+                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString, StringComparison.Ordinal))
                         {
                             uri = Tools.ResolveUri(lit.Value, baseUri);
                             return new UriNode(null, UriFactory.Create(uri));
                         }
-                        else
-                        {
-                            string dt = lit.DataType.AbsoluteUri;
-                            if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString, StringComparison.Ordinal))
-                            {
-                                uri = Tools.ResolveUri(lit.Value, baseUri);
-                                return new UriNode(null, UriFactory.Create(uri));
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create an IRI from a non-string typed literal");
-                            }
-                        }
 
-                    case NodeType.Uri:
-                        // Already a URI so nothing to do
-                        return result;
-                    default:
-                        throw new RdfQueryException("Cannot create an IRI from a non-URI/String literal");
-                }
+                        throw new RdfQueryException("Cannot create an IRI from a non-string typed literal");
+                    }
+
+                case NodeType.Uri:
+                    // Already a URI so nothing to do
+                    return result;
+                default:
+                    throw new RdfQueryException("Cannot create an IRI from a non-URI/String literal");
             }
         }
 
@@ -99,7 +95,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override string ToString()
         {
-            return "IRI(" + _expr.ToString() + ")";
+            return "IRI(" + _expr + ")";
         }
 
         /// <summary>

@@ -27,8 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -123,10 +121,8 @@ namespace VDS.RDF.Query.Algebra
                 }
                 return this._containsCache[var].Contains(n);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         /// <summary>
@@ -256,13 +252,11 @@ namespace VDS.RDF.Query.Algebra
                 {
                     return this._orderedVariables;
                 }
-                else
-                {
-                    return (from vs in this._variables
-                            from v in vs
-                            where v != null
-                            select v).Distinct();
-                }
+
+                return (from vs in this._variables
+                    from v in vs
+                    where v != null
+                    select v).Distinct();
             }
         }
 
@@ -271,7 +265,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public override IEnumerable<ISet> Sets
         {
-            get 
+            get
             {
                 if (this._orderedIDs == null)
                 {
@@ -279,11 +273,9 @@ namespace VDS.RDF.Query.Algebra
                             from s in p.Values
                             select s);
                 }
-                else
-                {
-                    return (from id in this._orderedIDs
-                            select this[id]);
-                }
+
+                return (from id in this._orderedIDs
+                    select this[id]);
             }
         }
 
@@ -292,7 +284,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public override IEnumerable<int> SetIDs
         {
-            get 
+            get
             {
                 if (this._orderedIDs == null)
                 {
@@ -300,10 +292,8 @@ namespace VDS.RDF.Query.Algebra
                             from id in p.Keys
                             select id);
                 }
-                else
-                {
-                    return this._orderedIDs;
-                }
+
+                return this._orderedIDs;
             }
         }
 
@@ -324,15 +314,11 @@ namespace VDS.RDF.Query.Algebra
                     {
                         return s;
                     }
-                    else
-                    {
-                        throw new RdfQueryException("A Set with the given ID " + id + " does not exist in this Multiset");
-                    }
-                }
-                else
-                {
+
                     throw new RdfQueryException("A Set with the given ID " + id + " does not exist in this Multiset");
                 }
+
+                throw new RdfQueryException("A Set with the given ID " + id + " does not exist in this Multiset");
             }
         }
 

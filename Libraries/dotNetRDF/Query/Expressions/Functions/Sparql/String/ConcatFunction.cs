@@ -99,14 +99,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 return new StringNode(null, output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
-            else if (allSameTag)
+
+            if (allSameTag)
             {
                 return new StringNode(null, output.ToString(), langTag);
             }
-            else
-            {
-                return new StringNode(null, output.ToString());
-            }
+            return new StringNode(null, output.ToString());
         }
 
         /// <summary>
@@ -155,7 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             output.Append('(');
             for (int i = 0; i < _exprs.Count; i++)
             {
-                output.Append(_exprs[i].ToString());
+                output.Append(_exprs[i]);
                 if (i < _exprs.Count - 1) output.Append(", ");
             }
             output.Append(")");

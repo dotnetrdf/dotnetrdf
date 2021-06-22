@@ -84,345 +84,334 @@ namespace VDS.RDF.Parsing.Tokens
                 LastTokenType = Token.BOF;
                 return new BOFToken();
             }
-            else
+            // Reading has started
+
+            StartNewToken();
+
+            try
             {
-                // Reading has started
-
-                StartNewToken();
-
-                try
+                if (LastTokenType == Token.BOF && _in.EndOfStream)
                 {
-                    if (LastTokenType == Token.BOF && _in.EndOfStream)
-                    {
-                        // Empty File
-                        return new EOFToken(0, 0);
-                    }
-                    else if (!_queryKeywordSeen)
-                    {
-                        // Expecting the Prologue/Keyword of the Query
-                        return TryGetPrologueOrQueryKeyword();
-                    }
-                    else if (LastTokenType == Token.HATHAT)
-                    {
-                        // Should get a DataType
-                        return TryGetDataType();
-                    }
-
-                    do
-                    {
-                        // Check for EOF
-                        if (_in.EndOfStream)
-                        {
-                            if (Length == 0)
-                            {
-                                // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(CurrentLine, CurrentPosition);
-                            }
-                            else
-                            {
-                                // We're at the End of the Stream and part-way through reading a Token
-                                // Raise an error
-                                throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + Value);
-
-                            }
-                        }
-
-                        // Get the Next Character
-                        char next = Peek();
-
-                        // Always need to do a check for End of Stream after Peeking to handle empty files OK
-                        if (next == Char.MaxValue && _in.EndOfStream)
-                        {
-                            if (Length == 0)
-                            {
-                                // We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(CurrentLine, CurrentPosition);
-                            }
-                            else
-                            {
-                                // We're at the End of the Stream and part-way through reading a Token
-                                // Raise an error
-                                throw UnexpectedEndOfInput("Token");
-                            }
-                        }
-
-                        if (Char.IsWhiteSpace(next))
-                        {
-                            // Discard White Space when not in a Token
-                            DiscardWhiteSpace();
-                        }
-                        else if (Char.IsLetter(next))
-                        {
-                            // Could be a Keyword or a QName
-                            return TryGetQNameOrKeyword();
-                        }
-                        else if (Char.IsDigit(next))
-                        {
-                            // Must be a Numeric Literal
-                            return TryGetNumericLiteral();
-                        }
-                        else
-                        {
-                            switch (next)
-                            {
-                                #region Punctuation
-
-                                case '*':
-                                    // All/Multiply Token
-                                    ConsumeCharacter();
-                                    if (LastTokenType == Token.SELECT || LastTokenType == Token.DISTINCT || LastTokenType == Token.REDUCED)
-                                    {
-                                        LastTokenType = Token.ALL;
-                                        return new AllToken(CurrentLine, StartPosition);
-                                    }
-                                    else
-                                    {
-                                        LastTokenType = Token.MULTIPLY;
-                                        return new MultiplyToken(CurrentLine, StartPosition);
-                                    }
-
-                                case '/':
-                                    // Divide Token
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.DIVIDE;
-                                    return new DivideToken(CurrentLine, StartPosition);
-
-                                case '=':
-                                    // Equals Token
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.EQUALS;
-                                    return new EqualityToken(CurrentLine, StartPosition);
-
-                                case '#':
-                                    // Comment Token
-                                    return TryGetComment();
-
-                                case '.':
-                                    // Statement Terminator
-                                    ConsumeCharacter();
-
-                                    // Watch our for plain literals
-                                    if (!_in.EndOfStream && Char.IsDigit(Peek()))
-                                    {
-                                        IToken temp = TryGetNumericLiteral();
-                                        if (temp is PlainLiteralToken)
-                                        {
-                                            LastTokenType = Token.PLAINLITERAL;
-                                            return temp;
-                                        }
-                                        else
-                                        {
-                                            throw UnexpectedToken("Plain Literal", temp);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // This should be the end of a directive
-                                        LastTokenType = Token.DOT;
-                                        return new DotToken(CurrentLine, StartPosition);
-                                    }
-
-                                case ';':
-                                    // Predicate Object List deliminator
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.SEMICOLON;
-                                    return new SemicolonToken(CurrentLine, StartPosition);
-
-                                case ',':
-                                    // Object List deleminator
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.COMMA;
-                                    return new CommaToken(CurrentLine, StartPosition);
-
-                                case '<':
-                                    // Start of a Uri or a Less Than
-                                    return TryGetUri();
-
-                                case '>':
-                                    // Greater Than
-                                    ConsumeCharacter();
-                                    next = Peek();
-                                    if (next == '=')
-                                    {
-                                        // Greater Than or Equal To
-                                        ConsumeCharacter();
-                                        LastTokenType = Token.GREATERTHANOREQUALTO;
-                                        return new GreaterThanOrEqualToToken(CurrentLine, StartPosition);
-                                    }
-                                    else
-                                    {
-                                        // Greater Than
-                                        LastTokenType = Token.GREATERTHAN;
-                                        return new GreaterThanToken(CurrentLine, StartPosition);
-                                    }
-
-                                case '"':
-                                    // Start of a Literal
-                                    return TryGetLiteral('"');
-
-                                case '\'':
-                                    // Start of a Literal
-                                    return TryGetLiteral('\'');
-
-                                case '^':
-                                    // DataType Specifier/Path Inverse
-                                    ConsumeCharacter();
-                                    next = Peek();
-                                    if (next == '^')
-                                    {
-                                        // DataType specifier
-                                        ConsumeCharacter();
-                                        LastTokenType = Token.HATHAT;
-                                        return new HatHatToken(CurrentLine, StartPosition);
-                                    }
-                                    else
-                                    {
-                                        // Path inverse
-                                        LastTokenType = Token.HAT;
-                                        return new HatToken(CurrentLine, StartPosition);
-                                        // throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered after a ^ character, expected a ^^ for a Data Type specifier");
-                                    }
-
-                                case '+':
-                                case '-':
-                                    // Start of a Numeric Literal
-                                    return TryGetNumericLiteral();
-
-                                case '!':
-                                    // Logical Negation/Not Equals
-                                    ConsumeCharacter();
-                                    next = Peek();
-                                    if (next == '=')
-                                    {
-                                        // Not Equals
-                                        ConsumeCharacter();
-                                        LastTokenType = Token.NOTEQUALS;
-                                        return new NotEqualsToken(CurrentLine, StartPosition);
-                                    }
-                                    else
-                                    {
-                                        // Logical Negation
-                                        LastTokenType = Token.NEGATION;
-                                        return new NegationToken(CurrentLine, StartPosition);
-                                    }
-
-                                case '&':
-                                    // Logical and
-                                    ConsumeCharacter();
-                                    next = Peek();
-                                    if (next == '&')
-                                    {
-                                        ConsumeCharacter();
-                                        LastTokenType = Token.AND;
-                                        return new AndToken(CurrentLine, StartPosition);
-                                    }
-                                    else
-                                    {
-                                        throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered while trying to parse a Logical And operator");
-                                    }
-
-                                case '|':
-                                    // Logical or/Path Alternative
-                                    ConsumeCharacter();
-                                    next = Peek();
-                                    if (next == '|')
-                                    {
-                                        // Logical Or
-                                        ConsumeCharacter();
-                                        LastTokenType = Token.OR;
-                                        return new OrToken(CurrentLine, StartPosition);
-                                    }
-                                    else
-                                    {
-                                        // Path Alternative
-                                        LastTokenType = Token.BITWISEOR;
-                                        return new BitwiseOrToken(CurrentLine, StartPosition);
-                                        // throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered while trying to parse a Logical Or operator");
-                                    }
-
-                                case '@':
-                                    // Lang Specifier
-                                    return TryGetLangSpec();
-
-                                #endregion
-
-                                #region Variables and QNames
-
-                                case '$':
-                                case '?':
-                                    // Start of a Variable
-                                    return TryGetVariable();
-
-                                case ':':
-                                case '_':
-                                    // A QName
-                                    return TryGetQName();
-
-                                #endregion
-
-                                #region Brackets
-
-                                case '{':
-                                    // Left Bracket
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.LEFTCURLYBRACKET;
-                                    return new LeftCurlyBracketToken(CurrentLine, StartPosition);
-
-                                case '}':
-                                    // Right Bracket
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.RIGHTCURLYBRACKET;
-                                    return new RightCurlyBracketToken(CurrentLine, StartPosition);
-
-                                case '(':
-                                    // Left Bracket
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.LEFTBRACKET;
-                                    return new LeftBracketToken(CurrentLine, StartPosition);
-
-                                case ')':
-                                    // Right Bracket
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.RIGHTBRACKET;
-                                    return new RightBracketToken(CurrentLine, StartPosition);
-
-                                case '[':
-                                    // Left Bracket
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.LEFTSQBRACKET;
-                                    return new LeftSquareBracketToken(CurrentLine, StartPosition);
-
-                                case ']':
-                                    // Right Bracket
-                                    ConsumeCharacter();
-                                    LastTokenType = Token.RIGHTSQBRACKET;
-                                    return new RightSquareBracketToken(CurrentLine, StartPosition);
-
-                                #endregion
-
-                                default:
-                                    // Unexpected Character
-                                    throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered!");
-
-                            }
-                        }
-
-                    } while (true);
+                    // Empty File
+                    return new EOFToken(0, 0);
                 }
-                catch (IOException)
+
+                if (!_queryKeywordSeen)
                 {
-                    // End Of Stream Check
+                    // Expecting the Prologue/Keyword of the Query
+                    return TryGetPrologueOrQueryKeyword();
+                }
+                if (LastTokenType == Token.HATHAT)
+                {
+                    // Should get a DataType
+                    return TryGetDataType();
+                }
+
+                do
+                {
+                    // Check for EOF
                     if (_in.EndOfStream)
                     {
-                        // At End of Stream so produce the EOFToken
-                        return new EOFToken(CurrentLine, CurrentPosition);
+                        if (Length == 0)
+                        {
+                            // We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(CurrentLine, CurrentPosition);
+                        }
+
+                        // We're at the End of the Stream and part-way through reading a Token
+                        // Raise an error
+                        throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + Value);
+                    }
+
+                    // Get the Next Character
+                    char next = Peek();
+
+                    // Always need to do a check for End of Stream after Peeking to handle empty files OK
+                    if (next == Char.MaxValue && _in.EndOfStream)
+                    {
+                        if (Length == 0)
+                        {
+                            // We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(CurrentLine, CurrentPosition);
+                        }
+
+                        // We're at the End of the Stream and part-way through reading a Token
+                        // Raise an error
+                        throw UnexpectedEndOfInput("Token");
+                    }
+
+                    if (Char.IsWhiteSpace(next))
+                    {
+                        // Discard White Space when not in a Token
+                        DiscardWhiteSpace();
+                    }
+                    else if (Char.IsLetter(next))
+                    {
+                        // Could be a Keyword or a QName
+                        return TryGetQNameOrKeyword();
+                    }
+                    else if (Char.IsDigit(next))
+                    {
+                        // Must be a Numeric Literal
+                        return TryGetNumericLiteral();
                     }
                     else
                     {
-                        // Some other Error so throw
-                        throw;
+                        switch (next)
+                        {
+                            #region Punctuation
+
+                            case '*':
+                                // All/Multiply Token
+                                ConsumeCharacter();
+                                if (LastTokenType == Token.SELECT || LastTokenType == Token.DISTINCT || LastTokenType == Token.REDUCED)
+                                {
+                                    LastTokenType = Token.ALL;
+                                    return new AllToken(CurrentLine, StartPosition);
+                                }
+                                else
+                                {
+                                    LastTokenType = Token.MULTIPLY;
+                                    return new MultiplyToken(CurrentLine, StartPosition);
+                                }
+
+                            case '/':
+                                // Divide Token
+                                ConsumeCharacter();
+                                LastTokenType = Token.DIVIDE;
+                                return new DivideToken(CurrentLine, StartPosition);
+
+                            case '=':
+                                // Equals Token
+                                ConsumeCharacter();
+                                LastTokenType = Token.EQUALS;
+                                return new EqualityToken(CurrentLine, StartPosition);
+
+                            case '#':
+                                // Comment Token
+                                return TryGetComment();
+
+                            case '.':
+                                // Statement Terminator
+                                ConsumeCharacter();
+
+                                // Watch our for plain literals
+                                if (!_in.EndOfStream && Char.IsDigit(Peek()))
+                                {
+                                    IToken temp = TryGetNumericLiteral();
+                                    if (temp is PlainLiteralToken)
+                                    {
+                                        LastTokenType = Token.PLAINLITERAL;
+                                        return temp;
+                                    }
+
+                                    throw UnexpectedToken("Plain Literal", temp);
+                                }
+                                else
+                                {
+                                    // This should be the end of a directive
+                                    LastTokenType = Token.DOT;
+                                    return new DotToken(CurrentLine, StartPosition);
+                                }
+
+                            case ';':
+                                // Predicate Object List deliminator
+                                ConsumeCharacter();
+                                LastTokenType = Token.SEMICOLON;
+                                return new SemicolonToken(CurrentLine, StartPosition);
+
+                            case ',':
+                                // Object List deleminator
+                                ConsumeCharacter();
+                                LastTokenType = Token.COMMA;
+                                return new CommaToken(CurrentLine, StartPosition);
+
+                            case '<':
+                                // Start of a Uri or a Less Than
+                                return TryGetUri();
+
+                            case '>':
+                                // Greater Than
+                                ConsumeCharacter();
+                                next = Peek();
+                                if (next == '=')
+                                {
+                                    // Greater Than or Equal To
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.GREATERTHANOREQUALTO;
+                                    return new GreaterThanOrEqualToToken(CurrentLine, StartPosition);
+                                }
+                                else
+                                {
+                                    // Greater Than
+                                    LastTokenType = Token.GREATERTHAN;
+                                    return new GreaterThanToken(CurrentLine, StartPosition);
+                                }
+
+                            case '"':
+                                // Start of a Literal
+                                return TryGetLiteral('"');
+
+                            case '\'':
+                                // Start of a Literal
+                                return TryGetLiteral('\'');
+
+                            case '^':
+                                // DataType Specifier/Path Inverse
+                                ConsumeCharacter();
+                                next = Peek();
+                                if (next == '^')
+                                {
+                                    // DataType specifier
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.HATHAT;
+                                    return new HatHatToken(CurrentLine, StartPosition);
+                                }
+                                else
+                                {
+                                    // Path inverse
+                                    LastTokenType = Token.HAT;
+                                    return new HatToken(CurrentLine, StartPosition);
+                                    // throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered after a ^ character, expected a ^^ for a Data Type specifier");
+                                }
+
+                            case '+':
+                            case '-':
+                                // Start of a Numeric Literal
+                                return TryGetNumericLiteral();
+
+                            case '!':
+                                // Logical Negation/Not Equals
+                                ConsumeCharacter();
+                                next = Peek();
+                                if (next == '=')
+                                {
+                                    // Not Equals
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.NOTEQUALS;
+                                    return new NotEqualsToken(CurrentLine, StartPosition);
+                                }
+                                else
+                                {
+                                    // Logical Negation
+                                    LastTokenType = Token.NEGATION;
+                                    return new NegationToken(CurrentLine, StartPosition);
+                                }
+
+                            case '&':
+                                // Logical and
+                                ConsumeCharacter();
+                                next = Peek();
+                                if (next == '&')
+                                {
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.AND;
+                                    return new AndToken(CurrentLine, StartPosition);
+                                }
+                                else
+                                {
+                                    throw Error("Unexpected Character (Code " + (int)next + ") " + next + " was encountered while trying to parse a Logical And operator");
+                                }
+
+                            case '|':
+                                // Logical or/Path Alternative
+                                ConsumeCharacter();
+                                next = Peek();
+                                if (next == '|')
+                                {
+                                    // Logical Or
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.OR;
+                                    return new OrToken(CurrentLine, StartPosition);
+                                }
+                                else
+                                {
+                                    // Path Alternative
+                                    LastTokenType = Token.BITWISEOR;
+                                    return new BitwiseOrToken(CurrentLine, StartPosition);
+                                    // throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered while trying to parse a Logical Or operator");
+                                }
+
+                            case '@':
+                                // Lang Specifier
+                                return TryGetLangSpec();
+
+                            #endregion
+
+                            #region Variables and QNames
+
+                            case '$':
+                            case '?':
+                                // Start of a Variable
+                                return TryGetVariable();
+
+                            case ':':
+                            case '_':
+                                // A QName
+                                return TryGetQName();
+
+                            #endregion
+
+                            #region Brackets
+
+                            case '{':
+                                // Left Bracket
+                                ConsumeCharacter();
+                                LastTokenType = Token.LEFTCURLYBRACKET;
+                                return new LeftCurlyBracketToken(CurrentLine, StartPosition);
+
+                            case '}':
+                                // Right Bracket
+                                ConsumeCharacter();
+                                LastTokenType = Token.RIGHTCURLYBRACKET;
+                                return new RightCurlyBracketToken(CurrentLine, StartPosition);
+
+                            case '(':
+                                // Left Bracket
+                                ConsumeCharacter();
+                                LastTokenType = Token.LEFTBRACKET;
+                                return new LeftBracketToken(CurrentLine, StartPosition);
+
+                            case ')':
+                                // Right Bracket
+                                ConsumeCharacter();
+                                LastTokenType = Token.RIGHTBRACKET;
+                                return new RightBracketToken(CurrentLine, StartPosition);
+
+                            case '[':
+                                // Left Bracket
+                                ConsumeCharacter();
+                                LastTokenType = Token.LEFTSQBRACKET;
+                                return new LeftSquareBracketToken(CurrentLine, StartPosition);
+
+                            case ']':
+                                // Right Bracket
+                                ConsumeCharacter();
+                                LastTokenType = Token.RIGHTSQBRACKET;
+                                return new RightSquareBracketToken(CurrentLine, StartPosition);
+
+                            #endregion
+
+                            default:
+                                // Unexpected Character
+                                throw Error("Unexpected Character (Code " + (int)next + ") " + next + " was encountered!");
+
+                        }
                     }
+
+                } while (true);
+            }
+            catch (IOException)
+            {
+                // End Of Stream Check
+                if (_in.EndOfStream)
+                {
+                    // At End of Stream so produce the EOFToken
+                    return new EOFToken(CurrentLine, CurrentPosition);
                 }
+
+                // Some other Error so throw
+                throw;
             }
         }
 
@@ -458,12 +447,10 @@ namespace VDS.RDF.Parsing.Tokens
                     // We're at the End of the Stream and not part-way through reading a Token
                     return new EOFToken(CurrentLine, CurrentPosition);
                 }
-                else
-                {
-                    // We're at the End of the Stream and part-way through reading a Token
-                    // Raise an error
-                    throw UnexpectedEndOfInput("Token");
-                }
+
+                // We're at the End of the Stream and part-way through reading a Token
+                // Raise an error
+                throw UnexpectedEndOfInput("Token");
             }
 
             // Discard leading White Space
@@ -532,13 +519,11 @@ namespace VDS.RDF.Parsing.Tokens
                             // Only one Base Declaration permitted
                             throw Error("Unexpected Base Declaration encountered, the Query Prologue may only contain one Base Declaration");
                         }
-                        else
-                        {
-                            // Got a Base Declaration
-                            _baseDeclared = true;
-                            LastTokenType = Token.BASEDIRECTIVE;
-                            return new BaseDirectiveToken(CurrentLine, StartPosition);
-                        }
+
+                        // Got a Base Declaration
+                        _baseDeclared = true;
+                        LastTokenType = Token.BASEDIRECTIVE;
+                        return new BaseDirectiveToken(CurrentLine, StartPosition);
                     }
                     else if (value.Equals(SparqlSpecsHelper.SparqlKeywordPrefix, StringComparison.OrdinalIgnoreCase))
                     {
@@ -556,28 +541,26 @@ namespace VDS.RDF.Parsing.Tokens
                             LastTokenType = Token.ASK;
                             return new AskKeywordToken(CurrentLine, StartPosition);
                         }
-                        else if (value.Equals(SparqlSpecsHelper.SparqlKeywordConstruct, StringComparison.OrdinalIgnoreCase))
+
+                        if (value.Equals(SparqlSpecsHelper.SparqlKeywordConstruct, StringComparison.OrdinalIgnoreCase))
                         {
                             // Construct Keyword
                             LastTokenType = Token.CONSTRUCT;
                             return new ConstructKeywordToken(CurrentLine, StartPosition);
                         }
-                        else if (value.Equals(SparqlSpecsHelper.SparqlKeywordDescribe, StringComparison.OrdinalIgnoreCase))
+                        if (value.Equals(SparqlSpecsHelper.SparqlKeywordDescribe, StringComparison.OrdinalIgnoreCase))
                         {
                             // Describe Keyword
                             LastTokenType = Token.DESCRIBE;
                             return new DescribeKeywordToken(CurrentLine, StartPosition);
                         }
-                        else if (value.Equals(SparqlSpecsHelper.SparqlKeywordSelect, StringComparison.OrdinalIgnoreCase))
+                        if (value.Equals(SparqlSpecsHelper.SparqlKeywordSelect, StringComparison.OrdinalIgnoreCase))
                         {
                             // Select Keyword
                             LastTokenType = Token.SELECT;
                             return new SelectKeywordToken(CurrentLine, StartPosition);
                         }
-                        else
-                        {
-                            throw Error("Unexpected String '" + value + "' encountered when a SPARQL Query Keyword was expected");
-                        }
+                        throw Error("Unexpected String '" + value + "' encountered when a SPARQL Query Keyword was expected");
                     }
                     else if (SparqlSpecsHelper.IsUpdateKeyword(value))
                     {
@@ -687,48 +670,43 @@ namespace VDS.RDF.Parsing.Tokens
                     LastTokenType = Token.LESSTHANOREQUALTO;
                     return new LessThanOrEqualToToken(CurrentLine, StartPosition);
                 }
-                else
-                {
-                    // Ambigious
-                    ConsumeCharacter();
-                    throw Error("Ambigious syntax in string '" + Value + "', the Tokeniser is unable to determine whether a Less Than or a URI was intended");
-                }
+
+                // Ambigious
+                ConsumeCharacter();
+                throw Error("Ambigious syntax in string '" + Value + "', the Tokeniser is unable to determine whether a Less Than or a URI was intended");
             }
-            else if (Char.IsWhiteSpace(next))
+
+            if (Char.IsWhiteSpace(next))
             {
                 // Appears to be a Less Than
                 LastTokenType = Token.LESSTHAN;
                 return new LessThanToken(CurrentLine, StartPosition);
             }
-            else
+            while (next != '>')
             {
-
-                while (next != '>')
+                if (Char.IsWhiteSpace(next))
                 {
-                    if (Char.IsWhiteSpace(next))
-                    {
-                        // White space is illegal in URIs
-                        throw Error("Illegal white space in URI '" + Value + "'");
-                    }
-                    else if (next == '\\')
-                    {
-                        // Might be an escape for a >
-                        HandleEscapes(TokeniserEscapeMode.Uri);
-                    }
-                    else
-                    {
-                        ConsumeCharacter();
-                    }
-
-                    next = Peek();
+                    // White space is illegal in URIs
+                    throw Error("Illegal white space in URI '" + Value + "'");
                 }
-                // Consume the concluding >
-                ConsumeCharacter();
 
-                LastTokenType = Token.URI;
-                return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
+                if (next == '\\')
+                {
+                    // Might be an escape for a >
+                    HandleEscapes(TokeniserEscapeMode.Uri);
+                }
+                else
+                {
+                    ConsumeCharacter();
+                }
+
+                next = Peek();
             }
+            // Consume the concluding >
+            ConsumeCharacter();
 
+            LastTokenType = Token.URI;
+            return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
         }
 
         private IToken TryGetQName()
@@ -752,11 +730,9 @@ namespace VDS.RDF.Parsing.Tokens
                     next = Peek();
                     continue;
                 }
-                else
-                {
-                    // Consume
-                    ConsumeCharacter();
-                }
+
+                // Consume
+                ConsumeCharacter();
 
                 if (next == ':')
                 {
@@ -800,12 +776,13 @@ namespace VDS.RDF.Parsing.Tokens
                 // Keyword 'a'
                 return new KeywordAToken(CurrentLine, StartPosition);
             }
-            else if (value.Equals("true") || value.Equals("false"))
+
+            if (value.Equals("true") || value.Equals("false"))
             {
                 // Boolean Literal
                 return new PlainLiteralToken(value, CurrentLine, StartPosition, EndPosition);
             }
-            else if (value.StartsWith("_:"))
+            if (value.StartsWith("_:"))
             {
                 if (!SparqlSpecsHelper.IsValidBNode(value)) throw Error("The value '" + value + "' is not valid as a Blank Node identifier");
 
@@ -813,17 +790,14 @@ namespace VDS.RDF.Parsing.Tokens
                 LastTokenType = Token.BLANKNODEWITHID;
                 return new BlankNodeWithIDToken(value, CurrentLine, StartPosition, EndPosition);
             }
-            else if (!SparqlSpecsHelper.IsValidQName(value, _syntax))
+            if (!SparqlSpecsHelper.IsValidQName(value, _syntax))
             {
                 // Not a valid QName
                 throw Error("The value '" + value + "' is not valid as a QName");
             }
-            else
-            {
-                // Return the QName
-                LastTokenType = Token.QNAME;
-                return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), CurrentLine, StartPosition, EndPosition);
-            }
+            // Return the QName
+            LastTokenType = Token.QNAME;
+            return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), CurrentLine, StartPosition, EndPosition);
         }
 
         private IToken TryGetQNameOrKeyword()
@@ -848,11 +822,9 @@ namespace VDS.RDF.Parsing.Tokens
                     next = Peek();
                     continue;
                 }
-                else
-                {
-                    // Consume
-                    ConsumeCharacter();
-                }
+
+                // Consume
+                ConsumeCharacter();
 
                 if (next == ':')
                 {
@@ -1356,7 +1328,8 @@ namespace VDS.RDF.Parsing.Tokens
                         throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword");
                 }
             }
-            else if (!colonoccurred && _queryKeywordSeen && SparqlSpecsHelper.IsQueryKeyword(value))
+
+            if (!colonoccurred && _queryKeywordSeen && SparqlSpecsHelper.IsQueryKeyword(value))
             {
                 if (_syntax == SparqlQuerySyntax.Sparql_1_0) throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword.  This appears to be an attempt to use a sub-query but sub-queries are not supported in SPARQL 1.0");
 
@@ -1366,45 +1339,40 @@ namespace VDS.RDF.Parsing.Tokens
                     LastTokenType = Token.SELECT;
                     return new SelectKeywordToken(CurrentLine, StartPosition);
                 }
-                else
-                {
-                    // Other Query Keyword
-                    throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword.  This appears to be an attempt to use an ASK/CONSTRUCT/DESCRIBE as a sub-query which is not supported");
-                }
+
+                // Other Query Keyword
+                throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword.  This appears to be an attempt to use an ASK/CONSTRUCT/DESCRIBE as a sub-query which is not supported");
             }
-            else if (value.Equals(SparqlSpecsHelper.SparqlKeywordAsc, StringComparison.OrdinalIgnoreCase))
+            if (value.Equals(SparqlSpecsHelper.SparqlKeywordAsc, StringComparison.OrdinalIgnoreCase))
             {
                 LastTokenType = Token.ASC;
                 return new AscKeywordToken(CurrentLine, StartPosition);
             }
-            else if (value.Equals(SparqlSpecsHelper.SparqlKeywordDesc, StringComparison.OrdinalIgnoreCase))
+            if (value.Equals(SparqlSpecsHelper.SparqlKeywordDesc, StringComparison.OrdinalIgnoreCase))
             {
                 LastTokenType = Token.DESC;
                 return new DescKeywordToken(CurrentLine, StartPosition);
             }
-            else if (value.Equals("a"))
+            if (value.Equals("a"))
             {
                 // Keyword 'a'
                 LastTokenType = Token.KEYWORDA;
                 return new KeywordAToken(CurrentLine, StartPosition);
             }
-            else if (value.Equals("true") || value.Equals("false"))
+            if (value.Equals("true") || value.Equals("false"))
             {
                 // Boolean Literal
                 LastTokenType = Token.PLAINLITERAL;
                 return new PlainLiteralToken(value, CurrentLine, StartPosition, EndPosition);
             }
-            else if (!SparqlSpecsHelper.IsValidQName(value, _syntax))
+            if (!SparqlSpecsHelper.IsValidQName(value, _syntax))
             {
                 // Not a valid QName
                 throw Error("The value '" + value + "' is not valid as a QName");
             }
-            else
-            {
-                // Return the QName
-                LastTokenType = Token.QNAME;
-                return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), CurrentLine, StartPosition, EndPosition);
-            }
+            // Return the QName
+            LastTokenType = Token.QNAME;
+            return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), CurrentLine, StartPosition, EndPosition);
         }
 
         private bool GetExpectedKeyword(String expectedKeyword)
@@ -1519,56 +1487,52 @@ namespace VDS.RDF.Parsing.Tokens
                     }
 
                     #endregion
-                } 
-                else 
-                {
-                    // Empty String
-                    LastTokenType = Token.LITERAL;
-                    return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
                 }
-            }
-            else
-            {
-                #region Literals
 
-                // Simple quoted literal
-                while (next != quotechar)
-                {
-                    if (next == '\\')
-                    {
-                        // Do Escape Processing
-                        if (quotechar == '"')
-                        {
-                            HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
-                        }
-                        else
-                        {
-                            HandleEscapes(TokeniserEscapeMode.QuotedLiteralsAlternate);
-                        }
-                    }
-                    else if (next == '\n' || next == '\r')
-                    {
-                        // Illegal New Line
-                        throw Error("Unexpected New Line while trying to Parse a Quoted Literal from content:\n" + Value + "\nTo use New Lines you must use the Triple Quote Long Literal syntax");
-                    }
-                    else if (_in.EndOfStream)
-                    {
-                        // Hit End of Stream unexpectedly
-                        throw Error("Unexpected End of File while trying to Parse a Quoted Literal from content:\n" + Value);
-                    } else {
-                        ConsumeCharacter();
-                    }
-                    next = Peek();
-                }
-                // Consume the last character which must be a " or '
-                ConsumeCharacter();
-
-                // Return the Literal
+                // Empty String
                 LastTokenType = Token.LITERAL;
                 return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
-
-                #endregion
             }
+
+            #region Literals
+
+            // Simple quoted literal
+            while (next != quotechar)
+            {
+                if (next == '\\')
+                {
+                    // Do Escape Processing
+                    if (quotechar == '"')
+                    {
+                        HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
+                    }
+                    else
+                    {
+                        HandleEscapes(TokeniserEscapeMode.QuotedLiteralsAlternate);
+                    }
+                }
+                else if (next == '\n' || next == '\r')
+                {
+                    // Illegal New Line
+                    throw Error("Unexpected New Line while trying to Parse a Quoted Literal from content:\n" + Value + "\nTo use New Lines you must use the Triple Quote Long Literal syntax");
+                }
+                else if (_in.EndOfStream)
+                {
+                    // Hit End of Stream unexpectedly
+                    throw Error("Unexpected End of File while trying to Parse a Quoted Literal from content:\n" + Value);
+                } else {
+                    ConsumeCharacter();
+                }
+                next = Peek();
+            }
+            // Consume the last character which must be a " or '
+            ConsumeCharacter();
+
+            // Return the Literal
+            LastTokenType = Token.LITERAL;
+            return new LiteralToken(Value, CurrentLine, StartPosition, EndPosition);
+
+            #endregion
         }
 
         private IToken TryGetNumericLiteral()
@@ -1600,16 +1564,14 @@ namespace VDS.RDF.Parsing.Tokens
                         // throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur once at the Start of a Numeric Literal, if this was intended as a subtractive operator please insert space to disambiguate this");
                         break;
                     }
-                    else
-                    {
-                        negoccurred = true;
 
-                        // Check this is at the start of the string or immediately after the 'e'
-                        if (Length > 0 && !Value.ToLower().EndsWith("e"))
-                        {
-                            //throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal and once immediately after the exponent specifier, if this was intended as a subtractive operator please insert space to disambiguate this");
-                            break;
-                        }
+                    negoccurred = true;
+
+                    // Check this is at the start of the string or immediately after the 'e'
+                    if (Length > 0 && !Value.ToLower().EndsWith("e"))
+                    {
+                        //throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal and once immediately after the exponent specifier, if this was intended as a subtractive operator please insert space to disambiguate this");
+                        break;
                     }
                 }
                 else if (next == 'e' || next == 'E')
@@ -1619,15 +1581,13 @@ namespace VDS.RDF.Parsing.Tokens
                         // Exponent already seen
                         throw Error("Unexpected Character (Code " + (int)next + " " + next + "\nThe Exponent specifier can only occur once in a Numeric Literal");
                     }
-                    else
-                    {
-                        expoccurred = true;
 
-                        // Check that it isn't the start of the string
-                        if (Length == 0)
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + " " + next + "\nThe Exponent specifier cannot occur at the start of a Numeric Literal");
-                        }
+                    expoccurred = true;
+
+                    // Check that it isn't the start of the string
+                    if (Length == 0)
+                    {
+                        throw Error("Unexpected Character (Code " + (int)next + " " + next + "\nThe Exponent specifier cannot occur at the start of a Numeric Literal");
                     }
                 }
                 else if (next == '.')
@@ -1654,12 +1614,13 @@ namespace VDS.RDF.Parsing.Tokens
                 LastTokenType = Token.PLUS;
                 return new PlusToken(CurrentLine, StartPosition);
             }
-            else if (value.Equals("-"))
+
+            if (value.Equals("-"))
             {
                 LastTokenType = Token.MINUS;
                 return new MinusToken(CurrentLine, StartPosition);
             }
-            else if (!SparqlSpecsHelper.IsValidNumericLiteral(value))
+            if (!SparqlSpecsHelper.IsValidNumericLiteral(value))
             {
                 // Invalid Numeric Literal
                 throw Error("The format of the Numeric Literal '" + Value + "' is not valid!");
@@ -1682,7 +1643,8 @@ namespace VDS.RDF.Parsing.Tokens
                 LastTokenType = Token.DATATYPE;
                 return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition, temp.EndPosition);
             }
-            else if (Char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || next == '_' || next == ':')
+
+            if (Char.IsLetter(next) || UnicodeSpecsHelper.IsLetter(next) || next == '_' || next == ':')
             {
                 // QName specified Data Type
                 IToken temp = TryGetQName();
@@ -1691,16 +1653,11 @@ namespace VDS.RDF.Parsing.Tokens
                     LastTokenType = Token.DATATYPE;
                     return new DataTypeToken(temp.Value, temp.StartLine, temp.StartPosition, temp.EndPosition);
                 }
-                else
-                {
-                    throw Error("Unexpected Token '" + temp.GetType().ToString() + "' was produced when a QName for a Data Type was expected!");
-                }
-            } 
-            else
-            {
-                // Invalid Start Character
-                throw Error("Unexpected Character (Code " + (int)next + " " + next + "\nExpected a < to start a URI or a valid start character for a QName to specify Data Type");
+
+                throw Error("Unexpected Token '" + temp.GetType() + "' was produced when a QName for a Data Type was expected!");
             }
+            // Invalid Start Character
+            throw Error("Unexpected Character (Code " + (int)next + " " + next + "\nExpected a < to start a URI or a valid start character for a QName to specify Data Type");
         }
 
         private IToken TryGetLangSpec()
@@ -1724,15 +1681,11 @@ namespace VDS.RDF.Parsing.Tokens
                     LastTokenType = Token.LANGSPEC;
                     return new LanguageSpecifierToken(Value, CurrentLine, StartPosition, EndPosition);
                 }
-                else
-                {
-                    throw Error("Unexpected Content '" + Value + "' encountered, expected a valid Language Specifier");
-                }
+
+                throw Error("Unexpected Content '" + Value + "' encountered, expected a valid Language Specifier");
             }
-            else
-            {
-                throw Error("Unexpected Character (Code " + (int)'@' + ") @ encountered, the @ character can only be used as part of a Language Specifier after a Literal/Long Literal");
-            }
+
+            throw Error("Unexpected Character (Code " + (int)'@' + ") @ encountered, the @ character can only be used as part of a Language Specifier after a Literal/Long Literal");
         }
 
         private IToken TryGetVariable()
@@ -1769,16 +1722,13 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 return new VariableToken(value, CurrentLine, StartPosition, EndPosition);
             }
-            else if (value.Equals("?"))
+
+            if (value.Equals("?"))
             {
                 // Path Cardinality Modifier
                 return new QuestionToken(CurrentLine, StartPosition);
             }
-            else
-            {
-                throw Error("The value '" + value + "' is not valid as a Variable Name");
-            }
-
+            throw Error("The value '" + value + "' is not valid as a Variable Name");
         }
 
 

@@ -308,15 +308,11 @@ namespace VDS.RDF.Writing.Contexts
                     {
                         return (IUriFormatter)_formatter;
                     }
-                    else
-                    {
-                        return null;
-                    }
+
+                    return null;
                 }
-                else
-                {
-                    return _uriFormatter;
-                }
+
+                return _uriFormatter;
             }
             set
             {

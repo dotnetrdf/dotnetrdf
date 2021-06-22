@@ -89,10 +89,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 return new FilteredProduct(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), ((IExpressionTransformer)optimiser).Transform(_expr));
             }
-            else
-            {
-                return new FilteredProduct(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), _expr);
-            }
+
+            return new FilteredProduct(optimiser.Optimise(_lhs), optimiser.Optimise(_rhs), _expr);
         }
 
         /// <summary>
@@ -297,7 +295,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "FilteredProduct(" + _lhs.ToString() + ", " + _rhs.ToString() + ", " + _expr.ToString() + ")";
+            return "FilteredProduct(" + _lhs + ", " + _rhs + ", " + _expr + ")";
         }
     }
 }

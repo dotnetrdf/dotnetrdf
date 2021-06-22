@@ -123,28 +123,22 @@ namespace VDS.RDF.Parsing.Handlers
                 {
                     return _handler.HandleTriple(t);
                 }
-                else if (_counter > _limit + _offset)
+
+                if (_counter > _limit + _offset)
                 {
                     // Stop parsing when we've reached the limit
                     return false;
                 }
-                else
-                {
-                    return true;
-                }
+                return true;
             }
-            else
+
+            // Limit less than zero means get all triples after the offset
+            if (_counter > _offset)
             {
-                // Limit less than zero means get all triples after the offset
-                if (_counter > _offset)
-                {
-                    return _handler.HandleTriple(t);
-                }
-                else
-                {
-                    return true;
-                }
+                return _handler.HandleTriple(t);
             }
+
+            return true;
         }
 
         /// <summary>

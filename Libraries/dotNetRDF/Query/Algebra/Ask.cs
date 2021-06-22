@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Ask(" + _pattern.ToString() + ")";
+            return "Ask(" + _pattern + ")";
         }
 
         /// <summary>

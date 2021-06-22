@@ -2,21 +2,21 @@
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
-// 
+//
 // Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is furnished
 // to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in all
 // copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Ordering
     /// <summary>
     /// Base Class for implementing Sparql ORDER BYs.
     /// </summary>
-    public abstract class BaseOrderBy 
+    public abstract class BaseOrderBy
         : ISparqlOrderBy
     {
         /// <summary>
@@ -189,29 +189,21 @@ namespace VDS.RDF.Query.Ordering
                     {
                         return _child.Compare(x, y);
                     }
-                    else
-                    {
-                        return 0;
-                    }
-                }
-                else
-                {
-                    return _modifier * -1;
-                }
-            }
-            else
-            {
-                int c = _comparer.Compare(xval, y[_varname]);
 
-                if (c == 0 && _child != null)
-                {
-                    return _child.Compare(x, y);
+                    return 0;
                 }
-                else
-                {
-                    return _modifier * c;
-                }
+
+                return _modifier * -1;
             }
+
+            int c = _comparer.Compare(xval, y[_varname]);
+
+            if (c == 0 && _child != null)
+            {
+                return _child.Compare(x, y);
+            }
+
+            return _modifier * c;
         }
 
         /// <summary>
@@ -245,7 +237,7 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         public override bool IsSimple
         {
-            get 
+            get
             {
                 if (_child != null)
                 {
@@ -253,11 +245,9 @@ namespace VDS.RDF.Query.Ordering
                     // depends on whether the Child Ordering is simple
                     return _child.IsSimple;
                 }
-                else
-                {
-                    // An ordering on a Variable is always simple
-                    return true;
-                }
+
+                // An ordering on a Variable is always simple
+                return true;
             }
         }
 
@@ -266,16 +256,14 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         public override IEnumerable<string> Variables
         {
-            get 
+            get
             {
                 if (_child != null)
                 {
-                    return _varname.AsEnumerable<String>().Concat(_child.Variables).Distinct();
+                    return _varname.AsEnumerable().Concat(_child.Variables).Distinct();
                 }
-                else
-                {
-                    return _varname.AsEnumerable<String>();
-                }
+
+                return _varname.AsEnumerable();
             }
         }
 
@@ -286,7 +274,7 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                return new VariableTerm(_varname); 
+                return new VariableTerm(_varname);
             }
         }
 
@@ -312,7 +300,7 @@ namespace VDS.RDF.Query.Ordering
             if (_child != null)
             {
                 output.Append(" ");
-                output.Append(_child.ToString());
+                output.Append(_child);
             }
             else
             {
@@ -353,69 +341,60 @@ namespace VDS.RDF.Query.Ordering
             {
                 return 0;
             }
-            else if (x.ID == y.ID)
+
+            if (x.ID == y.ID)
             {
                 return 0;
             }
-            else
+            INode a, b;
+            try
             {
-                INode a, b;
+                a = _expr.Evaluate(_context, x.ID);
+
                 try
                 {
-                    a = _expr.Evaluate(_context, x.ID);
-
-                    try
-                    {
-                        b = _expr.Evaluate(_context, y.ID);
-                    }
-                    catch
-                    {
-                        // If evaluating b errors consider this a NULL and rank a > b
-                        return _modifier * 1;
-                    }
-
-                    // If both give a value then compare
-                    if (a != null)
-                    {
-                        int c = _comparer.Compare(a, b);
-                        if (c == 0 && _child != null)
-                        {
-                            return _child.Compare(x, y);
-                        }
-                        else
-                        {
-                            return _modifier * c;
-                        }
-                    }
-                    else
-                    {
-                        // a is NULL so a < b
-                        return _modifier * -1;
-                    }
+                    b = _expr.Evaluate(_context, y.ID);
                 }
                 catch
                 {
-                    try
-                    {
-                        b = _expr.Evaluate(_context, y.ID);
-
-                        // If evaluating a errors but b evaluates correctly consider a to be NULL and rank a < b
-                        return _modifier * -1;
-                    }
-                    catch
-                    {
-                        // If both error then use child if any to evaluate, otherwise consider a = b
-                        if (_child != null)
-                        {
-                            return _child.Compare(x, y);
-                        }
-                        else
-                        {
-                            return 0;
-                        }
-                    }
+                    // If evaluating b errors consider this a NULL and rank a > b
+                    return _modifier * 1;
                 }
 
+                // If both give a value then compare
+                if (a != null)
+                {
+                    int c = _comparer.Compare(a, b);
+                    if (c == 0 && _child != null)
+                    {
+                        return _child.Compare(x, y);
+                    }
+
+                    return _modifier * c;
+                }
+
+                // a is NULL so a < b
+                return _modifier * -1;
+            }
+            catch
+            {
+                try
+                {
+                    b = _expr.Evaluate(_context, y.ID);
+
+                    // If evaluating a errors but b evaluates correctly consider a to be NULL and rank a < b
+                    return _modifier * -1;
+                }
+                catch
+                {
+                    // If both error then use child if any to evaluate, otherwise consider a = b
+                    if (_child != null)
+                    {
+                        return _child.Compare(x, y);
+                    }
+
+                    return 0;
+                }
             }
         }
 
@@ -447,10 +426,8 @@ namespace VDS.RDF.Query.Ordering
                 if (compareFunc == null) return null;
                 return new TripleComparer(compareFunc, Descending, child);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         /// <summary>
@@ -458,7 +435,7 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         public override bool IsSimple
         {
-            get 
+            get
             {
                 if (_expr is VariableTerm)
                 {
@@ -468,15 +445,11 @@ namespace VDS.RDF.Query.Ordering
                     {
                         return _child.IsSimple;
                     }
-                    else
-                    {
-                        return true;
-                    }
+
+                    return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
         }
 
@@ -491,10 +464,8 @@ namespace VDS.RDF.Query.Ordering
                 {
                     return _expr.Variables.Concat(_child.Variables).Distinct();
                 }
-                else
-                {
-                    return _expr.Variables;
-                }
+
+                return _expr.Variables;
             }
         }
 
@@ -524,13 +495,13 @@ namespace VDS.RDF.Query.Ordering
             {
                 output.Append("ASC(");
             }
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(")");
 
             if (_child != null)
             {
                 output.Append(" ");
-                output.Append(_child.ToString());
+                output.Append(_child);
             }
             else
             {

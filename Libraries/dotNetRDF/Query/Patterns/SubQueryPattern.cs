@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return "{" + _subquery.ToString() + "}";
+            return "{" + _subquery + "}";
         }
     }
 }

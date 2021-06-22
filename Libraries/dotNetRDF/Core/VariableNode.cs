@@ -104,7 +104,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(INode other)
         {
-            if ((Object)other == null) return false;
+            if (other == null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -112,11 +112,9 @@ namespace VDS.RDF
             {
                 return EqualityHelper.AreVariablesEqual(this, (IVariableNode)other);
             }
-            else
-            {
-                // Can only be equal to other Variables
-                return false;
-            }
+
+            // Can only be equal to other Variables
+            return false;
         }
 
         /// <summary>
@@ -170,7 +168,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
-            if ((Object)other == null) return false;
+            if (other == null) return false;
 
             if (ReferenceEquals(this, other)) return true;
 
@@ -202,11 +200,9 @@ namespace VDS.RDF
             {
                 return Equals((INode)obj);
             }
-            else
-            {
-                // Can only be equal to other Nodes
-                return false;
-            }
+
+            // Can only be equal to other Nodes
+            return false;
         }
 
         /// <summary>
@@ -232,15 +228,13 @@ namespace VDS.RDF
                 // Variables are considered greater than null
                 return 1;
             }
-            else if (other.NodeType == NodeType.Variable)
+
+            if (other.NodeType == NodeType.Variable)
             {
                 return CompareTo((IVariableNode)other);
             }
-            else
-            {
-                // Variable Nodes are less than everything else
-                return -1;
-            }
+            // Variable Nodes are less than everything else
+            return -1;
         }
 
         /// <summary>
@@ -257,11 +251,9 @@ namespace VDS.RDF
                 // Variables are considered greater than null
                 return 1;
             }
-            else
-            {
-                // Variable Nodes are less than everything else
-                return -1;
-            }
+
+            // Variable Nodes are less than everything else
+            return -1;
         }
 
         /// <summary>
@@ -278,11 +270,9 @@ namespace VDS.RDF
                 // Variables are considered greater than null
                 return 1;
             }
-            else
-            {
-                // Variable Nodes are less than everything else
-                return -1;
-            }
+
+            // Variable Nodes are less than everything else
+            return -1;
         }
 
         /// <summary>
@@ -299,11 +289,9 @@ namespace VDS.RDF
                 // Variables are considered greater than null
                 return 1;
             }
-            else
-            {
-                // Variable Nodes are less than everything else
-                return -1;
-            }
+
+            // Variable Nodes are less than everything else
+            return -1;
         }
 
         /// <summary>
@@ -320,11 +308,9 @@ namespace VDS.RDF
                 // Variables are considered greater than null
                 return 1;
             }
-            else
-            {
-                // Variable Nodes are less than everything else
-                return -1;
-            }
+
+            // Variable Nodes are less than everything else
+            return -1;
         }
 
         /// <summary>
@@ -341,10 +327,8 @@ namespace VDS.RDF
                 // Variables are considered greater than null
                 return 1;
             }
-            else
-            {
-                return ComparisonHelper.CompareVariables(this, other);
-            }
+
+            return ComparisonHelper.CompareVariables(this, other);
         }
 
         /// <summary>

@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <returns></returns>
         public override string ToString()
         {
-            return "!" + _expr.ToString();
+            return "!" + _expr;
         }
 
         /// <summary>

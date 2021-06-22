@@ -68,10 +68,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             {
                 return _ifBranch.Evaluate(context, bindingID);
             }
-            else
-            {
-                return _elseBranch.Evaluate(context, bindingID);
-            }
+
+            return _elseBranch.Evaluate(context, bindingID);
         }
 
         /// <summary>
@@ -93,11 +91,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             StringBuilder output = new StringBuilder();
             output.Append("IF (");
-            output.Append(_condition.ToString());
+            output.Append(_condition);
             output.Append(" , ");
-            output.Append(_ifBranch.ToString());
+            output.Append(_ifBranch);
             output.Append(" , ");
-            output.Append(_elseBranch.ToString());
+            output.Append(_elseBranch);
             output.Append(')');
             return output.ToString();
         }
@@ -131,7 +129,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             get
             {
-                return new ISparqlExpression[] { _condition, _ifBranch, _elseBranch };
+                return new[] { _condition, _ifBranch, _elseBranch };
             }
         }
 

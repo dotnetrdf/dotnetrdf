@@ -190,14 +190,12 @@ namespace VDS.RDF.Update.Protocol
             {
                 return new Uri(baseUri, graphID);
             }
-            else if (baseUri.Segments.Any())
+
+            if (baseUri.Segments.Any())
             {
                 return new Uri(baseUri, baseUri.Segments.Last() + "/" + graphID);
             }
-            else
-            {
-                return new Uri(baseUri, graphID);
-            }
+            return new Uri(baseUri, graphID);
         }
 
         /// <summary>

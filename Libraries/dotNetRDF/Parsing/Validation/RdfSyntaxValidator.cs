@@ -128,17 +128,15 @@ namespace VDS.RDF.Parsing.Validation
                     message = "Valid RDF - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name;
                     return new SyntaxValidationResults(true, message, handler);
                 }
-                else
+
+                message = "Valid RDF with Warnings - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name + " - " + _messages.Count + " Warnings";
+                int i = 1;
+                foreach (String m in _messages)
                 {
-                    message = "Valid RDF with Warnings - " + handler.Count + " Triples - Parser: " + _parser.GetType().Name + " - " + _messages.Count + " Warnings";
-                    int i = 1;
-                    foreach (String m in _messages)
-                    {
-                        message += "\n" + i + " - " + m;
-                        i++;
-                    }
-                    return new SyntaxValidationResults(false, message, handler, _messages);
+                    message += "\n" + i + " - " + m;
+                    i++;
                 }
+                return new SyntaxValidationResults(false, message, handler, _messages);
             }
             catch (RdfParseException parseEx)
             {

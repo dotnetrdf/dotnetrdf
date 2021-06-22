@@ -58,10 +58,8 @@ namespace VDS.RDF.Configuration
                 obj = (ISparqlOperator)temp;
                 return true;
             }
-            else
-            {
-                throw new DotNetRdfConfigurationException("Unable to load the SPARQL Operator identified by the Node '" + objNode.ToString() + "' as the object could not be loaded as an object which implements the required ISparqlOperator interface");
-            }
+
+            throw new DotNetRdfConfigurationException("Unable to load the SPARQL Operator identified by the Node '" + objNode.ToString() + "' as the object could not be loaded as an object which implements the required ISparqlOperator interface");
         }
 
         /// <summary>

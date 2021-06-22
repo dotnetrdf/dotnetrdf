@@ -57,12 +57,11 @@ namespace VDS.RDF
                 {
                     return 0;
                 }
-                else
-                {
-                    return -1;
-                }
+
+                return -1;
             }
-            else if (y == null)
+
+            if (y == null)
             {
                 return 1;
             }
@@ -100,13 +99,12 @@ namespace VDS.RDF
                         // Different datatypes
                         return c;
                     }
-                    else
-                    {
-                        // y is untyped literal so x is greater than y
-                        return 1;
-                    }
+
+                    // y is untyped literal so x is greater than y
+                    return 1;
                 }
-                else if (!a.Language.Equals(string.Empty))
+
+                if (!a.Language.Equals(string.Empty))
                 {
                     if (!b.Language.Equals(string.Empty))
                     {
@@ -120,23 +118,16 @@ namespace VDS.RDF
                         // Different language specifiers
                         return c;
                     }
-                    else
-                    {
-                        // y in plain literal so x is greater then y
-                        return 1;
-                    }
+
+                    // y in plain literal so x is greater then y
+                    return 1;
                 }
-                else
-                {
-                    // Plain literals so just compare lexical value
-                    return a.Value.CompareTo(b.Value);
-                }
+                // Plain literals so just compare lexical value
+                return a.Value.CompareTo(b.Value);
             }
-            else
-            {
-                // Non-literal nodes use their normal IComparable implementations
-                return x.CompareTo(y);
-            }
+
+            // Non-literal nodes use their normal IComparable implementations
+            return x.CompareTo(y);
         }
 
         /// <summary>
@@ -182,12 +173,11 @@ namespace VDS.RDF
                 {
                     return 0;
                 }
-                else
-                {
-                    return -1;
-                }
+
+                return -1;
             }
-            else if (y == null)
+
+            if (y == null)
             {
                 return 1;
             }
@@ -217,13 +207,12 @@ namespace VDS.RDF
                         // Different datatypes
                         return c;
                     }
-                    else
-                    {
-                        // y is untyped literal so x is greater than y
-                        return 1;
-                    }
+
+                    // y is untyped literal so x is greater than y
+                    return 1;
                 }
-                else if (!a.Language.Equals(string.Empty))
+
+                if (!a.Language.Equals(string.Empty))
                 {
                     if (!b.Language.Equals(string.Empty))
                     {
@@ -237,23 +226,16 @@ namespace VDS.RDF
                         // Different language specifiers
                         return c;
                     }
-                    else
-                    {
-                        // y in plain literal so x is greater then y
-                        return 1;
-                    }
+
+                    // y in plain literal so x is greater then y
+                    return 1;
                 }
-                else
-                {
-                    // Plain literals so just compare lexical value
-                    return a.Value.CompareTo(b.Value);
-                }
+                // Plain literals so just compare lexical value
+                return a.Value.CompareTo(b.Value);
             }
-            else
-            {
-                // Non-literal nodes use their normal IComparable implementations
-                return x.CompareTo(y);
-            }
+
+            // Non-literal nodes use their normal IComparable implementations
+            return x.CompareTo(y);
         }
 
         /// <inheritdoc />

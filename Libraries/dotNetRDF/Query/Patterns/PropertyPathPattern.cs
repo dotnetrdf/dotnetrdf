@@ -162,7 +162,6 @@ namespace VDS.RDF.Query.Patterns
                 }
 
                 // If we reach here we've successfully evaluated the simple pattern and can return
-                return;
             }
             finally
             {
@@ -220,11 +219,11 @@ namespace VDS.RDF.Query.Patterns
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append(_subj.ToString());
+            output.Append(_subj);
             output.Append(' ');
             output.Append(_path.ToString());
             output.Append(' ');
-            output.Append(_obj.ToString());
+            output.Append(_obj);
             return output.ToString();
         }
     }

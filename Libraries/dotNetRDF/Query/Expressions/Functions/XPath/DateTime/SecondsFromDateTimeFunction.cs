@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         protected override IValuedNode ValueInternal(DateTimeOffset dateTime)
         {
             decimal seconds = Convert.ToDecimal(dateTime.Second);
-            seconds += ((decimal)dateTime.Millisecond) / 1000m;
+            seconds += dateTime.Millisecond / 1000m;
 
             return new DecimalNode(null, seconds);
         }
@@ -61,7 +61,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime + ">(" + _expr + ")";
         }
 
         /// <summary>
