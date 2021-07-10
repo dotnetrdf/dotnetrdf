@@ -227,10 +227,11 @@ namespace VDS.RDF.Configuration
         /// </summary>
         private static Dictionary<CachedObjectKey, object> _cache = new Dictionary<CachedObjectKey, object>();
 
+        private static readonly List<IConfigurationExtension> _extensions = new List<IConfigurationExtension>();
         /// <summary>
         /// Set of built-in object factories that are automatically registered and used.
         /// </summary>
-        private static List<IObjectFactory> _factories = new List<IObjectFactory>
+        private static readonly List<IObjectFactory> _factories = new List<IObjectFactory>
         {
             // Default Data Factories
             new GraphFactory(),
@@ -277,6 +278,12 @@ namespace VDS.RDF.Configuration
             new ParserFactory(),
             new WriterFactory(),
         };
+
+        private static readonly List<Assembly> _factoryAssemblies = new List<Assembly>
+        {
+            Assembly.GetAssembly(typeof(ConfigurationLoader)),
+        };
+
         /// <summary>
         /// Path resolver.
         /// </summary>
@@ -461,6 +468,10 @@ namespace VDS.RDF.Configuration
             AutoConfigureObjectFactories(g);
             AutoConfigureReadersAndWriters(g);
             AutoConfigureStaticOptions(g);
+            foreach (Action<IGraph> autoConfigure in _extensions.SelectMany(ext=>ext.GetAutoConfigureActions()))
+            {
+                autoConfigure(g);
+            }
         }
 
         /// <summary>
@@ -1243,12 +1254,9 @@ namespace VDS.RDF.Configuration
             // Try and find an Object Loader that can load this object
             try
             {
-                foreach (IObjectFactory loader in _factories)
+                foreach (IObjectFactory loader in _factories.Where(l=>l.CanLoadObject(targetType)))
                 {
-                    if (loader.CanLoadObject(targetType))
-                    {
-                        if (loader.TryLoadObject(g, objNode, targetType, out temp)) break;
-                    }
+                    if (loader.TryLoadObject(g, objNode, targetType, out temp)) break;
                 }
             }
             catch (DotNetRdfConfigurationException)
@@ -1288,9 +1296,21 @@ namespace VDS.RDF.Configuration
                 {
                     throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' since there is no dnr:type property associated with it");
                 }
-                return LoadObject(g, objNode, Type.GetType(typeName));
+                return LoadObject(g, objNode, GetType(typeName));
             }
-            return LoadObject(g, objNode, Type.GetType(typeName));
+            return LoadObject(g, objNode, GetType(typeName));
+        }
+
+        private static Type GetType(string typeName)
+        {
+            if (typeName.Contains(","))
+            {
+                // Resolve assembly qualified type names directly
+                return Type.GetType(typeName);
+            }
+            // Otherwise use the assemblies of registered object factories to attempt to resolve the type name
+            return _factoryAssemblies.Select(assembly => assembly.GetType(typeName))
+                .FirstOrDefault(t => t != null);
         }
 
         /// <summary>
@@ -1519,10 +1539,27 @@ namespace VDS.RDF.Configuration
         public static void AddObjectFactory(IObjectFactory factory)
         {
             Type loaderType = factory.GetType();
-            if (!_factories.Any(l => l.GetType().Equals(loaderType)))
+            if (_factories.All(l => l.GetType() != loaderType))
             {
                 _factories.Add(factory);
+                if (!_factoryAssemblies.Contains(factory.GetType().Assembly))
+                {
+                    _factoryAssemblies.Add(factory.GetType().Assembly);
+                }
             }
+        }
+
+        public static void RegisterExtension<T>() where T : IConfigurationExtension
+        {
+            if (_extensions.Select(ext => ext.GetType()).Any(t => t == typeof(T)))
+            {
+                // Already registered an extension of this type
+                return;
+            }
+
+            IConfigurationExtension extension = Activator.CreateInstance<T>();
+            foreach (IObjectFactory f in extension.GetObjectFactories()) AddObjectFactory(f);
+            _extensions.Add(extension);
         }
 
         /// <summary>

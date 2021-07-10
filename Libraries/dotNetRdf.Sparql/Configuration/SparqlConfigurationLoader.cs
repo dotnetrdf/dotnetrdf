@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
 
 namespace VDS.RDF.Configuration
 {
-    public static class SparqlConfigurationLoader
+    public class SparqlConfigurationLoaderExtension : IConfigurationExtension
     {
         public const string PropertyEnabled = ConfigurationLoader.ConfigurationNamespace + "enabled";
         public const string ClassSparqlOperator = ConfigurationLoader.ConfigurationNamespace + "SparqlOperator";
 
+        
         /// <summary>
         /// Given a Configuration Graph will detect and configure SPARQL Operators.
         /// </summary>
@@ -45,13 +43,18 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        /// <summary>
-        /// Given a Configuration Graph applies all available SPARQL auto-configuration based on the contents of the graph.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        public static void AutoConfigure(IGraph g)
+        public IEnumerable<Action<IGraph>> GetAutoConfigureActions() { yield return AutoConfigureSparqlOperators; }
+
+        public IEnumerable<IObjectFactory> GetObjectFactories() { return ObjectFactories; }
+
+        private static readonly List<IObjectFactory> ObjectFactories = new()
         {
-            AutoConfigureSparqlOperators(g);
-        }
+            new ExpressionFactoryFactory(),
+            new OperatorFactory(),
+            new OptimiserFactory(),
+            new PropertyFunctionFactoryFactory(),
+            new QueryProcessorFactory(),
+            new UpdateProcessorFactory(),
+        };
     }
 }

@@ -2124,8 +2124,12 @@ namespace VDS.RDF.Query
                 foreach (SparqlQuery query in GetRemoteQueries(context, service.Pattern, GetBindings(context, service.Pattern)))
                 {
                     // Try and get a Result Set from the Service
-                    Task<SparqlResultSet> queryTask = endpoint.QueryWithResultSetAsync(query.ToString(), CancellationToken.None);
-                    queryTask.RunSynchronously();
+                    var cts = new CancellationTokenSource();
+                    var queryString = query.ToString();
+                    Task<SparqlResultSet> queryTask = endpoint.QueryWithResultSetAsync(query.ToString(), cts.Token);
+                    cts.CancelAfter(TimeSpan.FromMilliseconds(context.RemainingTimeout));
+                    queryTask.Wait(cts.Token);
+
                     SparqlResultSet results = queryTask.Result;
                     context.CheckTimeout();
 
@@ -3358,8 +3362,8 @@ namespace VDS.RDF.Query
 
         public BaseMultiset ProcessTriplePattern(TriplePattern triplePattern, SparqlEvaluationContext context)
         {
-            // Processing of the triple pattern is already handled
-            return context.InputMultiset;
+            context.Evaluate(triplePattern);
+            return context.OutputMultiset;
         }
 
         public virtual BaseMultiset ProcessUnknownOperator(ISparqlAlgebra op, SparqlEvaluationContext context)

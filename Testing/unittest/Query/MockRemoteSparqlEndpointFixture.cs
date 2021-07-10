@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using VDS.RDF.Parsing;
 using WireMock.RequestBuilders;
@@ -33,7 +34,7 @@ namespace VDS.RDF.Query
 
         public readonly string ConstructQuery = "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}";
         public readonly string ErrorConstructQuery = "CONSTRUCT {?s ?p ?err} WHERE {?s ?p ?o}";
-        public readonly string SelectQuery = "SELECT * WHERE {?s ?p ?o}";
+        public readonly string SelectQuery = "SELECT * WHERE { ?s ?p ?o . }";
         public readonly string ErrorSelectQuery = "SELECT ?err WHERE {?s ?p ?o}";
 
         private const string SparqlResultsXml = @"<?xml version=""1.0""?>
@@ -54,6 +55,9 @@ namespace VDS.RDF.Query
 
         private const string ConstructResults = "<http://example.org/s> <http://example.org/p> \"o\" .";
 
+        //private Predicate<string> SameAsQuery(string expectedQuery) =>
+        //    actualQuery => actualQuery == new SparqlQueryParser().ParseFromString(expectedQuery).ToString();
+
         protected void RegisterSelectQueryGetHandler()
         {
             RegisterSelectQueryGetHandler(SelectQuery);
@@ -66,7 +70,7 @@ namespace VDS.RDF.Query
                     .UsingGet()
                     .WithParam(queryParams =>
                         queryParams.ContainsKey("query") &&
-                        queryParams["query"].Any(q => HttpUtility.UrlDecode(q).StartsWith(query))))
+                        queryParams["query"].Any(q=>SameAsQuery(query)(q))))
                 .RespondWith(Response.Create()
                     .WithBody(SparqlResultsXml, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
@@ -81,7 +85,7 @@ namespace VDS.RDF.Query
                     .UsingGet()
                     .WithParam(queryParams =>
                         queryParams.ContainsKey("query") &&
-                        queryParams["query"].Any(q => queryPredicate(HttpUtility.UrlDecode(q)))))
+                        queryParams["query"].Any(q => queryPredicate(q))))
                 .RespondWith(Response.Create()
                     .WithBody(results, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
@@ -129,7 +133,7 @@ namespace VDS.RDF.Query
             Server.Given(Request.Create()
                     .WithPath("/sparql")
                     .UsingPost()
-                    .WithBody(x => x.Contains("query=" + HttpUtility.UrlEncode(ConstructQuery))))
+                    .WithBody(x => x != null && SameAsQuery(ConstructQuery)(x)))
                 .RespondWith(Response.Create()
                     .WithBody(ConstructResults, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", "application/n-triples")
@@ -141,7 +145,7 @@ namespace VDS.RDF.Query
             Server.Given(Request.Create()
                     .WithPath("/sparql")
                     .UsingPost()
-                    .WithBody(x => x.Contains("query=" + HttpUtility.UrlEncode(SelectQuery))))
+                    .WithBody(x => x != null && SameAsQuery(SelectQuery)(x)))
                 .RespondWith(Response.Create()
                     .WithBody(SparqlResultsXml, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])

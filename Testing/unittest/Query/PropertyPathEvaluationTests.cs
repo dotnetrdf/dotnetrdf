@@ -253,6 +253,7 @@ namespace VDS.RDF.Query
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             var dataset = new InMemoryDataset(store, g.Name);
+            _processor = new LeviathanQueryProcessor(dataset);
 
             var path =
                 new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
@@ -272,6 +273,7 @@ namespace VDS.RDF.Query
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             var dataset = new InMemoryDataset(store, g.Name);
+            _processor = new LeviathanQueryProcessor(dataset);
 
             var path =
                 new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
@@ -292,6 +294,7 @@ namespace VDS.RDF.Query
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             var dataset = new InMemoryDataset(store, g.Name);
+            _processor = new LeviathanQueryProcessor(dataset);
 
             var path =
                 new OneOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
@@ -312,6 +315,7 @@ namespace VDS.RDF.Query
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             var dataset = new InMemoryDataset(store, g.Name);
+            _processor = new LeviathanQueryProcessor(dataset);
 
             var path =
                 new ZeroOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
@@ -331,6 +335,7 @@ namespace VDS.RDF.Query
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             var dataset = new InMemoryDataset(store);
+            _processor = new LeviathanQueryProcessor(dataset);
 
             var path =
                 new ZeroOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
@@ -351,6 +356,7 @@ namespace VDS.RDF.Query
             g.LoadFromFile("resources\\InferenceTest.ttl");
             store.Add(g);
             var dataset = new InMemoryDataset(store);
+            _processor = new LeviathanQueryProcessor(dataset);
 
             var path =
                 new ZeroOrMore(new Property(_factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));

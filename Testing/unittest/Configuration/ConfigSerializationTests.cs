@@ -43,7 +43,7 @@ namespace VDS.RDF.Configuration
         [Fact]
         public void ConfigurationSerializationOperators()
         {
-            var ops = new List<ISparqlOperator>()
+            var ops = new List<ISparqlOperator>
             {
                 new AdditionOperator(),
                 new DateTimeAddition(),
@@ -59,6 +59,7 @@ namespace VDS.RDF.Configuration
             var g = new Graph();
             var context = new ConfigurationSerializationContext(g);
             var nodes = new List<INode>();
+            ConfigurationLoader.RegisterExtension<SparqlConfigurationLoaderExtension>();
 
             foreach (ISparqlOperator op in ops)
             {

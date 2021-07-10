@@ -53,7 +53,7 @@ LIMIT 10");
             var parser = new SparqlQueryParser();
             var q = parser.ParseFromString(query);
 
-            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore(), options => options.QueryExecutionTimeout = 5000);
             var results = processor.ProcessQuery(q);
             Assert.IsType<SparqlResultSet>(results);
             var resultSet = results as SparqlResultSet;
@@ -69,7 +69,7 @@ LIMIT 10");
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore(), options => options.QueryExecutionTimeout = 5000);
             var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
@@ -88,7 +88,7 @@ LIMIT 10");
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore(), options => options.QueryExecutionTimeout = 5000);
             Assert.Throws<RdfQueryException>(() => processor.ProcessQuery(q));
         }
 
@@ -100,7 +100,7 @@ LIMIT 10");
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore(), options=>options.QueryExecutionTimeout = 5000);
             object results = processor.ProcessQuery(q);
             TestTools.ShowResults(results);
         }

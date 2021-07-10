@@ -135,3 +135,10 @@ The ISparqlResultSet interface has been added to allow a more clean separation b
 ## AutoConfigureSparqlOperators method has moved
 
 The method is now a static method of VDS.RDF.Configuration.SparqlConfigurationLoader so calls to `ConfigurationLoader.AutoConfigureSparqlOperators` will need to be changed to `SparqlConfigurationLoader.AutoConfigureSparqlOperators`
+
+## MIME types for SPARQL Query and Update are no longer registered by default
+
+Because the parsers for SPARQL Query and Update are now in a separate assembly from the core assembly containing the MIME type registry, these parsers need to be registered. The static method `VDS.RDF.SparqlMimeTypeExtensions.RegisterSparqlMimeTypes()`
+will perform this registration.
+
+This change will break existing code that uses the MimeTypesHelper class to retrieve SPARQL query or update parsers.

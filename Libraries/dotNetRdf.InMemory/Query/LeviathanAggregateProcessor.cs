@@ -27,7 +27,7 @@ namespace VDS.RDF.Query
 
         public IValuedNode ProcessAverage(AverageAggregate average, SparqlEvaluationContext context, IEnumerable<int> bindings)
         {
-            if (average.Variable != null) AssertVariable(average.Variable, average, context);
+            //if (average.Variable != null) AssertVariable(average.Variable, average, context);
 
             // Prep Variables
             var values = new HashSet<IValuedNode>();
@@ -700,14 +700,15 @@ namespace VDS.RDF.Query
             return new BooleanNode(true);
         }
 
-        private void AssertVariable(string var, ISparqlAggregate aggregate, SparqlEvaluationContext context)
+        private static void AssertVariable(string var, ISparqlAggregate aggregate, SparqlEvaluationContext context)
         {
-                // Ensured the MAXed variable is in the Variables of the Results
+                // Ensured the aggregated variable is in the Variables of the Results
                 if (!context.Binder.Variables.Contains(var))
                 {
                     throw new RdfQueryException($"Cannot use the Variable ?{var} in a {aggregate.Functor} Aggregate since the Variable does not occur in a Graph Pattern");
                 }
         }
+
         public IValuedNode ProcessNumericMax(NumericMaxAggregate numericMax, SparqlEvaluationContext context, IEnumerable<int> bindings)
         {
             if (numericMax.Variable != null)

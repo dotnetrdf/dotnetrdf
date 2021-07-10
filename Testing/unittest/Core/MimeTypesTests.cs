@@ -40,6 +40,7 @@ namespace VDS.RDF
         public MimeTypesTests()
         {
             MimeTypesHelper.ResetDefinitions();
+            SparqlMimeTypeExtensions.RegisterSparqlMimeTypes();
         }
 
         public void Dispose()
@@ -51,7 +52,6 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsAll()
         {
             var count = MimeTypesHelper.Definitions.Count();
-            Console.WriteLine(count + " Definitions registered");
             Assert.Equal(32, count);
         }
 
@@ -59,7 +59,6 @@ namespace VDS.RDF
         public void MimeTypesGetDefinitionsByTypeAny()
         {
             var count = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).Count();
-            Console.WriteLine(count + " Definitions registered");
             Assert.Equal(32, count);
         }
 

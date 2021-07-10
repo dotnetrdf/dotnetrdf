@@ -25,22 +25,16 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
-using VDS.RDF.Update;
 
 namespace VDS.RDF.Configuration
 {
     /// <summary>
     /// Factory class for producing <see cref="IStorageProvider">IStorageProvider</see> and <see cref="IStorageServer"/> instances from Configuration Graphs.
     /// </summary>
-    public class StorageFactory
+    public class InMemoryStorageFactory
         : IObjectFactory
     {
         private const string DatasetFile = "VDS.RDF.Storage.DatasetFileManager",
