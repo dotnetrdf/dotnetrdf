@@ -1,6 +1,12 @@
 ﻿Change Log
 ==========
 
+2.7.2
+-----
+
+This is a minor update to bump dependencies, in particular it updates the Newtonsoft.Json dependency from 12.x to 13.x. It also
+includes minor updates for HtmlAgilityPack (1.11.31->1.11.34) and AngleSharp (0.14.0->0.16.0)
+
 2.7.1
 -----
 FIX: Fixed the UriLoaderCache to correctly handle cache file freshness checks when a cache file is deleted and then recreated within a short period of time.  Thanks to @co2chicken for the report. (#396)
