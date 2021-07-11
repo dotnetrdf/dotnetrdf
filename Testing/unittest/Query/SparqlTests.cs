@@ -333,14 +333,10 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             _serverFixture.RegisterSelectQueryGetHandler(testQuery);
             var endpoint = new SparqlConnector(new Uri(_serverFixture.Server.Urls[0] + "/sparql"));
 
-            Assert.Throws<RdfException>(() =>
-            {
-                object r = endpoint.Query(testQuery);
-            });
+            // As local SPARQL query parsing is no longer supposed, the server will receive the query (and in this case send back a response)
+            // endpoint.SkipLocalParsing = true;
 
-            endpoint.SkipLocalParsing = true;
-
-            object results = endpoint.Query(testQuery);
+            var results = endpoint.Query(testQuery);
             results.Should().BeOfType<SparqlResultSet>().Which.Results.Should().NotBeEmpty();
             //TestTools.ShowResults(results);
         }

@@ -44,11 +44,9 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public void SparqlServiceUsingDBPedia()
+        public void SparqlService()
         {
-            _serverFixture.RegisterSelectQueryGetHandler(@"SELECT * WHERE 
-{ ?s ?p ?o . }
-LIMIT 10");
+            _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE \r\n{ ?s ?p ?o . }\r\nLIMIT 10 ");
             var query = $"SELECT * WHERE {{ SERVICE <{_serverFixture.Server.Urls[0] + "/sparql"}> {{ ?s ?p ?o }} }} LIMIT 10";
             var parser = new SparqlQueryParser();
             var q = parser.ParseFromString(query);
@@ -61,7 +59,7 @@ LIMIT 10");
         }
 
         [Fact]
-        public void SparqlServiceUsingDBPediaAndBindings()
+        public void SparqlServiceUsingBindings()
         {
             _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { <http://dbpedia.org/resource/Southampton> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ? type . }");
             _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { <http://dbpedia.org/resource/Ilkeston> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ? type . }");

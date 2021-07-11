@@ -2125,16 +2125,13 @@ namespace VDS.RDF.Query
                 {
                     // Try and get a Result Set from the Service
                     var cts = new CancellationTokenSource();
-                    var queryString = query.ToString();
-                    Task<SparqlResultSet> queryTask = endpoint.QueryWithResultSetAsync(query.ToString(), cts.Token);
                     cts.CancelAfter(TimeSpan.FromMilliseconds(context.RemainingTimeout));
-                    queryTask.Wait(cts.Token);
-
-                    SparqlResultSet results = queryTask.Result;
+                    var task = Task.Run(() => endpoint.QueryWithResultSetAsync(query.ToString(), cts.Token));
+                    task.Wait();
                     context.CheckTimeout();
 
                     // Transform this Result Set back into a Multiset
-                    foreach (ISparqlResult r in results)
+                    foreach (ISparqlResult r in task.Result)
                     {
                         var set = new Set();
                         foreach(var v in r.Variables) { set.Add(v, r[v]);}

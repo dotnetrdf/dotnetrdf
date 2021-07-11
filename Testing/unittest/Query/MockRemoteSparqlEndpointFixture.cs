@@ -8,6 +8,7 @@ using VDS.RDF.Parsing;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
+using WireMock.Util;
 
 namespace VDS.RDF.Query
 {
@@ -70,7 +71,7 @@ namespace VDS.RDF.Query
                     .UsingGet()
                     .WithParam(queryParams =>
                         queryParams.ContainsKey("query") &&
-                        queryParams["query"].Any(q=>SameAsQuery(query)(q))))
+                        queryParams["query"].Any(query.Equals)))
                 .RespondWith(Response.Create()
                     .WithBody(SparqlResultsXml, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
@@ -111,7 +112,7 @@ namespace VDS.RDF.Query
         }
 
         public Predicate<string> SameAsQuery(string expectedQuery) =>
-            actualQuery => actualQuery == new SparqlQueryParser().ParseFromString(expectedQuery).ToString();
+            actualQuery => new SparqlQueryParser().ParseFromString(actualQuery).ToString().Equals(new SparqlQueryParser().ParseFromString(expectedQuery).ToString());
 
 
         protected void RegisterConstructQueryGetHandler()
@@ -133,7 +134,7 @@ namespace VDS.RDF.Query
             Server.Given(Request.Create()
                     .WithPath("/sparql")
                     .UsingPost()
-                    .WithBody(x => x != null && SameAsQuery(ConstructQuery)(x)))
+                    .WithBody(x => x != null && SameAsQuery(ConstructQuery)(HttpUtility.ParseQueryString(x).Get("query"))))
                 .RespondWith(Response.Create()
                     .WithBody(ConstructResults, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", "application/n-triples")
@@ -145,7 +146,7 @@ namespace VDS.RDF.Query
             Server.Given(Request.Create()
                     .WithPath("/sparql")
                     .UsingPost()
-                    .WithBody(x => x != null && SameAsQuery(SelectQuery)(x)))
+                    .WithBody(x => x != null && SameAsQuery(SelectQuery)(HttpUtility.ParseQueryString(x).Get("query"))))
                 .RespondWith(Response.Create()
                     .WithBody(SparqlResultsXml, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])

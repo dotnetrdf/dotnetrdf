@@ -56,7 +56,7 @@ namespace VDS.RDF.Query
         public void ItDefaultsToGetForShortQueries()
         {
             var endpoint = GetQueryEndpoint();
-            var results = endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}");
+            var results = endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o . }");
             results.Should().NotBeNull().And.HaveCount(1);
             var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
@@ -81,14 +81,12 @@ namespace VDS.RDF.Query
         [Fact]
         public void ItAllowsLongQueriesToBeForcedToUseGet()
         {
+            var queryString = "SELECT * WHERE {?s ?p ?o}" + new string('#', 2048);
+            _fixture.RegisterSelectQueryGetHandler(queryString);
             var endpoint = GetQueryEndpoint();
             endpoint.HttpMode = "GET";
 
-            var input = new StringBuilder();
-            input.AppendLine("SELECT * WHERE {?s ?p ?o}");
-            input.AppendLine(new string('#', 2048));
-
-            var results = endpoint.QueryWithResultSet(input.ToString());
+            var results = endpoint.QueryWithResultSet(queryString);
             results.Should().NotBeNull().And.HaveCount(1);
             var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
@@ -98,14 +96,12 @@ namespace VDS.RDF.Query
         [Fact]
         public void ItAllowsNonAsciiCharactersToBeForcedToUseGet()
         {
-            _fixture.RegisterSelectQueryGetHandler("SELECT * WHERE {?s ?p \"\u6E0B\u8c37\u99c5\"}");
+            var queryString = "SELECT * WHERE {?s ?p \"\u6E0B\u8c37\u99c5\"}";
+            _fixture.RegisterSelectQueryGetHandler(queryString);
             var endpoint = GetQueryEndpoint();
             endpoint.HttpMode = "GET";
 
-            var input = new StringBuilder();
-            input.AppendLine("SELECT * WHERE {?s ?p \"\u6E0B\u8c37\u99c5\"}");
-
-            var results = endpoint.QueryWithResultSet(input.ToString());
+            var results = endpoint.QueryWithResultSet(queryString);
             results.Should().NotBeNull().And.HaveCount(1);
             var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
@@ -130,7 +126,7 @@ namespace VDS.RDF.Query
             resultsHandler.Setup(x => x.HandleVariable(It.IsAny<string>())).Returns(true);
 
             var endpoint = GetQueryEndpoint();
-            endpoint.QueryWithResultSet(resultsHandler.Object, "SELECT * WHERE {?s ?p ?o}");
+            endpoint.QueryWithResultSet(resultsHandler.Object, "SELECT * WHERE { ?s ?p ?o . }");
 
             resultsHandler.Verify(x => x.StartResults());
             resultsHandler.Verify(x => x.HandleVariable("s"), Times.Exactly(1));
