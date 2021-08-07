@@ -81,9 +81,6 @@ namespace VDS.RDF.Query
 
             SparqlQuery query = _queryParser.ParseFromFile("resources\\sparql\\protocol\\update_dataset_default_graphs.rq");
 
-            ISparqlAlgebra algebra = query.ToAlgebra();
-            Console.WriteLine(algebra.ToString());
-
             var results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.Equal(SparqlResultsType.Boolean, results.ResultsType);
