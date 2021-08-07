@@ -117,6 +117,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 }
                 OptionsExpression = options;
             }
+            else
+            {
+                FixedOptions = true;
+            }
         }
 
         /// <summary>
