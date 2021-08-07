@@ -55,8 +55,8 @@ namespace VDS.RDF.Query
         [Fact]
         public void ItDefaultsToGetForShortQueries()
         {
-            var endpoint = GetQueryEndpoint();
-            var results = endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o . }");
+            SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+            SparqlResultSet results = endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o . }");
             results.Should().NotBeNull().And.HaveCount(1);
             var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
@@ -70,8 +70,8 @@ namespace VDS.RDF.Query
             input.AppendLine("SELECT * WHERE {?s ?p ?o}");
             input.AppendLine(new string('#', 2048));
 
-            var endpoint = GetQueryEndpoint();
-            var results = endpoint.QueryWithResultSet(input.ToString());
+            SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
+            SparqlResultSet results = endpoint.QueryWithResultSet(input.ToString());
             results.Should().HaveCount(1);
             var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
@@ -83,10 +83,10 @@ namespace VDS.RDF.Query
         {
             var queryString = "SELECT * WHERE {?s ?p ?o}" + new string('#', 2048);
             _fixture.RegisterSelectQueryGetHandler(queryString);
-            var endpoint = GetQueryEndpoint();
+            SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             endpoint.HttpMode = "GET";
 
-            var results = endpoint.QueryWithResultSet(queryString);
+            SparqlResultSet results = endpoint.QueryWithResultSet(queryString);
             results.Should().NotBeNull().And.HaveCount(1);
             var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
@@ -98,10 +98,10 @@ namespace VDS.RDF.Query
         {
             var queryString = "SELECT * WHERE {?s ?p \"\u6E0B\u8c37\u99c5\"}";
             _fixture.RegisterSelectQueryGetHandler(queryString);
-            var endpoint = GetQueryEndpoint();
+            SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             endpoint.HttpMode = "GET";
 
-            var results = endpoint.QueryWithResultSet(queryString);
+            SparqlResultSet results = endpoint.QueryWithResultSet(queryString);
             results.Should().NotBeNull().And.HaveCount(1);
             var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void ItInvokesAnIRdfHandler()
         {
-            var endpoint = GetQueryEndpoint();
+            SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             var handler= new CountHandler();
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}");
             handler.Count.Should().Be(1);
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query
             resultsHandler.Setup(x => x.HandleResult(It.IsAny<SparqlResult>())).Returns(true);
             resultsHandler.Setup(x => x.HandleVariable(It.IsAny<string>())).Returns(true);
 
-            var endpoint = GetQueryEndpoint();
+            SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             endpoint.QueryWithResultSet(resultsHandler.Object, "SELECT * WHERE { ?s ?p ?o . }");
 
             resultsHandler.Verify(x => x.StartResults());
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             var signal = new ManualResetEvent(false);
             var resultsCount = -1;
-            endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}", (r, s) =>
+            endpoint.QueryWithResultSet("SELECT * WHERE {?s ?p ?o}", (r, _) =>
             {
                 resultsCount = r.Count;
                 signal.Set();
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             var signal = new ManualResetEvent(false);
             var resultsCount = -1;
-            endpoint.QueryWithResultGraph(_fixture.ConstructQuery, (r, s) =>
+            endpoint.QueryWithResultGraph(_fixture.ConstructQuery, (r, _) =>
             {
                 if (r != null) resultsCount = r.Triples.Count;
                 signal.Set();
