@@ -153,6 +153,7 @@ namespace VDS.RDF.Query
             // REQ: Optimise the algebra here
             ISparqlAlgebra existsClause = exists.Pattern.ToAlgebra();
             BaseMultiset result = existsClause.Accept(_algebraProcessor, context);
+            cacheEntry.ResultNullOrEmpty = result.IsEmpty;
 
             // This is the new algorithm which is also correct but is O(3n) so much faster and scalable
             // Downside is that it does require more memory than the old algorithm
