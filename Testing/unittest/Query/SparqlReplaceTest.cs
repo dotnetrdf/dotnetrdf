@@ -73,12 +73,7 @@ HAVING (COUNT(?p) = 1)
             Test(ReplaceHavingWorkaroundQuery);
         }
 
-        private static void Test(string query)
-        {
-            Test(query, "2");
-        }
-
-        private static void Test(string query, string literal)
+        private static void Test(string query, string literal = "2")
 
         {
             IGraph graph = new Graph();
