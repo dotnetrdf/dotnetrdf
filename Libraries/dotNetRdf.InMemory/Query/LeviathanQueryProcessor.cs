@@ -206,7 +206,7 @@ namespace VDS.RDF.Query
                     try
                     {
                         context.StartExecution(_options.QueryExecutionTimeout);
-                        ISparqlAlgebra algebra = query.ToAlgebra(_options.AlgebraOptimisation);
+                        ISparqlAlgebra algebra = query.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
                         result = context.Evaluate(algebra);
 
                         context.EndExecution();
@@ -2393,7 +2393,7 @@ namespace VDS.RDF.Query
                     }
                 }
 
-                ISparqlAlgebra query = subquery.Query.ToAlgebra();
+                ISparqlAlgebra query = subquery.Query.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
                 try
                 {
                     // Evaluate the Subquery
@@ -3317,7 +3317,7 @@ namespace VDS.RDF.Query
                     }
                 }
 
-                ISparqlAlgebra query = subQueryPattern.SubQuery.ToAlgebra();
+                ISparqlAlgebra query = subQueryPattern.SubQuery.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
                 try
                 {
                     // Evaluate the Subquery

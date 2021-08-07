@@ -24,8 +24,10 @@
 // </copyright>
 */
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using VDS.RDF.Query.Describe;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Utils.Describe;
 
 namespace VDS.RDF.Query
@@ -71,6 +73,11 @@ namespace VDS.RDF.Query
 #pragma warning disable CS0618 // Type or member is obsolete
         public bool AlgebraOptimisation { get; set; } = Options.AlgebraOptimisation; // = true;
 #pragma warning restore CS0618 // Type or member is obsolete
+
+        /// <summary>
+        /// Gets/Sets the optimisers to apply if <see cref="AlgebraOptimisation"/> is enabled.
+        /// </summary>
+        public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers { get; set; } = LeviathanOptimiser.AlgebraOptimisers;
 
         /// <summary>
         /// Gets/Sets whether to use strict operators.
