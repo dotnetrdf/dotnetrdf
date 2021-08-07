@@ -822,18 +822,16 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra(bool optimise = true)
         {
-            // Depending on how the query gets built we may not have had graph pattern optimization applied
-            // which we should do here if query optimization is enabled
-            //if (!IsOptimised && optimiseQuery)
-            //{
-            //    Optimise();
-            //}
+            return ToAlgebra(optimise, SparqlOptimiser.AlgebraOptimisers);
+        }
+
+        public ISparqlAlgebra ToAlgebra(bool optimiseSpecial, IEnumerable<IAlgebraOptimiser> optimisers) {
 
             // Firstly Transform the Root Graph Pattern to SPARQL Algebra
             ISparqlAlgebra algebra;
             if (RootGraphPattern != null)
             {
-                if (optimise)
+                if (optimiseSpecial)
                 {
                     // If using Algebra Optimisation may use a special algebra in some cases
                     switch (SpecialType)
@@ -874,9 +872,9 @@ namespace VDS.RDF.Query
             {
                 case SparqlQueryType.Ask:
                     // Apply Algebra Optimisation is enabled
-                    if (optimise)
+                    if (optimisers != null)
                     {
-                        algebra = ApplyAlgebraOptimisations(algebra);
+                        algebra = ApplyAlgebraOptimisations(algebra, optimisers);
                     }
                     return new Ask(algebra);
 
@@ -953,9 +951,9 @@ namespace VDS.RDF.Query
                     }
 
                     // Apply Algebra Optimisation if enabled
-                    if (optimise)
+                    if (optimisers != null)
                     {
-                        algebra = ApplyAlgebraOptimisations(algebra);
+                        algebra = ApplyAlgebraOptimisations(algebra, optimisers);
                     }
 
                     return algebra;
@@ -970,7 +968,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="algebra">Query Algebra.</param>
         /// <returns>The Query Algebra which may have been transformed to a more optimal form.</returns>
-        private ISparqlAlgebra ApplyAlgebraOptimisations(ISparqlAlgebra algebra)
+        private ISparqlAlgebra ApplyAlgebraOptimisations(ISparqlAlgebra algebra, IEnumerable<IAlgebraOptimiser> optimisers)
         {
             try
             {
@@ -987,7 +985,7 @@ namespace VDS.RDF.Query
                     }
                 }
                 // Apply Global Optimisers
-                foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.Where(o => o.IsApplicable(this)))
+                foreach (IAlgebraOptimiser opt in optimisers.Where(o => o.IsApplicable(this)))
                 {
                     try
                     {
