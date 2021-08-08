@@ -9,7 +9,7 @@ namespace VDS.RDF
         [Fact]
         public void WhenInterningEnabledACachedValueIsReturned()
         {
-            var factory = new CachingUriFactory();
+            var factory = new CachingUriFactory(null);
             Uri uri1 = factory.Create("http://example.org/foo");
             Uri uri2 = factory.Create("http://example.org/foo");
             Uri uri3 = factory.Create("http://example.org/bar");
@@ -22,7 +22,7 @@ namespace VDS.RDF
         [Fact]
         public void WhenInterningDisabledNewValueIsReturned()
         {
-            var factory = new CachingUriFactory {InternUris = false};
+            var factory = new CachingUriFactory(null) {InternUris = false};
             Uri uri1 = factory.Create("http://example.org/foo");
             Uri uri2 = factory.Create("http://example.org/foo");
             Uri uri3 = factory.Create("http://example.org/bar");
@@ -36,7 +36,7 @@ namespace VDS.RDF
         public void WhenFactoryIsClearedNewValueIsReturned()
         {
             // Interning is enabled
-            var factory = new CachingUriFactory();
+            var factory = new CachingUriFactory(null);
             Uri uri1 = factory.Create("http://example.org/foo");
             Uri uri3 = factory.Create("http://example.org/bar");
             factory.Clear();
@@ -100,7 +100,7 @@ namespace VDS.RDF
         [Fact]
         public void InternedUriIsNotAccessibleToTheParent()
         {
-            var factory1 = new CachingUriFactory();
+            var factory1 = new CachingUriFactory(null);
             var factory2 = new CachingUriFactory(factory1);
 
             Uri uri1 = factory2.Create("http://example.org/foo");
