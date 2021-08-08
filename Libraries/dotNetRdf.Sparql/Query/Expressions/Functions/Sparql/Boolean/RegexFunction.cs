@@ -38,7 +38,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
     public class RegexFunction
         : ISparqlExpression
     {
-        private string _pattern = null;
         private RegexOptions _options = RegexOptions.None;
 
         // private bool _useInStr = false;
@@ -78,7 +77,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                         // It's a Valid Pattern
                         FixedPattern = true;
                         // this._useInStr = p.ToCharArray().All(c => Char.IsLetterOrDigit(c) || Char.IsWhiteSpace(c));
-                        _pattern = p;
+                        Pattern = p;
                     }
                     catch
                     {
@@ -95,12 +94,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 {
                     _options = GetOptions(constantOptions.Node, false);
                     FixedOptions = true;
-                    if (FixedPattern) CompiledRegex = new Regex(_pattern, _options);
+                    if (FixedPattern) CompiledRegex = new Regex(Pattern, _options);
                 }
             }
             else
             {
-                if (FixedPattern) CompiledRegex = new Regex(_pattern);
+                if (FixedPattern) CompiledRegex = new Regex(Pattern);
             }
         }
 
@@ -121,6 +120,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// True if <see cref="PatternExpression"/> is a constant.
         /// </summary>
         public bool FixedPattern { get; } = false;
+
+        /// <summary>
+        /// Get the pattern part of the regular expression if <see cref="FixedPattern"/> is true.
+        /// </summary>
+        public string Pattern { get; } = null;
+
         /// <summary>
         /// True if <see cref="OptionsExpression"/> is a constant.
         /// </summary>
@@ -206,7 +211,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             if (FixedPattern)
             {
                 output.Append('"');
-                output.Append(_pattern);
+                output.Append(Pattern);
                 output.Append('"');
             }
             else

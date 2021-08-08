@@ -1090,6 +1090,10 @@ namespace VDS.RDF.Query
                     throw new RdfQueryException("Not a valid Pattern Expression or the fixed Pattern String was invalid");
                 }
             }
+            else
+            {
+                pattern = regex.Pattern;
+            }
 
             // Execute the Regular Expression
             IValuedNode textNode = regex.TextExpression.Accept(this, context, binding);
