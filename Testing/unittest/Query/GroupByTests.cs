@@ -29,8 +29,6 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
@@ -65,7 +63,7 @@ namespace VDS.RDF.Query
             var g = new QueryableGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            object results = g.ExecuteQuery(q);
+            var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet rset)
             {
                 Assert.True(rset.All(r => r.HasValue("x") && !r.HasValue("s")), "All Results should have a ?x variable and no ?s variable");
@@ -86,10 +84,10 @@ namespace VDS.RDF.Query
             var g = new QueryableGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            object results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet rset)
+            var results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                Assert.True(rset.All(r => r.HasValue("x") && !r.HasValue("s") && r.HasValue("predicates")), "All Results should have a ?x and ?predicates variables and no ?s variable");
+                Assert.True(resultSet.All(r => r.HasValue("x") && !r.HasValue("s") && r.HasValue("predicates")), "All Results should have a ?x and ?predicates variables and no ?s variable");
             }
             else
             {
@@ -107,10 +105,10 @@ namespace VDS.RDF.Query
             var g = new QueryableGraph();
             FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-            object results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet rset)
+            var results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("sum")), "All Results should have a ?s and a ?sum variable");
+                Assert.True(resultSet.All(r => r.HasValue("s") && r.HasValue("sum")), "All Results should have a ?s and a ?sum variable");
             }
             else
             {
@@ -127,10 +125,10 @@ namespace VDS.RDF.Query
 
             var g = new QueryableGraph();
             FileLoader.Load(g, Path.Combine("resources", "rdfserver", "southampton.rdf"));
-            object results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet rset)
+            var results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                Assert.True(rset.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
+                Assert.True(resultSet.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
             }
             else
             {
@@ -147,10 +145,10 @@ namespace VDS.RDF.Query
 
             var g = new QueryableGraph();
             FileLoader.Load(g, Path.Combine("resources", "rdfserver", "southampton.rdf"));
-            object results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet rset)
+            var results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet resultSet)
             {
-                Assert.True(rset.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
+                Assert.True(resultSet.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
             }
             else
             {
@@ -196,8 +194,8 @@ WHERE {
 } GROUP BY ?x";
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new TripleStore());
-            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var results = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
             Assert.True(results.IsEmpty, "Results should be empty");
         }
@@ -436,7 +434,7 @@ WHERE
             Assert.Equal(4, results.Count);
             Assert.Equal(3, results.Variables.Count());
 
-            foreach (SparqlResult r in results)
+            foreach (ISparqlResult r in results)
             {
                 if (r.HasBoundValue("x"))
                 {
@@ -489,7 +487,7 @@ WHERE
             Assert.Equal(4, results.Count);
             Assert.Equal(4, results.Variables.Count());
 
-            foreach (SparqlResult r in results)
+            foreach (ISparqlResult r in results)
             {
                 var cxVal = r["cx"].AsValuedNode().AsInteger();
                 if (cxVal == -1) Assert.Equal(-2, r["div"].AsValuedNode().AsInteger());
