@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Algebra
     /// The evaluation of this operator simply registers the search provider with the Evaluation Context such that any <see cref="FullTextMatchPropertyFunction"/> instances are honoured.
     /// </remarks>
     public class FullTextQuery
-        : IUnaryOperator
+        : IUnaryOperator, ILeviathanAlgebraExtension
     {
         private readonly IFullTextSearchProvider _provider;
 
