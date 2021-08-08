@@ -1,31 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>dotNetRDF.Query.FullText provides Full Text SPARQL support as a plugin for the dotNetRDF Leviathan SPARQL Engine using Lucene.Net</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
     <AssemblyTitle>dotNetRDF.Query.FullText</AssemblyTitle>
+    <AssemblyName>dotNetRDF.Query.FullText</AssemblyName>
+    <Description>Provides Full Text SPARQL support as a plugin for the dotNetRDF Leviathan SPARQL Engine using Lucene.Net</Description>
     <VersionPrefix>$(Version)</VersionPrefix>
-    <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
     <TargetFrameworks>net472</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>dotNetRDF.Query.FullText</AssemblyName>
     <PackageId>dotNetRDF.Query.FullText</PackageId>
     <PackageTags>RDF;Semantic;Web;SPARQL;Query;Full;Text;Lucene</PackageTags>
-    <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>
-    <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
-    <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -41,6 +24,7 @@
     <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
     <ProjectReference Include="..\dotNetRdf.Sparql\dotNetRdf.Sparql.csproj" />
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+    <InternalsVisibleTo Include="dotNetRdf.Test" />
   </ItemGroup>
 
   <ItemGroup>

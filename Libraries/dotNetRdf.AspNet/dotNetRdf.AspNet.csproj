@@ -1,18 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Provides a framework for building RDF-powered web applications and web APIs.</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
+    <AssemblyName>dotNetRdf.AspNet</AssemblyName>
+    <AssemblyTitle>dotNetRDF ASP.NET Support</AssemblyTitle>
+    <Description>Provides a framework for building RDF-powered ASP.NET web applications and web APIs.</Description>
+    <PackageId>dotNetRdf.AspNet</PackageId>
+    <PackageTags>RDF;Semantic;Web;SPARQL;Web API</PackageTags>
     <TargetFramework>net472</TargetFramework>
-    <AssemblyName>dotNetRDF.Web</AssemblyName>
-    <Authors>RobVesse;tpluscode;kal_ahmed;dotnetrdf</Authors>
-    <PackageId>dotNetRDF.Web</PackageId>
-    <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3;Web API</PackageTags>
-    <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
-    <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
     <RootNamespace>VDS.RDF</RootNamespace>
   </PropertyGroup>
 

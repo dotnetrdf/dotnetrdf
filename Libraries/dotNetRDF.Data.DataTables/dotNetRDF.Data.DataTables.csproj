@@ -1,33 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <AssemblyName>dotNetRdf.Data.DataTables</AssemblyName>
+    <AssemblyTitle>dotNetRdf DataTables</AssemblyTitle>
     <Description>Package which allow integrating dotNetRDF with System.Data.DataTable</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
-    <AssemblyTitle>dotNetRDF.Data.DataTables</AssemblyTitle>
-    <VersionPrefix>$(Version)</VersionPrefix>
-    <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>dotNetRDF.Data.DataTables</AssemblyName>
     <PackageId>dotNetRDF.Data.DataTables</PackageId>
-    <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3</PackageTags>
-    <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>
-    <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
-    <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>VDS.RDF.Data.DataTables</RootNamespace>
+    <VersionPrefix>$(Version)</VersionPrefix>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>

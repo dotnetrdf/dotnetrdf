@@ -3,8 +3,7 @@
   <PropertyGroup>
     <AssemblyTitle>dotNetRDF.Test</AssemblyTitle>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-    <AssemblyName>dotNetRDF.Test</AssemblyName>
-    <PackageId>unittest</PackageId>
+    <AssemblyName>dotNetRdf.Test</AssemblyName>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -29,6 +28,7 @@
     <ProjectReference Include="..\..\Libraries\dotNetRdf.HtmlSchema\dotNetRdf.HtmlSchema.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRdf.Inferencing\dotNetRdf.Inferencing.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.FullText\dotNetRdf.Query.FullText.csproj"/>
     <ProjectReference Include="..\dotNetRdf.TestSupport\dotNetRdf.TestSupport.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>

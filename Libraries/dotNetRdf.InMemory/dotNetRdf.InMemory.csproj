@@ -8,10 +8,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\dotNetRdf.Sparql\dotNetRdf.Sparql.csproj" />
+    <InternalsVisibleTo Include="dotNetRdf.Test"/>
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

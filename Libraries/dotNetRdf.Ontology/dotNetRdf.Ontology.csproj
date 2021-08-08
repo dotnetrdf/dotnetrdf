@@ -1,19 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
-    <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
-    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <AssemblyName>dotNetRdf.Ontology</AssemblyName>
+    <AssemblyTitle>dotNetRDF Ontology API</AssemblyTitle>
+    <Description>Provides a convenience API for creating RDF graphs that contain RDF Schema/Ontology data.</Description>
     <PackageId>dotNetRdf.Ontology</PackageId>
-    <RootNamespace>VDS.RDF</RootNamespace>
-    <PackageTags>RDF;Ontology;OWL</PackageTags>
-    <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>
-    <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
-    <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>

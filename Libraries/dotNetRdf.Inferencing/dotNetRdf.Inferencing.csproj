@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <AssemblyName>dotNetRdf.Inferencing</AssemblyName>
+    <AssemblyTitle>dotNetRDF Inferencing Support</AssemblyTitle>
+    <Description>Adds support for basic inferencing from an RDF Schema/Ontology</Description>
+    <PackageId>dotNetRdf.Inferencing</PackageId>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <RootNamespace>VDS.RDF</RootNamespace>
   </PropertyGroup>
