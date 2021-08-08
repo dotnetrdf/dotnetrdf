@@ -1152,7 +1152,7 @@ namespace VDS.RDF.Query
             {
                 var subgroups = new Dictionary<INode, BindingGroup>();
                 var error = new BindingGroup();
-                var nulls = new BindingGroup();
+                var nulls = new BindingGroup(group);
 
                 foreach (var id in group.BindingIDs)
                 {
