@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Skos</AssemblyName>
@@ -13,7 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\rdf_w3c_icon.64.png" Pack="true" PackagePath="\"/>
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
   </ItemGroup>
 

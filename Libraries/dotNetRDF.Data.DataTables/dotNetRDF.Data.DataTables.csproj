@@ -18,8 +18,4 @@
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\rdf_w3c_icon.64.png" Pack="True" PackagePath="\" />
-  </ItemGroup>
-
 </Project>

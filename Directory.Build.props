@@ -8,12 +8,15 @@
   <PropertyGroup>
 	  <!-- Default NuGet Package metadata -->
     <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3</PackageTags>
-    <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>
-    <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\icon.png" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 </Project>

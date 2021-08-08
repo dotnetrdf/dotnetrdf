@@ -34,8 +34,4 @@
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\rdf_w3c_icon.64.png" Pack="True" PackagePath="\" />
-  </ItemGroup>
-
 </Project>
