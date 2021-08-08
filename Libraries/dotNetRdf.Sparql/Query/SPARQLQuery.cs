@@ -261,21 +261,14 @@ namespace VDS.RDF.Query
         public BindingsPattern Bindings { get; internal set; } = null;
 
         /// <summary>
-        /// Gets/Sets the locally scoped Algebra Optimisers that are used to optimise the Query Algebra in addition to (but before) any global optimisers (specified by <see cref="SparqlOptimiser.AlgebraOptimisers">SparqlOptimiser.AlgebraOptimisers</see>) that are applied.
+        /// Gets/Sets the locally scoped Algebra Optimisers that are used to optimise the Query Algebra in addition to (but before) any external (e.g. processor-provided) optimisers.
         /// </summary>
         public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
         {
             get => _optimisers;
             set
             {
-                if (value != null)
-                {
-                    _optimisers = value;
-                }
-                else
-                {
-                    _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
-                }
+                _optimisers = value ?? Enumerable.Empty<IAlgebraOptimiser>();
             }
         }
 
@@ -287,14 +280,7 @@ namespace VDS.RDF.Query
             get => _exprFactories;
             set
             {
-                if (value != null)
-                {
-                    _exprFactories = value;
-                }
-                else
-                {
-                    _exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
-                }
+                _exprFactories = value ?? Enumerable.Empty<ISparqlCustomExpressionFactory>();
             }
         }
 
@@ -306,14 +292,7 @@ namespace VDS.RDF.Query
             get => _propFuncFactories;
             set
             {
-                if (value != null)
-                {
-                    _propFuncFactories = value;
-                }
-                else
-                {
-                    _propFuncFactories = Enumerable.Empty<IPropertyFunctionFactory>();
-                }
+                _propFuncFactories = value ?? Enumerable.Empty<IPropertyFunctionFactory>();
             }
         }
 
@@ -819,19 +798,17 @@ namespace VDS.RDF.Query
         /// Converts the Query into it's SPARQL Algebra representation (as represented in the Leviathan API).
         /// </summary>
         /// <param name="optimise">Boolean flag indicating whether to apply algebra optimisation.</param>
+        /// <param name="optimisers">The external algebra optimisers to apply.</param>
+        /// <remarks>If <paramref name="optimisers"/> is null, only any locally defined optimisation will be applied.</remarks>
         /// <returns></returns>
-        public ISparqlAlgebra ToAlgebra(bool optimise = true)
+        public ISparqlAlgebra ToAlgebra(bool optimise = true, IEnumerable<IAlgebraOptimiser> optimisers = null)
         {
-            return ToAlgebra(optimise, SparqlOptimiser.AlgebraOptimisers);
-        }
-
-        public ISparqlAlgebra ToAlgebra(bool optimiseSpecial, IEnumerable<IAlgebraOptimiser> optimisers) {
-
+            optimisers ??= SparqlOptimiser.AlgebraOptimisers;
             // Firstly Transform the Root Graph Pattern to SPARQL Algebra
             ISparqlAlgebra algebra;
             if (RootGraphPattern != null)
             {
-                if (optimiseSpecial)
+                if (optimise)
                 {
                     // If using Algebra Optimisation may use a special algebra in some cases
                     switch (SpecialType)
@@ -871,8 +848,8 @@ namespace VDS.RDF.Query
             switch (QueryType)
             {
                 case SparqlQueryType.Ask:
-                    // Apply Algebra Optimisation is enabled
-                    if (optimisers != null)
+                    // Apply Algebra Optimisation if enabled
+                    if (optimise)
                     {
                         algebra = ApplyAlgebraOptimisations(algebra, optimisers);
                     }
@@ -951,7 +928,7 @@ namespace VDS.RDF.Query
                     }
 
                     // Apply Algebra Optimisation if enabled
-                    if (optimisers != null)
+                    if (optimise)
                     {
                         algebra = ApplyAlgebraOptimisations(algebra, optimisers);
                     }
@@ -967,6 +944,7 @@ namespace VDS.RDF.Query
         /// Applies Algebra Optimisations to the Query.
         /// </summary>
         /// <param name="algebra">Query Algebra.</param>
+        /// <param name="optimisers">The additional externally provided optimisers to be applied to the algebra after local optimisers have been applied.</param>
         /// <returns>The Query Algebra which may have been transformed to a more optimal form.</returns>
         private ISparqlAlgebra ApplyAlgebraOptimisations(ISparqlAlgebra algebra, IEnumerable<IAlgebraOptimiser> optimisers)
         {

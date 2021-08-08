@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.FullText
             SparqlQuery q = _parser.ParseFromString(query);
             _output.WriteLine(_formatter.Format(q));
 
-            _output.WriteLine("Normal Algebra: " + q.ToAlgebra().ToString());
+            _output.WriteLine("Normal Algebra: " + q.ToAlgebra());
 
             q.AlgebraOptimisers = _optimisers;
 
