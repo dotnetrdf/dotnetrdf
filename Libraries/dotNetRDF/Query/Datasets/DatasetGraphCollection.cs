@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">URI of the Graph to removed.</param>
         [Obsolete("Replaced by Remove(IRefNode)")]
-        protected internal override bool Remove(Uri graphUri)
+        public override bool Remove(Uri graphUri)
         {
             if (Contains(graphUri))
             {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Datasets
         /// <remarks>
         /// The null value is used to reference the Default Graph.
         /// </remarks>
-        protected internal override bool Remove(IRefNode graphName)
+        public override bool Remove(IRefNode graphName)
         {
             if (!_dataset.HasGraph(graphName))
             {
