@@ -153,7 +153,7 @@ namespace VDS.RDF
         }
 
         [Obsolete("Replaced by Remove(IRefNode)")]
-        protected internal override bool Remove(Uri graphUri)
+        public override bool Remove(Uri graphUri)
         {
             if (Contains(graphUri))
             {
@@ -169,7 +169,7 @@ namespace VDS.RDF
         /// <remarks>
         /// The null value is used to reference the Default Graph.
         /// </remarks>
-        protected internal override bool Remove(IRefNode graphName)
+        public override bool Remove(IRefNode graphName)
         {
             return Contains(graphName) && base.Remove(graphName);
         }

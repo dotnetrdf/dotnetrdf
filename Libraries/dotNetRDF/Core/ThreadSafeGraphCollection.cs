@@ -149,7 +149,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to remove.</param>
         [Obsolete]
-        protected internal override bool Remove(Uri graphUri)
+        public override bool Remove(Uri graphUri)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace VDS.RDF
         /// <remarks>
         /// The null value is used to reference the Default Graph.
         /// </remarks>
-        protected internal override bool Remove(IRefNode graphName)
+        public override bool Remove(IRefNode graphName)
         {
             try
             {

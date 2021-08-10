@@ -71,7 +71,7 @@ namespace VDS.RDF
         /// The null URI is used to reference the Default Graph.
         /// </remarks>
         [Obsolete("Replaced by Remove(IRefNode)")]
-        protected abstract internal bool Remove(Uri graphUri);
+        public abstract bool Remove(Uri graphUri);
 
         /// <summary>
         /// Removes a graph from the collection.
@@ -80,7 +80,7 @@ namespace VDS.RDF
         /// <remarks>
         /// The null value is used to reference the Default Graph.
         /// </remarks>
-        protected abstract internal bool Remove(IRefNode graphName);
+        public abstract bool Remove(IRefNode graphName);
 
         /// <summary>
         /// Gets the number of Graphs in the Collection.
