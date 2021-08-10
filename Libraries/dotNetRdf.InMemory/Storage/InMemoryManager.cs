@@ -401,7 +401,13 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
-            this.AsyncQuery(sparqlQuery, callback, state);
+
+            Task.Factory.StartNew(() => Query(sparqlQuery)).ContinueWith(antecedent =>
+                callback(this,
+                    antecedent.IsFaulted
+                        ? new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQuery, sparqlQuery, antecedent.Exception)
+                        : new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQuery, sparqlQuery, antecedent.Result),
+                    state));
         }
 
         /// <summary>
@@ -414,7 +420,14 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
         {
-            this.AsyncQueryHandlers(sparqlQuery, rdfHandler, resultsHandler, callback, state);
+            Task.Factory.StartNew(() => Query(rdfHandler, resultsHandler, sparqlQuery)).ContinueWith(
+                antecedent =>
+                    callback(this,
+                        antecedent.IsFaulted
+                            ? new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery,
+                                rdfHandler, resultsHandler, antecedent.Exception)
+                            : new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery,
+                                rdfHandler, resultsHandler), state));
         }
 
         /// <inheritdoc />
@@ -438,7 +451,12 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback.</param>
         public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
-            this.AsyncUpdate(sparqlUpdates, callback, state);
+            Task.Factory.StartNew(() => Update(sparqlUpdates)).ContinueWith(antecedent =>
+                callback(this,
+                    antecedent.IsFaulted
+                        ? new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdates,
+                            antecedent.Exception)
+                        : new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdates), state));
         }
 
         /// <inheritdoc />
