@@ -67,10 +67,7 @@ namespace VDS.RDF.Query
                 if (results is IGraph g)
                 {
                     DetachEventHandlers(_triples);
-                    foreach (Triple t in g.Triples)
-                    {
-                        _triples.Add(t);
-                    }
+                    _triples = g.Triples.ToTripleCollection();
                     AttachEventHandlers(_triples);
                 }
                 else

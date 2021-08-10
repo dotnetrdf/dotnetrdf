@@ -3668,7 +3668,7 @@ namespace VDS.RDF.Parsing
                 case Token.LITERAL:
                 case Token.LONGLITERAL:
                     // Literals use Node Matches
-                    return new NodeMatchPattern(new NonNormalizedLiteralNode(t.Value));
+                    return new NodeMatchPattern(new LiteralNode(t.Value, false));
 
                 case Token.PLAINLITERAL:
                     // Plain Literals either use an inferred Literal Node Match
@@ -3703,18 +3703,18 @@ namespace VDS.RDF.Parsing
                     {
                         baseUri = (context.Query.BaseUri == null) ? string.Empty : context.Query.BaseUri.AbsoluteUri;
                         u = UriFactory.Create(Tools.ResolveUri(litdt.DataType.Substring(1, litdt.DataType.Length - 2), baseUri));
-                        return new NodeMatchPattern(new NonNormalizedLiteralNode(litdt.Value, u));
+                        return new NodeMatchPattern(new LiteralNode(litdt.Value, u, false));
                     }
                     else
                     {
                         // Resolve the QName                       
-                        return new NodeMatchPattern(new NonNormalizedLiteralNode(litdt.Value, ResolveQName(context, litdt.DataType)));
+                        return new NodeMatchPattern(new LiteralNode(litdt.Value, ResolveQName(context, litdt.DataType), false));
                     }
 
                 case Token.LITERALWITHLANG:
                     // Literal with Lang Spec use Node Matches
                     var litls = (LiteralWithLanguageSpecifierToken)t;
-                    return new NodeMatchPattern(new NonNormalizedLiteralNode(litls.Value, litls.Language));
+                    return new NodeMatchPattern(new LiteralNode(litls.Value, litls.Language, false));
 
                 case Token.BLANKNODEWITHID:
                     // Blanks accept any Blank

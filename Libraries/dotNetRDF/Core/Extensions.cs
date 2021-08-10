@@ -714,7 +714,7 @@ namespace VDS.RDF
         /// <param name="builder">String Builder.</param>
         /// <param name="line">String to append.</param>
         /// <param name="indent">Indent.</param>
-        internal static void AppendIndented(this StringBuilder builder, string line, int indent)
+        public static void AppendIndented(this StringBuilder builder, string line, int indent)
         {
             builder.Append(new string(' ', indent) + line);
         }
@@ -1649,6 +1649,19 @@ namespace VDS.RDF
             if (s == null) throw new ArgumentNullException("s", "Cannot create a Literal Node for a null String");
 
             return factory.CreateLiteralNode(s, factory.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+        }
+
+        /// <summary>
+        /// Creates <see cref="BaseTripleCollection"/> from an enumeration of triples.
+        /// </summary>
+        /// <param name="triples">The triples to add to the collection</param>
+        /// <param name="indexed">True to create an indexed collection, false to create an un-indexed collection.</param>
+        /// <returns></returns>
+        public static BaseTripleCollection ToTripleCollection(this IEnumerable<Triple> triples, bool indexed=true)
+        {
+            BaseTripleCollection collection = indexed ? new TreeIndexedTripleCollection() : new TripleCollection();
+            foreach (Triple t in triples) collection.Add(t);
+            return collection;
         }
     }
 }
