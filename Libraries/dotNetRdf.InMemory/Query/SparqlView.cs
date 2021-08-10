@@ -79,11 +79,7 @@ namespace VDS.RDF.Query
                     // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
                     // This does mean that while the update is occurring the user may be viewing a stale graph
                     DetachEventHandlers(_triples);
-                    var triples = new TreeIndexedTripleCollection(FullTripleIndexing);
-                    foreach (Triple t in g.Triples)
-                    {
-                        triples.Add(t);
-                    }
+                    BaseTripleCollection triples = g.Triples.ToTripleCollection(indexed: FullTripleIndexing);
                     _triples = triples;
                     AttachEventHandlers(_triples);
                 }
@@ -92,7 +88,7 @@ namespace VDS.RDF.Query
                     // Note that we replace the existing triple collection with an entirely new one as otherwise nasty race conditions can happen
                     // This does mean that while the update is occurring the user may be viewing a stale graph
                     DetachEventHandlers(_triples);
-                    _triples = ((SparqlResultSet)results).ToTripleCollection(this);
+                    _triples = ((SparqlResultSet)results).ToTripleCollection(this, "s", "p", "o", FullTripleIndexing);
                     AttachEventHandlers(_triples);
                 }
                 LastError = null;
