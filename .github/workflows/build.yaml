@@ -5,18 +5,13 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     
-    - name: Fetch tags for GitVersion
-      run: git fetch --tags
-
-    - name: Fetch master for GitVersion
-      if: github.ref != 'refs/head/master'
-      run: git branch --create-reflog master origin/master
-      
     - name: GitVersion
       id: gitversion
-      uses: gittools/actions/gitversion/execute@0.9.10
+      uses: gittools/actions/gitversion/execute@v0.9.10
       with:
         useConfigFile: true
       
