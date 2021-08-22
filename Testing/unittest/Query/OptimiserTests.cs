@@ -31,6 +31,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Writing.Formatting;
 using Xunit.Abstractions;
@@ -241,7 +242,7 @@ SELECT * WHERE
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraAskSimple()
+        public void LeviathanOptimiserAlgebraAskSimple()
         {
             var query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 ASK WHERE
@@ -254,13 +255,13 @@ ASK WHERE
 
             _output.WriteLine(_formatter.Format(q));
             
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.True(algebra.Contains("AskBgp("), "Algebra should be optimised to use AskBgp()'s");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraAskUnion()
+        public void LeviathanOptimiserAlgebraAskUnion()
         {
             var query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 ASK WHERE
@@ -274,14 +275,14 @@ ASK WHERE
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.True(algebra.Contains("AskBgp("), "Algebra should be optimised to use AskBgp()'s");
             Assert.True(algebra.Contains("AskUnion("), "Algebra should be optimised to use AskUnion()'s");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraSelectSimple()
+        public void LeviathanOptimiserAlgebraSelectSimple()
         {
             var query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE
@@ -294,13 +295,13 @@ SELECT * WHERE
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.True(algebra.Contains("LazyBgp("), "Algebra should be optimised to use LazyBgp()'s");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraSelectUnion()
+        public void LeviathanOptimiserAlgebraSelectUnion()
         {
             var query = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE
@@ -314,90 +315,90 @@ SELECT * WHERE
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.True(algebra.Contains("LazyBgp("), "Algebra should be optimised to use LazyBgp()'s");
             Assert.True(algebra.Contains("LazyUnion("), "Algebra should be optimised to use LazyUnion()'s");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraImplicitJoinSimple1()
+        public void LeviathanOptimiserAlgebraImplicitJoinSimple1()
         {
             var query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(?x = ?y) }";
             SparqlQuery q = _parser.ParseFromString(query);
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.True(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraImplicitJoinSimple2()
+        public void LeviathanOptimiserAlgebraImplicitJoinSimple2()
         {
             var query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(SAMETERM(?x, ?y)) }";
             SparqlQuery q = _parser.ParseFromString(query);
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.True(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraImplicitJoinSimple3()
+        public void LeviathanOptimiserAlgebraImplicitJoinSimple3()
         {
             var query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(?a = ?b) }";
             SparqlQuery q = _parser.ParseFromString(query);
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
             Assert.True(algebra.Contains("Filter"), "Algebra should be optimised to use Filter");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraImplicitJoinSimple4()
+        public void LeviathanOptimiserAlgebraImplicitJoinSimple4()
         {
             var query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(SAMETERM(?a, ?b)) }";
             SparqlQuery q = _parser.ParseFromString(query);
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.True(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
             Assert.False(algebra.Contains("Filter("), "Algebra should not be optimised to not use Filter");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraImplicitJoinComplex1()
+        public void LeviathanOptimiserAlgebraImplicitJoinComplex1()
         {
             var query = "SELECT * WHERE { ?x a ?type . { SELECT ?y WHERE { ?y a ?type } }. FILTER(?x = ?y) }";
             SparqlQuery q = _parser.ParseFromString(query);
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraImplicitJoinComplex2()
+        public void LeviathanOptimiserAlgebraImplicitJoinComplex2()
         {
             var query = "SELECT * WHERE { ?x a ?type . OPTIONAL { ?y a ?type } . FILTER(?x = ?y) }";
             SparqlQuery q = _parser.ParseFromString(query);
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.True(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
@@ -427,7 +428,7 @@ WHERE
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraFilteredProduct1()
+        public void LeviathanOptimiserAlgebraFilteredProduct1()
         {
             var query = @"SELECT *
 WHERE
@@ -441,14 +442,14 @@ WHERE
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
             Assert.True(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraFilteredProduct2()
+        public void LeviathanOptimiserAlgebraFilteredProduct2()
         {
             var query = @"SELECT *
 WHERE
@@ -462,14 +463,14 @@ WHERE
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
             Assert.True(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraFilteredProduct3()
+        public void LeviathanOptimiserAlgebraFilteredProduct3()
         {
             var query = @"SELECT *
 WHERE
@@ -483,14 +484,14 @@ WHERE
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
             Assert.True(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
 
         [Fact]
-        public void SparqlOptimiserAlgebraFilteredProduct4()
+        public void LeviathanOptimiserAlgebraFilteredProduct4()
         {
             var query = @"SELECT *
 WHERE
@@ -504,7 +505,7 @@ WHERE
 
             _output.WriteLine(_formatter.Format(q));
 
-            var algebra = q.ToAlgebra().ToString();
+            var algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString();
             _output.WriteLine(algebra);
             Assert.False(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
             Assert.True(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");

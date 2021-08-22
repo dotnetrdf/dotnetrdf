@@ -41,6 +41,11 @@ namespace VDS.RDF.Parsing
         : BaseSparqlResultsReader
     {
         /// <summary>
+        /// Namespace Uri for SPARQL Namespace.
+        /// </summary>
+        public const string SparqlNamespace = "http://www.w3.org/2005/sparql-results#";
+
+        /// <summary>
         /// Loads a Result Set from an Input.
         /// </summary>
         /// <param name="results">Result Set to load into.</param>
@@ -190,7 +195,7 @@ namespace VDS.RDF.Parsing
                         context.Input.MoveToNextAttribute();
                         if (context.Input.Name.Equals("xmlns"))
                         {
-                            if (!context.Input.Value.Equals(SparqlSpecsHelper.SparqlNamespace))
+                            if (!context.Input.Value.Equals(SparqlNamespace))
                             {
                                 throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <sparql> element has an incorrect Namespace!");
                             }

@@ -105,8 +105,8 @@ namespace VDS.RDF
         /// <remarks>
         /// The default is SPARQL 1.1 unless you use this property to change it.
         /// </remarks>
-        [Obsolete("This API will be removed in a future release. The syntax mode to use when parsing can now be set as a constructor parameter on the SparqlQueryParser class.")]
-        public static SparqlQuerySyntax QueryDefaultSyntax { get; set; } = SparqlQuerySyntax.Sparql_1_1;
+        // [Obsolete("This API will be removed in a future release. The syntax mode to use when parsing can now be set as a constructor parameter on the SparqlQueryParser class.")]
+        // public static SparqlQuerySyntax QueryDefaultSyntax { get; set; } = SparqlQuerySyntax.Sparql_1_1;
 
         /// <summary>
         /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>.

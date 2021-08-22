@@ -36,7 +36,7 @@ namespace VDS.RDF.Query
     /// Class for representing Sparql Result Sets.
     /// </summary>
     public sealed class SparqlResultSet 
-        : IEnumerable<SparqlResult>, IDisposable, IEquatable<SparqlResultSet>
+        : IEnumerable<ISparqlResult>, IDisposable, IEquatable<SparqlResultSet>
     {
         /// <summary>
         /// Lists of Variables in the Result Set.
@@ -70,7 +70,7 @@ namespace VDS.RDF.Query
         /// Creates a Sparql Result Set for the collection of results.
         /// </summary>
         /// <param name="results">Results.</param>
-        public SparqlResultSet(IEnumerable<SparqlResult> results)
+        public SparqlResultSet(IEnumerable<ISparqlResult> results)
         {
             ResultsType = SparqlResultsType.VariableBindings;
             Results = results.ToList();
@@ -85,6 +85,8 @@ namespace VDS.RDF.Query
         /// Creates a SPARQL Result Set for the Results of a Query with the Leviathan Engine.
         /// </summary>
         /// <param name="context">SPARQL Evaluation Context.</param>
+        // TODO: This method should move into the leviathan engine or the SparqlEvaluationContext
+        /*
         public SparqlResultSet(SparqlEvaluationContext context)
         {
             ResultsType = context.Query.QueryType == SparqlQueryType.Ask ? SparqlResultsType.Boolean : SparqlResultsType.VariableBindings;
@@ -113,6 +115,7 @@ namespace VDS.RDF.Query
                 }
             }
         }
+        */
 
         #region Properties
 
@@ -174,14 +177,14 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the List of Results.
         /// </summary>
-        public List<SparqlResult> Results { get; } = new List<SparqlResult>();
+        public List<ISparqlResult> Results { get; } = new List<ISparqlResult>();
 
         /// <summary>
         /// Index directly into the Results.
         /// </summary>
         /// <param name="index">Index of the Result you wish to retrieve.</param>
         /// <returns></returns>
-        public SparqlResult this[int index] => Results[index];
+        public ISparqlResult this[int index] => Results[index];
 
         /// <summary>
         /// Gets the Variables used in the Result Set.
@@ -223,7 +226,7 @@ namespace VDS.RDF.Query
         /// Adds a Result to the Result Set.
         /// </summary>
         /// <param name="result">Result.</param>
-        internal void AddResult(SparqlResult result)
+        internal void AddResult(ISparqlResult result)
         {
             if (ResultsType == SparqlResultsType.Boolean) throw new RdfException("Cannot add a Variable Binding Result to a Boolean Result Set");
             Results.Add(result);
@@ -249,7 +252,7 @@ namespace VDS.RDF.Query
         /// Gets an Enumerator for the Results List.
         /// </summary>
         /// <returns></returns>
-        public IEnumerator<SparqlResult> GetEnumerator()
+        public IEnumerator<ISparqlResult> GetEnumerator()
         {
             return Results.GetEnumerator();
         }
@@ -290,9 +293,9 @@ namespace VDS.RDF.Query
 
             // All Ground Results from the Result Set must appear in the Other Result Set
             var otherResults = results.OrderByDescending(r => r.Variables.Count()).ToList();
-            var localResults = new List<SparqlResult>();
+            var localResults = new List<ISparqlResult>();
             var grCount = 0;
-            foreach (SparqlResult result in Results.OrderByDescending(r => r.Variables.Count()))
+            foreach (ISparqlResult result in Results.OrderByDescending(r => r.Variables.Count()))
             {
                 if (result.IsGroundResult)
                 {
@@ -322,12 +325,12 @@ namespace VDS.RDF.Query
                 other.AddVariable(var);
             }
 
-            foreach (SparqlResult r in localResults)
+            foreach (ISparqlResult r in localResults)
             {
                 local.AddResult(r);
             }
 
-            foreach (SparqlResult r in otherResults)
+            foreach (ISparqlResult r in otherResults)
             {
                 other.AddResult(r);
             }
@@ -368,7 +371,7 @@ namespace VDS.RDF.Query
         {
             BaseTripleCollection tripleCollection = new TreeIndexedTripleCollection(fullTripleIndex);
 
-            foreach (SparqlResult r in Results)
+            foreach (ISparqlResult r in Results)
             {
                 // Must have values available for all three variables
                 if (r.HasValue(subjVar) && r.HasValue(predVar) && r.HasValue(objVar))

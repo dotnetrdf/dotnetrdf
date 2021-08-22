@@ -39,6 +39,11 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public class SparqlRdfParser : BaseSparqlResultsReader
     {
+        /// <summary>
+        /// Namespace Uri for the RDF serialization of a SPARQL Result Set.
+        /// </summary>
+        public const string SparqlRdfResultsNamespace = "http://www.w3.org/2001/sw/DataAccess/tests/result-set#";
+
         private IRdfReader _parser;
 
         /// <summary>
@@ -198,7 +203,7 @@ namespace VDS.RDF.Parsing
 
                 // Create relevant Nodes
                 context.Graph.NamespaceMap.AddNamespace("rdf", UriFactory.Root.Create(NamespaceMapper.RDF));
-                context.Graph.NamespaceMap.AddNamespace("rs", UriFactory.Root.Create(SparqlSpecsHelper.SparqlRdfResultsNamespace));
+                context.Graph.NamespaceMap.AddNamespace("rs", UriFactory.Root.Create(SparqlRdfResultsNamespace));
                 IUriNode rdfType = context.Graph.CreateUriNode("rdf:type");
                 IUriNode resultSetClass = context.Graph.CreateUriNode("rs:ResultSet");
                 IUriNode resultVariable = context.Graph.CreateUriNode("rs:resultVariable");

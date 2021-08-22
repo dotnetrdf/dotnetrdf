@@ -62,7 +62,7 @@ namespace VDS.RDF.Storage
             manager.SaveGraph(g);
 
             g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
+            g.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl, dotNetRdf.Sparql");
             g.BaseUri = new Uri(TestGraphUri3);
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
@@ -142,7 +142,7 @@ namespace VDS.RDF.Storage
                 Assert.Equal(bExpected, bActual);
 
                 var cExpected = new Graph(nodeFactory.CreateUriNode(new Uri(TestGraphUri3)));
-                cExpected.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
+                cExpected.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl, dotNetRdf.Sparql");
                 cExpected.Retract(cExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 cExpected.BaseUri = new Uri(TestGraphUri3);
                 IGraph cActual = store[cExpected.Name];

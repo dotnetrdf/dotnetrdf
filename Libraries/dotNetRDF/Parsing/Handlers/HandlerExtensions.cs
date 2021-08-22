@@ -155,7 +155,7 @@ namespace VDS.RDF.Parsing.Handlers
                         {
                             if (!handler.HandleVariable(var)) ParserHelper.Stop();
                         }
-                        foreach (SparqlResult r in results)
+                        foreach (ISparqlResult r in results)
                         {
                             if (!handler.HandleResult(r)) ParserHelper.Stop();
                         }

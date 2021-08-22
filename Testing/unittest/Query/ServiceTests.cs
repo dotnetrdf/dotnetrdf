@@ -44,16 +44,14 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public void SparqlServiceUsingDBPedia()
+        public void SparqlService()
         {
-            _serverFixture.RegisterSelectQueryGetHandler(@"SELECT * WHERE 
-{ ?s ?p ?o . }
-LIMIT 10");
+            _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE \r\n{ ?s ?p ?o . }\r\nLIMIT 10 ");
             var query = $"SELECT * WHERE {{ SERVICE <{_serverFixture.Server.Urls[0] + "/sparql"}> {{ ?s ?p ?o }} }} LIMIT 10";
             var parser = new SparqlQueryParser();
             var q = parser.ParseFromString(query);
 
-            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore(), options => options.QueryExecutionTimeout = 5000);
             var results = processor.ProcessQuery(q);
             Assert.IsType<SparqlResultSet>(results);
             var resultSet = results as SparqlResultSet;
@@ -61,7 +59,7 @@ LIMIT 10");
         }
 
         [Fact]
-        public void SparqlServiceUsingDBPediaAndBindings()
+        public void SparqlServiceUsingBindings()
         {
             _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { <http://dbpedia.org/resource/Southampton> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ? type . }");
             _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { <http://dbpedia.org/resource/Ilkeston> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ? type . }");
@@ -69,7 +67,7 @@ LIMIT 10");
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore(), options => options.QueryExecutionTimeout = 5000);
             var results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
@@ -88,7 +86,7 @@ LIMIT 10");
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore(), options => options.QueryExecutionTimeout = 5000);
             Assert.Throws<RdfQueryException>(() => processor.ProcessQuery(q));
         }
 
@@ -100,7 +98,7 @@ LIMIT 10");
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            var processor = new LeviathanQueryProcessor(new TripleStore());
+            var processor = new LeviathanQueryProcessor(new TripleStore(), options=>options.QueryExecutionTimeout = 5000);
             object results = processor.ProcessQuery(q);
             TestTools.ShowResults(results);
         }

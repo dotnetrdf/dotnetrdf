@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace VDS.RDF.Configuration
 {
@@ -79,5 +80,20 @@ namespace VDS.RDF.Configuration
         /// <param name="path">Path.</param>
         /// <returns></returns>
         string ResolvePath(string path);
+    }
+
+    public interface IConfigurationExtension
+    {
+        /// <summary>
+        /// Returns the additional object factories provided by this configuration extension.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IObjectFactory> GetObjectFactories();
+
+        /// <summary>
+        /// Returns the additional auto-configuration actions provided by this configuration extension.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<Action<IGraph>> GetAutoConfigureActions();
     }
 }

@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using Xunit;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
@@ -106,7 +107,8 @@ namespace VDS.RDF.Query
             //Distinct should yield a single result since temporary variables
             //are stripped
             var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
-            BaseMultiset results = distinct.Evaluate(context);
+            var processor = new LeviathanQueryProcessor(new InMemoryDataset());
+            BaseMultiset results = distinct.Accept(processor, context);
             Assert.Equal(1, results.Count);
             Assert.False(results.ContainsVariable("_:b"));
         }
@@ -139,7 +141,8 @@ namespace VDS.RDF.Query
             //Distinct should yield two result and temporary variables should still
             //be present
             var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions());
-            BaseMultiset results = distinct.Evaluate(context);
+            var processor = new LeviathanQueryProcessor(new InMemoryDataset());
+            BaseMultiset results = distinct.Accept(processor, context);
             Assert.Equal(2, results.Count);
             Assert.True(results.ContainsVariable("_:b"));
         }

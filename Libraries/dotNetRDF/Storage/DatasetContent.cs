@@ -40,7 +40,7 @@ namespace VDS.RDF.Storage
         private readonly IStoreWriter _writer;
         public DatasetContent(IGraph graph, string contentType)
         {
-            _store = new TripleStore();
+            _store = new SimpleTripleStore();
             _store.Add(graph);
             _writer = MimeTypesHelper.GetStoreWriter(contentType);
             Headers.ContentType = MediaTypeHeaderValue.Parse(contentType);
@@ -48,7 +48,7 @@ namespace VDS.RDF.Storage
 
         public DatasetContent(IGraph graph, IStoreWriter writer)
         {
-            _store = new TripleStore();
+            _store = new SimpleTripleStore();
             _store.Add(graph);
             _writer = writer;
             var contentType = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetFileExtension(writer))

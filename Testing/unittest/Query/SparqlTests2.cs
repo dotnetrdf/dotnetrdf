@@ -48,46 +48,15 @@ namespace VDS.RDF.Query
             _output = output;
         }
 
-        private ISparqlDataset AsDataset(IInMemoryQueryableStore store)
+        private static ISparqlDataset AsDataset(IInMemoryQueryableStore store)
         {
-            if (store.Graphs.Count == 1)
-            {
-                return new InMemoryDataset(store, store.Graphs.First().Name);
-            }
-            else
-            {
-                return new InMemoryDataset(store);
-            }
-        }
-
-        private IEnumerable<IAlgebraOptimiser> _algebraOptimisers;
-
-        private void UseSpecificOptimiserOnly(IAlgebraOptimiser optimiser)
-        {
-            _algebraOptimisers = SparqlOptimiser.AlgebraOptimisers.ToList();
-            foreach (IAlgebraOptimiser opt in _algebraOptimisers)
-            {
-                SparqlOptimiser.RemoveOptimiser(opt);
-            }
-            SparqlOptimiser.AddOptimiser(optimiser);
-        }
-
-        private void ResetOptimiser()
-        {
-            foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.ToList())
-            {
-                SparqlOptimiser.RemoveOptimiser(opt);
-            }
-            foreach (IAlgebraOptimiser opt in _algebraOptimisers)
-            {
-                SparqlOptimiser.AddOptimiser(opt);
-            }
+            return store.Graphs.Count == 1 ? new InMemoryDataset(store, store.Graphs.First().Name) : new InMemoryDataset(store);
         }
 
         [Fact]
         public void SparqlBind()
         {
-            var query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) }";
+            const string query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) }";
 
             var store = new TripleStore();
             var g = new Graph();
@@ -98,11 +67,10 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -114,122 +82,107 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlBindLazy()
         {
-            try
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
+
+            var query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace +
+                        "> SELECT ?triple WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } LIMIT 1";
+
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            store.Add(g);
+
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
+                "Should have been optimised to use a Lazy BGP");
+
+            var processor = new LeviathanQueryProcessor(AsDataset(store),
+                options => options.AlgebraOptimisers = optimisers);
+            var results = processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet rset)
             {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-
-                var query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } LIMIT 1";
-
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                store.Add(g);
-
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-
-                _output.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
-
-                var processor = new LeviathanQueryProcessor(AsDataset(store));
-                object results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
+                foreach (SparqlResult r in rset)
                 {
-                    var rset = (SparqlResultSet)results;
-                    foreach (SparqlResult r in rset)
-                    {
-                        _output.WriteLine(r.ToString());
-                    }
-                    Assert.True(rset.Count == 1, "Expected exactly 1 results");
-                    Assert.True(rset.All(r => r.HasValue("triple")), "All Results should have had a value for ?triple");
+                    _output.WriteLine(r.ToString());
                 }
-            }
-            finally
-            {
-                ResetOptimiser();
+
+                Assert.True(rset.Count == 1, "Expected exactly 1 results");
+                Assert.True(rset.All(r => r.HasValue("triple")), "All Results should have had a value for ?triple");
             }
         }
 
         [Fact]
         public void SparqlBindLazy2()
         {
-            try
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
+            var query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace +
+                        "> SELECT * WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } LIMIT 10";
+
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            store.Add(g);
+
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
+                "Should have been optimised to use a Lazy BGP");
+
+            var processor = new LeviathanQueryProcessor(AsDataset(store),
+                options => options.AlgebraOptimisers = optimisers);
+            var results = processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet rset)
             {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-
-                var query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } LIMIT 10";
-
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                store.Add(g);
-
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-
-                _output.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
-
-                var processor = new LeviathanQueryProcessor(AsDataset(store));
-                object results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
+                foreach (SparqlResult r in rset)
                 {
-                    var rset = (SparqlResultSet)results;
-                    foreach (SparqlResult r in rset)
-                    {
-                        _output.WriteLine(r.ToString());
-                    }
-                    Assert.True(rset.Count == 10, "Expected exactly 10 results");
-                    Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o") && r.HasValue("triple")), "Expected ?s, ?p, ?o and ?triple values for every result");
+                    _output.WriteLine(r.ToString());
                 }
-            }
-            finally
-            {
-                ResetOptimiser();
+
+                Assert.True(rset.Count == 10, "Expected exactly 10 results");
+                Assert.True(
+                    rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o") && r.HasValue("triple")),
+                    "Expected ?s, ?p, ?o and ?triple values for every result");
             }
         }
 
         [Fact]
         public void SparqlBindLazy3()
         {
-            try
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
+            var query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace +
+                        "> SELECT * WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } LIMIT 10 OFFSET 10";
+
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            store.Add(g);
+
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
+                "Should have been optimised to use a Lazy BGP");
+
+            var processor =
+                new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
+            var results = processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet rset)
             {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-                var query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) } LIMIT 10 OFFSET 10";
-
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                store.Add(g);
-
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-
-                _output.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
-
-                var processor = new LeviathanQueryProcessor(AsDataset(store));
-                object results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
+                foreach (SparqlResult r in rset)
                 {
-                    var rset = (SparqlResultSet)results;
-                    foreach (SparqlResult r in rset)
-                    {
-                        _output.WriteLine(r.ToString());
-                    }
-                    Assert.True(rset.Count == 10, "Expected exactly 10 results");
-                    Assert.True(rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o") && r.HasValue("triple")), "Expected ?s, ?p, ?o and ?triple values for every result");
+                    _output.WriteLine(r.ToString());
                 }
-            }
-            finally
-            {
-                ResetOptimiser();
+
+                Assert.True(rset.Count == 10, "Expected exactly 10 results");
+                Assert.True(
+                    rset.All(r => r.HasValue("s") && r.HasValue("p") && r.HasValue("o") && r.HasValue("triple")),
+                    "Expected ?s, ?p, ?o and ?triple values for every result");
             }
         }
 
@@ -296,24 +249,19 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlBindToExistingVariableLazy()
         {
-            try
+            var query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace +
+                        "> SELECT * WHERE { ?s ?p ?o . BIND(?s AS ?p) } LIMIT 1";
+
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            store.Add(g);
+
+            var parser = new SparqlQueryParser();
+            Assert.Throws<RdfParseException>(() =>
             {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-
-                var query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o . BIND(?s AS ?p) } LIMIT 1";
-
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                store.Add(g);
-
-                var parser = new SparqlQueryParser();
-                Assert.Throws<RdfParseException>(() => { SparqlQuery _ = parser.ParseFromString(query); });
-            }
-            finally
-            {
-                ResetOptimiser();
-            }
+                SparqlQuery _ = parser.ParseFromString(query);
+            });
         }
 
         [Fact]
@@ -456,11 +404,10 @@ WHERE
             SparqlQuery q = parser.ParseFromString(query);
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -664,16 +611,13 @@ WHERE
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            _output.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            _output.WriteLine(string.Empty);
+            Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -695,16 +639,13 @@ WHERE
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            _output.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            _output.WriteLine(string.Empty);
+            Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -726,16 +667,13 @@ WHERE
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            _output.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            _output.WriteLine(string.Empty);
+            Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -757,16 +695,13 @@ WHERE
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            _output.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            _output.WriteLine(string.Empty);
+            Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -788,16 +723,13 @@ WHERE
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            _output.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            _output.WriteLine(string.Empty);
+            Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -819,16 +751,13 @@ WHERE
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            _output.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            _output.WriteLine(string.Empty);
+            Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -850,16 +779,14 @@ WHERE
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            _output.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            _output.WriteLine(string.Empty);
+            ISparqlAlgebra algebra = q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers);
+            Assert.True(algebra.ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
-            var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            ISparqlQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -885,14 +812,12 @@ WHERE
             var timer = new Stopwatch();
             SparqlQuery q = parser.ParseFromString(query);
 
-            _output.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            _output.WriteLine(string.Empty);
+            Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
             ISparqlDataset dataset = AsDataset(store);
             var processor = new LeviathanQueryProcessor(dataset);
             timer.Start();
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             timer.Stop();
             _output.WriteLine("Took " + timer.Elapsed + " to execute when Optimised");
             timer.Reset();
@@ -936,16 +861,13 @@ WHERE
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            _output.WriteLine(q.ToAlgebra().ToString());
-            Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-            _output.WriteLine(string.Empty);
+            Assert.True(q.ToAlgebra(true, LeviathanOptimiser.AlgebraOptimisers).ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
 
             var processor = new LeviathanQueryProcessor(AsDataset(store));
-            object results = processor.ProcessQuery(q);
+            var results = processor.ProcessQuery(q);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
                 foreach (SparqlResult r in rset)
                 {
                     _output.WriteLine(r.ToString());
@@ -957,304 +879,268 @@ WHERE
         [Fact]
         public void SparqlFilterLazy()
         {
-            try
+            IEnumerable<IAlgebraOptimiser> optimisers = new List<IAlgebraOptimiser> { new LazyBgpOptimiser() };
+
+            var query =
+                "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3";
+
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            store.Add(g);
+
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            ISparqlAlgebra algebra = q.ToAlgebra(true, optimisers);
+            Assert.True(algebra.ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+
+            var processor = new LeviathanQueryProcessor(AsDataset(store),
+                options => options.AlgebraOptimisers = optimisers);
+            var results = processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet rset)
             {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-
-                var query = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3";
-
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                store.Add(g);
-
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-
-                _output.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
-
-                var processor = new LeviathanQueryProcessor(AsDataset(store));
-                object results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
+                foreach (SparqlResult r in rset)
                 {
-                    var rset = (SparqlResultSet)results;
-                    foreach (SparqlResult r in rset)
-                    {
-                        _output.WriteLine(r.ToString());
-                    }
-                    Assert.True(rset.Count == 3, "Expected exactly 3 results");
+                    _output.WriteLine(r.ToString());
                 }
-            }
-            finally
-            {
-                ResetOptimiser();
+
+                Assert.True(rset.Count == 3, "Expected exactly 3 results");
             }
         }
 
         [Fact]
         public void SparqlFilterLazy2()
         {
-            try
+            // NOTE: The URI for Car is purposefully wrong in this case so no results should be returned
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
+
+            var query =
+                "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/Vehicles/Car>)) } LIMIT 3";
+
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            store.Add(g);
+
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            _output.WriteLine(q.ToAlgebra().ToString());
+            Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
+                "Should have been optimised to use a Lazy BGP");
+            _output.WriteLine(string.Empty);
+
+            var processor =
+                new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
+            var results = processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet rset)
             {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-                var query = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/Vehicles/Car>)) } LIMIT 3";
-
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                store.Add(g);
-
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-
-                _output.WriteLine("NOTE: The URI for Car is purposefully wrong in this case so no results should be returned");
-                _output.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
-
-                var processor = new LeviathanQueryProcessor(AsDataset(store));
-                object results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
+                foreach (SparqlResult r in rset)
                 {
-                    var rset = (SparqlResultSet)results;
-                    foreach (SparqlResult r in rset)
-                    {
-                        _output.WriteLine(r.ToString());
-                    }
-                    Assert.True(rset.Count == 0, "Expected no results");
+                    _output.WriteLine(r.ToString());
                 }
-            }
-            finally
-            {
-                ResetOptimiser();
+
+                Assert.True(rset.Count == 0, "Expected no results");
             }
         }
 
         [Fact]
         public void SparqlFilterLazy3()
         {
-            try
-            {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
 
-                var query =
-                    "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) . ?s <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
+            var query =
+                "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) . ?s <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
 
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                store.Add(g);
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            store.Add(g);
 
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-                q.Timeout = 0;
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+            q.Timeout = 0;
 
-                _output.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"),
-                    "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
+            Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
+                "Should have been optimised to use a Lazy BGP");
 
-                var processor = new LeviathanQueryProcessor(AsDataset(store),
-                    options => { options.QueryExecutionTimeout = 0; });
-                object results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
+            var processor = new LeviathanQueryProcessor(AsDataset(store),
+                options =>
                 {
-                    var rset = (SparqlResultSet) results;
-                    foreach (SparqlResult r in rset)
-                    {
-                        _output.WriteLine(r.ToString());
-                    }
-
-                    Assert.True(rset.Count == 3, "Expected exactly 3 results");
-                }
-            }
-            finally
+                    options.QueryExecutionTimeout = 0;
+                    options.AlgebraOptimisers = optimisers;
+                });
+            var results = processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet rset)
             {
-                ResetOptimiser();
+                foreach (SparqlResult r in rset)
+                {
+                    _output.WriteLine(r.ToString());
+                }
+
+                Assert.True(rset.Count == 3, "Expected exactly 3 results");
             }
         }
 
         [Fact]
         public void SparqlFilterLazy4()
         {
-            try
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
+
+            var query =
+                "SELECT * WHERE { ?s a <http://example.org/vehicles/Car> ; <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
+
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            store.Add(g);
+
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
+                "Should have been optimised to use a Lazy BGP");
+
+            var processor =
+                new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
+            var results = processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet rset)
             {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-                var query = "SELECT * WHERE { ?s a <http://example.org/vehicles/Car> ; <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
-
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                store.Add(g);
-
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-
-                _output.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
-
-                var processor = new LeviathanQueryProcessor(AsDataset(store));
-                object results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet)
+                foreach (SparqlResult r in rset)
                 {
-                    var rset = (SparqlResultSet)results;
-                    foreach (SparqlResult r in rset)
-                    {
-                        _output.WriteLine(r.ToString());
-                    }
-                    Assert.True(rset.Count == 3, "Expected exactly 3 results");
+                    _output.WriteLine(r.ToString());
                 }
-            }
-            finally
-            {
-                ResetOptimiser();
+
+                Assert.True(rset.Count == 3, "Expected exactly 3 results");
             }
         }
 
         [Fact]
         public void SparqlFilterLazyDBPedia()
         {
-            try
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
+
+            var query = new SparqlParameterizedString();
+            query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
+            query.CommandText =
+                "SELECT * WHERE {?s ?p ?label . FILTER(ISLITERAL(?label) && LANGMATCHES(LANG(?label), \"en\")) } LIMIT 5";
+
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, Path.Combine("resources", "rdfserver", "southampton.rdf"));
+            store.Add(g);
+
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
+                "Should have been optimised to use a Lazy BGP");
+
+            var processor =
+                new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
+            var results = processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet rset)
             {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-
-                var query = new SparqlParameterizedString();
-                query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-                query.CommandText = "SELECT * WHERE {?s ?p ?label . FILTER(ISLITERAL(?label) && LANGMATCHES(LANG(?label), \"en\")) } LIMIT 5";
-
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, Path.Combine("resources", "rdfserver", "southampton.rdf"));
-                store.Add(g);
-
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-
-                _output.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
-
-                var processor = new LeviathanQueryProcessor(AsDataset(store));
-                object results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet rset)
+                foreach (SparqlResult r in rset)
                 {
-                    foreach (SparqlResult r in rset)
-                    {
-                        _output.WriteLine(r.ToString());
-                    }
-                    Assert.True(rset.Count == 5, "Expected exactly 5 results");
+                    _output.WriteLine(r.ToString());
                 }
-            }
-            finally
-            {
-                ResetOptimiser();
+
+                Assert.True(rset.Count == 5, "Expected exactly 5 results");
             }
         }
 
         [Fact]
         public void SparqlLazyWithAndWithoutOffset()
         {
-            try
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
+            var query =
+                "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3";
+            var query2 =
+                "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3 OFFSET 3";
+
+            var store = new TripleStore();
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            store.Add(g);
+
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+            SparqlQuery q2 = parser.ParseFromString(query2);
+
+            Assert.True(q.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
+                "Should have been optimised to use a Lazy BGP");
+
+            Assert.True(q2.ToAlgebra(true, optimisers).ToString().Contains("LazyBgp"),
+                "Should have been optimised to use a Lazy BGP");
+
+            var processor =
+                new LeviathanQueryProcessor(AsDataset(store), options => options.AlgebraOptimisers = optimisers);
+            var results = processor.ProcessQuery(q);
+            Assert.IsAssignableFrom<SparqlResultSet>(results);
+            if (results is SparqlResultSet rset)
             {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
-
-                var query = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3";
-                var query2 = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3 OFFSET 3";
-
-                var store = new TripleStore();
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
-                store.Add(g);
-
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-                SparqlQuery q2 = parser.ParseFromString(query2);
-
-                _output.WriteLine(q.ToAlgebra().ToString());
-                Assert.True(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
-
-                _output.WriteLine(q2.ToAlgebra().ToString());
-                Assert.True(q2.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
-                _output.WriteLine(string.Empty);
-
-                var processor = new LeviathanQueryProcessor(AsDataset(store));
-                object results = processor.ProcessQuery(q);
-                Assert.IsAssignableFrom<SparqlResultSet>(results);
-                if (results is SparqlResultSet rset)
+                foreach (SparqlResult r in rset)
                 {
-                    foreach (SparqlResult r in rset)
+                    _output.WriteLine(r.ToString());
+                }
+
+                Assert.True(rset.Count == 3, "Expected exactly 3 results");
+
+                var results2 = processor.ProcessQuery(q2);
+                Assert.IsAssignableFrom<SparqlResultSet>(results2);
+                if (results2 is SparqlResultSet rset2)
+                {
+                    foreach (SparqlResult r in rset2)
                     {
                         _output.WriteLine(r.ToString());
                     }
-                    Assert.True(rset.Count == 3, "Expected exactly 3 results");
 
-                    object results2 = processor.ProcessQuery(q2);
-                    Assert.IsAssignableFrom<SparqlResultSet>(results2);
-                    if (results2 is SparqlResultSet rset2)
-                    {
-                        foreach (SparqlResult r in rset2)
-                        {
-                            _output.WriteLine(r.ToString());
-                        }
-                        Assert.True(rset2.Count == 1, "Expected exactly 1 results");
-                    }
+                    Assert.True(rset2.Count == 1, "Expected exactly 1 results");
                 }
-            }
-            finally
-            {
-                ResetOptimiser();
             }
         }
 
         [Fact]
         public void SparqlLazyLimitSimple1()
         {
-            try
-            {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
 
-                const string query = @"PREFIX eg:
+            const string query = @"PREFIX eg:
 <http://example.org/vehicles/> PREFIX rdf:
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?car ?speed WHERE
 { ?car rdf:type eg:Car . ?car eg:Speed ?speed } LIMIT 1";
 
-                var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            var g = new Graph();
+            FileLoader.Load(g, "resources\\InferenceTest.ttl");
 
-                var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromString(query);
-                object results = g.ExecuteQuery(q);
-                Assert.True(results is SparqlResultSet, "Expected a SPARQL results set");
-                var rset = results as SparqlResultSet;
-                foreach (SparqlResult r in rset)
-                {
-                    _output.WriteLine(r.ToString());
-                    Assert.Equal(2, r.Count);
-                }
-            }
-            finally
+            var parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+            q.AlgebraOptimisers = optimisers;
+            var processor = new LeviathanQueryProcessor(new InMemoryDataset(g),
+                options => options.AlgebraOptimisers = optimisers);
+            var results = processor.ProcessQuery(q);
+            Assert.True(results is SparqlResultSet, "Expected a SPARQL results set");
+            var rset = results as SparqlResultSet;
+            foreach (SparqlResult r in rset)
             {
-                ResetOptimiser();
+                _output.WriteLine(r.ToString());
+                Assert.Equal(2, r.Count);
             }
         }
 
         [Fact]
         public void SparqlLazyLimitSimple2()
         {
-            try
-            {
-                UseSpecificOptimiserOnly(new LazyBgpOptimiser());
+            var optimisers = new IAlgebraOptimiser[] { new LazyBgpOptimiser() };
 
-                const string query = @"PREFIX eg:
+            const string query = @"PREFIX eg:
 <http://example.org/vehicles/> PREFIX rdf:
 <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?car ?speed WHERE
 { ?car rdf:type eg:Car . ?car eg:Speed ?speed } LIMIT 20";
@@ -1264,7 +1150,9 @@ WHERE
 
                 var parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromString(query);
-                object results = g.ExecuteQuery(q);
+                var processor = new LeviathanQueryProcessor(new InMemoryDataset(g),
+                    options => options.AlgebraOptimisers = optimisers);
+                var results = processor.ProcessQuery(q);
                 Assert.True(results is SparqlResultSet, "Expected a SPARQL results set");
                 var rset = results as SparqlResultSet;
                 foreach (SparqlResult r in rset)
@@ -1272,11 +1160,6 @@ WHERE
                     _output.WriteLine(r.ToString());
                     Assert.Equal(2, r.Count);
                 }
-            }
-            finally
-            {
-                ResetOptimiser();
-            }
         }
 
         [Fact]

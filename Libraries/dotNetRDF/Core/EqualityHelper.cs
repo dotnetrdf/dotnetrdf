@@ -855,7 +855,7 @@ namespace VDS.RDF
 
         private static bool IsNumericType(string datatype)
         {
-            return SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(datatype) != SparqlNumericType.NaN;
+            return NumericTypesHelper.GetNumericTypeFromDataTypeUri(datatype) != SparqlNumericType.NaN;
         }
 
         private static bool IsDateTimeType(string datatype)
@@ -888,7 +888,7 @@ namespace VDS.RDF
 
         private static int CompareNumeric(IValuedNode a, IValuedNode b, string comparisonDataType)
         {
-            switch (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(comparisonDataType))
+            switch (NumericTypesHelper.GetNumericTypeFromDataTypeUri(comparisonDataType))
             {
                 case SparqlNumericType.Decimal:
                     return a.AsDecimal().CompareTo(b.AsDecimal());

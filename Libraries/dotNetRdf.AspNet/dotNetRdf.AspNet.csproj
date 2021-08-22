@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>dotNetRdf.AspNet</AssemblyName>
+    <AssemblyTitle>dotNetRDF ASP.NET Support</AssemblyTitle>
+    <Description>Provides a framework for building RDF-powered ASP.NET web applications and web APIs.</Description>
+    <PackageId>dotNetRdf.AspNet</PackageId>
+    <PackageTags>RDF;Semantic;Web;SPARQL;Web API</PackageTags>
+    <TargetFramework>net472</TargetFramework>
+    <RootNamespace>VDS.RDF</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Update\Protocol\" />
+    <Folder Include="Web\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf.HtmlSchema\dotNetRdf.HtmlSchema.csproj" />
+    <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
+    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+
+</Project>

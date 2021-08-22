@@ -54,8 +54,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="provider">Full Text Search Provider.</param>
         public FullTextOptimiser(IFullTextSearchProvider provider)
         {
-            if (provider == null) throw new ArgumentNullException("Full Text Search Provider cannot be null");
-            _provider = provider;
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider), "Full Text Search Provider cannot be null");
         }
 
         /// <summary>
@@ -102,11 +101,11 @@ namespace VDS.RDF.Query.Optimisation
             context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType)), context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassAlgebraOptimiser)));
             context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType)), context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Query.FullText"));
 
-            if (_provider is IConfigurationSerializable)
+            if (_provider is IConfigurationSerializable serializable)
             {
                 INode searcherObj = context.Graph.CreateBlankNode();
                 context.NextSubject = searcherObj;
-                ((IConfigurationSerializable)_provider).SerializeConfiguration(context);
+                serializable.SerializeConfiguration(context);
                 context.Graph.Assert(optObj, context.Graph.CreateUriNode(context.UriFactory.Create(FullTextHelper.PropertySearcher)), searcherObj);
             }
             else

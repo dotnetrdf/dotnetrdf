@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="result">Result.</param>
         /// <returns></returns>
-        protected override bool HandleResultInternal(SparqlResult result)
+        protected override bool HandleResultInternal(ISparqlResult result)
         {
             _counter++;
             return true;

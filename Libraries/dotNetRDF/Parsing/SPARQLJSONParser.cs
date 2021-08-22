@@ -597,7 +597,7 @@ namespace VDS.RDF.Parsing
         /// <param name="var">Variable Name.</param>
         /// <param name="r">Result Object that is being constructed from the Binding Object.</param>
         /// <param name="headSeen"></param>
-        private void ParseBoundVariable(SparqlJsonParserContext context, string var, SparqlResult r, bool headSeen)
+        private void ParseBoundVariable(SparqlJsonParserContext context, string var, ISparqlResult r, bool headSeen)
         {
             string nodeType, nodeLang, nodeDatatype;
             var nodeValue = nodeType = nodeLang = nodeDatatype = null;

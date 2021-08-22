@@ -52,7 +52,7 @@ namespace VDS.RDF.Storage
     public class ReadWriteSparqlConnector
         : SparqlConnector, IUpdateableStorage
     {
-        private readonly SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly TurtleFormatter _formatter = new ();
 #pragma warning disable 618
         private readonly SparqlRemoteUpdateEndpoint _updateEndpoint;
 #pragma warning restore 618
@@ -341,30 +341,11 @@ namespace VDS.RDF.Storage
         {
             if (UpdateClient != null)
             {
-                if (!_skipLocalParsing)
-                {
-                    var updateParser = new SparqlUpdateParser();
-                    updateParser.ParseFromString(sparqlUpdate);
-                }
                 UpdateClient.UpdateAsync(sparqlUpdate).Wait();
             }
             else
             {
-                // Legacy update through obsolete endpoint class
-                if (!_skipLocalParsing)
-                {
-                    // Parse the update locally to validate it
-                    // This also saves us wasting a HttpWebRequest on a malformed update
-                    var uparser = new SparqlUpdateParser();
-                    uparser.ParseFromString(sparqlUpdate);
-
-                    _updateEndpoint.Update(sparqlUpdate);
-                }
-                else
-                {
-                    // If we're skipping local parsing then we'll need to just make a raw update
-                    _updateEndpoint.Update(sparqlUpdate);
-                }
+                _updateEndpoint.Update(sparqlUpdate);
             }
         }
 

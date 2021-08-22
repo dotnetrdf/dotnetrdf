@@ -3,11 +3,7 @@
   <PropertyGroup>
     <AssemblyTitle>dotNetRDF.Test</AssemblyTitle>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-    <AssemblyName>dotNetRDF.Test</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>unittest</PackageId>
+    <AssemblyName>dotNetRdf.Test</AssemblyName>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -21,7 +17,7 @@
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>VDS.RDF</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.HtmlSchema\dotNetRdf.HtmlSchema.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Inferencing\dotNetRdf.Inferencing.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.FullText\dotNetRdf.Query.FullText.csproj"/>
+    <ProjectReference Include="..\dotNetRdf.TestSupport\dotNetRdf.TestSupport.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
   
@@ -51,7 +51,6 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Query.FullText\dotNetRDF.Query.FullText.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.Virtuoso\dotNetRDF.Data.Virtuoso.csproj" />
-    <ProjectReference Include="..\..\Libraries\dotNetRDF.Web\dotNetRDF.Web.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.DataTables\dotNetRDF.Data.DataTables.csproj" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Data" />

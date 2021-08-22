@@ -166,5 +166,15 @@ namespace VDS.RDF.Query.Algebra
         {
             throw new NotImplementedException();
         }
+
+        public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

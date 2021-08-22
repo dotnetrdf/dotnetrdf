@@ -35,10 +35,11 @@ namespace VDS.RDF.Query.Expressions
     public class SparqlCastTests : BaseTest
     {
         private INodeFactory _graph;
-
+        private LeviathanExpressionProcessor _expressionProcessor;
         public SparqlCastTests(ITestOutputHelper output):base(output)
         {
             _graph = new Graph();
+            _expressionProcessor = new LeviathanExpressionProcessor(new LeviathanQueryOptions(), null);
         }
 
         [Fact]
@@ -52,7 +53,7 @@ namespace VDS.RDF.Query.Expressions
                     var cast = new DecimalCast(new ConstantTerm(3.4m.ToLiteral(_graph)));
 
                     // when
-                    IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
+                    IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
 
                     // then
                     Assert.Equal(3.4m, valuedNode.AsDecimal());
@@ -71,7 +72,7 @@ namespace VDS.RDF.Query.Expressions
                     var cast = new DoubleCast(new ConstantTerm(3.4d.ToLiteral(_graph)));
 
                     // when
-                    IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
+                    IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
 
                     // then
                     Assert.Equal(3.4d, valuedNode.AsDouble());
@@ -90,7 +91,7 @@ namespace VDS.RDF.Query.Expressions
                     var cast = new FloatCast(new ConstantTerm(3.4f.ToLiteral(_graph)));
 
                     // when
-                    IValuedNode valuedNode = cast.Evaluate(new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
+                    IValuedNode valuedNode = cast.Accept(_expressionProcessor, new SparqlEvaluationContext(new SparqlQuery(), new InMemoryDataset(), new LeviathanQueryOptions()), 0);
 
                     // then
                     Assert.Equal(3.4f, valuedNode.AsFloat());

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>dotNetRdf.Skos</AssemblyName>
+    <AssemblyTitle>dotNetRDF SKOS API</AssemblyTitle>
+    <Description>Provides a convience API for working the RDF graphs that contain SKOS Concept Schemes.</Description>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+    <RootNamespace>VDS.RDF.Skos</RootNamespace>
+    <PackageId>dotNetRdf.Skos</PackageId>
+    <LangVersion>latest</LangVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+  </ItemGroup>
+
+</Project>

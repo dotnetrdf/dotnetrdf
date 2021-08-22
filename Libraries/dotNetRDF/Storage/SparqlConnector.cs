@@ -65,10 +65,7 @@ namespace VDS.RDF.Storage
         /// Method for loading graphs.
         /// </summary>
         protected SparqlConnectorLoadMethod _mode = SparqlConnectorLoadMethod.Construct;
-        /// <summary>
-        /// Whether to skip local parsing.
-        /// </summary>
-        protected bool _skipLocalParsing = false;
+
         /// <summary>
         /// Timeout for endpoints.
         /// </summary>
@@ -151,16 +148,18 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If the endpoint you are connecting to provides extensions to SPARQL syntax which are not permitted by the libraries parser then you may wish to enable this option as otherwise you will not be able to execute such queries.
         /// </remarks>
+        [Obsolete("This property is no longer supported as local query parsing is not supported by this implementation. Clients wishing to ensure that only valid SPARQL is sent to a remote server should apply query parsing before invoking this class.")]
         [Description("Determines whether queries are parsed locally before being sent to the remote endpoint.  Should be disabled if the remote endpoint supports non-standard extensions that won't parse locally.")]
         public bool SkipLocalParsing
         {
             get
             {
-                return _skipLocalParsing;
+                return true;
             }
             set
             {
-                _skipLocalParsing = value;
+                if (value != true)
+                    throw new ArgumentException("The SparqlConnector class no longer supports local parsing.");
             }
         }
 
@@ -242,100 +241,29 @@ namespace VDS.RDF.Storage
         
         private void QueryWithQueryClient(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            if (!_skipLocalParsing)
-            {
-                var queryParser = new SparqlQueryParser();
-                SparqlQuery q = queryParser.ParseFromString(sparqlQuery);
-                switch (q.QueryType)
-                {
-                    case SparqlQueryType.Ask:
-                    case SparqlQueryType.Select:
-                    case SparqlQueryType.SelectAll:
-                    case SparqlQueryType.SelectAllDistinct:
-                    case SparqlQueryType.SelectAllReduced:
-                    case SparqlQueryType.SelectDistinct:
-                    case SparqlQueryType.SelectReduced:
-                        // Some kind of Sparql Result Set
-                        QueryClient.QueryWithResultSetAsync(sparqlQuery, resultsHandler).Wait();
-                        break;
-                    case SparqlQueryType.Construct:
-                    case SparqlQueryType.Describe:
-                    case SparqlQueryType.DescribeAll:
-                        // Some kind of Graph
-                        QueryClient.QueryWithResultGraphAsync(sparqlQuery, rdfHandler).Wait();
-                        break;
-
-                    case SparqlQueryType.Unknown:
-                    default:
-                        // Error
-                        throw new RdfQueryException(
-                            "Unknown Query Type was used, unable to determine how to process the response");
-                }
-            }
-            else
-            {
-                QueryClient.QueryAsync(sparqlQuery, rdfHandler, resultsHandler, CancellationToken.None).Wait();
-            }
+            QueryClient.QueryAsync(sparqlQuery, rdfHandler, resultsHandler, CancellationToken.None).Wait();
         }
 
         private void QueryWithRemoteEndpoint(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
-            if (!_skipLocalParsing)
+            // If we're skipping local parsing then we'll need to just make a raw query and process the response
+            using (HttpWebResponse response = _endpoint.QueryRaw(sparqlQuery))
             {
-                // Parse the query locally to validate it and so we can decide what to do
-                // when we receive the Response more easily as we'll know the query type
-                // This also saves us wasting a HttpWebRequest on a malformed query
-                var qparser = new SparqlQueryParser();
-                SparqlQuery q = qparser.ParseFromString(sparqlQuery);
-
-                switch (q.QueryType)
+                try
                 {
-                    case SparqlQueryType.Ask:
-                    case SparqlQueryType.Select:
-                    case SparqlQueryType.SelectAll:
-                    case SparqlQueryType.SelectAllDistinct:
-                    case SparqlQueryType.SelectAllReduced:
-                    case SparqlQueryType.SelectDistinct:
-                    case SparqlQueryType.SelectReduced:
-                        // Some kind of Sparql Result Set
-                        _endpoint.QueryWithResultSet(resultsHandler, sparqlQuery);
-                        break;
-
-                    case SparqlQueryType.Construct:
-                    case SparqlQueryType.Describe:
-                    case SparqlQueryType.DescribeAll:
-                        // Some kind of Graph
-                        _endpoint.QueryWithResultGraph(rdfHandler, sparqlQuery);
-                        break;
-
-                    case SparqlQueryType.Unknown:
-                    default:
-                        // Error
-                        throw new RdfQueryException(
-                            "Unknown Query Type was used, unable to determine how to process the response");
+                    // Is the Content Type referring to a Sparql Result Set format?
+                    ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                    sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
+                    response.Close();
                 }
-            }
-            else
-            {
-                // If we're skipping local parsing then we'll need to just make a raw query and process the response
-                using (HttpWebResponse response = _endpoint.QueryRaw(sparqlQuery))
+                catch (RdfParserSelectionException)
                 {
-                    try
-                    {
-                        // Is the Content Type referring to a Sparql Result Set format?
-                        ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                        sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
-                        response.Close();
-                    }
-                    catch (RdfParserSelectionException)
-                    {
-                        // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+                    // If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
 
-                        // Is the Content Type referring to a RDF format?
-                        IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
-                        rdfParser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
-                        response.Close();
-                    }
+                    // Is the Content Type referring to a RDF format?
+                    IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
+                    rdfParser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
+                    response.Close();
                 }
             }
         }
@@ -643,7 +571,6 @@ namespace VDS.RDF.Storage
 
             // Serialize Load Mode
             context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode(_mode.ToString())));
-            context.Graph.Assert(new Triple(manager, skipParsing, _skipLocalParsing.ToLiteral(context.Graph)));
 
             // Query Endpoint
             if (_endpoint != null)

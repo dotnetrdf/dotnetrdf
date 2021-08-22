@@ -112,7 +112,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public bool AsBoolean()
         {
-            return SparqlSpecsHelper.EffectiveBooleanValue(this);
+            return this.EffectiveBooleanValue();
         }
 
         /// <summary>

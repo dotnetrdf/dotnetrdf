@@ -73,12 +73,7 @@ HAVING (COUNT(?p) = 1)
             Test(ReplaceHavingWorkaroundQuery);
         }
 
-        private static void Test(string query)
-        {
-            Test(query, "2");
-        }
-
-        private static void Test(string query, string literal)
+        private static void Test(string query, string literal = "2")
 
         {
             IGraph graph = new Graph();
@@ -93,7 +88,7 @@ HAVING (COUNT(?p) = 1)
                 TestTools.ShowResults(resultSet);
                 Assert.Equal(1, resultSet.Count);
 
-                SparqlResult result = resultSet[0];
+                ISparqlResult result = resultSet[0];
                 Assert.True(result.HasBoundValue("oo"));
                 Assert.Equal(graph.CreateLiteralNode(literal), result["oo"]);
             }

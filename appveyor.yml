@@ -17,7 +17,7 @@ install:
   - ps: msiexec /i InstallResources\SandcastleHelpFileBuilder.msi /quiet /qn /norestart /log install.log
 
 before_build:
-  - ps: gitversion /l console /output buildserver /updateassemblyinfo
+  - ps: gitversion /l console /output buildserver /updateprojectfiles
   - ps: dotnet restore dotNetRDF.sln
 
 configuration: Release

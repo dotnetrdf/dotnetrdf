@@ -24,11 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF.Configuration;
 using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Configuration
@@ -36,6 +32,12 @@ namespace VDS.RDF.Configuration
 
     public class LoadObjectTests
     {
+        public LoadObjectTests()
+        {
+            ConfigurationLoader.RegisterExtension<SparqlConfigurationLoaderExtension>();
+            ConfigurationLoader.RegisterExtension<InMemoryConfigurationLoaderExtension>();
+        }
+
         [Fact]
         public void ConfigurationLoadObjectPropertyFunctionFactory()
         {

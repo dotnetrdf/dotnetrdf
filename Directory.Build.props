@@ -1,0 +1,22 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Default Assembly metadata -->
+    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
+
+  </PropertyGroup>
+  <PropertyGroup>
+	  <!-- Default NuGet Package metadata -->
+    <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3</PackageTags>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
+    <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\icon.png" Pack="true" PackagePath="/"/>
+  </ItemGroup>
+</Project>

@@ -936,7 +936,7 @@ namespace VDS.RDF.Storage
                                             s.Add(var.Name, LoadNode(temp, r[var.Name]));
                                         }
                                     }
-                                    if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                                    if (!resultsHandler.HandleResult(s.ToSparqlResult())) ParserHelper.Stop();
                                 }
                                 break;
 
@@ -1034,7 +1034,7 @@ namespace VDS.RDF.Storage
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                                 var s = new Set();
                                 s.Add("Result", r.ToLiteral(resultsHandler));
-                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                                if (!resultsHandler.HandleResult(s.ToSparqlResult())) ParserHelper.Stop();
                             }
                             else if (float.TryParse(results.Rows[0][0].ToString(), out var rflt))
                             {
@@ -1044,7 +1044,7 @@ namespace VDS.RDF.Storage
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                                 var s = new Set();
                                 s.Add("Result", rflt.ToLiteral(resultsHandler));
-                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                                if (!resultsHandler.HandleResult(s.ToSparqlResult())) ParserHelper.Stop();
                             }
                             else if (double.TryParse(results.Rows[0][0].ToString(), out var rdbl))
                             {
@@ -1054,7 +1054,7 @@ namespace VDS.RDF.Storage
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                                 var s = new Set();
                                 s.Add("Result", rdbl.ToLiteral(resultsHandler));
-                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                                if (!resultsHandler.HandleResult(s.ToSparqlResult())) ParserHelper.Stop();
                             }
                             else if (decimal.TryParse(results.Rows[0][0].ToString(), out var rdec))
                             {
@@ -1064,7 +1064,7 @@ namespace VDS.RDF.Storage
                                 if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                                 var s = new Set();
                                 s.Add("Result", rdec.ToLiteral(resultsHandler));
-                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                                if (!resultsHandler.HandleResult(s.ToSparqlResult())) ParserHelper.Stop();
                             }
                             else
                             {
@@ -1086,7 +1086,7 @@ namespace VDS.RDF.Storage
                                     var s = new Set();
                                     s.Add(results.Columns[0].ColumnName, LoadNode(resultsHandler, results.Rows[0][0]));
                                     //Nothing was returned here previously - fix submitted by Aleksandr A. Zaripov [zaripov@tpu.ru]
-                                    if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                                    if (!resultsHandler.HandleResult(s.ToSparqlResult())) ParserHelper.Stop();
                                 }
                             }
                         }
@@ -1116,7 +1116,7 @@ namespace VDS.RDF.Storage
                                         s.Add(var, LoadNode(resultsHandler, r[var]));
                                     }
                                 }
-                                if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
+                                if (!resultsHandler.HandleResult(s.ToSparqlResult())) ParserHelper.Stop();
                             }
                         }
                         Close(false);

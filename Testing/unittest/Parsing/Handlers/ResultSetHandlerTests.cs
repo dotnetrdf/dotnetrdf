@@ -308,7 +308,8 @@ namespace VDS.RDF.Parsing.Handlers
         public void ParsingResultsWriteThroughHandlerSparqlXml()
         {
             var g = new Graph();
-            g.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
+            //g.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
+            g.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
             var original = g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
             var sparqlWriter = new SparqlXmlWriter();
             sparqlWriter.Save(original, "test.custom.srx");

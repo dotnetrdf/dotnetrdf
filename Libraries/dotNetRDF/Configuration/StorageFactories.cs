@@ -43,31 +43,12 @@ namespace VDS.RDF.Configuration
     public class StorageFactory
         : IObjectFactory
     {
-        private const string AllegroGraph = "VDS.RDF.Storage.AllegroGraphConnector",
-                             AllegroGraphServer = "VDS.RDF.Storage.Management.AllegroGraphServer",
-                             DatasetFile = "VDS.RDF.Storage.DatasetFileManager",
-                             Dydra = "VDS.RDF.Storage.DydraConnector",
-                             FourStore = "VDS.RDF.Storage.FourStoreConnector",
-                             Fuseki = "VDS.RDF.Storage.FusekiConnector",
-                             InMemory = "VDS.RDF.Storage.InMemoryManager",
-                             ReadOnly = "VDS.RDF.Storage.ReadOnlyConnector",
-                             ReadOnlyQueryable = "VDS.RDF.Storage.QueryableReadOnlyConnector",
-                             ReadWriteSparql = "VDS.RDF.Storage.ReadWriteSparqlConnector",
-                             Sesame = "VDS.RDF.Storage.SesameHttpProtocolConnector",
-                             SesameV5 = "VDS.RDF.Storage.SesameHttpProtocolVersion5Connector",
-                             SesameV6 = "VDS.RDF.Storage.SesameHttpProtocolVersion6Connector",
-                             SesameServer = "VDS.RDF.Storage.Management.SesameServer",
-                             Sparql = "VDS.RDF.Storage.SparqlConnector",
-                             SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
-                             Stardog = "VDS.RDF.Storage.StardogConnector",
-                             StardogV1 = "VDS.RDF.Storage.StardogV1Connector",
-                             StardogV2 = "VDS.RDF.Storage.StardogV2Connector",
-                             StardogV3 = "VDS.RDF.Storage.StardogV3Connector",
-                             StardogServer = "VDS.RDF.Storage.Management.StardogServer",
-                             StardogServerV1 = "VDS.RDF.Storage.Management.StardogV1Server",
-                             StardogServerV2 = "VDS.RDF.Storage.Management.StardogV2Server",
-                             StardogServerV3 = "VDS.RDF.Storage.Management.StardogV3Server"
-                             ;
+        private const string ReadOnly = "VDS.RDF.Storage.ReadOnlyConnector",
+            ReadOnlyQueryable = "VDS.RDF.Storage.QueryableReadOnlyConnector",
+            ReadWriteSparql = "VDS.RDF.Storage.ReadWriteSparqlConnector",
+            Sparql = "VDS.RDF.Storage.SparqlConnector",
+            SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector";
+                             
 
         /// <summary>
         /// Tries to load a Generic IO Manager based on information from the Configuration Graph.
@@ -80,134 +61,27 @@ namespace VDS.RDF.Configuration
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             IStorageProvider storageProvider = null;
-            IStorageServer storageServer = null;
             SparqlConnectorLoadMethod loadMode;
             obj = null;
 
-            string server, user, pwd, store, catalog, loadModeRaw;
+            string server, loadModeRaw;
 
             object temp;
             INode storeObj;
 
             // Create the URI Nodes we're going to use to search for things
             INode propServer = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyServer)),
-                  propDb = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyDatabase)),
-                  propStore = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStore)),
-                  propAsync = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAsync)),
                   propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
             switch (targetType.FullName)
             {
-                case AllegroGraph:
-                    // Get the Server, Catalog and Store
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    catalog = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
-                    store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
-                    if (store == null) return false;
-
-                    // Get User Credentials
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-
-                    if (user != null && pwd != null)
-                    {
-                        storageProvider = new AllegroGraphConnector(server, catalog, store, user, pwd);
-                    }
-                    else
-                    {
-                        storageProvider = new AllegroGraphConnector(server, catalog, store);
-                    }
-                    break;
-
-                case AllegroGraphServer:
-                    // Get the Server, Catalog and User Credentials
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    catalog = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-
-                    if (user != null && pwd != null)
-                    {
-                        storageServer = new AllegroGraphServer(server, catalog, user, pwd);
-                    }
-                    else
-                    {
-                        storageServer = new AllegroGraphServer(server, catalog);
-                    }
-                    break;
-                case DatasetFile:
-                    // Get the Filename and whether the loading should be done asynchronously
-                    var file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
-                    if (file == null) return false;
-                    file = ConfigurationLoader.ResolvePath(file);
-                    var isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
-                    storageProvider = new DatasetFileManager(file, isAsync);
-                    break;
-
-                case Dydra:
-                    throw new DotNetRdfConfigurationException("DydraConnector is no longer supported by dotNetRDF and is considered obsolete");
-
-                case FourStore:
-                    // Get the Server and whether Updates are enabled
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    var enableUpdates = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyEnableUpdates)), true);
-                    storageProvider = new FourStoreConnector(server, enableUpdates);
-                    break;
-
-                case Fuseki:
-                    // Get the Server URI
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    storageProvider = new FusekiConnector(server);
-                    break;
-
-                case InMemory:
-                    // Get the Dataset/Store
-                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
-                    if (datasetObj != null)
-                    {
-                        temp = ConfigurationLoader.LoadObject(g, datasetObj);
-                        if (temp is ISparqlDataset)
-                        {
-                            storageProvider = new InMemoryManager((ISparqlDataset) temp);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the In-Memory Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
-                        }
-                    }
-                    else
-                    {
-                        // If no dnr:usingDataset try dnr:usingStore instead
-                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
-                        if (storeObj != null)
-                        {
-                            temp = ConfigurationLoader.LoadObject(g, storeObj);
-                            if (temp is IInMemoryQueryableStore)
-                            {
-                                storageProvider = new InMemoryManager((IInMemoryQueryableStore) temp);
-                            }
-                            else
-                            {
-                                throw new DotNetRdfConfigurationException("Unable to load the In-Memory Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
-                            }
-                        }
-                        else
-                        {
-                            // If no dnr:usingStore either then create a new empty store
-                            storageProvider = new InMemoryManager();
-                        }
-                    }
-                    break;
-
                 case ReadOnly:
                     // Get the actual Manager we are wrapping
                     storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
-                    if (temp is IStorageProvider)
+                    if (temp is IStorageProvider provider)
                     {
-                        storageProvider = new ReadOnlyConnector((IStorageProvider) temp);
+                        storageProvider = new ReadOnlyConnector(provider);
                     }
                     else
                     {
@@ -229,40 +103,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-                case Sesame:
-                case SesameV5:
-                case SesameV6:
-                    // Get the Server and Store ID
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
-                    if (store == null) return false;
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-                    if (user != null && pwd != null)
-                    {
-                        storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new object[] {server, store, user, pwd});
-                    }
-                    else
-                    {
-                        storageProvider = (IStorageProvider) Activator.CreateInstance(targetType, new object[] {server, store});
-                    }
-                    break;
-
-                case SesameServer:
-                    // Get the Server and User Credentials
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-
-                    if (user != null && pwd != null)
-                    {
-                        storageServer = new SesameServer(server, user, pwd);
-                    }
-                    else
-                    {
-                        storageServer = new SesameServer(server);
-                    }
-                    break;
 
                 case Sparql:
                     // Get the Endpoint URI or the Endpoint
@@ -289,19 +129,18 @@ namespace VDS.RDF.Configuration
                         if (endpointObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
                         
+                        switch (temp)
+                        {
 #pragma warning disable 618
-                        if (temp is SparqlRemoteEndpoint remoteEndpoint)
-                        {
-                            storageProvider = new SparqlConnector(remoteEndpoint, loadMode);
-                        }
+                            case SparqlRemoteEndpoint remoteEndpoint:
+                                storageProvider = new SparqlConnector(remoteEndpoint, loadMode);
+                                break;
 #pragma warning restore 618
-                        else if (temp is SparqlQueryClient queryClient)
-                        {
-                            storageProvider = new SparqlConnector(queryClient, loadMode);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the SparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteEndpoint");
+                            case SparqlQueryClient queryClient:
+                                storageProvider = new SparqlConnector(queryClient, loadMode);
+                                break;
+                            default:
+                                throw new DotNetRdfConfigurationException("Unable to load the SparqlConnector identified by the Node '" + objNode.ToString() + "' as the value given for the property dnr:endpoint points to an Object which cannot be loaded as an object which is of the type SparqlRemoteEndpoint");
                         }
                     }
                     else
@@ -465,122 +304,6 @@ namespace VDS.RDF.Configuration
                     storageProvider = new SparqlHttpProtocolConnector(g.UriFactory.Create(server));
                     break;
 
-                case Stardog:
-                case StardogV1:
-                case StardogV2:
-                case StardogV3:
-                    // Get the Server and Store
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
-                    if (store == null) return false;
-
-                    // Get User Credentials
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-
-                    // Get Reasoning Mode
-                    StardogReasoningMode reasoning = StardogReasoningMode.None;
-                    var mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
-                    if (mode != null)
-                    {
-                        try
-                        {
-                            reasoning = (StardogReasoningMode) Enum.Parse(typeof (StardogReasoningMode), mode, true);
-                        }
-                        catch
-                        {
-                            reasoning = StardogReasoningMode.None;
-                        }
-                    }
-
-                    if (user != null && pwd != null)
-                    {
-                        switch (targetType.FullName)
-                        {
-                            case StardogV1:
-                                storageProvider = new StardogV1Connector(server, store, reasoning, user, pwd);
-                                break;
-                            case StardogV2:
-                                storageProvider = new StardogV2Connector(server, store, reasoning, user, pwd);
-                                break;
-                            case StardogV3:
-                                storageProvider = new StardogV3Connector(server, store, user, pwd);
-                                break;
-                            case Stardog:
-                            default:
-                                storageProvider = new StardogConnector(server, store, user, pwd);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        switch (targetType.FullName)
-                        {
-                            case StardogV1:
-                                storageProvider = new StardogV1Connector(server, store, reasoning);
-                                break;
-                            case StardogV2:
-                                storageProvider = new StardogV2Connector(server, store, reasoning);
-                                break;
-                            case StardogV3:
-                                storageProvider = new StardogV3Connector(server, store);
-                                break;
-                            case Stardog:
-                            default:
-                                storageProvider = new StardogConnector(server, store);
-                                break;
-                        }
-                    }
-                    break;
-
-                case StardogServer:
-                case StardogServerV1:
-                case StardogServerV2:
-                case StardogServerV3:
-                    // Get the Server and User Credentials
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-
-                    if (user != null && pwd != null)
-                    {
-                        switch (targetType.FullName)
-                        {
-                            case StardogServerV1:
-                                storageServer = new StardogV1Server(server, user, pwd);
-                                break;
-                            case StardogServerV2:
-                                storageServer = new StardogV2Server(server, user, pwd);
-                                break;
-                            case StardogServerV3:
-                                storageServer = new StardogV3Server(server, user, pwd);
-                                break;
-                            case StardogServer:
-                            default:
-                                storageServer = new StardogServer(server, user, pwd);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        switch (targetType.FullName)
-                        {
-                            case StardogServerV1:
-                                storageServer = new StardogV1Server(server);
-                                break;
-                            case StardogServerV2:
-                                storageServer = new StardogV2Server(server);
-                                break;
-                            case StardogServerV3:
-                                storageServer = new StardogV3Server(server);
-                                break;
-                            case StardogServer:
-                            default:
-                                storageServer = new StardogServer(server);
-                                break;
-                        }
-                    }
-                    break;
             }
 
             // Set the return object if one has been loaded
@@ -588,16 +311,10 @@ namespace VDS.RDF.Configuration
             {
                 obj = storageProvider;
             }
-            else if (storageServer != null)
-            {
-                obj = storageServer;
-            }
-
+            
             // Check whether this is a standard HTTP manager and if so load standard configuration
-            if (obj is BaseHttpConnector)
+            if (obj is BaseHttpConnector connector)
             {
-                var connector = (BaseHttpConnector) obj;
-
                 var timeout = ConfigurationLoader.GetConfigurationInt32(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyTimeout)), 0);
                 if (timeout > 0)
                 {
@@ -607,9 +324,9 @@ namespace VDS.RDF.Configuration
                 if (proxyNode != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, proxyNode);
-                    if (temp is IWebProxy)
+                    if (temp is IWebProxy proxy)
                     {
-                        connector.Proxy = (IWebProxy) temp;
+                        connector.Proxy = proxy;
                     }
                     else
                     {
@@ -618,7 +335,7 @@ namespace VDS.RDF.Configuration
                 }
             }
 
-            return (obj != null);
+            return obj != null;
         }
 
         /// <summary>
@@ -630,30 +347,11 @@ namespace VDS.RDF.Configuration
         {
             switch (t.FullName)
             {
-                case AllegroGraph:
-                case AllegroGraphServer:
-                case DatasetFile:
-                case Dydra:
-                case FourStore:
-                case Fuseki:
-                case InMemory:
-                case Sesame:
-                case SesameV5:
-                case SesameV6:
-                case SesameServer:
                 case ReadOnly:
                 case ReadOnlyQueryable:
                 case Sparql:
                 case ReadWriteSparql:
                 case SparqlHttpProtocol:
-                case Stardog:
-                case StardogV1:
-                case StardogV2:
-                case StardogV3:
-                case StardogServer:
-                case StardogServerV1:
-                case StardogServerV2:
-                case StardogServerV3:
                     return true;
                 default:
                     return false;

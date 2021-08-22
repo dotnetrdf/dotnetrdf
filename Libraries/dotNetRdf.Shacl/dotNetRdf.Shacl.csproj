@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>dotNetRdf.Shacl</AssemblyName>
+    <AssemblyTitle>dotNetRdf SHACL</AssemblyTitle>
+    <Description>Provides support for validating RDF graphs with the W3C Shape Constraint Language.</Description>
+    <PackageId>dotNetRdf.Shacl</PackageId>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <RootNamespace>VDS.RDF.Shacl</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
+    <ProjectReference Include="..\dotNetRdf.Sparql\dotNetRdf.Sparql.csproj" />
+    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+  </ItemGroup>
+
+</Project>

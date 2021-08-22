@@ -73,7 +73,7 @@ namespace VDS.RDF
         /// <param name="g">Graph.</param>
         /// <param name="mergeIfExists">Whether to merge into an existing Graph with the same URI.</param>
         /// <returns></returns>
-        protected internal override bool Add(IGraph g, bool mergeIfExists)
+        public override bool Add(IGraph g, bool mergeIfExists)
         {
             return _graphs.Add(g, mergeIfExists);
         }
@@ -151,7 +151,7 @@ namespace VDS.RDF
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         [Obsolete("Replaced by Remove(IRefNode)")]
-        protected internal override bool Remove(Uri graphUri)
+        public override bool Remove(Uri graphUri)
         {
             return _graphs.Remove(graphUri);
         }
@@ -163,7 +163,7 @@ namespace VDS.RDF
         /// <remarks>
         /// The null value is used to reference the Default Graph.
         /// </remarks>
-        protected internal override bool Remove(IRefNode graphName)
+        public override bool Remove(IRefNode graphName)
         {
             return _graphs.Remove(graphName);
         }

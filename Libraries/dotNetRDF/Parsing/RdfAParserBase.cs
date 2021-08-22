@@ -1384,6 +1384,48 @@ namespace VDS.RDF.Parsing
             } while (!canExit);
         }
 
+        private IEnumerable<KeyValuePair<string, string>> GetPrefixMappings(RdfAParserContext<THtmlDocument> context, IGraph g)
+        {
+            var prefix = new UriNode(context.UriFactory.Create(RdfANamespace + "prefix"));
+            var uri = new UriNode(context.UriFactory.Create(RdfANamespace + "uri"));
+            return GetMappings(prefix, uri, g);
+        }
+
+        private IEnumerable<KeyValuePair<string, string>> GetTermMappings(RdfAParserContext<THtmlDocument> context,
+            IGraph g)
+        {
+            var term = new UriNode(context.UriFactory.Create(RdfANamespace + "term"));
+            var uri = new UriNode(context.UriFactory.Create(RdfANamespace + "uri"));
+            return GetMappings(term, uri, g);
+        }
+
+        private IEnumerable<KeyValuePair<string, string>> GetMappings(INode keyPredicateNode, INode valuePredicateNode,
+            IGraph graph)
+        {
+            IDictionary<INode, INode> prefixByMapNode = graph.GetTriplesWithPredicate(keyPredicateNode)
+                .GroupBy(t => t.Subject)
+                .Where(grouping => grouping.Count() == 1)
+                .ToDictionary(grouping => grouping.Key, grouping => grouping.First().Object);
+
+            IDictionary<INode, INode> uriByMapNode = graph.GetTriplesWithPredicate(valuePredicateNode)
+                .GroupBy(t => t.Subject)
+                .Where(g => g.Count() == 1)
+                .ToDictionary(g => g.Key, g => g.First().Object);
+
+            foreach (INode mappingNode in prefixByMapNode.Keys.Intersect(uriByMapNode.Keys))
+            {
+                INode prefixNode = prefixByMapNode[mappingNode];
+                INode nsNode = uriByMapNode[mappingNode];
+                if (prefixNode is ILiteralNode prefixLiteralNode &&
+                    nsNode is ILiteralNode nsListLiteralNode)
+                {
+                    yield return new KeyValuePair<string, string>(
+                        prefixLiteralNode.Value.ToLower(),
+                        nsListLiteralNode.Value);
+                }
+            }
+        }
+
         private bool ParseProfileAttribute(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, TAttribute attr)
         {
             string[] profiles;
@@ -1425,40 +1467,48 @@ namespace VDS.RDF.Parsing
                         }
 
                         // Namespace Mappings
-                        var results = g.ExecuteQuery(prefixQuery);
-                        if (results is SparqlResultSet)
+                        foreach (KeyValuePair<string, string> mapping in GetPrefixMappings(context, g))
                         {
-                            var rset = (SparqlResultSet)results;
-                            foreach (SparqlResult r in rset.Results)
-                            {
-                                INode prefixNode = r["NamespacePrefix"];
-                                INode nsNode = r["NamespaceURI"];
-                                if (prefixNode.NodeType == NodeType.Literal && nsNode.NodeType == NodeType.Literal)
-                                {
-                                    var prefix = ((ILiteralNode)prefixNode).Value.ToLower();
-                                    var ns = ((ILiteralNode)nsNode).Value;
-                                    evalContext.LocalVocabulary.AddNamespace(prefix, ns);
-                                }
-                            }
+                            evalContext.LocalVocabulary.AddNamespace(mapping.Key, mapping.Value);
                         }
+                        //var results = g.ExecuteQuery(prefixQuery);
+                        //if (results is SparqlResultSet)
+                        //{
+                        //    var rset = (SparqlResultSet)results;
+                        //    foreach (SparqlResult r in rset.Results)
+                        //    {
+                        //        INode prefixNode = r["NamespacePrefix"];
+                        //        INode nsNode = r["NamespaceURI"];
+                        //        if (prefixNode.NodeType == NodeType.Literal && nsNode.NodeType == NodeType.Literal)
+                        //        {
+                        //            var prefix = ((ILiteralNode)prefixNode).Value.ToLower();
+                        //            var ns = ((ILiteralNode)nsNode).Value;
+                        //            evalContext.LocalVocabulary.AddNamespace(prefix, ns);
+                        //        }
+                        //    }
+                        //}
 
                         // Term Mappings
-                        results = g.ExecuteQuery(termQuery);
-                        if (results is SparqlResultSet)
+                        foreach (KeyValuePair<string, string> termMapping in GetTermMappings(context, g))
                         {
-                            var rset = (SparqlResultSet)results;
-                            foreach (SparqlResult r in rset.Results)
-                            {
-                                INode termNode = r["Term"];
-                                INode uriNode = r["URI"];
-                                if (termNode.NodeType == NodeType.Literal && uriNode.NodeType == NodeType.Literal)
-                                {
-                                    var term = ((ILiteralNode)termNode).Value;
-                                    var uri = ((ILiteralNode)uriNode).Value;
-                                    evalContext.LocalVocabulary.AddTerm(term, uri);
-                                }
-                            }
+                            evalContext.LocalVocabulary.AddTerm(termMapping.Key, termMapping.Value);
                         }
+                        //results = g.ExecuteQuery(termQuery);
+                        //if (results is SparqlResultSet)
+                        //{
+                        //    var rset = (SparqlResultSet)results;
+                        //    foreach (SparqlResult r in rset.Results)
+                        //    {
+                        //        INode termNode = r["Term"];
+                        //        INode uriNode = r["URI"];
+                        //        if (termNode.NodeType == NodeType.Literal && uriNode.NodeType == NodeType.Literal)
+                        //        {
+                        //            var term = ((ILiteralNode)termNode).Value;
+                        //            var uri = ((ILiteralNode)uriNode).Value;
+                        //            evalContext.LocalVocabulary.AddTerm(term, uri);
+                        //        }
+                        //    }
+                        //}
                     }
                 }
                 catch

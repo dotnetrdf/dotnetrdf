@@ -27,6 +27,7 @@ using System;
 using VDS.RDF.Nodes;
 using Xunit;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 
 namespace VDS.RDF.Query
@@ -100,8 +101,9 @@ namespace VDS.RDF.Query
         {
             var rand = new RandFunction();
             var context = new SparqlEvaluationContext(null, null, new LeviathanQueryOptions());
-            IValuedNode resultNode = rand.Evaluate(context, 0);
-            IValuedNode repeatResultNode = rand.Evaluate(context, 0);
+            var processor = new LeviathanExpressionProcessor(new LeviathanQueryOptions(), null);
+            IValuedNode resultNode = rand.Accept(processor, context, 0);
+            IValuedNode repeatResultNode = rand.Accept(processor, context, 0);
             Assert.Same(resultNode, repeatResultNode);
         }
     }

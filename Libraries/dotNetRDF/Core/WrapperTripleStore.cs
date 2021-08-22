@@ -47,12 +47,6 @@ namespace VDS.RDF
         private TripleStoreEventHandler GraphAddedHandler, GraphRemovedHandler, GraphChangedHandler, GraphMergedHandler, GraphClearedHandler;
 
         /// <summary>
-        /// Creates a new triple store decorator that uses a default in-memory <see cref="TripleStore"/>.
-        /// </summary>
-        public WrapperTripleStore()
-            : this(new TripleStore()) { }
-
-        /// <summary>
         /// Creates a new triple store decorator around the given <see cref="ITripleStore"/> instance.
         /// </summary>
         /// <param name="store">Triple Store.</param>

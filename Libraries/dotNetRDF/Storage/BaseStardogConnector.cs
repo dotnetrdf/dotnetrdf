@@ -38,6 +38,7 @@ using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Writing;
@@ -516,18 +517,11 @@ namespace VDS.RDF.Storage
 
             var transactionId = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
             var requestUri = _kb + transactionId + "/query";
-            var construct = new SparqlParameterizedString();
-            if (!graphUri.Equals(string.Empty))
-            {
-                construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH @graph { ?s ?p ?o } }";
-                construct.SetUri("graph", UriFactory.Create(graphUri));
-            }
-            else
-            {
-                construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-            }
+            var construct = string.IsNullOrEmpty(graphUri)
+                ? "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
+                : $"CONSTRUCT {{ ?s ?p ?o }} WHERE {{ GRAPH <{graphUri}> {{ ?s ?p ?o }} }}";
 
-            serviceParams.Add("query", construct.ToString());
+            serviceParams.Add("query", construct);
 
             HttpRequestMessage request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get,
                 serviceParams);
@@ -647,11 +641,9 @@ namespace VDS.RDF.Storage
                             MimeTypesHelper.Any, HttpMethod.Post, new Dictionary<string, string>());
 
                         // Save the Data to be removed as TriG to the Request Stream
-                        var store = new TripleStore();
                         var g = new Graph(graphUri);
                         g.Assert(removals);
-                        store.Add(g);
-                        request.Content = new DatasetContent(store, _writer);
+                        request.Content = new DatasetContent(g, _writer);
                         using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
                         if (!response.IsSuccessStatusCode) throw StorageHelper.HandleHttpError(response, "updating a Graph in");
                     }
@@ -666,11 +658,9 @@ namespace VDS.RDF.Storage
                             HttpMethod.Post, new Dictionary<string, string>());
 
                         // Save the Data to be added as TriG to the Request Stream
-                        var store = new TripleStore();
                         var g = new Graph(graphUri);
                         g.Assert(additions);
-                        store.Add(g);
-                        request.Content = new DatasetContent(store, _writer);
+                        request.Content = new DatasetContent(g, _writer);
 
                         using HttpResponseMessage response = HttpClient.SendAsync(request).Result;
                         if (!response.IsSuccessStatusCode) throw StorageHelper.HandleHttpError(response, "updating a Graph in");
@@ -1033,9 +1023,7 @@ namespace VDS.RDF.Storage
         {
             HttpRequestMessage request = CreateRequest(_kb + "/" + tID + "/add", MimeTypesHelper.Any, HttpMethod.Post,
                 new Dictionary<string, string>());
-            var store = new TripleStore();
-            store.Add(g);
-            request.Content = new DatasetContent(store, _writer);
+            request.Content = new DatasetContent(g, _writer);
             return request;
         }
 
@@ -1161,16 +1149,9 @@ namespace VDS.RDF.Storage
 
             var tID = (_activeTrans == null) ? string.Empty : "/" + _activeTrans;
             var requestUri = _kb + tID + "/query";
-            var construct = new SparqlParameterizedString();
-            if (!graphUri.Equals(string.Empty))
-            {
-                construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH @graph { ?s ?p ?o } }";
-                construct.SetUri("graph", UriFactory.Create(graphUri));
-            }
-            else
-            {
-                construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
-            }
+            var construct = string.IsNullOrEmpty(graphUri)
+                ? "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
+                : $"CONSTRUCT {{ ?s ?p ?o }} WHERE {{ GRAPH <{graphUri}> {{ ?s ?p ?o }} }}";
 
             serviceParams.Add("query", construct.ToString());
 
@@ -1567,11 +1548,9 @@ namespace VDS.RDF.Storage
             HttpRequestMessage addRequest = CreateRequest(_kb + "/" + transactionId + "/add",
                 MimeTypesHelper.Any,
                 HttpMethod.Post, new Dictionary<string, string>());
-            var store = new TripleStore();
             var g = new Graph(graphName.ToSafeUri());
             g.Assert(additions);
-            store.Add(g);
-            addRequest.Content = new DatasetContent(store, _writer);
+            addRequest.Content = new DatasetContent(g, _writer);
             return addRequest;
         }
 
@@ -1586,11 +1565,9 @@ namespace VDS.RDF.Storage
         {
             HttpRequestMessage request = CreateRequest(_kb + "/" + transactionId + "/remove", MimeTypesHelper.Any,
                 HttpMethod.Post, new Dictionary<string, string>());
-            var store = new TripleStore();
             var g = new Graph(graphName.ToSafeUri());
             g.Assert(removals);
-            store.Add(g);
-            request.Content = new DatasetContent(store, _writer);
+            request.Content = new DatasetContent(g, _writer);
             return request;
         }
 

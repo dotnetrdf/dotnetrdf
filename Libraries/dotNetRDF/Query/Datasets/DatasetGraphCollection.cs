@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="g">Graph to add.</param>
         /// <param name="mergeIfExists">Whether to merge the given Graph with any existing Graph with the same URI.</param>
         /// <exception cref="RdfException">Thrown if a Graph with the given URI already exists and the <paramref name="mergeIfExists">mergeIfExists</paramref> is set to false.</exception>
-        protected internal override bool Add(IGraph g, bool mergeIfExists)
+        public override bool Add(IGraph g, bool mergeIfExists)
         {
             if (Contains(g.Name))
             {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">URI of the Graph to removed.</param>
         [Obsolete("Replaced by Remove(IRefNode)")]
-        protected internal override bool Remove(Uri graphUri)
+        public override bool Remove(Uri graphUri)
         {
             if (Contains(graphUri))
             {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Datasets
         /// <remarks>
         /// The null value is used to reference the Default Graph.
         /// </remarks>
-        protected internal override bool Remove(IRefNode graphName)
+        public override bool Remove(IRefNode graphName)
         {
             if (!_dataset.HasGraph(graphName))
             {

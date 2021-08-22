@@ -39,6 +39,12 @@ namespace VDS.RDF.Configuration
 
     public class AutoConfigTests
     {
+        public AutoConfigTests()
+        {
+            ConfigurationLoader.RegisterExtension<SparqlConfigurationLoaderExtension>();
+            ConfigurationLoader.RegisterExtension<InMemoryConfigurationLoaderExtension>();
+        }
+
         [Fact]
         public void ConfigurationStaticOptionUri1()
         {
@@ -156,8 +162,7 @@ dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
 
                 var g = new Graph();
                 g.LoadFromString(data);
-
-                ConfigurationLoader.AutoConfigureSparqlOperators(g);
+                ConfigurationLoader.AutoConfigure(g);
 
                 SparqlOperators.TryGetOperator(SparqlOperatorType.Add, false, out var op, null);
 
@@ -182,8 +187,7 @@ dnr:enabled false .";
 
                 var g = new Graph();
                 g.LoadFromString(data);
-
-                ConfigurationLoader.AutoConfigureSparqlOperators(g);
+                ConfigurationLoader.AutoConfigure(g);
 
                 Assert.False(SparqlOperators.IsRegistered(new DateTimeAddition()));
             }

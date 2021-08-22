@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>dotNetRdf.Ontology</AssemblyName>
+    <AssemblyTitle>dotNetRDF Ontology API</AssemblyTitle>
+    <Description>Provides a convenience API for creating RDF graphs that contain RDF Schema/Ontology data.</Description>
+    <PackageId>dotNetRdf.Ontology</PackageId>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Writing\" />
+  </ItemGroup>
+
+</Project>

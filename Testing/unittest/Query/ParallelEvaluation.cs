@@ -159,6 +159,8 @@ namespace VDS.RDF.Query
 
             ISparqlExpression expr = new DivisionExpression(new VariableTerm("x"), new VariableTerm("y"));
 
+            var processor = new LeviathanExpressionProcessor(new LeviathanQueryOptions(), null);
+
             for (var i = 1; i <= 10000; i++)
             {
                 var context = new SparqlEvaluationContext(null, new LeviathanQueryOptions())
@@ -167,7 +169,7 @@ namespace VDS.RDF.Query
                     OutputMultiset = new Multiset()
                 };
 
-                context.InputMultiset.SetIDs.AsParallel().ForAll(id => EvalExtend(context, context.InputMultiset, expr, "actual", id));
+                context.InputMultiset.SetIDs.AsParallel().ForAll(id => EvalExtend(processor, context, context.InputMultiset, expr, "actual", id));
 
                 foreach (ISet s in context.OutputMultiset.Sets)
                 {
@@ -176,13 +178,13 @@ namespace VDS.RDF.Query
             }
         }
 
-        private void EvalExtend(SparqlEvaluationContext context, BaseMultiset results, ISparqlExpression expr, String var, int id)
+        private void EvalExtend(LeviathanExpressionProcessor processor, SparqlEvaluationContext context, BaseMultiset results, ISparqlExpression expr, String var, int id)
         {
             ISet s = results[id].Copy();
             try
             {
                 //Make a new assignment
-                INode temp = expr.Evaluate(context, id);
+                INode temp = expr.Accept(processor, context, id);
                 s.Add(var, temp);
             }
             catch

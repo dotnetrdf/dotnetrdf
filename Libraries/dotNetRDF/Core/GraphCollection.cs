@@ -85,7 +85,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to add.</param>
         /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present.</param>
         /// <exception cref="RdfException">Throws an RDF Exception if the Graph has no Base Uri or if the Graph already exists in the Collection and the <paramref name="mergeIfExists"/> parameter was not set to true.</exception>
-        protected internal override bool Add(IGraph g, bool mergeIfExists)
+        public override bool Add(IGraph g, bool mergeIfExists)
         {
             if (_graphs.ContainsKey(g.Name))
             {
@@ -114,7 +114,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to remove.</param>
         [Obsolete("Replaced by Remove(IRefNode)")]
-        protected internal override bool Remove(Uri graphUri)
+        public override bool Remove(Uri graphUri)
         {
             IRefNode graphName = _graphs.Keys.FirstOrDefault(k => k is UriNode uriNode && uriNode.Uri.Equals(graphUri));
             if (graphName == null && !_graphs.ContainsKey(null!)) return false;
@@ -128,7 +128,7 @@ namespace VDS.RDF
         /// <remarks>
         /// The null value is used to reference the Default Graph.
         /// </remarks>
-        protected internal override bool Remove(IRefNode graphName) 
+        public override bool Remove(IRefNode graphName) 
         {
             if (_graphs.TryGetValue(graphName, out IGraph g) &&
                 _graphs.Remove(graphName))

@@ -764,14 +764,14 @@ namespace VDS.RDF.Query.Spin.Model
             IResource varList = model.CreateList(vars.GetEnumerator());
             values.AddProperty(SP.PropertyVarNames, varList);
 
-            IEnumerator<SparqlResult> bindings = data.Results.GetEnumerator();
+            using IEnumerator<ISparqlResult> bindings = data.Results.GetEnumerator();
             if (bindings.MoveNext())
             {
                 var lists = new List<IResource>();
                 while (bindings.MoveNext())
                 {
                     var nodes = new List<IResource>();
-                    SparqlResult binding = bindings.Current;
+                    ISparqlResult binding = bindings.Current;
                     foreach (var varName in data.Variables)
                     {
                         INode value = binding.Value(varName);

@@ -1,34 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>dotNetRDF.Data.Virtuoso provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</Description>
-    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
+    <AssemblyName>dotNetRDF.Data.Virtuoso</AssemblyName>
     <AssemblyTitle>dotNetRDF.Data.Virtuoso</AssemblyTitle>
+    <Description>Provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</Description>
     <VersionPrefix>$(Version)</VersionPrefix>
-    <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
     <TargetFrameworks>net472</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>dotNetRDF.Data.Virtuoso</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>dotNetRDF.Data.Virtuoso</PackageId>
     <PackageTags>RDF;Semantic;Web;SPARQL;Virtuoso;OpenLink</PackageTags>
-    <PackageIconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.64.gif</PackageIconUrl>
-    <PackageIcon>rdf_w3c_icon.64.png</PackageIcon>
-    <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -36,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf.Sparql\dotNetRdf.Sparql.csproj" />
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
@@ -52,9 +33,5 @@
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\..\rdf_w3c_icon.64.png" Pack="True" PackagePath="\" />
-  </ItemGroup>
 
 </Project>

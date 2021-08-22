@@ -27,16 +27,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.FullText.Search;
-using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query.FullText
 {
@@ -44,32 +41,37 @@ namespace VDS.RDF.Query.FullText
     [Trait("category", "fulltext")]
     public class FullTextOptimiserTests
     {
-        private SparqlQueryParser _parser = new SparqlQueryParser();
-        private List<IAlgebraOptimiser> _optimisers;
-        private SparqlFormatter _formatter = new SparqlFormatter();
+        private readonly SparqlQueryParser _parser = new();
+
+        private readonly List<IAlgebraOptimiser> _optimisers = new()
+        {
+            new StrictAlgebraOptimiser(), new FullTextOptimiser(new MockSearchProvider())
+        };
+
+        private readonly SparqlFormatter _formatter = new();
+
+        private readonly ITestOutputHelper _output;
+
+        public FullTextOptimiserTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
 
         private SparqlQuery TestOptimisation(String query)
         {
             query = "PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>\n" + query;
             SparqlQuery q = _parser.ParseFromString(query);
-            Console.WriteLine(_formatter.Format(q));
+            _output.WriteLine(_formatter.Format(q));
 
-            Console.WriteLine("Normal Algebra: " + q.ToAlgebra().ToString());
+            _output.WriteLine("Normal Algebra: " + q.ToAlgebra());
 
-            if (_optimisers == null)
-            {
-                _optimisers = new List<IAlgebraOptimiser>()
-                {
-                    new StrictAlgebraOptimiser(),
-                    new FullTextOptimiser(new MockSearchProvider())
-                };
-            }
             q.AlgebraOptimisers = _optimisers;
 
             var algebra = q.ToAlgebra().ToString();
-            Console.WriteLine("Optimised Algebra: " + algebra);
+            _output.WriteLine("Optimised Algebra: " + algebra);
             Assert.True(algebra.Contains("FullTextQuery("), "Optimised Algebra should use FullTextQuery operator");
-            Assert.True(algebra.Contains("PropertyFunction("), "Optimised Algebra should use PropertyFunction operator");
+            Assert.True(algebra.Contains("PropertyFunction("),
+                "Optimised Algebra should use PropertyFunction operator");
 
             return q;
         }
@@ -121,7 +123,8 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextOptimiserComplex4()
         {
-            SparqlQuery q = TestOptimisation("SELECT * WHERE { (?s ?score) pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
+            SparqlQuery q =
+                TestOptimisation("SELECT * WHERE { (?s ?score) pf:textMatch 'value' . BIND(STR(?s) AS ?str) }");
             ISparqlAlgebra algebra = q.ToAlgebra();
             Assert.DoesNotContain("PropertyFunction(Extend(", algebra.ToString());
         }
@@ -178,7 +181,8 @@ SELECT DISTINCT ?result ?isWebSite WHERE {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold, int limit)
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold,
+            int limit)
         {
             throw new NotImplementedException();
         }
@@ -198,12 +202,14 @@ SELECT DISTINCT ?result ?isWebSite WHERE {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold, int limit)
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text,
+            double scoreThreshold, int limit)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold)
+        public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text,
+            double scoreThreshold)
         {
             throw new NotImplementedException();
         }

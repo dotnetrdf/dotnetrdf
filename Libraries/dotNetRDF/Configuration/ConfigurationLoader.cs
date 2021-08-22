@@ -63,7 +63,7 @@ namespace VDS.RDF.Configuration
         public const string PropertyType = ConfigurationNamespace + "type",
                             PropertyImports = ConfigurationNamespace + "imports",
                             PropertyConfigure = ConfigurationNamespace  + "configure",
-                            PropertyEnabled = ConfigurationNamespace + "enabled",
+                            
                             PropertyUser = ConfigurationNamespace + "user",
                             PropertyPassword = ConfigurationNamespace + "password",
                             PropertyCredentials = ConfigurationNamespace + "credentials",
@@ -227,28 +227,37 @@ namespace VDS.RDF.Configuration
         /// </summary>
         private static Dictionary<CachedObjectKey, object> _cache = new Dictionary<CachedObjectKey, object>();
 
+        private static readonly List<IConfigurationExtension> _extensions = new List<IConfigurationExtension>();
         /// <summary>
         /// Set of built-in object factories that are automatically registered and used.
         /// </summary>
-        private static List<IObjectFactory> _factories = new List<IObjectFactory>
+        private static readonly List<IObjectFactory> _factories = new List<IObjectFactory>
         {
             // Default Data Factories
             new GraphFactory(),
-            new StoreFactory(),
+            // TODO: Extension to register this factory
+            // new StoreFactory(),
+
             new CollectionFactory(),
+
             // Default Manager Factories
-            new StorageFactory(),
-            new DatasetFactory(),
+            // TODO: Extension to register these factories
+            // new StorageFactory(),
+            // new DatasetFactory(),
             // Endpoint Factories
             new SparqlClientFactory(),
+
 #pragma warning disable 618
             // To be removed when deprecated classes are removed
             new SparqlEndpointFactory(),
 #pragma warning restore 618
+
             // Processor Factories
-            new QueryProcessorFactory(),
-            new UpdateProcessorFactory(),
-            new ProtocolProcessorFactory(),
+            // TODO: Extension to register these factories
+            //new QueryProcessorFactory(),
+            //new UpdateProcessorFactory(),
+
+            //new ProtocolProcessorFactory(),
             // User and Permission related Factories
             new UserGroupFactory(),
             new PermissionFactory(),
@@ -256,17 +265,25 @@ namespace VDS.RDF.Configuration
             new ProxyFactory(),
 
             // SPARQL Extension related Factories
-            new OptimiserFactory(),
-            new ReasonerFactory(),
-            new ExpressionFactoryFactory(),
-            new PropertyFunctionFactoryFactory(),
-            new OperatorFactory(),
+            // TODO: Extension to register these factories
+            // new OptimiserFactory(),
+            //new ReasonerFactory(),
+            //new ExpressionFactoryFactory(),
+            // new PropertyFunctionFactoryFactory(),
+            // new OperatorFactory(),
+
             // ObjectFactory Factory
             new ObjectFactoryFactory(),
             // Parser and Writer Factories
             new ParserFactory(),
             new WriterFactory(),
         };
+
+        private static readonly List<Assembly> _factoryAssemblies = new List<Assembly>
+        {
+            Assembly.GetAssembly(typeof(ConfigurationLoader)),
+        };
+
         /// <summary>
         /// Path resolver.
         /// </summary>
@@ -450,8 +467,11 @@ namespace VDS.RDF.Configuration
         {
             AutoConfigureObjectFactories(g);
             AutoConfigureReadersAndWriters(g);
-            AutoConfigureSparqlOperators(g);
             AutoConfigureStaticOptions(g);
+            foreach (Action<IGraph> autoConfigure in _extensions.SelectMany(ext=>ext.GetAutoConfigureActions()))
+            {
+                autoConfigure(g);
+            }
         }
 
         /// <summary>
@@ -716,37 +736,6 @@ namespace VDS.RDF.Configuration
             }
         }
 
-        /// <summary>
-        /// Given a Configuration Graph will detect and configure SPARQL Operators.
-        /// </summary>
-        /// <param name="g">Configuration Graph.</param>
-        public static void AutoConfigureSparqlOperators(IGraph g)
-        {
-            INode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType)),
-                  operatorClass = g.CreateUriNode(g.UriFactory.Create(ClassSparqlOperator)),
-                  enabled = g.CreateUriNode(g.UriFactory.Create(PropertyEnabled));
-
-            foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
-            {
-                var temp = LoadObject(g, t.Subject);
-                if (temp is ISparqlOperator)
-                {
-                    var enable = GetConfigurationBoolean(g, t.Subject, enabled, true);
-                    if (enable)
-                    {
-                        SparqlOperators.AddOperator((ISparqlOperator)temp);
-                    }
-                    else
-                    {
-                        SparqlOperators.RemoveOperatorByType((ISparqlOperator)temp);
-                    }
-                }
-                else
-                {
-                    throw new DotNetRdfConfigurationException("Auto-configuration of SPARQL Operators failed as the Operator specified by the Node '" + t.Subject.ToString() + "' does not implement the required ISparqlOperator interface");
-                }
-            }
-        }
 
         #endregion
 
@@ -1265,12 +1254,9 @@ namespace VDS.RDF.Configuration
             // Try and find an Object Loader that can load this object
             try
             {
-                foreach (IObjectFactory loader in _factories)
+                foreach (IObjectFactory loader in _factories.Where(l=>l.CanLoadObject(targetType)))
                 {
-                    if (loader.CanLoadObject(targetType))
-                    {
-                        if (loader.TryLoadObject(g, objNode, targetType, out temp)) break;
-                    }
+                    if (loader.TryLoadObject(g, objNode, targetType, out temp)) break;
                 }
             }
             catch (DotNetRdfConfigurationException)
@@ -1310,9 +1296,21 @@ namespace VDS.RDF.Configuration
                 {
                     throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' since there is no dnr:type property associated with it");
                 }
-                return LoadObject(g, objNode, Type.GetType(typeName));
+                return LoadObject(g, objNode, GetType(typeName));
             }
-            return LoadObject(g, objNode, Type.GetType(typeName));
+            return LoadObject(g, objNode, GetType(typeName));
+        }
+
+        private static Type GetType(string typeName)
+        {
+            if (typeName.Contains(","))
+            {
+                // Resolve assembly qualified type names directly
+                return Type.GetType(typeName);
+            }
+            // Otherwise use the assemblies of registered object factories to attempt to resolve the type name
+            return _factoryAssemblies.Select(assembly => assembly.GetType(typeName))
+                .FirstOrDefault(t => t != null);
         }
 
         /// <summary>
@@ -1541,10 +1539,27 @@ namespace VDS.RDF.Configuration
         public static void AddObjectFactory(IObjectFactory factory)
         {
             Type loaderType = factory.GetType();
-            if (!_factories.Any(l => l.GetType().Equals(loaderType)))
+            if (_factories.All(l => l.GetType() != loaderType))
             {
                 _factories.Add(factory);
+                if (!_factoryAssemblies.Contains(factory.GetType().Assembly))
+                {
+                    _factoryAssemblies.Add(factory.GetType().Assembly);
+                }
             }
+        }
+
+        public static void RegisterExtension<T>() where T : IConfigurationExtension
+        {
+            if (_extensions.Select(ext => ext.GetType()).Any(t => t == typeof(T)))
+            {
+                // Already registered an extension of this type
+                return;
+            }
+
+            IConfigurationExtension extension = Activator.CreateInstance<T>();
+            foreach (IObjectFactory f in extension.GetObjectFactories()) AddObjectFactory(f);
+            _extensions.Add(extension);
         }
 
         /// <summary>

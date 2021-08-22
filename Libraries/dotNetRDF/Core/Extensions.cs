@@ -35,6 +35,7 @@ using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -298,7 +299,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="s">String to hash.</param>
         /// <returns></returns>
-        internal static string GetSha256Hash(this string s)
+        public static string GetSha256Hash(this string s)
         {
             if (s == null) throw new ArgumentNullException("s");
 
@@ -662,7 +663,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        internal static string ToSafeString(this object obj)
+        public static string ToSafeString(this object obj)
         {
             return (obj == null) ? string.Empty : obj.ToString();
         }
@@ -672,7 +673,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="u">URI.</param>
         /// <returns></returns>
-        internal static string ToSafeString(this Uri u)
+        public static string ToSafeString(this Uri u)
         {
             return (u == null) ? string.Empty : u.AbsoluteUri;
         }
@@ -683,7 +684,7 @@ namespace VDS.RDF
         /// <param name="str">String.</param>
         /// <param name="uriFactory">Factor to use when creating the URI. If not specified, the <see cref="UriFactory.Root"/> instance will be used.</param>
         /// <returns>Either null if the string is null/empty or a URI otherwise.</returns>
-        internal static Uri ToSafeUri(this string str, IUriFactory uriFactory = null)
+        public static Uri ToSafeUri(this string str, IUriFactory uriFactory = null)
         {
             return string.IsNullOrEmpty(str) ? null : (uriFactory ?? UriFactory.Root).Create(str);
         }
@@ -713,7 +714,7 @@ namespace VDS.RDF
         /// <param name="builder">String Builder.</param>
         /// <param name="line">String to append.</param>
         /// <param name="indent">Indent.</param>
-        internal static void AppendIndented(this StringBuilder builder, string line, int indent)
+        public static void AppendIndented(this StringBuilder builder, string line, int indent)
         {
             builder.Append(new string(' ', indent) + line);
         }
@@ -727,7 +728,7 @@ namespace VDS.RDF
         /// <remarks>
         /// Strings containing new lines are split over multiple lines.
         /// </remarks>
-        internal static void AppendLineIndented(this StringBuilder builder, string line, int indent)
+        public static void AppendLineIndented(this StringBuilder builder, string line, int indent)
         {
             if (line.Contains('\n'))
             {
@@ -756,7 +757,164 @@ namespace VDS.RDF
             return value.ToCharArray().All(c => c <= 127);
         }
 
-#endregion
+        #endregion
+
+        #region Node related Extensions
+
+        /// <summary>
+        /// Calculates the Effective Boolean Value of a given Node according to the Sparql specification.
+        /// </summary>
+        /// <param name="n">Node to computer EBV for.</param>
+        /// <returns></returns>
+        public static bool EffectiveBooleanValue(this INode n)
+        {
+            if (n == null)
+            {
+                // Nulls give Type Error
+                throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a null value");
+            }
+            else
+            {
+                if (n.NodeType == NodeType.Literal)
+                {
+                    var lit = (ILiteralNode)n;
+
+                    if (lit.DataType == null)
+                    {
+                        if (lit.Value == string.Empty)
+                        {
+                            // Empty String Literals have EBV of False
+                            return false;
+                        }
+                        else
+                        {
+                            // Non-Empty String Literals have EBV of True
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        // EBV is dependent on the Data Type for Typed Literals
+                        var dt = lit.DataType.ToString();
+
+                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+                        {
+                            // Boolean Typed Literal
+                            if (bool.TryParse(lit.Value, out var b))
+                            {
+                                // Valid Booleans have EBV of their value
+                                return b;
+                            }
+                            // Invalid Booleans have EBV of false
+                            return false;
+                        }
+                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                        {
+                            // String Typed Literal
+                            if (lit.Value == string.Empty)
+                            {
+                                // Empty String Literals have EBV of False
+                                return false;
+                            }
+                            else
+                            {
+                                // Non-Empty String Literals have EBV of True
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            // Is it a Number?
+                            SparqlNumericType numType = NumericTypesHelper.GetNumericTypeFromDataTypeUri(dt);
+                            switch (numType)
+                            {
+                                case SparqlNumericType.Decimal:
+                                    // Should be a decimal
+                                    decimal dec;
+                                    if (decimal.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dec))
+                                    {
+                                        if (dec == decimal.Zero)
+                                        {
+                                            // Zero gives EBV of false
+                                            return false;
+                                        }
+                                        else
+                                        {
+                                            // Non-Zero gives EBV of true
+                                            return true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Invalid Numerics have EBV of false
+                                        return false;
+                                    }
+
+                                case SparqlNumericType.Float:
+                                case SparqlNumericType.Double:
+                                    // Should be a double
+                                    double dbl;
+                                    if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out dbl))
+                                    {
+                                        if (dbl == 0.0d || double.IsNaN(dbl))
+                                        {
+                                            // Zero/NaN gives EBV of false
+                                            return false;
+                                        }
+                                        else
+                                        {
+                                            // Non-Zero gives EBV of true
+                                            return true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Invalid Numerics have EBV of false
+                                        return false;
+                                    }
+
+                                case SparqlNumericType.Integer:
+                                    // Should be an Integer
+                                    long l;
+                                    if (long.TryParse(lit.Value, out l))
+                                    {
+                                        if (l == 0)
+                                        {
+                                            // Zero gives EBV of false
+                                            return false;
+                                        }
+                                        else
+                                        {
+                                            // Non-Zero gives EBV of true
+                                            return true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Invalid Numerics have EBV of false
+                                        return false;
+                                    }
+
+                                case SparqlNumericType.NaN:
+                                    // If not a Numeric Type then Type error
+                                    throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
+
+                                default:
+                                    // Shouldn't hit this case but included to keep compiler happy
+                                    throw new RdfQueryException("Unable to compute an Effective Boolean Value for a Literal Typed <" + dt + ">");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Non-Literal Nodes give type error
+                    throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a non-literal RDF Term");
+                }
+            }
+        }
+        #endregion
+
 
     }
 
@@ -765,100 +923,6 @@ namespace VDS.RDF
     /// </summary>
     public static class GraphExtensions
     {
-        /// <summary>
-        /// Turns a Graph into a Triple Store.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <returns></returns>
-        internal static IInMemoryQueryableStore AsTripleStore(this IGraph g)
-        {
-            var store = new TripleStore();
-            store.Add(g);
-            return store;
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on a Graph.
-        /// </summary>
-        /// <param name="g">Graph to query.</param>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <returns></returns>
-        public static object ExecuteQuery(this IGraph g, string sparqlQuery)
-        {
-            // Due to change in default graph behaviour ensure that we associate this graph as the default graph of the dataset
-            var ds = new InMemoryDataset(g);
-            var processor = new LeviathanQueryProcessor(ds, options=>options.UriFactory = new CachingUriFactory(g.UriFactory));
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(sparqlQuery);
-            return processor.ProcessQuery(q);
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on a Graph handling the results using the handlers provided.
-        /// </summary>
-        /// <param name="g">Graph to query.</param>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">SPARQL Results Handler.</param>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
-        {
-            var ds = new InMemoryDataset(g);
-            var processor = new LeviathanQueryProcessor(ds, options=>options.UriFactory = new CachingUriFactory(g.UriFactory));
-            var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(sparqlQuery);
-            processor.ProcessQuery(rdfHandler, resultsHandler, q);
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on a Graph.
-        /// </summary>
-        /// <param name="g">Graph to query.</param>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        /// <returns></returns>
-        public static object ExecuteQuery(this IGraph g, SparqlParameterizedString sparqlQuery)
-        {
-            return g.ExecuteQuery(sparqlQuery.ToString());
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on a Graph handling the results using the handlers provided.
-        /// </summary>
-        /// <param name="g">Graph to query.</param>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">SPARQL Results Handler.</param>
-        /// <param name="sparqlQuery">SPARQL Query.</param>
-        public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlParameterizedString sparqlQuery)
-        {
-            g.ExecuteQuery(rdfHandler, resultsHandler, sparqlQuery.ToString());
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on a Graph.
-        /// </summary>
-        /// <param name="g">Graph to query.</param>
-        /// <param name="query">SPARQL Query.</param>
-        /// <returns></returns>
-        public static object ExecuteQuery(this IGraph g, SparqlQuery query)
-        {
-            var ds = new InMemoryDataset(g);
-            var processor = new LeviathanQueryProcessor(ds, options=>options.UriFactory = new CachingUriFactory(g.UriFactory));
-            return processor.ProcessQuery(query);
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on a Graph handling the results using the handlers provided.
-        /// </summary>
-        /// <param name="g">Graph to query.</param>
-        /// <param name="rdfHandler">RDF Handler.</param>
-        /// <param name="resultsHandler">SPARQL Results Handler.</param>
-        /// <param name="query">SPARQL Query.</param>
-        public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
-        {
-            var ds = new InMemoryDataset(g);
-            var processor = new LeviathanQueryProcessor(ds, options=>options.UriFactory = new CachingUriFactory(g.UriFactory));
-            processor.ProcessQuery(rdfHandler, resultsHandler, query);
-        }
-
         /// <summary>
         /// Loads RDF data from a file into a Graph.
         /// </summary>
@@ -1089,6 +1153,34 @@ namespace VDS.RDF
             IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
             g.SaveToStream(streamWriter, writer);
         }
+
+        /// <summary>
+        /// Computes the ETag for a Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
+        public static string GetETag(this IGraph g)
+        {
+            var ts = g.Triples.ToList();
+            ts.Sort();
+
+            var hash = new StringBuilder();
+            foreach (Triple t in ts)
+            {
+                hash.AppendLine(t.GetHashCode().ToString());
+            }
+            var h = hash.ToString().GetHashCode().ToString();
+
+            var sha1 = SHA1.Create();
+            var hashBytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(h));
+            hash = new StringBuilder();
+            foreach (var b in hashBytes)
+            {
+                hash.Append(b.ToString("x2"));
+            }
+            return hash.ToString();
+        }
+
     }
 
     /// <summary>
@@ -1557,6 +1649,19 @@ namespace VDS.RDF
             if (s == null) throw new ArgumentNullException("s", "Cannot create a Literal Node for a null String");
 
             return factory.CreateLiteralNode(s, factory.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+        }
+
+        /// <summary>
+        /// Creates <see cref="BaseTripleCollection"/> from an enumeration of triples.
+        /// </summary>
+        /// <param name="triples">The triples to add to the collection</param>
+        /// <param name="indexed">True to create an indexed collection, false to create an un-indexed collection.</param>
+        /// <returns></returns>
+        public static BaseTripleCollection ToTripleCollection(this IEnumerable<Triple> triples, bool indexed=true)
+        {
+            BaseTripleCollection collection = indexed ? new TreeIndexedTripleCollection() : new TripleCollection();
+            foreach (Triple t in triples) collection.Add(t);
+            return collection;
         }
     }
 }

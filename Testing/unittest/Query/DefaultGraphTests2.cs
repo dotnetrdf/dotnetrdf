@@ -66,7 +66,7 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, true);
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, true);
@@ -124,7 +124,7 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, false);
@@ -154,7 +154,7 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/1"));
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/1"));
@@ -214,7 +214,7 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/2"));
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/2"));
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, new Uri("http://example.org/unknown"));
@@ -304,7 +304,7 @@ namespace VDS.RDF.Query
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             gs.Add(g);
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
             gs.Add(h);
 
             ISparqlDataset dataset = GetDataset(gs, null);

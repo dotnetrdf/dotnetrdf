@@ -72,52 +72,52 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for Turtle.
         /// </summary>
-        internal static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
+        public static readonly string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
 
         /// <summary>
         /// MIME Types for RDF/XML.
         /// </summary>
-        internal static string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
+        public static readonly string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
 
         /// <summary>
         /// MIME Types for Notation 3.
         /// </summary>
-        internal static string[] Notation3 = { "text/n3", "text/rdf+n3" };
+        public static readonly string[] Notation3 = { "text/n3", "text/rdf+n3" };
 
         /// <summary>
         /// MIME Types for NTriples.
         /// </summary>
-        internal static string[] NTriples = { "application/n-triples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples", "application/ntriples" };
+        public static readonly string[] NTriples = { "application/n-triples", "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples", "application/ntriples" };
 
         /// <summary>
         /// MIME Types for NQuads.
         /// </summary>
-        internal static string[] NQuads = { "application/n-quads", "text/x-nquads" };
+        public static readonly string[] NQuads = { "application/n-quads", "text/x-nquads" };
 
         /// <summary>
         /// MIME Types for TriG.
         /// </summary>
-        internal static string[] TriG = { "application/x-trig" };
+        public static readonly string[] TriG = { "application/x-trig" };
 
         /// <summary>
         /// MIME Types for TriX.
         /// </summary>
-        internal static string[] TriX = { "application/trix" };
+        public static readonly string[] TriX = { "application/trix" };
 
         /// <summary>
         /// MIME Types for RDF/JSON.
         /// </summary>
-        internal static string[] Json = { "application/json", "text/json", "application/rdf+json" };
+        public static readonly string[] Json = { "application/json", "text/json", "application/rdf+json" };
 
         /// <summary>
         /// MIME types for JSON-LD.
         /// </summary>
-        internal static string[] JsonLd = {"application/ld+json"};
+        public static readonly string[] JsonLd = {"application/ld+json"};
 
         /// <summary>
         /// MIME Types for SPARQL Result Sets.
         /// </summary>
-        internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
+        public static readonly string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
 
         /// <summary>
         /// MIME Types for SPARQL Results XML.
@@ -127,27 +127,27 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for SPARQL Results JSON.
         /// </summary>
-        internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
+        public static readonly string[] SparqlResultsJson = { "application/sparql-results+json" };
 
         /// <summary>
         /// MIME Types for SPARQL Boolean Result.
         /// </summary>
-        internal static string[] SparqlResultsBoolean = { "text/boolean" };
+        public static readonly string[] SparqlResultsBoolean = { "text/boolean" };
 
         /// <summary>
         /// MIME Types for CSV.
         /// </summary>
-        internal static string[] Csv = { "text/csv", "text/comma-separated-values" };
+        public static readonly string[] Csv = { "text/csv", "text/comma-separated-values" };
 
         /// <summary>
         /// MIME Types for TSV.
         /// </summary>
-        internal static string[] Tsv = { "text/tab-separated-values" };
+        public static readonly string[] Tsv = { "text/tab-separated-values" };
 
         /// <summary>
         /// MIME Types for HTML.
         /// </summary>
-        internal static string[] Html = { "text/html", "application/xhtml+xml" };
+        public static readonly string[] Html = { "text/html", "application/xhtml+xml" };
 
         /// <summary>
         /// MIME Type for SPARQL Queries.
@@ -223,14 +223,6 @@ namespace VDS.RDF
         /// Default File Extension for XHTML.
         /// </summary>
         public const string DefaultXHtmlExtension = "xhtml";
-        /// <summary>
-        /// Default File Extension for SPARQL Queries.
-        /// </summary>
-        public const string DefaultSparqlQueryExtension = "rq";
-        /// <summary>
-        /// Default File Extension for SPARQL Updates.
-        /// </summary>
-        public const string DefaultSparqlUpdateExtension = "ru";
         /// <summary>
         /// Default File Extension for GZip.
         /// </summary>
@@ -310,6 +302,24 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Register a collection of <see cref="MimeTypeDefinition"/> with the helper.
+        /// </summary>
+        /// <param name="mimeTypes"></param>
+        public static void Register(IEnumerable<MimeTypeDefinition> mimeTypes)
+        {
+            Init();
+            lock (_initLock)
+            {
+                foreach (MimeTypeDefinition mimeType in mimeTypes)
+                {
+                    var existing = _mimeTypes.FindIndex(x => x.SyntaxName.Equals(mimeType.SyntaxName));
+                    if (existing >= 0) _mimeTypes.RemoveAt(existing);
+                    _mimeTypes.Add(mimeType);
+                }
+            }
+        }
+
+        /// <summary>
         /// Initialises the MIME Type definitions.
         /// </summary>
         private static void Init()
@@ -386,16 +396,6 @@ namespace VDS.RDF
 
                     // Define GraphViz DOT
                     _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new string[] { "text/vnd.graphviz" }, new string[] { ".gv", ".dot" }, null, null, null, typeof(GraphVizWriter), null, null));
-
-                    // Define SPARQL Query
-                    var qDef = new MimeTypeDefinition("SPARQL Query", new string[] { SparqlQuery }, new string[] { DefaultSparqlQueryExtension });
-                    qDef.SetObjectParserType<SparqlQuery>(typeof(SparqlQueryParser));
-                    _mimeTypes.Add(qDef);
-
-                    // Define SPARQL Update
-                    var uDef = new MimeTypeDefinition("SPARQL Update", new string[] { SparqlUpdate }, new string[] { DefaultSparqlUpdateExtension });
-                    uDef.SetObjectParserType<SparqlUpdateCommandSet>(typeof(SparqlUpdateParser));
-                    _mimeTypes.Add(uDef);
 
                     _init = true;
                 }
@@ -1052,7 +1052,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static string GetFilenameFilter()
         {
-            return GetFilenameFilter(true, true, true, true, true, true);
+            return GetFilenameFilter(_=>true, true);
         }
 
         /// <summary>
@@ -1065,24 +1065,29 @@ namespace VDS.RDF
         /// <param name="sparqlUpdate">Allow SPARQL Update (i.e. .ru files).</param>
         /// <param name="allFiles">Allow All Files (i.e. */*).</param>
         /// <returns></returns>
-        public static string GetFilenameFilter(bool rdf, bool rdfDatasets, bool sparqlResults, bool sparqlQuery, bool sparqlUpdate, bool allFiles)
+        public static string GetFilenameFilter(bool rdf, bool rdfDatasets, bool sparqlResults, bool allFiles)
+        {
+            return GetFilenameFilter(def => (rdf && (def.CanParseRdf || def.CanWriteRdf))
+                                            || (rdfDatasets && (def.CanParseRdfDatasets || def.CanWriteRdfDatasets))
+                                            || (sparqlResults && (def.CanParseSparqlResults || def.CanWriteSparqlResults)), allFiles);
+        }
+
+        /// <summary>
+        /// Generates a Filename Filter that can be used with any .Net application and includes a user dictated subset of the formats that dotNetRDF is aware of.
+        /// </summary>
+        /// <param name="typeSelector">A function that returns true for each known mime-type to be included in the filename filter.</param>
+        /// <param name="allFiles">Add an All Files (i.e. *.*) option to the filename filter.</param>
+        /// <returns>A string formatted as a filename filter that can be used in .NET file dialogs.</returns>
+        public static string GetFilenameFilter(Func<MimeTypeDefinition, bool> typeSelector, bool allFiles)
         {
             if (!_init) Init();
-
             var filter = string.Empty;
             var exts = new List<string>();
 
-            foreach (MimeTypeDefinition def in Definitions)
+            foreach (MimeTypeDefinition def in Definitions.Where(typeSelector))
             {
-                if ((rdf && (def.CanParseRdf || def.CanWriteRdf)) 
-                    || (rdfDatasets && (def.CanParseRdfDatasets || def.CanWriteRdfDatasets)) 
-                    || (sparqlResults && (def.CanParseSparqlResults || def.CanWriteSparqlResults)) 
-                    || (sparqlQuery && def.CanParseObject<SparqlQuery>()) 
-                    || (sparqlUpdate && def.CanParseObject<SparqlUpdateCommandSet>()))
-                {
-                    exts.AddRange(def.FileExtensions);
-                    filter += def.SyntaxName + " Files|*." + string.Join(";*.", def.FileExtensions.ToArray()) + "|";
-                }
+                exts.AddRange(def.FileExtensions);
+                filter += def.SyntaxName + " Files|*." + string.Join(";*.", def.FileExtensions.ToArray()) + "|";
             }
             // Add an All Supported Formats option as first option
             filter = "All Supported Files|*." + string.Join(";*.", exts.ToArray()) + "|" + filter;
