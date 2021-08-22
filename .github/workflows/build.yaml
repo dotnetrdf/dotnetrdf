@@ -1,0 +1,26 @@
+name: build-and-test
+on: [push]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    
+    - name: Fetch tags for GitVersion
+      run: git fetch --tags
+
+    - name: Fetch master for GitVersion
+      if: github.ref != 'refs/head/master'
+      run: git branch --create-reflog master origin/master
+      
+    - name: GitVersion
+      id: gitversion
+      uses: roryprimrose/rungitversion@v1.0.0
+      
+    - name: Show GitVersion Value
+      run: |
+        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.NuGetVersionV2 }}"
+        echo "NuGetVersion: ${{ steps.gitversion.outputs.NuGetVersion }}"
+        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
+        echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.NuGetPreReleaseTag }}"
