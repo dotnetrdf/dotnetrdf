@@ -16,7 +16,9 @@ jobs:
       
     - name: GitVersion
       id: gitversion
-      uses: roryprimrose/rungitversion@v1.0.0
+      uses: gittools/actions/gitversion/execute
+      with:
+        useConfigFile: true
       
     - name: Show GitVersion Value
       run: |
