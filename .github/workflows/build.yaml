@@ -26,3 +26,15 @@ jobs:
         echo "NuGetVersion: ${{ steps.gitversion.outputs.NuGetVersion }}"
         echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
         echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.NuGetPreReleaseTag }}"
+        
+    - name: Build solution
+      run: dotnet build dotNetRDF.sln --configuration=Release
+    
+    - name: Core Tests (.NET 4.7.2)
+      run: |
+        dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\unittest\unittest.csproj
+        dotnet test -c Release --filter "Category=fulltext" --framework net472
+    
+    - name: Core Tests (.NET Core 3.1)
+      run: |
+        dotnet test -c Release --filter "Category!=explicit" --framework netcoreapp3.1 Testing\unittest\unittest.csproj
