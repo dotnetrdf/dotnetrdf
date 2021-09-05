@@ -1,4 +1,4 @@
-name: Build and Test
+name: Unit Tests
 on: push
 jobs:
   test:
@@ -24,35 +24,3 @@ jobs:
         fetch-depth: 0
     - name: Test Full-Text Indexing
       run: dotnet test -c Release --filter "Category=fulltext" --framework net472
-    
-  build:
-    needs: [test, fullTextTests]
-    runs-on: windows-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.10
-      with:
-        versionSpec: '5.x'
-
-    - name: GitVersion
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v0.9.10
-      with:
-        useConfigFile: true
-      
-    - name: Show GitVersion Value
-      run: |
-        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.NuGetVersionV2 }}"
-        echo "NuGetVersion: ${{ steps.gitversion.outputs.NuGetVersion }}"
-        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
-        echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.NuGetPreReleaseTag }}"
-        
-    - name: Build solution
-      run: dotnet build dotNetRDF.sln --configuration=Release
-    
-   
