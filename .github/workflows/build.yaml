@@ -1,7 +1,6 @@
-name: build-and-test
-on: [push]
+name: Build and Test
 jobs:
-  build:
+  setup:
     runs-on: windows-latest
     steps:
     - name: Checkout
@@ -13,7 +12,11 @@ jobs:
       uses: gittools/actions/gitversion/setup@v0.9.10
       with:
         versionSpec: '5.x'
-
+    
+  build:
+    needs: setup
+    runs-on: windows-latest
+    steps:
     - name: GitVersion
       id: gitversion
       uses: gittools/actions/gitversion/execute@v0.9.10
@@ -30,11 +33,20 @@ jobs:
     - name: Build solution
       run: dotnet build dotNetRDF.sln --configuration=Release
     
-    - name: Core Tests (.NET 4.7.2)
-      run: |
-        dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\unittest\unittest.csproj
-        dotnet test -c Release --filter "Category=fulltext" --framework net472
+  coreTests:
+    needs: build
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        framework: ["net472", "netcoreapp3.1"]
+    steps:
+    - name: Core Tests
+      run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} Testing\unittest\unittest.csproj
+   
+  fullTextTests:
+    needs: build
+    runs-on: windows-latest
+    steps:
+    - name: Test Full-Text Indexing
+      run: dotnet test -c Release --filter "Category=fulltext" --framework net472
     
-    - name: Core Tests (.NET Core 3.1)
-      run: |
-        dotnet test -c Release --filter "Category!=explicit" --framework netcoreapp3.1 Testing\unittest\unittest.csproj
