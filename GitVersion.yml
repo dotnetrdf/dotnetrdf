@@ -1,5 +1,4 @@
 branches: {}
 ignore:
   commits-before: 2017-01-01
-  sha: []
 merge-message-formats: {}
