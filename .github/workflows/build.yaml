@@ -1,7 +1,32 @@
 name: Build and Test
 on: push
 jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        framework: ["net472", "netcoreapp3.1"]
+        suite: ["unittest", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRDF.Skos.Tests"]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Run Tests
+      run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} Testing\${{matrix.suite}}
+    
+  fullTextTests:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Test Full-Text Indexing
+      run: dotnet test -c Release --filter "Category=fulltext" --framework net472
+    
   build:
+    needs: [test, fullTextTests]
     runs-on: windows-latest
     steps:
     - name: Checkout
@@ -30,21 +55,4 @@ jobs:
     - name: Build solution
       run: dotnet build dotNetRDF.sln --configuration=Release
     
-  coreTests:
-    needs: build
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        framework: ["net472", "netcoreapp3.1"]
-        suite: ["unittest", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRDF.Skos.Tests"]
-    steps:
-    - name: Core Tests
-      run: dotnet test -c Release --no-build --filter "Category!=explicit" --framework ${{ matrix.framework }} Testing\${{matrix.suite}}
    
-  fullTextTests:
-    needs: build
-    runs-on: windows-latest
-    steps:
-    - name: Test Full-Text Indexing
-      run: dotnet test -c Release --filter "Category=fulltext" --framework net472
-    
