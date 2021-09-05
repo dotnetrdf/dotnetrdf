@@ -1,5 +1,15 @@
 branches: {}
 ignore:
+  commits-before:
+    date-time: 2017-01-01T00:00:00.0000000
+    utc-date-time: 2017-01-01T00:00:00.0000000Z
+    local-date-time: 2017-01-01T00:00:00.0000000+00:00
+    date: 2017-01-01T00:00:00.0000000
+    day: 1
+    day-of-year: 1
+    month: 1
+    ticks: 636188256000000000
+    utc-ticks: 636188256000000000
+    year: 2017
   sha: []
-  commits-before: 2017-01-01T00:00:00
 merge-message-formats: {}
