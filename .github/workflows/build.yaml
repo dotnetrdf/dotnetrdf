@@ -39,9 +39,10 @@ jobs:
     strategy:
       matrix:
         framework: ["net472", "netcoreapp3.1"]
+        suite: ["unittest", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRDF.Skos.Tests"]
     steps:
     - name: Core Tests
-      run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} Testing\unittest\unittest.csproj
+      run: dotnet test -c Release --no-build --filter "Category!=explicit" --framework ${{ matrix.framework }} Testing\${{matrix.suite}}
    
   fullTextTests:
     needs: build
