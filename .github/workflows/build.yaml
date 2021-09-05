@@ -1,4 +1,5 @@
 name: Build and Test
+on: push
 jobs:
   setup:
     runs-on: windows-latest
