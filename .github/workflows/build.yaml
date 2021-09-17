@@ -13,7 +13,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Run Tests
-      run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} Testing\${{matrix.suite}}
+      run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} --collector:"XPlat Code Coverage" Testing\${{matrix.suite}}
     - name: Upload Code Coverage
       uses: actions/upload-artifact@v2
       with:
@@ -28,4 +28,13 @@ jobs:
       with:
         fetch-depth: 0
     - name: Test Full-Text Indexing
-      run: dotnet test -c Release --filter "Category=fulltext" --framework net472
+      run: dotnet test -c Release --filter "Category=fulltext" --framework net472 --collector:"XPlat Code Coverage"
+      
+  report:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v2
+      - name: Display downloaded artifacts
+        run: Get-ChildItem -recurse
