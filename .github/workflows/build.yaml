@@ -40,11 +40,11 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1.x'
+        dotnet-version: '5.0.x'
     - name: Start Fuseki
       run: docker run --rm -d -p 3030:3030 --name fuseki atomgraph/fuseki --mem /ds
     - name: Test Fuskei Connector
-      run: dotnet test -c Release --framework netcoreapp3.1 --collect:"XPlat Code Coverage" Testing/dotNetRDF.Connectors.Fuseki.Tests/dotNetRDF.Connectors.Fuseki.Tests.csproj
+      run: dotnet test -c Release --framework netcoreapp5.0 --collect:"XPlat Code Coverage" Testing/dotNetRDF.Connectors.Fuseki.Tests/dotNetRDF.Connectors.Fuseki.Tests.csproj
     - name: Stop Fuseki
       run: docker stop fuseki
       
