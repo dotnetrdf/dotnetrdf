@@ -42,10 +42,10 @@ jobs:
         uses: danielpalme/ReportGenerator-GitHub-Action@4.5.8
         with:
           reports: '*\*\*.xml'
-          targetdir: coveragereport
-          reporttypes: HtmlInline;Cobertura;Badges
+          targetdir: 'coveragereport'
+          reporttypes: 'HtmlInline;Cobertura;Badges'
           tag: '${{ github.run_number }}_${{ github.run_id }}'
-      -name: Upload Coverage Report
+      - name: Upload Coverage Report
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
