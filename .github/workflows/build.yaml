@@ -38,7 +38,7 @@ jobs:
       with:
         dotnet-version: '5.0.x'
     - name: Install .NET Core 3.1 Framework
-      run: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Runtime dotnet -Channel 3.1
+      run: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Channel 3.1
     - name: Validate Installation
       run: dotnet --list-runtimes
     - name: Checkout
