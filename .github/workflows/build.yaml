@@ -45,7 +45,7 @@ jobs:
       run: docker stop fuseki
       
   report:
-    needs: [ "test", "fullTextTests" ]
+    needs: [ "test", "fullTextTests", "fusekiTests" ]
     runs-on: windows-latest
     steps:
       - name: Checkout
