@@ -14,6 +14,11 @@ jobs:
         fetch-depth: 0
     - name: Run Tests
       run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} Testing\${{matrix.suite}}
+    - name: Upload Code Coverage
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage ${{matrix.suite}} ${{matrix.framework}}
+        path: Testing\${{matrix.suite}}\TestResults\**\coverage.cobertura.xml
     
   fullTextTests:
     runs-on: windows-latest
