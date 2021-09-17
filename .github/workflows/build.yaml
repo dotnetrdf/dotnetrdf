@@ -40,7 +40,7 @@ jobs:
     - name: Setup .NET Core # Required to execute ReportGenerator
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.5
+        dotnet-version: 5.0
     - name: Start Fuseki
       run: docker run --rm -d -p 3030:3030 --name fuseki atomgraph/fuseki --mem /ds
     - name: Test Fuskei Connector
