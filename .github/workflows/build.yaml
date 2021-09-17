@@ -28,7 +28,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Test Full-Text Indexing
-      run: dotnet test -c Release --filter "Category=fulltext" --framework net472 --collector:"XPlat Code Coverage"
+      run: dotnet test -c Release --filter "Category=fulltext" --framework net472 --collect:"XPlat Code Coverage"
       
   report:
     needs: test
