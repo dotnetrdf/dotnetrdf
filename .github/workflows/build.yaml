@@ -51,7 +51,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: code-coverage dotNetRDF.Connectors.Fuseki.Tests netcoreapp5.0
-        path: Testing\dotNetRDF.Connectors.Fuseki.Tests\TestResults\**\coverage.cobertura.xml
+        path: Testing/dotNetRDF.Connectors.Fuseki.Tests/TestResults/*/coverage.cobertura.xml
       
   report:
     needs: [ "test", "fullTextTests", "fusekiTests" ]
