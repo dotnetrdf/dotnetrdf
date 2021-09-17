@@ -31,12 +31,16 @@ jobs:
       run: dotnet test -c Release --filter "Category=fulltext" --framework net472 --collect:"XPlat Code Coverage"
       
   fusekiTests:
-    runs-on: windows-latest
+    runs-on: ubuntu
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+    - name: Setup .NET Core # Required to execute ReportGenerator
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.5
     - name: Start Fuseki
       run: docker run --rm -d -p 3030:3030 --name fuseki atomgraph/fuseki --mem /ds
     - name: Test Fuskei Connector
