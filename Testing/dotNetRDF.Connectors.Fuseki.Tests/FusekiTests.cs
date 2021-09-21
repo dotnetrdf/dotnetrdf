@@ -35,6 +35,7 @@ using System.IO;
 
 namespace VDS.RDF.Storage
 {
+    [Collection("Fuseki Test Collection")]
     public class FusekiTests
     {
         private readonly ITestOutputHelper _testOutputHelper;
