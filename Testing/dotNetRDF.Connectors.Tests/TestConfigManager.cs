@@ -99,10 +99,11 @@ namespace VDS.RDF
         {
             if (_init) return;
             if (_failed) Fail();
+            var configFilePath = Path.Combine("resources", "UnitTestConfig.properties");
 
-            if (File.Exists(@"resources\UnitTestConfig.properties"))
+            if (File.Exists(configFilePath))
             {
-                using (StreamReader reader = File.OpenText(@"resources\UnitTestConfig.properties"))
+                using (StreamReader reader = File.OpenText(configFilePath))
                 {
                     do
                     {

@@ -50,7 +50,7 @@ namespace VDS.RDF.Storage
             manager.SaveGraph(g);
 
             g = new Graph(new Uri(TestGraphUri2));
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(System.IO.Path.Combine("resources", "InferenceTest.ttl"));
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
 
@@ -128,7 +128,7 @@ namespace VDS.RDF.Storage
                 Assert.Equal(aExpected, aActual);
 
                 var bExpected = new Graph(new Uri(TestGraphUri2));
-                bExpected.LoadFromFile("resources\\InferenceTest.ttl");
+                bExpected.LoadFromFile(System.IO.Path.Combine("resources", "InferenceTest.ttl"));
                 bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 IGraph bActual = store[bExpected.Name];
                 Assert.Equal(bExpected, bActual);

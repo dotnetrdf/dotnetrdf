@@ -31,9 +31,11 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 using Xunit.Abstractions;
+using System.IO;
 
 namespace VDS.RDF.Storage
 {
+    [Collection("Fuseki Test Collection")]
     public class FusekiTests
     {
         private readonly ITestOutputHelper _testOutputHelper;
@@ -58,7 +60,7 @@ namespace VDS.RDF.Storage
         public void StorageFusekiSaveGraph(string mimeType = null)
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             g.BaseUri = new Uri("http://example.org/fusekiTest");
 
             //Save Graph to Fuseki
@@ -83,7 +85,7 @@ namespace VDS.RDF.Storage
         public void StorageFusekiSaveGraph2()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             g.BaseUri = new Uri("http://example.org/fuseki#test");
 
             //Save Graph to Fuseki
@@ -101,7 +103,7 @@ namespace VDS.RDF.Storage
         public void StorageFusekiSaveDefaultGraph()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             g.BaseUri = null;
 
             //Save Graph to Fuseki
@@ -120,7 +122,7 @@ namespace VDS.RDF.Storage
         public void StorageFusekiSaveDefaultGraph2()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             g.BaseUri = null;
 
             //Save Graph to Fuseki
@@ -142,7 +144,7 @@ namespace VDS.RDF.Storage
             StorageFusekiSaveGraph();
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             g.BaseUri = new Uri("http://example.org/fusekiTest");
 
             //Try to load the relevant Graph back from the Store

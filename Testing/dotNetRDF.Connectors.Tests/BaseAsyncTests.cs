@@ -136,8 +136,9 @@ namespace VDS.RDF.Storage
             try
             {
                 var signal = new ManualResetEvent(false);
+                var graphUri = (g.Name as IUriNode).Uri.AbsoluteUri;
                 AsyncStorageCallbackArgs resArgs = null;
-                g.BaseUri = UriFactory.Root.Create(DeleteGraphUri);
+                g.BaseUri = UriFactory.Root.Create(graphUri);
                 provider.SaveGraph(g, (_, args, state) =>
                 {
                     resArgs = args;
@@ -153,7 +154,7 @@ namespace VDS.RDF.Storage
                     Console.WriteLine("Async SaveGraph() worked OK, trying async DeleteGraph() to remove newly added graph...");
                     resArgs = null;
                     signal.Reset();
-                    provider.DeleteGraph(DeleteGraphUri, (_, args, state) =>
+                    provider.DeleteGraph(graphUri, (_, args, state) =>
                         {
                             resArgs = args;
                             signal.Set();
@@ -170,7 +171,7 @@ namespace VDS.RDF.Storage
                         resArgs = null;
                         signal.Reset();
                         var h = new Graph();
-                        provider.LoadGraph(h, DeleteGraphUri, (_, args, state) =>
+                        provider.LoadGraph(h, graphUri, (_, args, state) =>
                         {
                             resArgs = args;
                             signal.Set();
@@ -491,7 +492,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public void StorageAsyncDeleteGraph()
         {
-            var g = new Graph(new Uri(DeleteGraphUri));
+            var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             TestAsyncDelete(g);
         }
@@ -559,11 +560,12 @@ namespace VDS.RDF.Storage
 
             try
             {
+                var graphUri = (g.Name as IUriNode).Uri.AbsoluteUri;
                 await provider.SaveGraphAsync(g, CancellationToken.None);
-                await provider.DeleteGraphAsync(DeleteGraphUri, CancellationToken.None);
+                await provider.DeleteGraphAsync(graphUri, CancellationToken.None);
 
                 var h = new Graph();
-                await provider.LoadGraphAsync(h, DeleteGraphUri, CancellationToken.None);
+                await provider.LoadGraphAsync(h, graphUri, CancellationToken.None);
                 Assert.True(h.IsEmpty, "[" + provider.GetType().Name + "] Expected an empty Graph");
             }
             finally
@@ -698,7 +700,7 @@ namespace VDS.RDF.Storage
         [SkippableFact]
         public async Task StorageDeleteGraphAsync()
         {
-            var g = new Graph(new Uri(DeleteGraphUri));
+            var g = new Graph(new Uri(DeleteGraphUri + "/" + Guid.NewGuid()));
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             await TestDeleteGraphAsync(g);
         }
