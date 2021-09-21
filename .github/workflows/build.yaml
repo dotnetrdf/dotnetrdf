@@ -29,6 +29,11 @@ jobs:
         fetch-depth: 0
     - name: Test Full-Text Indexing
       run: dotnet test -c Release --filter "Category=fulltext" --framework net472 --collect:"XPlat Code Coverage"
+    - name: Upload Code Coverage
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage ${{matrix.suite}} ${{matrix.framework}}
+        path: Testing\${{matrix.suite}}\TestResults\**\coverage.cobertura.xml
       
   fusekiTests:
     runs-on: ubuntu-latest
@@ -61,22 +66,22 @@ jobs:
     needs: [ "test", "fullTextTests", "fusekiTests" ]
     runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Download coverage artifacts
-        uses: actions/download-artifact@v2
-      - name: Generate coverage report
-        uses: danielpalme/ReportGenerator-GitHub-Action@4.5.8
-        with:
-          reports: '*\*\*.xml'
-          targetdir: 'coveragereport'
-          reporttypes: 'HtmlInline;Cobertura;Badges'
-          tag: '${{ github.run_number }}_${{ github.run_id }}'
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-report
-          path: coveragereport\*
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Download coverage artifacts
+      uses: actions/download-artifact@v2
+    - name: Generate coverage report
+      uses: danielpalme/ReportGenerator-GitHub-Action@4.5.8
+      with:
+        reports: '*\*\*.xml'
+        targetdir: 'coveragereport'
+        reporttypes: 'HtmlInline;Cobertura;Badges'
+        tag: '${{ github.run_number }}_${{ github.run_id }}'
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: coveragereport\*
 
