@@ -50,6 +50,7 @@ namespace VDS.RDF.Query.FullText
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private INamespaceMapper _nsmap;
         private ISparqlDataset _dataset;
+        private LuceneTestHarness _testHarness = new LuceneTestHarness();
 
         public FullTextSparqlTests2()
         {
@@ -91,7 +92,7 @@ namespace VDS.RDF.Query.FullText
             }
             Console.WriteLine();
 
-            var provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+            var provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
             try
             {
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(provider) };
@@ -118,14 +119,14 @@ namespace VDS.RDF.Query.FullText
             finally
             {
                 provider.Dispose();
-                LuceneTestHarness.Index.Dispose();
+                _testHarness.Index.Dispose();
             }
         }
 
         [Fact]
         public void FullTextSparqlComplexLuceneSubjects1()
         {
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a <http://example.org/noSuchThing> }", Enumerable.Empty<INode>());
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a <http://example.org/noSuchThing> }", Enumerable.Empty<INode>());
         }
 
         [Fact]
@@ -139,7 +140,7 @@ namespace VDS.RDF.Query.FullText
             expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(n, factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             Assert.True(expected.Any());
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class }", expected);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class }", expected);
         }
 
         [Fact]
@@ -153,7 +154,7 @@ namespace VDS.RDF.Query.FullText
             expected.RemoveAll(n => !_dataset.ContainsTriple(new Triple(n, factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             Assert.True(expected.Any());
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match a rdfs:Class . { ?match pf:textMatch 'http' } }", expected);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?match a rdfs:Class . { ?match pf:textMatch 'http' } }", expected);
         }
 
         [Fact]
@@ -168,7 +169,7 @@ namespace VDS.RDF.Query.FullText
             expected.RemoveAll(n => !_dataset.GetTriplesWithPredicateObject(factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain")), n).Any());
             Assert.True(expected.Any());
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match }", expected);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match }", expected);
         }
 
         [Fact]
@@ -183,7 +184,7 @@ namespace VDS.RDF.Query.FullText
             expected.RemoveAll(n => !_dataset.GetTriplesWithPredicateObject(factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain")), n).Any());
 
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match . OPTIONAL { ?property rdfs:label ?label } }", expected);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match . OPTIONAL { ?property rdfs:label ?label } }", expected);
         }
 
         [Fact]
@@ -195,7 +196,7 @@ namespace VDS.RDF.Query.FullText
                                     select t.Subject).ToList();
             var factory = new NodeFactory();
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . OPTIONAL { ?match ?p ?o } }", expected);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . OPTIONAL { ?match ?p ?o } }", expected);
         }
     }
 }

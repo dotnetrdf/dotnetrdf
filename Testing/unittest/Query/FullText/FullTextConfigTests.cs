@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.FullText
             IGraph g = GetBaseGraph();
             INode obj = g.CreateBlankNode();
             g.Assert(obj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
-            g.Assert(obj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net"));
+            g.Assert(obj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
             TestTools.ShowGraph(g);
 
@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.FullText
             IGraph g = GetBaseGraph();
             INode obj = g.CreateBlankNode();
             g.Assert(obj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
-            g.Assert(obj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net"));
+            g.Assert(obj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
             g.Assert(obj, g.CreateUriNode("dnr-ft:version"), (2400).ToLiteral(g));
 
             TestTools.ShowGraph(g);
@@ -170,7 +170,7 @@ namespace VDS.RDF.Query.FullText
             //Add and Test the analyzer Config
             INode analyzerObj = g.CreateBlankNode();
             g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
-            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net"));
+            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
             ConfigurationLoader.AddObjectFactory(_factory);
 
@@ -222,7 +222,7 @@ namespace VDS.RDF.Query.FullText
             //Add and Test the analyzer Config
             INode analyzerObj = g.CreateBlankNode();
             g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
-            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net"));
+            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
             ConfigurationLoader.AddObjectFactory(_factory);
 
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.FullText
             //Add and Test the analyzer Config
             INode analyzerObj = g.CreateBlankNode();
             g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
-            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net"));
+            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
             ConfigurationLoader.AddObjectFactory(_factory);
 
@@ -327,7 +327,7 @@ namespace VDS.RDF.Query.FullText
             //Add and Test the analyzer Config
             INode analyzerObj = g.CreateBlankNode();
             g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
-            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net"));
+            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
             ConfigurationLoader.AddObjectFactory(_factory);
 
@@ -374,7 +374,7 @@ namespace VDS.RDF.Query.FullText
             //Add and Test the analyzer Config
             INode analyzerObj = g.CreateBlankNode();
             g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
-            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net"));
+            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net.Analysis.Common"));
 
             //Add and Test the schema config
             INode schemaObj = g.CreateBlankNode();
@@ -504,7 +504,8 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextConfigSerializeIndexerLuceneSubjects()
         {
-            var indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+            var testHarness = new LuceneTestHarness();
+            var indexer = new LuceneSubjectsIndexer(testHarness.Index, testHarness.Analyzer, testHarness.Schema);
             var context = new ConfigurationSerializationContext();
             INode obj = context.Graph.CreateBlankNode();
             context.NextSubject = obj;
@@ -522,7 +523,8 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextConfigSerializeIndexerLuceneObjects()
         {
-            var indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+            var testHarness = new LuceneTestHarness();
+            var indexer = new LuceneObjectsIndexer(testHarness.Index, testHarness.Analyzer, testHarness.Schema);
             var context = new ConfigurationSerializationContext();
             INode obj = context.Graph.CreateBlankNode();
             context.NextSubject = obj;
@@ -540,7 +542,8 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextConfigSerializeIndexerLucenePredicates()
         {
-            var indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+            var testHarness = new LuceneTestHarness();
+            var indexer = new LucenePredicatesIndexer(testHarness.Index, testHarness.Analyzer, testHarness.Schema);
             var context = new ConfigurationSerializationContext();
             INode obj = context.Graph.CreateBlankNode();
             context.NextSubject = obj;
@@ -558,12 +561,13 @@ namespace VDS.RDF.Query.FullText
         [Fact]
         public void FullTextConfigSerializeFullTextOptimiser()
         {
+            var testHarness = new LuceneTestHarness();
             try
             {
-                var writer = new IndexWriter(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
-                writer.Dispose();
+                // Ensure we have a properly initialised search index in the RAM directory
+                using (var indexer = new LucenePredicatesIndexer(testHarness.Index, testHarness.Analyzer, testHarness.Schema)) { };
 
-                var optimiser = new FullTextOptimiser(new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index, LuceneTestHarness.Schema));
+                var optimiser = new FullTextOptimiser(new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, testHarness.Index, testHarness.Schema));
                 var context = new ConfigurationSerializationContext();
                 INode obj = context.Graph.CreateBlankNode();
                 context.NextSubject = obj;
@@ -578,7 +582,7 @@ namespace VDS.RDF.Query.FullText
             }
             finally
             {
-                LuceneTestHarness.Index.Dispose();
+                testHarness.Index.Dispose();
             }
         }
     }

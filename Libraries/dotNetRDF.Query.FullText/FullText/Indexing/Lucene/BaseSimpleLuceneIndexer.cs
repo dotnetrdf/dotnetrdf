@@ -52,10 +52,11 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         private IndexingMode _mode;
         private Directory _indexDir;
         private Analyzer _analyzer;
+        private IndexWriterConfig _writerConfig;
         private IndexWriter _writer;
         private IFullTextIndexSchema _schema;
         private NTriplesFormatter _formatter = new NTriplesFormatter();
-        private IndexReader _reader;
+        private DirectoryReader _reader;
 
         /// <summary>
         /// Creates a new Simple Lucene Indexer.
@@ -71,7 +72,8 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             _indexDir = indexDir;
             _analyzer = analyzer;
             _schema = schema;
-            _writer = new IndexWriter(indexDir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+            _writerConfig = new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer) { OpenMode = OpenMode.CREATE_OR_APPEND };
+            _writer = new IndexWriter(indexDir, _writerConfig);
         }
 
         /// <summary>
@@ -89,7 +91,11 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         {
             if (_writer == null)
             {
-                _writer = new IndexWriter(_indexDir, _analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+                if (_writerConfig == null)
+                {
+                    _writerConfig = new IndexWriterConfig(LuceneVersion.LUCENE_48, _analyzer);
+                }
+                _writer = new IndexWriter(_indexDir, _writerConfig);
             }
         }
 
@@ -107,12 +113,16 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         {
             if (_reader == null)
             {
-                _reader = IndexReader.Open(_indexDir, false);
+                _reader = DirectoryReader.Open(_indexDir);
             }
             else if (!_reader.IsCurrent())
             {
-                _reader.Dispose();
-                _reader = IndexReader.Open(_indexDir, false);
+                var newReader = DirectoryReader.OpenIfChanged(_reader);
+                if (newReader != null)
+                {
+                    _reader.Dispose();
+                    _reader = newReader;
+                }
             }
         }
 
@@ -120,7 +130,6 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         {
             if (_reader != null)
             {
-                _reader.Commit();
                 _reader.Dispose();
                 _reader = null;
             }
@@ -148,21 +157,15 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// <param name="text">Full Text.</param>
         protected override void Unindex(String graphUri, INode n, string text)
         {
+            EnsureWriterOpen();
             var query = new TermQuery(new Term(_schema.HashField, GetHash(graphUri, n, text)));
-
-            //Close the existing writer
-            EnsureWriterClosed();
-
-            //Create a read/write Index Reader to modify the index
-            EnsureReaderOpen();
-            var searcher = new IndexSearcher(_reader);
-            var collector = new DocCollector();
-            searcher.Search(query, collector);
-
-            //Delete at most one instance
-            if (collector.Count > 0)
+            var deleteReader = _writer.GetReader(true);
+            var searcher = new IndexSearcher(deleteReader);
+            var results = searcher.Search(query, 1);
+            EnsureReaderClosed();
+            if (results.ScoreDocs.Length > 0)
             {
-                _reader.DeleteDocument(collector.Documents.First().Key);
+                _writer.TryDeleteDocument(deleteReader, results.ScoreDocs[0].Doc);
             }
         }
 
@@ -234,10 +237,6 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             {
                 _writer.Commit();
             }
-            else if (_reader != null)
-            {
-                _reader.Commit();
-            }
         }
 
         /// <summary>
@@ -248,7 +247,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             if (_writer != null)
             {
                 _writer.Commit();
-                if (_indexDir.isOpen_ForNUnit) _writer.Dispose();
+                _writer.Dispose();
             }
         }
 

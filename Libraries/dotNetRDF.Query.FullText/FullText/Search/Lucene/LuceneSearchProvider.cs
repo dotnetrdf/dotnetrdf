@@ -27,8 +27,8 @@
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Store;
-using LucUtil = Lucene.Net.Util;
 using VDS.RDF.Query.FullText.Schema;
+using Lucene.Net.Util;
 
 namespace VDS.RDF.Query.FullText.Search.Lucene
 {
@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="analyzer">Analyzer.</param>
         /// <param name="schema">Index Schema.</param>
         /// <param name="autoSync">Whether to keep the search provider in sync with the index.</param>
-        public LuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
+        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
             : base(ver, indexDir, analyzer, schema, autoSync) { }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="indexDir">Directory.</param>
         /// <param name="analyzer">Analyzer.</param>
         /// <param name="schema">Index Schema.</param>
-        public LuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
+        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
             : this(ver, indexDir, analyzer, schema, true) { }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <remarks>
         /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema.
         /// </remarks>
-        public LuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, bool autoSync)
+        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, bool autoSync)
             : this(ver, indexDir, analyzer, new DefaultIndexSchema(), autoSync) { }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <remarks>
         /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema.
         /// </remarks>
-        public LuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer)
+        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer)
             : this(ver, indexDir, analyzer, true) { }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <remarks>
         /// Uses the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
         /// </remarks>
-        public LuceneSearchProvider(LucUtil.Version ver, Directory indexDir, IFullTextIndexSchema schema, bool autoSync)
+        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, IFullTextIndexSchema schema, bool autoSync)
             : this(ver, indexDir, new StandardAnalyzer(ver), schema, autoSync) { }
 
         
@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <remarks>
         /// Uses the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
         /// </remarks>
-        public LuceneSearchProvider(LucUtil.Version ver, Directory indexDir, IFullTextIndexSchema schema)
+        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, IFullTextIndexSchema schema)
             : this(ver, indexDir, schema, true) { }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <remarks>
         /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema and the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
         /// </remarks>
-        public LuceneSearchProvider(LucUtil.Version ver, Directory indexDir, bool autoSync)
+        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir, bool autoSync)
             : this(ver, indexDir, new StandardAnalyzer(ver), new DefaultIndexSchema(), autoSync) { }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <remarks>
         /// Uses the <see cref="DefaultIndexSchema">DefaultIndexSchema</see> as the schema and the <see cref="StandardAnalyzer">StandardAnalyzer</see> as the analyzer.
         /// </remarks>
-        public LuceneSearchProvider(LucUtil.Version ver, Directory indexDir)
+        public LuceneSearchProvider(LuceneVersion ver, Directory indexDir)
             : this(ver, indexDir, true) { }
     }
 }

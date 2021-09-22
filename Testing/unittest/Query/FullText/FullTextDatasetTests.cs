@@ -102,6 +102,7 @@ namespace VDS.RDF.Query.FullText
             //Lucene Index
             Directory dir = new RAMDirectory();
             var indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
+            indexer.Flush();
             var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
 
             //Test Dataset

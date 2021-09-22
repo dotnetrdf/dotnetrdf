@@ -36,6 +36,9 @@ using LucUtil = Lucene.Net.Util;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.FullText.Schema;
+using Lucene.Net.Util;
+using Lucene.Net.QueryParsers.Flexible.Standard;
+using Lucene.Net.QueryParsers.Flexible.Standard.Config;
 
 namespace VDS.RDF.Query.FullText.Search.Lucene
 {
@@ -49,9 +52,10 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         : IFullTextSearchProvider, IConfigurationSerializable
     {
         private Directory _indexDir;
+        private DirectoryReader _indexReader;
         private LucSearch.IndexSearcher _searcher;
-        private QueryParser _parser;
-        private LucUtil.Version _version;
+        private StandardQueryParser _parser;
+        private LuceneVersion _version;
         private Analyzer _analyzer;
         private IFullTextIndexSchema _schema;
         private bool _autoSync = true;
@@ -65,7 +69,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="analyzer">Analyzer.</param>
         /// <param name="schema">Index Schema.</param>
         /// <param name="autoSync">Whether the Search Provider should stay in sync with the underlying index.</param>
-        public BaseLuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
+        public BaseLuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
         {
             _version = ver;
             _indexDir = indexDir;
@@ -74,8 +78,10 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             _autoSync = autoSync;
 
             //Create necessary objects
-            _searcher = new LucSearch.IndexSearcher(_indexDir, true);
-            _parser = new QueryParser(_version, _schema.IndexField, _analyzer);
+            _indexReader = DirectoryReader.Open(indexDir);
+            _searcher = new LucSearch.IndexSearcher(_indexReader);
+            _parser = new StandardQueryParser();
+            _parser.QueryConfigHandler.Set(ConfigurationKeys.ANALYZER, _analyzer);
         }
 
         /// <summary>
@@ -85,7 +91,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="indexDir">Directory.</param>
         /// <param name="analyzer">Analyzer.</param>
         /// <param name="schema">Index Schema.</param>
-        public BaseLuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
+        public BaseLuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
             : this(ver, indexDir, analyzer, schema, true) { }
 
         /// <summary>
@@ -106,7 +112,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold, int limit)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             LucSearch.TopDocs docs = _searcher.Search(q, limit);
 
             return (from doc in docs.ScoreDocs
@@ -123,7 +129,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector(scoreThreshold);
             _searcher.Search(q, collector);
             return (from doc in collector.Documents
@@ -139,7 +145,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, int limit)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             LucSearch.TopDocs docs = _searcher.Search(q, limit);
 
             return (from doc in docs.ScoreDocs
@@ -154,7 +160,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public virtual IEnumerable<IFullTextSearchResult> Match(string text)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector();
             _searcher.Search(q, collector);
             return (from doc in collector.Documents
@@ -173,7 +179,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold, int limit)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector();
             _searcher.Search(q, collector);
 
@@ -194,7 +200,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector(scoreThreshold);
             _searcher.Search(q, collector);
             IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
@@ -213,7 +219,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, int limit)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector();
             _searcher.Search(q, collector);
 
@@ -232,7 +238,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector();
             _searcher.Search(q, collector);
             IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
@@ -251,7 +257,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold, int limit)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector();
             _searcher.Search(q, collector);
 
@@ -270,7 +276,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, double scoreThreshold)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector(scoreThreshold);
             _searcher.Search(q, collector);
             IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
@@ -287,7 +293,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text, int limit)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector();
             _searcher.Search(q, collector);
 
@@ -304,7 +310,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         public IEnumerable<IFullTextSearchResult> Match(IEnumerable<IRefNode> graphUris, string text)
         {
             EnsureCurrent();
-            LucSearch.Query q = _parser.Parse(text);
+            LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector();
             _searcher.Search(q, collector);
             IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
@@ -360,11 +366,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         {
             if (_autoSync)
             {
-                if (!_searcher.IndexReader.IsCurrent())
+                DirectoryReader newReader = DirectoryReader.OpenIfChanged(_indexReader);
+                if (newReader != null)
                 {
-                    IndexReader oldReader = _searcher.IndexReader;
-                    _searcher = new LucSearch.IndexSearcher(oldReader.Reopen());
-                    oldReader.Dispose();
+                    _indexReader.Dispose();
+                    _indexReader = newReader;
+                    _searcher = new LucSearch.IndexSearcher(_indexReader);
                 }
             }
         }
@@ -387,7 +394,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
 
             DisposeInternal();
 
-            if (_searcher != null) _searcher.Dispose();
+            //if (_searcher != null) _searcher.Dispose();
         }
 
         /// <summary>

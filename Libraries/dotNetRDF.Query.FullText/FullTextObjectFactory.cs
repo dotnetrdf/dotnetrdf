@@ -25,12 +25,10 @@
 */
 
 using System;
-using System.Collections.Generic;
 using DirInfo = System.IO.DirectoryInfo;
 using System.Linq;
 using System.Reflection;
 using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
 using VDS.RDF.Query;
@@ -41,7 +39,8 @@ using VDS.RDF.Query.FullText.Schema;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Query.Optimisation;
-using LucVersion = Lucene.Net.Util.Version;
+using Lucene.Net.Util;
+using Lucene.Net.Analysis.Standard;
 
 namespace VDS.RDF.Configuration
 {   
@@ -263,7 +262,7 @@ namespace VDS.RDF.Configuration
                         {
                             //Create an Analyzer
                             //Try to create passing Lucene Version wherever possible
-                            if (targetType.GetConstructor(new Type[] { typeof(LucVersion) }) != null)
+                            if (targetType.GetConstructor(new Type[] { typeof(LuceneVersion) }) != null)
                             {
                                 obj = Activator.CreateInstance(targetType, new Object[] { GetLuceneVersion(ver) });
                             }
@@ -300,7 +299,8 @@ namespace VDS.RDF.Configuration
                             {
                                 if (ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "ensureIndex")), false))
                                 {
-                                    var writer = new IndexWriter((Directory)obj, new StandardAnalyzer(GetLuceneVersion(ver)), IndexWriter.MaxFieldLength.UNLIMITED);
+                                    var conf = new IndexWriterConfig(GetLuceneVersion(ver), new StandardAnalyzer(GetLuceneVersion(ver)));
+                                    var writer = new IndexWriter((Directory)obj, conf);
                                     writer.Dispose();
                                 }
                             }
@@ -348,24 +348,44 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="ver">Version.</param>
         /// <returns></returns>
-        private LucVersion GetLuceneVersion(int ver)
+        private LuceneVersion GetLuceneVersion(int ver)
         {
             switch (ver)
             {
-                case 2000:
-                    return LucVersion.LUCENE_20;
-                case 2100:
-                    return LucVersion.LUCENE_21;
-                case 2200:
-                    return LucVersion.LUCENE_22;
-                case 2300:
-                    return LucVersion.LUCENE_23;
-                case 2400:
-                    return LucVersion.LUCENE_24;
-                case 2900:
-                    return LucVersion.LUCENE_29;
+                case 3000:
+                    return LuceneVersion.LUCENE_30;
+                case 3100:
+                    return LuceneVersion.LUCENE_31;
+                case 3200:
+                    return LuceneVersion.LUCENE_32;
+                case 3300:
+                    return LuceneVersion.LUCENE_33;
+                case 3400:
+                    return LuceneVersion.LUCENE_34;
+                case 3500:
+                    return LuceneVersion.LUCENE_35;
+                case 3600:
+                    return LuceneVersion.LUCENE_36;
+                case 4000:
+                    return LuceneVersion.LUCENE_40;
+                case 4100:
+                    return LuceneVersion.LUCENE_41;
+                case 4200:
+                    return LuceneVersion.LUCENE_42;
+                case 4300:
+                    return LuceneVersion.LUCENE_43;
+                case 4400:
+                    return LuceneVersion.LUCENE_44;
+                case 4500:
+                    return LuceneVersion.LUCENE_45;
+                case 4600:
+                    return LuceneVersion.LUCENE_46;
+                case 4700:
+                    return LuceneVersion.LUCENE_47;
+                case 4800:
+                    return LuceneVersion.LUCENE_48;
                 default:
-                    return LucVersion.LUCENE_29;
+                    return LuceneVersion.LUCENE_48;
             }
         }
     }

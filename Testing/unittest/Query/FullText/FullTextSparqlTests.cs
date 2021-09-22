@@ -53,6 +53,7 @@ namespace VDS.RDF.Query.FullText
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private INamespaceMapper _nsmap;
         private ISparqlDataset _dataset;
+        private LuceneTestHarness _testHarness = new LuceneTestHarness();
 
         private INamespaceMapper GetQueryNamespaces()
         {
@@ -95,7 +96,7 @@ namespace VDS.RDF.Query.FullText
             Console.WriteLine("Parsed Query:");
             Console.WriteLine(formatter.Format(q));
 
-            var provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+            var provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
             var factory = new FullTextPropertyFunctionFactory();
             try
             {
@@ -126,7 +127,7 @@ namespace VDS.RDF.Query.FullText
             {
                 PropertyFunctionFactory.RemoveFactory(factory);
                 provider.Dispose();
-                LuceneTestHarness.Index.Dispose();
+                _testHarness.Index.Dispose();
             }
         }
 
@@ -145,7 +146,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
+            RunTest(new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
         }
 
         [Fact]
@@ -158,7 +159,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
+            RunTest(new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
         }
 
         [Fact]
@@ -171,7 +172,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
+            RunTest(new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
         }
 
         [Fact]
@@ -184,7 +185,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
@@ -197,7 +198,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
@@ -210,7 +211,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
         }
 
         [Fact]
@@ -223,7 +224,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
         }
 
         [Fact]
@@ -236,7 +237,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
         }
 
         [Fact]
@@ -249,7 +250,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
@@ -262,7 +263,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
@@ -275,7 +276,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
+            RunTest(new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT * WHERE { ?s pf:textMatch 'http' }", expected);
         }
 
         [Fact]
@@ -288,7 +289,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
+            RunTest(new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch 'http' } ORDER BY DESC(?score)", expected);
         }
 
         [Fact]
@@ -301,7 +302,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
+            RunTest(new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.5) } ORDER BY DESC(?score)", expected, false);
         }
 
         [Fact]
@@ -314,7 +315,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 1.0 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
 
         [Fact]
@@ -327,7 +328,7 @@ namespace VDS.RDF.Query.FullText
                                   && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                             select t).Count();
 
-            RunTest(new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
+            RunTest(new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema), "SELECT ?score ?match WHERE { (?match ?score) pf:textMatch ('http' 3) } ORDER BY DESC(?score)", Math.Min(expected, 3), false);
         }
     }
 }

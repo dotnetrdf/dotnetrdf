@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
     /// Collector Implementation used as part of our Lucene.Net integration.
     /// </summary>
     class DocCollector
-        : Collector
+        : ICollector
     {
         private Scorer _scorer;
         private int _currBase = 0;
@@ -82,25 +82,14 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             }
         }
 
-        /// <summary>
-        /// Returns that documents are accepted out of order.
-        /// </summary>
-        /// <returns></returns>
-        public override bool AcceptsDocsOutOfOrder
-        {
-            get
-            {
-                return true;
-            }
-        }
 
         /// <summary>
         /// Collects a document if it meets the score threshold (if any).
         /// </summary>
         /// <param name="doc">Document ID.</param>
-        public override void Collect(int doc)
+        public void Collect(int doc)
         {
-            double score = _scorer.Score();
+            double score =_scorer.GetScore();
             if (!Double.IsNaN(_scoreThreshold))
             {
                 if (score >= _scoreThreshold)
@@ -117,20 +106,33 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <summary>
         /// Sets the Next Reader.
         /// </summary>
-        /// <param name="reader">Index Reader.</param>
-        /// <param name="docBase">Document Base.</param>
-        public override void SetNextReader(IndexReader reader, int docBase)
+        /// <param name="context">Index Reader context.</param>
+        public void SetNextReader(AtomicReaderContext context)
         {
-            _currBase = docBase;
+            _currBase = context.DocBase;
         }
+
 
         /// <summary>
         /// Sets the Scorer.
         /// </summary>
         /// <param name="scorer">Scorer.</param>
-        public override void SetScorer(Scorer scorer)
+        public void SetScorer(Scorer scorer)
         {
             _scorer = scorer;
         }
+
+        /// <summary>
+        /// Returns that documents are accepted out of order.
+        /// </summary>
+        /// <returns></returns>
+        public bool AcceptsDocsOutOfOrder
+        {
+            get
+            {
+                return true;
+            }
+        }
+
     }
 }
