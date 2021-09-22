@@ -174,24 +174,11 @@ namespace VDS.RDF.Update
         /// <summary>
         /// Gets/Sets the Time the updates took to execute.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown if you try to inspect the execution time before/during the execution of updates.</exception>
+        /// <remarks>Returns NULL if no execution time has been set yet (e.g. if the command set has not yet been processed).</remarks>
         public TimeSpan? UpdateExecutionTime
         {
-            get
-            {
-                if (_executionTime == null)
-                {
-                    throw new InvalidOperationException("Cannot inspect the Update Time as the Command Set has not yet been processed");
-                }
-                else
-                {
-                    return _executionTime;
-                }
-            }
-            set
-            {
-                _executionTime = value;
-            }
+            get => _executionTime;
+            set => _executionTime = value;
         }
 
         /// <summary>

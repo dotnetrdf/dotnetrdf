@@ -35,6 +35,7 @@ using VDS.RDF.Query.Inference;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 using Xunit.Abstractions;
+using FluentAssertions;
 
 namespace VDS.RDF.Update
 {
@@ -719,5 +720,31 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.NotEqual(origTriples, g.Triples.Count);
             Assert.False(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Any(t => t.Object.ToString().Contains("dotnetrdf.org")), "Expected triples to have been deleted");
         }
+
+        [Fact]
+        public void ExecutionTimeIsNullBeforeExecutionAndNotNullAfter()
+        {
+            var store = new TripleStore();
+            var g = new Graph();
+            g.LoadFromFile("resources\\rvesse.ttl");
+            store.Add(g);
+
+            var origTriples = g.Triples.Count;
+
+            var command = new SparqlParameterizedString();
+            command.Namespaces.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            command.CommandText = @"DELETE { ?x foaf:mbox ?email } WHERE { ?x foaf:mbox ?email }";
+
+            var parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+            cmds.UpdateExecutionTime.Should().BeNull();
+
+            var dataset = new InMemoryDataset(store, g.Name);
+            var processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+
+            cmds.UpdateExecutionTime.Should().NotBeNull();
+        }
     }
+
 }
