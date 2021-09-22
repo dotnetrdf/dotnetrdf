@@ -30,6 +30,7 @@ using Xunit;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
+using System.Xml;
 
 namespace VDS.RDF.Parsing
 {
@@ -519,5 +520,21 @@ namespace VDS.RDF.Parsing
                 Assert.True(diff.AreEqual, "Expected test graph #" + i + " to match expect graph but found differences.");
 	        }
 	    }
+
+        [Theory]
+        [InlineData(RdfXmlParserMode.Streaming)]
+        [InlineData(RdfXmlParserMode.DOM)]
+        public void EntityParsingCanBeDisabled(RdfXmlParserMode mode)
+        {
+            var parser = new RdfXmlParser(mode);
+            const string rdfWithEntities = "<!DOCTYPE rdf:RDF [ <!ENTITY foo 'abc'> ]><rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:ex='http://example.org/'><rdf:Description rdf:nodeID='&foo;' ex:fullName='John Smith'/></rdf:RDF>";
+            parser.XmlReaderSettings.DtdProcessing = System.Xml.DtdProcessing.Prohibit;
+            var thrown = Assert.Throws<RdfParseException>(() =>
+            {
+                var g = new Graph();
+                g.LoadFromString(rdfWithEntities, parser);
+            });
+            Assert.IsType<XmlException>(thrown.InnerException);
+        }
     }
 }

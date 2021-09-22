@@ -130,10 +130,11 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">RDF Handler.</param>
         /// <param name="input">Input.</param>
         /// <param name="uriFactory">URI Factory to use.</param>
-        public RdfXmlParserContext(IRdfHandler handler, TextReader input, IUriFactory uriFactory= null)
+        /// <param name="xmlReaderSettings">The settngs to pass through to the underlying XML parser.</param>
+        public RdfXmlParserContext(IRdfHandler handler, TextReader input, IUriFactory uriFactory= null, XmlReaderSettings xmlReaderSettings = null)
             : base(handler, false, uriFactory ?? RDF.UriFactory.Root)
         {
-            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri().ToSafeString()));
+            _queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri().ToSafeString(), xmlReaderSettings));
         }
 
         /// <summary>

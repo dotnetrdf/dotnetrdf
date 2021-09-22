@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Writing;
+using System.Xml;
 
 namespace VDS.RDF.Parsing
 {
@@ -113,6 +114,17 @@ namespace VDS.RDF.Parsing
             var store = new TripleStore();
             _parser.Load(store, @"resources\\trix\emptygraph.trix");
             Assert.Equal(0, store.Graphs.Count);
+        }
+
+        [Fact]
+        public void EntityParsingCanBeDisabled()
+        {
+            var store = new TripleStore();
+            var parser = new TriXParser();
+            parser.XmlReaderSettings.DtdProcessing = DtdProcessing.Prohibit;
+            var thrown = Assert.Throws<RdfParseException>(() =>
+            parser.Load(store, System.IO.Path.Combine("resources", "trix", "entities.trix")));
+            Assert.IsType<XmlException>(thrown.InnerException);
         }
     }
 }

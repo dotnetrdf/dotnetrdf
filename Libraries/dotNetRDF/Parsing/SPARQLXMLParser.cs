@@ -46,6 +46,22 @@ namespace VDS.RDF.Parsing
         public const string SparqlNamespace = "http://www.w3.org/2005/sparql-results#";
 
         /// <summary>
+        /// Get the settings passed to the underlying XML parser on read.
+        /// </summary>
+        /// <remarks>This property can be used to modify the configuration of the 
+        /// XML parser used to parse SPARQL XML. In particular it makes it possible to 
+        /// disable the processing of the XML DTD in environments where remote XML
+        /// entity references are of concern.</remarks>
+        public readonly XmlReaderSettings XmlReaderSettings = new XmlReaderSettings
+        {
+            DtdProcessing = DtdProcessing.Parse,
+            ConformanceLevel = ConformanceLevel.Document,
+            IgnoreComments = true,
+            IgnoreProcessingInstructions = true,
+            IgnoreWhitespace = true,
+        };
+
+        /// <summary>
         /// Loads a Result Set from an Input.
         /// </summary>
         /// <param name="results">Result Set to load into.</param>
@@ -100,7 +116,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Parse the XML
-                var reader = XmlReader.Create(input, GetSettings());
+                var reader = XmlReader.Create(input, XmlReaderSettings);
                 Parse(new SparqlXmlParserContext(reader, handler, uriFactory));
             }
             catch
@@ -146,24 +162,6 @@ namespace VDS.RDF.Parsing
             Load(handler, new StreamReader(File.OpenRead(filename)), uriFactory);
         }
 
-        /// <summary>
-        /// Initialises the XML Reader settings.
-        /// </summary>
-        /// <returns></returns>
-        private XmlReaderSettings GetSettings()
-        {
-            var settings = new XmlReaderSettings();
-#if NETCORE
-            settings.DtdProcessing = DtdProcessing.Ignore;
-#elif NET40
-            settings.DtdProcessing = DtdProcessing.Parse;
-#endif
-            settings.ConformanceLevel = ConformanceLevel.Document;
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
-            return settings;
-        }
 
         /// <summary>
         /// Parses the XML Result Set format into a set of SPARQLResult objects.
