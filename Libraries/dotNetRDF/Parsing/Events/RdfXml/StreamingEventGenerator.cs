@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Xml;
 
 namespace VDS.RDF.Parsing.Events.RdfXml
@@ -57,31 +56,13 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// Creates a new Streaming Event Generator.
         /// </summary>
         /// <param name="stream">Stream.</param>
-        public StreamingEventGenerator(Stream stream)
-        {
-            _reader = XmlReader.Create(stream, GetSettings());
-            _hasLineInfo = (_reader is IXmlLineInfo);
-        }
-
-        /// <summary>
-        /// Creates a new Streaming Event Generator.
-        /// </summary>
-        /// <param name="stream">Stream.</param>
         /// <param name="baseUri">Base URI.</param>
-        public StreamingEventGenerator(Stream stream, string baseUri)
-            : this(stream)
+        /// <param name="xmlReaderSettings">The settings to pass through to the underlying XMLReader instance.</param>
+        public StreamingEventGenerator(Stream stream, string baseUri = null, XmlReaderSettings xmlReaderSettings = null)
         {
-            _currentBaseUri = baseUri;
-        }
-
-        /// <summary>
-        /// Creates a new Streaming Event Generator.
-        /// </summary>
-        /// <param name="reader">Text Reader.</param>
-        public StreamingEventGenerator(TextReader reader)
-        {
-            _reader = XmlReader.Create(reader, GetSettings());
+            _reader = XmlReader.Create(stream, xmlReaderSettings ?? GetSettings());
             _hasLineInfo = (_reader is IXmlLineInfo);
+            _currentBaseUri = baseUri ?? String.Empty;
         }
 
         /// <summary>
@@ -89,20 +70,12 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// </summary>
         /// <param name="reader">Text Reader.</param>
         /// <param name="baseUri">Base URI.</param>
-        public StreamingEventGenerator(TextReader reader, string baseUri)
-            : this(reader)
+        /// <param name="xmlReaderSettings">The settings to pass through to the underlying XMLReader instance.</param>
+        public StreamingEventGenerator(TextReader reader, string baseUri = null,XmlReaderSettings xmlReaderSettings = null)
         {
-            _currentBaseUri = baseUri;
-        }
-
-        /// <summary>
-        /// Creates a new Streaming Event Generator.
-        /// </summary>
-        /// <param name="file">Filename.</param>
-        public StreamingEventGenerator(string file)
-        {
-            _reader = XmlReader.Create(new FileStream(file, FileMode.Open), GetSettings());
+            _reader = XmlReader.Create(reader, xmlReaderSettings ?? GetSettings());
             _hasLineInfo = (_reader is IXmlLineInfo);
+            _currentBaseUri = baseUri ?? string.Empty;
         }
 
         /// <summary>
@@ -110,28 +83,28 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         /// </summary>
         /// <param name="file">Filename.</param>
         /// <param name="baseUri">Base URI.</param>
-        public StreamingEventGenerator(string file, string baseUri)
-            : this(file)
+        /// <param name="xmlReaderSettings">Settings to pass through to the underlying XML parser.</param>
+        public StreamingEventGenerator(string file, string baseUri = null, XmlReaderSettings xmlReaderSettings = null)
         {
-            _currentBaseUri = baseUri;
+            _reader = XmlReader.Create(new FileStream(file, FileMode.Open), xmlReaderSettings ?? GetSettings());
+            _hasLineInfo = (_reader is IXmlLineInfo);
+            _currentBaseUri = baseUri ?? string.Empty;
         }
 
         /// <summary>
-        /// Initialises the XML Reader settings.
+        /// Returns the default XML Reader settings.
         /// </summary>
         /// <returns></returns>
         private XmlReaderSettings GetSettings()
         {
-            var settings = new XmlReaderSettings();
-#if NETCORE 
-            settings.DtdProcessing = DtdProcessing.Ignore;
-#elif NET40 || NETSTANDARD2_0
-            settings.DtdProcessing = DtdProcessing.Parse;
-#endif
-            settings.ConformanceLevel = ConformanceLevel.Document;
-            settings.IgnoreComments = true;
-            settings.IgnoreProcessingInstructions = true;
-            settings.IgnoreWhitespace = true;
+            var settings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Parse,
+                ConformanceLevel = ConformanceLevel.Document,
+                IgnoreComments = true,
+                IgnoreProcessingInstructions = true,
+                IgnoreWhitespace = true,
+            };
             return settings;
         }
 

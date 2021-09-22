@@ -51,11 +51,28 @@ namespace VDS.RDF.Parsing
     public class TriXParser
         : IStoreReader
     {
+        private readonly bool _processDtd = false;
+
         /// <summary>
         /// Current W3C Namespace Uri for TriX.
         /// </summary>
         public const string TriXNamespaceURI = "http://www.w3.org/2004/03/trix/trix-1/";
 
+        /// <summary>
+        /// Get the settings passed to the XML parser.
+        /// </summary>
+        /// <remarks>This property can be used to modify the configuration of the 
+        /// underlying XML parser that is used. In particular it can be used to 
+        /// disable DTD processing in those environments where remote entity references
+        /// might be considered to be a risk.</remarks>
+        public readonly XmlReaderSettings XmlReaderSettings = new XmlReaderSettings
+            {
+                DtdProcessing = DtdProcessing.Parse,
+                ConformanceLevel = ConformanceLevel.Document,
+                IgnoreComments = true,
+                IgnoreProcessingInstructions = false,
+                IgnoreWhitespace = true,
+            };
 
         /// <summary>
         /// Loads the RDF Dataset from the TriX input into the given Triple Store.
@@ -372,18 +389,6 @@ namespace VDS.RDF.Parsing
             throw Error("Unexpected element <" + reader.Name + "> encountered, expected a <id>/<uri>/<plainLiteral>/<typedLiteral> element as part of a Triple", reader);
         }
 
-        private static XmlReaderSettings GetSettings()
-        {
-            return new XmlReaderSettings
-            {
-                DtdProcessing = DtdProcessing.Parse,
-                ConformanceLevel = ConformanceLevel.Document,
-                IgnoreComments = true,
-                IgnoreProcessingInstructions = false,
-                IgnoreWhitespace = true,
-            };
-        }
-
         /// <inheritdoc />
         public void Load(IRdfHandler handler, TextReader input)
         {
@@ -408,19 +413,27 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Load source XML
-                using (var xmlReader = XmlReader.Create(input, GetSettings()))
+                try
                 {
-                    var source = XDocument.Load(xmlReader);
-                    foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>()
-                        .Where(pi => pi.Target.Equals("xml-stylesheet")))
+                    using (var xmlReader = XmlReader.Create(input, XmlReaderSettings))
                     {
-                        source = ApplyTransform(source, pi);
-                    }
+                        var source = XDocument.Load(xmlReader);
+                        foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>()
+                            .Where(pi => pi.Target.Equals("xml-stylesheet")))
+                        {
+                            source = ApplyTransform(source, pi);
+                        }
 
-                    using (XmlReader transformedXmlReader = source.CreateReader())
-                    {
-                        TryParseGraphset(transformedXmlReader, handler, uriFactory);
+                        using (XmlReader transformedXmlReader = source.CreateReader())
+                        {
+                            TryParseGraphset(transformedXmlReader, handler, uriFactory);
+                        }
                     }
+                }
+                catch (XmlException xmlEx)
+                {
+                    // Wrap in a RDF Parse Exception
+                    throw new RdfParseException("Unable to Parse this TriX document since System.Xml was unable to parse the document, see Inner Exception for details of the XML exception that occurred", new PositionInfo(xmlEx.LineNumber, xmlEx.LinePosition), xmlEx);
                 }
             }
             finally
@@ -436,7 +449,7 @@ namespace VDS.RDF.Parsing
             var xslRef = match.Groups[1].Value;
             var xslt = new XslCompiledTransform();
             var xmlStringBuilder = new StringBuilder();
-            xslt.Load(XmlReader.Create(new StreamReader(xslRef), GetSettings()));
+            xslt.Load(XmlReader.Create(new StreamReader(xslRef), XmlReaderSettings));
             var output = new XDocument();
             using (XmlWriter writer = output.CreateWriter())
             {

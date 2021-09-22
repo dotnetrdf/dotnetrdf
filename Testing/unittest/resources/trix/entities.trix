@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE Trix [
+  <!ENTITY who 'Bob'>
+]>
+<Trix xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <triple>
+      <uri>http://example.org/&who;</uri>
+      <uri>http://example.org/wife</uri>
+      <uri>http://example.org/Mary</uri>
+    </triple>
+  </graph>
+</Trix>

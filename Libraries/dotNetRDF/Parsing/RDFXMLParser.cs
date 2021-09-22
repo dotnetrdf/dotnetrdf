@@ -107,6 +107,18 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Get the settings to pass through to the underlying XML parser used when parsing in streaming mode.
+        /// </summary>
+        public readonly XmlReaderSettings XmlReaderSettings = new XmlReaderSettings
+        {
+            DtdProcessing = DtdProcessing.Parse,
+            ConformanceLevel = ConformanceLevel.Document,
+            IgnoreComments = true,
+            IgnoreProcessingInstructions = true,
+            IgnoreWhitespace = true,
+        };
+
         #endregion
 
         /// <summary>
@@ -226,7 +238,8 @@ namespace VDS.RDF.Parsing
                 {
                     // Load XML from Stream
                     var doc = new XmlDocument();
-                    doc.Load(input);
+                    var reader = XmlReader.Create(input, XmlReaderSettings);
+                    doc.Load(reader);
 
                     // Create a new Parser Context and Parse
                     var context = new RdfXmlParserContext(handler, doc, _traceparsing, uriFactory);
@@ -234,7 +247,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    var context = new RdfXmlParserContext(handler, input, uriFactory);
+                    var context = new RdfXmlParserContext(handler, input, uriFactory, XmlReaderSettings);
                     Parse(context);
                 }
             }
