@@ -27,7 +27,7 @@ using Xunit;
 
 namespace VDS.RDF.Storage
 {
-    [Collection("RdfServer")]
+    [Collection("Fuseki Test Collection")]
     public class FusekiStoreTests : BasePersistentTripleStoreTests
     {
         public FusekiStoreTests(RdfServerFixture serverFixture) : base(serverFixture){}
