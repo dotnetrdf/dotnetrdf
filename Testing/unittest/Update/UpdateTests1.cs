@@ -24,18 +24,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
-using VDS.RDF.Query.Inference;
-using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 using Xunit.Abstractions;
 using FluentAssertions;
+using System.IO;
 
 namespace VDS.RDF.Update
 {
@@ -375,95 +372,45 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.Equal(orig, h);
         }
 
-        // TODO: Replace these tests with tests that don't rely on the RDFS Reasoner
-        [Fact]
-        public void SparqlUpdateInsertCommand()
+        [Theory]
+        [InlineData("insert-default-graph")]
+        [InlineData("insert-using")]
+        [InlineData("insert-using-named")]
+        public void SparqlUpdateInsert(string test)
         {
-            var command = new SparqlParameterizedString();
-            command.Namespaces.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
-            command.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-            command.CommandText = "INSERT { ?s rdf:type ?class } WHERE { ?s a ?type . ?type rdfs:subClassOf+ ?class };";
-            command.CommandText += "INSERT { ?s ?property ?value } WHERE {?s ?p ?value . ?p rdfs:subPropertyOf+ ?property };";
-            command.CommandText += "INSERT { ?s rdf:type rdfs:Class } WHERE { ?s rdfs:subClassOf ?class };";
-            command.CommandText += "INSERT { ?s rdf:type rdf:Property } WHERE { ?s rdfs:subPropertyOf ?property };";
+            var testPath = Path.Combine("resources", "sparql-update", test);
 
+            var p = new SparqlUpdateParser();
+            var cmds = p.ParseFromFile(Path.Combine(testPath, "update.rq"));
             var store = new TripleStore();
-            var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
-            g.BaseUri = null;
-            store.Add(g);
+            var inputFiles = Directory.GetFiles(testPath, "input*.*");
+            foreach (var inputFile in inputFiles) {
+                store.LoadFromFile(inputFile);
+            }
+            var updateProcessor = new LeviathanUpdateProcessor(store);
+            updateProcessor.ProcessCommandSet(cmds);
 
-            var parser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
-            var processor = new LeviathanUpdateProcessor(store);
-            processor.ProcessCommandSet(cmds);
-
-            TestTools.ShowGraph(g);
-            Console.WriteLine();
-
-            //Now reload the test data and apply an RDFS reasoner over it
-            //This should give us a Graph equivalent to the one created by the previous INSERT commands
-            var h = new Graph();
-            FileLoader.Load(h, "resources\\InferenceTest.ttl");
-            h.Retract(h.Triples.Where(t => !t.IsGroundTriple).ToList());
-            var reasoner = new RdfsReasoner();
-            reasoner.Apply(h);
-
-            GraphDiffReport diff = h.Difference(g);
-            if (!diff.AreEqual)
+            var expectStore = new TripleStore();
+            var expectFiles = Directory.GetFiles(testPath, "output*.*");
+            foreach(var expectFile in expectFiles)
             {
-                TestTools.ShowDifferences(diff);
+                expectStore.LoadFromFile(expectFile);
             }
 
-            Assert.Equal(h, g);            
-        }
-
-        [Fact]
-        public void SparqlUpdateInsertCommand2()
-        {
-            var command = new SparqlParameterizedString();
-            command.Namespaces.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
-            command.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-            command.CommandText = "INSERT { ?s rdf:type ?class } USING <http://example.org/temp> WHERE { ?s a ?type . ?type rdfs:subClassOf+ ?class };";
-            command.CommandText += "INSERT { ?s ?property ?value } USING <http://example.org/temp> WHERE {?s ?p ?value . ?p rdfs:subPropertyOf+ ?property };";
-            command.CommandText += "INSERT { ?s rdf:type rdfs:Class } USING <http://example.org/temp> WHERE { ?s rdfs:subClassOf ?class };";
-            command.CommandText += "INSERT { ?s rdf:type rdf:Property } USING <http://example.org/temp> WHERE { ?s rdfs:subPropertyOf ?property };";
-
-            var store = new TripleStore();
-            var g = new Graph(new UriNode(new Uri("http://example.org/temp")));
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            store.Add(g);
-            var origTriples = g.Triples.Count;
-
-            var parser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
-            var processor = new LeviathanUpdateProcessor(store);
-            processor.ProcessCommandSet(cmds);
-
-            Assert.Equal(origTriples, g.Triples.Count);
-
-            IGraph def = store[(IRefNode)null];
-
-            TestTools.ShowGraph(def, _testOutputHelper);
-            _testOutputHelper.WriteLine();
-
-            //Apply a RDFS reasoner over the original input and output it into another graph
-            //Should be equivalent to the default Graph
-            var h = new Graph();
-            var reasoner = new RdfsReasoner();
-            reasoner.Apply(g, h);
-
-            TestTools.ShowGraph(h, _testOutputHelper);
-
-            GraphDiffReport report = h.Difference(def);
-            if (!report.AreEqual)
+            foreach(var h in expectStore.Graphs)
             {
-                TestTools.ShowDifferences(report, _testOutputHelper);
+                Assert.True(store.HasGraph(h.Name), "Did not find expected graph " + h.Name + " in updated store.");
+                var g = store.Graphs[h.Name];
+                GraphDiffReport diff = h.Difference(g);
+                if (!diff.AreEqual)
+                {
+                    TestTools.ShowDifferences(diff, _testOutputHelper);
+                }
 
-                Assert.True(report.RemovedTriples.Count() == 1, "Should have only 1 missing Triple (due to rdfs:domain inference which is hard to encode in an INSERT command)");
+                Assert.Equal(h, g);
             }
         }
+
 
         [Fact]
         public void SparqlUpdateInsertCommand3()
@@ -491,49 +438,6 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             IGraph def = store[(IRefNode)null];
             TestTools.ShowGraph(def);
             Assert.True(def.IsEmpty, "Graph should be empty as the commands only used USING NAMED (so shouldn't have changed the dataset) and the Active Graph for the dataset was empty so there should have been nothing matched to generate insertions from");
-        }
-
-        [Fact]
-        public void SparqlUpdateInsertCommand4()
-        {
-            var command = new SparqlParameterizedString();
-            command.Namespaces.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
-            command.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-            command.CommandText = "INSERT { ?s rdf:type ?class } USING NAMED <http://example.org/temp> WHERE { GRAPH ?g { ?s a ?type . ?type rdfs:subClassOf+ ?class } };";
-            command.CommandText += "INSERT { ?s ?property ?value } USING NAMED <http://example.org/temp> WHERE { GRAPH ?g { ?s ?p ?value . ?p rdfs:subPropertyOf+ ?property } };";
-            command.CommandText += "INSERT { ?s rdf:type rdfs:Class } USING NAMED <http://example.org/temp> WHERE { GRAPH ?g { ?s rdfs:subClassOf ?class } };";
-            command.CommandText += "INSERT { ?s rdf:type rdf:Property } USING NAMED <http://example.org/temp> WHERE { GRAPH ?g { ?s rdfs:subPropertyOf ?property } };";
-
-            var store = new TripleStore();
-            var g = new Graph(new UriNode(new Uri("http://example.org/temp")));
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            store.Add(g);
-
-            var parser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
-            var dataset = new InMemoryDataset(store);
-            var processor = new LeviathanUpdateProcessor(dataset);
-            dataset.SetDefaultGraph((IRefNode)null);
-            processor.ProcessCommandSet(cmds);
-
-            IGraph def = store[(IRefNode)null];
-            TestTools.ShowGraph(def);
-
-            //Apply a RDFS reasoner over the original input and output it into another graph
-            //Should be equivalent to the default Graph
-            var h = new Graph();
-            var reasoner = new RdfsReasoner();
-            reasoner.Apply(g, h);
-
-            TestTools.ShowGraph(h);
-
-            GraphDiffReport report = h.Difference(def);
-            if (!report.AreEqual)
-            {
-                TestTools.ShowDifferences(report);
-
-                Assert.True(report.RemovedTriples.Count() == 1, "Should have only 1 missing Triple (due to rdfs:domain inference which is hard to encode in an INSERT command)");
-            }
         }
 
         [Fact]
