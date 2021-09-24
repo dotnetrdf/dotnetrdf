@@ -29,10 +29,11 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Data.DataTables;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF
 {
-    public class DataTableTests
+    public class SparqlResultsToDataTableTests
     {
         [Fact]
         public void SparqlResultSetToDataTable()

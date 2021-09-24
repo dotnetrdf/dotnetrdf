@@ -151,44 +151,6 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public void SparqlViewAndReasonerInteraction1()
-        {
-            var store = new InferencingTripleStore();
-            var view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { GRAPH ?g { ?s a ?type } }", store,
-                new UriNode(new Uri("http://example.org/view")));
-            store.Add(view);
-
-            _testOutputHelper.WriteLine("SPARQL View Empty");
-            TestTools.ShowGraph(view, _testOutputHelper);
-            _testOutputHelper.WriteLine();
-
-            //Load a Graph into the Store to cause the SPARQL View to update
-            var g = new Graph(new UriNode(new Uri("http://example.org/data")));
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
-            store.Add(g);
-
-            Thread.Sleep(500);
-            if (view.Triples.Count == 0) view.UpdateView();
-
-            _testOutputHelper.WriteLine("SPARQL View Populated");
-            TestTools.ShowGraph(view, _testOutputHelper);
-            _testOutputHelper.WriteLine();
-
-            Assert.True(view.Triples.Count > 0, "View should have updated to contain some Triples");
-            var lastCount = view.Triples.Count;
-
-            //Apply an RDFS reasoner
-            var reasoner = new StaticRdfsReasoner();
-            reasoner.Initialise(g);
-            store.AddInferenceEngine(reasoner);
-
-            Thread.Sleep(200);
-            if (view.Triples.Count == lastCount) view.UpdateView();
-            _testOutputHelper.WriteLine("SPARQL View Populated after Reasoner added");
-            TestTools.ShowGraph(view);
-        }
-
-        [Fact]
         public void SparqlViewGraphScope1()
         {
             var store = new TripleStore();

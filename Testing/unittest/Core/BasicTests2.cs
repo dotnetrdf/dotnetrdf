@@ -29,7 +29,6 @@ using System.IO;
 using System.Linq;
 using FluentAssertions;
 using Xunit;
-using VDS.RDF.Data.DataTables;
 using VDS.RDF.Parsing;
 using Xunit.Abstractions;
 
@@ -267,29 +266,6 @@ namespace VDS.RDF
                     Assert.Equal(u, g.BaseUri);
                 }
             }
-        }
-
-        [Fact]
-        public void GraphToDataTable()
-        {
-            var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-
-            var table = g.ToDataTable();
-
-            Assert.Equal(g.Triples.Count, table.Rows.Count);
-            Assert.Equal(3, table.Columns.Count);
-        }
-
-        [Fact]
-        public void GraphToDataTable2()
-        {
-            var g = new Graph();
-
-            var table = g.ToDataTable();
-
-            Assert.Equal(g.Triples.Count, table.Rows.Count);
-            Assert.Equal(3, table.Columns.Count);
         }
     }
 }
