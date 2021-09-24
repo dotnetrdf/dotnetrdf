@@ -44,6 +44,8 @@ namespace VDS.RDF.Query.FullText
     [Collection("FullText")]
     public class IndexCreationTests
     {
+        private LuceneTestHarness _testHarness = new LuceneTestHarness();
+
         private IGraph GetTestData()
         {
             var g = new Graph();
@@ -57,7 +59,7 @@ namespace VDS.RDF.Query.FullText
             IFullTextIndexer indexer = null;
             try
             {
-                indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
                 indexer.Index(GetTestData());
             }
             finally
@@ -72,7 +74,7 @@ namespace VDS.RDF.Query.FullText
             IFullTextIndexer indexer = null;
             try
             {
-                indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
                 indexer.Index(GetTestData());
             }
             finally
@@ -87,7 +89,7 @@ namespace VDS.RDF.Query.FullText
             IFullTextIndexer indexer = null;
             try
             {
-                indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
                 indexer.Index(GetTestData());
             }
             finally
@@ -106,7 +108,7 @@ namespace VDS.RDF.Query.FullText
                 int origCount;
                 try
                 {
-                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                     origCount = provider.Match("http").Count();
                     provider.Dispose();
                 }
@@ -120,7 +122,7 @@ namespace VDS.RDF.Query.FullText
                 }
                 Console.WriteLine("Prior to indexing search returns " + origCount + " result(s)");
 
-                indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
                 IGraph g = GetTestData();
                 indexer.Index(g);
                 indexer.Dispose();
@@ -129,7 +131,7 @@ namespace VDS.RDF.Query.FullText
                 int currCount;
                 try
                 {
-                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                     currCount = provider.Match("http").Count();
                     provider.Dispose();
                 }
@@ -143,13 +145,13 @@ namespace VDS.RDF.Query.FullText
                 }
                 Console.WriteLine("After indexing search returns " + currCount + " result(s)");
 
-                indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer = new LuceneSubjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
                 indexer.Unindex(g);
                 indexer.Dispose();
                 indexer = null;
                 try
                 {
-                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                     currCount = provider.Match("http").Count();
                     Console.WriteLine("After unindexing search returns " + currCount + " result(s)");
                 }
@@ -163,7 +165,7 @@ namespace VDS.RDF.Query.FullText
             finally
             {
                 if (indexer != null) indexer.Dispose();
-                LuceneTestHarness.Index.Dispose();
+                _testHarness.Index.Dispose();
             }
         }
 
@@ -177,7 +179,7 @@ namespace VDS.RDF.Query.FullText
                 int origCount;
                 try
                 {
-                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                     origCount = provider.Match("http").Count();
                     provider.Dispose();
                 }
@@ -191,7 +193,7 @@ namespace VDS.RDF.Query.FullText
                 }
                 Console.WriteLine("Prior to indexing search returns " + origCount + " result(s)");
 
-                indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
                 IGraph g = GetTestData();
                 indexer.Index(g);
                 indexer.Dispose();
@@ -200,7 +202,7 @@ namespace VDS.RDF.Query.FullText
                 int currCount;
                 try
                 {
-                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                     currCount = provider.Match("http").Count();
                     provider.Dispose();
                 }
@@ -214,13 +216,13 @@ namespace VDS.RDF.Query.FullText
                 }
                 Console.WriteLine("After indexing search returns " + currCount + " result(s)");
 
-                indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
                 indexer.Unindex(g);
                 indexer.Dispose();
                 indexer = null;
                 try
                 {
-                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                     currCount = provider.Match("http").Count();
                     Console.WriteLine("After unindexing search returns " + currCount + " result(s)");
                 }
@@ -234,7 +236,7 @@ namespace VDS.RDF.Query.FullText
             finally
             {
                 if (indexer != null) indexer.Dispose();
-                LuceneTestHarness.Index.Dispose();
+                _testHarness.Index.Dispose();
             }
         }
 
@@ -248,7 +250,7 @@ namespace VDS.RDF.Query.FullText
                 int origCount;
                 try
                 {
-                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                     origCount = provider.Match("http").Count();
                     provider.Dispose();
                 }
@@ -262,7 +264,7 @@ namespace VDS.RDF.Query.FullText
                 }
                 Console.WriteLine("Prior to indexing search returns " + origCount + " result(s)");
 
-                indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
                 IGraph g = GetTestData();
                 indexer.Index(g);
                 indexer.Dispose();
@@ -271,7 +273,7 @@ namespace VDS.RDF.Query.FullText
                 int currCount;
                 try
                 {
-                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                     currCount = provider.Match("http").Count();
                     provider.Dispose();
                 }
@@ -285,13 +287,13 @@ namespace VDS.RDF.Query.FullText
                 }
                 Console.WriteLine("After indexing search returns " + currCount + " result(s)");
 
-                indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer = new LucenePredicatesIndexer(_testHarness.Index, _testHarness.Analyzer, _testHarness.Schema);
                 indexer.Unindex(g);
                 indexer.Dispose();
                 indexer = null;
                 try
                 {
-                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                    provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                     currCount = provider.Match("http").Count();
                     Console.WriteLine("After unindexing search returns " + currCount + " result(s)");
                 }
@@ -305,7 +307,7 @@ namespace VDS.RDF.Query.FullText
             finally
             {
                 if (indexer != null) indexer.Dispose();
-                LuceneTestHarness.Index.Dispose();
+                _testHarness.Index.Dispose();
             }
         }
 
@@ -315,7 +317,7 @@ namespace VDS.RDF.Query.FullText
             IFullTextIndexer indexer = null;
             try
             {
-                indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, new DefaultIndexSchema());
+                indexer = new LuceneObjectsIndexer(_testHarness.Index, _testHarness.Analyzer, new DefaultIndexSchema());
                 
                 var g = new Graph();
                 INode example = g.CreateLiteralNode("This is an example node which we'll index multiple times");
@@ -326,7 +328,7 @@ namespace VDS.RDF.Query.FullText
                 }
                 indexer.Index(g);
 
-                var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                var searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, _testHarness.Index);
                 Assert.Equal(10, searcher.Match("example").Count());
 
                 for (var i = 9; i >= 0; i--)

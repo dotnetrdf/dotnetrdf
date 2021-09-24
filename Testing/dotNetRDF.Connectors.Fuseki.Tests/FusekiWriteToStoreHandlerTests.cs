@@ -23,11 +23,14 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using Xunit;
+
 namespace VDS.RDF.Storage
 {
     /// <summary>
     /// Summary description for WriteToStoreHandlerTests
     /// </summary>
+    [Collection("Fuseki Test Collection")]
     public class FusekiWriteToStoreHandlerTests: WriteToStoreHandlerTests
     {
         protected override IStorageProvider GetConnection()

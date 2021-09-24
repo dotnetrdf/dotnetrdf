@@ -38,6 +38,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Schema;
 using VDS.RDF.Query.FullText.Search;
+using Lucene.Net.Index;
 
 namespace VDS.RDF.Query
 {
@@ -57,28 +58,29 @@ namespace VDS.RDF.Query
         internal static IFullTextSearchResult ToResult(this Document doc, double score, IFullTextIndexSchema schema)
         {
             //First get the node type
-            Field nodeTypeField = doc.GetField(schema.NodeTypeField);
+            IIndexableField nodeTypeField = doc.GetField(schema.NodeTypeField);
             if (nodeTypeField == null) throw new RdfQueryException("Node Type field " + schema.NodeTypeField + " not present on a retrieved document.  Please check you have configured the Index Schema correctly");
             NodeType nodeType;
             try 
             {
-                nodeType = (NodeType)Enum.Parse(typeof(NodeType), nodeTypeField.StringValue);
+                nodeType = (NodeType)Enum.Parse(typeof(NodeType), nodeTypeField.GetStringValue());
             } 
             catch 
             {
-                throw new RdfQueryException("Node Type field " + schema.NodeTypeField + " contained an invalid value '" + nodeTypeField.StringValue + "'.  Please check you have configured the Index Schema correctly");
+                throw new RdfQueryException("Node Type field " + schema.NodeTypeField + " contained an invalid value '" + nodeTypeField.GetStringValue() + "'.  Please check you have configured the Index Schema correctly");
             }
 
             //Get the Graph
-            Field graphField = doc.GetField(schema.GraphField);
+            IIndexableField graphField = doc.GetField(schema.GraphField);
             IRefNode graphName = graphField == null ? null :
-                graphField.StringValue.StartsWith("_:") ?  (IRefNode)_factory.CreateBlankNode(graphField.StringValue) :
-                _factory.CreateUriNode(_factory.UriFactory.Create(graphField.StringValue));
+                graphField.GetStringValue().StartsWith("_:") ? 
+                (IRefNode)_factory.CreateBlankNode(graphField.GetStringValue()) :
+                _factory.CreateUriNode(_factory.UriFactory.Create(graphField.GetStringValue()));
 
             //Then get the node value
-            Field nodeValueField = doc.GetField(schema.NodeValueField);
+            IIndexableField nodeValueField = doc.GetField(schema.NodeValueField);
             if (nodeValueField == null) throw new RdfQueryException("Node Value field " + schema.NodeValueField + " not present on a retrieved document.  Please check you have configured the Index Schema correctly");
-            var nodeValue = nodeValueField.StringValue;
+            var nodeValue = nodeValueField.GetStringValue();
 
             //Then depending on the Node Type determine whether we need to obtain the Meta Field as well
             switch (nodeType)
@@ -89,7 +91,7 @@ namespace VDS.RDF.Query
 
                 case NodeType.Literal:
                     //Need to get Meta field to determine whether we have a language or datatype present
-                    Field nodeMetaField = doc.GetField(schema.NodeMetaField);
+                    IIndexableField nodeMetaField = doc.GetField(schema.NodeMetaField);
                     if (nodeMetaField == null)
                     {
                         //Assume a Plain Literal
@@ -97,7 +99,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        var nodeMeta = nodeMetaField.StringValue;
+                        var nodeMeta = nodeMetaField.GetStringValue();
                         if (nodeMeta.StartsWith("@"))
                         {
                             //Language Specified literal
@@ -227,10 +229,10 @@ namespace VDS.RDF.Query
             INode analyzerObj = context.NextSubject;
 
             Type t = analyzer.GetType();
-            if (t.GetConstructor(Type.EmptyTypes) != null || t.GetConstructor(new Type[] { typeof(Lucene.Net.Util.Version) }) != null)
+            if (t.GetConstructor(Type.EmptyTypes) != null || t.GetConstructor(new Type[] { typeof(Lucene.Net.Util.LuceneVersion) }) != null)
             {
                 context.Graph.Assert(analyzerObj, rdfType, analyzerClass);
-                context.Graph.Assert(analyzerObj, dnrType, context.Graph.CreateLiteralNode(t.FullName + ", Lucene.Net"));
+                context.Graph.Assert(analyzerObj, dnrType, context.Graph.CreateLiteralNode(t.AssemblyQualifiedName));
             }
             else
             {
