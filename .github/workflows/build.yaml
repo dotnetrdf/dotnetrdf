@@ -48,7 +48,7 @@ jobs:
         path: Testing/dotNetRDF.Connectors.Fuseki.Tests/TestResults/*/coverage.cobertura.xml
       
   report:
-    needs: [ "test", "fullTextTests", "fusekiTests" ]
+    needs: [ "test", "fusekiTests" ]
     runs-on: windows-latest
     steps:
     - name: Checkout
