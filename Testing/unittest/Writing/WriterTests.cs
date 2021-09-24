@@ -268,7 +268,6 @@ namespace VDS.RDF.Writing
         [InlineData(typeof(RdfJsonWriter))]
         [InlineData(typeof(CompressingTurtleWriter))]
         [InlineData(typeof(HtmlWriter))]
-        [InlineData(typeof(HtmlSchemaWriter))]
         [InlineData(typeof(GraphVizWriter))]
         public void TextWriterCanBeLeftOpen(Type writerType)
         {

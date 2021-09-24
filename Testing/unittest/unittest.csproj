@@ -25,9 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\dotNetRdf.HtmlSchema\dotNetRdf.HtmlSchema.csproj" />
+	<ProjectReference Include="..\..\Libraries\dotNetRDF.Sparql\dotNetRDF.Sparql.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
-    <ProjectReference Include="..\..\Libraries\dotNetRdf.Sparql\dotNetRdf.Sparql.csproj" />
     <ProjectReference Include="..\dotNetRdf.TestSupport\dotNetRdf.TestSupport.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>

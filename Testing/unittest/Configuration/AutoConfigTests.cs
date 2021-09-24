@@ -24,15 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF.Configuration;
-using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query.Operators;
-using VDS.RDF.Query.Operators.DateTime;
 
 namespace VDS.RDF.Configuration
 {
@@ -151,78 +143,9 @@ namespace VDS.RDF.Configuration
         }
 
 
-        [Fact]
-        public void ConfigurationAutoOperators1()
+        public static class MockConfigurationTarget
         {
-            try
-            {
-                var data = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
-_:a a dnr:SparqlOperator ;
-dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
-
-                var g = new Graph();
-                g.LoadFromString(data);
-                ConfigurationLoader.AutoConfigure(g);
-
-                SparqlOperators.TryGetOperator(SparqlOperatorType.Add, false, out var op, null);
-
-                Assert.Equal(typeof(MockSparqlOperator), op.GetType());
-                SparqlOperators.RemoveOperator(op);
-            }
-            finally
-            {
-                SparqlOperators.Reset();
-            }
+            public static int StaticIntOption { get; set; }
         }
-
-        [Fact]
-        public void ConfigurationAutoOperators2()
-        {
-            try
-            {
-                var data = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
-_:a a dnr:SparqlOperator ;
-dnr:type ""VDS.RDF.Query.Operators.DateTime.DateTimeAddition"" ;
-dnr:enabled false .";
-
-                var g = new Graph();
-                g.LoadFromString(data);
-                ConfigurationLoader.AutoConfigure(g);
-
-                Assert.False(SparqlOperators.IsRegistered(new DateTimeAddition()));
-            }
-            finally
-            {
-                SparqlOperators.Reset();
-            }
-        }
-    }
-
-    public class MockSparqlOperator
-        : ISparqlOperator
-    {
-
-        #region ISparqlOperator Members
-
-        public SparqlOperatorType Operator => SparqlOperatorType.Add;
-
-        public bool IsExtension => true;
-
-        public bool IsApplicable(params IValuedNode[] ns)
-        {
-            return true;
-        }
-
-        public IValuedNode Apply(params Nodes.IValuedNode[] ns)
-        {
-            return null;
-        }
-
-        #endregion
-    }
-
-    public static class MockConfigurationTarget
-    {
-        public static int StaticIntOption { get; set; }
     }
 }
