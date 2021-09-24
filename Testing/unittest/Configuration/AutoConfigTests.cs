@@ -142,10 +142,5 @@ namespace VDS.RDF.Configuration
             Assert.Equal(99, MockConfigurationTarget.StaticIntOption);
         }
 
-
-        public static class MockConfigurationTarget
-        {
-            public static int StaticIntOption { get; set; }
-        }
     }
 }
