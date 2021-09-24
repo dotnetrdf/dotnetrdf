@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         framework: ["net472", "netcoreapp3.1"]
-        suite: ["unittest", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRDF.Skos.Tests", "dotNetRdf.Data.DataTables.Tests"]
+        suite: ["unittest", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRDF.Skos.Tests", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.Query.FullText.Tests"]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -20,24 +20,6 @@ jobs:
         name: code-coverage ${{matrix.suite}} ${{matrix.framework}}
         path: Testing\${{matrix.suite}}\TestResults\**\coverage.cobertura.xml
     
-  fullTextTests:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        framework: ["net472", "netcoreapp3.1"]
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Test Full-Text Indexing
-      run: dotnet test -c Release --filter "Category=fulltext" --framework ${{ matrix.framework }} --collect:"XPlat Code Coverage" Testing\unittest
-    - name: Upload Code Coverage
-      uses: actions/upload-artifact@v2
-      with:
-        name: code-coverage FullText ${{ matrix.framework }}
-        path: Testing\unittest\TestResults\**\coverage.cobertura.xml
-      
   fusekiTests:
     runs-on: ubuntu-latest
     steps:
