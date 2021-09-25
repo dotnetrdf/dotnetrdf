@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using VDS.RDF.Query.Operators;
+using VDS.RDF.Query.Operators.DateTime;
 using Xunit;
 
 namespace VDS.RDF.Configuration
