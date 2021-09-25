@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Query.FullText", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Query.Spin", "Libraries\dotNetRDF.Query.Spin\dotNetRDF.Query.Spin.csproj", "{7D138362-4FB1-4B85-AE11-18D49C46BEC1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "unittest", "Testing\unittest\unittest.csproj", "{A94C3243-F0CD-4AEB-B8F4-EC12CFFFCA12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Tests", "Testing\dotNetRdf.Tests\dotNetRdf.Tests.csproj", "{A94C3243-F0CD-4AEB-B8F4-EC12CFFFCA12}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Data.DataTables", "Libraries\dotNetRDF.Data.DataTables\dotNetRDF.Data.DataTables.csproj", "{63FDB648-1631-4452-8B60-E5A4225341FB}"
 EndProject
