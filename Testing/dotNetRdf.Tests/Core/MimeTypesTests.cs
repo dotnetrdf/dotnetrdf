@@ -40,7 +40,6 @@ namespace VDS.RDF
         public MimeTypesTests()
         {
             MimeTypesHelper.ResetDefinitions();
-            SparqlMimeTypeExtensions.RegisterSparqlMimeTypes();
         }
 
         public void Dispose()

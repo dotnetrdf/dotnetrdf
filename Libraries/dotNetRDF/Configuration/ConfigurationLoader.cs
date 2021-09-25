@@ -307,6 +307,7 @@ namespace VDS.RDF.Configuration
 #if NET40
             SettingsProvider = new ConfigurationManagerSettingsProvider();
 #endif
+            ConfigurationLoader.RegisterExtension<SparqlConfigurationLoaderExtension>();
         }
 
         #region Graph Loading and Auto-Configuration

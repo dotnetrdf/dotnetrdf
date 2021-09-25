@@ -16,7 +16,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotNetRdf.Sparql\dotNetRdf.Sparql.csproj" />
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>

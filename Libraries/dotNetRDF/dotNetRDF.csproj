@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="dotNetRDF.Test"/>
+    <InternalsVisibleTo Include="dotNetRdf.InMemory" />
   </ItemGroup>
 
   <ItemGroup>

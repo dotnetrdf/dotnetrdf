@@ -88,13 +88,7 @@ namespace VDS.RDF.Query
             IsSubQuery = subquery;
         }
 
-        /// <summary>
-        /// Creates a new SPARQL Query.
-        /// </summary>
-        /// <param name="subquery">Whether the Query is a Sub-query.</param>
-        internal SparqlQuery(bool subquery): this(null, null, subquery)
-        {
-        }
+        public SparqlQuery(bool subQuery):this(null, null, subQuery) { }
 
         /// <summary>
         /// Creates a copy of the query.

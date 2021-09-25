@@ -135,6 +135,16 @@ namespace VDS.RDF
         public static readonly string[] SparqlResultsBoolean = { "text/boolean" };
 
         /// <summary>
+        /// MIME Type for SPARQL Queries.
+        /// </summary>
+        public const string SparqlQuery = "application/sparql-query";
+
+        /// <summary>
+        /// MIME Type for SPARQL Updates.
+        /// </summary>
+        public const string SparqlUpdate = "application/sparql-update";
+
+        /// <summary>
         /// MIME Types for CSV.
         /// </summary>
         public static readonly string[] Csv = { "text/csv", "text/comma-separated-values" };
@@ -148,16 +158,6 @@ namespace VDS.RDF
         /// MIME Types for HTML.
         /// </summary>
         public static readonly string[] Html = { "text/html", "application/xhtml+xml" };
-
-        /// <summary>
-        /// MIME Type for SPARQL Queries.
-        /// </summary>
-        public const string SparqlQuery = "application/sparql-query";
-
-        /// <summary>
-        /// MIME Type for SPARQL Updates.
-        /// </summary>
-        public const string SparqlUpdate = "application/sparql-update";
 
         /// <summary>
         /// Default File Extension for Turtle Files.
@@ -227,6 +227,15 @@ namespace VDS.RDF
         /// Default File Extension for GZip.
         /// </summary>
         public const string DefaultGZipExtension = "gz";
+        /// <summary>
+        /// Default File Extension for SPARQL Queries.
+        /// </summary>
+        public const string DefaultSparqlQueryExtension = "rq";
+        /// <summary>
+        /// Default File Extension for SPARQL Updates.
+        /// </summary>
+        public const string DefaultSparqlUpdateExtension = "ru";
+
 
         /// <summary>
         /// Extensions which are considered stackable.
@@ -396,6 +405,16 @@ namespace VDS.RDF
 
                     // Define GraphViz DOT
                     _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new string[] { "text/vnd.graphviz" }, new string[] { ".gv", ".dot" }, null, null, null, typeof(GraphVizWriter), null, null));
+
+                    // Define SPARQL Query
+                    var qDef = new MimeTypeDefinition("SPARQL Query", new string[] { SparqlQuery }, new string[] { DefaultSparqlQueryExtension });
+                    qDef.SetObjectParserType<SparqlQuery>(typeof(SparqlQueryParser));
+                    _mimeTypes.Add(qDef);
+
+                    // Define SPARQL Update
+                    var uDef = new MimeTypeDefinition("SPARQL Update", new string[] { SparqlUpdate }, new string[] { DefaultSparqlUpdateExtension });
+                    uDef.SetObjectParserType<SparqlUpdateCommandSet>(typeof(SparqlUpdateParser));
+                    _mimeTypes.Add(uDef);
 
                     _init = true;
                 }

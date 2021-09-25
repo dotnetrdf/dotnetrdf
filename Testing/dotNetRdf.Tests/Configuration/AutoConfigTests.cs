@@ -141,6 +141,50 @@ namespace VDS.RDF.Configuration
             ApplyStaticOptionsConfigure(g, optionUri, (99).ToLiteral(g));
             Assert.Equal(99, MockConfigurationTarget.StaticIntOption);
         }
+        [Fact]
+        public void ConfigurationAutoOperators1()
+        {
+            try
+            {
+                var data = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+_:a a dnr:SparqlOperator ;
+dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
 
+                var g = new Graph();
+                g.LoadFromString(data);
+                ConfigurationLoader.AutoConfigure(g);
+
+                SparqlOperators.TryGetOperator(SparqlOperatorType.Add, false, out var op, null);
+
+                Assert.Equal(typeof(MockSparqlOperator), op.GetType());
+                SparqlOperators.RemoveOperator(op);
+            }
+            finally
+            {
+                SparqlOperators.Reset();
+            }
+        }
+
+        [Fact]
+        public void ConfigurationAutoOperators2()
+        {
+            try
+            {
+                var data = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+_:a a dnr:SparqlOperator ;
+dnr:type ""VDS.RDF.Query.Operators.DateTime.DateTimeAddition"" ;
+dnr:enabled false .";
+
+                var g = new Graph();
+                g.LoadFromString(data);
+                ConfigurationLoader.AutoConfigure(g);
+
+                Assert.False(SparqlOperators.IsRegistered(new DateTimeAddition()));
+            }
+            finally
+            {
+                SparqlOperators.Reset();
+            }
+        }
     }
 }

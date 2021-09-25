@@ -37,11 +37,6 @@ namespace VDS.RDF.Parsing
 
     public class ObjectParserTests
     {
-        public ObjectParserTests()
-        {
-            SparqlMimeTypeExtensions.RegisterSparqlMimeTypes();
-        }
-
         [Fact]
         public void ParsingObjectsListAvailable()
         {
