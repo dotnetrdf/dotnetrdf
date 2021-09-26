@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
-    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
     <InternalsVisibleTo Include="dotNetRdf.Query.FullText.Tests" />
   </ItemGroup>
 

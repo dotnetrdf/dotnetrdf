@@ -1,36 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyTitle>dotNetRDF.Connectors.Virtuoso.Tests</AssemblyTitle>
-    <TargetFrameworks>net472</TargetFrameworks>
-    <AssemblyName>dotNetRDF.Connectors.Virtuoso.Tests</AssemblyName>
-    <PackageId>dotNetRDF.Connectors.Virtuoso.Tests</PackageId>
-    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <AssemblyTitle>dotNetRdf.Connectors.Sesame.Tests</AssemblyTitle>
+    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <AssemblyName>dotNetRDF.Connectors.Sesame.Tests</AssemblyName>
+	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\dotNetRDF.Data.Virtuoso\dotNetRDF.Data.Virtuoso.csproj" />
-    <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
-    <ProjectReference Include="..\dotNetRDF.Connectors.Tests\dotNetRDF.Connectors.Tests.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Client\dotNetRdf.Client.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf\dotNetRdf.csproj" />
+    <ProjectReference Include="..\dotNetRdf.Connectors.Tests\dotNetRdf.Connectors.Tests.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Include="*.cs" />
   </ItemGroup>
- 
+
+  <ItemGroup>
+    <Compile Remove="Async\**" />
+    <EmbeddedResource Remove="Async\**" />
+    <None Remove="Async\**" />
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.0" />

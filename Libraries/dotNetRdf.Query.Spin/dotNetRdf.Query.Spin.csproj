@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>dotNetRDF.Query.Spin</AssemblyName>
+    <AssemblyName>dotNetRdf.Query.Spin</AssemblyName>
     <AssemblyTitle>dotNetRDF SPIN</AssemblyTitle>
     <Description>A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine</Description>
     <VersionPrefix>$(Version)</VersionPrefix>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>dotNetRDF.Query.Spin</PackageId>
+    <PackageId>dotNetRdf.Query.Spin</PackageId>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\dotNetRdf.Inferencing\dotNetRdf.Inferencing.csproj" />
-    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

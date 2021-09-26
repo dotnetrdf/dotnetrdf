@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>dotNetRDF.Data.Virtuoso</AssemblyName>
-    <AssemblyTitle>dotNetRDF.Data.Virtuoso</AssemblyTitle>
+    <AssemblyName>dotNetRdf.Data.Virtuoso</AssemblyName>
+    <AssemblyTitle>dotNetRdf.Data.Virtuoso</AssemblyTitle>
     <Description>Provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</Description>
     <VersionPrefix>$(Version)</VersionPrefix>
     <TargetFrameworks>net472</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>dotNetRDF.Data.Virtuoso</PackageId>
+    <PackageId>dotNetRdf.Data.Virtuoso</PackageId>
     <PackageTags>RDF;Semantic;Web;SPARQL;Virtuoso;OpenLink</PackageTags>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <DebugType>full</DebugType>
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 

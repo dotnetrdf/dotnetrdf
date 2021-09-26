@@ -4,7 +4,7 @@
     <AssemblyName>dotNetRdf.Data.DataTables</AssemblyName>
     <AssemblyTitle>dotNetRdf DataTables</AssemblyTitle>
     <Description>Package which allow integrating dotNetRDF with System.Data.DataTable</Description>
-    <PackageId>dotNetRDF.Data.DataTables</PackageId>
+    <PackageId>dotNetRdf.Data.DataTables</PackageId>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>VDS.RDF.Data.DataTables</RootNamespace>
     <VersionPrefix>$(Version)</VersionPrefix>
@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@
     <Description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</Description>
     <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>dotNetRDF</PackageId>
+    <PackageId>dotNetRdf</PackageId>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>VDS.RDF</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="dotNetRDF.Test"/>
+    <InternalsVisibleTo Include="dotNetRdf.Test"/>
     <InternalsVisibleTo Include="dotNetRdf.InMemory" />
   </ItemGroup>
 
