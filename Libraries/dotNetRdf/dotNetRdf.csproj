@@ -17,11 +17,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="dotNetRdf.Test"/>
+    <InternalsVisibleTo Include="dotNetRdf.Test" />
     <InternalsVisibleTo Include="dotNetRdf.InMemory" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
   </ItemGroup>
   
   <ItemGroup>
@@ -81,7 +83,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <Compile Remove="Properties\**" />
   </ItemGroup>
 
 </Project>
