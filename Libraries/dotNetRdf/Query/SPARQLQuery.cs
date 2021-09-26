@@ -549,7 +549,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public void Optimise()
         {
-            Optimise(SparqlOptimiser.QueryOptimiser);
+            Optimise(SparqlOptimiser.Default.QueryOptimiser);
         }
 
         /// <summary>
@@ -797,7 +797,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra(bool optimise = true, IEnumerable<IAlgebraOptimiser> optimisers = null)
         {
-            optimisers ??= SparqlOptimiser.AlgebraOptimisers;
+            optimisers ??= SparqlOptimiser.Default.AlgebraOptimisers;
             // Firstly Transform the Root Graph Pattern to SPARQL Algebra
             ISparqlAlgebra algebra;
             if (RootGraphPattern != null)

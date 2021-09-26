@@ -206,24 +206,13 @@ namespace VDS.RDF.Update
         /// <summary>
         /// Optimises the Commands in the Command Set.
         /// </summary>
-        /// <param name="optimiser">Optimiser to use.</param>
-        public void Optimise(IQueryOptimiser optimiser)
+        /// <param name="optimiser">The query optimiser to apply. If this parameter is null or omitted, the query optimiser from <see cref="SparqlOptimiser.Default"/> is used.</param>
+        public void Optimise(IQueryOptimiser optimiser = null)
         {
+            optimiser ??= SparqlOptimiser.Default.QueryOptimiser;
             foreach (SparqlUpdateCommand c in _commands)
             {
                 c.Optimise(optimiser);
-            }
-        }
-
-        /// <summary>
-        /// Optimises the Commands in the Command Set.
-        /// </summary>
-        /// <remarks>Uses the globally registered query optimiser from <see cref="SparqlOptimiser.QueryOptimiser">SparqlOptimiser.QueryOptimiser</see>.</remarks>
-        public void Optimise()
-        {
-            foreach (SparqlUpdateCommand c in _commands)
-            {
-                c.Optimise(SparqlOptimiser.QueryOptimiser);
             }
         }
 
@@ -236,7 +225,14 @@ namespace VDS.RDF.Update
             processor.ProcessCommandSet(this);
         }
 
-        public ISparqlAlgebra ApplyAlgebraOptimisers(ISparqlAlgebra algebra)
+        /// <summary>
+        /// Apply algebra optimisers to the specified algebra, returning the optimised algebra.
+        /// </summary>
+        /// <param name="algebra">The algebra to be optimised.</param>
+        /// <param name="globalOptimisers">Additional optimisers to apply after applying all of the local optimisers specified by <see cref="AlgebraOptimisers"/>.</param>
+        /// <returns>The optimised algebra.</returns>
+        /// <remarks>If the <paramref name="globalOptimisers"/> is null or not specified, the default algebra optimisers defined by <see cref="SparqlOptimiser.Default"/> are applied.</remarks>
+        public ISparqlAlgebra ApplyAlgebraOptimisers(ISparqlAlgebra algebra, IEnumerable<IAlgebraOptimiser> globalOptimisers = null)
         {
             try
             {
@@ -253,7 +249,8 @@ namespace VDS.RDF.Update
                     }
                 }
                 // Apply Global Optimisers
-                foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.Where(o => o.IsApplicable(this)))
+                globalOptimisers ??= SparqlOptimiser.Default.AlgebraOptimisers;
+                foreach (IAlgebraOptimiser opt in globalOptimisers.Where(o => o.IsApplicable(this)))
                 {
                     try
                     {
