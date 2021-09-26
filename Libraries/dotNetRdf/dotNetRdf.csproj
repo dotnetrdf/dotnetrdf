@@ -22,12 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Query\Expressions\LeviathanFunctionLibrary.ttl" />
-    <None Remove="Query\Optimisation\OptimiserStats.ttl" />
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\configuration.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <EmbeddedResource Include="Configuration\configuration.ttl" />
+    <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
+    <EmbeddedResource Include="Query\Optimisation\OptimiserStats.ttl" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
     
