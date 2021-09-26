@@ -12,11 +12,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+    <Compile Remove="Writing\**" />
+    <EmbeddedResource Remove="Writing\**" />
+    <None Remove="Writing\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Writing\" />
+    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
   </ItemGroup>
 
 </Project>

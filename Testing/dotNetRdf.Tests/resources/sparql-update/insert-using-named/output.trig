@@ -1,0 +1,29 @@
+﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <http://example.org/> .
+
+:temp {
+    :WrittenWork rdfs:subClassOf :Thing .
+    :Book rdfs:subClassOf :WrittenWork .
+
+    :author rdfs:subPropertyOf :creator .
+    :ghostAuthor rdfs:subPropertyOf :author .
+
+    :someBook a :Book;
+              :ghostAuthor :alice;
+              :author :bob .
+}
+{
+    :WrittenWork a rdfs:Class .
+
+    :Book a rdfs:Class .
+
+    :author a rdf:Property .
+
+    :ghostAuthor a rdf:Property .
+
+    :someBook a :WrittenWork, :Thing;
+              :creator :alice;
+              :author :alice;
+              :creator :bob.
+}

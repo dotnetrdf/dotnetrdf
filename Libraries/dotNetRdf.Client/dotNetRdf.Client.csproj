@@ -12,16 +12,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotNetRdf.Sparql\dotNetRdf.Sparql.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Configuration\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Web"/>
+    <Reference Include="System.Web" />
   </ItemGroup>
 
   </Project>
