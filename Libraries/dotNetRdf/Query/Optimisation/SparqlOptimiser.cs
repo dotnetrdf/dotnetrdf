@@ -30,12 +30,12 @@ using System.Collections.Generic;
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// Static Helper class which provides global registry of Algebra Optimisers and the global Query Optimiser.
+    /// Helper class which provides a registry of Algebra Optimisers and the global Query Optimiser.
     /// </summary>
-    public static class SparqlOptimiser
+    public class SparqlOptimiser
     {
-        private static IQueryOptimiser _queryOpt = new DefaultOptimiser();
-        private static List<IAlgebraOptimiser> _algebraOpt = new List<IAlgebraOptimiser>()
+        private IQueryOptimiser _queryOpt = new DefaultOptimiser();
+        private List<IAlgebraOptimiser> _algebraOpt = new List<IAlgebraOptimiser>()
         {
             // Optimise to insert Property Functions first - this is always a no-op if none registered
             new PropertyFunctionOptimiser(),
@@ -45,8 +45,13 @@ namespace VDS.RDF.Query.Optimisation
             // Optimise ORDER BY + DISTINCT/REDUCED combinations
             new OrderByDistinctOptimiser(),
             // Optimise for special filter constructs which improve performance
-            new IdentityFilterOptimiser()
+            new IdentityFilterOptimiser(),
         };
+
+        /// <summary>
+        /// Get a default pre-configured optimiser.
+        /// </summary>
+        public static readonly SparqlOptimiser Default = new SparqlOptimiser();
 
         /// <summary>
         /// Namespace URI for the Optimiser Statistics vocabulary.
@@ -70,7 +75,7 @@ namespace VDS.RDF.Query.Optimisation
         /// Even with this option disabled a Query can still be optimised manually by calling its <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
         /// </para>
         /// </remarks>
-        public static IQueryOptimiser QueryOptimiser
+        public IQueryOptimiser QueryOptimiser
         {
             get
             {
@@ -81,6 +86,10 @@ namespace VDS.RDF.Query.Optimisation
                 if (value != null)
                 {
                     _queryOpt = value;
+                }
+                else
+                {
+                    throw new ArgumentNullException(nameof(value));
                 }
             }
         }
@@ -93,7 +102,7 @@ namespace VDS.RDF.Query.Optimisation
         /// Unlike Query Optimisation multiple Algebra Optimisations may apply.  Algebra optimisers may also be specified and apply locally by the use of the relevant properties on the <see cref="VDS.RDF.Parsing.SparqlQueryParser">SparqlQueryParser</see> and <see cref="SparqlQuery">SparqlQuery</see> classes.  Those specified on a parser will automatically be passed through to all queries parsed by the parser.  Locally specified optimisers apply prior to globally specified ones.
         /// </para>
         /// </remarks>
-        public static IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
+        public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
         {
             get
             {
@@ -105,7 +114,7 @@ namespace VDS.RDF.Query.Optimisation
         /// Adds a new Algebra Optimiser.
         /// </summary>
         /// <param name="optimiser">Optimiser.</param>
-        public static void AddOptimiser(IAlgebraOptimiser optimiser)
+        public void AddOptimiser(IAlgebraOptimiser optimiser)
         {
             _algebraOpt.Add(optimiser);
         }
@@ -114,7 +123,7 @@ namespace VDS.RDF.Query.Optimisation
         /// Removes an Algebra Optimiser.
         /// </summary>
         /// <param name="optimiser"></param>
-        public static void RemoveOptimiser(IAlgebraOptimiser optimiser)
+        public void RemoveOptimiser(IAlgebraOptimiser optimiser)
         {
             _algebraOpt.Remove(optimiser);
         }
@@ -122,7 +131,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <summary>
         /// Resets Optimisers to default settings.
         /// </summary>
-        public static void ResetOptimisers()
+        public void ResetOptimisers()
         {
             if (_queryOpt.GetType() != typeof(DefaultOptimiser))
             {
@@ -139,7 +148,7 @@ namespace VDS.RDF.Query.Optimisation
                 // Optimise ORDER BY + DISTINCT/REDUCED combinations
                 new OrderByDistinctOptimiser(),
                 // Optimise for special filter constructs which improve performance
-                new IdentityFilterOptimiser()
+                new IdentityFilterOptimiser(),
             };
         }
     }

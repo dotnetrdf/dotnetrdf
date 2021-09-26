@@ -585,11 +585,11 @@ namespace VDS.RDF.Query.Patterns
         #region Pattern Optimisation
 
         /// <summary>
-        /// Optimises the Graph Pattern using the current global optimiser.
+        /// Optimises the Graph Pattern using the default query optimiser.
         /// </summary>
         public void Optimise()
         {
-            Optimise(SparqlOptimiser.QueryOptimiser);
+            Optimise(SparqlOptimiser.Default.QueryOptimiser);
         }
 
         /// <summary>
