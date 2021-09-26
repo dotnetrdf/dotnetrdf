@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing.Handlers
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
             var h = new Graph(new UriNode(new Uri("http://graphs/2")));
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             store.Add(h);
             store.SaveToFile(testFile);
         }
@@ -72,7 +72,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(expectGraph2), "Leviathan Function Library Graph should have been parsed from Dataset");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[expectGraph2];
             Assert.Equal(lvnOrig, lvn);
 
@@ -97,7 +97,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(graph2), "Leviathan Function Library Graph should have been parsed from Dataset");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[graph2];
             Assert.Equal(lvnOrig, lvn);
 
@@ -115,7 +115,7 @@ namespace VDS.RDF.Parsing.Handlers
             var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.Equal(2, counter.GraphCount);
             Assert.Equal(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount);
@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing.Handlers
             var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.Equal(2, counter.GraphCount);
             Assert.Equal(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount);
@@ -156,7 +156,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(graph2), "Leviathan Function Library Graph should have been parsed from Dataset");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[graph2];
             Assert.Equal(lvnOrig, lvn);
 
@@ -187,7 +187,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(graph2), "Leviathan Function Library Graph should have been parsed from Dataset");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[graph2];
             Assert.Equal(lvnOrig, lvn);
 
@@ -213,7 +213,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(graph2), "Leviathan Function Library Graph should have been parsed from Dataset");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[graph2];
             Assert.Equal(lvnOrig, lvn);
 
@@ -231,7 +231,7 @@ namespace VDS.RDF.Parsing.Handlers
             var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.Equal(2, counter.GraphCount);
             Assert.Equal(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount);
@@ -261,7 +261,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(graph2), "Leviathan Function Library Graph should have been parsed from Dataset");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[graph2];
             Assert.Equal(lvnOrig, lvn);
 
@@ -287,7 +287,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             Assert.True(store.HasGraph(graph2), "Leviathan Function Library Graph should have been parsed from Dataset");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store[graph2];
             Assert.Equal(lvnOrig, lvn);
 
@@ -305,7 +305,7 @@ namespace VDS.RDF.Parsing.Handlers
             var configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             var lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl, dotNetRdf.Sparql");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.Equal(2, counter.GraphCount);
             Assert.Equal(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount);
