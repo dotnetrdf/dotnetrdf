@@ -6,17 +6,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{F0F45D49-20AC-4407-8618-8C3650E34B97}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF", "Libraries\dotNetRDF\dotNetRDF.csproj", "{90ABF384-7116-451A-BCE6-82872FD95792}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf", "Libraries\dotNetRdf\dotNetRdf.csproj", "{90ABF384-7116-451A-BCE6-82872FD95792}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Data.Virtuoso", "Libraries\dotNetRDF.Data.Virtuoso\dotNetRDF.Data.Virtuoso.csproj", "{E53A145B-A81A-4FCC-9E2A-4136856F414A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Data.Virtuoso", "Libraries\dotNetRdf.Data.Virtuoso\dotNetRdf.Data.Virtuoso.csproj", "{E53A145B-A81A-4FCC-9E2A-4136856F414A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Query.FullText", "Libraries\dotNetRDF.Query.FullText\dotNetRDF.Query.FullText.csproj", "{D1839286-0E0F-42C6-BF6B-D2B177B7862A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Query.FullText", "Libraries\dotNetRdf.Query.FullText\dotNetRdf.Query.FullText.csproj", "{D1839286-0E0F-42C6-BF6B-D2B177B7862A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Query.Spin", "Libraries\dotNetRDF.Query.Spin\dotNetRDF.Query.Spin.csproj", "{7D138362-4FB1-4B85-AE11-18D49C46BEC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Query.Spin", "Libraries\dotNetRdf.Query.Spin\dotNetRdf.Query.Spin.csproj", "{7D138362-4FB1-4B85-AE11-18D49C46BEC1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Tests", "Testing\dotNetRdf.Tests\dotNetRdf.Tests.csproj", "{A94C3243-F0CD-4AEB-B8F4-EC12CFFFCA12}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Data.DataTables", "Libraries\dotNetRDF.Data.DataTables\dotNetRDF.Data.DataTables.csproj", "{63FDB648-1631-4452-8B60-E5A4225341FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Data.DataTables", "Libraries\dotNetRdf.Data.DataTables\dotNetRdf.Data.DataTables.csproj", "{63FDB648-1631-4452-8B60-E5A4225341FB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8A1831D5-14EF-4956-8F35-800960B16115}"
 	ProjectSection(SolutionItems) = preProject
@@ -30,19 +30,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SparqlAnalyzer", "Testing\SparqlAnalyzer\SparqlAnalyzer.csproj", "{B19AD698-11F5-486E-B534-00262F751700}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Fuseki.Tests", "Testing\dotNetRDF.Connectors.Fuseki.Tests\dotNetRDF.Connectors.Fuseki.Tests.csproj", "{77BC34F9-12AB-4EC6-9924-D0F4676F0D0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Connectors.Fuseki.Tests", "Testing\dotNetRdf.Connectors.Fuseki.Tests\dotNetRdf.Connectors.Fuseki.Tests.csproj", "{77BC34F9-12AB-4EC6-9924-D0F4676F0D0E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Tests", "Testing\dotNetRDF.Connectors.Tests\dotNetRDF.Connectors.Tests.csproj", "{D20F6C78-9DC7-4AFB-B69F-289733B516C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Connectors.Tests", "Testing\dotNetRdf.Connectors.Tests\dotNetRdf.Connectors.Tests.csproj", "{D20F6C78-9DC7-4AFB-B69F-289733B516C3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.FourStore.Tests", "Testing\dotNetRDF.Connectors.FourStore.Tests\dotNetRDF.Connectors.FourStore.Tests.csproj", "{0A342FA3-8C22-49AB-8DBB-5044D2852A9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Connectors.FourStore.Tests", "Testing\dotNetRdf.Connectors.FourStore.Tests\dotNetRdf.Connectors.FourStore.Tests.csproj", "{0A342FA3-8C22-49AB-8DBB-5044D2852A9E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Sesame.Tests", "Testing\dotNetRDF.Connectors.Sesame.Tests\dotNetRDF.Connectors.Sesame.Tests.csproj", "{82D6BD63-210B-4694-BAA1-C2B01D6BEF5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Connectors.Sesame.Tests", "Testing\dotNetRdf.Connectors.Sesame.Tests\dotNetRdf.Connectors.Sesame.Tests.csproj", "{82D6BD63-210B-4694-BAA1-C2B01D6BEF5C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Allegrograph.Tests", "Testing\dotNetRDF.Connectors.Allegrograph.Tests\dotNetRDF.Connectors.Allegrograph.Tests.csproj", "{7DCF7F90-42F7-4739-9E41-27CFC4A2424F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Connectors.Allegrograph.Tests", "Testing\dotNetRdf.Connectors.Allegrograph.Tests\dotNetRdf.Connectors.Allegrograph.Tests.csproj", "{7DCF7F90-42F7-4739-9E41-27CFC4A2424F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Stardog.Tests", "Testing\dotNetRDF.Connectors.Stardog.Tests\dotNetRDF.Connectors.Stardog.Tests.csproj", "{2DD1CFE4-0CC8-4003-A6D9-D7830A0F2D4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Connectors.Stardog.Tests", "Testing\dotNetRdf.Connectors.Stardog.Tests\dotNetRdf.Connectors.Stardog.Tests.csproj", "{2DD1CFE4-0CC8-4003-A6D9-D7830A0F2D4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRDF.Connectors.Virtuoso.Tests", "Testing\dotNetRDF.Connectors.Virtuoso.Tests\dotNetRDF.Connectors.Virtuoso.Tests.csproj", "{C706FF67-D9DD-454C-97D2-7EB6B55730CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Connectors.Virtuoso.Tests", "Testing\dotNetRdf.Connectors.Virtuoso.Tests\dotNetRdf.Connectors.Virtuoso.Tests.csproj", "{C706FF67-D9DD-454C-97D2-7EB6B55730CA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Skos", "Libraries\dotNetRdf.Skos\dotNetRdf.Skos.csproj", "{41744666-E7E6-48BD-A4F1-631CCDCD69F1}"
 EndProject
