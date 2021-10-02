@@ -174,6 +174,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Determines whether this Node is equal to a Triple Node (should always be false).
+        /// </summary>
+        /// <param name="other">Triple Node.</param>
+        /// <returns></returns>
+        public override bool Equals(ITripleNode other)
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Determines whether this Node is equal to a Graph Literal Node.
         /// </summary>
         /// <param name="other">Graph Literal Node.</param>
@@ -215,28 +225,14 @@ namespace VDS.RDF
         public override int CompareTo(INode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-
-            if (other == null)
+            return other?.NodeType switch
             {
-                // Everything is greater than a null
-                // Return a 1 to indicate this
-                return 1;
-            }
-            else if (other.NodeType != NodeType.GraphLiteral)
-            {
-                // Graph Literal Nodes are greater than Blank, Variable, Uri and Literal Nodes
-                // Return a 1 to indicate this
-                return 1;
-            }
-            else if (other.NodeType == NodeType.GraphLiteral)
-            {
-                return ComparisonHelper.CompareGraphLiterals(this, (IGraphLiteralNode)other);
-            }
-            else
-            {
-                // Anything else is Greater Than us
-                return -1;
-            }
+                // Graph literal nodes are less than triple nodes
+                NodeType.Triple => -1,
+                NodeType.GraphLiteral => ComparisonHelper.CompareGraphLiterals(this, other as IGraphLiteralNode),
+                // Graph literal nodes are greater than every other type of node (and nulls)
+                _ => 1
+            };
         }
 
         /// <summary>
@@ -246,8 +242,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IRefNode other)
         {
-            // We are always greater than everything
-            return 1;
+            // We are always greater than everything but Triple Nodes.
+            if (other == null) return 1;
+            return other.NodeType == NodeType.Triple ? -1 : 1;
         }
 
         /// <summary>
@@ -257,7 +254,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
-            // We are always greater than everything
+            // We are always greater than everything but Triple Nodes.
             return 1;
         }
 
@@ -278,7 +275,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
-            // We are always greater than everything
+            // We are always greater than everything but Triple Nodes.
             return 1;
         }
 
@@ -289,7 +286,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
-            // We are always greater than everything
+            // We are always greater than everything but Triple Nodes.
             return 1;
         }
 
@@ -300,8 +297,19 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
-            // We are always greater than everything
+            // We are always greater than everything but Triple Nodes.
             return 1;
+        }
+
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
+        /// </summary>
+        /// <param name="other">Node to test against.</param>
+        /// <returns></returns>
+        public override int CompareTo(ITripleNode other)
+        {
+            // We are greater than a Null but less than a Triple Node.
+            return other == null ? 1 : -1;
         }
 
         /// <summary>

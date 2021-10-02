@@ -35,9 +35,9 @@ namespace VDS.RDF
     /// </summary>
     public interface INode 
         : IComparable<INode>, IComparable<IBlankNode>, IComparable<IGraphLiteralNode>, IComparable<ILiteralNode>,
-          IComparable<IUriNode>, IComparable<IVariableNode>, IComparable<IRefNode>,
+          IComparable<IUriNode>, IComparable<IVariableNode>, IComparable<IRefNode>, IComparable<ITripleNode>,
           IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
-          IEquatable<IUriNode>, IEquatable<IVariableNode>, IEquatable<IRefNode>
+          IEquatable<IUriNode>, IEquatable<IVariableNode>, IEquatable<IRefNode>, IEquatable<ITripleNode>
     {
         /// <summary>
         /// Nodes have a Type.

@@ -152,6 +152,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Determines whether this Node is equal to a Triple Node (should always be false).
+        /// </summary>
+        /// <param name="other">Triple Node.</param>
+        /// <returns></returns>
+        public override bool Equals(ITripleNode other)
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Determines whether this Node is equal to a Variable Node.
         /// </summary>
         /// <param name="other">Variable Node.</param>
@@ -198,19 +208,14 @@ namespace VDS.RDF
         public override int CompareTo(INode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-
-            if (other == null)
+            return other?.NodeType switch
             {
                 // Variables are considered greater than null
-                return 1;
-            }
-            if (other is IVariableNode varNode)
-            {
-                return CompareTo(varNode);
-            }
-
-            // Variable Nodes are less than everything else
-            return -1;
+                null => 1,
+                NodeType.Variable => CompareTo(other as IVariableNode),
+                // Variable Nodes are less than everything else
+                _ => -1
+            };
         }
 
 
@@ -221,14 +226,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IRefNode other)
         {
-            if (other == null)
-            {
-                // Variables are considered greater than null
-                return 1;
-            }
-
-            // Variable Nodes are less than everything else
-            return -1;
+            // Variables are considered greater than null and less than everything else
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -238,14 +237,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
-            if (other == null)
-            {
-                // Variables are considered greater than null
-                return 1;
-            }
-
-            // Variable Nodes are less than everything else
-            return -1;
+            // Variables are considered greater than null and less than everything else
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -255,14 +248,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
-            if (other == null)
-            {
-                // Variables are considered greater than null
-                return 1;
-            }
-
-            // Variable Nodes are less than everything else
-            return -1;
+            // Variables are considered greater than null and less than everything else
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -272,14 +259,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
-            if (other == null)
-            {
-                // Variables are considered greater than null
-                return 1;
-            }
-
-            // Variable Nodes are less than everything else
-            return -1;
+            // Variables are considered greater than null and less than everything else
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -289,14 +270,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
-            if (other == null)
-            {
-                // Variables are considered greater than null
-                return 1;
-            }
-
-            // Variable Nodes are less than everything else
-            return -1;
+            // Variables are considered greater than null and less than everything else
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -307,8 +282,18 @@ namespace VDS.RDF
         public override int CompareTo(IVariableNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-
             return other == null ? 1 : ComparisonHelper.CompareVariables(this, other);
+        }
+
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
+        /// </summary>
+        /// <param name="other">Node to test against.</param>
+        /// <returns></returns>
+        public override int CompareTo(ITripleNode other)
+        {
+            // We are always greater than null, and less than a Triple node.
+            return other == null ? 1 : -1;
         }
 
         /// <summary>

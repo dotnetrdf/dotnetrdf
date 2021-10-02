@@ -438,6 +438,19 @@ namespace VDS.RDF.Storage.Virtualisation
             return CompareTo((INode)other);
         }
 
+        /// <summary>
+        /// Compares this Node to another Triple Node.
+        /// </summary>
+        /// <param name="other">Other Triple Node.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform comparison.
+        /// </remarks>
+        public virtual int CompareTo(ITripleNode other)
+        {
+            return CompareTo((INode)other);
+        }
+
         #endregion
 
         #region IEquatable Implementations
@@ -656,6 +669,18 @@ namespace VDS.RDF.Storage.Virtualisation
             return TypedEquality(other);
         }
 
+        /// <summary>
+        /// Checks this Node for equality against another Triple Node.
+        /// </summary>
+        /// <param name="other">Other Triple Node.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Unless Virtual Equality (equality based on the Virtual RDF Provider and Virtual ID) can be determined or the Nodes are of different types then the Nodes value will have to be materialized in order to perform the equality check.
+        /// </remarks>
+        public virtual bool Equals(ITripleNode other)
+        {
+            return TypedEquality(other);
+        }
         #endregion
 
         #region ICopyNodes abstract Member
