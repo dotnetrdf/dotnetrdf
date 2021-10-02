@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
@@ -252,6 +253,16 @@ namespace VDS.RDF
         public override bool Contains(Triple t)
         {
             return _triples.ContainsKey(t);
+        }
+
+        public override bool ContainsAsserted(Triple t)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool ContainsQuoted(Triple t)
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -534,5 +545,12 @@ namespace VDS.RDF
         {
             return _triples.Keys.GetEnumerator();
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Asserted { get { throw new NotImplementedException(); } }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Quoted { get { throw new NotImplementedException(); } }
+
     }
 }

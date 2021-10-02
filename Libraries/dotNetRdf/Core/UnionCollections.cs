@@ -91,6 +91,26 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Checks whether the specified triple is asserted in any of the collections of the union.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns></returns>
+        public override bool ContainsAsserted(Triple t)
+        {
+            return _collections.Any(c => c.ContainsAsserted(t));
+        }
+
+        /// <summary>
+        /// Checks whether the specified triple is quoted in any of the collections of the union.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns></returns>
+        public override bool ContainsQuoted(Triple t)
+        {
+            return _collections.Any(c => c.ContainsAsserted(t));
+        }
+
+        /// <summary>
         /// Gets the count of Triples in this union.
         /// </summary>
         /// <remarks>
@@ -192,5 +212,12 @@ namespace VDS.RDF
         {
             return _collections.SelectMany(c => c).GetEnumerator();
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Asserted => _collections.SelectMany(c => c.Asserted);
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Quoted => _collections.SelectMany(c => c.Quoted);
+
     }
 }

@@ -43,7 +43,7 @@ namespace VDS.RDF
         : IComparable<Triple>
     {
         private Uri _u = null;
-        private int _hashcode;
+        private readonly int _hashcode;
 
         /// <summary>
         /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory.

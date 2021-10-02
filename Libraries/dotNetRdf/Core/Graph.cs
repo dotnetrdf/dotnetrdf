@@ -292,7 +292,12 @@ namespace VDS.RDF
             return GetNode<IBlankNode>(new BlankNode(nodeId));
         }
 
-        
+        /// <inheritdoc />
+        public override ITripleNode GetTripleNode(Triple triple)
+        {
+            return GetNode<ITripleNode>(new TripleNode(triple));
+        }
+
         private T GetNode<T>(T node) where T: INode
         {
             var ret = (T) Triples.WithSubject(node).FirstOrDefault()?.Subject;

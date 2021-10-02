@@ -170,6 +170,16 @@ namespace VDS.RDF
             return _triples.ContainsKey(t);
         }
 
+        public override bool ContainsAsserted(Triple t)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool ContainsQuoted(Triple t)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Gets the count of triples in the collection.
         /// </summary>
@@ -357,6 +367,7 @@ namespace VDS.RDF
             _o.Clear();
         }
 
+
         /// <summary>
         /// Gets the enumerator for the collection.
         /// </summary>
@@ -365,5 +376,11 @@ namespace VDS.RDF
         {
             return _triples.Keys.GetEnumerator();
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Asserted { get { throw new NotImplementedException(); } }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Quoted { get { throw new NotImplementedException(); } }
     }
 }

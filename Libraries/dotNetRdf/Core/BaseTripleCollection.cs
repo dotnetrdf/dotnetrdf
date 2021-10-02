@@ -54,6 +54,20 @@ namespace VDS.RDF
         public abstract bool Contains(Triple t);
 
         /// <summary>
+        /// Determines whether a given Triple is asserted in the collection.
+        /// </summary>
+        /// <param name="t">The triple to test.</param>
+        /// <returns>True if the triple is asserted in the triple collection, false otherwise.</returns>
+        public abstract bool ContainsAsserted(Triple t);
+
+        /// <summary>
+        /// Determines whether a given triple is quoted by a triple node of a triple in the collection.
+        /// </summary>
+        /// <param name="t">The triple to test.</param>
+        /// <returns>True if the triple is quoted in the triple collection, false otherwise.</returns>
+        public abstract bool ContainsQuoted(Triple t);
+
+        /// <summary>
         /// Gets the Number of Triples in the Triple Collection.
         /// </summary>
         public abstract int Count 
@@ -106,13 +120,33 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Triples with the given Subject.
         /// </summary>
-        /// <param name="subj">ubject to lookup.</param>
+        /// <param name="subj">subject to lookup.</param>
         /// <returns></returns>
         public virtual IEnumerable<Triple> WithSubject(INode subj)
         {
             return (from t in this
                     where t.Subject.Equals(subj)
                     select t);
+        }
+
+        /// <summary>
+        /// Gets all asserted triples with the given subject.
+        /// </summary>
+        /// <param name="subj">Subject to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> AssertedWithSubject(INode subj)
+        {
+            return WithSubject(subj).Where(ContainsAsserted);
+        }
+
+        /// <summary>
+        /// Gets all quoted triples with the given subject.
+        /// </summary>
+        /// <param name="subj">Subject to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> QuotedWithSubject(INode subj)
+        {
+            return WithSubject(subj).Where(ContainsQuoted);
         }
 
         /// <summary>
@@ -128,6 +162,22 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets all the asserted triples with the given Predicate.
+        /// </summary>
+        /// <param name="pred">Predicate to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> AssertedWithPredicate(INode pred) =>
+            WithPredicate(pred).Where(ContainsAsserted);
+
+        /// <summary>
+        /// Gets all the quoted triples with the given Predicate.
+        /// </summary>
+        /// <param name="pred">Predicate to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> QuotedWithPredicate(INode pred) =>
+            WithPredicate(pred).Where(ContainsQuoted);
+
+        /// <summary>
         /// Gets all the Triples with the given Object.
         /// </summary>
         /// <param name="obj">Object to lookup.</param>
@@ -138,6 +188,22 @@ namespace VDS.RDF
                     where t.Object.Equals(obj)
                     select t);
         }
+
+        /// <summary>
+        /// Gets all the asserted triples with the given Object.
+        /// </summary>
+        /// <param name="obj">Object to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> AssertedWithObject(INode obj) =>
+        WithObject(obj).Where(ContainsAsserted);
+
+        /// <summary>
+        /// Gets all the quoted triples with the given Object.
+        /// </summary>
+        /// <param name="obj">Object to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> QuotedWithObject(INode obj) =>
+            WithObject(obj).Where(ContainsQuoted);
 
         /// <summary>
         /// Gets all the Triples with the given Subject Predicate pair.
@@ -153,6 +219,24 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets all the asserted triples with the given Subject Predicate pair.
+        /// </summary>
+        /// <param name="subj">Subject to lookup.</param>
+        /// <param name="pred">Predicate to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> AssertedWithSubjectPredicate(INode subj, INode pred) =>
+            WithSubjectPredicate(subj, pred).Where(ContainsAsserted);
+
+        /// <summary>
+        /// Gets all the quoted triples with the given Subject Predicate pair.
+        /// </summary>
+        /// <param name="subj">Subject to lookup.</param>
+        /// <param name="pred">Predicate to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> QuotedWithSubjectPredicate(INode subj, INode pred) =>
+            WithSubjectPredicate(subj, pred).Where(ContainsQuoted);
+
+        /// <summary>
         /// Gets all the Triples with the given Predicate Object pair.
         /// </summary>
         /// <param name="pred">Predicate to lookup.</param>
@@ -164,6 +248,24 @@ namespace VDS.RDF
                     where t.Object.Equals(obj)
                     select t);
         }
+
+        /// <summary>
+        /// Gets all the asserted triples with the given Predicate Object pair.
+        /// </summary>
+        /// <param name="pred">Predicate to lookup.</param>
+        /// <param name="obj">Object to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> AssertedWithPredicateObject(INode pred, INode obj) =>
+            WithPredicateObject(pred, obj).Where(ContainsAsserted);
+
+        /// <summary>
+        /// Gets all the quoted triples with the given Predicate Object pair.
+        /// </summary>
+        /// <param name="pred">Predicate to lookup.</param>
+        /// <param name="obj">Object to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> QuotedWithPredicateObject(INode pred, INode obj) =>
+            WithPredicateObject(pred, obj).Where(ContainsQuoted);
 
         /// <summary>
         /// Gets all the Triples with the given Subject Object pair.
@@ -179,7 +281,25 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Diposes of a Triple Collection.
+        /// Gets all the asserted triples with the given Subject Object pair.
+        /// </summary>
+        /// <param name="subj">Subject to lookup.</param>
+        /// <param name="obj">Object to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> AssertedWithSubjectObject(INode subj, INode obj) =>
+            WithSubjectObject(subj, obj).Where(ContainsAsserted);
+
+        /// <summary>
+        /// Gets all the quoted triples with the given Subject Object pair.
+        /// </summary>
+        /// <param name="subj">Subject to lookup.</param>
+        /// <param name="obj">Object to lookup.</param>
+        /// <returns></returns>
+        public virtual IEnumerable<Triple> QuotedWithSubjectObject(INode subj, INode obj) =>
+            WithSubjectObject(subj, obj).Where(ContainsQuoted);
+
+        /// <summary>
+        /// Disposes of a Triple Collection.
         /// </summary>
         public abstract void Dispose();
 
@@ -188,6 +308,16 @@ namespace VDS.RDF
         /// </summary>
         /// <returns></returns>
         public abstract IEnumerator<Triple> GetEnumerator();
+
+        /// <summary>
+        /// Gets the triples that are asserted in the collection.
+        /// </summary>
+        public abstract IEnumerable<Triple> Asserted { get; }
+
+        /// <summary>
+        /// Gets the triples that are quoted in the collection.
+        /// </summary>
+        public abstract IEnumerable<Triple> Quoted { get; }
 
         /// <summary>
         /// Gets the non-generic Enumerator for the Triple Collection.

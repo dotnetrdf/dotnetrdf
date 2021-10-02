@@ -343,6 +343,17 @@ namespace VDS.RDF
             return _g.GetLiteralNode(literal, datatype);
         }
 
+
+        /// <summary>
+        /// Selects the Triple Node with the given Triple value if it exists in the graph.
+        /// </summary>
+        /// <param name="triple">Triple.</param>
+        /// <returns>The triple node if it exists in the graph or else null.</returns>
+        public virtual ITripleNode GetTripleNode(Triple triple)
+        {
+            return _g.GetTripleNode(triple);
+        }
+
         /// <summary>
         /// Gets all the Triples involving the given URI.
         /// </summary>
@@ -477,13 +488,33 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether a given Triple exists in this Graph.
+        /// Gets whether a given Triple is either quoted or asserted in this Graph.
         /// </summary>
         /// <param name="t">Triple to test.</param>
         /// <returns></returns>
         public virtual bool ContainsTriple(Triple t)
         {
             return _g.ContainsTriple(t);
+        }
+
+        /// <summary>
+        /// Gets whether a given triple is asserted in this graph.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns>True if the triple is asserted in this graph, false otherwise.</returns>
+        public virtual bool ContainsAssertedTriple(Triple t)
+        {
+            return _g.ContainsAssertedTriple(t);
+        }
+
+        /// <summary>
+        /// Gets whether a given triple is quoted in this graph.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns>True if the triple is quoted in this graph, false otherwise.</returns>
+        public virtual bool ContainsQuotedTriple(Triple t)
+        {
+            return _g.ContainsQuotedTriple(t);
         }
 
         /// <summary>

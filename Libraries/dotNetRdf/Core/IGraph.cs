@@ -170,11 +170,32 @@ namespace VDS.RDF
         IUriNode GetUriNode(Uri uri);
 
         /// <summary>
+        /// Selects the Triple Node with the given Triple value if it exists in the graph.
+        /// </summary>
+        /// <param name="triple">Triple.</param>
+        /// <returns>The triple node if it exists in the graph or else null.</returns>
+        ITripleNode GetTripleNode(Triple triple);
+
+        /// <summary>
         /// Gets whether a given Triple is in this Graph.
         /// </summary>
         /// <param name="t">Triple to test.</param>
-        /// <returns></returns>
+        /// <returns>True if the triple is either asserted or quoted in this graph, false otherwise.</returns>
         bool ContainsTriple(Triple t);
+
+        /// <summary>
+        /// Gets whether a given triple is asserted in this graph.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns>True if the triple is asserted in this graph, false otherwise.</returns>
+        bool ContainsAssertedTriple(Triple t);
+
+        /// <summary>
+        /// Gets whether a given triple is quoted in this graph.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns>True if the triple is quoted in this graph, false otherwise.</returns>
+        bool ContainsQuotedTriple(Triple t);
 
         #endregion
 

@@ -308,7 +308,25 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public ITripleNode GetTripleNode(Triple triple)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public bool ContainsTriple(Triple t)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public bool ContainsAssertedTriple(Triple t)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public bool ContainsQuotedTriple(Triple t)
         {
             throw new NotImplementedException();
         }
@@ -438,6 +456,12 @@ namespace VDS.RDF.Query.Spin
 
         /// <inheritdoc />
         public IVariableNode CreateVariableNode(string varname)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public ITripleNode CreateTripleNode(Triple triple)
         {
             throw new NotImplementedException();
         }

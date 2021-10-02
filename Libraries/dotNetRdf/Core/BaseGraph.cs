@@ -378,6 +378,13 @@ namespace VDS.RDF
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists.</returns>
         public abstract IUriNode GetUriNode(Uri uri);
 
+        /// <summary>
+        /// Selects the Triple Node with the given Triple value if it exists in the graph.
+        /// </summary>
+        /// <param name="triple">Triple.</param>
+        /// <returns>The triple node if it exists in the graph or else null.</returns>
+        public abstract ITripleNode GetTripleNode(Triple triple);
+
         #endregion
 
         #region Triple Selection
@@ -470,6 +477,26 @@ namespace VDS.RDF
         public virtual bool ContainsTriple(Triple t)
         {
             return _triples.Contains(t);
+        }
+
+        /// <summary>
+        /// Gets whether a given triple is asserted in this graph.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns>True if the triple is asserted in this graph, false otherwise.</returns>
+        public virtual bool ContainsAssertedTriple(Triple t)
+        {
+            return _triples.ContainsAsserted(t);
+        }
+
+        /// <summary>
+        /// Gets whether a given triple is quoted in this graph.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns>True if the triple is quoted in this graph, false otherwise.</returns>
+        public virtual bool ContainsQuotedTriple(Triple t)
+        {
+            return _triples.ContainsQuoted(t);
         }
 
         #endregion

@@ -71,6 +71,16 @@ namespace VDS.RDF.Query.Datasets
             return _dataset.ContainsQuad(_graphName, t);
         }
 
+        public override bool ContainsAsserted(Triple t)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool ContainsQuoted(Triple t)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc />
         public override int Count
         {
@@ -140,6 +150,13 @@ namespace VDS.RDF.Query.Datasets
         {
             return _dataset.GetQuads(_graphName).GetEnumerator();
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Asserted { get { throw new NotImplementedException(); } }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Quoted { get { throw new NotImplementedException(); } }
+
 
         /// <inheritdoc />
         public override IEnumerable<Triple> WithObject(INode obj)
