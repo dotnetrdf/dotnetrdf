@@ -319,6 +319,15 @@ namespace VDS.RDF
             return NodeFactory.CreateVariableNode(varname);
         }
 
+        /// <summary>
+        /// Creates a node that quotes the given triple.
+        /// </summary>
+        /// <param name="triple">The triple to be the quoted value of the created node.</param>
+        /// <returns></returns>
+        public virtual ITripleNode CreateTripleNode(Triple triple)
+        {
+            return NodeFactory.CreateTripleNode(triple);
+        }
         #endregion
 
 

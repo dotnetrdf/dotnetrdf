@@ -222,6 +222,12 @@ namespace VDS.RDF
             return new VariableNode(varName);
         }
 
+        /// <inheritdoc />
+        public ITripleNode CreateTripleNode(Triple triple)
+        {
+            return new TripleNode(triple);
+        }
+
         /// <summary>
         /// Creates a new unused Blank Node ID and returns it.
         /// </summary>
@@ -252,6 +258,11 @@ namespace VDS.RDF
         private ILiteralNode _lit = new LiteralNode("mock", false);
         private IUriNode _uri = new UriNode(RDF.UriFactory.Root.Create("dotnetrdf:mock"));
         private IVariableNode _var = new VariableNode("mock");
+
+        private TripleNode _triple = new TripleNode(new Triple(
+            new UriNode(RDF.UriFactory.Root.Create("urn:s")),
+            new UriNode(RDF.UriFactory.Root.Create("urn:p")),
+            new UriNode(RDF.UriFactory.Root.Create("urn:o"))));
 
         #region INodeFactory Members
 
@@ -314,6 +325,11 @@ namespace VDS.RDF
         public IVariableNode CreateVariableNode(string varname)
         {
             return _var;
+        }
+
+        public ITripleNode CreateTripleNode(Triple triple)
+        {
+            return _triple;
         }
 
         public string GetNextBlankNodeID()

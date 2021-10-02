@@ -361,6 +361,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Creates a node that quotes the given triple.
+        /// </summary>
+        /// <param name="triple">The triple to be the quoted value of the created node.</param>
+        /// <returns></returns>
+        public ITripleNode CreateTripleNode(Triple triple)
+        {
+            return _g.CreateTripleNode(triple);
+        }
+
+        /// <summary>
         /// Attempts to get the Blank Node with the given ID.
         /// </summary>
         /// <param name="nodeId">Node ID.</param>

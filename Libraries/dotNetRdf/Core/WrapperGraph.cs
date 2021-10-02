@@ -295,6 +295,12 @@ namespace VDS.RDF
             return _g.CreateVariableNode(varname);
         }
 
+        /// <inheritdoc />
+        public virtual ITripleNode CreateTripleNode(Triple triple)
+        {
+            return _g.CreateTripleNode(triple);
+        }
+
         /// <summary>
         /// Attempts to get the Blank Node with the given ID.
         /// </summary>
