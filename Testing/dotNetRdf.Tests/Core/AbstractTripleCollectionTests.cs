@@ -175,7 +175,132 @@ namespace VDS.RDF
             collection.Asserted.Count().Should().Be(1);
             collection.Quoted.Count().Should().Be(2);
             collection.Count.Should().Be(3);
+        }
 
+        [Fact]
+        public void DeletingATripleCanDeleteQuotedTriples()
+        {
+            BaseTripleCollection collection = GetInstance();
+            var quotedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o"));
+            var assertedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateTripleNode(quotedTriple));
+            collection.Add(assertedTriple);
+            // Before deletion we have the asserted triple and its quoted triple
+            collection.Count.Should().Be(2);
+            collection.Delete(assertedTriple);
+
+            // Deleting the asserted triple also deletes the quoted triple because there are no other references to it.
+            collection.Count.Should().Be(0);
+        }
+
+        [Fact]
+        public void QuotedTripleIsNotDeletedIfItIsAlsoAsserted()
+        {
+            BaseTripleCollection collection = GetInstance();
+            var quotedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o"));
+            var assertedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateTripleNode(quotedTriple));
+            collection.Add(assertedTriple);
+            collection.Add(quotedTriple);
+
+            // Before deletion we have the asserted triple and its quoted triple
+            collection.Count.Should().Be(2);
+
+            collection.Delete(assertedTriple);
+
+            // Deleting the asserted triple does not delete the quoted triple because it is also asserted
+            collection.Count.Should().Be(1);
+        }
+
+        [Fact]
+        public void QuotedTripleIsNotDeletedIfOtherReferencesToItExist()
+        {
+            BaseTripleCollection collection = GetInstance();
+            var quotedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o"));
+            var assertedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateTripleNode(quotedTriple));
+            var assertedTriple2 = new Triple(
+                NodeFactory.CreateUriNode("ex:s2"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateTripleNode(quotedTriple));
+            collection.Add(assertedTriple);
+            collection.Add(assertedTriple2);
+
+            // Before deletion we have the asserted triple and its quoted triple
+            collection.Count.Should().Be(3);
+
+            collection.Delete(assertedTriple);
+
+            // Deleting the asserted triple does not delete the quoted triple because there is another reference to it
+            collection.Count.Should().Be(2);
+
+            // Deleting the second assertion will remove the quoted triple because now there are no other refs
+            collection.Delete(assertedTriple2);
+            collection.Count.Should().Be(0);
+        }
+
+        [Fact]
+        public void NestedQuotationsAreAlsoRemoved()
+        {
+            BaseTripleCollection collection = GetInstance();
+            var nestedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o")
+            );
+            var quotedTriple = new Triple(
+                NodeFactory.CreateTripleNode(nestedTriple),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o")
+            );
+            var assertedTriple = new Triple(
+                NodeFactory.CreateTripleNode(quotedTriple),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o"));
+
+            collection.Add(assertedTriple);
+            collection.Count.Should().Be(3);
+
+            // Deleting the asserted triple should delete both the directly quoted triple and the indirectly quoted one.
+            collection.Delete(assertedTriple);
+            collection.Count.Should().Be(0);
+        }
+
+        [Fact]
+        public void DeletingAQuotedTripleHasNoEffect()
+        {
+            BaseTripleCollection collection = GetInstance();
+            var quotedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o"));
+            var assertedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateTripleNode(quotedTriple));
+            collection.Add(assertedTriple);
+            // Before deletion we have the asserted triple and its quoted triple
+            collection.Count.Should().Be(2);
+            var wasDeleted = collection.Delete(quotedTriple);
+
+            // Deleting the quoted triple has no effect as it is not asserted in the graph
+            wasDeleted.Should().BeFalse();
+            collection.Count.Should().Be(2);
         }
     }
 

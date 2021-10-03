@@ -24,10 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using VDS.Common.Collections;
 
 namespace VDS.RDF
@@ -38,21 +36,6 @@ namespace VDS.RDF
     public class TripleCollection 
         : BaseTripleCollection, IEnumerable<Triple>
     {
-        /// <summary>
-        /// Struct used for reference counting the quotation of triples in an RDF-star graph.
-        /// </summary>
-        protected class TripleRefs
-        {
-            /// <summary>
-            /// Flag indicating if the triple is asserted in the graph.
-            /// </summary>
-            public bool Asserted;
-            /// <summary>
-            /// Count of the number of times the triple is quoted in the graph.
-            /// </summary>
-            public uint QuoteCount;
-        }
-
         /// <summary>
         /// Underlying Storage of the Triple Collection.
         /// </summary>
@@ -100,6 +83,7 @@ namespace VDS.RDF
             {
                 // Triple has not been quoted or asserted
                 refs = new TripleRefs { Asserted = true };
+                Triples.Add(t, refs);
             }
             else
             {
@@ -107,7 +91,6 @@ namespace VDS.RDF
                 refs.Asserted = true;
             }
 
-            Triples.Add(t, refs);
             RaiseTripleAdded(t);
             if (t.Subject is ITripleNode stn) AddQuoted(stn);
             if (t.Object is ITripleNode otn) AddQuoted(otn);
@@ -137,16 +120,47 @@ namespace VDS.RDF
         /// Deletes a Triple from the Collection.
         /// </summary>
         /// <param name="t">Triple to remove.</param>
-        /// <remarks>Deleting something that doesn't exist has no effect and gives no error.</remarks>
+        /// <remarks>
+        /// Only asserted triples can be deleted. Deleting something that doesn't exist, or a triple that is only quoted has no effect and gives no error.
+        /// </remarks>
         protected internal override bool Delete(Triple t)
         {
-            if (Triples.Remove(t))
+            if (Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
             {
+                refs.Asserted = false;
+                if (refs.QuoteCount == 0)
+                {
+                    Triples.Remove(t);
+                }
                 RaiseTripleRemoved(t);
+                if (t.Subject is ITripleNode stn) RemoveQuoted(stn);
+                if (t.Object is ITripleNode otn) RemoveQuoted(otn);
                 return true;
             }
             return false;
         }
+
+        /// <summary>
+        /// Removes a quote reference to a triple from the collection.
+        /// </summary>
+        /// <param name="tripleNode">The node containing the triple to be 'unquoted'.</param>
+        /// <remarks>This method decreases the quote reference count for the triple. If the reference count drops to 0 and the triple is not also asserted in the graph, then it will be removed from the collection. If the triple itself quotes other triples, then this process is applied out recursively.</remarks>
+        protected internal void RemoveQuoted(ITripleNode tripleNode)
+        {
+            if (Triples.TryGetValue(tripleNode.Triple, out TripleRefs refs))
+            {
+                refs.QuoteCount--;
+                if (refs.QuoteCount == 0 && !refs.Asserted)
+                {
+                    Triples.Remove(tripleNode.Triple);
+                }
+            }
+
+            // Recursively remove any nested quotations
+            if (tripleNode.Triple.Subject is ITripleNode stn) RemoveQuoted(stn);
+            if (tripleNode.Triple.Object is ITripleNode otn) RemoveQuoted(otn);
+        }
+
 
         /// <summary>
         /// Gets the Number of Triples in the Triple Collection.
