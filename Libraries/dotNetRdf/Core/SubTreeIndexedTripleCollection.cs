@@ -49,17 +49,17 @@ namespace VDS.RDF
                                                                               _o = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer());
 
         // Placeholder Variables for compound lookups
-        private VariableNode _subjVar = new VariableNode("s"),
+        private readonly VariableNode _subjVar = new VariableNode("s"),
                              _predVar = new VariableNode("p"),
                              _objVar = new VariableNode("o");
 
         // Hash Functions
-        private Func<Triple, int> _sHash = (t => Tools.CombineHashCodes(t.Subject, t.Predicate)),
+        private readonly Func<Triple, int> _sHash = (t => Tools.CombineHashCodes(t.Subject, t.Predicate)),
                                   _pHash = (t => Tools.CombineHashCodes(t.Predicate, t.Object)),
                                   _oHash = (t => Tools.CombineHashCodes(t.Object, t.Subject));
 
         // Comparers
-        private IComparer<Triple> _sComparer = new SubjectPredicateComparer(new FastVirtualNodeComparer()),
+        private readonly IComparer<Triple> _sComparer = new SubjectPredicateComparer(new FastVirtualNodeComparer()),
                                   _pComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
                                   _oComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer());
 
@@ -216,13 +216,14 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            if (_p.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
+            if (!_p.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(new Triple(_subjVar, pred, obj), out HashSet<Triple> ts))
-                {
-                    return (ts ?? Enumerable.Empty<Triple>());
-                }
                 return Enumerable.Empty<Triple>();
+            }
+
+            if (subtree.TryGetValue(new Triple(_subjVar, pred, obj), out HashSet<Triple> ts))
+            {
+                return ts ?? Enumerable.Empty<Triple>();
             }
             return Enumerable.Empty<Triple>();
         }
@@ -235,13 +236,14 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            if (_o.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
+            if (!_o.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(new Triple(subj, _predVar, obj), out HashSet<Triple> ts))
-                {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
-                }
                 return Enumerable.Empty<Triple>();
+            }
+
+            if (subtree.TryGetValue(new Triple(subj, _predVar, obj), out HashSet<Triple> ts))
+            {
+                return ts ?? Enumerable.Empty<Triple>();
             }
             return Enumerable.Empty<Triple>();
         }
@@ -254,13 +256,14 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            if (_s.TryGetValue(subj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
+            if (!_s.TryGetValue(subj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
             {
-                if (subtree.TryGetValue(new Triple(subj, pred, _objVar), out HashSet<Triple> ts))
-                {
-                    return ts ?? Enumerable.Empty<Triple>();
-                }
                 return Enumerable.Empty<Triple>();
+            }
+
+            if (subtree.TryGetValue(new Triple(subj, pred, _objVar), out HashSet<Triple> ts))
+            {
+                return ts ?? Enumerable.Empty<Triple>();
             }
             return Enumerable.Empty<Triple>();
         }
@@ -268,13 +271,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Object Nodes.
         /// </summary>
-        public override IEnumerable<INode> ObjectNodes
-        {
-            get 
-            {
-                return _o.Keys;
-            }
-        }
+        public override IEnumerable<INode> ObjectNodes => _o.Keys;
 
         /// <summary>
         /// Gets the Predicate Nodes.
