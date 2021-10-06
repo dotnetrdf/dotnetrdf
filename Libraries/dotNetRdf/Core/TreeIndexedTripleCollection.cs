@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
@@ -41,18 +40,18 @@ namespace VDS.RDF
         : BaseTripleCollection
     {
         // Main Storage
-        private MultiDictionary<Triple, object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
+        private readonly MultiDictionary<Triple, TripleRefs> _triples = new MultiDictionary<Triple, TripleRefs>(new FullTripleComparer(new FastVirtualNodeComparer()));
         // Simple Indexes
-        private MultiDictionary<INode, HashSet<Triple>> _s, _p, _o;
+        private readonly MultiDictionary<INode, HashSet<Triple>> _s, _p, _o;
         // Compound Indexes
-        private MultiDictionary<Triple, HashSet<Triple>> _sp, _so, _po;
+        private readonly MultiDictionary<Triple, HashSet<Triple>> _sp, _so, _po;
 
         // Placeholder Variables for compound lookups
-        private VariableNode _subjVar = new VariableNode("s"),
+        private readonly VariableNode _subjVar = new VariableNode("s"),
                              _predVar = new VariableNode("p"),
                              _objVar = new VariableNode("o");
 
-        private int _count = 0;
+        private int _count;
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection.
@@ -122,8 +121,7 @@ namespace VDS.RDF
         {
             if (index == null) return;
 
-            HashSet<Triple> ts;
-            if (index.TryGetValue(n, out ts))
+            if (index.TryGetValue(n, out HashSet<Triple> ts))
             {
                 if (ts == null)
                 {
@@ -149,8 +147,7 @@ namespace VDS.RDF
         {
             if (index == null) return;
 
-            HashSet<Triple> ts;
-            if (index.TryGetValue(t, out ts))
+            if (index.TryGetValue(t, out HashSet<Triple> ts))
             {
                 if (ts == null)
                 {
@@ -191,8 +188,7 @@ namespace VDS.RDF
         {
             if (index == null) return;
 
-            HashSet<Triple> ts;
-            if (index.TryGetValue(n, out ts))
+            if (index.TryGetValue(n, out HashSet<Triple> ts))
             {
                 if (ts != null)
                 {
@@ -214,8 +210,7 @@ namespace VDS.RDF
         {
             if (index == null) return;
 
-            HashSet<Triple> ts;
-            if (index.TryGetValue(t, out ts))
+            if (index.TryGetValue(t, out HashSet<Triple> ts))
             {
                 if (ts != null)
                 {
@@ -235,14 +230,45 @@ namespace VDS.RDF
         /// <returns></returns>
         protected internal override bool Add(Triple t)
         {
-            if (!Contains(t))
+            if (_triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
             {
-                _triples.Add(t, null);
+                return false;
+            }
+
+            if (refs == null)
+            {
+                refs = new TripleRefs { Asserted = true };
+                _triples.Add(t, refs);
                 Index(t);
                 _count++;
-                return true;
             }
-            return false;
+            else
+            {
+                // If t is already quoted in the graph it will be indexed and counted already
+                refs.Asserted = true;
+            }
+            if (t.Subject is ITripleNode stn) AddQuoted(stn);
+            if (t.Object is ITripleNode otn) AddQuoted(otn);
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a quotation of a triple to the collection.
+        /// </summary>
+        /// <param name="tripleNode">The triple node that quotes the triple to be added to the collection.</param>
+        protected internal void AddQuoted(ITripleNode tripleNode)
+        {
+            if (_triples.TryGetValue(tripleNode.Triple, out TripleRefs refs))
+            {
+                refs.QuoteCount++;
+                return;
+            }
+            _triples.Add(tripleNode.Triple, new TripleRefs{Asserted = false, QuoteCount = 1});
+            Index(tripleNode.Triple);
+            _count++;
+            // Recursively process any nested quotations
+            if (tripleNode.Triple.Subject is ITripleNode stn) AddQuoted(stn);
+            if (tripleNode.Triple.Object is ITripleNode otn) AddQuoted(otn);
         }
 
         /// <summary>
@@ -255,14 +281,16 @@ namespace VDS.RDF
             return _triples.ContainsKey(t);
         }
 
+        /// <inheritdoc />
         public override bool ContainsAsserted(Triple t)
         {
-            throw new System.NotImplementedException();
+            return _triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted;
         }
 
+        /// <inheritdoc />
         public override bool ContainsQuoted(Triple t)
         {
-            throw new System.NotImplementedException();
+            return _triples.TryGetValue(t, out TripleRefs refs) && refs.QuoteCount > 0;
         }
 
         /// <summary>
@@ -284,15 +312,47 @@ namespace VDS.RDF
         /// <returns></returns>
         protected internal override bool Delete(Triple t)
         {
-            if (_triples.Remove(t))
+            if (_triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
             {
-                // If removed then unindex
-                Unindex(t);
+                refs.Asserted = false;
+                if (refs.QuoteCount == 0)
+                {
+                    // If removed then un-index
+                    _triples.Remove(t);
+                    Unindex(t);
+                    _count--;
+                }
+                // TripleRemoved event is raised when the triple is retracted from the graph. It may still be quoted.
                 RaiseTripleRemoved(t);
-                _count--;
+
+                if (t.Subject is ITripleNode stn) RemoveQuoted(stn);
+                if (t.Object is ITripleNode otn) RemoveQuoted(otn);
                 return true;
             }
+
             return false;
+        }
+
+        /// <summary>
+        /// Removes a quote reference to a triple from the collection.
+        /// </summary>
+        /// <param name="tripleNode">The node containing the triple to be 'unquoted'.</param>
+        /// <remarks>This method decreases the quote reference count for the triple. If the reference count drops to 0 and the triple is not also asserted in the graph, then it will be removed from the collection. If the triple itself quotes other triples, then this process is applied out recursively.</remarks>
+        protected internal void RemoveQuoted(ITripleNode tripleNode)
+        {
+            if (_triples.TryGetValue(tripleNode.Triple, out TripleRefs refs) && refs.QuoteCount > 0)
+            {
+                refs.QuoteCount--;
+                if (refs.QuoteCount == 0 && !refs.Asserted)
+                {
+                    // If the triple is no longer referenced and is not asserted it can be un-indexed
+                    Unindex(tripleNode.Triple);
+                    _count--;
+                }
+            }
+            // Recursively remove any nested quotations
+            if (tripleNode.Triple.Subject is ITripleNode stn) RemoveQuoted(stn);
+            if (tripleNode.Triple.Object is ITripleNode otn) RemoveQuoted(otn);
         }
 
         /// <summary>
@@ -304,8 +364,7 @@ namespace VDS.RDF
         {
             get
             {
-                Triple actual;
-                if (_triples.TryGetKey(t, out actual))
+                if (_triples.TryGetKey(t, out Triple actual))
                 {
                     return actual;
                 }
@@ -325,10 +384,9 @@ namespace VDS.RDF
         {
             if (_o != null)
             {
-                HashSet<Triple> ts;
-                if (_o.TryGetValue(obj, out ts))
+                if (_o.TryGetValue(obj, out HashSet<Triple> ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return ts ?? Enumerable.Empty<Triple>();
                 }
                 else
                 {
@@ -350,10 +408,9 @@ namespace VDS.RDF
         {
             if (_p != null)
             {
-                HashSet<Triple> ts;
-                if (_p.TryGetValue(pred, out ts))
+                if (_p.TryGetValue(pred, out HashSet<Triple> ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return ts ?? Enumerable.Empty<Triple>();
                 }
                 else
                 {
@@ -375,10 +432,9 @@ namespace VDS.RDF
         {
             if (_s != null)
             {
-                HashSet<Triple> ts;
-                if (_s.TryGetValue(subj, out ts))
+                if (_s.TryGetValue(subj, out HashSet<Triple> ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return ts ?? Enumerable.Empty<Triple>();
                 }
                 else
                 {
@@ -401,10 +457,9 @@ namespace VDS.RDF
         {
             if (_po != null)
             {
-                HashSet<Triple> ts;
-                if (_po.TryGetValue(new Triple(_subjVar, pred, obj), out ts))
+                if (_po.TryGetValue(new Triple(_subjVar, pred, obj), out HashSet<Triple> ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return ts ?? Enumerable.Empty<Triple>();
                 }
                 else
                 {
@@ -427,10 +482,9 @@ namespace VDS.RDF
         {
             if (_so != null)
             {
-                HashSet<Triple> ts;
-                if (_so.TryGetValue(new Triple(subj, _predVar, obj), out ts))
+                if (_so.TryGetValue(new Triple(subj, _predVar, obj), out HashSet<Triple> ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return ts ?? Enumerable.Empty<Triple>();
                 }
                 else
                 {
@@ -453,10 +507,9 @@ namespace VDS.RDF
         {
             if (_sp != null)
             {
-                HashSet<Triple> ts;
-                if (_sp.TryGetValue(new Triple(subj, pred, _objVar), out ts))
+                if (_sp.TryGetValue(new Triple(subj, pred, _objVar), out HashSet<Triple> ts))
                 {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                    return ts ?? Enumerable.Empty<Triple>();
                 }
                 else
                 {
@@ -547,10 +600,28 @@ namespace VDS.RDF
         }
 
         /// <inheritdoc />
-        public override IEnumerable<Triple> Asserted { get { throw new NotImplementedException(); } }
+        public override IEnumerable<Triple> Asserted
+        {
+            get
+            {
+                foreach (KeyValuePair<Triple, TripleRefs> x in _triples)
+                {
+                    if (x.Value.Asserted) yield return x.Key;
+                }
+            }
+        }
 
         /// <inheritdoc />
-        public override IEnumerable<Triple> Quoted { get { throw new NotImplementedException(); } }
+        public override IEnumerable<Triple> Quoted
+        {
+            get
+            {
+                foreach (KeyValuePair<Triple, TripleRefs> x in _triples)
+                {
+                    if (x.Value.QuoteCount > 0) yield return x.Key;
+                }
+            }
+        }
 
     }
 }
