@@ -37,10 +37,8 @@ namespace VDS.RDF
     /// <remarks>
     /// </remarks>
     public class TreeIndexedTripleCollection
-        : BaseTripleCollection
+        : AbstractIndexedTripleCollection
     {
-        // Main Storage
-        private readonly MultiDictionary<Triple, TripleRefs> _triples = new MultiDictionary<Triple, TripleRefs>(new FullTripleComparer(new FastVirtualNodeComparer()));
         // Simple Indexes
         private readonly MultiDictionary<INode, HashSet<Triple>> _s, _p, _o;
         // Compound Indexes
@@ -51,7 +49,6 @@ namespace VDS.RDF
                              _predVar = new VariableNode("p"),
                              _objVar = new VariableNode("o");
 
-        private int _count;
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection.
@@ -101,7 +98,7 @@ namespace VDS.RDF
         /// Indexes a Triple.
         /// </summary>
         /// <param name="t">Triple.</param>
-        private void Index(Triple t)
+        protected override void Index(Triple t)
         {
             IndexSimple(t.Subject, t, _s);
             IndexSimple(t.Predicate, t, _p);
@@ -168,7 +165,7 @@ namespace VDS.RDF
         /// Unindexes a triple.
         /// </summary>
         /// <param name="t">Triple.</param>
-        private void Unindex(Triple t)
+        protected override void Unindex(Triple t)
         {
             UnindexSimple(t.Subject, t, _s);
             UnindexSimple(t.Predicate, t, _p);
@@ -223,137 +220,6 @@ namespace VDS.RDF
             }
         }
 
-        /// <summary>
-        /// Adds a Triple to the collection.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected internal override bool Add(Triple t)
-        {
-            if (_triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
-            {
-                return false;
-            }
-
-            if (refs == null)
-            {
-                refs = new TripleRefs { Asserted = true };
-                _triples.Add(t, refs);
-                Index(t);
-                _count++;
-            }
-            else
-            {
-                // If t is already quoted in the graph it will be indexed and counted already
-                refs.Asserted = true;
-            }
-            if (t.Subject is ITripleNode stn) AddQuoted(stn);
-            if (t.Object is ITripleNode otn) AddQuoted(otn);
-            return true;
-        }
-
-        /// <summary>
-        /// Adds a quotation of a triple to the collection.
-        /// </summary>
-        /// <param name="tripleNode">The triple node that quotes the triple to be added to the collection.</param>
-        protected internal void AddQuoted(ITripleNode tripleNode)
-        {
-            if (_triples.TryGetValue(tripleNode.Triple, out TripleRefs refs))
-            {
-                refs.QuoteCount++;
-                return;
-            }
-            _triples.Add(tripleNode.Triple, new TripleRefs{Asserted = false, QuoteCount = 1});
-            Index(tripleNode.Triple);
-            _count++;
-            // Recursively process any nested quotations
-            if (tripleNode.Triple.Subject is ITripleNode stn) AddQuoted(stn);
-            if (tripleNode.Triple.Object is ITripleNode otn) AddQuoted(otn);
-        }
-
-        /// <summary>
-        /// Checks whether the collection contains a given Triple.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        public override bool Contains(Triple t)
-        {
-            return _triples.ContainsKey(t);
-        }
-
-        /// <inheritdoc />
-        public override bool ContainsAsserted(Triple t)
-        {
-            return _triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted;
-        }
-
-        /// <inheritdoc />
-        public override bool ContainsQuoted(Triple t)
-        {
-            return _triples.TryGetValue(t, out TripleRefs refs) && refs.QuoteCount > 0;
-        }
-
-        /// <summary>
-        /// Gets the count of triples in the collection.
-        /// </summary>
-        public override int Count
-        {
-            get 
-            {
-                // Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
-                return _count;
-            }
-        }
-
-        /// <summary>
-        /// Deletes a triple from the collection.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected internal override bool Delete(Triple t)
-        {
-            if (_triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
-            {
-                refs.Asserted = false;
-                if (refs.QuoteCount == 0)
-                {
-                    // If removed then un-index
-                    _triples.Remove(t);
-                    Unindex(t);
-                    _count--;
-                }
-                // TripleRemoved event is raised when the triple is retracted from the graph. It may still be quoted.
-                RaiseTripleRemoved(t);
-
-                if (t.Subject is ITripleNode stn) RemoveQuoted(stn);
-                if (t.Object is ITripleNode otn) RemoveQuoted(otn);
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Removes a quote reference to a triple from the collection.
-        /// </summary>
-        /// <param name="tripleNode">The node containing the triple to be 'unquoted'.</param>
-        /// <remarks>This method decreases the quote reference count for the triple. If the reference count drops to 0 and the triple is not also asserted in the graph, then it will be removed from the collection. If the triple itself quotes other triples, then this process is applied out recursively.</remarks>
-        protected internal void RemoveQuoted(ITripleNode tripleNode)
-        {
-            if (_triples.TryGetValue(tripleNode.Triple, out TripleRefs refs) && refs.QuoteCount > 0)
-            {
-                refs.QuoteCount--;
-                if (refs.QuoteCount == 0 && !refs.Asserted)
-                {
-                    // If the triple is no longer referenced and is not asserted it can be un-indexed
-                    Unindex(tripleNode.Triple);
-                    _count--;
-                }
-            }
-            // Recursively remove any nested quotations
-            if (tripleNode.Triple.Subject is ITripleNode stn) RemoveQuoted(stn);
-            if (tripleNode.Triple.Object is ITripleNode otn) RemoveQuoted(otn);
-        }
 
         /// <summary>
         /// Gets the specific instance of a Triple in the collection.
@@ -364,7 +230,7 @@ namespace VDS.RDF
         {
             get
             {
-                if (_triples.TryGetKey(t, out Triple actual))
+                if (Triples.TryGetKey(t, out Triple actual))
                 {
                     return actual;
                 }
@@ -395,7 +261,7 @@ namespace VDS.RDF
             }
             else
             {
-                return _triples.Keys.Where(t => t.Object.Equals(obj));
+                return Triples.Keys.Where(t => t.Object.Equals(obj));
             }
         }
 
@@ -419,7 +285,7 @@ namespace VDS.RDF
             }
             else
             {
-                return _triples.Keys.Where(t => t.Predicate.Equals(pred));
+                return Triples.Keys.Where(t => t.Predicate.Equals(pred));
             }
         }
 
@@ -443,7 +309,7 @@ namespace VDS.RDF
             }
             else
             {
-                return _triples.Keys.Where(t => t.Subject.Equals(subj));
+                return Triples.Keys.Where(t => t.Subject.Equals(subj));
             }
         }
 
@@ -527,16 +393,9 @@ namespace VDS.RDF
         /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
-            get 
+            get
             {
-                if (_o != null)
-                {
-                    return _o.Keys;
-                }
-                else
-                {
-                    return _triples.Keys.Select(t => t.Object);
-                }
+                return _o?.Keys ?? Triples.Keys.Select(t => t.Object);
             }
         }
 
@@ -547,14 +406,7 @@ namespace VDS.RDF
         {
             get
             {
-                if (_p != null)
-                {
-                    return _p.Keys;
-                }
-                else
-                {
-                    return _triples.Keys.Select(t => t.Predicate);
-                }
+                return _p?.Keys ?? Triples.Keys.Select(t => t.Predicate);
             }
         }
 
@@ -563,16 +415,9 @@ namespace VDS.RDF
         /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
-            get 
+            get
             {
-                if (_s != null)
-                {
-                    return _s.Keys;
-                }
-                else
-                {
-                    return _triples.Keys.Select(t => t.Subject);
-                }
+                return _s?.Keys ?? Triples.Keys.Select(t => t.Subject);
             }
         }
 
@@ -581,47 +426,16 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            _triples.Clear();
-            if (_s != null) _s.Clear();
-            if (_p != null) _p.Clear();
-            if (_o != null) _o.Clear();
-            if (_so != null) _so.Clear();
-            if (_sp != null) _sp.Clear();
-            if (_po != null) _po.Clear();
+            Triples.Clear();
+            _s?.Clear();
+            _p?.Clear();
+            _o?.Clear();
+            _so?.Clear();
+            _sp?.Clear();
+            _po?.Clear();
         }
 
-        /// <summary>
-        /// Gets the enumerator for the collection.
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerator<Triple> GetEnumerator()
-        {
-            return _triples.Keys.GetEnumerator();
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<Triple> Asserted
-        {
-            get
-            {
-                foreach (KeyValuePair<Triple, TripleRefs> x in _triples)
-                {
-                    if (x.Value.Asserted) yield return x.Key;
-                }
-            }
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<Triple> Quoted
-        {
-            get
-            {
-                foreach (KeyValuePair<Triple, TripleRefs> x in _triples)
-                {
-                    if (x.Value.QuoteCount > 0) yield return x.Key;
-                }
-            }
-        }
+        
 
     }
 }

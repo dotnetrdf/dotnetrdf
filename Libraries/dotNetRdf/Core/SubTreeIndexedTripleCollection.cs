@@ -41,10 +41,8 @@ namespace VDS.RDF
     /// </para>
     /// </remarks>
     public class SubTreeIndexedTripleCollection
-        : BaseTripleCollection
+        : AbstractIndexedTripleCollection
     {
-        // Main Storage
-        private MultiDictionary<Triple, object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
         // Indexes
         private MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer()),
                                                                               _p = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer()),
@@ -65,13 +63,11 @@ namespace VDS.RDF
                                   _pComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
                                   _oComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer());
 
-        private int _count;
-
         /// <summary>
         /// Indexes a Triple.
         /// </summary>
         /// <param name="t">Triple.</param>
-        private void Index(Triple t)
+        protected override void Index(Triple t)
         {
             Index(t.Subject, t, _s, _sHash, _sComparer);
             Index(t.Predicate, t, _p, _pHash, _pComparer);
@@ -118,7 +114,7 @@ namespace VDS.RDF
         /// Unindexes a triple.
         /// </summary>
         /// <param name="t">Triple.</param>
-        private void Unindex(Triple t)
+        protected override void Unindex(Triple t)
         {
             Unindex(t.Subject, t, _s);
             Unindex(t.Predicate, t, _p);
@@ -143,72 +139,6 @@ namespace VDS.RDF
             }
         }
 
-        /// <summary>
-        /// Adds a Triple to the collection.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected internal override bool Add(Triple t)
-        {
-            if (!Contains(t))
-            {
-                _triples.Add(t, null);
-                Index(t);
-                _count++;
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Checks whether the collection contains a given Triple.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        public override bool Contains(Triple t)
-        {
-            return _triples.ContainsKey(t);
-        }
-
-        public override bool ContainsAsserted(Triple t)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool ContainsQuoted(Triple t)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets the count of triples in the collection.
-        /// </summary>
-        public override int Count
-        {
-            get 
-            {
-                // Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
-                return _count;
-            }
-        }
-
-        /// <summary>
-        /// Deletes a triple from the collection.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected internal override bool Delete(Triple t)
-        {
-            if (_triples.Remove(t))
-            {
-                // If removed then unindex
-                Unindex(t);
-                RaiseTripleRemoved(t);
-                _count--;
-                return true;
-            }
-            return false;
-        }
 
         /// <summary>
         /// Gets the specific instance of a Triple in the collection.
@@ -219,7 +149,7 @@ namespace VDS.RDF
         {
             get
             {
-                if (_triples.TryGetKey(t, out Triple actual))
+                if (Triples.TryGetKey(t, out Triple actual))
                 {
                     return actual;
                 }
@@ -361,26 +291,11 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            _triples.Clear();
+            Triples.Clear();
             _s.Clear();
             _p.Clear();
             _o.Clear();
         }
 
-
-        /// <summary>
-        /// Gets the enumerator for the collection.
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerator<Triple> GetEnumerator()
-        {
-            return _triples.Keys.GetEnumerator();
-        }
-
-        /// <inheritdoc />
-        public override IEnumerable<Triple> Asserted { get { throw new NotImplementedException(); } }
-
-        /// <inheritdoc />
-        public override IEnumerable<Triple> Quoted { get { throw new NotImplementedException(); } }
     }
 }
