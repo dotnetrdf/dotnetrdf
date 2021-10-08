@@ -113,12 +113,12 @@ namespace VDS.RDF
         public virtual BaseTripleCollection Triples => _triples;
 
         /// <inheritdoc />
-        public virtual IEnumerable<INode> Nodes => _triples.SubjectNodes.Union(_triples.ObjectNodes).Distinct();
+        public virtual IEnumerable<INode> Nodes => _triples.AssertedSubjectNodes.Union(_triples.AssertedObjectNodes).Distinct();
 
         /// <inheritdoc />
         public virtual IEnumerable<INode> AllNodes
         {
-            get { return _triples.SelectMany(t => t.Nodes).Distinct(); }
+            get { return _triples.Asserted.SelectMany(t => t.Nodes).Distinct(); }
         }
 
         /// <summary>

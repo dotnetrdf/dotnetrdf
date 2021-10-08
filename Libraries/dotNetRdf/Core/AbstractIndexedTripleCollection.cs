@@ -117,30 +117,42 @@ namespace VDS.RDF
             {
                 refs = new TripleRefs { Asserted = true };
                 Triples.Add(t, refs);
-                Index(t);
                 _count++;
             }
             else
             {
-                // If t is already quoted in the graph it will be indexed and counted already
+                // If t is already quoted in the graph it will counted already
                 refs.Asserted = true;
             }
+            IndexAsserted(t);
             if (t.Subject is ITripleNode stn) AddQuoted(stn);
             if (t.Object is ITripleNode otn) AddQuoted(otn);
             return true;
         }
 
         /// <summary>
-        /// Override in derived classes to add a triple to the index.
+        /// Override in derived classes to add an asserted triple to the index.
         /// </summary>
         /// <param name="t">Triple to add.</param>
-        protected abstract void Index(Triple t);
+        protected abstract void IndexAsserted(Triple t);
 
         /// <summary>
-        /// Override in derived classes to remove a triple from the index.
+        /// Override in derived classes to remove an asserted triple from the index.
         /// </summary>
         /// <param name="t">Triple to remove.</param>
-        protected abstract void Unindex(Triple t);
+        protected abstract void UnindexAsserted(Triple t);
+
+        /// <summary>
+        /// Override in derived classes to add a quoted triple to the index.
+        /// </summary>
+        /// <param name="t">Triple to add.</param>
+        protected abstract void IndexQuoted(Triple t);
+
+        /// <summary>
+        /// Override in derived classes to remove a quoted triple from the index.
+        /// </summary>
+        /// <param name="t"></param>
+        protected abstract void UnindexQuoted(Triple t);
 
         /// <summary>
         /// Deletes a triple from the collection.
@@ -154,11 +166,11 @@ namespace VDS.RDF
                 refs.Asserted = false;
                 if (refs.QuoteCount == 0)
                 {
-                    // If removed then un-index
+                    // If removed then decrement count
                     Triples.Remove(t);
-                    Unindex(t);
                     _count--;
                 }
+                UnindexAsserted(t);
                 // TripleRemoved event is raised when the triple is retracted from the graph. It may still be quoted.
                 RaiseTripleRemoved(t);
 
@@ -179,12 +191,19 @@ namespace VDS.RDF
         {
             if (Triples.TryGetValue(tripleNode.Triple, out TripleRefs refs))
             {
+                if (refs.QuoteCount == 0)
+                {
+                    // Triple was previously asserted but not quoted so add it to the quoted triples index.
+                    IndexQuoted(tripleNode.Triple);
+                }
                 refs.QuoteCount++;
                 return;
             }
+            // New (not previously asserted or quoted) triple
             Triples.Add(tripleNode.Triple, new TripleRefs { Asserted = false, QuoteCount = 1 });
-            Index(tripleNode.Triple);
+            IndexQuoted(tripleNode.Triple);
             _count++;
+
             // Recursively process any nested quotations
             if (tripleNode.Triple.Subject is ITripleNode stn) AddQuoted(stn);
             if (tripleNode.Triple.Object is ITripleNode otn) AddQuoted(otn);
@@ -194,17 +213,24 @@ namespace VDS.RDF
         /// Removes a quote reference to a triple from the collection.
         /// </summary>
         /// <param name="tripleNode">The node containing the triple to be 'unquoted'.</param>
-        /// <remarks>This method decreases the quote reference count for the triple. If the reference count drops to 0 and the triple is not also asserted in the graph, then it will be removed from the collection. If the triple itself quotes other triples, then this process is applied out recursively.</remarks>
+        /// <remarks>This method decreases the quote reference count for the triple.
+        /// If the reference count drops to 0, the triple is removed from the quoted triples index.
+        /// If the reference count drops to 0 and the triple is not asserted in the graph, it will be removed from the collection count.
+        /// If the triple itself quotes other triples, then this process is applied out recursively.
+        /// </remarks>
         protected internal void RemoveQuoted(ITripleNode tripleNode)
         {
             if (Triples.TryGetValue(tripleNode.Triple, out TripleRefs refs) && refs.QuoteCount > 0)
             {
                 refs.QuoteCount--;
-                if (refs.QuoteCount == 0 && !refs.Asserted)
+                if (refs.QuoteCount == 0)
                 {
-                    // If the triple is no longer referenced and is not asserted it can be un-indexed
-                    Unindex(tripleNode.Triple);
-                    _count--;
+                    UnindexQuoted(tripleNode.Triple);
+                    if (!refs.Asserted)
+                    {
+                        // If the triple is no longer referenced and is not asserted it can be un-indexed
+                        _count--;
+                    }
                 }
             }
             // Recursively remove any nested quotations

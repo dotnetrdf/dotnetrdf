@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
@@ -40,15 +41,29 @@ namespace VDS.RDF
         : AbstractIndexedTripleCollection
     {
         // Simple Indexes
+        // Simple index for asserted triples
         private readonly MultiDictionary<INode, HashSet<Triple>> _s, _p, _o;
+        // Simple index for quoted triples
+        private readonly MultiDictionary<INode, HashSet<Triple>> _qs, _qp, _qo;
+
         // Compound Indexes
+        // Compound index for asserted triples
         private readonly MultiDictionary<Triple, HashSet<Triple>> _sp, _so, _po;
+        // Compound index for quoted triples
+        private readonly MultiDictionary<Triple, HashSet<Triple>> _qsp, _qso, _qpo;
 
         // Placeholder Variables for compound lookups
         private readonly VariableNode _subjVar = new VariableNode("s"),
                              _predVar = new VariableNode("p"),
                              _objVar = new VariableNode("o");
 
+        // Comparers
+        private readonly BaseTripleComparer _spComparer = new SubjectPredicateComparer(new FastVirtualNodeComparer()),
+            _poComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
+            _osComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer()),
+            _sComparer = new SubjectComparer(new FastVirtualNodeComparer()),
+            _oComparer = new ObjectComparer(new FastVirtualNodeComparer()),
+            _pComparer = new PredicateComparer(new FastVirtualNodeComparer());
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection.
@@ -84,21 +99,84 @@ namespace VDS.RDF
         /// <param name="subjObjIndex">Whether to create a subject object index.</param>
         /// <param name="predObjIndex">Whether to create a predicate object index.</param>
         /// <param name="compoundIndexMode">Mode to use for compound indexes.</param>
-        public TreeIndexedTripleCollection(bool subjIndex, bool predIndex, bool objIndex, bool subjPredIndex, bool subjObjIndex, bool predObjIndex, MultiDictionaryMode compoundIndexMode)
+        public TreeIndexedTripleCollection(bool subjIndex, bool predIndex, bool objIndex, bool subjPredIndex, bool subjObjIndex, bool predObjIndex, MultiDictionaryMode compoundIndexMode) :
+            this(subjIndex, predIndex, objIndex, subjPredIndex, subjObjIndex, predObjIndex, true, compoundIndexMode) {}
+
+        /// <summary>
+        /// Creates a new Tree Indexed triple collection with the given Indexing options.
+        /// </summary>
+        /// <param name="subjIndex">Whether to create a subject index.</param>
+        /// <param name="predIndex">Whether to create a predicate index.</param>
+        /// <param name="objIndex">Whether to create an object index.</param>
+        /// <param name="subjPredIndex">Whether to create a subject predicate index.</param>
+        /// <param name="subjObjIndex">Whether to create a subject object index.</param>
+        /// <param name="predObjIndex">Whether to create a predicate object index.</param>
+        /// <param name="indexQuoted">Whether to create the same set of indexes for quoted triples.</param>
+        /// <param name="compoundIndexMode">Mode to use for compound indexes.</param>
+        public TreeIndexedTripleCollection(bool subjIndex, bool predIndex, bool objIndex, bool subjPredIndex, bool subjObjIndex, bool predObjIndex, bool indexQuoted, MultiDictionaryMode compoundIndexMode)
         {
-            if (subjIndex) _s = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
-            if (predIndex) _p = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
-            if (objIndex) _o = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
-            if (subjPredIndex) _sp = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), false, new SubjectPredicateComparer(new FastVirtualNodeComparer()), compoundIndexMode);
-            if (subjObjIndex) _so = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), false, new SubjectObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
-            if (predObjIndex) _po = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), false, new PredicateObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+            if (subjIndex)
+            {
+                _s = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                if (indexQuoted)
+                {
+                    _qs = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                }
+            }
+
+            if (predIndex)
+            {
+                _p = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                if (indexQuoted)
+                {
+                    _qp = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                }
+            }
+
+            if (objIndex)
+            {
+                _o = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                if (indexQuoted)
+                {
+                    _qo = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                }
+            }
+
+            if (subjPredIndex)
+            {
+                _sp = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), false, new SubjectPredicateComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+                if (indexQuoted)
+                {
+                    _qsp = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), false, new SubjectPredicateComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+                }
+            }
+
+            if (subjObjIndex)
+            {
+                _so = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), false, new SubjectObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+                if (indexQuoted)
+                {
+                    _qso = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), false, new SubjectObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+                }
+            }
+
+            if (predObjIndex)
+            {
+                _po = new MultiDictionary<Triple, HashSet<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), false, new PredicateObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+                if (indexQuoted)
+                {
+                    _qpo = new MultiDictionary<Triple, HashSet<Triple>>(
+                        t => Tools.CombineHashCodes(t.Predicate, t.Object), false,
+                        new PredicateObjectComparer(new FastVirtualNodeComparer()), compoundIndexMode);
+                }
+            }
         }
 
         /// <summary>
         /// Indexes a Triple.
         /// </summary>
         /// <param name="t">Triple.</param>
-        protected override void Index(Triple t)
+        protected override void IndexAsserted(Triple t)
         {
             IndexSimple(t.Subject, t, _s);
             IndexSimple(t.Predicate, t, _p);
@@ -106,6 +184,17 @@ namespace VDS.RDF
             IndexCompound(t, _sp);
             IndexCompound(t, _so);
             IndexCompound(t, _po);
+        }
+
+        /// <inheritdoc />
+        protected override void IndexQuoted(Triple t)
+        {
+            IndexSimple(t.Subject, t, _qs);
+            IndexSimple(t.Predicate, t, _qp);
+            IndexSimple(t.Object, t, _qo);
+            IndexCompound(t, _qsp);
+            IndexCompound(t, _qso);
+            IndexCompound(t, _qpo);
         }
 
         /// <summary>
@@ -165,7 +254,7 @@ namespace VDS.RDF
         /// Unindexes a triple.
         /// </summary>
         /// <param name="t">Triple.</param>
-        protected override void Unindex(Triple t)
+        protected override void UnindexAsserted(Triple t)
         {
             UnindexSimple(t.Subject, t, _s);
             UnindexSimple(t.Predicate, t, _p);
@@ -173,6 +262,17 @@ namespace VDS.RDF
             UnindexCompound(t, _sp);
             UnindexCompound(t, _so);
             UnindexCompound(t, _po);
+        }
+
+        /// <inheritdoc/>
+        protected override void UnindexQuoted(Triple t)
+        {
+            UnindexSimple(t.Subject, t, _qs);
+            UnindexSimple(t.Predicate, t, _qp);
+            UnindexSimple(t.Object, t, _qo);
+            UnindexCompound(t, _qsp);
+            UnindexCompound(t, _qso);
+            UnindexCompound(t, _qpo);
         }
 
         /// <summary>
@@ -248,6 +348,89 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
+            return _o != null
+                ? AssertedWithObject(obj).Union(QuotedWithObject(obj),_spComparer)
+                : Triples.Keys.Where(t => t.Object.Equals(obj));
+        }
+
+        /// <summary>
+        /// Gets all the triples with a given predicate.
+        /// </summary>
+        /// <param name="pred">Predicate.</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithPredicate(INode pred)
+        {
+            return _p != null
+                ? AssertedWithPredicate(pred).Union(QuotedWithPredicate(pred),_osComparer)
+                : Triples.Keys.Where(t => t.Predicate.Equals(pred));
+        }
+
+        /// <summary>
+        /// Gets all the triples with a given subject.
+        /// </summary>
+        /// <param name="subj">Subject.</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithSubject(INode subj)
+        {
+            return _s != null
+                ? AssertedWithSubject(subj).Union(QuotedWithSubject(subj), _poComparer)
+                : Triples.Keys.Where(t => t.Subject.Equals(subj));
+        }
+
+        /// <summary>
+        /// Gets all the triples with a given predicate and object.
+        /// </summary>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
+        {
+            return _po != null
+                ? AssertedWithPredicateObject(pred, obj).Union(QuotedWithPredicateObject(pred, obj), _sComparer)
+                : WithPredicate(pred).Where(t => t.Object.Equals(obj));
+        }
+
+        /// <summary>
+        /// Gets all the triples with a given subject and object.
+        /// </summary>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
+        {
+            return _so != null
+                ? AssertedWithSubjectObject(subj, obj).Union(QuotedWithSubjectObject(subj, obj), _pComparer)
+                : WithSubject(subj).Where(t => t.Object.Equals(obj));
+        }
+
+        /// <summary>
+        /// Gets all the triples with a given subject and predicate.
+        /// </summary>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
+        {
+            return _sp != null
+                ? AssertedWithSubjectPredicate(subj, pred).Union(QuotedWithSubjectPredicate(subj, pred), _oComparer)
+                : WithSubject(subj).Where(t => t.Predicate.Equals(pred));
+        }
+
+
+        private IEnumerable<Triple> AssertedTriples(Func<Triple, bool> filter)
+        {
+            foreach (KeyValuePair<Triple, TripleRefs> entry in Triples)
+            {
+                if (entry.Value.Asserted && filter(entry.Key))
+                {
+                    yield return entry.Key;
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> AssertedWithObject(INode obj)
+        {
             if (_o != null)
             {
                 if (_o.TryGetValue(obj, out HashSet<Triple> ts))
@@ -261,16 +444,13 @@ namespace VDS.RDF
             }
             else
             {
-                return Triples.Keys.Where(t => t.Object.Equals(obj));
+                return AssertedTriples(t => t.Object.Equals(obj));
             }
         }
 
-        /// <summary>
-        /// Gets all the triples with a given predicate.
-        /// </summary>
-        /// <param name="pred">Predicate.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithPredicate(INode pred)
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> AssertedWithPredicate(INode pred)
         {
             if (_p != null)
             {
@@ -285,16 +465,13 @@ namespace VDS.RDF
             }
             else
             {
-                return Triples.Keys.Where(t => t.Predicate.Equals(pred));
+                return AssertedTriples(t => t.Predicate.Equals(pred));
             }
         }
 
-        /// <summary>
-        /// Gets all the triples with a given subject.
-        /// </summary>
-        /// <param name="subj">Subject.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithSubject(INode subj)
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> AssertedWithSubject(INode subj)
         {
             if (_s != null)
             {
@@ -309,17 +486,13 @@ namespace VDS.RDF
             }
             else
             {
-                return Triples.Keys.Where(t => t.Subject.Equals(subj));
+                return AssertedTriples(t => t.Subject.Equals(subj));
             }
         }
 
-        /// <summary>
-        /// Gets all the triples with a given predicate and object.
-        /// </summary>
-        /// <param name="pred">Predicate.</param>
-        /// <param name="obj">Object.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> AssertedWithPredicateObject(INode pred, INode obj)
         {
             if (_po != null)
             {
@@ -338,13 +511,9 @@ namespace VDS.RDF
             }
         }
 
-        /// <summary>
-        /// Gets all the triples with a given subject and object.
-        /// </summary>
-        /// <param name="subj">Subject.</param>
-        /// <param name="obj">Object.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> AssertedWithSubjectObject(INode subj, INode obj)
         {
             if (_so != null)
             {
@@ -363,13 +532,9 @@ namespace VDS.RDF
             }
         }
 
-        /// <summary>
-        /// Gets all the triples with a given subject and predicate.
-        /// </summary>
-        /// <param name="subj">Subject.</param>
-        /// <param name="pred">Predicate.</param>
-        /// <returns></returns>
-        public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> AssertedWithSubjectPredicate(INode subj, INode pred)
         {
             if (_sp != null)
             {
@@ -387,6 +552,147 @@ namespace VDS.RDF
                 return WithSubject(subj).Where(t => t.Predicate.Equals(pred));
             }
         }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithObject(INode obj)
+        {
+            if (_qo != null)
+            {
+                if (_qo.TryGetValue(obj, out HashSet<Triple> ts))
+                {
+                    return ts ?? Enumerable.Empty<Triple>();
+                }
+                else
+                {
+                    return Enumerable.Empty<Triple>();
+                }
+            }
+            else
+            {
+                return QuotedTriples(x => x.Object.Equals(obj));
+            }
+        }
+
+        /// <summary>
+        /// Helper function for filtering the entries in the Triples collection to include only quoted triples.
+        /// </summary>
+        /// <param name="filter">An additional filter to apply to the triples.</param>
+        /// <returns></returns>
+        private IEnumerable<Triple> QuotedTriples(Func<Triple, bool> filter)
+        {
+            foreach (KeyValuePair<Triple, TripleRefs> entry in Triples)
+            {
+                if (entry.Value.QuoteCount > 0 && filter(entry.Key))
+                {
+                    yield return entry.Key;
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithPredicate(INode pred)
+        {
+            if (_qp != null)
+            {
+                if (_qp.TryGetValue(pred, out HashSet<Triple> ts))
+                {
+                    return ts ?? Enumerable.Empty<Triple>();
+                }
+                else
+                {
+                    return Enumerable.Empty<Triple>();
+                }
+            }
+            else
+            {
+                return QuotedTriples(t => t.Predicate.Equals(pred));
+            }
+        }
+
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithSubject(INode subj)
+        {
+            if (_qs != null)
+            {
+                if (_qs.TryGetValue(subj, out HashSet<Triple> ts))
+                {
+                    return ts ?? Enumerable.Empty<Triple>();
+                }
+                else
+                {
+                    return Enumerable.Empty<Triple>();
+                }
+            }
+            else
+            {
+                return QuotedTriples(t => t.Subject.Equals(subj));
+            }
+        }
+
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithPredicateObject(INode pred, INode obj)
+        {
+            if (_qpo != null)
+            {
+                if (_qpo.TryGetValue(new Triple(_subjVar, pred, obj), out HashSet<Triple> ts))
+                {
+                    return ts ?? Enumerable.Empty<Triple>();
+                }
+                else
+                {
+                    return Enumerable.Empty<Triple>();
+                }
+            }
+            else
+            {
+                return QuotedWithPredicate(pred).Where(t => t.Object.Equals(obj));
+            }
+        }
+
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithSubjectObject(INode subj, INode obj)
+        {
+            if (_qso != null)
+            {
+                if (_qso.TryGetValue(new Triple(subj, _predVar, obj), out HashSet<Triple> ts))
+                {
+                    return ts ?? Enumerable.Empty<Triple>();
+                }
+                else
+                {
+                    return Enumerable.Empty<Triple>();
+                }
+            }
+            else
+            {
+                return QuotedWithSubject(subj).Where(t => t.Object.Equals(obj));
+            }
+        }
+
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            if (_qsp != null)
+            {
+                if (_qsp.TryGetValue(new Triple(subj, pred, _objVar), out HashSet<Triple> ts))
+                {
+                    return ts ?? Enumerable.Empty<Triple>();
+                }
+                else
+                {
+                    return Enumerable.Empty<Triple>();
+                }
+            }
+            else
+            {
+                return QuotedWithSubject(subj).Where(t => t.Predicate.Equals(pred));
+            }
+        }
+
 
         /// <summary>
         /// Gets the Object Nodes.
@@ -420,6 +726,62 @@ namespace VDS.RDF
                 return _s?.Keys ?? Triples.Keys.Select(t => t.Subject);
             }
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<INode> AssertedObjectNodes
+        {
+            get
+            {
+                return _o?.Keys ?? AssertedTriples(_ => true).Select(x => x.Object);
+            }
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<INode> AssertedPredicateNodes
+        {
+            get
+            {
+                return _p?.Keys ?? AssertedTriples(_ => true).Select(x => x.Predicate);
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedSubjectNodes
+        {
+            get
+            {
+                return _s?.Keys ?? AssertedTriples(_ => true).Select(x => x.Subject);
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedObjectNodes
+        {
+            get
+            {
+                return _qo?.Keys ?? QuotedTriples(_ => true).Select(x => x.Object);
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedPredicateNodes
+        {
+            get
+            {
+                return _qp?.Keys ?? QuotedTriples(_ => true).Select(x => x.Predicate);
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedSubjectNodes
+        {
+            get
+            {
+                return _qs?.Keys ?? QuotedTriples(_ => true).Select(x => x.Subject);
+            }
+        }
+
+
 
         /// <summary>
         /// Disposes of the collection.

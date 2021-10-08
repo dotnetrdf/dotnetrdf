@@ -41,7 +41,7 @@ namespace VDS.RDF
     public class ThreadSafeTripleCollection 
         : WrapperTripleCollection
     {
-        private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        private readonly ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         /// <summary>
         /// Creates a new thread safe triple collection which wraps a new instance of the default unindexed <see cref="TripleCollection"/>.
@@ -330,6 +330,104 @@ namespace VDS.RDF
                     ExitReadLock();
                 }
                 return nodes;
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedObjectNodes
+        {
+            get
+            {
+                try
+                {
+                    EnterReadLock();
+                    return _triples.AssertedObjectNodes.ToList();
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedPredicateNodes
+        {
+            get
+            {
+                try
+                {
+                    EnterReadLock();
+                    return _triples.AssertedPredicateNodes.ToList();
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedSubjectNodes
+        {
+            get
+            {
+                try
+                {
+                    EnterReadLock();
+                    return _triples.AssertedSubjectNodes.ToList();
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
+            }
+        }
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedObjectNodes {
+            get
+            {
+                try
+                {
+                    EnterReadLock();
+                    return _triples.QuotedObjectNodes.ToList();
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
+            }
+        }
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedPredicateNodes {
+            get
+            {
+                try
+                {
+                    EnterReadLock();
+                    return _triples.QuotedPredicateNodes.ToList();
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedSubjectNodes
+        {
+            get
+            {
+                try
+                {
+                    EnterReadLock();
+                    return _triples.QuotedSubjectNodes.ToList();
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
             }
         }
 

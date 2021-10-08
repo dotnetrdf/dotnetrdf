@@ -42,11 +42,6 @@ namespace VDS.RDF
         protected readonly MultiDictionary<Triple, TripleRefs> Triples = new MultiDictionary<Triple, TripleRefs>(new FullTripleComparer(new FastVirtualNodeComparer()));
 
         /// <summary>
-        /// Creates a new Triple Collection.
-        /// </summary>
-        public TripleCollection() { }
-
-        /// <summary>
         /// Determines whether a given Triple is in the Triple Collection.
         /// </summary>
         /// <param name="t">The Triple to test.</param>
@@ -208,6 +203,36 @@ namespace VDS.RDF
                 return ns.Distinct();
             }
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<INode> AssertedObjectNodes
+        {
+            get => Asserted.Select(t => t.Object).Distinct();
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<INode> AssertedPredicateNodes
+        {
+            get => Asserted.Select(t => t.Predicate).Distinct();
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<INode> AssertedSubjectNodes
+        {
+            get => Asserted.Select(t => t.Subject).Distinct();
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<INode> QuotedObjectNodes
+        {
+            get => Quoted.Select(t => t.Object).Distinct();
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<INode> QuotedPredicateNodes { get => Quoted.Select(t=>t.Predicate).Distinct(); }
+
+        /// <inheritdoc />
+        public override IEnumerable<INode> QuotedSubjectNodes { get => Quoted.Select(t => t.Subject).Distinct(); }
 
         /// <summary>
         /// Gets all the Nodes which are Predicates of Triples in the Triple Collection.

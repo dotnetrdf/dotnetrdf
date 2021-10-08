@@ -302,6 +302,107 @@ namespace VDS.RDF
             wasDeleted.Should().BeFalse();
             collection.Count.Should().Be(2);
         }
+
+        [Fact]
+        public void RetrievalByNodeShouldIncludeQuotedTriples()
+        {
+            BaseTripleCollection collection = GetInstance();
+            var quotedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o"));
+            var assertedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateTripleNode(quotedTriple));
+            collection.Add(assertedTriple);
+            collection.WithSubject(NodeFactory.CreateUriNode("ex:s")).Should()
+                .Contain(new[] { assertedTriple, quotedTriple });
+            collection.WithPredicate(NodeFactory.CreateUriNode("ex:p")).Should()
+                .Contain(new[] { assertedTriple, quotedTriple });
+            collection.WithObject(NodeFactory.CreateUriNode("ex:o")).Should()
+                .Contain(quotedTriple).And.NotContain(assertedTriple);
+            collection.WithObject(new TripleNode(quotedTriple)).Should()
+                .Contain(assertedTriple).And.NotContain(quotedTriple);
+            collection.WithSubjectObject(NodeFactory.CreateUriNode("ex:s"), NodeFactory.CreateUriNode("ex:o"))
+                .Should().Contain(quotedTriple).And.NotContain(assertedTriple);
+            collection.WithSubjectObject(NodeFactory.CreateUriNode("ex:s"), NodeFactory.CreateTripleNode(quotedTriple))
+                .Should().Contain(assertedTriple).And.NotContain(quotedTriple);
+            collection.WithPredicateObject(NodeFactory.CreateUriNode("ex:p"), NodeFactory.CreateUriNode("ex:o"))
+                .Should().Contain(quotedTriple).And.NotContain(assertedTriple);
+            collection.WithPredicateObject(NodeFactory.CreateUriNode("ex:p"), NodeFactory.CreateTripleNode(quotedTriple))
+                .Should().Contain(assertedTriple).And.NotContain(quotedTriple);
+            collection.WithSubjectPredicate(NodeFactory.CreateUriNode("ex:s"), NodeFactory.CreateUriNode("ex:p"))
+                .Should().Contain(new[] { assertedTriple, quotedTriple });
+        }
+
+        [Fact]
+        public void RetrievalByAssertedNodeShouldOnlyIncludeAssertedTriples()
+        {
+            BaseTripleCollection collection = GetInstance();
+            var quotedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o"));
+            var assertedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateTripleNode(quotedTriple));
+            collection.Add(assertedTriple);
+            collection.AssertedWithSubject(NodeFactory.CreateUriNode("ex:s")).Should()
+                .Contain(assertedTriple).And.NotContain(quotedTriple);
+            collection.AssertedWithPredicate(NodeFactory.CreateUriNode("ex:p")).Should()
+                .Contain(assertedTriple).And.NotContain(quotedTriple);
+            collection.AssertedWithObject(NodeFactory.CreateUriNode("ex:o"))
+                .Should().BeEmpty();
+            collection.AssertedWithObject(new TripleNode(quotedTriple))
+                .Should().Contain(assertedTriple).And.NotContain(quotedTriple);
+            collection.AssertedWithSubjectObject(NodeFactory.CreateUriNode("ex:s"), NodeFactory.CreateUriNode("ex:o"))
+                .Should().BeEmpty();
+            collection.AssertedWithSubjectObject(NodeFactory.CreateUriNode("ex:s"), NodeFactory.CreateTripleNode(quotedTriple))
+                .Should().Contain(assertedTriple).And.NotContain(quotedTriple);
+            collection.AssertedWithPredicateObject(NodeFactory.CreateUriNode("ex:p"), NodeFactory.CreateUriNode("ex:o"))
+                .Should().BeEmpty();
+            collection.AssertedWithPredicateObject(NodeFactory.CreateUriNode("ex:p"), NodeFactory.CreateTripleNode(quotedTriple))
+                .Should().Contain(assertedTriple).And.NotContain(quotedTriple);
+            collection.AssertedWithSubjectPredicate(NodeFactory.CreateUriNode("ex:s"), NodeFactory.CreateUriNode("ex:p"))
+                .Should().Contain(assertedTriple).And.NotContain(quotedTriple);
+        }
+
+        [Fact]
+        public void RetrievalByQuotedNodeShouldOnlyIncludeQuotedTriples()
+        {
+            BaseTripleCollection collection = GetInstance();
+            var quotedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateUriNode("ex:o"));
+            var assertedTriple = new Triple(
+                NodeFactory.CreateUriNode("ex:s"),
+                NodeFactory.CreateUriNode("ex:p"),
+                NodeFactory.CreateTripleNode(quotedTriple));
+            collection.Add(assertedTriple);
+            collection.QuotedWithSubject(NodeFactory.CreateUriNode("ex:s")).Should()
+                .Contain(quotedTriple).And.NotContain(assertedTriple);
+            collection.QuotedWithPredicate(NodeFactory.CreateUriNode("ex:p")).Should()
+                .Contain(quotedTriple).And.NotContain(assertedTriple);
+            collection.QuotedWithObject(NodeFactory.CreateUriNode("ex:o"))
+                .Should().Contain(quotedTriple).And.NotContain(assertedTriple);
+            collection.QuotedWithObject(new TripleNode(quotedTriple)).Should()
+                .BeEmpty();
+            collection.QuotedWithSubjectObject(NodeFactory.CreateUriNode("ex:s"), NodeFactory.CreateUriNode("ex:o"))
+                .Should().Contain(quotedTriple).And.NotContain(assertedTriple);
+            collection.QuotedWithSubjectObject(NodeFactory.CreateUriNode("ex:s"),
+                    NodeFactory.CreateTripleNode(quotedTriple))
+                .Should().BeEmpty();
+            collection.QuotedWithPredicateObject(NodeFactory.CreateUriNode("ex:p"), NodeFactory.CreateUriNode("ex:o"))
+                .Should().Contain(quotedTriple).And.NotContain(assertedTriple);
+            collection.QuotedWithPredicateObject(NodeFactory.CreateUriNode("ex:p"),
+                    NodeFactory.CreateTripleNode(quotedTriple))
+                .Should().BeEmpty();
+            collection.QuotedWithSubjectPredicate(NodeFactory.CreateUriNode("ex:s"), NodeFactory.CreateUriNode("ex:p"))
+                .Should().Contain(quotedTriple).And.NotContain(assertedTriple);
+        }
     }
 
 }

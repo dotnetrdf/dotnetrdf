@@ -70,10 +70,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Number of Triples in the Triple Collection.
         /// </summary>
-        public abstract int Count 
-        { 
-            get; 
-        }
+        public abstract int Count { get; }
 
         /// <summary>
         /// Deletes a Triple from the Collection.
@@ -88,34 +85,49 @@ namespace VDS.RDF
         /// <param name="t">Triple to retrieve.</param>
         /// <returns></returns>
         /// <exception cref="KeyNotFoundException">Thrown if the given Triple doesn't exist.</exception>
-        public abstract Triple this[Triple t]
-        {
-            get;
-        }
+        public abstract Triple this[Triple t] { get; }
 
         /// <summary>
         /// Gets all the Nodes which are Objects of Triples in the Triple Collection.
         /// </summary>
-        public abstract IEnumerable<INode> ObjectNodes 
-        { 
-            get; 
-        }
+        public abstract IEnumerable<INode> ObjectNodes { get; }
 
         /// <summary>
         /// Gets all the Nodes which are Predicates of Triples in the Triple Collection.
         /// </summary>
-        public abstract IEnumerable<INode> PredicateNodes 
-        {
-            get; 
-        }
+        public abstract IEnumerable<INode> PredicateNodes { get; }
 
         /// <summary>
         /// Gets all the Nodes which are Subjects of Triples in the Triple Collection.
         /// </summary>
-        public abstract IEnumerable<INode> SubjectNodes 
-        { 
-            get;
-        }
+        public abstract IEnumerable<INode> SubjectNodes { get; }
+
+
+        /// <summary>
+        /// Gets all the nodes which are subjects of asserted triples in the triple collection.
+        /// </summary>
+        public abstract IEnumerable<INode> AssertedObjectNodes { get; }
+        /// <summary>
+        /// Gets all the nodes which are predicates of asserted triples in the triple collection.
+        /// </summary>
+        public abstract IEnumerable<INode> AssertedPredicateNodes { get; }
+        /// <summary>
+        /// Gets all the nodes which are objects of asserted triples in the triple collection.
+        /// </summary>
+        public abstract IEnumerable<INode> AssertedSubjectNodes { get; }
+
+        /// <summary>
+        /// Gets all the nodes which are subjects of quoted triples in the triple collection.
+        /// </summary>
+        public abstract IEnumerable<INode> QuotedObjectNodes { get; }
+        /// <summary>
+        /// Gets all the nodes which are predicates of quoted triples in the triple collection.
+        /// </summary>
+        public abstract IEnumerable<INode> QuotedPredicateNodes { get; }
+        /// <summary>
+        /// Gets all the nodes which are objects of quoted triples in the triple collection.
+        /// </summary>
+        public abstract IEnumerable<INode> QuotedSubjectNodes { get; }
 
         /// <summary>
         /// Gets all the Triples with the given Subject.

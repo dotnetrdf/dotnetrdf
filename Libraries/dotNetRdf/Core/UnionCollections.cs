@@ -193,6 +193,41 @@ namespace VDS.RDF
             }
         }
 
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedObjectNodes
+        {
+            get => _collections.SelectMany(c => c.AssertedObjectNodes);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedPredicateNodes
+        {
+            get => _collections.SelectMany(c => c.AssertedPredicateNodes);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedSubjectNodes
+        {
+            get => _collections.SelectMany(c => c.AssertedSubjectNodes);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedObjectNodes
+        {
+            get => _collections.SelectMany(c => c.QuotedObjectNodes);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedPredicateNodes
+        {
+            get => _collections.SelectMany(c => c.QuotedPredicateNodes);
+        }
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedSubjectNodes
+        {
+            get => _collections.SelectMany(c => c.QuotedSubjectNodes);
+        }
+
         /// <summary>
         /// Disposes of the collection.
         /// </summary>

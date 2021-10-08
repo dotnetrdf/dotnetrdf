@@ -71,11 +71,13 @@ namespace VDS.RDF.Query.Datasets
             return _dataset.ContainsQuad(_graphName, t);
         }
 
+        /// <inheritdoc/>
         public override bool ContainsAsserted(Triple t)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public override bool ContainsQuoted(Triple t)
         {
             throw new NotImplementedException();
@@ -138,6 +140,24 @@ namespace VDS.RDF.Query.Datasets
                 return _dataset.GetQuads(_graphName).Select(t => t.Subject).Distinct(); 
             }
         }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedObjectNodes => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedPredicateNodes => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> AssertedSubjectNodes => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedObjectNodes => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedPredicateNodes => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedSubjectNodes => throw new NotImplementedException();
 
         /// <inheritdoc />
         public override void Dispose()
