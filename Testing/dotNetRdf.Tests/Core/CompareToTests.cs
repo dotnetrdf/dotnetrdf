@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using FluentAssertions;
 using System;
 using System.Globalization;
 using System.Text;
@@ -693,6 +694,45 @@ namespace VDS.RDF
         }
 
         [Fact]
+        public void NodeCompareToTripleNodes()
+        {
+            var g = new Graph();
+            var t = g.CreateTripleNode(
+                new Triple(
+                    g.CreateUriNode(new Uri("urn:s")),
+                    g.CreateUriNode(new Uri("urn:p")),
+                    g.CreateUriNode(new Uri("urn:o"))));
+            var t2 = g.CreateTripleNode(
+                new Triple(
+                    g.CreateUriNode(new Uri("urn:o")),
+                    g.CreateUriNode(new Uri("urn:p")),
+                    g.CreateUriNode(new Uri("urn:s"))));
+            var t3 = g.CreateTripleNode(
+                new Triple(
+                    g.CreateUriNode(new Uri("urn:s")),
+                    g.CreateUriNode(new Uri("urn:o")),
+                    g.CreateUriNode(new Uri("urn:p"))));
+
+            var t4 = g.CreateTripleNode(
+                new Triple(
+                    g.CreateUriNode(new Uri("urn:s")),
+                    g.CreateUriNode(new Uri("urn:p")),
+                    g.CreateLiteralNode("foo", "en")));
+            var nodes = new List<INode> { t, t, t2, t3, t4 };
+
+            //ShowOrdering(nodes);
+            // Expected comparison results:
+            t.CompareTo(t).Should().Be(0);
+            t.CompareTo(t2).Should().BeGreaterThan(0);
+            t.CompareTo(t3).Should().BeGreaterThan(0);
+            t.CompareTo(t4).Should().BeLessThan(0);
+
+            CheckCombinations(nodes);
+            CheckCombinations<ITripleNode>(nodes.OfType<ITripleNode>().ToList());
+            CheckCombinations<TripleNode>(nodes.OfType<TripleNode>().ToList());
+        }
+
+        [Fact]
         public void NodeCompareToMixedNodes()
         {
             var g = new Graph();
@@ -701,6 +741,7 @@ namespace VDS.RDF
             IBlankNode b = g.CreateBlankNode();
             ILiteralNode plain = g.CreateLiteralNode("plain");
             IUriNode u = g.CreateUriNode("rdf:type");
+            ITripleNode t = g.CreateTripleNode(new Triple(b, u, plain));
             var nodes = new List<INode>()
             {
                 b,
@@ -726,10 +767,16 @@ namespace VDS.RDF
                 g.CreateUriNode(new Uri("http://www.dotnetrdf.org/configuration#")),
                 g.CreateUriNode(new Uri("http://www.dotnetrdf.org/Configuration#")),
                 g.CreateUriNode(new Uri("mailto:rvesse@dotnetrdf.org")),
-                u
+                u,
+                t,
+                g.CreateTripleNode(new Triple(
+                    g.CreateUriNode(new Uri("urn:s")), 
+                    g.CreateUriNode(new Uri("urn:p")), 
+                    g.CreateUriNode(new Uri("urn:o")))),
+                t
             };
 
-            ShowOrdering(nodes);
+            //ShowOrdering(nodes);
 
             CheckCombinations(nodes);
         }

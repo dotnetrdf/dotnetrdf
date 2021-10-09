@@ -361,6 +361,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Creates a node that quotes the given triple.
+        /// </summary>
+        /// <param name="triple">The triple to be the quoted value of the created node.</param>
+        /// <returns></returns>
+        public ITripleNode CreateTripleNode(Triple triple)
+        {
+            return _g.CreateTripleNode(triple);
+        }
+
+        /// <summary>
         /// Attempts to get the Blank Node with the given ID.
         /// </summary>
         /// <param name="nodeId">Node ID.</param>
@@ -515,6 +525,72 @@ namespace VDS.RDF
             return _g.GetTriplesWithPredicateObject(pred, obj);
         }
 
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuoted(Uri uri)
+        {
+            return _g.GetQuoted(uri);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuoted(INode n)
+        {
+            return _g.GetQuoted(n);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithObject(Uri u)
+        {
+            return _g.GetQuotedWithObject(u);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithObject(INode n)
+        {
+            return _g.GetQuotedWithObject(n);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithPredicate(INode n)
+        {
+            return _g.GetQuotedWithPredicate(n);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithPredicate(Uri u)
+        {
+            return _g.GetQuotedWithPredicate(u);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubject(INode n)
+        {
+            return _g.GetQuotedWithSubject(n);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubject(Uri u)
+        {
+            return _g.GetQuotedWithSubject(u);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            return _g.GetQuotedWithSubjectPredicate(subj, pred);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj)
+        {
+            return _g.GetQuotedWithSubjectObject(subj, obj);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj)
+        {
+            return _g.GetQuotedWithPredicateObject(pred, obj);
+        }
+
         /// <summary>
         /// Returns the UriNode with the given QName if it exists.
         /// </summary>
@@ -536,13 +612,25 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets whether a given Triple exists in this Graph.
+        /// Selects the Triple Node with the given Triple value if it exists in the graph.
         /// </summary>
-        /// <param name="t">Triple to test.</param>
-        /// <returns></returns>
+        /// <param name="triple">Triple.</param>
+        /// <returns>The triple node if it exists in the graph or else null.</returns>
+        public ITripleNode GetTripleNode(Triple triple)
+        {
+            return _g.GetTripleNode(triple);
+        }
+
+        /// <inheritdoc />
         public virtual bool ContainsTriple(Triple t)
         {
             return _g.ContainsTriple(t);
+        }
+
+        /// <inheritdoc />
+        public bool ContainsQuotedTriple(Triple t)
+        {
+            return _g.ContainsQuotedTriple(t);
         }
 
         /// <summary>

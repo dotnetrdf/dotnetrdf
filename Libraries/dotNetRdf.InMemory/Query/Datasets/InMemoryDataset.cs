@@ -244,6 +244,11 @@ namespace VDS.RDF.Query.Datasets
                 select t;
         }
 
+        protected override IEnumerable<Triple> GetQuotedWithSubjectInternal(INode subj)
+        {
+            return Graphs.SelectMany(g => g.GetQuotedWithSubject(subj));
+        }
+
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Predicate.
         /// </summary>
@@ -256,6 +261,11 @@ namespace VDS.RDF.Query.Datasets
                 select t;
         }
 
+        protected override IEnumerable<Triple> GetQuotedWithPredicateInternal(INode predicate)
+        {
+            return Graphs.SelectMany(g => g.GetQuotedWithPredicate(predicate));
+        }
+
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Object.
         /// </summary>
@@ -266,6 +276,11 @@ namespace VDS.RDF.Query.Datasets
             return (from g in Graphs
                     from t in g.GetTriplesWithObject(obj)
                     select t);
+        }
+
+        protected override IEnumerable<Triple> GetQuotedWithObjectInternal(INode obj)
+        {
+            return Graphs.SelectMany(g => g.GetQuotedWithObject(obj));
         }
 
         /// <summary>
@@ -281,6 +296,11 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        protected override IEnumerable<Triple> GetQuotedWithSubjectPredicateInternal(INode subj, INode predicate)
+        {
+            return Graphs.SelectMany(g => g.GetQuotedWithSubjectPredicate(subj, predicate));
+        }
+
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Subject and Object.
         /// </summary>
@@ -294,6 +314,11 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        protected override IEnumerable<Triple> GetQuotedWithSubjectObjectInternal(INode subj, INode obj)
+        {
+            return Graphs.SelectMany(g => g.GetQuotedWithSubjectObject(subj, obj));
+        }
+
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Predicate and Object.
         /// </summary>
@@ -305,6 +330,11 @@ namespace VDS.RDF.Query.Datasets
             return (from g in Graphs
                     from t in g.GetTriplesWithPredicateObject(pred, obj)
                     select t);
+        }
+
+        protected override IEnumerable<Triple> GetQuotedWithPredicateObjectInternal(INode pred, INode obj)
+        {
+            return Graphs.SelectMany(g => g.GetQuotedWithPredicateObject(pred, obj));
         }
 
         #endregion       

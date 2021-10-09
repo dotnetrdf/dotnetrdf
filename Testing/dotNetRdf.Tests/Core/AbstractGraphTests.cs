@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using FluentAssertions;
 using Xunit;
 using VDS.RDF.Parsing;
@@ -115,12 +112,36 @@ namespace VDS.RDF
         }
 
         [Fact]
+        public void NodesPropertyShouldNotReturnNodesInQuotedTriples()
+        {
+            IGraph g = GetInstance();
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
+            INode[] quotedNodes = { g.CreateUriNode(":a"), g.CreateUriNode(":b"), g.CreateUriNode(":c") };
+            g.Assert(new Triple(g.CreateUriNode(":s"),
+                g.CreateUriNode(":p"),
+                g.CreateTripleNode(new Triple(quotedNodes[0], quotedNodes[1], quotedNodes[2]))));
+            g.Nodes.Should().HaveCount(2).And.NotContain(quotedNodes).And.NotContain(g.CreateUriNode(":p"));
+        }
+
+        [Fact]
         public void AllNodesPropertyShouldIncludePredicateNodes()
         {
             var g = GetInstance();
             g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
             g.Assert(new Triple(g.CreateUriNode(":s"), g.CreateUriNode(":p"), g.CreateUriNode(":o")));
             g.AllNodes.Should().HaveCount(3).And.Contain(g.CreateUriNode(":p"));
+        }
+
+        [Fact]
+        public void AllNodesPropertyShouldNotReturnNodesInQuotedTriples()
+        {
+            IGraph g = GetInstance();
+            g.NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create("http://example/"));
+            INode[] quotedNodes = { g.CreateUriNode(":a"), g.CreateUriNode(":b"), g.CreateUriNode(":c") };
+            g.Assert(new Triple(g.CreateUriNode(":s"),
+                g.CreateUriNode(":p"),
+                g.CreateTripleNode(new Triple(quotedNodes[0], quotedNodes[1], quotedNodes[2]))));
+            g.AllNodes.Should().HaveCount(3).And.Contain(g.CreateUriNode(":p")).And.NotContain(quotedNodes);
         }
 
         [Fact]

@@ -41,41 +41,49 @@ namespace VDS.RDF
     /// </para>
     /// </remarks>
     public class SubTreeIndexedTripleCollection
-        : BaseTripleCollection
+        : AbstractIndexedTripleCollection
     {
-        // Main Storage
-        private MultiDictionary<Triple, object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastVirtualNodeComparer()));
         // Indexes
-        private MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer()),
-                                                                              _p = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer()),
-                                                                              _o = new MultiDictionary<INode,MultiDictionary<Triple,HashSet<Triple>>>(new FastVirtualNodeComparer());
+        private readonly MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>
+            _sp = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
+            _po = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
+            _os = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
+            _qsp = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
+            _qpo = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer()),
+            _qos = new MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>>(new FastVirtualNodeComparer());
 
         // Placeholder Variables for compound lookups
-        private VariableNode _subjVar = new VariableNode("s"),
+        private readonly VariableNode _subjVar = new VariableNode("s"),
                              _predVar = new VariableNode("p"),
                              _objVar = new VariableNode("o");
 
         // Hash Functions
-        private Func<Triple, int> _sHash = (t => Tools.CombineHashCodes(t.Subject, t.Predicate)),
-                                  _pHash = (t => Tools.CombineHashCodes(t.Predicate, t.Object)),
-                                  _oHash = (t => Tools.CombineHashCodes(t.Object, t.Subject));
+        private readonly Func<Triple, int> _sHash = t => Tools.CombineHashCodes(t.Subject, t.Predicate),
+                                  _pHash = t => Tools.CombineHashCodes(t.Predicate, t.Object),
+                                  _oHash = t => Tools.CombineHashCodes(t.Object, t.Subject);
 
         // Comparers
-        private IComparer<Triple> _sComparer = new SubjectPredicateComparer(new FastVirtualNodeComparer()),
-                                  _pComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
-                                  _oComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer());
-
-        private int _count;
+        private readonly BaseTripleComparer _spComparer = new SubjectPredicateComparer(new FastVirtualNodeComparer()),
+            _poComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
+            _osComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer());
 
         /// <summary>
         /// Indexes a Triple.
         /// </summary>
         /// <param name="t">Triple.</param>
-        private void Index(Triple t)
+        protected override void IndexAsserted(Triple t)
         {
-            Index(t.Subject, t, _s, _sHash, _sComparer);
-            Index(t.Predicate, t, _p, _pHash, _pComparer);
-            Index(t.Object, t, _o, _oHash, _oComparer);
+            Index(t.Subject, t, _sp, _sHash, _spComparer);
+            Index(t.Predicate, t, _po, _pHash, _poComparer);
+            Index(t.Object, t, _os, _oHash, _osComparer);
+        }
+
+        /// <inheritdoc />
+        protected override void IndexQuoted(Triple t)
+        {
+            Index(t.Subject, t, _qsp, _sHash, _spComparer);
+            Index(t.Predicate, t, _qpo, _pHash, _poComparer);
+            Index(t.Object, t, _qos, _oHash, _osComparer);
         }
 
         /// <summary>
@@ -118,12 +126,20 @@ namespace VDS.RDF
         /// Unindexes a triple.
         /// </summary>
         /// <param name="t">Triple.</param>
-        private void Unindex(Triple t)
+        protected override void UnindexAsserted(Triple t)
         {
-            Unindex(t.Subject, t, _s);
-            Unindex(t.Predicate, t, _p);
-            Unindex(t.Object, t, _o);
+            Unindex(t.Subject, t, _sp);
+            Unindex(t.Predicate, t, _po);
+            Unindex(t.Object, t, _os);
 
+        }
+
+        /// <inheritdoc/>
+        protected override void UnindexQuoted(Triple t)
+        {
+            Unindex(t.Subject, t, _qsp);
+            Unindex(t.Predicate, t, _qpo);
+            Unindex(t.Object, t, _qos);
         }
 
         /// <summary>
@@ -143,62 +159,6 @@ namespace VDS.RDF
             }
         }
 
-        /// <summary>
-        /// Adds a Triple to the collection.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected internal override bool Add(Triple t)
-        {
-            if (!Contains(t))
-            {
-                _triples.Add(t, null);
-                Index(t);
-                _count++;
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Checks whether the collection contains a given Triple.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        public override bool Contains(Triple t)
-        {
-            return _triples.ContainsKey(t);
-        }
-
-        /// <summary>
-        /// Gets the count of triples in the collection.
-        /// </summary>
-        public override int Count
-        {
-            get 
-            {
-                // Note we maintain the count manually as traversing the entire tree every time we want to count would get very expensive
-                return _count;
-            }
-        }
-
-        /// <summary>
-        /// Deletes a triple from the collection.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        protected internal override bool Delete(Triple t)
-        {
-            if (_triples.Remove(t))
-            {
-                // If removed then unindex
-                Unindex(t);
-                RaiseTripleRemoved(t);
-                _count--;
-                return true;
-            }
-            return false;
-        }
 
         /// <summary>
         /// Gets the specific instance of a Triple in the collection.
@@ -209,12 +169,36 @@ namespace VDS.RDF
         {
             get
             {
-                if (_triples.TryGetKey(t, out Triple actual))
+                if (Triples.TryGetKey(t, out Triple actual))
                 {
                     return actual;
                 }
                 throw new KeyNotFoundException("Given triple does not exist in this collection");
             }
+        }
+
+        private IEnumerable<Triple> WithNode(INode key, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index)
+        {
+            if (index.TryGetValue(key, out MultiDictionary<Triple, HashSet<Triple>> subtree))
+            {
+                return (from ts in subtree.Values
+                        where ts != null
+                        from t in ts
+                        select t);
+            }
+            return Enumerable.Empty<Triple>();
+        }
+
+        private IEnumerable<Triple> WithNodeAndTriple(INode key, Triple subkey, MultiDictionary<INode, MultiDictionary<Triple, HashSet<Triple>>> index)
+        {
+            if (index.TryGetValue(key, out MultiDictionary<Triple, HashSet<Triple>> subtree))
+            {
+                if (subtree.TryGetValue(subkey, out HashSet<Triple> triples))
+                {
+                    return triples ?? Enumerable.Empty<Triple>();
+                }
+            }
+            return Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -224,14 +208,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
-            if (_o.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
-            {
-                return (from ts in subtree.Values
-                        where ts != null
-                        from t in ts
-                        select t);
-            }
-            return Enumerable.Empty<Triple>();
+            return WithNode(obj, _os);
         }
 
         /// <summary>
@@ -241,14 +218,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
-            if (_p.TryGetValue(pred, out MultiDictionary<Triple, HashSet<Triple>> subtree))
-            {
-                return (from ts in subtree.Values
-                        where ts != null
-                        from t in ts
-                        select t);
-            }
-            return Enumerable.Empty<Triple>();
+            return WithNode(pred, _po);
         }
 
         /// <summary>
@@ -258,14 +228,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
-            if (_s.TryGetValue(subj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
-            {
-                return (from ts in subtree.Values
-                        where ts != null
-                        from t in ts
-                        select t);
-            }
-            return Enumerable.Empty<Triple>();
+            return WithNode(subj, _sp);
         }
 
         /// <summary>
@@ -276,15 +239,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            if (_p.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
-            {
-                if (subtree.TryGetValue(new Triple(_subjVar, pred, obj), out HashSet<Triple> ts))
-                {
-                    return (ts ?? Enumerable.Empty<Triple>());
-                }
-                return Enumerable.Empty<Triple>();
-            }
-            return Enumerable.Empty<Triple>();
+            return WithNodeAndTriple(pred, new Triple(_subjVar, pred, obj), _po);
         }
 
         /// <summary>
@@ -295,15 +250,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            if (_o.TryGetValue(obj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
-            {
-                if (subtree.TryGetValue(new Triple(subj, _predVar, obj), out HashSet<Triple> ts))
-                {
-                    return (ts != null ? ts : Enumerable.Empty<Triple>());
-                }
-                return Enumerable.Empty<Triple>();
-            }
-            return Enumerable.Empty<Triple>();
+            return WithNodeAndTriple(obj, new Triple(subj, _predVar, obj), _os);
         }
 
         /// <summary>
@@ -314,56 +261,73 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            if (_s.TryGetValue(subj, out MultiDictionary<Triple, HashSet<Triple>> subtree))
-            {
-                if (subtree.TryGetValue(new Triple(subj, pred, _objVar), out HashSet<Triple> ts))
-                {
-                    return ts ?? Enumerable.Empty<Triple>();
-                }
-                return Enumerable.Empty<Triple>();
-            }
-            return Enumerable.Empty<Triple>();
+            return WithNodeAndTriple(subj, new Triple(subj, pred, _objVar), _sp);
         }
 
-        /// <summary>
-        /// Gets the Object Nodes.
-        /// </summary>
-        public override IEnumerable<INode> ObjectNodes
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithObject(INode obj)
         {
-            get 
-            {
-                return _o.Keys;
-            }
+            return WithNode(obj, _qos);
         }
 
-        /// <summary>
-        /// Gets the Predicate Nodes.
-        /// </summary>
-        public override IEnumerable<INode> PredicateNodes => _p.Keys;
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithPredicate(INode pred)
+        {
+            return WithNode(pred, _qpo);
+        }
 
-        /// <summary>
-        /// Gets the Subject Nodes.
-        /// </summary>
-        public override IEnumerable<INode> SubjectNodes => _s.Keys;
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithSubject(INode subj)
+        {
+            return WithNode(subj, _qsp);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithPredicateObject(INode pred, INode obj)
+        {
+            return WithNodeAndTriple(pred, new Triple(_subjVar, pred, obj), _qpo);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithSubjectObject(INode subj, INode obj)
+        {
+            return WithNodeAndTriple(obj, new Triple(subj, _predVar, obj), _qos);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> QuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            return WithNodeAndTriple(subj, new Triple(subj, pred, _objVar), _qsp);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> ObjectNodes => _os.Keys;
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> PredicateNodes => _po.Keys;
+        
+        /// <inheritdoc/>
+        public override IEnumerable<INode> SubjectNodes => _sp.Keys;
+        
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedObjectNodes => _qos.Keys;
+        
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedPredicateNodes => _qpo.Keys;
+        
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedSubjectNodes => _qsp.Keys;
 
         /// <summary>
         /// Disposes of the collection.
         /// </summary>
         public override void Dispose()
         {
-            _triples.Clear();
-            _s.Clear();
-            _p.Clear();
-            _o.Clear();
+            Triples.Clear();
+            _sp.Clear();
+            _po.Clear();
+            _os.Clear();
         }
 
-        /// <summary>
-        /// Gets the enumerator for the collection.
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerator<Triple> GetEnumerator()
-        {
-            return _triples.Keys.GetEnumerator();
-        }
     }
 }

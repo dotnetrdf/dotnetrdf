@@ -204,6 +204,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Determines whether this Node is equal to a Triple Node (should always be false).
+        /// </summary>
+        /// <param name="other">Triple Node.</param>
+        /// <returns></returns>
+        public override bool Equals(ITripleNode other)
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Determines whether this Node is equal to a Blank Node.
         /// </summary>
         /// <param name="other">Blank Node.</param>
@@ -221,29 +231,14 @@ namespace VDS.RDF
         public override int CompareTo(INode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-
-            if (other == null)
+            return other?.NodeType switch
             {
-                // Blank Nodes are considered greater than nulls
-                // So we return a 1 to indicate we're greater than it
-                return 1;
-            }
-
-            if (other.NodeType == NodeType.Variable)
-            {
-                // Blank Nodes are considered greater than Variables
-                return 1;
-            }
-
-            if (other.NodeType == NodeType.Blank)
-            {
-                // Order Blank Nodes lexically by their ID
-                return ComparisonHelper.CompareBlankNodes(this, (IBlankNode)other);
-            }
-
-            // Anything else is greater than a Blank Node
-            // So we return a -1 to indicate we are less than the other Node
-            return -1;
+                // We are greater than nulls and variables
+                null or NodeType.Variable => 1,
+                NodeType.Blank => ComparisonHelper.CompareBlankNodes(this, other as IBlankNode),
+                // We are less than all other types of node
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -253,10 +248,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IRefNode other)
         {
-            if (other == null) return 1;
             if (ReferenceEquals(this, other)) return 0;
-            if (other is IBlankNode blankNode) return CompareTo(blankNode);
-            return -1; // Always less than URI nodes
+            return other?.NodeType switch
+            {
+                // We are greater than nulls and variables
+                null or NodeType.Variable => 1,
+                NodeType.Blank => ComparisonHelper.CompareBlankNodes(this, other as IBlankNode),
+                // We are less than all other types of node
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -267,14 +267,7 @@ namespace VDS.RDF
         public override int CompareTo(IBlankNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
-            if (other == null)
-            {
-                // We are always greater than nulls
-                return 1;
-            }
-
-            // Order lexically on ID
-            return ComparisonHelper.CompareBlankNodes(this, other);
+            return other == null ? 1 : ComparisonHelper.CompareBlankNodes(this, other);
         }
 
         /// <summary>
@@ -284,14 +277,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
-            if (other == null)
-            {
-                // We are always greater than nulls
-                return 1;
-            }
-
-            // We are less than Graph Literal Nodes
-            return -1;
+            // We are greater than nulls, less than graph literal nodes
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -301,14 +288,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
-            if (other == null)
-            {
-                // We are always greater than nulls
-                return 1;
-            }
-
-            // We are less than Literal Nodes
-            return -1;
+            // We are greater than nulls, less than literal nodes
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -318,14 +299,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
-            if (other == null)
-            {
-                // We are always greater than nulls
-                return 1;
-            }
-
-            // We are less than URI Nodes
-            return -1;
+            // We are greater than nulls, less than uri nodes
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -335,8 +310,19 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
-            // We are always greater than Nulls/Variable Nodes
+            // We are always greater than Nulls and Variable Nodes
             return 1;
+        }
+
+        /// <summary>
+        /// Returns an integer indicating the ordering of this Node compared to a Triple Node.
+        /// </summary>
+        /// <param name="other">Triple Node to compare with</param>
+        /// <returns></returns>
+        public override int CompareTo(ITripleNode other)
+        {
+            // We are always greater than Nulls, and less than Triple Nodes
+            return other == null ? 1 : -1;
         }
 
         /// <summary>

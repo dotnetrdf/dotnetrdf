@@ -185,6 +185,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Determines whether this Node is equal to a Triple Node (should always be false).
+        /// </summary>
+        /// <param name="other">Triple Node.</param>
+        /// <returns></returns>
+        public override bool Equals(ITripleNode other)
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Determines whether this Node is equal to a URI Node.
         /// </summary>
         /// <param name="other">URI Node.</param>
@@ -217,30 +227,15 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            if (other == null)
+            return other?.NodeType switch
             {
-                // Everything is greater than a null
-                // Return a 1 to indicate this
-                return 1;
-            }
-            else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable)
-            {
-                // Uri Nodes are greater than Blank and Variable Nodes
-                // Return a 1 to indicate this
-                return 1;
-            }
-            else if (other.NodeType == NodeType.Uri)
-            {
-                // Return the result of CompareTo using the IUriNode comparison method
-
-                return CompareTo((IUriNode)other);
-            }
-            else
-            {
-                // Anything else is considered greater than a Uri Node
-                // Return -1 to indicate this
-                return -1;
-            }
+                // Everything is greater than a null.
+                // URI Nodes are greater than blank nodes and variable nodes
+                null or NodeType.Blank or NodeType.Variable => 1,
+                NodeType.Uri => CompareTo((IUriNode)other),
+                // Everything else is greater than a URI nodes
+                _ => -1
+            };
         }
 
         /// <summary>
@@ -274,17 +269,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
-            if (other == null)
-            {
-                // Everything is greater than a null
-                // Return a 1 to indicate this
-                return 1;
-            }
-            else
-            {
-                // URI Nodes are less than Graph Literal Nodes
-                return -1;
-            }
+            // We are greater than nulls, less than graph literal nodes
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -294,15 +280,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
-            if (other == null)
-            {
-                // Everything is greater than a null
-                // Return a 1 to indicate this
-                return 1;
-            }
-
-            // URI Nodes are less than Literal Nodes
-            return -1;
+            // We are greater than nulls, less than literal nodes
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -324,6 +303,17 @@ namespace VDS.RDF
         public override int CompareTo(IUriNode other)
         {
             return ComparisonHelper.CompareUris(Uri, other.Uri);
+        }
+
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
+        /// </summary>
+        /// <param name="other">Node to test against.</param>
+        /// <returns></returns>
+        public override int CompareTo(ITripleNode other)
+        {
+            // We are greater than nulls, but less than triple nodes
+            return other == null ? 1 : -1;
         }
 
         /// <summary>

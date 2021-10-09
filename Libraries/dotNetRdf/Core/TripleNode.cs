@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -25,48 +25,38 @@
 */
 
 using System;
-using VDS.RDF.Writing;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Nodes.
+    /// Class for representing RDF-star triple nodes.
     /// </summary>
-    public interface INode 
-        : IComparable<INode>, IComparable<IBlankNode>, IComparable<IGraphLiteralNode>, IComparable<ILiteralNode>,
-          IComparable<IUriNode>, IComparable<IVariableNode>, IComparable<IRefNode>, IComparable<ITripleNode>,
-          IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
-          IEquatable<IUriNode>, IEquatable<IVariableNode>, IEquatable<IRefNode>, IEquatable<ITripleNode>
+    public class TripleNode : BaseTripleNode, IComparable<TripleNode>, IEquatable<TripleNode>
     {
         /// <summary>
-        /// Nodes have a Type.
+        /// Create a new node that quotes the specified triple.
         /// </summary>
-        /// <remarks>Primarily provided so can do quick integer comparison to see what type of Node you have without having to do actual full blown Type comparison.</remarks>
-        NodeType NodeType
+        /// <param name="triple">The triple to be quoted.</param>
+        public TripleNode(Triple triple):base(triple){}
+
+        /// <summary>
+        /// Determines whether this node is equal to another <see cref="TripleNode"/>.
+        /// </summary>
+        /// <param name="other">The other node to compare to.</param>
+        /// <returns>True if the quoted triple of this node is equal to the quoted triple of the other node, false otherwise.</returns>
+        public bool Equals(TripleNode other)
         {
-            get;
+            return base.Equals(other as ITripleNode);
         }
 
         /// <summary>
-        /// Gets the String representation of the Node.
+        /// Perform a sort order comparison of this node with another <see cref="TripleNode"/>.
         /// </summary>
-        /// <returns></returns>
-        string ToString();
-
-        /// <summary>
-        /// Gets the String representation of the Node formatted with the given Node formatter.
-        /// </summary>
-        /// <param name="formatter">Formatter.</param>
-        /// <returns></returns>
-        string ToString(INodeFormatter formatter);
-
-        /// <summary>
-        /// Gets the String representation of the Node formatted with the given Node formatter.
-        /// </summary>
-        /// <param name="formatter">Formatter.</param>
-        /// <param name="segment">Triple Segment.</param>
-        /// <returns></returns>
-        string ToString(INodeFormatter formatter, TripleSegment segment);
+        /// <param name="other">The other node to compare to.</param>
+        /// <returns>1 if <paramref name="other"/> is null, otherwise the result of comparing this node's <see cref="Triple"/> property value with <paramref name="other"/>'s <see cref="Triple"/> property value.</returns>
+        public int CompareTo(TripleNode other)
+        {
+            return base.CompareTo(other as ITripleNode);
+        }
     }
 }

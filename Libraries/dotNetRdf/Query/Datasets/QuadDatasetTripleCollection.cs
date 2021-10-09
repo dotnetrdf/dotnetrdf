@@ -71,6 +71,12 @@ namespace VDS.RDF.Query.Datasets
             return _dataset.ContainsQuad(_graphName, t);
         }
 
+        /// <inheritdoc/>
+        public override bool ContainsQuoted(Triple t)
+        {
+            return _dataset.ContainsQuoted(_graphName, t);
+        }
+
         /// <inheritdoc />
         public override int Count
         {
@@ -79,6 +85,9 @@ namespace VDS.RDF.Query.Datasets
                 return _dataset.GetQuads(_graphName).Count();
             }
         }
+
+        /// <inheritdoc />
+        public override int QuotedCount => _dataset.GetQuoted(_graphName).Count();
 
         /// <inheritdoc />
         protected internal override bool Delete(Triple t)
@@ -129,6 +138,18 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedObjectNodes => 
+            _dataset.GetQuoted(_graphName).Select(t=>t.Object).Distinct();
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedPredicateNodes =>
+            _dataset.GetQuoted(_graphName).Select(t => t.Predicate).Distinct();
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedSubjectNodes =>
+            _dataset.GetQuoted(_graphName).Select(t => t.Subject).Distinct();
+
         /// <inheritdoc />
         public override void Dispose()
         {
@@ -140,6 +161,13 @@ namespace VDS.RDF.Query.Datasets
         {
             return _dataset.GetQuads(_graphName).GetEnumerator();
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Asserted =>  _dataset.GetQuads(_graphName);
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Quoted => _dataset.GetQuoted(_graphName);
+
 
         /// <inheritdoc />
         public override IEnumerable<Triple> WithObject(INode obj)
@@ -175,6 +203,42 @@ namespace VDS.RDF.Query.Datasets
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
             return _dataset.GetQuadsWithSubjectPredicate(_graphName, subj, pred);
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple>QuotedWithObject(INode obj)
+        {
+            return _dataset.GetQuotedWithObject(_graphName, obj);
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple>QuotedWithPredicate(INode pred)
+        {
+            return _dataset.GetQuotedWithPredicate(_graphName, pred);
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple>QuotedWithPredicateObject(INode pred, INode obj)
+        {
+            return _dataset.GetQuotedWithPredicateObject(_graphName, pred, obj);
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple>QuotedWithSubject(INode subj)
+        {
+            return _dataset.GetQuotedWithSubject(_graphName, subj);
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple>QuotedWithSubjectObject(INode subj, INode obj)
+        {
+            return _dataset.GetQuotedWithSubjectObject(_graphName, subj, obj);
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple>QuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            return _dataset.GetQuotedWithSubjectPredicate(_graphName, subj, pred);
         }
     }
 }

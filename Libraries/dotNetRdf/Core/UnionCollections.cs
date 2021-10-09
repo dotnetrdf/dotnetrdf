@@ -91,6 +91,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Checks whether the specified triple is quoted in any of the collections of the union.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns></returns>
+        public override bool ContainsQuoted(Triple t)
+        {
+            return _collections.Any(c => c.ContainsQuoted(t));
+        }
+
+        /// <summary>
         /// Gets the count of Triples in this union.
         /// </summary>
         /// <remarks>
@@ -103,6 +113,9 @@ namespace VDS.RDF
                 return _collections.Sum(c => c.Count);
             }
         }
+
+        /// <inheritdoc/>
+        public override int QuotedCount => _collections.Sum(c=>c.QuotedCount);
 
         /// <summary>
         /// Deletes a Triple from the base collection.
@@ -173,6 +186,23 @@ namespace VDS.RDF
             }
         }
 
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedObjectNodes
+        {
+            get => _collections.SelectMany(c => c.QuotedObjectNodes);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedPredicateNodes
+        {
+            get => _collections.SelectMany(c => c.QuotedPredicateNodes);
+        }
+        /// <inheritdoc/>
+        public override IEnumerable<INode> QuotedSubjectNodes
+        {
+            get => _collections.SelectMany(c => c.QuotedSubjectNodes);
+        }
+
         /// <summary>
         /// Disposes of the collection.
         /// </summary>
@@ -192,5 +222,12 @@ namespace VDS.RDF
         {
             return _collections.SelectMany(c => c).GetEnumerator();
         }
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Asserted => _collections.SelectMany(c => c.Asserted);
+
+        /// <inheritdoc />
+        public override IEnumerable<Triple> Quoted => _collections.SelectMany(c => c.Quoted);
+
     }
 }

@@ -296,6 +296,72 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public IEnumerable<Triple> GetQuoted(Uri uri)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuoted(INode n)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithObject(Uri u)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithObject(INode n)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicate(INode n)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicate(Uri u)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubject(INode n)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubject(Uri u)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public IUriNode GetUriNode(string qname)
         {
             throw new NotImplementedException();
@@ -308,7 +374,25 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public ITripleNode GetTripleNode(Triple triple)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public bool ContainsTriple(Triple t)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public bool ContainsAssertedTriple(Triple t)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public bool ContainsQuotedTriple(Triple t)
         {
             throw new NotImplementedException();
         }
@@ -438,6 +522,12 @@ namespace VDS.RDF.Query.Spin
 
         /// <inheritdoc />
         public IVariableNode CreateVariableNode(string varname)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public ITripleNode CreateTripleNode(Triple triple)
         {
             throw new NotImplementedException();
         }

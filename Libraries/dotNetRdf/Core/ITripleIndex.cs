@@ -113,5 +113,85 @@ namespace VDS.RDF
         /// <param name="obj">Object.</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
+
+        /// <summary>
+        /// Selects all quoted triples which have a Uri Node with the given Uri.
+        /// </summary>
+        /// <param name="uri">Uri.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuoted(Uri uri);
+
+        /// <summary>
+        /// Selects all quoted triples which contain the given Node.
+        /// </summary>
+        /// <param name="n">Node.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuoted(INode n);
+
+        /// <summary>
+        /// Selects all quoted triples where the Object is a Uri Node with the given Uri.
+        /// </summary>
+        /// <param name="u">Uri.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuotedWithObject(Uri u);
+
+        /// <summary>
+        /// Selects all quoted triples where the Object is a given Node.
+        /// </summary>
+        /// <param name="n">Node.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuotedWithObject(INode n);
+
+        /// <summary>
+        /// Selects all quoted triples where the Predicate is a given Node.
+        /// </summary>
+        /// <param name="n">Node.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuotedWithPredicate(INode n);
+
+        /// <summary>
+        /// Selects all quoted triples where the Predicate is a Uri Node with the given Uri.
+        /// </summary>
+        /// <param name="u">Uri.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuotedWithPredicate(Uri u);
+
+        /// <summary>
+        /// Selects all quoted triples where the Subject is a given Node.
+        /// </summary>
+        /// <param name="n">Node.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuotedWithSubject(INode n);
+
+        /// <summary>
+        /// Selects all quoted triples where the Subject is a Uri Node with the given Uri.
+        /// </summary>
+        /// <param name="u">Uri.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuotedWithSubject(Uri u);
+
+        /// <summary>
+        /// Selects all quoted triples with the given Subject and Predicate.
+        /// </summary>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred);
+
+        /// <summary>
+        /// Selects all quoted triples with the given Subject and Object.
+        /// </summary>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj);
+
+        /// <summary>
+        /// Selects all quoted triples with the given Predicate and Object.
+        /// </summary>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj);
     }
 }

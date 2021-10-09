@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -27,33 +27,13 @@
 namespace VDS.RDF
 {
     /// <summary>
-    /// Node Type Values.
+    /// Interface for triple nodes.
     /// </summary>
-    public enum NodeType
+    public interface ITripleNode : IRefNode
     {
         /// <summary>
-        /// A Blank Node
+        /// Get the triple that is the value of this node.
         /// </summary>
-        Blank = 0, 
-        /// <summary>
-        /// A Uri Node
-        /// </summary>
-        Uri = 1, 
-        /// <summary>
-        /// A Literal Node
-        /// </summary>
-        Literal = 2,
-        /// <summary>
-        /// A Graph Literal Node
-        /// </summary>
-        GraphLiteral = 3,
-        /// <summary>
-        /// A Variable Node (currently only used in N3)
-        /// </summary>
-        Variable = 4,
-        /// <summary>
-        /// A triple node (used in RDF-Star graphs)
-        /// </summary>
-        Triple = 5,
+        public Triple Triple { get; }
     }
 }

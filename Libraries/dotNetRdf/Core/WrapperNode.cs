@@ -195,6 +195,12 @@ namespace VDS.RDF
         }
 
         /// <inheritdoc/>
+        public int CompareTo(ITripleNode other)
+        {
+            return Node.CompareTo(other);
+        }
+        
+        /// <inheritdoc/>
         public bool Equals(INode other)
         {
             return Node.Equals(other);
@@ -232,6 +238,12 @@ namespace VDS.RDF
 
         /// <inheritdoc/>
         public bool Equals(IVariableNode other)
+        {
+            return Node.Equals(other);
+        }
+
+        /// <inheritdoc/>
+        public bool Equals(ITripleNode other)
         {
             return Node.Equals(other);
         }

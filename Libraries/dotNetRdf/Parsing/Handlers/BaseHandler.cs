@@ -216,6 +216,16 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
+        /// Creates a node that quotes the given triple.
+        /// </summary>
+        /// <param name="triple">The triple to be the quoted value of the created node.</param>
+        /// <returns></returns>
+        public virtual ITripleNode CreateTripleNode(Triple triple)
+        {
+            return _factory.CreateTripleNode(triple);
+        }
+
+        /// <summary>
         /// Gets the next available Blank Node ID.
         /// </summary>
         /// <returns></returns>

@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2020 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -234,6 +234,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Determines whether this Node is equal to a Triple Node (should always be false).
+        /// </summary>
+        /// <param name="other">Triple Node.</param>
+        /// <returns></returns>
+        public override bool Equals(ITripleNode other)
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Determines whether this Node is equal to a Literal Node.
         /// </summary>
         /// <param name="other">Literal Node.</param>
@@ -286,28 +296,16 @@ namespace VDS.RDF
         {
             if (ReferenceEquals(this, other)) return 0;
 
-            if (other == null)
+            return other?.NodeType switch
             {
                 // Everything is greater than a null
-                // Return a 1 to indicate this
-                return 1;
-            }
-            else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable || other.NodeType == NodeType.Uri)
-            {
+                null => 1,
                 // Literal Nodes are greater than Blank, Variable and Uri Nodes
-                // Return a 1 to indicate this
-                return 1;
-            }
-            else if (other.NodeType == NodeType.Literal)
-            {
-                return CompareTo((ILiteralNode)other);
-            }
-            else
-            {
+                NodeType.Blank or NodeType.Variable or NodeType.Uri => 1,
+                NodeType.Literal => CompareTo((ILiteralNode)other),
                 // Anything else is considered greater than a Literal Node
-                // Return -1 to indicate this
-                return -1;
-            }
+                _ => -1,
+            };
         }
 
         /// <summary>
@@ -317,8 +315,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IRefNode other)
         {
-            // We are always greater than nulls, blank nodes or URI nodes
-            return 1;
+            // We are always greater than nulls, blank nodes or URI nodes, but less than triple nodes.
+            return other?.NodeType == NodeType.Triple ? -1 : 1;
         }
 
         /// <summary>
@@ -339,8 +337,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
-            if (ReferenceEquals(this, other)) return 0;
-            return ComparisonHelper.CompareLiterals(this, other);
+            return ReferenceEquals(this, other) ? 0 : ComparisonHelper.CompareLiterals(this, other);
         }
 
         /// <summary>
@@ -350,16 +347,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
-            if (other == null)
-            {
-                // We are always greater than nulls
-                return 1;
-            }
-            else
-            {
-                // Graph Literals are always greater than us
-                return -1;
-            }
+            // We are greater than nulls but less than graph literals
+            return other == null ? 1 : -1;
         }
 
         /// <summary>
@@ -382,6 +371,17 @@ namespace VDS.RDF
         {
             // We are always greater than nulls/Variable Nodes
             return 1;
+        }
+
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node.
+        /// </summary>
+        /// <param name="other">Node to test against.</param>
+        /// <returns></returns>
+        public override int CompareTo(ITripleNode other)
+        {
+            // We are greater than nulls, but less than triple nodes
+            return other == null ? 1 : -1;
         }
 
         /// <summary>

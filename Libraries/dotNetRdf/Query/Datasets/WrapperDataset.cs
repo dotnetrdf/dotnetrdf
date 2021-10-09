@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Datasets
         /// Creates a new wrapped dataset.
         /// </summary>
         /// <param name="dataset">Dataset.</param>
-        public WrapperDataset(ISparqlDataset dataset)
+        protected WrapperDataset(ISparqlDataset dataset)
         {
             _dataset = dataset ?? throw new ArgumentNullException(nameof(dataset));
         }
@@ -473,6 +473,72 @@ namespace VDS.RDF.Query.Datasets
         public virtual IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
             return _dataset.GetTriplesWithPredicateObject(pred, obj);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuoted(Uri uri)
+        {
+            return _dataset.GetQuoted(uri);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuoted(INode n)
+        {
+            return _dataset.GetQuoted(n);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithObject(Uri u)
+        {
+            return _dataset.GetQuotedWithObject(u);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithObject(INode n)
+        {
+            return _dataset.GetQuotedWithObject(n);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithPredicate(INode n)
+        {
+            return _dataset.GetQuotedWithPredicate(n);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithPredicate(Uri u)
+        {
+            return _dataset.GetQuotedWithPredicate(u);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubject(INode n)
+        {
+            return _dataset.GetQuotedWithSubject(n);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubject(Uri u)
+        {
+            return _dataset.GetQuotedWithSubject(u);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            return _dataset.GetQuotedWithSubjectPredicate(subj, pred);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj)
+        {
+            return _dataset.GetQuotedWithSubjectObject(subj, obj);
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj)
+        {
+            return _dataset.GetQuotedWithPredicateObject(pred, obj);
         }
 
         /// <summary>

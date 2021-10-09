@@ -126,6 +126,13 @@ namespace VDS.RDF
         IVariableNode CreateVariableNode(string varname);
 
         /// <summary>
+        /// Creates a node that quotes the given triple.
+        /// </summary>
+        /// <param name="triple">The triple to be the quoted value of the created node.</param>
+        /// <returns></returns>
+        ITripleNode CreateTripleNode(Triple triple);
+
+        /// <summary>
         /// Creates a new unused Blank Node ID and returns it.
         /// </summary>
         /// <returns></returns>

@@ -113,12 +113,12 @@ namespace VDS.RDF
         public virtual BaseTripleCollection Triples => _triples;
 
         /// <inheritdoc />
-        public virtual IEnumerable<INode> Nodes => _triples.SubjectNodes.Union(_triples.ObjectNodes).Distinct();
+        public virtual IEnumerable<INode> Nodes => _triples.SubjectNodes.Union(_triples.ObjectNodes);
 
         /// <inheritdoc />
         public virtual IEnumerable<INode> AllNodes
         {
-            get { return _triples.SelectMany(t => t.Nodes).Distinct(); }
+            get { return _triples.Asserted.SelectMany(t => t.Nodes).Distinct(); }
         }
 
         /// <summary>
@@ -319,6 +319,15 @@ namespace VDS.RDF
             return NodeFactory.CreateVariableNode(varname);
         }
 
+        /// <summary>
+        /// Creates a node that quotes the given triple.
+        /// </summary>
+        /// <param name="triple">The triple to be the quoted value of the created node.</param>
+        /// <returns></returns>
+        public virtual ITripleNode CreateTripleNode(Triple triple)
+        {
+            return NodeFactory.CreateTripleNode(triple);
+        }
         #endregion
 
 
@@ -368,6 +377,13 @@ namespace VDS.RDF
         /// <param name="uri">The Uri of the Node to select.</param>
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists.</returns>
         public abstract IUriNode GetUriNode(Uri uri);
+
+        /// <summary>
+        /// Selects the Triple Node with the given Triple value if it exists in the graph.
+        /// </summary>
+        /// <param name="triple">Triple.</param>
+        /// <returns>The triple node if it exists in the graph or else null.</returns>
+        public abstract ITripleNode GetTripleNode(Triple triple);
 
         #endregion
 
@@ -453,15 +469,54 @@ namespace VDS.RDF
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
 
-        /// <summary>
-        /// Gets whether a given Triple exists in this Graph.
-        /// </summary>
-        /// <param name="t">Triple to test.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public virtual bool ContainsTriple(Triple t)
         {
             return _triples.Contains(t);
         }
+
+        /// <summary>
+        /// Gets whether a given triple is quoted in this graph.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns>True if the triple is quoted in this graph, false otherwise.</returns>
+        public virtual bool ContainsQuotedTriple(Triple t)
+        {
+            return _triples.ContainsQuoted(t);
+        }
+
+        /// <inheritdoc/>
+        public virtual IEnumerable<Triple> GetQuoted(Uri uri) => GetQuoted(new UriNode(uri));
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuoted(INode n);
+
+        /// <inheritdoc/>
+        public virtual IEnumerable<Triple> GetQuotedWithObject(Uri u) => GetQuotedWithObject(new UriNode(u));
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithObject(INode n);
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithPredicate(INode n);
+
+        /// <inheritdoc/>
+        public virtual IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => GetQuotedWithPredicate(new UriNode(u));
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithSubject(INode n);
+
+        /// <inheritdoc/>
+        public virtual IEnumerable<Triple> GetQuotedWithSubject(Uri u) => GetQuotedWithSubject(new UriNode(u));
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred);
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj);
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj);
 
         #endregion
 
@@ -910,6 +965,8 @@ namespace VDS.RDF
         {
             DetachEventHandlers(_triples);
         }
+
+        
     }
 
 }

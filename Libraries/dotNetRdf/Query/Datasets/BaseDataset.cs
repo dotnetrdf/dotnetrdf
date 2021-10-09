@@ -706,6 +706,13 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        private IEnumerable<Triple> GetTriples(Func<IGraph, IEnumerable<Triple>> graphFunc,
+            Func<IEnumerable<Triple>> fallback)
+        {
+            if (_activeGraph.Value != null) return graphFunc(_activeGraph.Value);
+            if (_defaultGraph.Value != null) return graphFunc(_defaultGraph.Value);
+            return fallback();
+        }
         /// <summary>
         /// Abstract method that concrete implementations must implement to return an enumerable of all the Triples in the Dataset.
         /// </summary>
@@ -725,21 +732,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
-            if (_activeGraph.Value == null)
-            {
-                if (_defaultGraph.Value == null)
-                {
-                    return GetTriplesWithSubjectInternal(subj);
-                }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithSubject(subj);
-                }
-            }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithSubject(subj);
-            }
+            return GetTriples(g => g.GetTriplesWithSubject(subj), () => GetTriplesWithSubjectInternal(subj));
         }
 
         /// <inheritdoc />
@@ -748,12 +741,31 @@ namespace VDS.RDF.Query.Datasets
             return GetTriplesWithSubject(new UriNode(u));
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubject(Uri u)
+        {
+            return GetQuotedWithSubject(new UriNode(u));
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubject(INode subj)
+        {
+            return GetTriples(g => g.GetQuotedWithSubject(subj), ()=>GetQuotedWithSubjectInternal(subj));
+        }
+
         /// <summary>
-        /// Gets all the Triples in the Dataset with the given Subject.
+        /// Gets all the asserted triples in the Dataset with the given Subject.
         /// </summary>
         /// <param name="subj">Subject.</param>
         /// <returns></returns>
         protected abstract IEnumerable<Triple> GetTriplesWithSubjectInternal(INode subj);
+
+        /// <summary>
+        /// Gets all the quoted triples in the dataset with the given subject.
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
+        protected abstract IEnumerable<Triple> GetQuotedWithSubjectInternal(INode subj);
 
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Predicate.
@@ -762,30 +774,34 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
-            if (_activeGraph.Value == null)
-            {
-                if (_defaultGraph.Value == null)
-                {
-                    return GetTriplesWithPredicateInternal(pred);
-                }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithPredicate(pred);
-                }
-            }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithPredicate(pred);
-            }
+            return GetTriples(g => g.GetTriplesWithPredicate(pred), ()=>GetTriplesWithPredicateInternal(pred));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicate(Uri u)
+        {
+            return GetQuotedWithPredicate(new UriNode(u));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicate(INode pred)
+        {
+            return GetTriples(g=> g.GetQuotedWithPredicate(pred), ()=>GetQuotedWithPredicateInternal(pred));
         }
 
         /// <summary>
-        /// Gets all the Triples in the Dataset with the given Predicate.
+        /// Gets all the asserted triples in the Dataset with the given Predicate.
         /// </summary>
         /// <param name="predicate">Predicate.</param>
         /// <returns></returns>
         protected abstract IEnumerable<Triple> GetTriplesWithPredicateInternal(INode predicate);
 
+        /// <summary>
+        /// Gets all the quoted triples in the dataset with the given predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        protected abstract IEnumerable<Triple> GetQuotedWithPredicateInternal(INode predicate);
         /// <inheritdoc />
         public IEnumerable<Triple> GetTriples(Uri uri)
         {
@@ -797,6 +813,19 @@ namespace VDS.RDF.Query.Datasets
         {
             return GetTriplesWithSubject(n).Union(GetTriplesWithPredicate(n).Where(t => !t.Subject.Equals(n)))
                 .Union(GetTriplesWithObject(n).Where(t => !(t.Subject.Equals(n) || t.Predicate.Equals(n))));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuoted(Uri u)
+        {
+            return GetQuoted(new UriNode(u));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuoted(INode n)
+        {
+            return GetQuotedWithSubject(n).Union(GetQuotedWithPredicate(n).Where(t => !t.Subject.Equals(n)))
+                .Union(GetQuotedWithObject(n).Where(t => !(t.Subject.Equals(n) || t.Predicate.Equals(n))));
         }
 
         /// <inheritdoc />
@@ -812,30 +841,34 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
-            if (_activeGraph.Value == null)
-            {
-                if (_defaultGraph.Value == null)
-                {
-                    return GetTriplesWithObjectInternal(obj);
-                }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithObject(obj);
-                }
-            }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithObject(obj);
-            }
+            return GetTriples(g => g.GetTriplesWithObject(obj), () => GetTriplesWithObjectInternal(obj));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithObject(Uri u)
+        {
+            return GetQuotedWithObject(new UriNode(u));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithObject(INode obj)
+        {
+            return GetTriples(g => g.GetQuotedWithObject(obj), () => GetQuotedWithObjectInternal(obj));
         }
 
         /// <summary>
-        /// Gets all the Triples in the Dataset with the given Object.
+        /// Gets all the asserted triples in the dataset with the given object.
         /// </summary>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
         protected abstract IEnumerable<Triple> GetTriplesWithObjectInternal(INode obj);
 
+        /// <summary>
+        /// Gets all the quoted triples in the dataset with the given object.
+        /// </summary>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
+        protected abstract IEnumerable<Triple> GetQuotedWithObjectInternal(INode obj);
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Subject and Predicate.
         /// </summary>
@@ -844,25 +877,18 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
-            if (_activeGraph.Value == null)
-            {
-                if (_defaultGraph.Value == null)
-                {
-                    return GetTriplesWithSubjectPredicateInternal(subj, pred);
-                }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithSubjectPredicate(subj, pred);
-                }
-            }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithSubjectPredicate(subj, pred);
-            }
+            return GetTriples(g => g.GetTriplesWithSubjectPredicate(subj, pred),
+                () => GetTriplesWithSubjectPredicateInternal(subj, pred));
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            return GetTriples(g => g.GetQuotedWithSubjectPredicate(subj, pred),
+                () => GetQuotedWithSubjectPredicateInternal(subj, pred));
+        }
         /// <summary>
-        /// Gets all the Triples in the Dataset with the given Subject and Predicate.
+        /// Gets all the asserted triples in the dataset with the given subject and predicate.
         /// </summary>
         /// <param name="subj">Subject.</param>
         /// <param name="predicate">Predicate.</param>
@@ -870,32 +896,28 @@ namespace VDS.RDF.Query.Datasets
         protected abstract IEnumerable<Triple> GetTriplesWithSubjectPredicateInternal(INode subj, INode predicate);
 
         /// <summary>
-        /// Gets all the Triples in the Dataset with the given Subject and Object.
+        /// Gets all the quoted triples in the dataset with the given subject and predicate.
         /// </summary>
         /// <param name="subj">Subject.</param>
-        /// <param name="obj">Object.</param>
+        /// <param name="predicate">Predicate.</param>
         /// <returns></returns>
+        protected abstract IEnumerable<Triple> GetQuotedWithSubjectPredicateInternal(INode subj, INode predicate);
+
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            if (_activeGraph.Value == null)
-            {
-                if (_defaultGraph.Value == null)
-                {
-                    return GetTriplesWithSubjectObjectInternal(subj, obj);
-                }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithSubjectObject(subj, obj);
-                }
-            }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithSubjectObject(subj, obj);
-            }
+            return GetTriples(g => g.GetTriplesWithSubjectObject(subj, obj),
+                () => GetTriplesWithSubjectObjectInternal(subj, obj));
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj)
+        {
+            return GetTriples(g => g.GetQuotedWithSubjectObject(subj, obj),
+                () => GetQuotedWithSubjectObjectInternal(subj, obj));
+        }
         /// <summary>
-        /// Gets all the Triples in the Dataset with the given Subject and Object.
+        /// Gets all the asserted triples in the dataset with the given subject and object.
         /// </summary>
         /// <param name="subj">Subject.</param>
         /// <param name="obj">Object.</param>
@@ -903,37 +925,43 @@ namespace VDS.RDF.Query.Datasets
         protected abstract IEnumerable<Triple> GetTriplesWithSubjectObjectInternal(INode subj, INode obj);
 
         /// <summary>
-        /// Gets all the Triples in the Dataset with the given Predicate and Object.
+        /// Gets all the quoted triples in the dataset with the given subject and object.
         /// </summary>
-        /// <param name="pred">Predicate.</param>
+        /// <param name="subj">Subject.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
+        protected abstract IEnumerable<Triple> GetQuotedWithSubjectObjectInternal(INode subj, INode obj);
+
+
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
-            if (_activeGraph.Value == null)
-            {
-                if (_defaultGraph.Value == null)
-                {
-                    return GetTriplesWithPredicateObjectInternal(pred, obj);
-                }
-                else
-                {
-                    return _defaultGraph.Value.GetTriplesWithPredicateObject(pred, obj);
-                }
-            }
-            else
-            {
-                return _activeGraph.Value.GetTriplesWithPredicateObject(pred, obj);
-            }
+            return GetTriples(g => g.GetTriplesWithPredicateObject(pred, obj),
+                () => GetTriplesWithPredicateObjectInternal(pred, obj));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj)
+        {
+            return GetTriples(g => g.GetQuotedWithPredicateObject(pred, obj),
+                () => GetQuotedWithPredicateObjectInternal(pred, obj));
         }
 
         /// <summary>
-        /// Gets all the Triples in the Dataset with the given Predicate and Object.
+        /// Gets all the asserted triples in the dataset with the given predicate and object.
         /// </summary>
         /// <param name="pred">Predicate.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
         protected abstract IEnumerable<Triple> GetTriplesWithPredicateObjectInternal(INode pred, INode obj);
+
+        /// <summary>
+        /// Gets all the quoted triples in the dataset with the given predicate and object.
+        /// </summary>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
+        protected abstract IEnumerable<Triple> GetQuotedWithPredicateObjectInternal(INode pred, INode obj);
 
         #endregion
 

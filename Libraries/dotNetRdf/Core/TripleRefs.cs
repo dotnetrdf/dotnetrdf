@@ -27,33 +27,17 @@
 namespace VDS.RDF
 {
     /// <summary>
-    /// Node Type Values.
+    /// Struct used for reference counting the quotation of triples in an RDF-star graph.
     /// </summary>
-    public enum NodeType
+    public class TripleRefs
     {
         /// <summary>
-        /// A Blank Node
+        /// Flag indicating if the triple is asserted in the graph.
         /// </summary>
-        Blank = 0, 
+        public bool Asserted;
         /// <summary>
-        /// A Uri Node
+        /// Count of the number of times the triple is quoted in the graph.
         /// </summary>
-        Uri = 1, 
-        /// <summary>
-        /// A Literal Node
-        /// </summary>
-        Literal = 2,
-        /// <summary>
-        /// A Graph Literal Node
-        /// </summary>
-        GraphLiteral = 3,
-        /// <summary>
-        /// A Variable Node (currently only used in N3)
-        /// </summary>
-        Variable = 4,
-        /// <summary>
-        /// A triple node (used in RDF-Star graphs)
-        /// </summary>
-        Triple = 5,
+        public uint QuoteCount;
     }
 }

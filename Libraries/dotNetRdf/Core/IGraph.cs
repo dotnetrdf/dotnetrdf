@@ -45,41 +45,29 @@ namespace VDS.RDF
         /// Gets the name of the graph.
         /// </summary>
         /// <remarks>The graph name May be NULL for an unnamed (default) graph.</remarks>
-        IRefNode Name
-        {
-            get;
-        }
+        IRefNode Name { get; }
 
         
         /// <summary>
         /// Gets whether a Graph is Empty.
         /// </summary>
-        bool IsEmpty 
-        { 
-            get; 
-        }
+        bool IsEmpty { get; }
 
         /// <summary>
         /// Gets the unique Subject and Object nodes of the Graph.
         /// </summary>
-        /// <remarks>This property returns only nodes that appear in the Subject or Object position in triples. To retrieve a list of all INode instances in a graph including those in Predicate position in a triple, use the <see cref="AllNodes"/> property.</remarks>
-        IEnumerable<INode> Nodes 
-        {
-            get;
-        }
+        /// <remarks>This property returns only nodes that appear in the Subject or Object position in asserted triples. To retrieve a list of all INode instances in a graph including those in Predicate position in a triple, use the <see cref="AllNodes"/> property.</remarks>
+        IEnumerable<INode> Nodes { get; }
 
         /// <summary>
-        /// Gets the unique Subject, Predicate and Object nodes of the Graph.
+        /// Gets the unique Subject, Predicate and Object nodes of the asserted triples in the Graph.
         /// </summary>
         IEnumerable<INode> AllNodes { get; }
 
         /// <summary>
         /// Gets the Triple Collection for the Graph.
         /// </summary>
-        BaseTripleCollection Triples 
-        { 
-            get; 
-        }
+        BaseTripleCollection Triples { get; }
 
         #endregion
 
@@ -153,8 +141,6 @@ namespace VDS.RDF
         /// <returns>The Node if it exists in the Graph or null.</returns>
         ILiteralNode GetLiteralNode(string literal, Uri datatype);
 
-        
-
         /// <summary>
         /// Selects the Uri Node with the given QName if it exists in the Graph, returns null otherwise.
         /// </summary>
@@ -170,11 +156,25 @@ namespace VDS.RDF
         IUriNode GetUriNode(Uri uri);
 
         /// <summary>
-        /// Gets whether a given Triple is in this Graph.
+        /// Selects the Triple Node with the given Triple value if it exists in the graph.
+        /// </summary>
+        /// <param name="triple">Triple.</param>
+        /// <returns>The triple node if it exists in the graph or else null.</returns>
+        ITripleNode GetTripleNode(Triple triple);
+
+        /// <summary>
+        /// Gets whether a given triple is asserted in this Graph.
         /// </summary>
         /// <param name="t">Triple to test.</param>
-        /// <returns></returns>
+        /// <returns>True if the triple is asserted in this graph, false otherwise.</returns>
         bool ContainsTriple(Triple t);
+
+        /// <summary>
+        /// Gets whether a given triple is quoted in this graph.
+        /// </summary>
+        /// <param name="t">Triple to test.</param>
+        /// <returns>True if the triple is quoted in this graph, false otherwise.</returns>
+        bool ContainsQuotedTriple(Triple t);
 
         #endregion
 

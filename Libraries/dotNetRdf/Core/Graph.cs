@@ -292,7 +292,12 @@ namespace VDS.RDF
             return GetNode<IBlankNode>(new BlankNode(nodeId));
         }
 
-        
+        /// <inheritdoc />
+        public override ITripleNode GetTripleNode(Triple triple)
+        {
+            return GetNode<ITripleNode>(new TripleNode(triple));
+        }
+
         private T GetNode<T>(T node) where T: INode
         {
             var ret = (T) Triples.WithSubject(node).FirstOrDefault()?.Subject;
@@ -421,6 +426,49 @@ namespace VDS.RDF
         public override IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
             return _triples.WithPredicateObject(pred, obj);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> GetQuoted(INode n)
+        {
+            return _triples.QuotedWithSubject(n).Union(_triples.QuotedWithPredicate(n).Where(t => !t.Subject.Equals(n)))
+                .Union(_triples.QuotedWithObject(n).Where(t => !t.Subject.Equals(n) && !t.Predicate.Equals(n)));
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> GetQuotedWithObject(INode n)
+        {
+            return _triples.QuotedWithObject(n);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> GetQuotedWithPredicate(INode n)
+        {
+            return _triples.QuotedWithPredicate(n);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> GetQuotedWithSubject(INode n)
+        {
+            return _triples.QuotedWithSubject(n);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            return _triples.QuotedWithSubjectPredicate(subj, pred);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj)
+        {
+            return _triples.QuotedWithSubjectObject(subj, obj);
+        }
+
+        /// <inheritdoc/>
+        public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj)
+        {
+            return _triples.QuotedWithPredicateObject(pred, obj);
         }
 
         #endregion
