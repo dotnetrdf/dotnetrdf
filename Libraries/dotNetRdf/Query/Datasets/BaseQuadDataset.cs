@@ -483,8 +483,7 @@ namespace VDS.RDF.Query.Datasets
                         }
                         else
                         {
-                            IEnumerable<IGraph> gs = (from u in DefaultGraphNames
-                                select new Graph(new QuadDatasetTripleCollection(this, u)));
+                            IEnumerable<IGraph> gs = DefaultGraphNames.Select(u=> new Graph(new QuadDatasetTripleCollection(this, u))).ToList();
                             return new UnionGraph(gs.First(), gs.Skip(1));
                         }
                     }
@@ -556,12 +555,20 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether a Triple exists in a specific Graph of the dataset.
+        /// Gets whether a triple is asserted in a specific graph of the dataset.
         /// </summary>
         /// <param name="graphName">Graph name.</param>
         /// <param name="t">Triple.</param>
         /// <returns></returns>
         public abstract bool ContainsQuad(IRefNode graphName, Triple t);
+
+        /// <summary>
+        /// Gets whether a triple is quoted in a specified graph of the dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="t">Triple.</param>
+        /// <returns>True if <paramref name="t"/> is quoted in the graph, false otherwise.</returns>
+        public abstract bool ContainsQuoted(IRefNode graphName, Triple t);
 
         /// <summary>
         /// Gets all triples from the dataset.
@@ -577,20 +584,21 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all the Triples for a specific graph of the dataset.
+        /// Gets all the triples asserted in a specific graph of the dataset.
         /// </summary>
         /// <param name="graphName">Graph name.</param>
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetQuads(IRefNode graphName);
 
-        /// <inheritdoc />
-        public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
-        {
-            return GetTriplesWithPredicate(new UriNode(u));
-        }
+        /// <summary>
+        /// Get all the triples quoted in a specified graph of the dataset.
+        /// </summary>
+        /// <param name="graphName"></param>
+        /// <returns></returns>
+        public abstract IEnumerable<Triple> GetQuoted(IRefNode graphName);
 
         /// <summary>
-        /// Gets all the Triples with a given subject.
+        /// Gets all the asserted triples with a given subject.
         /// </summary>
         /// <param name="subj">Subject.</param>
         /// <returns></returns>
@@ -607,6 +615,18 @@ namespace VDS.RDF.Query.Datasets
             return GetTriplesWithSubject(new UriNode(u));
         }
 
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubject(Uri u)
+        {
+            return GetTriplesWithSubject(new UriNode(u));
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithSubject(INode subj)
+        {
+            return ActiveGraphNames.SelectMany(g => GetQuotedWithSubject(g, subj));
+        }
+
         /// <summary>
         /// Gets all the Triples with a given subject from a specific graph of the dataset.
         /// </summary>
@@ -616,10 +636,21 @@ namespace VDS.RDF.Query.Datasets
         public abstract IEnumerable<Triple> GetQuadsWithSubject(IRefNode graphName, INode subj);
 
         /// <summary>
-        /// Gets all the Triples with a given predicate.
+        /// Gets all quoted triples with a given subject from a specific graph of the dataset.
         /// </summary>
-        /// <param name="pred">Predicate.</param>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="subj">Subject.</param>
         /// <returns></returns>
+        public abstract IEnumerable<Triple> GetQuotedWithSubject(IRefNode graphName, INode subj);
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
+        {
+            return GetTriplesWithPredicate(new UriNode(u));
+        }
+
+
+        /// <inheritdoc/>
         public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
             return (from u in ActiveGraphNames
@@ -627,13 +658,33 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithPredicate(Uri u)
+        {
+            return GetQuotedWithPredicate(new UriNode(u));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicate(INode pred)
+        {
+            return ActiveGraphNames.SelectMany(g => GetQuotedWithPredicate(g, pred));
+        }
+
         /// <summary>
-        /// Gets all the Triples with a given predicate from a specific graph of the dataset.
+        /// Gets all the asserted triples with a given predicate from a specific graph of the dataset.
         /// </summary>
         /// <param name="graphName">Graph URI.</param>
         /// <param name="pred">Predicate.</param>
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetQuadsWithPredicate(IRefNode graphName, INode pred);
+
+        /// <summary>
+        /// Gets all the quoted triples with a given predicate from a specific graph of the dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <returns></returns>
+        public abstract IEnumerable<Triple> GetQuotedWithPredicate(IRefNode graphName, INode pred);
 
         /// <inheritdoc />
         public IEnumerable<Triple> GetTriples(Uri uri)
@@ -646,6 +697,19 @@ namespace VDS.RDF.Query.Datasets
         {
             return GetTriplesWithSubject(n).Union(GetTriplesWithPredicate(n).Where(t => !t.Subject.Equals(n)))
                 .Union(GetTriplesWithObject(n).Where(t => !(t.Subject.Equals(n) || t.Predicate.Equals(n))));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuoted(Uri uri)
+        {
+            return GetQuoted(new UriNode(uri));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuoted(INode n)
+        {
+            return GetQuotedWithSubject(n).Union(GetQuotedWithPredicate(n).Where(t => !t.Subject.Equals(n)))
+                .Union(GetQuotedWithObject(n).Where(t => !(t.Subject.Equals(n) || t.Predicate.Equals(n))));
         }
 
         /// <inheritdoc />
@@ -666,6 +730,18 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithObject(Uri uri)
+        {
+            return GetQuotedWithObject(new UriNode(uri));
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithObject(INode obj)
+        {
+            return ActiveGraphNames.SelectMany(g => GetQuotedWithObject(g, obj));
+        }
+
         /// <summary>
         /// Gets all the Triples with a given object from a specific graph of the dataset.
         /// </summary>
@@ -673,6 +749,14 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="obj">Object.</param>
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetQuadsWithObject(IRefNode graphName, INode obj);
+
+        /// <summary>
+        /// Gets all the quoted triples with a given object from a specific graph of the dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
+        public abstract IEnumerable<Triple> GetQuotedWithObject(IRefNode graphName, INode obj);
 
         /// <summary>
         /// Gets all the Triples with a given subject and predicate.
@@ -687,8 +771,14 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            return ActiveGraphNames.SelectMany(g => GetQuotedWithSubjectPredicate(g, subj, pred));
+        }
+
         /// <summary>
-        /// Gets all the Triples with a given subject and predicate from a specific graph of the dataset.
+        /// Gets all the asserted triples with a given subject and predicate from a specific graph of the dataset.
         /// </summary>
         /// <param name="graphName">Graph name.</param>
         /// <param name="subj">Subject.</param>
@@ -697,7 +787,16 @@ namespace VDS.RDF.Query.Datasets
         public abstract IEnumerable<Triple> GetQuadsWithSubjectPredicate(IRefNode graphName, INode subj, INode pred);
 
         /// <summary>
-        /// Gets all the Triples with a given subject and object.
+        /// Gets all the quoted triples with a given subject and predicate from a specific graph of the dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <returns></returns>
+        public abstract IEnumerable<Triple> GetQuotedWithSubjectPredicate(IRefNode graphName, INode subj, INode pred);
+
+        /// <summary>
+        /// Gets all the asserted riples with a given subject and object.
         /// </summary>
         /// <param name="subj">Subject.</param>
         /// <param name="obj">Object.</param>
@@ -709,14 +808,29 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj)
+        {
+            return ActiveGraphNames.SelectMany(g => GetQuotedWithSubjectObject(g, subj, obj));
+        }
+
         /// <summary>
-        /// Gets all the Triples with a given subject and object from a specific graph of the dataset.
+        /// Gets all the asserted triples with a given subject and object from a specific graph of the dataset.
         /// </summary>
         /// <param name="graphName">Graph name.</param>
         /// <param name="subj">Subject.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetQuadsWithSubjectObject(IRefNode graphName, INode subj, INode obj);
+
+        /// <summary>
+        /// Gets all the quoted triples with a given subject and object from a specific graph of the dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
+        public abstract IEnumerable<Triple> GetQuotedWithSubjectObject(IRefNode graphName, INode subj, INode obj);
 
         /// <summary>
         /// Gets all the Triples with a given predicate and object.
@@ -731,8 +845,14 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        /// <inheritdoc/>
+        public IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj)
+        {
+            return ActiveGraphNames.SelectMany(g => GetQuotedWithPredicateObject(g, pred, obj));
+        }
+
         /// <summary>
-        /// Gets all the Triples with a given predicate and object from a specific graph of the dataset.
+        /// Gets all the asserted triples with a given predicate and object from a specific graph of the dataset.
         /// </summary>
         /// <param name="graphName">Graph URI.</param>
         /// <param name="pred">Predicate.</param>
@@ -740,6 +860,14 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetQuadsWithPredicateObject(IRefNode graphName, INode pred, INode obj);
 
+        /// <summary>
+        /// Gets all the quoted triples with a given predicate and object from a specific graph of the dataset.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
+        public abstract IEnumerable<Triple> GetQuotedWithPredicateObject(IRefNode graphName, INode pred, INode obj);
         /// <summary>
         /// Flushes any changes to the dataset.
         /// </summary>

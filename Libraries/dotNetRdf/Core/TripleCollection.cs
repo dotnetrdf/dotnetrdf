@@ -41,18 +41,10 @@ namespace VDS.RDF
         /// </summary>
         protected readonly MultiDictionary<Triple, TripleRefs> Triples = new MultiDictionary<Triple, TripleRefs>(new FullTripleComparer(new FastVirtualNodeComparer()));
 
-        /// <summary>
-        /// Determines whether a given Triple is in the Triple Collection.
-        /// </summary>
-        /// <param name="t">The Triple to test.</param>
-        /// <returns>True if the Triple already exists in the Triple Collection.</returns>
-        public override bool Contains(Triple t)
-        {
-            return Triples.ContainsKey(t);
-        }
+        private int _assertedCount, _quotedCount;
 
         /// <inheritdoc />
-        public override bool ContainsAsserted(Triple t)
+        public override bool Contains(Triple t)
         {
             return Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted;
         }
@@ -63,10 +55,7 @@ namespace VDS.RDF
             return Triples.TryGetValue(t, out TripleRefs refs) && refs.QuoteCount > 0;
         }
 
-        /// <summary>
-        /// Adds a Triple to the Collection.
-        /// </summary>
-        /// <param name="t">Triple to add.</param>
+        /// <inheritdoc />
         protected internal override bool Add(Triple t)
         {
             if (Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted)
@@ -86,6 +75,7 @@ namespace VDS.RDF
                 refs.Asserted = true;
             }
 
+            _assertedCount++;
             RaiseTripleAdded(t);
             if (t.Subject is ITripleNode stn) AddQuoted(stn);
             if (t.Object is ITripleNode otn) AddQuoted(otn);
@@ -105,6 +95,7 @@ namespace VDS.RDF
             else
             {
                 Triples.Add(tripleNode.Triple, new TripleRefs{Asserted = false, QuoteCount = 1});
+                _quotedCount++;
             }
             // Recursively process any nested quotations
             if (tripleNode.Triple.Subject is ITripleNode stn) AddQuoted(stn);
@@ -127,6 +118,8 @@ namespace VDS.RDF
                 {
                     Triples.Remove(t);
                 }
+
+                _assertedCount--;
                 RaiseTripleRemoved(t);
                 if (t.Subject is ITripleNode stn) RemoveQuoted(stn);
                 if (t.Object is ITripleNode otn) RemoveQuoted(otn);
@@ -148,6 +141,7 @@ namespace VDS.RDF
                 if (refs.QuoteCount == 0 && !refs.Asserted)
                 {
                     Triples.Remove(tripleNode.Triple);
+                    _quotedCount--;
                 }
             }
 
@@ -157,16 +151,11 @@ namespace VDS.RDF
         }
 
 
-        /// <summary>
-        /// Gets the Number of Triples in the Triple Collection.
-        /// </summary>
-        public override int Count
-        {
-            get
-            {
-                return Triples.Count;
-            }
-        }
+        /// <inheritdoc />
+        public override int Count => _assertedCount;
+
+        /// <inheritdoc />
+        public override int QuotedCount => _quotedCount;
 
         /// <summary>
         /// Gets the given Triple.
@@ -176,48 +165,31 @@ namespace VDS.RDF
         /// <exception cref="KeyNotFoundException">Thrown if the given Triple does not exist in the Triple Collection.</exception>
         public override Triple this[Triple t]
         {
-            get 
+            get
             {
-                Triple actual;
-                if (Triples.TryGetKey(t, out actual))
+                if (Triples.TryGetKey(t, out Triple actual))
                 {
                     return actual;
                 }
-                else
-                {
-                    throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
-                }
-            }
-        }
 
-        /// <summary>
-        /// Gets all the Nodes which are Subjects of Triples in the Triple Collection.
-        /// </summary>
-        public override IEnumerable<INode> SubjectNodes
-        {
-            get
-            {
-                IEnumerable<INode> ns = from t in this
-                                        select t.Subject;
-
-                return ns.Distinct();
+                throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
             }
         }
 
         /// <inheritdoc />
-        public override IEnumerable<INode> AssertedObjectNodes
+        public override IEnumerable<INode> ObjectNodes
         {
             get => Asserted.Select(t => t.Object).Distinct();
         }
 
         /// <inheritdoc />
-        public override IEnumerable<INode> AssertedPredicateNodes
+        public override IEnumerable<INode> PredicateNodes
         {
             get => Asserted.Select(t => t.Predicate).Distinct();
         }
 
         /// <inheritdoc />
-        public override IEnumerable<INode> AssertedSubjectNodes
+        public override IEnumerable<INode> SubjectNodes
         {
             get => Asserted.Select(t => t.Subject).Distinct();
         }
@@ -229,37 +201,15 @@ namespace VDS.RDF
         }
 
         /// <inheritdoc />
-        public override IEnumerable<INode> QuotedPredicateNodes { get => Quoted.Select(t=>t.Predicate).Distinct(); }
-
-        /// <inheritdoc />
-        public override IEnumerable<INode> QuotedSubjectNodes { get => Quoted.Select(t => t.Subject).Distinct(); }
-
-        /// <summary>
-        /// Gets all the Nodes which are Predicates of Triples in the Triple Collection.
-        /// </summary>
-        public override IEnumerable<INode> PredicateNodes
+        public override IEnumerable<INode> QuotedPredicateNodes
         {
-            get
-            {
-                IEnumerable<INode> ns = from t in this
-                                        select t.Predicate;
-
-                return ns.Distinct();
-            }
+            get => Quoted.Select(t=>t.Predicate).Distinct();
         }
 
-        /// <summary>
-        /// Gets all the Nodes which are Objects of Triples in the Triple Collection.
-        /// </summary>
-        public override IEnumerable<INode> ObjectNodes
+        /// <inheritdoc />
+        public override IEnumerable<INode> QuotedSubjectNodes
         {
-            get
-            {
-                IEnumerable<INode> ns = from t in this
-                                        select t.Object;
-
-                return ns.Distinct();
-            }
+            get => Quoted.Select(t => t.Subject).Distinct();
         }
 
         #region IEnumerable<Triple> Members
@@ -276,15 +226,6 @@ namespace VDS.RDF
             }
         }
 
-        /// <summary>
-        /// Gets the Enumerator for the Collection.
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerator<Triple> GetEnumerator()
-        {
-            return Triples.Keys.GetEnumerator();
-        }
-
         /// <inheritdoc />
         public override IEnumerable<Triple> Asserted {
             get
@@ -296,6 +237,14 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Enumerator for the Collection.
+        /// </summary>
+        /// <returns></returns>
+        public override IEnumerator<Triple> GetEnumerator()
+        {
+            return Asserted.GetEnumerator();
+        }
 
         #endregion
 

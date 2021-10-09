@@ -91,23 +91,13 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Checks whether the specified triple is asserted in any of the collections of the union.
-        /// </summary>
-        /// <param name="t">Triple to test.</param>
-        /// <returns></returns>
-        public override bool ContainsAsserted(Triple t)
-        {
-            return _collections.Any(c => c.ContainsAsserted(t));
-        }
-
-        /// <summary>
         /// Checks whether the specified triple is quoted in any of the collections of the union.
         /// </summary>
         /// <param name="t">Triple to test.</param>
         /// <returns></returns>
         public override bool ContainsQuoted(Triple t)
         {
-            return _collections.Any(c => c.ContainsAsserted(t));
+            return _collections.Any(c => c.ContainsQuoted(t));
         }
 
         /// <summary>
@@ -123,6 +113,9 @@ namespace VDS.RDF
                 return _collections.Sum(c => c.Count);
             }
         }
+
+        /// <inheritdoc/>
+        public override int QuotedCount => _collections.Sum(c=>c.QuotedCount);
 
         /// <summary>
         /// Deletes a Triple from the base collection.
@@ -191,24 +184,6 @@ namespace VDS.RDF
                         from s in c.SubjectNodes
                         select s); 
             }
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> AssertedObjectNodes
-        {
-            get => _collections.SelectMany(c => c.AssertedObjectNodes);
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> AssertedPredicateNodes
-        {
-            get => _collections.SelectMany(c => c.AssertedPredicateNodes);
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> AssertedSubjectNodes
-        {
-            get => _collections.SelectMany(c => c.AssertedSubjectNodes);
         }
 
         /// <inheritdoc/>

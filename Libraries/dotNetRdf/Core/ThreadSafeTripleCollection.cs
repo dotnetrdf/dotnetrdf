@@ -125,21 +125,7 @@ namespace VDS.RDF
             return contains;
         }
 
-        /// <inheritdoc />
-        public override bool ContainsAsserted(Triple t)
-        {
-            try
-            {
-                EnterReadLock();
-                return _triples.ContainsAsserted(t);
-            }
-            finally
-            {
-                ExitReadLock();
-            }
-        }
-
-        /// <inheritdoc />
+       /// <inheritdoc />
         public override bool ContainsQuoted(Triple t)
         {
             try
@@ -171,6 +157,23 @@ namespace VDS.RDF
                     ExitReadLock();
                 }
                 return c;
+            }
+        }
+
+        /// <inheritdoc />
+        public override int QuotedCount
+        {
+            get
+            {
+                try
+                {
+                    EnterReadLock();
+                    return _triples.QuotedCount;
+                }
+                finally
+                {
+                    ExitReadLock();
+                }
             }
         }
 
@@ -333,56 +336,7 @@ namespace VDS.RDF
             }
         }
 
-        /// <inheritdoc/>
-        public override IEnumerable<INode> AssertedObjectNodes
-        {
-            get
-            {
-                try
-                {
-                    EnterReadLock();
-                    return _triples.AssertedObjectNodes.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-            }
-        }
 
-        /// <inheritdoc/>
-        public override IEnumerable<INode> AssertedPredicateNodes
-        {
-            get
-            {
-                try
-                {
-                    EnterReadLock();
-                    return _triples.AssertedPredicateNodes.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> AssertedSubjectNodes
-        {
-            get
-            {
-                try
-                {
-                    EnterReadLock();
-                    return _triples.AssertedSubjectNodes.ToList();
-                }
-                finally
-                {
-                    ExitReadLock();
-                }
-            }
-        }
         /// <inheritdoc/>
         public override IEnumerable<INode> QuotedObjectNodes {
             get
@@ -398,6 +352,7 @@ namespace VDS.RDF
                 }
             }
         }
+
         /// <inheritdoc/>
         public override IEnumerable<INode> QuotedPredicateNodes {
             get

@@ -1057,6 +1057,72 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public IEnumerable<Triple> GetQuoted(Uri uri)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuoted(INode n)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithObject(Uri u)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithObject(INode n)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicate(INode n)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicate(Uri u)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubject(INode n)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubject(Uri u)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public IEnumerable<Triple> GetTriples(Uri uti)
         {
             throw new NotImplementedException();

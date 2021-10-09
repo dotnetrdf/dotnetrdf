@@ -163,18 +163,11 @@ namespace VDS.RDF
         ITripleNode GetTripleNode(Triple triple);
 
         /// <summary>
-        /// Gets whether a given Triple is in this Graph.
-        /// </summary>
-        /// <param name="t">Triple to test.</param>
-        /// <returns>True if the triple is either asserted or quoted in this graph, false otherwise.</returns>
-        bool ContainsTriple(Triple t);
-
-        /// <summary>
-        /// Gets whether a given triple is asserted in this graph.
+        /// Gets whether a given triple is asserted in this Graph.
         /// </summary>
         /// <param name="t">Triple to test.</param>
         /// <returns>True if the triple is asserted in this graph, false otherwise.</returns>
-        bool ContainsAssertedTriple(Triple t);
+        bool ContainsTriple(Triple t);
 
         /// <summary>
         /// Gets whether a given triple is quoted in this graph.

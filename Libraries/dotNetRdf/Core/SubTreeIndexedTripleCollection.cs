@@ -58,17 +58,14 @@ namespace VDS.RDF
                              _objVar = new VariableNode("o");
 
         // Hash Functions
-        private readonly Func<Triple, int> _sHash = (t => Tools.CombineHashCodes(t.Subject, t.Predicate)),
-                                  _pHash = (t => Tools.CombineHashCodes(t.Predicate, t.Object)),
-                                  _oHash = (t => Tools.CombineHashCodes(t.Object, t.Subject));
+        private readonly Func<Triple, int> _sHash = t => Tools.CombineHashCodes(t.Subject, t.Predicate),
+                                  _pHash = t => Tools.CombineHashCodes(t.Predicate, t.Object),
+                                  _oHash = t => Tools.CombineHashCodes(t.Object, t.Subject);
 
         // Comparers
         private readonly BaseTripleComparer _spComparer = new SubjectPredicateComparer(new FastVirtualNodeComparer()),
-                                  _poComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
-                                  _osComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer()),
-                                  _sComparer = new SubjectComparer(new FastVirtualNodeComparer()),
-                                  _oComparer = new ObjectComparer(new FastVirtualNodeComparer()),
-                                  _pComparer = new PredicateComparer(new FastVirtualNodeComparer());
+            _poComparer = new PredicateObjectComparer(new FastVirtualNodeComparer()),
+            _osComparer = new ObjectSubjectComparer(new FastVirtualNodeComparer());
 
         /// <summary>
         /// Indexes a Triple.
@@ -209,7 +206,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> AssertedWithObject(INode obj)
+        public override IEnumerable<Triple> WithObject(INode obj)
         {
             return WithNode(obj, _os);
         }
@@ -219,7 +216,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="pred">Predicate.</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> AssertedWithPredicate(INode pred)
+        public override IEnumerable<Triple> WithPredicate(INode pred)
         {
             return WithNode(pred, _po);
         }
@@ -229,7 +226,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="subj">Subject.</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> AssertedWithSubject(INode subj)
+        public override IEnumerable<Triple> WithSubject(INode subj)
         {
             return WithNode(subj, _sp);
         }
@@ -240,7 +237,7 @@ namespace VDS.RDF
         /// <param name="pred">Predicate.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> AssertedWithPredicateObject(INode pred, INode obj)
+        public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
             return WithNodeAndTriple(pred, new Triple(_subjVar, pred, obj), _po);
         }
@@ -251,7 +248,7 @@ namespace VDS.RDF
         /// <param name="subj">Subject.</param>
         /// <param name="obj">Object.</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> AssertedWithSubjectObject(INode subj, INode obj)
+        public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
             return WithNodeAndTriple(obj, new Triple(subj, _predVar, obj), _os);
         }
@@ -262,7 +259,7 @@ namespace VDS.RDF
         /// <param name="subj">Subject.</param>
         /// <param name="pred">Predicate.</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> AssertedWithSubjectPredicate(INode subj, INode pred)
+        public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
             return WithNodeAndTriple(subj, new Triple(subj, pred, _objVar), _sp);
         }
@@ -304,71 +301,22 @@ namespace VDS.RDF
         }
 
         /// <inheritdoc/>
-        public override IEnumerable<Triple> WithObject(INode obj)
-        {
-            return AssertedWithObject(obj).Union(QuotedWithObject(obj), _spComparer);
-        }
+        public override IEnumerable<INode> ObjectNodes => _os.Keys;
 
         /// <inheritdoc/>
-        public override IEnumerable<Triple> WithPredicate(INode pred)
-        {
-            return AssertedWithPredicate(pred).Union(QuotedWithPredicate(pred), _osComparer);
-        }
-
+        public override IEnumerable<INode> PredicateNodes => _po.Keys;
+        
         /// <inheritdoc/>
-        public override IEnumerable<Triple> WithSubject(INode subj)
-        {
-            return AssertedWithSubject(subj).Union(QuotedWithSubject(subj),_poComparer);
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
-        {
-            return AssertedWithPredicateObject(pred, obj)
-                .Union(QuotedWithPredicateObject(pred, obj), _sComparer);
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
-        {
-            return AssertedWithSubjectPredicate(subj, pred)
-                .Union(QuotedWithSubjectPredicate(subj, pred), _oComparer);
-        }
-
-        /// <inheritdoc/>
-        public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
-        {
-            return AssertedWithSubjectObject(subj, obj).Union(QuotedWithSubjectObject(subj, obj), _pComparer);
-        }
-
-        /// <summary>
-        /// Gets the Object Nodes.
-        /// </summary>
-        public override IEnumerable<INode> ObjectNodes => _os.Keys.Union(_qos.Keys).Distinct();
-
-        /// <summary>
-        /// Gets the Predicate Nodes.
-        /// </summary>
-        public override IEnumerable<INode> PredicateNodes => _po.Keys.Union(_qpo.Keys).Distinct();
-
-        /// <summary>
-        /// Gets the Subject Nodes.
-        /// </summary>
-        public override IEnumerable<INode> SubjectNodes => _sp.Keys.Union(_qsp.Keys).Distinct();
-
-        /// <inheritdoc/>
-        public override IEnumerable<INode> AssertedObjectNodes => _os.Keys;
-        /// <inheritdoc/>
-        public override IEnumerable<INode> AssertedPredicateNodes => _po.Keys;
-        /// <inheritdoc/>
-        public override IEnumerable<INode> AssertedSubjectNodes => _sp.Keys;
+        public override IEnumerable<INode> SubjectNodes => _sp.Keys;
+        
         /// <inheritdoc/>
         public override IEnumerable<INode> QuotedObjectNodes => _qos.Keys;
+        
         /// <inheritdoc/>
         public override IEnumerable<INode> QuotedPredicateNodes => _qpo.Keys;
+        
         /// <inheritdoc/>
         public override IEnumerable<INode> QuotedSubjectNodes => _qsp.Keys;
-
 
         /// <summary>
         /// Disposes of the collection.

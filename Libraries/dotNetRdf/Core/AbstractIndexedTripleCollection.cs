@@ -39,25 +39,16 @@ namespace VDS.RDF
         /// </summary>
         protected readonly MultiDictionary<Triple, TripleRefs> Triples = new MultiDictionary<Triple, TripleRefs>(new FullTripleComparer(new FastVirtualNodeComparer()));
 
-        private int _count;
-
-        /// <summary>
-        /// Gets the count of triples in the collection.
-        /// </summary>
-        public override int Count => _count;
-
-        /// <summary>
-        /// Checks whether the collection contains a given Triple.
-        /// </summary>
-        /// <param name="t">Triple.</param>
-        /// <returns></returns>
-        public override bool Contains(Triple t)
-        {
-            return Triples.ContainsKey(t);
-        }
+        private int _assertedCount, _quotedCount;
 
         /// <inheritdoc />
-        public override bool ContainsAsserted(Triple t)
+        public override int Count => _assertedCount;
+
+        /// <inheritdoc />
+        public override int QuotedCount => _quotedCount;
+
+        /// <inheritdoc />
+        public override bool Contains(Triple t)
         {
             return Triples.TryGetValue(t, out TripleRefs refs) && refs.Asserted;
         }
@@ -68,13 +59,10 @@ namespace VDS.RDF
             return Triples.TryGetValue(t, out TripleRefs refs) && refs.QuoteCount > 0;
         }
 
-        /// <summary>
-        /// Gets the enumerator for the collection.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public override IEnumerator<Triple> GetEnumerator()
         {
-            return Triples.Keys.GetEnumerator();
+            return Asserted.GetEnumerator();
         }
 
         /// <inheritdoc />
@@ -117,13 +105,13 @@ namespace VDS.RDF
             {
                 refs = new TripleRefs { Asserted = true };
                 Triples.Add(t, refs);
-                _count++;
             }
             else
             {
-                // If t is already quoted in the graph it will counted already
                 refs.Asserted = true;
             }
+
+            _assertedCount++;
             IndexAsserted(t);
             if (t.Subject is ITripleNode stn) AddQuoted(stn);
             if (t.Object is ITripleNode otn) AddQuoted(otn);
@@ -168,8 +156,9 @@ namespace VDS.RDF
                 {
                     // If removed then decrement count
                     Triples.Remove(t);
-                    _count--;
                 }
+
+                _assertedCount--;
                 UnindexAsserted(t);
                 // TripleRemoved event is raised when the triple is retracted from the graph. It may still be quoted.
                 RaiseTripleRemoved(t);
@@ -195,6 +184,7 @@ namespace VDS.RDF
                 {
                     // Triple was previously asserted but not quoted so add it to the quoted triples index.
                     IndexQuoted(tripleNode.Triple);
+                    _quotedCount++;
                 }
                 refs.QuoteCount++;
                 return;
@@ -202,7 +192,7 @@ namespace VDS.RDF
             // New (not previously asserted or quoted) triple
             Triples.Add(tripleNode.Triple, new TripleRefs { Asserted = false, QuoteCount = 1 });
             IndexQuoted(tripleNode.Triple);
-            _count++;
+            _quotedCount++;
 
             // Recursively process any nested quotations
             if (tripleNode.Triple.Subject is ITripleNode stn) AddQuoted(stn);
@@ -225,12 +215,8 @@ namespace VDS.RDF
                 refs.QuoteCount--;
                 if (refs.QuoteCount == 0)
                 {
+                    _quotedCount--;
                     UnindexQuoted(tripleNode.Triple);
-                    if (!refs.Asserted)
-                    {
-                        // If the triple is no longer referenced and is not asserted it can be un-indexed
-                        _count--;
-                    }
                 }
             }
             // Recursively remove any nested quotations

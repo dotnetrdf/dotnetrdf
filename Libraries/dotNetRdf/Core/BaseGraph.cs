@@ -113,7 +113,7 @@ namespace VDS.RDF
         public virtual BaseTripleCollection Triples => _triples;
 
         /// <inheritdoc />
-        public virtual IEnumerable<INode> Nodes => _triples.AssertedSubjectNodes.Union(_triples.AssertedObjectNodes).Distinct();
+        public virtual IEnumerable<INode> Nodes => _triples.SubjectNodes.Union(_triples.ObjectNodes);
 
         /// <inheritdoc />
         public virtual IEnumerable<INode> AllNodes
@@ -469,24 +469,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
 
-        /// <summary>
-        /// Gets whether a given Triple exists in this Graph.
-        /// </summary>
-        /// <param name="t">Triple to test.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public virtual bool ContainsTriple(Triple t)
         {
             return _triples.Contains(t);
-        }
-
-        /// <summary>
-        /// Gets whether a given triple is asserted in this graph.
-        /// </summary>
-        /// <param name="t">Triple to test.</param>
-        /// <returns>True if the triple is asserted in this graph, false otherwise.</returns>
-        public virtual bool ContainsAssertedTriple(Triple t)
-        {
-            return _triples.ContainsAsserted(t);
         }
 
         /// <summary>
@@ -498,6 +484,39 @@ namespace VDS.RDF
         {
             return _triples.ContainsQuoted(t);
         }
+
+        /// <inheritdoc/>
+        public virtual IEnumerable<Triple> GetQuoted(Uri uri) => GetQuoted(new UriNode(uri));
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuoted(INode n);
+
+        /// <inheritdoc/>
+        public virtual IEnumerable<Triple> GetQuotedWithObject(Uri u) => GetQuotedWithObject(new UriNode(u));
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithObject(INode n);
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithPredicate(INode n);
+
+        /// <inheritdoc/>
+        public virtual IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => GetQuotedWithPredicate(new UriNode(u));
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithSubject(INode n);
+
+        /// <inheritdoc/>
+        public virtual IEnumerable<Triple> GetQuotedWithSubject(Uri u) => GetQuotedWithSubject(new UriNode(u));
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred);
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj);
+        
+        /// <inheritdoc/>
+        public abstract IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj);
 
         #endregion
 
@@ -946,6 +965,8 @@ namespace VDS.RDF
         {
             DetachEventHandlers(_triples);
         }
+
+        
     }
 
 }

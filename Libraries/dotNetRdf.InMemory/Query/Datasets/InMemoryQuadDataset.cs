@@ -259,21 +259,17 @@ namespace VDS.RDF.Query.Datasets
             return _store[graphName].Assert(t);
         }
 
-        /// <summary>
-        /// Gets whether the dataset contains a given Quad.
-        /// </summary>
-        /// <param name="graphName">Graph URI.</param>
-        /// <param name="t">Triple.</param>
+
+        /// <inheritdoc />
         public override bool ContainsQuad(IRefNode graphName, Triple t)
         {
-            if (_store.HasGraph(graphName))
-            {
-                return _store[graphName].ContainsTriple(t);
-            }
-            else
-            {
-                return false;
-            }
+            return _store.HasGraph(graphName) && _store[graphName].ContainsTriple(t);
+        }
+
+        /// <inheritdoc />
+        public override bool ContainsQuoted(IRefNode graphName, Triple t)
+        {
+            return _store.HasGraph(graphName) && _store[graphName].ContainsQuotedTriple(t);
         }
 
         /// <summary>
@@ -283,14 +279,12 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IEnumerable<Triple> GetQuads(IRefNode graphName)
         {
-            if (_store.HasGraph(graphName))
-            {
-                return _store[graphName].Triples;
-            }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+            return _store.HasGraph(graphName) ? _store[graphName].Triples : Enumerable.Empty<Triple>();
+        }
+
+        public override IEnumerable<Triple> GetQuoted(IRefNode graphName)
+        {
+            return _store.HasGraph(graphName) ? _store[graphName].Triples.Quoted : Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -311,6 +305,13 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        public override IEnumerable<Triple> GetQuotedWithObject(IRefNode graphName, INode obj)
+        {
+            return _store.HasGraph(graphName)
+                ? _store[graphName].GetQuotedWithObject(obj)
+                : Enumerable.Empty<Triple>();
+        }
+
         /// <summary>
         /// Gets all Quads with a given predicate.
         /// </summary>
@@ -327,6 +328,13 @@ namespace VDS.RDF.Query.Datasets
             {
                 return Enumerable.Empty<Triple>();
             }
+        }
+
+        public override IEnumerable<Triple> GetQuotedWithPredicate(IRefNode graphName, INode pred)
+        {
+            return _store.HasGraph(graphName)
+                ? _store[graphName].GetQuotedWithPredicate(pred)
+                : Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -348,6 +356,13 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        public override IEnumerable<Triple> GetQuotedWithPredicateObject(IRefNode graphName, INode pred, INode obj)
+        {
+            return _store.HasGraph(graphName)
+                ? _store[graphName].GetQuotedWithPredicateObject(pred, obj)
+                : Enumerable.Empty<Triple>();
+        }
+
         /// <summary>
         /// Gets all Quads with a given subject.
         /// </summary>
@@ -364,6 +379,13 @@ namespace VDS.RDF.Query.Datasets
             {
                 return Enumerable.Empty<Triple>();
             }
+        }
+
+        public override IEnumerable<Triple> GetQuotedWithSubject(IRefNode graphName, INode subj)
+        {
+            return _store.HasGraph(graphName)
+                ? _store[graphName].GetQuotedWithSubject(subj)
+                : Enumerable.Empty<Triple>();
         }
 
         /// <summary>
@@ -385,6 +407,13 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        public override IEnumerable<Triple> GetQuotedWithSubjectObject(IRefNode graphName, INode subj, INode obj)
+        {
+            return _store.HasGraph(graphName)
+                ? _store[graphName].GetQuotedWithSubjectObject(subj, obj)
+                : Enumerable.Empty<Triple>();
+        }
+
         /// <summary>
         /// Gets all Quads with a given subject and predicate.
         /// </summary>
@@ -404,12 +433,19 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(IRefNode graphName, INode subj, INode pred)
+        {
+            return _store.HasGraph(graphName)
+                ? _store[graphName].GetQuotedWithSubjectPredicate(subj, pred)
+                : Enumerable.Empty<Triple>();
+        }
+
         /// <summary>
         /// Removes a quad from the dataset.
         /// </summary>
         /// <param name="graphUri">Graph URI.</param>
         /// <param name="t">Triple.</param>
-        [Obsolete("Replacecd by RemoveQuad(IRefNode, Triple)")]
+        [Obsolete("Replaced by RemoveQuad(IRefNode, Triple)")]
         public override bool RemoveQuad(Uri graphUri, Triple t)
         {
             if (_store.HasGraph(graphUri))
