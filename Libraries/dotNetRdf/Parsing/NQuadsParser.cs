@@ -27,6 +27,7 @@
 using System;
 using System.IO;
 using System.Text;
+using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
@@ -46,6 +47,11 @@ namespace VDS.RDF.Parsing
         /// Standardized NQuads as specified in the <a href="http://www.w3.org/TR/n-quads/">RDF 1.1 NQuads</a> specification
         /// </summary>
         Rdf11,
+
+        /// <summary>
+        /// NQuads-Star
+        /// </summary>
+        Rdf11Star,
     }
 
     /// <summary>
@@ -248,27 +254,9 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Setup Token Queue and Tokeniser
-                var tokeniser = new NTriplesTokeniser(input, AsNTriplesSyntax(Syntax));
-                tokeniser.NQuadsMode = true;
-                ITokenQueue tokens;
-                switch (TokenQueueMode)
-                {
-                    case TokenQueueMode.AsynchronousBufferDuringParsing:
-                        tokens = new AsynchronousBufferedTokenQueue(tokeniser);
-                        break;
-                    case TokenQueueMode.QueueAllBeforeParsing:
-                        tokens = new TokenQueue(tokeniser);
-                        break;
-                    case TokenQueueMode.SynchronousBufferDuringParsing:
-                    default:
-                        tokens = new BufferedTokenQueue(tokeniser);
-                        break;
-                }
-                tokens.Tracing = TraceTokeniser;
-                tokens.InitialiseBuffer();
-
+                var tokeniser = new NTriplesTokeniser(input, AsNTriplesSyntax(Syntax)) { NQuadsMode = true };
                 // Invoke the Parser
-                Parse(handler, uriFactory, tokens);
+                Parse(new TokenisingParserContext(handler, tokeniser, TokenQueueMode, false, TraceTokeniser, uriFactory));
             }
             finally
             {
@@ -294,253 +282,130 @@ namespace VDS.RDF.Parsing
             {
                 case NQuadsSyntax.Original:
                     return NTriplesSyntax.Original;
-                default:
+                case NQuadsSyntax.Rdf11:
                     return NTriplesSyntax.Rdf11;
+                default:
+                    return NTriplesSyntax.Rdf11Star;
             }
         }
 
-        private void Parse(IRdfHandler handler, IUriFactory uriFactory, ITokenQueue tokens)
+        private void Parse(TokenisingParserContext context)
         {
             IToken next;
             IToken s, p, o;
 
             try
             {
-                handler.StartRdf();
+                context.Handler.StartRdf();
+
+                context.Tokens.InitialiseBuffer(10);
 
                 // Expect a BOF token at start
-                next = tokens.Dequeue();
+                next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.BOF)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a BOF token at the start of the input", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a BOF token at the start of the input", next);
                 }
 
-                do
+                // Expect Quads
+                next = context.Tokens.Peek();
+                while (next.TokenType != Token.EOF)
                 {
-                    next = tokens.Peek();
-                    if (next.TokenType == Token.EOF) return;
+                    // Discard Comments
+                    while (next.TokenType == Token.COMMENT)
+                    {
+                        context.Tokens.Dequeue();
+                        next = context.Tokens.Peek();
+                    }
+                    if (next.TokenType == Token.EOF) break;
 
-                    s = TryParseSubject(tokens);
-                    p = TryParsePredicate(tokens);
-                    o = TryParseObject(tokens);
-                    Uri context = TryParseContext(handler, tokens, uriFactory);
+                    TryParseQuad(context);
 
-                    TryParseTriple(handler, uriFactory, s, p, o, context);
+                    next = context.Tokens.Peek();
+                }
 
-                    next = tokens.Peek();
-                } while (next.TokenType != Token.EOF);
-
-                handler.EndRdf(true);
+                context.Handler.EndRdf(true);
             }
             catch (RdfParsingTerminatedException)
             {
-                handler.EndRdf(true);
+                context.Handler.EndRdf(true);
                 // Discard this - it justs means the Handler told us to stop
             }
             catch
             {
-                handler.EndRdf(false);
+                context.Handler.EndRdf(false);
                 throw;
             }
         }
 
-        private IToken TryParseSubject(ITokenQueue tokens)
-        {
-            IToken next = tokens.Dequeue();
-            switch (next.TokenType)
-            {
-                case Token.BLANKNODEWITHID:
-                case Token.URI:
-                    // OK
-                    return next;
 
-                default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", next);
-            }
+        private void TryParseQuad(TokenisingParserContext context)
+        {
+            INode subj = NTriplesParser.TryParseSubject(context);
+            INode predicate = NTriplesParser.TryParsePredicate(context);
+            INode obj = NTriplesParser.TryParseObject(context);
+            Uri graphUri = TryParseContext(context);
+            if (!context.Handler.HandleTriple(new Triple(subj, predicate, obj, graphUri))) ParserHelper.Stop();
         }
 
-        private IToken TryParsePredicate(ITokenQueue tokens)
-        {
-            IToken next = tokens.Dequeue();
-            switch (next.TokenType)
-            {
-                case Token.URI:
-                    // OK
-                    return next;
-                default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI as the Predicate of a Triple", next);
-            }
-        }
 
-        private IToken TryParseObject(ITokenQueue tokens)
+        private Uri TryParseContext(TokenisingParserContext context)
         {
-            IToken next = tokens.Dequeue();
-            switch (next.TokenType)
-            {
-                case Token.BLANKNODEWITHID:
-                case Token.LITERALWITHDT:
-                case Token.LITERALWITHLANG:
-                case Token.URI:
-                    // OK
-                    return next;
-
-                case Token.LITERAL:
-                    // Check for Datatype/Language
-                    IToken temp = tokens.Peek();
-                    if (temp.TokenType == Token.DATATYPE)
-                    {
-                        tokens.Dequeue();
-                        return new LiteralWithDataTypeToken(next, (DataTypeToken) temp);
-                    }
-                    else if (temp.TokenType == Token.LANGSPEC)
-                    {
-                        tokens.Dequeue();
-                        return new LiteralWithLanguageSpecifierToken(next, (LanguageSpecifierToken) temp);
-                    }
-                    else
-                    {
-                        return next;
-                    }
-                default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", next);
-            }
-        }
-
-        private Uri TryParseContext(IRdfHandler handler, ITokenQueue tokens, IUriFactory uriFactory)
-        {
-            IToken next = tokens.Dequeue();
+            IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.DOT)
             {
                 return null;
             }
-            INode context;
+            INode graphContext;
             switch (next.TokenType)
             {
                 case Token.BLANKNODEWITHID:
-                    context = handler.CreateBlankNode(next.Value.Substring(2));
+                    graphContext = context.Handler.CreateBlankNode(next.Value.Substring(2));
                     break;
                 case Token.URI:
-                    context = TryParseUri(handler, next.Value, uriFactory);
+                    graphContext = NTriplesParser.TryParseUri(context, next.Value);
                     break;
                 case Token.LITERAL:
                     if (Syntax != NQuadsSyntax.Original) throw new RdfParseException("Only a Blank Node/URI may be used as the graph name in RDF NQuads 1.1");
 
                     // Check for Datatype/Language
-                    IToken temp = tokens.Peek();
+                    IToken temp = context.Tokens.Peek();
                     switch (temp.TokenType)
                     {
                         case Token.LANGSPEC:
-                            tokens.Dequeue();
-                            context = handler.CreateLiteralNode(next.Value, temp.Value);
+                            context.Tokens.Dequeue();
+                            graphContext = context.Handler.CreateLiteralNode(next.Value, temp.Value);
                             break;
                         case Token.DATATYPE:
-                            tokens.Dequeue();
-                            context = handler.CreateLiteralNode(next.Value, ((IUriNode) TryParseUri(handler, temp.Value.Substring(1, temp.Value.Length - 2), uriFactory)).Uri);
+                            context.Tokens.Dequeue();
+                            graphContext = context.Handler.CreateLiteralNode(next.Value, ((IUriNode) NTriplesParser.TryParseUri(context, temp.Value.Substring(1, temp.Value.Length - 2))).Uri);
                             break;
                         default:
-                            context = handler.CreateLiteralNode(next.Value);
+                            graphContext = context.Handler.CreateLiteralNode(next.Value);
                             break;
                     }
                     break;
                 default:
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Context of the Triple", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Blank Node/Literal/URI as the Context of the Triple", next);
             }
 
             // Ensure we then see a . to terminate the Quad
-            next = tokens.Dequeue();
+            next = context.Tokens.Dequeue();
             if (next.TokenType != Token.DOT)
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Dot Token (Line Terminator) to terminate a Triple", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Dot Token (Line Terminator) to terminate a Triple", next);
             }
 
             // Finally return the Context URI
-            if (context.NodeType == NodeType.Uri)
+            return graphContext.NodeType switch
             {
-                return ((IUriNode) context).Uri;
-            }
-            else if (context.NodeType == NodeType.Blank)
-            {
-                return uriFactory.Create("nquads:bnode:" + context.GetHashCode());
-            }
-            else if (context.NodeType == NodeType.Literal)
-            {
-                return uriFactory.Create("nquads:literal:" + context.GetHashCode());
-            }
-            else
-            {
-                throw ParserHelper.Error("Cannot turn a Node of type '" + context.GetType().ToString() + "' into a Context URI for a Triple", next);
-            }
-        }
-
-        private void TryParseTriple(IRdfHandler handler, IUriFactory uriFactory, IToken s, IToken p, IToken o, Uri graphUri)
-        {
-            INode subj, pred, obj;
-
-            switch (s.TokenType)
-            {
-                case Token.BLANKNODEWITHID:
-                    subj = handler.CreateBlankNode(s.Value.Substring(2));
-                    break;
-                case Token.URI:
-                    subj = TryParseUri(handler, s.Value, uriFactory);
-                    break;
-                default:
-                    throw ParserHelper.Error("Unexpected Token '" + s.GetType().ToString() + "' encountered, expected a Blank Node/URI as the Subject of a Triple", s);
-            }
-
-            switch (p.TokenType)
-            {
-                case Token.URI:
-                    pred = ParserHelper.TryResolveUri(handler, p, uriFactory);
-                    break;
-                default:
-                    throw ParserHelper.Error("Unexpected Token '" + p.GetType().ToString() + "' encountered, expected a URI as the Predicate of a Triple", p);
-            }
-
-            switch (o.TokenType)
-            {
-                case Token.BLANKNODEWITHID:
-                    obj = handler.CreateBlankNode(o.Value.Substring(2));
-                    break;
-                case Token.LITERAL:
-                    obj = handler.CreateLiteralNode(o.Value);
-                    break;
-                case Token.LITERALWITHDT:
-                    var dtUri = ((LiteralWithDataTypeToken) o).DataType;
-                    obj = handler.CreateLiteralNode(o.Value, ((IUriNode) TryParseUri(handler, dtUri.Substring(1, dtUri.Length - 2), uriFactory)).Uri);
-                    break;
-                case Token.LITERALWITHLANG:
-                    obj = handler.CreateLiteralNode(o.Value, ((LiteralWithLanguageSpecifierToken) o).Language);
-                    break;
-                case Token.URI:
-                    obj = TryParseUri(handler, o.Value, uriFactory);
-                    break;
-                default:
-                    throw ParserHelper.Error("Unexpected Token '" + o.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", o);
-            }
-
-            if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) ParserHelper.Stop();
-        }
-
-        /// <summary>
-        /// Tries to parse a URI.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="uri">URI.</param>
-        /// <returns>URI Node if parsed successfully.</returns>
-        private static INode TryParseUri(IRdfHandler handler, string uri, IUriFactory uriFactory)
-        {
-            try
-            {
-                IUriNode n = handler.CreateUriNode(uriFactory.Create(uri));
-                if (!n.Uri.IsAbsoluteUri)
-                    throw new RdfParseException("NQuads does not permit relative URIs");
-                return n;
-            }
-            catch (UriFormatException uriEx)
-            {
-                throw new RdfParseException("Invalid URI encountered, see inner exception for details", uriEx);
-            }
+                NodeType.Uri => ((IUriNode)graphContext).Uri,
+                NodeType.Blank => context.UriFactory.Create("nquads:bnode:" + graphContext.GetHashCode()),
+                NodeType.Literal => context.UriFactory.Create("nquads:literal:" + graphContext.GetHashCode()),
+                _ => throw ParserHelper.Error(
+                    "Cannot turn a Node of type '" + graphContext.GetType() + "' into a Context URI for a Triple",
+                    next)
+            };
         }
 
         /// <summary>

@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// NTriples-Star
         /// </summary>
-        Rdf11Star
+        Rdf11Star,
     }
 
     /// <summary>
@@ -352,7 +352,7 @@ namespace VDS.RDF.Parsing
             if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
         }
 
-        private INode TryParseSubject(TokenisingParserContext context)
+        internal static INode TryParseSubject(TokenisingParserContext context)
         {
             IToken subjToken = context.Tokens.Dequeue();
 
@@ -381,7 +381,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private INode TryParsePredicate(TokenisingParserContext context)
+        internal static INode TryParsePredicate(TokenisingParserContext context)
         {
             IToken predToken = context.Tokens.Dequeue();
 
@@ -407,7 +407,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private INode TryParseObject(TokenisingParserContext context)
+        internal static INode TryParseObject(TokenisingParserContext context)
         {
             IToken objToken = context.Tokens.Dequeue();
 
@@ -442,6 +442,10 @@ namespace VDS.RDF.Parsing
                         case Token.URI:
                             context.Tokens.Dequeue();
                             return context.Handler.CreateLiteralNode(objToken.Value, ((IUriNode)TryParseUri(context, next.Value)).Uri);
+                        case Token.DATATYPE:
+                            context.Tokens.Dequeue();
+                            return context.Handler.CreateLiteralNode(objToken.Value,
+                                ((IUriNode)TryParseUri(context, next.Value.Substring(1, next.Value.Length-2))).Uri);
                         default:
                             return context.Handler.CreateLiteralNode(objToken.Value);
                     }
@@ -475,7 +479,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Context.</param>
         /// <param name="uri">URI.</param>
         /// <returns>URI Node if parsed successfully.</returns>
-        private static INode TryParseUri(TokenisingParserContext context, string uri)
+        internal static INode TryParseUri(TokenisingParserContext context, string uri)
         {
             try
             {
@@ -495,7 +499,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="context">Context.</param>
         /// <returns>Triple node if parsed successfully.</returns>
-        private ITripleNode TryParseQuotedTriple(TokenisingParserContext context)
+        private static ITripleNode TryParseQuotedTriple(TokenisingParserContext context)
         {
             INode subj = TryParseSubject(context);
             INode pred = TryParsePredicate(context);
@@ -508,7 +512,7 @@ namespace VDS.RDF.Parsing
         /// Try to parse an end-quote marker.
         /// </summary>
         /// <param name="context">Context.</param>
-        private void TryParseEndQuote(ITokenisingParserContext context)
+        private static void TryParseEndQuote(ITokenisingParserContext context)
         {
             IToken next = context.Tokens.Dequeue();
 
