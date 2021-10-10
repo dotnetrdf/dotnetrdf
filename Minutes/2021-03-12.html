@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 12 March 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>12 March 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-03-05.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Mar/0030.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/03/12-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-03-19.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gatemezing, gkellogg, james, olaf, ora, pchampin, rivettp, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>ora, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Daylight Saving Time (US) and Summertime (EU)</a></li>
+<li><a href="#t03">SPARQL-eval test suite</a></li>
+<li><a href="#t04">Define a URI for the class of embedded triples</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+</section>
+
+<section>
+<h3 id=t02>Daylight Saving Time (US) and Summertime (EU)</h3>
+<p id=x033 class="phone s01"><cite>pchampin:</cite> switch happens at different times in the US and in Europe</p>
+<p id=x034 class="phone s01"><cite>pchampin:</cite> what would be the reference time zone?</p>
+<p id=x036 class=irc><cite>&lt;TallTed&gt;</cite> typical practice for w3 work is Boston/New York, but it won't make a lot of difference for me</p>
+<p id=x037 class=irc><cite>&lt;TallTed&gt;</cite> US would be an hour later (as it would be noon where it is now 11am)</p>
+<p id=x038 class=irc><cite>&lt;pchampin&gt;</cite> if we stick to UTC: <a href="https://www.timeanddate.com/worldclock/fixedtime.html?msg=RDF%2A+call&amp;iso=20210319T16&amp;p1=1440&amp;ah=1">https://<wbr>www.timeanddate.com/<wbr>worldclock/<wbr>fixedtime.html?msg=RDF%2A+call&amp;iso=20210319T16&amp;p1=1440&amp;ah=1</a></p>
+<p id=x039 class="phone s02"><cite>gkellogg:</cite> W3C uses Boston time</p>
+<p id=x040 class="phone s01"><cite>pchampin:</cite> using European time, would be noon for Boston, 9 am for SF</p>
+<p id=x041 class="phone s01"><cite>pchampin:</cite> gkellogg's argument is valid, though, not to interfere with other W3C meetings</p>
+<p id=x042 class=irc><cite>&lt;TallTed&gt;</cite> this just impacts the next two weeks, correct?</p>
+<p id=x043 class="phone s01"><cite>pchampin:</cite> yes</p>
+<p id=x045 class=irc><cite>&lt;thomas&gt;</cite> gregg has the only argument, so why not take taht?</p>
+<p id=x046 class="phone s01"><cite>pchampin:</cite> propose to stick with US time</p>
+<p id=x047 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: stick to US time to avoid conflict with other W3C meetings</p>
+<p id=x048 class=irc><cite>&lt;pchampin&gt;</cite> pchampin: +1</p>
+<p id=x049 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x050 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x051 class=summary>+1</p>
+<p id=x052 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x053 class=irc><cite>&lt;william&gt;</cite> +1</p>
+<p id=x054 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x055 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x056 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x057 class=irc><cite>&lt;james&gt;</cite> +0</p>
+<p id=x058 class="phone s02"><cite>gkellogg:</cite> strong push in the US to eliminate DST</p>
+<p id=x059 class="phone s01"><cite>pchampin:</cite> we will stick with the US time</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> stick to US time to avoid conflict with other W3C meetings</p>
+<p id=x061 class="phone s01"><cite>pchampin:</cite> next week 1 hr earlier for Europeans</p>
+</section>
+
+<section>
+<h3 id=t03>SPARQL-eval test suite</h3>
+<p id=x064 class=irc><cite>&lt;pchampin&gt;</cite> PR: <a href="https://github.com/w3c/rdf-star/pull/114">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>114</a></p>
+<p id=x065 class="phone s03"><cite>andys:</cite> no such things as finished test suite</p>
+<p id=x066 class="phone s03"><cite>andys:</cite> generally good coverage now</p>
+<p id=x067 class="phone s03"><cite>andys:</cite> syntax tests updated</p>
+<p id=x068 class="phone s01"><cite>pchampin:</cite> we must reach out to implementors</p>
+<p id=x069 class=irc><cite>&lt;gkellogg&gt;</cite> My implementations pass all the tests.</p>
+<p id=x070 class="phone s03"><cite>andys:</cite> I would like to merge now</p>
+<p id=x071 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: merge PR 114 befor advertising the test suite to implementers</p>
+<p id=x072 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x073 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x074 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x075 class=summary>+1</p>
+<p id=x076 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x077 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x078 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x079 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x080 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x081 class=irc><cite>&lt;william&gt;</cite> +</p>
+<p id=x082 class=irc><cite>&lt;william&gt;</cite> (sorry)</p>
+<p id=x083 class=irc><cite>&lt;william&gt;</cite> +</p>
+<p id=x084 class=irc><cite>&lt;william&gt;</cite> +1</p>
+<p id=r02 class=resolution><strong>Resolution:</strong> merge PR 114 befor advertising the test suite to implementers</p>
+<p id=x087 class=irc><cite>&lt;william&gt;</cite> (numlock was off :-)</p>
+<p id=x089 class="phone s02"><cite>gkellogg:</cite> we might consider publishing an implementation report early</p>
+<p id=x090 class="phone s02"><cite>gkellogg:</cite> I have tooling to check</p>
+<p id=x091 class=irc><cite>&lt;pchampin&gt;</cite> example: <a href="https://w3c.github.io/json-ld-api/reports/">https://<wbr>w3c.github.io/<wbr>json-ld-api/<wbr>reports/</a></p>
+<p id=x093 class="phone s03"><cite>andys:</cite> if we get good coverage we should publish</p>
+<p id=x094 class="phone s01"><cite>pchampin:</cite> sounds like a good idea</p>
+<p id=x095 class="phone s01"><cite>pchampin:</cite> will add a link to the spec</p>
+<p id=x096 class=irc><cite>&lt;TallTed&gt;</cite> EARL is common (probably best, probably not only) practice for implementation reports these days.</p>
+<p id=x097 class=irc><cite>&lt;TallTed&gt;</cite> per-test results are optimal for CR-&gt;PR-&gt;TR, and probably also for CG-&gt;Report-&gt;WG</p>
+<p id=a01 class=action><strong>Action:</strong> gkellogg to make a PR for the implementation report</p>
+<p id=x099 class="phone s01"><cite>pchampin:</cite> we should make an announcement</p>
+<p id=x100 class="phone s03"><cite>andys:</cite> could someone check the HTML manifest?</p>
+<p id=x101 class="phone s02"><cite>gkellogg:</cite> to check that the HTML manifest covers all?</p>
+<p id=x102 class="phone s03"><cite>andys:</cite> yes, the HTML manifest is generated from Turtle</p>
+<p id=x103 class="phone s03"><cite>andys:</cite> set of tests does not prove your implementation</p>
+<p id=x105 class="phone s01"><cite>pchampin:</cite> we should be careful to avoid any statements about completeness</p>
+<p id=x106 class="phone s01"><cite>pchampin:</cite> this is work in progress</p>
+<p id=x107 class="phone s01"><cite>pchampin:</cite> raise awareness on the mailing list</p>
+<p id=x108 class="phone s01"><cite>pchampin:</cite> any other channels?</p>
+<p id=x109 class="phone s03"><cite>andys:</cite> give people the chance to look before we go to a wider audience</p>
+<p id=x110 class=irc><cite>&lt;james&gt;</cite> i do not necessarily intend to exercise the test suite before the report is complete</p>
+<p id=x112 class="phone s02"><cite>gkellogg:</cite> other groups' impl. reports are not necessarily frozen, late entries are accepted</p>
+<p id=x113 class="phone s01"><cite>pchampin:</cite> nothing is frozen</p>
+<p id=x115 class="phone s01"><cite>pchampin:</cite> why not use it early?</p>
+<p id=x117 class="phone s01"><cite>pchampin:</cite> I will email the list</p>
+<p id=x118 class="phone s01"><cite>pchampin:</cite> there are discussions on the list about function descriptions, should we discuss?</p>
+<p id=x119 class="phone s04"><cite>james:</cite> we can use the list</p>
+</section>
+
+<section>
+<h3 id=t04>Define a URI for the class of embedded triples</h3>
+<p id=x121 class="phone s01"><cite>pchampin:</cite> what namespace?</p>
+<p id=x123 class=summary>not ideal to proliferate namespaces</p>
+<p id=x124 class=summary>changing an IRI later does not work well</p>
+<p id=x125 class=summary>we do not, however, have the authority to change RDF</p>
+<p id=x130 class="phone s05"><cite>ora:</cite> why is proliferation of namespaces bad?<br>
+<span id=x131>… easy to create an RDF-star namespace</span></p>
+<p id=x136 class="phone s03"><cite>andys:</cite> how much would go to a new namespace?</p>
+<p id=x138 class="phone s03"><cite>andys:</cite> if it is very few things, might not be worth it</p>
+<p id=x140 class="phone s02"><cite>gkellogg:</cite> comes down to the question about the purpose of this CG</p>
+<p id=x141 class="phone s02"><cite>gkellogg:</cite> if we are creating a new spec, makes sense to have a new namespace</p>
+<p id=x142 class="phone s02"><cite>gkellogg:</cite> if it is to advise other groups, then maybe not</p>
+<p id=x144 class="phone s02"><cite>gkellogg:</cite> if there is going to be a new RDF WG, then our work is considered an experiment</p>
+<p id=x145 class="phone s02"><cite>gkellogg:</cite> we can invent new IRIs, we just don't have the authority change RDF, etc.</p>
+<p id=x147 class="phone s06"><cite>thomas:</cite> semantics not stable</p>
+<p id=x148 class="phone s06"><cite>thomas:</cite> so perhaps not a good idea to use the RDF namespace</p>
+<p id=x149 class="phone s06"><cite>thomas:</cite> more prudent to use an RDF* namespace</p>
+<p id=x151 class="phone s01"><cite>pchampin:</cite> the whole spec is unstable</p>
+<p id=x152 class="phone s01"><cite>pchampin:</cite> nothing will be fixed until we reach a stable state</p>
+<p id=x153 class="phone s06"><cite>thomas:</cite> semantics unproven for now</p>
+<p id=x158 class="phone s05"><cite>ora:</cite> the rdf vs.rdfs issue is historical<br>
+<span id=x159>… there was 2 different groups</span><br>
+<span id=x160>… retrospectiveley, it was unfortunate</span></p>
+<p id=x164 class="phone s03"><cite>andys:</cite> missed thomas' point: what is tied to semantics</p>
+<p id=x165 class="phone s03"><cite>andys:</cite> i am looking at the effect on users</p>
+<p id=x166 class="phone s03"><cite>andys:</cite> I suggest we say &quot;we propose that...&quot;</p>
+<p id=x169 class="phone s02"><cite>gkellogg:</cite> RDFa added stuff</p>
+<p id=x170 class="phone s05"><cite>ora:</cite> RDF namespaces are fixed</p>
+<p id=x171 class="phone s02"><cite>gkellogg:</cite> any WG is authorized to update namespaces</p>
+<p id=x173 class="phone s02"><cite>gkellogg:</cite> CG is input WGs</p>
+<p id=x177 class="phone s05"><cite>ora:</cite> I doubt that it's true that any WG is authorized to change the RDF namespace</p>
+<p id=x178 class="phone s02"><cite>gkellogg:</cite> we did in the JSON-LD WG, figured this out with Ivan Herman</p>
+<p id=x179 class=irc><cite>&lt;TallTed&gt;</cite> WGs can change W3 namespaces, *upon approval by W3 Management*, which is not automatic but is typically granted with suitable justification from the WG</p>
+<p id=x180 class="phone s02"><cite>gkellogg:</cite> we did discuss whether the JSON datatype should be in the RDF NS</p>
+<p id=x184 class="phone s05"><cite>ora:</cite> feels strange; changing the NS is invalidating the spec</p>
+<p id=x185 class="phone s03"><cite>AndyS:</cite> this is an addition, not a change</p>
+<p id=x186 class="phone s05"><cite>ora:</cite> but implementation may enforce the notion that RDF and RDFS namespaces are fixed</p>
+<p id=x187 class="phone s07"><cite>TallTed:</cite> enforcing something that is not fixed is an implementation error</p>
+<p id=x192 class="phone s02"><cite>gkellogg:</cite> JSON-LD process was to ask for comments from the community first</p>
+<p id=x193 class="phone s02"><cite>gkellogg:</cite> very little feedback</p>
+<p id=x194 class="phone s02"><cite>gkellogg:</cite> no evidence of implementations breaking</p>
+<p id=x197 class="phone s06"><cite>thomas:</cite> what if semantics change? We define a new term/</p>
+<p id=x198 class="phone s02"><cite>gkellogg:</cite> RDF 1.1 does not have plain literals</p>
+<p id=x201 class="phone s08"><cite>william:</cite> Notation3 CG made the decision to reuse old namespaces</p>
+<p id=x202 class="phone s08"><cite>william:</cite> we did not want to add namespaces</p>
+<p id=x203 class="phone s08"><cite>william:</cite> TimBL said to go ahead</p>
+<p id=x204 class=irc><cite>&lt;pchampin&gt;</cite> STRAWPOLL: put our IRI(s) in the RDF namespace</p>
+<p id=x205 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x206 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x207 class=summary>-1</p>
+<p id=x208 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x209 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x210 class=irc><cite>&lt;thomas&gt;</cite> -1</p>
+<p id=x211 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x212 class=irc><cite>&lt;william&gt;</cite> +0</p>
+<p id=x213 class=irc><cite>&lt;olaf&gt;</cite> +0</p>
+<p id=x214 class=irc><cite>&lt;TallTed&gt;</cite> +0</p>
+<p id=x215 class=summary>no consensus</p>
+<p id=x216 class="phone s01"><cite>pchampin:</cite> polite thing to do is to seek broader feedback</p>
+<p id=x217 class="phone s03"><cite>andys:</cite> if something is controversial it is a good idea to make sure people pay attention</p>
+<p id=x218 class="phone s03"><cite>andys:</cite> (anecdote about John McCarthy)</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">gkellogg to make a PR for the implementation report</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">stick to US time to avoid conflict with other W3C meetings</a></li>
+<li><a href="#r02">merge PR 114 befor advertising the test suite to implementers</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

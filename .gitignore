@@ -1,0 +1,7 @@
+## Backup files
+*~
+*.bak
+*.backup
+.*.swp
+\#*#
+reports/manifests.nt

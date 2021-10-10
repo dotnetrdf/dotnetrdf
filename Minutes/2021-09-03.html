@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 03 September 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>03 September 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-07-16.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Sep/0000.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/09/03-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-09-17.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, Doerthe, Fabio_Vitali, gatemezing, gkellogg, olaf, ora, pchampin, rivettp, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>gatemezing, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">PR #198: Suggest metadata in manifest turtle file</a></li>
+<li><a href="#t04">Issue #200: RDF-star and reasoning</a></li>
+<li><a href="#t05">roadmap</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x008 class=irc><cite>&lt;ora&gt;</cite> (Too long of a break to again remember all the chat commands...)</p>
+</section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x029 class=summary>Introduction of the new comer Fabio Vitali<br>
+<span id=x030>… Prof in Italy and working a lot on semantic technologies</span><br>
+<span id=x031>… He was also involved in many W3C, like anything around markup</span></p>
+<p id=x034 class="phone s01"><cite>pchampin:</cite> thanks for the introduction</p>
+<p id=x037 class="phone s02"><cite>ora:</cite> Should write a comparison for next week. They write a paper for SCG workshop<br>
+<span id=x038>… and they realize there are somethings that are not taken into account by this rdf-star work</span><br>
+<span id=x039>… thinking to write a use case on that aspect, and apologize before if this is late</span></p>
+<p id=x040 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://w3c.github.io/rdf-star/cg-spec/editors_draft.html#occurrences">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>cg-spec/<wbr>editors_draft.html#occurrences</a></p>
+<p id=x041 class="phone s01"><cite>pchampin:</cite> Maybe it is related to some discussions we had before @ora joined the group</p>
+<p id=x042 class=irc><cite>&lt;thomas&gt;</cite> ora: do you have a link to the paper?</p>
+<p id=x043 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://mosaicrown.github.io/scg2021/">https://<wbr>mosaicrown.github.io/<wbr>scg2021/</a></p>
+<p id=x044 class=irc><cite>&lt;ora&gt;</cite> Paper is not public yet, I will provide a link soon.</p>
+<p id=x045 class=irc><cite>&lt;thomas&gt;</cite> ora, thanks! looking forward to it</p>
+<p id=x046 class="phone s01"><cite>pchampin:</cite> explain the venue of SCG workshop at SemantiCs2021</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x050 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/196">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>196</a></p>
+<p id=x051 class="phone s01"><cite>pchampin:</cite> Issue #196 is still pending</p>
+<p id=x052 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/195">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>195</a></p>
+<p id=x054 class="phone s01"><cite>pchampin:</cite> the process for a &quot;living standard&quot; is possible<br>
+<span id=x055>… check what could be a new feature in the W3C process</span></p>
+<p id=x056 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/EasierRDF/issues/88">https://<wbr>github.com/<wbr>w3c/<wbr>EasierRDF/<wbr>issues/<wbr>88</a></p>
+<p id=x060 class="phone s01"><cite>pchampin:</cite> and sent an email to a boss at W3C awaiting for the response</p>
+<p id=x066 class="phone s02"><cite>ora:</cite> I was wondering the impact on product delivery processes</p>
+<p id=x070 class="phone s03"><cite>AndyS:</cite> There's must be a public discussion on new features</p>
+<p id=x074 class="phone s03"><cite>AndyS:</cite> my gut feeling is that RDF-star would be to big to be considered a &quot;new feature&quot;<br>
+<span id=x075>… It would set a high expectation</span></p>
+<p id=x078 class="phone s04"><cite>thomas:</cite> could it be better to send to the public semantic Web W3C list?</p>
+<p id=a01 class=action><strong>Action:</strong> pchampin to notify semantic.web@w3.org about <a href="https://github.com/w3c/EasierRDF/issues/88">https://<wbr>github.com/<wbr>w3c/<wbr>EasierRDF/<wbr>issues/<wbr>88</a></p>
+<p id=x082 class="phone s05"><cite>gkellogg:</cite> A balance should be reach between the limitations and the features<br>
+<span id=x083>… the charter should limit the types of the group can do or not</span></p>
+<p id=x084 class=irc><cite>&lt;pchampin&gt;</cite> +1 for a feature-annoucement mechanism of some kind</p>
+<p id=x085 class="phone s05"><cite>gkellogg:</cite> RDF-star should consider annoucemenent features like MDN with HTML</p>
+<p id=x089 class="phone s02"><cite>ora:</cite> a risk to choose what to implement in a living document could be also a risk</p>
+<p id=x092 class="phone s06"><cite>olaf:</cite> The concern is to better seperate and consider it</p>
+<p id=x093 class="phone s07"><cite>rivettp:</cite> How the ecosystem would evolve with somehow different implementations of the specs</p>
+<p id=x096 class="phone s07"><cite>rivettp:</cite> OWL and other standards have not caught up with RDF 1.1<br>
+<span id=x097>… How would that go with RDF being a living standard?</span></p>
+<p id=x098 class=irc><cite>&lt;rivettp&gt;</cite> my concern generally was the challenge of managing the ecosystem as a whole if one standard is &quot;living&quot;</p>
+<p id=x099 class="phone s03"><cite>AndyS:</cite> migrations are hard. People will wait until something is a standard to implement it</p>
+<p id=x101 class=summary>+1 with AndyS's point</p>
+<p id=x102 class=irc><cite>&lt;rivettp&gt;</cite> maybe you try for synchronized configurations or releases of multiple projects - which is what Eclipse tries to do</p>
+</section>
+
+<section>
+<h3 id=t03>PR #198: Suggest metadata in manifest turtle file</h3>
+<p id=x105 class="phone s01"><cite>pchampin:</cite> This discussion should be push forward in the public mailing list</p>
+<p id=x108 class="phone s08"><cite>gatemezing:</cite> this PR aims to add more metadata in the manifest files.<br>
+<span id=x109>… AndyS, gatemezing, TallTed commented on it.</span><br>
+<span id=x110>… There's general agreement that it should be done, more discussion on what to add exactly.</span></p>
+<p id=x111 class=summary>[discussion on the representation of licenses in RDF]</p>
+</section>
+
+<section>
+<h3 id=t04>Issue #200: RDF-star and reasoning</h3>
+<p id=x115 class=summary><a href="https://github.com/w3c/rdf-star/issues/200">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>200</a></p>
+<p id=x118 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x119 class="phone s03"><cite>AndyS:</cite> We have to choose which types of discussions and maybe add labels</p>
+<p id=x121 class=irc><cite>&lt;TallTed&gt;</cite> ugh. Github discussion &quot;threads&quot; are one-level deep, and don't do well with shifting active conversation in either direction (issue-&gt;disc or disc-&gt;issue)</p>
+<p id=x126 class="phone s04"><cite>thomas:</cite> how to settle some other discussions in our document<br>
+<span id=x127>… can someone put where to write it up so that it's part of the community report</span><br>
+<span id=x128>… so that that everyone can easily find it</span></p>
+<p id=x130 class="phone s06"><cite>olaf:</cite> I can do it, but I can't do it by next week</p>
+<p id=a02 class=action><strong>Action:</strong> olaf to write a part on &quot;per-property semantics&quot; in the report -- pchampin to help</p>
+<p id=x135 class="phone s09"><cite>TallTed:</cite> I'm against using Github discussion since it's not mature for this purpose<br>
+<span id=x136>… Use mailing list for other type of discussion</span></p>
+<p id=x138 class="phone s01"><cite>pchampin:</cite> Not also fan with discussions on Github. There are different special &quot;kind&quot; of issues ...</p>
+<p id=x139 class=irc><cite>&lt;TallTed&gt;</cite> Probably for next time, it can be good to review issues (with whatever label) based on oldest last activity -- e.g., <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-asc">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-asc</a></p>
+<p id=x141 class="phone s01"><cite>pchampin:</cite> The mailing list has an archive but still difficult to follow</p>
+<p id=x145 class=irc><cite>&lt;pchampin&gt;</cite> STRAWPOLL: use github 'discussions' to replace de 'discussion' label on actions</p>
+<p id=x146 class="phone s03"><cite>AndyS:</cite> When do we know we've finished</p>
+<p id=x147 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> trivial question by newcomer: how do I let Zakim know I am present?</p>
+<p id=x148 class=irc><cite>&lt;thomas&gt;</cite> +1 to ted</p>
+<p id=x149 class=irc><cite>&lt;rivettp&gt;</cite> Are we not talking about GH Discussions as opposed to GH Issues - they are distinct things?</p>
+<p id=x150 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> Present</p>
+<p id=x152 class=irc><cite>&lt;pchampin&gt;</cite> STRAWPOLL: use github 'discussions' to replace de 'discussion' label on actions</p>
+<p id=x156 class=irc><cite>&lt;pchampin&gt;</cite> +0.5</p>
+<p id=x157 class=irc><cite>&lt;AndyS&gt;</cite> +0.5</p>
+<p id=x158 class=irc><cite>&lt;gkellogg&gt;</cite> +0</p>
+<p id=x159 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> @gatemezing: thanks</p>
+<p id=x160 class=irc><cite>&lt;TallTed&gt;</cite> -0.9</p>
+<p id=x161 class=irc><cite>&lt;ora&gt;</cite> +0</p>
+<p id=x162 class=irc><cite>&lt;rivettp&gt;</cite> -1</p>
+<p id=x163 class=irc><cite>&lt;thomas&gt;</cite> -0</p>
+<p id=x164 class=irc><cite>&lt;olaf&gt;</cite> 0 (no experience with the github discussion feature)</p>
+<p id=x165 class=irc><cite>&lt;Doerthe&gt;</cite> +0</p>
+<p id=x166 class=summary>+0.56</p>
+<p id=x167 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> there was a standard sentence to agree with majority</p>
+<p id=x168 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> +0</p>
+<p id=x175 class="phone s04"><cite>thomas:</cite> how do we go on this problem? Do we wait for the creator to join?</p>
+<p id=x176 class="phone s01"><cite>pchampin:</cite> Once we have the vocabulary added, then we could move forward with that point</p>
+</section>
+
+<section>
+<h3 id=t05>roadmap</h3>
+<p id=x179 class="phone s01"><cite>pchampin:</cite> few things regarding the vocab section, do think that all can be done before we send out a &quot;final community report&quot;</p>
+<p id=x184 class="phone s04"><cite>thomas:</cite> I proposed to reordoring the sections in the document before the summer..</p>
+<p id=x188 class="phone s03"><cite>AndyS:</cite> I'm concerned about the PR on restructuring before having a consensus on it is desirable</p>
+<p id=a03 class=action><strong>Action:</strong> pchampin to draft an introduction paragraph to show the interconnection between the section</p>
+<p id=x190 class=irc><cite>&lt;rivettp&gt;</cite> I need to drop</p>
+<p id=x194 class="phone s01"><cite>pchampin:</cite> Thanks everyone and see you!</p>
+<p id=x195 class=irc><cite>&lt;gkellogg&gt;</cite> Regrets for the next meeting.</p>
+<p id=x198 class=irc><cite>&lt;pchampin&gt;</cite> gatemezing, no I'll take care of the rest</p>
+<p id=x199 class=irc><cite>&lt;pchampin&gt;</cite> thanks</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">pchampin to notify semantic.web@w3.org about https://<wbr>github.com/<wbr>w3c/<wbr>EasierRDF/<wbr>issues/<wbr>88</a></li>
+<li><a href="#a02">olaf to write a part on &quot;per-property semantics&quot; in the report -- pchampin to help</a></li>
+<li><a href="#a03">pchampin to draft an introduction paragraph to show the interconnection between the section</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

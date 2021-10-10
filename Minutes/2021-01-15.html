@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF* -- 15 Jan 2021</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF*" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF*</h1>
+<h2>15 Jan 2021</h2>
+
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>AndyS, gkellogg, TallTed, pchampin, thomas, gatemezing, pfps</dd>
+<dt>Regrets</dt>
+<dd></dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>gkellogg</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">Review pending actions</a></li>
+<li><a href="#item02">sections on "triples vs occurrences"</a></li>
+<li><a href="#item03">Discuss the new semantics proposal</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: gkellogg
+</p>
+
+<h3 id="item01">Review pending actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/40">https://github.com/w3c/rdf-star/issues/40</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Just the long-standing action the test suite…
+</p>
+
+<p class='phone'>
+<cite>afs:</cite> I have an action on summarizing the syntax issues.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I’ll add an issue so it shows up in the list. <br>
+... There was a PR on the test suite, but it was merged, as it didn’t seem to require call time. <br>
+... There were some new tests around combinations of embedding. Further PRs are welcome.
+</p>
+
+<h3 id="item02">sections on "triples vs occurrences"</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/75">https://github.com/w3c/rdf-star/pull/75</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; s/Present + / present+
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I’ve seen some comments on the PR discussions. pfps has raised a number of issues, and thomas one I haven’t seen yet.
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> I like that it’s more prominent in 2.1 and not just the appendix. I think the seminal example should be explained at the top in 2.1 and why it doesn’t work. <br>
+... There’s also the relationship to RDF refication, which should be more prominant in sect 2. <br>
+... So that people coming to RDF* thinking it solves their problem will be well informed without needing to fully understand the semantics. <br>
+... It took a while to understand these bits, and the spec should be clear.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> The overview section now has an example, and another in 2.1. <br>
+... As pfps pointed out, the spec doesn’t require people to have read the initial papers, and should be self-suficcient. Starting with a bad example and explaining why it is bad doesn’t seem like a good way to start.
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> I think 2.1 is fine, just make it clear where rdf* stands WRT reification.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> I disagree with thomas and think the semanal example should be relegated. The Appendix is far to kind to the seminal example, and it should be stated as such. The example was wrong and misleading. <br>
+... Lets say that and move on.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I’m sorry olaf can’t be hear to make a case. I’ve stated that I’m not as harsh on the example.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> THere’s evidence to bvack up my statement: multiple people are confused if RDF* has unique triples.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> But, there are a number of people that were not so misled. <br>
+... The so-called “seminal-example” is the running example used in the original papers. It’s copied into the current spec.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/75.html#the-seminal-example">https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/75.html#the-seminal-example</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; The example is the one in <a href="http://ceur-ws.org/Vol-1912/paper12.pdf">http://ceur-ws.org/Vol-1912/paper12.pdf</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> The problem with the example is that it gives the impression that the &lt;&lt;…&gt;&gt; embedded triples represent ocurances of triples. Not an occurance of the triple in some document. <br>
+... IMO, the definitions say it’s the abstract triple, and not the ocurance.
+</p>
+
+<p class='phone'>
+<cite>ora:</cite> iin writing a spec, our goal should be confusion-free. WIthout expressing my opinion, I agree that it’s confusing.
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; Perhaps we could just say "The world has turned. Original documents were problematic in various ways. We have not reproduced the problematic parts here because they were problematic and we don't want to continue those problems." and then actually leave out the problematic parts...
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: change the wording in appendix A.2 to more clearly disqualify the seminal example as "bad"
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; -1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; -0.5
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +0
+</p>
+
+<p class='phone'>
+<cite>ora:</cite> you want the example to not only not be in any future spec, but characterize the previous use as “bad”.
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +1 : present and indicating the meaning
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; gatemezing: q+
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I thought it was important to acknowledge that the previous documents were misleading. THe idea was to try to fix the damage that was done and that the community has evolved.
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> I noted on one of the issues that the original document should be relegated to history. It was a solo effort and made some errors. We don’t need to reproduce anything from it, other that to say it’s historical.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> That’s the title of the appendix. I think it’s better to have this recorded near the spec, rather than burried in an archive.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1 to TallTed, without any mention of "bad" or whatever
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> Olaf agreed. We shouldn’t reproduce anything problemantic, other than to say that something previous was problemantic.
+</p>
+
+<p class='phone'>
+<cite>ora:</cite> I agree, let’s not reproduce it or signal it out. Historical documents are exactly that and shouldn’t be given additional relevance.
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> The spec is a produce of a group, where we can strive for perfection.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I oppose this; the document will be found and will be misleading unless there’s another document that repudiates it,
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> Iagree to have a reference to another document which repudiates the previous doc.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> As long as it’s clear that we say these documents don’t agree. If there’s another document that says why it is wrong, you’re accounting for it.
+</p>
+
+<p class='phone'>
+<cite>thomas_:</cite> The appendix was a way to understand the relationship with reification. We’ll need to come back to that and explain how this relates to other versions such as RDF reification.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I’m a bit unconfortable with the way we’re going. I don’t feel the spec is fundmentally different from the original paper. I still think that the core of the paper is aligned with the spec. <br>
+... I understand the arguments, but the problems didn’t prevent this group from happending. <br>
+... The example is misleading, but there is much else in the paper which is relevant.
+</p>
+
+<p class='phone'>
+<cite>thomas_:</cite> The original paper has two different versions, the semantics and the example. THis was just until recently.
+</p>
+
+<p class='phone'>
+<cite>ora:</cite> once the new spec is out, does one need to read the older papers? W3C has a long history of publishing new, sometimes very different versions and that it supercedes the previous work. <br>
+... I don’t think we need to do more than that.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> I’m in the same place as Ora; we should say it is superceded and we don’t need to explain it.
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> This supercedes what came before. It was an input and we don’t need to re-explain anything in it. <br>
+... We can’t put warnings on the old documents, because they are PDFs. We need to make this document solid.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I want to reiterate that because you think you need to refer to it, is wrong. If I see a document with new semantics, I ignore the old semantics. You shouldn’t require the previous document in order to understand the spec.
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; +1 to james
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I agree on that. That being said, we can say that it is superceded.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> “Don’t read this paper!”
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Don’t expect to find consistency between the paper and the spec.
+</p>
+
+<a name="action01"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> pchampin to get back admin priviledge on BBB, or find another platform
+</p>
+
+<p class='phone'>
+<cite>gatemezing:</cite> Another option would be to say that someone could write a paper that states that there was something misleading before we get to the output of this group.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: replace appendix A.2 by a  sentence in the introduction explaining that seminal papers are not entirelt aligned with the spec
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; -1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; -0.5
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; -0.5
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Just say that the editor understands the concerns and move on.
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; 0 (just not sure yet)
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +0 strawpoll
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1 AndyS
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; gatemezing: +0
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I’ll keep the appendix and try to make the language more explicit without being dismissive. <br>
+... Otherwise, we have a point by thomas_ to improve 2.1.
+</p>
+
+<h3 id="item03">Discuss the new semantics proposal</h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> I understand that this is a technical topic that not everone wan’t to go into in too much detail. <br>
+... To make the call time more productive, I wanted to validate by closing some issues.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/37">https://github.com/w3c/rdf-star/issues/37</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> This is a syntactice sugar issue. There are some choices in the proposal. <br>
+... There was an agreement to make RDF* syntactic sugar on RDF reification, so that the semantics is not something new, by mapping RDF* syntax to RDF syntax. <br>
+... it’s ot possible to map RDF* syntax to RDF syntax. <br>
+... We can say there exist IRIs to do the mappings, but we don’t give them.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> I like the approach, and not to be able to write it “raw” in RDF Turtle.
+</p>
+
+<p class='phone'>
+<cite>thomas_:</cite> Is this an optimization? Shouldn’t we do that for lists and other complex constructs.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I think the same approach could have been taken for Lists. The idea is to alow implementors to optimize it without having to handle the bad implications.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> If the users can break the assumptions, they will do so.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> I disagree with both: I prefer the semantic approach in the original “ash can” document, partly because it relates back to RDF reification. <br>
+... I like the ability to describe parts of triples and have more freedom to fidle with it using RDF reification.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> That freedom is what we’re trying to avoid :) <br>
+... There was not a 1-1 mapping between RDF* and reification.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> You could use the nice new syntax if it was useful, but you could also go from that to other kinds of RDF reification and have them inter-relate. The new syntax gives us two different styles. One is wide-open, but the other is a useful subset; you can’t easily go from one to the other. <br>
+... You could, if you wanted to relate the two.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Is that something you’d like to include in the spec
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> If it turns out that the new view of reification is what’s in RDF*, it would be good to relate it back to the old view; but, I don’t think it’s necessary.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> I think mapping from RDF* into “full reification” is the way to do it. Whether from new semantics or directly embedded semantics. <br>
+... We might want to write something about transforming from one to the other.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> There’s also an issue about named graphs, and we should have an appendix exploring the relations and differences.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: are you ok with "abstract syntactic sugar", i.e.  being unable to serialize RDF* in plain Turtle / RDF-XML / etc...
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; -1
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +0.5 I would prefer not extending the abstract syntax but I'm OK with an abstract-to-abstract mapping
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; -0
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; this does appear to force new MIME types and file extensions...
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +0
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Disagree - as per issue discussion.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/43">https://github.com/w3c/rdf-star/issues/43</a>
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> It’s important to cover the rough implications of a decision such as this.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; But doesn't RDF* itself require a new MIME type?   Isn't just the &lt;&lt;&gt;&gt; syntax enough for a new MIME type?
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I’m turning out to be the oly RDF purist, apparently. I don’t think you should have to chase afte rnew mime types. <br>
+... If at some point there is a clear semanics, I’m willing to consider new mime types. But not until I understand that.
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; MIME types are not automatically strict - c.f.XML, HTML.
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; pfps: YES
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Do you consider that the current semantics is not clear enough?
+</p>
+
+<p class='phone'>
+<cite>james:</cite> If there were clear semantics I could implement it. If it does entail a new mime-type, I’d be comfortable if it could be represented using existing mime-types.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> There is a clear way. We say there is an IRI, but don’t give it, then you can implement it that way. You can’t expect anyone else to understand it.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> Then you undercut interoperability.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Mime-types don’t guarantee semantic interoperation. <br>
+... There is a translation that can be made to RDF.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ack: pfps
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> I’m confused: &lt;&lt;&gt;&gt; requires a new MIME type, right?
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> It’s not automatic, it’s one option. <br>
+... Old data is not invalidated.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Re AndyS : that's why there are people working on syntaxis interoperability
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> If we’re going to anticipate that it will change again we might not create a mime-type.
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; IANA might beg to differ
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> TallTed I think that’s a big claim. Profiles are one way this has been done.
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; still I'm not sure this whole thing is not premature optimization
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> You haven’t changed the meaning of a document by adding new syntax, because the worst that can happen is that you fail. Two implementations won’t interpret differently. <br>
+... If you have old data, what is the mime type? You might need to look at the entire document before you assign a mime type,
+</p>
+
+<p class='phone'>
+<cite>ora:</cite> Before supporting RDF* and I see the mime type, I think I can parst it, but I can’t.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Who’s responsibility is it?
+</p>
+
+<p class='phone'>
+<cite>ora:</cite> if there’s a new syntax there should be a new mime-type.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Then you have the consideration if you don’t know. Are you going to lock out old clients because somewhere it may happen. <br>
+... Please give feedback on the issues.
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; Regrettable decisions were made a long while back about not including any info within the file about what it is, e.g., `Turtle 1.0` vs `Turtle 1.1` vs `Turtle* 1.0`
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; JSON-LD now has a declaration within the file about being 1.0 vs 1.1
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+<strong>[NEW]</strong> <strong>ACTION:</strong> pchampin to get back admin priviledge on BBB, or find another platform <br />
+&nbsp;<br />
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol></ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

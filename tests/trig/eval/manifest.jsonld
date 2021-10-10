@@ -1,0 +1,161 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "mf": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "rdft": "http://www.w3.org/ns/rdftest#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "qt": "http://www.w3.org/2001/sw/DataAccess/tests/test-query#",
+    "ut": "http://www.w3.org/2009/sparql/tests/test-update#",
+    "test": "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
+    "trs": "https://w3c.github.io/rdf-star/tests/trig/eval#",
+    "@vocab": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "@base": "https://w3c.github.io/rdf-star/tests/trig/eval/",
+    "include": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "entries": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "recognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "unrecognizedDatatypes": {
+      "@type": "@id",
+      "@container": "@list"
+    },
+    "action": {
+      "@type": "@id"
+    },
+    "qt:query": {
+      "@type": "@id"
+    },
+    "qt:data": {
+      "@type": "@id"
+    },
+    "ut:request": {
+      "@type": "@id"
+    },
+    "ut:data": {
+      "@type": "@id"
+    },
+    "result": {
+      "@type": "@id"
+    },
+    "label": "rdfs:label",
+    "comment": "rdfs:comment",
+    "seeAlso": {
+      "@id": "rdfs:seeAlso",
+      "@type": "@id"
+    },
+    "approval": {
+      "@id": "test:approval",
+      "@type": "@vocab",
+      "@context": {
+        "Approved": "test:Approved",
+        "Proposed": "test:NotClassified",
+        "NotClassified": "test:NotClassified",
+        "Rejected": "test:Rejected",
+        "Obsoleted": "test:Obsoleted",
+        "Withdrawn": "test:Withdrawn"
+      }
+    },
+    "TestTurtlePositiveSyntax": "rdft:TestTurtlePositiveSyntax",
+    "TestTurtleNegativeSyntax": "rdft:TestTurtleNegativeSyntax",
+    "statusOf": {
+      "@reverse": "test:approval"
+    }
+  },
+  "@id": "trs:manifest",
+  "@type": "Manifest",
+  "label": "TriG-star Evaluation Tests",
+  "entries": [
+    {
+      "@id": "trs:trig-star-1",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-01.trig",
+      "name": "TriG-star - subject embedded triple",
+      "result": "trig-star-eval-01.nq"
+    },
+    {
+      "@id": "trs:trig-star-2",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-02.trig",
+      "name": "TriG-star - object embedded triple",
+      "result": "trig-star-eval-02.nq"
+    },
+    {
+      "@id": "trs:trig-star-bnode-1",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-bnode-1.trig",
+      "name": "TriG-star - blank node label",
+      "result": "trig-star-eval-bnode-1.nq"
+    },
+    {
+      "@id": "trs:trig-star-bnode-2",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-bnode-2.trig",
+      "name": "TriG-star - blank node labels",
+      "result": "trig-star-eval-bnode-2.nq"
+    },
+    {
+      "@id": "trs:trig-star-annotation-1",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-annotation-1.trig",
+      "name": "TriG-star - Annotation form",
+      "result": "trig-star-eval-annotation-1.nq"
+    },
+    {
+      "@id": "trs:trig-star-annotation-2",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-annotation-2.trig",
+      "name": "TriG-star - Annotation example",
+      "result": "trig-star-eval-annotation-2.nq"
+    },
+    {
+      "@id": "trs:trig-star-annotation-3",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-annotation-3.trig",
+      "name": "TriG-star - Annotation - predicate and object lists",
+      "result": "trig-star-eval-annotation-3.nq"
+    },
+    {
+      "@id": "trs:trig-star-annotation-4",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-annotation-4.trig",
+      "name": "TriG-star - Annotation - nested",
+      "result": "trig-star-eval-annotation-4.nq"
+    },
+    {
+      "@id": "trs:trig-star-annotation-5",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-annotation-5.trig",
+      "name": "TriG-star - Annotation object list",
+      "result": "trig-star-eval-annotation-5.nq"
+    },
+    {
+      "@id": "trs:trig-star-embed-annotation-1",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-embed-annotation-1.trig",
+      "name": "TriG-star - Annotation with embedding",
+      "result": "trig-star-eval-embed-annotation-1.nq"
+    },
+    {
+      "@id": "trs:trig-star-embed-annotation-2",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-embed-annotation-2.trig",
+      "name": "TriG-star - Annotation on triple with embedded subject",
+      "result": "trig-star-eval-embed-annotation-2.nq"
+    },
+    {
+      "@id": "trs:trig-star-embed-annotation-3",
+      "@type": "rdft:TestTrigEval",
+      "action": "trig-star-eval-embed-annotation-3.trig",
+      "name": "TriG-star - Annotation on triple with embedded object",
+      "result": "trig-star-eval-embed-annotation-3.nq"
+    }
+  ]
+}

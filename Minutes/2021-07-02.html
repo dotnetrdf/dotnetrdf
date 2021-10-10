@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 2 July 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>&ndash; DRAFT &ndash;<br>
+RDF-star</h1>
+<h2>2 July 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-06-18.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Jul/0000.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/07/02-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-07-16.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gkellogg, james, Jay Gray, ora, pchampin, rivettp, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>AndyS, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Summer schedule</a></li>
+<li><a href="#t03">CG report</a></li>
+<li><a href="#t04">WG draft charter</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x031 class="phone s01"><cite>Jay:</cite> using RDF and related tech to create electronic labels (food drugs, cosmetics, household chemicals)<br>
+<span id=x032>… can see along the supply chain as it has labels-in-labels.</span><br>
+<span id=x033>… looking the RDF-star work to see if it will relate to what we plan to deploy soon</span></p>
+<p id=x037 class="phone s02"><cite>james:</cite> link?</p>
+<p id=x038 class="phone s02"><cite>james:</cite> labels-in-labels : is it by inclusion or by reference.</p>
+<p id=x039 class="phone s01"><cite>Jay:</cite> large graphs being updated (Shex and SHACL on ingestion). Generates references (may be in (solid) pods).</p>
+<p id=x043 class="phone s03"><cite>pchampin:</cite> Announcement -- 3rd public draft published<br>
+<span id=x044>… all contributors now properly registered in the CG.</span></p>
+<p id=x053 class="phone s03"><cite>pchampin:</cite> none :-)</p>
+</section>
+
+<section>
+<h3 id=t02>Summer schedule</h3>
+<p id=x058 class=summary><a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x062 class="phone s03"><cite>pchampin:</cite> Can make next call in 2 weeks time. Then time away, back in August.<br>
+<span id=x063>… common practice: gap and reconvene end Aug/early Sept</span></p>
+<p id=x064 class="phone s03"><cite>pchampin:</cite> work areas -- charter and vocab section</p>
+<p id=x065 class=summary>Who is here 16/July?</p>
+<p id=x066 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x067 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x068 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x069 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x070 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x071 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x072 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x073 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x074 class=summary>&lt;jay&gt; +1</p>
+<p id=x075 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: cancel all calls after July 16, and reconvene on Sep 3rd</p>
+<p id=x076 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x077 class=irc><cite>&lt;james&gt;</cite> 0</p>
+<p id=x078 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x079 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x080 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x081 class=irc><cite>&lt;thomas&gt;</cite> 0</p>
+<p id=x082 class=irc><cite>&lt;TallTed&gt;</cite> +</p>
+<p id=x083 class=irc><cite>&lt;TallTed&gt;</cite> +0</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> cancel all calls after July 16, and reconvene on Sep 3rd</p>
+</section>
+
+<section>
+<h3 id=t03>CG report</h3>
+<p id=x090 class="phone s03"><cite>pchampin:</cite> Vocabulary</p>
+<p id=x095 class="phone s04"><cite>AndyS:</cite> suggesting we describe &quot;embedded triples&quot; as &quot;quoted triples&quot;<br>
+<span id=x096>… we have used that term on occasions; also used in N3 (quoted formula)</span><br>
+<span id=x097>… Too late to change &quot;embeded&quot; to &quot;quoted&quot;</span></p>
+<p id=x100 class="phone s05"><cite>thomas:</cite> +ve: useful term but -ve not what it looks like</p>
+<p id=x104 class=irc><cite>&lt;TallTed&gt;</cite> Grammar remains the same, but comprehension would rise dramatically.</p>
+<p id=x107 class="phone s04"><cite>AndyS:</cite> wholesale change is a change to grammar e.g. embTriple</p>
+<p id=x108 class="phone s02"><cite>james:</cite> either replace uses or be careful to mention in one place &quot;behaves as ...&quot;</p>
+<p id=x114 class="phone s03"><cite>pchampin:</cite> non-normative language<br>
+<span id=x115>… possibility: &quot;quoted&quot; =&gt; not asserted.</span></p>
+<p id=x119 class="phone s06"><cite>TallTed:</cite> I find &quot;quoted&quot; useful - communicates unasserted better than &quot;embedded&quot; -- and I would do so throughout.</p>
+<p id=x121 class="phone s07"><cite>ora:</cite> without strong opinion on what specific words we use, now is the time to change terminology - we are not REC track yet.</p>
+<p id=x127 class=irc><cite>&lt;thomas&gt;</cite> the embedded triple is unasserted AND quoted</p>
+<p id=x129 class=irc><cite>&lt;rivettp&gt;</cite> we want to capture &quot;not necessarily asserted&quot; which is a bit of a mouthful</p>
+<p id=x132 class="phone s02"><cite>james:</cite> this qualification makes it complicated - quoted works, &quot;assertion&quot; has extra language to say it is the local usage intended.</p>
+<p id=x133 class=irc><cite>&lt;thomas&gt;</cite> quoted to me refers to referential opacity, so is not about assertion</p>
+<p id=x138 class="phone s06"><cite>TallTed:</cite> grammar term embTriple will cause embedded in people's mind.<br>
+<span id=x139>… challenge is communicate and express the effect of the &lt;&lt;&gt;&gt;</span><br>
+<span id=x140>… need care</span></p>
+<p id=x142 class="phone s07"><cite>ora:</cite> original RDF - similar issues - reification examples helped.</p>
+<p id=x146 class=irc><cite>&lt;TallTed&gt;</cite> +1000 examples ... and it's helpful to build later examples upon/from earlier examples</p>
+<p id=x149 class="phone s04"><cite>AndyS:</cite> suggest to turn this into some action, to see what would be the impact<br>
+<span id=x150>… can work on it during the summer</span></p>
+<p id=x155 class="phone s03"><cite>pchampin:</cite> Notions -- :s :p :o and &lt;&lt;:s :p :o&gt;&gt; -- unchanged.</p>
+<p id=x158 class=summary>james - &quot;quoted&quot; works better than &quot;embedded&quot;.</p>
+<p id=x159 class=irc><cite>&lt;TallTed&gt;</cite> &quot;embedded&quot; is not clearly distinguished from &quot;asserted&quot; nor &quot;unasserted&quot;</p>
+<p id=x161 class="phone s02"><cite>james:</cite> &quot;quoted&quot; works better than &quot;embedded&quot;.</p>
+<p id=x165 class="phone s08"><cite>gkellogg:</cite> quoted - and may elsewhere be asserted.<br>
+<span id=x166>… &quot;embedded&quot; keep but &quot;quoted&quot; is more accurate to the way people think about it.</span></p>
+<p id=x167 class="phone s05"><cite>thomas:</cite> now prefer &quot;quoted&quot;</p>
+<p id=x170 class="phone s07"><cite>ora:</cite> like &quot;quoted&quot; and it's like lisp</p>
+<p id=x171 class="phone s08"><cite>gkellogg:</cite> yes - there is a quoted triple there.</p>
+<p id=x175 class="phone s05"><cite>thomas:</cite> &quot;embedded&quot; when written, &quot;quoted&quot; in abstract syntax.</p>
+<p id=a01 class=action><strong>Action:</strong> AndyS: continue issue already opened</p>
+</section>
+
+<section>
+<h3 id=t04>WG draft charter</h3>
+<p id=x181 class=summary><a href="https://github.com/w3c/rdf-star-wg-charter/issues/1">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star-wg-charter/<wbr>issues/<wbr>1</a></p>
+<p id=x184 class="phone s03"><cite>pchampin:</cite> several SPARQL RECs to update.<br>
+<span id=x185>… needs updating to RDF 1.1</span><br>
+<span id=x186>… makes the scope of RDF-star WG much larger</span></p>
+<p id=x188 class="phone s08"><cite>gkellogg:</cite> split makes a coordination problem. Better is one WG with subgroups.<br>
+<span id=x189>… need to coordinate with JSON-LD WG (maintainence)</span></p>
+<p id=x190 class="phone s06"><cite>TallTed:</cite> agree.</p>
+<p id=x193 class="phone s07"><cite>ora:</cite> RDF / RDFS turned out to be not the way to work. There was a big overlap.</p>
+<p id=x195 class="phone s01"><cite>jay:</cite> wikidata is significant to us (company).</p>
+<p id=x198 class="phone s03"><cite>pchampin:</cite> yes, stability is important</p>
+<p id=x200 class=irc><cite>&lt;TallTed&gt;</cite> makes some sense ... alignment to an implementation or deployment (e.g., Wikidata, which has broken from the standard in some significant ways), however, as opposed to alignment to a *standard*, less sense</p>
+<p id=x203 class="phone s07"><cite>ora:</cite> I agree that stability is significant and important.</p>
+<p id=x210 class="phone s04"><cite>AndyS:</cite> I assumed it would be one group, organizing itself as it wants<br>
+<span id=x211>… Once upon the time, there was an RDF coordination group</span><br>
+<span id=x212>… Of course, we must hope enough people turn up.</span><br>
+<span id=x213>… There is a danger a scope creep.</span><br>
+<span id=x214>… The language of the charter must keep the scope focused.</span></p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">AndyS: continue issue already opened</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">cancel all calls after July 16, and reconvene on Sep 3rd</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

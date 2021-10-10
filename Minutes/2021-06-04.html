@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 4 June 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>4 June 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-05-28.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Jun/0002.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/06/04-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-06-11.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gatemezing, gkellogg, ora, pchampin, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>william</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>AndyS, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Outstanding pull-requests</a>
+<ol>
+<li><a href="#t04">Discussion on referential opacity &lt;https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>173&gt;</a></li>
+<li><a href="#t05">Section on RDF-star vocabulary &lt;https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>176&gt;</a></li>
+<li><a href="#t06">Discussion of TR 'Content Negotiation by Profile' &lt;https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>177&gt;</a></li>
+</ol>
+</li>
+<li><a href="#t07">Publishing a new report</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x020 class=irc><cite>&lt;thomas&gt;</cite> thomas+</p>
+<p id=x023 class=irc><cite>&lt;TallTed&gt;</cite> present</p>
+<p id=x026 class=summary>I'll scribe</p>
+</section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x033 class="phone s01"><cite>pchampin:</cite> rust implementation in progress</p>
+<p id=x035 class="phone s02"><cite>gkellogg:</cite> Regenerate EARL tests?</p>
+<p id=x038 class="phone s01"><cite>pchampin:</cite> wait until next publication</p>
+<p id=x040 class="phone s03"><cite>ora:</cite> Any C++ implementation?<br>
+<span id=x041>… and state of Redland?</span></p>
+<p id=x042 class=irc><cite>&lt;gatemezing&gt;</cite> I'm not aware of any implementation in C++ nor Redland</p>
+<p id=x046 class="phone s04"><cite>AndyS:</cite> when we publish next time, maybe we should have a vote saying the test suite is complete</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x051 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x055 class="phone s01"><cite>pchampin:</cite> charter action open.<br>
+<span id=x056>… SPARQL function/operators action merged</span></p>
+</section>
+
+<section>
+<h3 id=t03>Outstanding pull-requests</h3>
+<h4 id=t04>Discussion on referential opacity &lt;<a href="https://github.com/w3c/rdf-star/pull/173">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>173</a>&gt;</h4>
+<p id=x063 class=irc><cite>&lt;thomas&gt;</cite> i commented today</p>
+<p id=x064 class=irc><cite>&lt;thomas&gt;</cite> sorry, i was late</p>
+<p id=x065 class="phone s05"><cite>thomas:</cite> suggestion to add section 2.2 that covers transparent vs opaque.</p>
+<p id=x067 class="phone s01"><cite>pchampin:</cite> section is focused on the abstract syntax.<br>
+<span id=x068>… so discussion is with &quot;semantics&quot;.</span></p>
+<p id=x069 class="phone s05"><cite>thomas:</cite> not visible enough</p>
+<p id=x072 class="phone s01"><cite>pchampin:</cite> This PR is about &quot;transparent vs opaque&quot; in dedicated sections.<br>
+<span id=x073>… can we merge this PR?</span></p>
+<p id=x077 class="phone s02"><cite>gkellogg:</cite> this is an abstract issue and may, in a WG, be rolled into RDF semantics and entailments.<br>
+<span id=x078>… so maybe guidance to a future WG on updating RDF.</span></p>
+<p id=x079 class=irc><cite>&lt;pchampin&gt;</cite> q.</p>
+<p id=x081 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: merge PR173</p>
+<p id=x082 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x083 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x084 class="phone s01"><cite>pchampin:</cite> propose to merge #173.</p>
+<p id=x085 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x086 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x087 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x088 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x089 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> merge PR173</p>
+<h4 id=t05>Section on RDF-star vocabulary &lt;<a href="https://github.com/w3c/rdf-star/pull/176">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>176</a>&gt;</h4>
+<p id=x092 class="phone s01"><cite>pchampin:</cite> some placeholders for discussion.</p>
+<p id=x095 class="phone s05"><cite>thomas:</cite> misses transparency vocabulary - there is an issue.</p>
+<p id=x096 class=irc><cite>&lt;thomas&gt;</cite> 170</p>
+<p id=x097 class="phone s05"><cite>thomas:</cite> issue #170</p>
+<p id=x098 class=irc><cite>&lt;gkellogg&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/170">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>170</a></p>
+<p id=a01 class=action><strong>Action:</strong> pchampin to add issue 170 in the section of PR176</p>
+<p id=x101 class="phone s05"><cite>thomas:</cite> add syntax for transparency?</p>
+<p id=x103 class="phone s01"><cite>pchampin:</cite> does not define vocabulary.</p>
+<p id=x105 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: merge PR176 after issue 170 has been added to it</p>
+<p id=x106 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x107 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x108 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x109 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x110 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x111 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x112 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=r02 class=resolution><strong>Resolution:</strong> merge PR176 after issue 170 has been added to it</p>
+<h4 id=t06>Discussion of TR 'Content Negotiation by Profile' &lt;<a href="https://github.com/w3c/rdf-star/pull/177">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>177</a>&gt;</h4>
+<p id=x116 class="phone s06"><cite>TallTed:</cite> neither &quot;x.&quot; nor &quot;x-&quot; is appropriate</p>
+<p id=x121 class="phone s04"><cite>AndyS:</cite> IANA registration is slow, but updating an existing registration can be quicker</p>
+<p id=x122 class="phone s06"><cite>TallTed:</cite> there is a combination of facts here, including the fact that text/turtle *currently* does not point to the correct document</p>
+<p id=x126 class="phone s01"><cite>pchampin:</cite> the correct text is to leave it as &quot;x.&quot;<br>
+<span id=x127>… &quot;x-&quot; is not a subtree</span></p>
+<p id=x130 class="phone s01"><cite>pchampin:</cite> the point of the section is to note there is not consensus in this group.</p>
+<p id=x131 class=irc><cite>&lt;gatemezing&gt;</cite> +1 of pchampin solution of not explicitly mentioning the x. or x-</p>
+<p id=x132 class="phone s01"><cite>pchampin:</cite> suggest remove mention of &quot;x?&quot;</p>
+<p id=x133 class=irc><cite>&lt;pchampin&gt;</cite> STRAWPOLL: do not mention either 'x.' or 'x-'</p>
+<p id=x134 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x135 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x136 class=irc><cite>&lt;thomas&gt;</cite> 0</p>
+<p id=x137 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x138 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x139 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x140 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x142 class=irc><cite>&lt;gkellogg&gt;</cite> <a href="https://www.iana.org/assignments/media-types/application/n-triples">https://<wbr>www.iana.org/<wbr>assignments/<wbr>media-types/<wbr>application/<wbr>n-triples</a></p>
+<p id=x144 class="phone s02"><cite>gkellogg:</cite> what is necessary for other media type - eg: n-triples: -&gt; TR/n-triples<br>
+<span id=x145>… then no IANA involvement needed</span></p>
+<p id=x146 class=irc><cite>&lt;TallTed&gt;</cite> Linking from the CGReport to the relevant Issues and/or PRs could keep some of the discussion text out of the report, and make it easier for follow-on work to see how we reached the conclusion(s) in the CGReport</p>
+<p id=x149 class="phone s04"><cite>AndyS:</cite> Turtle was registered before it was a REC<br>
+<span id=x150>… it is a special case</span></p>
+<p id=x152 class=irc><cite>&lt;TallTed&gt;</cite> We might suggest to the IANA-listed W3 affiliated maintainers of these media types that their registrations be changed to point to w3id.org URIs which *should* be easier to update going forward, with more maintainers, etc.</p>
+<p id=x153 class="phone s01"><cite>pchampin:</cite> bring the &quot;one person&quot; contact issue to W3C team.</p>
+<p id=a02 class=action><strong>Action:</strong> pchampin to raise the IANA issue (specific individual responsible for mediatype) in W3C stategy team</p>
+<p id=x155 class=irc><cite>&lt;TallTed&gt;</cite> (or that the IANA-listed maintainers be changed to point to role accounts/addresses)</p>
+<p id=x157 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: merge PR 177 once the 'x.'/'x-' mentions have been removed</p>
+<p id=x158 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x159 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x160 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x161 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x162 class=irc><cite>&lt;thomas&gt;</cite> 0</p>
+<p id=x163 class=irc><cite>&lt;TallTed&gt;</cite> +0.75</p>
+<p id=x164 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=r03 class=resolution><strong>Resolution:</strong> merge PR 177 once the 'x.'/'x-' mentions have been removed</p>
+<p id=x167 class="phone s06"><cite>TallTed:</cite> suggestion - link to discussions<br>
+<span id=x168>… add links to places location for discussions</span></p>
+<p id=x171 class="phone s04"><cite>AndyS:</cite> discussions tend to be in context</p>
+<p id=x173 class="phone s02"><cite>gkellogg:</cite> discussions exist on github.</p>
+<p id=x177 class="phone s01"><cite>pchampin:</cite> The section has a link to issue 43.<br>
+<span id=x178>… and telecon discussions noted on issues</span></p>
+<p id=x179 class=irc><cite>&lt;ora&gt;</cite> +1 on Andy's comment</p>
+</section>
+
+<section>
+<h3 id=t07>Publishing a new report</h3>
+<p id=x182 class="phone s01"><cite>pchampin:</cite> ted and thomas wish to make proposals.</p>
+<p id=x183 class="phone s06"><cite>TallTed:</cite> not a blocker for me.</p>
+<p id=x187 class="phone s01"><cite>pchampin:</cite> only choices in W3C process are &quot;draft&quot; and &quot;final&quot;<br>
+<span id=x188>… will add to intro/abstract explaining &quot;final&quot; does not mean no further publication</span></p>
+<p id=x190 class="phone s01"><cite>pchampin:</cite> proposal - we make a decision next week on publication of a &quot;non draft&quot; report.</p>
+<p id=x191 class="phone s05"><cite>thomas:</cite> my proposal by Wednesday</p>
+<p id=x192 class=irc><cite>&lt;ora&gt;</cite> Bye!</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">pchampin to add issue 170 in the section of PR176</a></li>
+<li><a href="#a02">pchampin to raise the IANA issue (specific individual responsible for mediatype) in W3C stategy team</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">merge PR173</a></li>
+<li><a href="#r02">merge PR176 after issue 170 has been added to it</a></li>
+<li><a href="#r03">merge PR 177 once the 'x.'/'x-' mentions have been removed</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF* -- 11 Dec 2020</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF*" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF*</h1>
+<h2>11 Dec 2020</h2>
+
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>pchampin, gatemezing, rivettp, olaf, AndyS, TallTed, thomas, pavel, gkellogg, ora, doerthe, pfps</dd>
+<dt>Regrets</dt>
+<dd></dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>gkellogg, pchampin</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">upcoming calls</a></li>
+<li><a href="#item02">Introductions</a></li>
+<li><a href="#item03">open actions</a></li>
+<li><a href="#item04">SPARQL*</a></li>
+<li><a href="#item05">annotation syntax</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Hi all
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; thomas+
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; meeting: #rdf-star telecon / 2020-12-11
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; scribe: gkellogg
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: gkellogg
+</p>
+
+<h3 id="item01">upcoming calls</h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> No call on December 25th or January 1st.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> are people okay for next week?
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>doerthe</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; December 25 / January 1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1
+</p>
+
+<p class='phone'>
+<cite>scribe:</cite> Last call of the year next week.
+</p>
+
+<h3 id="item02">Introductions</h3>
+
+<p class='phone'>
+<cite>ora:</cite> I’m a member of the Amazon graph DB team. Ora Lassa.
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; Correct spelling: Ora Lassila
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> I’m with OpenLink Software, maker of Virtuoso and many other things, and I've been on many W3 groups since about 2000.
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; Welcome Ora and Ted!!
+</p>
+
+<h3 id="item03">open actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Two actions, one about creating a test suite. Andy has created Turtle* syntax tests. <br>
+... I’ve created a skelleton for SPARQL* <br>
+... I think we can close the action, although the test suites aren’t (and may never by) complete. <br>
+... I’d like to suggest … The tests are very abstract, and based on my understanding on RDF*. <br>
+... pfps has suggested that it may be premature. <br>
+... I’d like to ask people that have run the test cases to translate examples into test cases. <br>
+... It may help to make a link from practical issues without loosing track of what people have proposed.
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; SPARQL* test cases?
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Is there a way to map those UCs using the manifest file?
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> syntax tests are not about interpretation <br>
+... we need to set a line where N-Triple* is, so that we can write syntax tests with their *meaning* <br>
+... I'm concern that people think that annotations and pointy brackets are different things
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; AndyS: I put some notes in the annotation discussion about that. N-Triples* is a key to understanding this.
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: gkellogg
+</p>
+
+<p class='phone'>
+<cite>UNKNOWN_SPEAKER:</cite> Jos’ EYE has been reporting trnslations, and I’d like to create evaluation tests based on those.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; (sorry I am late and can only stay a bit)
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I agree with the need for N-Triples*, and things are held up on that.
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> I’m seeing a lot of bluring in whats being discussed to date. I’ve been out of date for the last year.
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; AndyS: Offer to write some evaluation tests starting with the EYE translation.
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> Much of what’s been discussed is focusing on Quads and not talking about N-Triples. The “Star” has got to go. If it’s an evolution of RDF it needs to be treated as such. <br>
+... We can’t use RDF+ or RDF#, because they’re used. Punctuation naming breaks things.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ack: gkellogg
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> same problem with the JSON-LD WG, when working on JSON-LD 1.1 <br>
+... should we go as WHATWG? I don't think so for RDF*
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; "RDF Annotation task force" would put it under the umbrella, without using a version that might be overrun by another group
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> it is more than RDF, a proposal for what a future WG might do
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; scribe: gkellogg
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> We’re drifting off the action list. I’d like to keep a slot at the end of the meeting for open issues. <br>
+... I agree that it might be important for outreach, but we can make progress in parallel.
+</p>
+
+<h3 id="item04">SPARQL*</h3>
+
+<p class='phone'>
+<cite>olaf:</cite> I copied over definitions from some old papers into the spec to define query standards. <br>
+... What needs to be adjusted is recursion. <br>
+... I don’t think there’s anything suprising. I’ve defined it assuming “SA” mode. <br>
+... If we have a nested triple and a pattern that my match it, it would not be a match unless the embedded triple is also asserted.
+</p>
+
+<p class='phone'>
+<cite>pavel:</cite> I was reading through evaluation semantics. I’m not quite sure how it works with SA mode. If you can’t match an embedded pattern against a database.
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> We changed it in the sense that in the original papers, the BIND could match something that was embedded, but that would not be a triple itself in the graph. <br>
+... That was possible in the original definitions, but now the triple needs to be explicitly in the graph.
+</p>
+
+<p class='phone'>
+<cite>pavel:</cite> If you have BIND and an embedded pattern with variables that iss not in the graph, you can’t use BIND to create embedded triples.
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; bind(&lt;&lt; :a :p :b &gt;&gt; as ?var) &lt;-- no match here
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> This is a separate issue to be discussed. I’ve created another issue to address differences between SA and PG mode, as it’s different. <br>
+... You can’t create new triples that aren’t in the graph. <br>
+... AndyS suggested renaming BIND to FIND accordingly. But, it’s still open if it matches triples in the graph or embedded triples. <br>
+... Issue #6. We’re not talking about issue #8. <br>
+... We can discuss #6 next week.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Using BIND in this way also … If triples are terms they can also be used in expressions. <br>
+... You might need to replicate the expression with and without to handle both modes. <br>
+... You should be able to ask what the subject of the value of a variable is
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> Are you talking about additional builtin functions?
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> By deciding one particular way, we might end up blocking that.
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> Getting to issue #6, I like renaming BIND to FIND.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> I just wanted to make clear that there are other consequnces of the decision.
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; fwiw, Stardog does provide additional builtin functions e.g. subject(), to decompose embedded triples
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> We need to put issue #6 on the agenda for next time.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Happy also to use another keyword like FIND
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> Can we have a straw poll?
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; FWIW so does Jena including construction triple-terms
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: close issue #8, the current state of section 4 SPARQL* is satisfying
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; It is helpful to make clear the PRs relevant to an Issue
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; 0 ("enthaltung" ;-)
+</p>
+
+<p class='irc'>
+&lt;<cite>doerthe</cite>&gt; +1
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> We’re creating quite a lot of material. Just because we agree, doesn’t mean they can’t become discussion items later
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; TallTed, next time -- I did not put this one through a PR
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; (and rather than just making commits directly, to go through the PR mechanism)
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; Sorry!
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +0
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution01">RESOLUTION: close issue #8, the current state of section 4 SPARQL* is satisfying</strong>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> As AndyS said, just because we’ve resolved an issue, doesn’t mean we can’t come back to discuss it. We’re not a WG, but we’re mimmicking the process.
+</p>
+
+<h3 id="item05">annotation syntax</h3>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; trying to extend *all* of RDF, Turtle, N3, N4, SPARQL, TriG, etc. in one whack is a rather large undertaking, given that each of those has had its own WG for updates
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/58">https://github.com/w3c/rdf-star/pull/58</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; Preview with diff: <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/58/2160503...7479002.html#turtle-star-grammar">https://pr-preview.s3.amazonaws.com/w3c/rdf-star/58/2160503...7479002.html#turtle-star-grammar</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> This is an extension of Turtle* that’s been discussed for a while. Some people use it in discussions, but it’s not properly documented. It would be useful to have in the document. <br>
+... It’s not just about the syntax, but can help us to move forward on SA vs. PG. <br>
+... The question is if an embedded triple is also asserted. There have been different interpretations of &lt;&lt; … &gt;&gt;. The idea is to have two different syntaxes, one which asserts, and one which doesn’t That way, we don’t need different modes. <br>
+... I think getting rid of SA and PG modes would help discussions. <br>
+... That’s why I added a non-normative paragraph to explain the history.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> I have implemented it, it is straighforward <br>
+... I think we should get rid of PG mode <br>
+... a provisional N-Triple* would not have the annotation syntax, only the poiny bracket syntax <br>
+... thus you would need to explicitly assert a triple that is also embedded
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1 to gkellogg -- "one line, one triple"-ish.
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; scribe: gkellogg
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; so only Turtle* would get the sytactic sugar of PG mode?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Is anyone unhappy with the notion of having an annotation syntax? <br>
+... To answer thomas, not just Turtle*, but perhaps TriG*, SPARQL*. <br>
+... But, N-Triples and N-Quads want to keep one asserted triple per line, which is why they wouldn’t have an annotation syntax.
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; okay, thanks. +1 to that
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Basically, one “asserted” triple per line.
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; I'm not sure I see a strong utility of the annotation syntax, but I don't (yet) see a strong argument against allowing it. Implementation may be problematic, but I can't speak to that at this point.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> This may be a minority view, but as implicit in my use case, I’m opposed to anything that changes the elementary syntax. It runs against the general intent of RDF. <br>
+... I believe this should be a consequence of iinterpretation and not of encoding. <br>
+... I don’t think there should be two different encodings.
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; Clarify "encoding"
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> The standard does specify how you interpret the syntax.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> N-Triples encodes triples, which are all in graphs. Anything else is going out on thin ice. I can’t see a purpose to ratifying different interpretation of the syntax.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Are you saying you just want PG mode?
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I don’t want a mode at all.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I'm confused.  It seems to me that this proposal is requiring that :a :b "&lt;a b c&gt;" requires that the triple (a, b, c) be in the graph.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; Sorry for the noise, I need to go already
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> I think you’re saying that the interpretation is modal, because you want to have one interpretation for embedded triples, and wheither it’s treated as its own term or another triples.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I’m not asserting that there are modes, or there may be three modes, but it should be after the fact and not as a consequence of the encoding.
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Isn't this like entailment? Specifically D-entailment -- entailment being an external mechanism.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> It could be that SA and PG are the interpretations, but I don’t want to presume them.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I agree with AndyS, perhaps this relates more to entailment?
+</p>
+
+<p class='phone'>
+<cite>james:</cite> That would be a way to frame it.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I see that SA mode is less committing of the two modes.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> The eproblem of saying SA mode is that there is no PG mode. I’d like to avoid that. <br>
+... My feeling is that both have reasonable use cases.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> The idea is that the need for PG mode was a problem of redundancy, because SA mode is more redundant. <br>
+... Maybe, in other cases, it could be a matter of inferrence.
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> I want to be able to say “Mary said Bob is stupid”, but I don’t want to say “Bob is stupid”. <br>
+... They can interpret my notation as if it’s asserting it, because it may come around to say something I didn’t mean to say.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> To be clear, is the annotation syntax a problem?
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> I don’t see a problem with the syntax, but it may not be easy to implement.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> To james, the problem is that “mode” puts things as either/or, which was useful at the time, but if we have a system where we have a fundamental rule to unify them…
+</p>
+
+<p class='phone'>
+<cite>james:</cite> The concern I have with mode is that it is exclusive.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> my interpretation of this discussion is to get rid of the notion of mode <br>
+... everyone would interpret the syntax the same way <br>
+... the notion of modes was useful before, because we didn't have the appropriate syntax <br>
+... any further matter of interpretation may be a matter of entailment
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; scribe: gkellogg
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: do you agree to merge PR58 Annotation syntax
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1 (I did add one more tweak to the language a few minutes ago)
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I think the discussion of modes is hindering our discussions, and I’d like to get this out of the way.
+</p>
+
+<p class='irc'>
+&lt;<cite>doerthe</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Question: Based on the james' comments, could we add an issue on merging modes?
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; 0
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I think we have a use case which is a point of discussion, but if James thinks it’s necessary,, please feel free to create a new issue.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Thanks pchampin !
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: merge PR58 Annotation syntax
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>doerthe</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1 (including TallTed's tweak from a few mins ago ;)
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; 0
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution02">RESOLUTION: merge PR58 Annotation syntax</strong>
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; 0
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Of course, any other changes would be editorial and aren’t an issue.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Thanks all!
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; bye
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol><li><a href="#resolution01">close issue #8, the current state of section 4 SPARQL* is satisfying</a></li>
+<li><a href="#resolution02">merge PR58 Annotation syntax</a></li>
+</ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

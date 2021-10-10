@@ -1,0 +1,41 @@
+body { font-family: "Open Sans", sans-serif ; 
+       font-size:   15px ;
+       font-weight: 400 ;
+       line-height: 25px;
+       color:       #404040 ;
+}
+
+a         { color : #0000C0 ; }
+a:hover   { text-decoration: underline ; }
+a:visited { color : #000080 ; }
+
+h1 { font-size: 32px ; font-weight: bold ; }
+h2 { font-size: 24px ; font-weight: bold ; }
+h3 { font-size: 18px ; font-weight: bold ; }
+
+code { font-family: "Inconsolata" ; color: black ; background-color: #F0F0F0 ; }
+pre { font-family: "Inconsolata" ; }
+
+pre code { white-space: pre; overflow: auto;}
+
+blockquote { font-size: 14px ; color: #888 ; font-style: italic ; }
+
+table tr td,th {
+  vertical-align: top;
+  border-right: 1px dotted #A0A0A0;
+  border-top: 1px dotted #A0A0A0;
+  padding-left: 2em ;
+  padding-right: 2em ;
+  padding: 0.3em;
+}
+
+table {
+  border: 1px solid #A0A0A0 ;
+  border-spacing: 0;
+}
+
+table th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  background-color: #ededee;
+}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 7 May 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>7 May 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-04-30.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021May/0021.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/05/07-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-05-14.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gatemezing, gkellogg, james, james_, olaf, ora, pchampin, rivettp, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>AndyS, jbollema, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Moving to standard track</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x028 class=summary>Knowledge Graph Conference</p>
+<p id=x029 class="phone s01"><cite>ora:</cite> Got a Q about RDF-star - request for what's going on.</p>
+<p id=x030 class="phone s02"><cite>olaf:</cite> shorter version of Lotico event</p>
+<p id=x033 class="phone s03"><cite>rivettp:</cite> There session on GQL and OSI.<br>
+<span id=x034>… is there unification of work going on?</span></p>
+<p id=x035 class="phone s04"><cite>pchampin:</cite> GQL is following a different track.</p>
+<p id=x038 class="phone s05"><cite>AndyS:</cite> the process is partially responsible of that<br>
+<span id=x039>… the ISO process makes it hard to share with the public</span></p>
+<p id=x041 class="phone s03"><cite>rivettp:</cite> many people at the conference were asking about RDF-star<br>
+<span id=x042>… the seem to expect it to help a convergence between the two worlds</span></p>
+<p id=x043 class="phone s05"><cite>AndyS:</cite> not sure people expect &quot;convergence&quot;</p>
+<p id=x045 class="phone s03"><cite>rivettp:</cite> [something about data interoperability]</p>
+<p id=x046 class=irc><cite>&lt;AndyS&gt;</cite> Ditto.</p>
+<p id=x052 class="phone s01"><cite>ora:</cite> Interesting results of EKGC survey - interoperation a priority<br>
+<span id=x053>… very positive for standardization</span><br>
+<span id=x054>… least important &quot;no code&quot; tools.</span></p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x058 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x060 class=irc><cite>&lt;AndyS&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/163">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>163</a></p>
+<p id=x061 class=irc><cite>&lt;AndyS&gt;</cite> PR 167</p>
+<p id=x064 class="phone s05"><cite>AndyS:</cite> updated SPARQL grammar to allow &lt;&lt; ... &gt;&gt; in expressions<br>
+<span id=x065>… and add corresponding negative test cases</span><br>
+<span id=x066>… and a short section describing how to evaluate these expressions (refering to TRIPLE(...))</span></p>
+<p id=x068 class=irc><cite>&lt;gkellogg&gt;</cite> +1 to merge</p>
+<p id=x069 class="phone s05"><cite>AndyS:</cite> ready to merge in a few days</p>
+<p id=x073 class="phone s04"><cite>pchampin:</cite> other actions?<br>
+<span id=x074>… semantics PR in-progress</span></p>
+</section>
+
+<section>
+<h3 id=t03>Moving to standard track</h3>
+<p id=x078 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021May/0015.html">https://<wbr>lists.w3.org/<wbr>Archives/<wbr>Public/<wbr>public-rdf-star/<wbr>2021May/<wbr>0015.html</a></p>
+<p id=x082 class="phone s04"><cite>pchampin:</cite> Summary of email: W3C suggests starting the chartering process soon as possible.<br>
+<span id=x083>… flow from CG(-like) to WG</span><br>
+<span id=x084>… do not give impression that the WG is a rubber stamp</span><br>
+<span id=x085>… Q1 : Are we OK with that?</span></p>
+<p id=x088 class="phone s06"><cite>thomas:</cite> Who will participate?</p>
+<p id=x090 class=summary>(This is a W3C process question not specific to this WG)</p>
+<p id=x091 class="phone s04"><cite>pchampin:</cite> W3C member organisations nominate individuals.</p>
+<p id=x094 class="phone s07"><cite>phcampin:</cite> we can help with the charter text<br>
+<span id=x095>… and we need chairs</span></p>
+<p id=x097 class="phone s01"><cite>ora:</cite> WG may have invited experts</p>
+<p id=x098 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://www.w3.org/Consortium/Process/">https://<wbr>www.w3.org/<wbr>Consortium/<wbr>Process/</a></p>
+<p id=x106 class="phone s08"><cite>gkellogg:</cite> IE at chairs' discretion<br>
+<span id=x107>… not bypass your own W3C member org</span><br>
+<span id=x108>… CG stands on its own. We will have a final report.</span><br>
+<span id=x109>… (about another WG) ...</span></p>
+<p id=x116 class="phone s09"><cite>jbollema:</cite> Do we need two WGs? - one for RDF, one for SPARQL.</p>
+<p id=x121 class="phone s05"><cite>AndyS:</cite> in the past, some WG have modified other WG's documents<br>
+<span id=x122>… there is a preference to have less WGs</span></p>
+<p id=x124 class="phone s04"><cite>pchampin:</cite> Both would be in scope - will check.</p>
+<p id=x125 class=irc><cite>&lt;ora&gt;</cite> (Are we not using the queue anymore...?)</p>
+<p id=x126 class="phone s10"><cite>gkellog:</cite> Charter will list docs in-scope.</p>
+<p id=x130 class="phone s01"><cite>ora:</cite> Original RDF, RDFS got combined.</p>
+<p id=x131 class="phone s01"><cite>ora:</cite> There will be a delay - chartering, ramp up, IP review</p>
+<p id=x133 class=irc><cite>&lt;thomas&gt;</cite> are we talking months?</p>
+<p id=x134 class="phone s04"><cite>pchampin:</cite> because it will take time, is one reason to start chartering soon. And CG can continue while process proceeds.</p>
+<p id=x135 class=irc><cite>&lt;AndyS&gt;</cite> thomas - yes</p>
+<p id=x137 class=irc><cite>&lt;Zakim&gt;</cite> TallTed, you wanted to say it's all about the charter</p>
+<p id=x140 class="phone s11"><cite>TallTed:</cite> Qs: &quot;CG&quot; input can taken at the point of WG-start-up. Wording in charter.<br>
+<span id=x141>… concern is this RDF 1.2, fork, RDF 2.</span></p>
+<p id=x144 class=irc><cite>&lt;gatemezing&gt;</cite> +1 to TallTed on using the input of this work for the next WG</p>
+<p id=x148 class="phone s05"><cite>AndyS:</cite> there are RDF systems not supporting bnodes<br>
+<span id=x149>… we can live with RDF systems not supporting embedded triples.</span><br>
+<span id=x150>… The important point is that what we propose does not invalidated existing data.</span></p>
+<p id=x151 class=irc><cite>&lt;james&gt;</cite> .. but ... it will invalidate applications</p>
+<p id=x156 class="phone s08"><cite>gkellogg:</cite> Not so much an either/or -- RDF 1.1 has generalized RDF graph.<br>
+<span id=x157>… key is updating docs  for abstract syntax or in &quot;generalized&quot; abstraction</span><br>
+<span id=x158>… AZ mentioned quoted graphs</span></p>
+<p id=x161 class="phone s01"><cite>ora:</cite> concern what does this do to the wider community<br>
+<span id=x162>… we should pay attention to the adoption and presentation</span></p>
+<p id=x168 class="phone s05"><cite>AndyS:</cite> Would chartering avoid implementers submit implementation reports<br>
+<span id=x169>… hope to make internal implementors experiments public.</span><br>
+<span id=x170>… so that we can learn of it.</span></p>
+<p id=x173 class="phone s04"><cite>pchampin:</cite> implementation reports might look like we just want to rubber stamp the existing spec</p>
+<p id=x176 class="phone s05"><cite>AndyS:</cite> this can be turned into something positive<br>
+<span id=x177>… implementation reports will inform the charter</span></p>
+<p id=x180 class="phone s06"><cite>thomas:</cite> who writes the charter?</p>
+<p id=x182 class="phone s04"><cite>pchampin:</cite> Usually W3C team member who will be team contact. Wide review and revision.<br>
+<span id=x183>… general agreement this is the way forward.</span></p>
+<p id=x184 class=irc><cite>&lt;pchampin&gt;</cite> STRAWPOLL: let's write a charter draft</p>
+<p id=x185 class=irc><cite>&lt;jbollema&gt;</cite> +1 for starting on a charter for a WG.</p>
+<p id=x186 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x187 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x188 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x189 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x190 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x191 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x192 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x193 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x194 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=a01 class=action><strong>Action:</strong> pchampin to create a repo for the charter</p>
+<p id=x197 class=irc><cite>&lt;william&gt;</cite> +1</p>
+<p id=x198 class=irc><cite>&lt;pchampin&gt;</cite> STRAWPOLL: have a call next week</p>
+<p id=x199 class=irc><cite>&lt;TallTed&gt;</cite> +0</p>
+<p id=x200 class=irc><cite>&lt;pchampin&gt;</cite> +0</p>
+<p id=x201 class=irc><cite>&lt;thomas&gt;</cite> +0</p>
+<p id=x202 class=irc><cite>&lt;james&gt;</cite> +0</p>
+<p id=x203 class=irc><cite>&lt;gkellogg&gt;</cite> +0</p>
+<p id=x204 class=irc><cite>&lt;william&gt;</cite> +0</p>
+<p id=x205 class=irc><cite>&lt;olaf&gt;</cite> +0</p>
+<p id=x206 class=irc><cite>&lt;AndyS&gt;</cite> +0</p>
+<p id=x207 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x208 class=irc><cite>&lt;jbollema&gt;</cite> +1</p>
+<p id=x209 class=irc><cite>&lt;william&gt;</cite> thanks</p>
+<p id=x210 class=irc><cite>&lt;ora&gt;</cite> bye</p>
+<p id=x212 class=irc><cite>&lt;olaf&gt;</cite> bye</p>
+<p id=x213 class=irc><cite>&lt;jbollema&gt;</cite> bye and thanks</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">pchampin to create a repo for the charter</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

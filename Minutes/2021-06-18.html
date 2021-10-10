@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 18 June 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>18 June 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-06-11.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Jun/0010.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/06/18-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-07-02.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gatemezing, gkellogg, james__, olaf, pchampin, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>william</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>olaf, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">open actions</a></li>
+<li><a href="#t03">Community Group Process</a></li>
+<li><a href="#t04">Publishing a new report</a></li>
+<li><a href="#t05">Admin</a></li>
+<li><a href="#t06">Open-ended discussions</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x030 class="phone s01"><cite>pchampin:</cite> no newcomers<br>
+<span id=x031>… announcements anyone?</span><br>
+<span id=x032>… none</span></p>
+<p id=x033 class=irc><cite>&lt;gkellogg&gt;</cite> regrets for next week</p>
+</section>
+
+<section>
+<h3 id=t02>open actions</h3>
+<p id=x041 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x043 class="phone s01"><cite>pchampin:</cite> only one open action<br>
+<span id=x044>… it has been completed</span></p>
+<p id=x045 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star-wg-charter">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star-wg-charter</a></p>
+<p id=x056 class="phone s01"><cite>pchampin:</cite> initiate a github repo for charter for future WG<br>
+<span id=x057>… simply took the charter template, currently a lot of boiler plate stuff</span><br>
+<span id=x058>… plus a bit of content</span><br>
+<span id=x059>… feedback welcome</span><br>
+<span id=x060>… currently framed as: writing the new version of RDF RECs</span><br>
+<span id=x061>… but everything is open at this stage</span><br>
+<span id=x062>… let#s discuss among us first</span><br>
+<span id=x063>… and later share with the broader community</span></p>
+<p id=x068 class="phone s02"><cite>gkellogg:</cite> deliverable list not complete<br>
+<span id=x069>… serialization syntaxes not complete</span><br>
+<span id=x070>… long list of specs</span><br>
+<span id=x071>… which will be controversial</span></p>
+<p id=x081 class="phone s01"><cite>pchampin:</cite> it's work in progress<br>
+<span id=x082>… out-of-scope section is there</span><br>
+<span id=x083>… essentially saying that our CG report is a patch on several different specs</span><br>
+<span id=x084>… scope of it should be kept tightly focused</span><br>
+<span id=x085>… One possibility mentioned in the draft charter:</span><br>
+<span id=x086>… by updating the specs, we are making use of a new feature of the W3C process</span><br>
+<span id=x087>… namely, documents are &quot;living documents&quot;</span><br>
+<span id=x088>… that can serve as an argument to keep the scope focused</span></p>
+<p id=x091 class="phone s03"><cite>AndyS:</cite> What does it mean to have a &quot;living standard&quot;?</p>
+<p id=x095 class="phone s01"><cite>pchampin:</cite> it means: a REC can be marked to be open to new features<br>
+<span id=x096>… which does not require to go through the whole process (working drafts-&gt;last draft -&gt; etc)</span><br>
+<span id=x097>… makes the process more lightweight</span></p>
+</section>
+
+<section>
+<h3 id=t03>Community Group Process</h3>
+<p id=x102 class="phone s01"><cite>pchampin:</cite> Did homework regarding the proposed transition to a final report<br>
+<span id=x103>… CGs are not WGs</span></p>
+<p id=x104 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://www.w3.org/community/about/faq/">https://<wbr>www.w3.org/<wbr>community/<wbr>about/<wbr>faq/</a></p>
+<p id=x111 class="phone s01"><cite>pchampin:</cite> but still the process is a bit more formalized than thought<br>
+<span id=x112>… two thing:</span><br>
+<span id=x113>… first, we are making a mistake with the list of contributors</span><br>
+<span id=x114>… contributors to a CG report must agree to a license agreement</span><br>
+<span id=x115>… by joining the CG</span><br>
+<span id=x116>… While that's the case for the editors and most of the authors, it's not the case for most of the contributors listed on the draft report</span><br>
+<span id=x117>… easiest way forward: rename that section to Acknowledgements</span></p>
+<p id=x119 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: rename the 'contributors' section to 'acknowledgements', to avoid confusion</p>
+<p id=x127 class=irc><cite>&lt;TallTed&gt;</cite> +1 though I don't think this requires group resolution</p>
+<p id=x128 class="phone s01"><cite>pchampin:</cite> remains in the same place within the doc</p>
+<p id=x131 class="phone s04"><cite>james__:</cite> believes that he had to agree the W3C terms<br>
+<span id=x132>… when joining the CG</span></p>
+<p id=x134 class="phone s01"><cite>pchampin:</cite> maybe that was because of a PR</p>
+<p id=x140 class="phone s01"><cite>pchampin:</cite> we may also question who is in which section<br>
+<span id=x141>… however, the issue at hand is about the third section</span></p>
+<p id=x142 class="phone s03"><cite>AndyS:</cite> doesn't that make it more a bit more complicated?</p>
+<p id=x144 class="phone s01"><cite>pchampin:</cite> when we go to final report, the license changes<br>
+<span id=x145>… currently, everyone is giving license for their own contributions</span></p>
+<p id=x148 class="phone s05"><cite>TallTed:</cite> no issue about being on the calls etc, but about what they have put into the text<br>
+<span id=x149>… we may copy boiler plate text from some other similar report</span></p>
+<p id=x152 class="phone s01"><cite>pchampin:</cite> hoping that the current boiler plate text should be enough<br>
+<span id=x153>… currently just proposing to change the header of the third group of people mentioned on the report</span><br>
+<span id=x154>… checking whether it's okay with everyone to rename the header</span></p>
+<p id=x157 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: rename the 'contributors' section to 'acknowledgement'</p>
+<p id=x158 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x159 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x160 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x161 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x162 class=irc><cite>&lt;olaf&gt;</cite> +1 (Acknowledgements ;)</p>
+<p id=x163 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x164 class=irc><cite>&lt;james__&gt;</cite> 1+</p>
+<p id=x165 class=irc><cite>&lt;TallTed&gt;</cite> +1 +s</p>
+<p id=x166 class=irc><cite>&lt;pchampin&gt;</cite> APPROVED: rename the 'contributors' section to 'acknowledgements'</p>
+<p id=x167 class="phone s01"><cite>pchampin:</cite> now to the second point in this context</p>
+<p id=x168 class=irc><cite>&lt;gatemezing&gt;</cite> And Bob?</p>
+<p id=x171 class="phone s01"><cite>pchampin:</cite> some of the people under &quot;authors&quot; are not in the CG<br>
+<span id=x172>… Peter and Bryan</span><br>
+<span id=x173>… emailed Peter to asked to join the CG</span></p>
+<p id=x174 class="phone s02"><cite>gkellogg:</cite> believe Peter's affiliation has changed</p>
+<p id=x175 class="phone s01"><cite>pchampin:</cite> Bryan?</p>
+<p id=x178 class="phone s06"><cite>olaf:</cite> I'm still in contact with Bryan, I can ask him</p>
+<p id=x181 class="phone s03"><cite>AndyS:</cite> isn't it important which member orga has signed up?<br>
+<span id=x182>… some other affiliation has changed</span></p>
+<p id=x184 class="phone s01"><cite>pchampin:</cite> another thing:<br>
+<span id=x185>… got confirmation that &quot;final&quot; in final report doesn't have to final</span></p>
+<p id=x186 class=irc><cite>&lt;gatemezing&gt;</cite> Was there a link to sign up to this group? I don't remeber ....</p>
+<p id=x187 class="phone s03"><cite>AndyS:</cite> actually, you can join a CG as an individual</p>
+<p id=x200 class="phone s01"><cite>pchampin:</cite> final report<br>
+<span id=x201>… some more hoops to jump through</span><br>
+<span id=x202>… license of the final report is slightly different (final license agreement)</span><br>
+<span id=x203>… an email will be sent to all participants of the CG asking them to explicitly agree to that final license agreement</span><br>
+<span id=x204>… Now, there are a lot of people in the CG who are not involved in this work</span><br>
+<span id=x205>… hence, it may be a bit strange for them</span><br>
+<span id=x206>… Other issue: the final report will end up on the W3C pages</span><br>
+<span id=x207>… which will make it a bit more complicated if there will be another &quot;final&quot; version later</span><br>
+<span id=x208>… The final report may be published even before everyone has signed that final license agreement</span></p>
+<p id=x212 class=summary>;-)</p>
+<p id=x213 class="phone s07"><cite>gatemazing:</cite> don't see the point about being reluctant about putting this on a W3C page</p>
+<p id=x216 class="phone s01"><cite>pchampin:</cite> didn't mean not to do that ever<br>
+<span id=x217>… but still better to wait until we are more convinced that things don't need to be changed</span><br>
+<span id=x218>… reluctant to end up with many &quot;final&quot; version</span></p>
+<p id=x222 class="phone s03"><cite>AndyS:</cite> another reason for pushing towards final was<br>
+<span id=x223>… to be able to mention it in the charter</span><br>
+<span id=x224>… but that doesn't seem to be needed anymore</span></p>
+<p id=x229 class="phone s01"><cite>pchampin:</cite> right<br>
+<span id=x230>… the LD license WG charter also points to draft reports</span><br>
+<span id=x231>… so, that's not a blocking point</span></p>
+</section>
+
+<section>
+<h3 id=t04>Publishing a new report</h3>
+<p id=x239 class="phone s01"><cite>pchampin:</cite> do we agree that it's a good time to publish another version?<br>
+<span id=x240>… maybe not yet marked as &quot;final&quot;</span><br>
+<span id=x241>… we have some new content, plus several new parts about controversial content</span><br>
+<span id=x242>… technical work quite mature now</span><br>
+<span id=x243>… probably a good time now to have a new timestamped version</span></p>
+<p id=x244 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x245 class=irc><cite>&lt;AndyS&gt;</cite> +1 to publishing as a draft</p>
+<p id=x246 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: publish the current editor's draft as a new draft report</p>
+<p id=x247 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x248 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x249 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x250 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x251 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x252 class=irc><cite>&lt;james__&gt;</cite> +1</p>
+<p id=x253 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x254 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x255 class=irc><cite>&lt;pchampin&gt;</cite> APPROVED: publish the current editor's draft as a new draft report</p>
+<p id=x257 class="phone s01"><cite>pchampin:</cite> good, will take care of publishing it<br>
+<span id=x258>… will create PR with the new version</span></p>
+<p id=a01 class=action><strong>Action:</strong> pchampin to make a PR for the new public draft</p>
+<p id=x261 class="phone s01"><cite>pchampin:</cite> and give some time for us to react</p>
+</section>
+
+<section>
+<h3 id=t05>Admin</h3>
+<p id=x267 class="phone s01"><cite>pchampin:</cite> more convenient to have these calls less frequent<br>
+<span id=x268>… e.g., every other week</span><br>
+<span id=x269>… also, considering that the summer break is coming</span><br>
+<span id=x270>… any objections?</span></p>
+<p id=x271 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x274 class=irc><cite>&lt;TallTed&gt;</cite> semiweekly == twice a week; biweekly == fortnightly</p>
+<p id=x275 class="phone s08"><cite>gatemezing:</cite> regarding summer, should we have a break / a month without calls ?</p>
+<p id=x277 class="phone s01"><cite>pchampin:</cite> we have to discuss</p>
+<p id=x278 class=irc><cite>&lt;AndyS&gt;</cite> +1 les quinze jours</p>
+<p id=x280 class="phone s01"><cite>pchampin:</cite> not clear how things will go in August<br>
+<span id=x281>… generally, yes, we may expect a longer break during summer</span></p>
+<p id=x282 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: have our calls every 2 weeks, starting now</p>
+<p id=x283 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x284 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x285 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x286 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x287 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x288 class=irc><cite>&lt;thomas&gt;</cite> 0</p>
+<p id=x289 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x290 class=irc><cite>&lt;james__&gt;</cite> +0</p>
+<p id=x291 class=irc><cite>&lt;pchampin&gt;</cite> APPROVED: have our calls every 2 weeks, starting now</p>
+<p id=x296 class="phone s02"><cite>gkellogg:</cite> August is typically lightly attended<br>
+<span id=x297>… maybe we can survey who  will be around when</span></p>
+<p id=x299 class=irc><cite>&lt;thomas&gt;</cite> pause in august</p>
+<p id=x301 class="phone s01"><cite>pchampin:</cite> any other ideas how to proceed during summer?<br>
+<span id=x302>… perhaps we can come back to this question in a future call</span></p>
+</section>
+
+<section>
+<h3 id=t06>Open-ended discussions</h3>
+<p id=x306 class="phone s01"><cite>pchampin:</cite> any other business?</p>
+<p id=x310 class="phone s09"><cite>thomas:</cite> about my proposal from last week<br>
+<span id=x311>… my idea to remove it and create several separate PRs</span></p>
+<p id=x313 class="phone s01"><cite>pchampin:</cite> took liberty to mark thomas' PR as a draft PR<br>
+<span id=x314>… which indicates that it is not meant to be merged</span></p>
+<p id=x315 class="phone s09"><cite>thomas:</cite> sounds good</p>
+<p id=x317 class="phone s01"><cite>pchampin:</cite> to keep the discussion focused it's more practical to have smaller PRs<br>
+<span id=x318>… you can still mark them as draft</span></p>
+<p id=x319 class="phone s09"><cite>thomas:</cite> new branch needed for that?</p>
+<p id=x320 class="phone s01"><cite>pchampin:</cite> yes, always a new branch in your own forked repo</p>
+<p id=x323 class="phone s09"><cite>thomas:</cite> okay.<br>
+<span id=x324>… try to put something together for the next meeting in two weeks</span></p>
+<p id=x327 class="phone s01"><cite>pchampin:</cite> anything else anyone?<br>
+<span id=x328>… nope -- we can finish early ;-)</span></p>
+<p id=x329 class=irc><cite>&lt;gatemezing&gt;</cite> Thanks pchampin .. thanks all</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">pchampin to make a PR for the new public draft</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

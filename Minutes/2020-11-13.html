@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF* -- 13 Nov 2020</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF*" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF*</h1>
+<h2>13 Nov 2020</h2>
+
+<p><a href='https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0009.html'>Agenda</a></p>
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>Pierre-Antoine Champin, James Anderson, Peter Patel-Schneider, Ruben Taelman, Jerven Bolleman, Andy Seaborne, Pete Rivett, Pavel Klinov, Thomas Lörtsch</dd>
+<dt>Regrets</dt>
+<dd></dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>rubensworks</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">Issue #15: CG Report scope : document alternatives or only make one proposal</a></li>
+<li><a href="#item02">Issues tagged with 'help-wanted'</a></li>
+<li><a href="#item03">Issue #22: Do you need referential opacity?</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; Meeting: RDF*
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; Agenda: <a href="https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0009.html">https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0009.html</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribenick: rubensworks
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> In the agenda we said to start with a round of introductions. <br>
+... I am an associate professor in Uni Lyon.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; pchampin is associate professor in Lyon.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; is currently on sabatical and helps olaf getting organized
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Currently in a sabattical. I proposed to Olaf to get things organized around RDF*.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; already in a few working groups
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I was part of a few WGs, such as RDF 1.1, and JSON-LD 1.1.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; Andy Seaborne, is involved in several standards.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> I am Andy Seaborne, involved in several RDF standard.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; Trying to understand usecases and long term benefit
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; Sorry for also scribing, hope it helps
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Not with a specific technical agenda. One interest I have is how to make the tech acceptable, so we can deploy it.
+</p>
+
+<p class='phone'>
+<cite>Pavel_Klinov:</cite> I am an engineer at Stardog. Focus on query evaluation in RDF, and was involved in the RDF* implementation.
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I am with Datagraph/Dydra, a ... and SPARQL service. I'm here for the use cases. I hope to not only focus on the open-source world, but also our implementation.
+</p>
+
+<p class='phone'>
+<cite>Jerven:</cite> I work on uniprot at university of ?. I want to implement RDF* in Python and ?. My main focus is compact in ecosystem.
+</p>
+
+<p class='irc'>
+&lt;<cite>Pavel_Klinov</cite>&gt; Sorry, will try to speak louder, the mic settings seem ok
+</p>
+
+<p class='phone'>
+Pete Rivett: I work for Agnos AI. We build business solution around KG technology. I'm very much a user, and interested in acceptability and consistency among different platforms.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; Jerven &lt;- I work at the SIB Swiss Institute of Bioinformatics. I work on providing data in RDF such as UniProt, Rhea and Swisslipids. I worked on implementing rdf* in Python rdflib, and my worry is comatiablity in the ecosyttem
+</p>
+
+<p class='phone'>
+Peter Patel-Schneider: I work for PARC (Palo Alto Research Center)(?) (part of Xerox). I hope this will all turn out well. Interested in whether RDF* is just a surface syntax, or if it needs something new, and if this is reasonable to provide.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribenicks: pchampin
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; rubensworks: researcher at Gent Univesity (Belgium). Focusing on decentralized query execution. RDF
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ... Interested in RDF* and SPARQL*, and its impact on the research world
+</p>
+
+<p class='irc'>
+&lt;<cite>rubenswork</cite>&gt; scribenick: rubensworks
+</p>
+
+<p class='phone'>
+Thomas Lortsch: Student at Hagen(?) in Germany. Focusing on data modeling techniques. Observer for RDF*. My concern is that the scope is ?. I want to know how it fits together with other annotation approaches.
+</p>
+
+<h3 id="item01">Issue #15: CG Report scope : document alternatives or only make one proposal</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/15">https://github.com/w3c/rdf-star/issues/15</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Olaf already gave his position in this issue, so I can talk for him on that. <br>
+... Goal is to make something that looks like a standard. <br>
+... As a CG, we don't have the power to make a REC. But we can draft one with the goal for a future WG. <br>
+... Via this way, we can move things faster than discussing things on the mailinglist. <br>
+... Side-note, adding yourself to the speaking queue is done by typing 'q+' in IRC.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> I raised this issue here because there are alternatives. We could have a draft spec, or an overview of the possibilities. W3C would benefit to have a solid spec from a CG. This would allow implementations to start early in the community.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Agree, since implementations already started, we need a draft spec to avoid divergence.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> I want to vote to go for one solution instead of several. This avoids people having to implement other options and later on change things.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> I have the feeling we want to get to tech work asap. Before we can do this, we need a consensus on the approach. For this, we need to have an overview of the use cases. <br>
+... Use cases such as providence, waiting for links, ... I am interested to hear what people are using RDF* for.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/EasierRDF/blob/master/RDFstar/RDFStarUCandRequirements.html">https://github.com/w3c/EasierRDF/blob/master/RDFstar/RDFStarUCandRequirements.html</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> There was a document started with use cases, but it doesn't seem complete.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> I will make an issue and send a mail to collect them in there.
+</p>
+
+<a name="action01"></a>
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; <strong>ACTION:</strong> AndyS: Open issue for UC&amp;R, email list to highlight and invite UCs
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> We have to make sure the use cases are recorded somewhere. Still, the current report aims to become something like a spec. There are impls, and we don't want everyone to go in their preferred direction.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: close issue #15, the current report should be a single proposal
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>rat10</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>Pavel_Klinov</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +1
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution01">RESOLUTION: close issue #15, the current report should be a single proposal</strong>
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I don't think it is *necessary* to capture all potential use cases.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Someone mentioned opening the wiki on GH. We don't have to create a deliverable, so the wiki might be a good medium.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; ... or even all actual use cases.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> If you are obligated to capture all potential use cases, then you'll have something very complicated, which may not be what we want. So we have to define what types of use cases we want to capture.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Agreed, not all use cases need to be handled by the spec, we just need to have discussed/seen them.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Several use cases I've seen appear to need a mulit-modal logic, which, in my view, is out of scope for RDF*.
+</p>
+
+<p class='irc'>
+&lt;<cite>rat10</cite>&gt; use cases could be a good way to clear what RDF* is and what it isn't
+</p>
+
+<p class='irc'>
+&lt;<cite>rat10</cite>&gt; or doesn't want to be
+</p>
+
+<h3 id="item02">Issues tagged with 'help-wanted'</h3>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; and we don't have to solve all UC. What it isn't is v important.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I've tagged several issues with the tag help-wanted. <br>
+... There are three of them. <br>
+... They could be implemented in a PR.
+</p>
+
+<p class='phone'>
+<a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/labels/help%20wanted">https://github.com/w3c/rdf-star/labels/help%20wanted</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; Did my sound go or is everyone quiet?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Two of them were proposed by Jeen, who could not join today. <br>
+... These are about result set in JSON and XML as response by SPARQL endpoints. They are implemented in different variants already, so we need to do this to avoid heterogeneity.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; Sorry missed a bit, as sound stoped working.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> I'm not sure if it's clear this is actually needed.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; SELECT * { ?x :createdBy :alice }
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> If RDF* is a shorthand for some form of RDF, then output could just be RDF, like before.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> If RDF* is just syntax, then we wouldn't need to do anything.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> Indeed, not saying this is a good idea. We just need to determine this first. <br>
+... It's fine if someone is willing to do the work, just as long as we're clear there is a chance this may not end up in the original report, otherwise people may get annoyed.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> You're right. The next issue about referential transparency will determine whether or not RDF* is just syntax. <br>
+... I don't fully agree, for example in the case of my query above. In this case, ?x can be an embedded triple, and it would be desired that the full triple would be returned.
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; could you not have a syntactic sugar for the results also? As an option
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> SPARQL output formats are pretty canonical. So doing "something extra" sounds very ... for clients that understand.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Some clients do indeed understand the returned triple format. <br>
+... So perhaps this issue is not trivial indeed.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; The issue is that consumers of SPARQL output need to be able to understand this "enhanced" output.  Right now this is fairly simple, and making it non-simple is not a good idea.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> pfps: how should we proceed then?
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> As a first step, we need to figure out what RDF* is. Only then can we define what SPARQL* is. <br>
+... Someone can independently to produce a report for SPARQL*, but it should not be final yet, because it may become irrelevant.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> In order to determine what RDF* is, we have to wait until people give use feedback on use cases. <br>
+... I propose to discuss the referential opacity issue.
+</p>
+
+<h3 id="item03">Issue #22: Do you need referential opacity?</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/22">https://github.com/w3c/rdf-star/issues/22</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> This is about one of the most challenging parts of the current spec. This is what prevents us from standard reification as an underlying model for RDF*. Reification is not referentially opaque, i.e., they talk about the statement, not the things in the statements.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Here is where the multi-modal logic creeps in.  Someone is going to have to very carefully delimit what is supposed to happen and what can be done.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> If Lois believes supermand can fly. If we believe Superman==Clark kent, we should not believe Clark Kent can fly. (scribe: I hope I wrote this down right...)
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I vote -1
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; A better example is &lt; susan says &lt;&lt; john height 6.0 &gt;&gt; &gt;  vs &lt; susan says &lt;&lt; john height 6.00 &gt;&gt; &gt;
+</p>
+
+<p class='phone'>
+<cite>Jerven:</cite> I didn't have the feeling that without sameAs reasoning, the problem doesn't disappear. I was wondering if this wasn't a problem. sameAs isn't the source of the problem, but multiple people may say things about the same things.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Problem is about the fact that two IRIs may reference the same thing, owl:sameAs is the easiest way to do this. Same thing can happen with literals, so you don't need owl for that, just datatype-aware inference. <br>
+... We are not interested in the referent of the terms, just the terms themselves.
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; what if we have lois believes Superman owl:sameAs ClarkKent?
+</p>
+
+<p class='phone'>
+<cite>Jerven:</cite> What is missing, if you put the same problem, but put ClarkKent everywhere, then you still have the same problem. <br>
+... I don't have the feeling the proposed solution solves the problem we're having. I will write it down in an email, because this is hard via a call.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; the problem here is that RDF is not a modal logic.  Using it for that purpose is not going to work.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> There are lots of cases where you can say things in RDF and RDF* that look nice. Anything that assumes there being a there there, is not correct. There is not modal reasoning in RDF. If you want to solve this, go to N3.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Not that I'm recommending going to N3.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I understand that the belief thing may lead to modal logic, but I'm not asking RDF* to be modal logic. <br>
+... Provenance is a use case that is less slippery. <br>
+... It may benefit from ref opacity as well. <br>
+... We may be interested in not only what was said, but also how it was said.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> Trouble is that now, provenance has a different kind of problem. <br>
+... Every act of asserting prov is an interpreation of what happened. It is not about what actually happened. To see this, go to any political situation.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I agree that provenance is *less* slippery, but it is not completely non-slippery.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Isn't this an argument to not overinterpret those prov annotated triples?
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> Problem there is not overinterpretation, but actually getting the tokens correct.
+</p>
+
+<p class='irc'>
+&lt;<cite>Jerven</cite>&gt; \q?
+</p>
+
+<p class='phone'>
+<cite>rat10:</cite> I'm not decided on what's best. There have been long discussions on that the interpretation of named graphs. <br>
+... If you want to be faithful, you use a datatype string for what you want to annotate, but you can't sparql that, and can't have bnodes.
+</p>
+
+<p class='phone'>
+<cite>Pavel_Klinov:</cite> I'm missing in this discussion, whether this depends on SA/PG mode.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I don't see that assertion changes an opaque semantics to a transparent one.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I'm not sure. This feels orthogonal to me.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; And here we are again with multi-modal reasoning.
+</p>
+
+<p class='phone'>
+<cite>Jerven:</cite> If you run OWL inference, you want to run it. You *do* say these explicit things. Sometimes you may not want to run it.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I disagree that this would be a requirement for OWL reasoning. <br>
+... We won't solve this today. <br>
+... I did some experiments, and most systems I tested have ref opacity at the moment.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; and thanks to ruben for scribing!
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; pchampin - I just did a PR to copy the UC&amp;R doc from EasierRDF so it wil be (if I got it oight)  visible as ... HTML appearance, not HTML tags.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; @AndyS good idea, thx
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/29">https://github.com/w3c/rdf-star/issues/29</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; UC&amp;R issue
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+<strong>[NEW]</strong> <strong>ACTION:</strong> AndyS: Open issue for UC&amp;R, email list to highlight and invite UCs <br />
+&nbsp;<br />
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol><li><a href="#resolution01">close issue #15, the current report should be a single proposal</a></li>
+</ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>
