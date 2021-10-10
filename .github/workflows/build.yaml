@@ -6,7 +6,8 @@ jobs:
     strategy:
       matrix:
         framework: ["net472", "netcoreapp3.1"]
-        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.HtmlSchema.Tests"]
+        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.HtmlSchema.Tests",
+        "dotNetRdf.TestSuite.RdfStar"]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
