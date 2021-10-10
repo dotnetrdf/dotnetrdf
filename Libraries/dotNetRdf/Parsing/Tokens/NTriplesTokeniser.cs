@@ -45,7 +45,6 @@ namespace VDS.RDF.Parsing.Tokens
         public NTriplesTokeniser(ParsingTextReader input, NTriplesSyntax syntax)
             : base(input)
         {
-            NQuadsMode = false;
             _in = input;
             Format = "NTriples";
             Syntax = syntax;
@@ -104,6 +103,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// In the case of NQuads a <see cref="UriToken">UriToken</see> may follow a Literal as the Context of that Triple and not its datatype so it's important to distinguish by using a <see cref="DataTypeToken">DataTypeToken</see> instead.
         /// </para>
         /// </remarks>
+        [Obsolete("This property is no longer used. The tokenizer now behaves consistently for NQuads and NTriples syntax. This property will be removed in a future release.")]
         public bool NQuadsMode { get; set; }
 
         /// <summary>
@@ -173,7 +173,21 @@ namespace VDS.RDF.Parsing.Tokens
 
                             case '<':
                                 // Start of a Uri
-                                return TryGetUri();
+                                return TryGetUriOrStartQuote();
+
+                            case '>':
+                                // End of a quoted triple
+                                ConsumeCharacter();
+                                next = Peek();
+                                if (next == '>')
+                                {
+                                    ConsumeCharacter();
+                                    LastTokenType = Token.ENDQUOTE;
+                                    return new EndQuoteToken(CurrentLine, StartPosition);
+                                }
+
+                                throw UnexpectedCharacter(next,
+                                    "the second > as part of a >> quoted triple end marker");
 
                             case '_':
                                 // Start of a  Blank Node ID
@@ -269,6 +283,42 @@ namespace VDS.RDF.Parsing.Tokens
             throw Error("Unexpected Content '" + output + "' encountered, expected a valid Language Specifier");
         }
 
+
+        private IToken TryGetUriOrStartQuote()
+        {
+            // Consume the first character which must have been a <
+            ConsumeCharacter();
+            var next = Peek();
+            if (Syntax == NTriplesSyntax.Rdf11Star && next == '<')
+            {
+                ConsumeCharacter();
+                LastTokenType = Token.STARTQUOTE;
+                return new StartQuoteToken(CurrentLine, StartPosition);
+            }
+
+            // Handle as first character of a URI Token
+            HandleUriTokenChar(next);
+            return TryGetUri();
+        }
+
+        private void HandleUriTokenChar(char c)
+        {
+            if (Syntax == NTriplesSyntax.Original && c > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
+
+            // Watch out for escapes
+            if (c == '\\')
+            {
+                HandleEscapes(Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.PermissiveUri : TokeniserEscapeMode.Uri);
+            }
+            else if (Syntax == NTriplesSyntax.Rdf11 && c == ' ')
+            {
+                throw Error("Spaces are not valid in URIs");
+            }
+            else
+            {
+                ConsumeCharacter();
+            }
+        }
         private IToken TryGetUri()
         {
             // Consume the first Character which must have been a <
@@ -280,21 +330,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 next = Peek();
 
-                if (Syntax == NTriplesSyntax.Original && next > 127) throw Error("Non-ASCII characters are not permitted in Original NTriples, please set the Syntax to Rdf11 to support characters beyond the ASCII range");
-
-                // Watch out for escapes
-                if (next == '\\')
-                {
-                    HandleEscapes(Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.PermissiveUri : TokeniserEscapeMode.Uri);
-                }
-                else if (Syntax == NTriplesSyntax.Rdf11 && next == ' ')
-                {
-                    throw Error("Spaces are not valid in URIs");
-                }
-                else
-                {
-                    ConsumeCharacter();
-                }
+                HandleUriTokenChar(next);
 
             } while (next != '>');
 
@@ -410,7 +446,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 // Uri for Data Type
                 IToken temp = TryGetUri();
-                return NQuadsMode ? new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1) : temp;
+                return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1);
             }
             throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");
         }

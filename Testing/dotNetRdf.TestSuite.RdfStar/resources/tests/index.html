@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <title>RDF-star Test Suite</title>
+    <link rel='alternate' type="text/turtle" href='manifest.ttl'>
+    <link rel='alternate' type="application/ld+json" href='manifest.jsonld'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet'>
+  </head>
+  <body>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1>RDF-star Test Suite</h1>
+    <p>This manifest loads additional manifests for specific behavior tests for
+      <a href="https://w3c.github.io/rdf-star">RDF-star</a></p>
+
+    <p>This is an HTML version of a test manifest.
+      Alternate versions of the manifest may be found at
+      <a href="manifest.ttl">manifest.ttl</a>, and
+      <a href="manifest.jsonld">manifest.jsonld</a>.</p>
+
+    <p>The RDF-star Test Suite is a set of tests that can
+    be used to verify Processor conformance.</p>
+
+    <h2>General instructions for running the RDF-star Test suites</h2>
+
+    <p>Tests are run broadly the same as those for relevant
+      test suites for Turtle, SPARQL, and RDF 1.1 Entailment.</p>
+
+    <h1>Running tests</h1>
+
+    <p>The top-level <a href="manifest.ttl">manifest</a>
+      references the specific test manifests,
+      which in turn reference each test associated with
+      a particular behavior. This includes the following test manifests:</p>
+
+    <ul>
+      <li><a href="nt/syntax/">N-Triples Syntax tests</a>,</li>
+      <li><a href="semantics/">Semantics tests</a>,</li>
+      <li><a href="sparql/syntax/">SPARQL Syntax tests</a>,</li>
+      <li><a href="sparql/eval/">SPARQL Evaluation tests</a>,</li>
+      <li><a href="trig/syntax/">TriG Syntax tests</a>,</li>
+      <li><a href="trig/eval/">TriG Evaluation tests</a>,</li>
+      <li><a href="turtle/syntax/">Turtle Syntax tests</a>,</li>
+      <li><a href="turtle/eval/">Turtle Evaluation tests</a>,</li>
+    </ul>
+
+    <p>Implementations create their own infrastructure for running the test suite.
+      In particular, the following should be considered:</p>
+
+    <ul>
+      <li>See <a href="https://w3c.github.io/rdf-tests/ntriples/">general guidance for running N-Triples tests</a>.</li>
+      <li>See <a href="https://w3c.github.io/rdf-tests/sparql11/">general guidance for running SPARQL 1.1 tests</a>.</li>
+      <li>See <a href="https://w3c.github.io/rdf-tests/turtle/">general guidance for running Turtle tests</a>.</li>
+      <li>See <a href="semantics/README">general guidance for running Semantics tests</a>.</li>
+    </ul>
+
+    <p>See the <a href="../reports/">implementation</a> report for guidance on reporting test
+      results using the <a href="http://www.w3.org/TR/EARL10-Schema/">EARL</a> format.</p>
+
+    <h1>Contributing Tests</h1>
+
+    <p>If you would like to contribute a new test or a fix to an existing test,
+please submit a Pull Request using either the <a 
+href="https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request">GitHub web interface</a>, 
+the steps below with a git client, or your preferred equivalent.</p>
+
+    <ol>
+    <li>Clone the git repository: <a href="https://github.com/w3c/rdf-star">https://github.com/w3c/rdf-star</a></li>
+    <li>Create a new branch.</li>
+    <li>Make your changes, commit to your branch and push to your clone.</li>
+    <li>Create a Pull Request in the <a href="https://github.com/w3c/rdf-star/pulls">RDF-star repository</a>
+      to merge into the default ("main") branch.</li>
+    </ol>
+
+    <h2>Distribution</h2>
+
+    <p>Distributed under the
+      <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">
+        W3C Test Suite License
+      </a>.
+      To contribute to a W3C Test Suite, see the
+      <a href="http://www.w3.org/2004/10/27-testcases">
+        policies and contribution forms
+      </a>.</p>
+
+    <h2>Disclaimer</h2>
+
+    <p>UNDER THE EXCLUSIVE LICENSE, THIS DOCUMENT AND ALL DOCUMENTS,
+      TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot;
+      AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES,
+      EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,
+      WARRANTIES OF MERCHANTABILITY,
+      FITNESS FOR A PARTICULAR PURPOSE,
+      NON-INFRINGEMENT, OR TITLE;
+      THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE;
+      NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE
+      ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+      COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL
+      OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT
+      OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+
+    <h2>Code of Conduct</h2>
+
+    <p>W3C functions under a <a href="https://www.w3.org/Consortium/cepc/">code of conduct</a>.</p>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+{
+    "@context": {
+        "rdf":  "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "mf":   "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+        "rdft": "http://www.w3.org/ns/rdftest#",
+        "xsd":  "http://www.w3.org/2001/XMLSchema#",
+        "qt":   "http://www.w3.org/2001/sw/DataAccess/tests/test-query#",
+        "ut":   "http://www.w3.org/2009/sparql/tests/test-update#",
+        "test": "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
+        "trs":  "https://w3c.github.io/rdf-star/tests/turtle/syntax#",
+        "@vocab": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+        "@base": "",
+        "include": {
+            "@type": "@id",
+            "@container": "@list"
+        },
+        "entries": {
+            "@type": "@id",
+            "@container": "@list"
+        },
+        "recognizedDatatypes": {
+            "@type": "@id",
+            "@container": "@list"
+        },
+        "unrecognizedDatatypes": {
+            "@type": "@id",
+            "@container": "@list"
+        },
+        "action": {
+            "@type": "@id"
+        },
+        "qt:query": {
+            "@type": "@id"
+        },
+        "qt:data": {
+            "@type": "@id"
+        },
+        "ut:request": {
+            "@type": "@id"
+        },
+        "ut:data": {
+            "@type": "@id"
+        },
+        "result": {
+            "@type": "@id"
+        },
+        "label": "rdfs:label",
+        "comment": "rdfs:comment",
+        "seeAlso": {
+            "@id": "rdfs:seeAlso",
+            "@type": "@vocab"
+        },
+        "approval": {
+            "@id": "test:approval",
+            "@type": "@vocab",
+            "@context": {
+                "Approved": "test:Approved",
+                "Proposed": "test:NotClassified",
+                "NotClassified": "test:NotClassified",
+                "Rejected": "test:Rejected",
+                "Obsoleted": "test:Obsoleted",
+                "Withdrawn": "test:Withdrawn"
+            }
+        },
+        "TestTurtlePositiveSyntax": "rdft:TestTurtlePositiveSyntax",
+        "TestTurtleNegativeSyntax": "rdft:TestTurtleNegativeSyntax",
+        "statusOf": {
+            "@reverse": "test:approval"
+        }
+    },
+    "@type": "mf:Manifest",
+    "entries": {
+        "@embed": true
+    },
+    "@included": [
+        {
+            "approval": {
+                "@id": ["test:Rejected", "test:Obsoleted", "test:Withdrawn"]
+            }
+        }
+    ]
+}

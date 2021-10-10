@@ -1,0 +1,6 @@
+---
+:format: :json
+:base: https://w3c.github.io/rdf-star/tests/
+:manifest: manifests.nt
+:bibRef: ! '[[rdf-star]]'
+:name: RDF-star

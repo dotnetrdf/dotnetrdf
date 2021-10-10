@@ -47,6 +47,11 @@ namespace VDS.RDF.Parsing
         /// Standardized NTriples as specified in the <a href="http://www.w3.org/TR/n-triples/">RDF 1.1 NTriples</a> specification
         /// </summary>
         Rdf11,
+
+        /// <summary>
+        /// NTriples-Star
+        /// </summary>
+        Rdf11Star,
     }
 
     /// <summary>
@@ -347,7 +352,7 @@ namespace VDS.RDF.Parsing
             if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
         }
 
-        private INode TryParseSubject(TokenisingParserContext context)
+        internal static INode TryParseSubject(TokenisingParserContext context)
         {
             IToken subjToken = context.Tokens.Dequeue();
 
@@ -369,12 +374,14 @@ namespace VDS.RDF.Parsing
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
                     throw Error("Subject cannot be a Literal in NTriples", subjToken);
+                case Token.STARTQUOTE:
+                    return TryParseQuotedTriple(context);
                 default:
                     throw Error("Unexpected Token '" + subjToken.GetType().ToString() + "' encountered, expected a Blank Node or URI for the Subject of a Triple", subjToken);
             }
         }
 
-        private INode TryParsePredicate(TokenisingParserContext context)
+        internal static INode TryParsePredicate(TokenisingParserContext context)
         {
             IToken predToken = context.Tokens.Dequeue();
 
@@ -400,7 +407,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private INode TryParseObject(TokenisingParserContext context)
+        internal static INode TryParseObject(TokenisingParserContext context)
         {
             IToken objToken = context.Tokens.Dequeue();
 
@@ -432,13 +439,18 @@ namespace VDS.RDF.Parsing
                         case Token.LANGSPEC:
                             context.Tokens.Dequeue();
                             return context.Handler.CreateLiteralNode(objToken.Value, next.Value);
-                        case Token.URI:
+                        //case Token.URI:
+                        //    context.Tokens.Dequeue();
+                        //    return context.Handler.CreateLiteralNode(objToken.Value, ((IUriNode)TryParseUri(context, next.Value)).Uri);
+                        case Token.DATATYPE:
                             context.Tokens.Dequeue();
-                            return context.Handler.CreateLiteralNode(objToken.Value, ((IUriNode)TryParseUri(context, next.Value)).Uri);
+                            return context.Handler.CreateLiteralNode(objToken.Value,
+                                ((IUriNode)TryParseUri(context, next.Value.Substring(1, next.Value.Length-2))).Uri);
                         default:
                             return context.Handler.CreateLiteralNode(objToken.Value);
                     }
-
+                case Token.STARTQUOTE:
+                    return TryParseQuotedTriple(context);
                 default:
                     throw Error("Unexpected Token '" + objToken.GetType().ToString() + "' encountered, expected a Blank Node, Literal or URI for the Object of a Triple", objToken);
             }
@@ -467,7 +479,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Context.</param>
         /// <param name="uri">URI.</param>
         /// <returns>URI Node if parsed successfully.</returns>
-        private static INode TryParseUri(TokenisingParserContext context, string uri)
+        internal static INode TryParseUri(TokenisingParserContext context, string uri)
         {
             try
             {
@@ -479,6 +491,35 @@ namespace VDS.RDF.Parsing
             catch (UriFormatException uriEx)
             {
                 throw new RdfParseException("Invalid URI encountered, see inner exception for details", uriEx);
+            }
+        }
+
+        /// <summary>
+        /// Tries to parse a quoted triple.
+        /// </summary>
+        /// <param name="context">Context.</param>
+        /// <returns>Triple node if parsed successfully.</returns>
+        private static ITripleNode TryParseQuotedTriple(TokenisingParserContext context)
+        {
+            INode subj = TryParseSubject(context);
+            INode pred = TryParsePredicate(context);
+            INode obj = TryParseObject(context);
+            TryParseEndQuote(context);
+            return new TripleNode(new Triple(subj, pred, obj));
+        }
+
+        /// <summary>
+        /// Try to parse an end-quote marker.
+        /// </summary>
+        /// <param name="context">Context.</param>
+        private static void TryParseEndQuote(ITokenisingParserContext context)
+        {
+            IToken next = context.Tokens.Dequeue();
+
+            // Ensure we finish with an end quote
+            if (next.TokenType != Token.ENDQUOTE)
+            {
+                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a '>>' to terminate a quoted triple.", next);
             }
         }
 

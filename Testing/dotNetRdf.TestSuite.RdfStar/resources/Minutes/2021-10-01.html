@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 01 October 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>01 October 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-09-17.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Sep/0046.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/10/01-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-10-15.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>/-0, AndyS, Doerthe, Fabio, Fabio_Vitali, gatemezing, gkellogg, olaf, ora, pchampin, present, rivettp, TallTed, thomas, william</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>AndyS, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">PR #206 Paragraph and figure in the intro</a></li>
+<li><a href="#t04">PR #209: New section about selective referential transparency</a></li>
+<li><a href="#t05">Issue #3: 'conformance' section</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x019 class=irc><cite>&lt;ora&gt;</cite> not me</p>
+</section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x024 class=irc><cite>&lt;TallTed&gt;</cite> New headsets for everyone!</p>
+<p id=x026 class=irc><cite>&lt;Fabio&gt;</cite> Hello everybody</p>
+<p id=x027 class=summary>use case - security labels for publishing attribute-based security of data</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x031 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x032 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/196">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>196</a></p>
+<p id=x034 class="phone s01"><cite>ora:</cite> work for 196 done; will submit a PR.</p>
+<p id=x035 class=irc><cite>&lt;gkellogg&gt;</cite> <a href="https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request">https://<wbr>docs.github.com/<wbr>en/<wbr>github/<wbr>collaborating-with-pull-requests/<wbr>proposing-changes-to-your-work-with-pull-requests/<wbr>creating-a-pull-request</a></p>
+<p id=x036 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/202">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>202</a></p>
+<p id=x037 class=irc><cite>&lt;Fabio&gt;</cite> I have problems in understanding the whole concept of &quot;quoted&quot;. Is this the right moment in time to express it or did I just loose the magic moment?</p>
+<p id=x038 class=irc><cite>&lt;pchampin&gt;</cite> solved by PR <a href="https://github.com/w3c/rdf-star/pull/209">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>209</a></p>
+<p id=x040 class="phone s02"><cite>pchampin:</cite> per-property semantics -- PR in progress<br>
+<span id=x041>… and in the agenda today</span></p>
+<p id=x042 class=irc><cite>&lt;Fabio&gt;</cite> Ok sure no problem</p>
+<p id=x044 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/203">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>203</a></p>
+<p id=x046 class="phone s02"><cite>pchampin:</cite> intro paragraph - in this meeting</p>
+<p id=x047 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/207">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>207</a></p>
+<p id=x048 class=irc><cite>&lt;olaf&gt;</cite> Fabio, in the meantime, you can find the definition at: <a href="https://w3c.github.io/rdf-star/cg-spec/editors_draft.html#dfn-quoted">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>cg-spec/<wbr>editors_draft.html#dfn-quoted</a></p>
+<p id=x049 class="phone s02"><cite>pchampin:</cite> tag long-term items.  Some done, more to do.</p>
+</section>
+
+<section>
+<h3 id=t03>PR #206 Paragraph and figure in the intro</h3>
+<p id=x053 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/206">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>206</a></p>
+<p id=x054 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/206.html#structure">https://<wbr>pr-preview.s3.amazonaws.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>206.html#structure</a></p>
+<p id=x055 class="phone s02"><cite>pchampin:</cite> guide for reader - doc is not necessarily linear</p>
+<p id=x058 class=irc><cite>&lt;Fabio&gt;</cite> olaf, andy, ok, I have a very clear idea of what are quoted triples and how they came into being. They used to be called &quot;embedded&quot; up until July. I simply fear the concept of &quot;quoting&quot; can be misleading and imprecise and not totally useful.</p>
+<p id=x062 class="phone s03"><cite>TallTed:</cite> accessibility for the picture<br>
+<span id=x063>… literal description for each box</span></p>
+<p id=x065 class=irc><cite>&lt;gatemezing&gt;</cite> question: a name or verb for grouping section 2 - ?</p>
+<p id=x067 class="phone s04"><cite>AndyS:</cite> highlight &quot;section 2&quot; box in some way as the entry point section</p>
+<p id=x068 class=irc><cite>&lt;thomas&gt;</cite> (someone is typing a lot which makes listening to other audio quite hard)</p>
+<p id=x069 class="phone s02"><cite>pchampin:</cite> may do SVG - need manual maintenance</p>
+<p id=x070 class=irc><cite>&lt;thomas&gt;</cite> (okay, then never mind)</p>
+<p id=x071 class=irc><cite>&lt;ora&gt;</cite> Pull request for Issue #196 created: <a href="https://github.com/w3c/rdf-star/pull/210">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>210</a></p>
+<p id=x074 class=irc><cite>&lt;Fabio&gt;</cite> I have a blind PhD, if that may help</p>
+<p id=x076 class="phone s05"><cite>gkellogg:</cite> Diagram adequate - extra text can be added<br>
+<span id=x077>… odd that &quot;section 2&quot; box does not have a title</span></p>
+<p id=x078 class=irc><cite>&lt;gatemezing&gt;</cite> +1 to add a title for &quot;section 2&quot;</p>
+<p id=x079 class="phone s02"><cite>pchampin:</cite> will merge, and continue to refine diagram.</p>
+<p id=a01 class=action><strong>Action:</strong> pchampin to make the center bubble more salient and the bold keywords less salient</p>
+<p id=x081 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: merge PR #206</p>
+<p id=x082 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x083 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x084 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x085 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x086 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x087 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x088 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x089 class=irc><cite>&lt;Doerthe&gt;</cite> +1</p>
+<p id=x090 class=irc><cite>&lt;Fabio&gt;</cite> +1</p>
+<p id=x091 class=irc><cite>&lt;william&gt;</cite> +1</p>
+<p id=x092 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x093 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> merge PR #206</p>
+</section>
+
+<section>
+<h3 id=t04>PR #209: New section about selective referential transparency</h3>
+<p id=x100 class="phone s06"><cite>olaf:</cite> context - quoted triples are referentially opaque - they are like literals.<br>
+<span id=x101>… vocabulary for declaring that a quoted triple can be treated as referentially transparent</span><br>
+<span id=x102>… if using an entitlement regime, can derive other nested triples</span></p>
+<p id=x104 class="phone s02"><cite>pchampin:</cite> another way to look at it is if a property holds, that property holds for all ref transparent nest triples from the original quoted triple</p>
+<p id=x105 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/209">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>209</a></p>
+<p id=x106 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/209.html#selective-ref-transparency">https://<wbr>pr-preview.s3.amazonaws.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>209.html#selective-ref-transparency</a></p>
+<p id=x107 class=irc><cite>&lt;olaf&gt;</cite> <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/209.html#selective-ref-transparency">https://<wbr>pr-preview.s3.amazonaws.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>209.html#selective-ref-transparency</a></p>
+<p id=x108 class="phone s02"><cite>pchampin:</cite> PR#209 adds a non-normative section.</p>
+<p id=x112 class="phone s07"><cite>thomas:</cite> why is it not normative?</p>
+<p id=x116 class="phone s02"><cite>pchampin:</cite> not sure when starting that it would be mature enough. May be getting there.<br>
+<span id=x117>… now comfortable to make it normative.</span><br>
+<span id=x118>… (personal opinion)</span></p>
+<p id=x119 class="phone s06"><cite>olaf:</cite> I am happy to make it normative.</p>
+<p id=x124 class="phone s02"><cite>pchampin:</cite> to go between 6.3 and 6.4</p>
+<p id=x125 class="phone s06"><cite>olaf:</cite> can go in section 7</p>
+<p id=x126 class="phone s02"><cite>pchampin:</cite> so sec 7 introduces an entailment regime</p>
+<p id=x128 class="phone s06"><cite>olaf:</cite> 6.4.6 can continue to exist for example then refer to sec 7.</p>
+<p id=x132 class="phone s02"><cite>pchampin:</cite> makes sense<br>
+<span id=x133>… needs some work for this semantic extension</span><br>
+<span id=x134>… does not need all vocab in this section, only certain items of the proposed vocabulary</span><br>
+<span id=x135>… easier to merge as is and keep working in new PR</span></p>
+<p id=x137 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: merge #209, then make a new PR to move the format parts in Â§7</p>
+<p id=x138 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x139 class=irc><cite>&lt;thomas_&gt;</cite> +/-0</p>
+<p id=x140 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x141 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x142 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x143 class=irc><cite>&lt;Doerthe&gt;</cite> +1</p>
+<p id=x144 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x145 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x146 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x147 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x148 class=irc><cite>&lt;william&gt;</cite> +1</p>
+<p id=x149 class=irc><cite>&lt;william&gt;</cite> sorry!</p>
+<p id=x150 class=irc><cite>&lt;Fabio&gt;</cite> +1</p>
+<p id=r02 class=resolution><strong>Resolution:</strong> merge #209, then make a new PR to move the format parts in Â§7</p>
+<p id=a02 class=action><strong>Action:</strong> pchampin to move the TEP entailment regime to Â§7 and extend it to the rest of the vocabulary</p>
+</section>
+
+<section>
+<h3 id=t05>Issue #3: 'conformance' section</h3>
+<p id=x156 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/3">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>3</a></p>
+<p id=x158 class="phone s02"><cite>pchampin:</cite> some standard boilerplate<br>
+<span id=x159>… test suite</span></p>
+<p id=x168 class="phone s04"><cite>AndyS:</cite> the Conformance section is the place that says &quot;this is RDF-star&quot;<br>
+<span id=x169>… if anyone claims to support RDF-star, this is where they should look</span><br>
+<span id=x170>… currently, system claiming to support RDF-star have very different notions of RDF-star</span><br>
+<span id=x171>… following the normative text may still lead to different implementations</span><br>
+<span id=x172>… This is not to say that all implementations must pass the whole test suite.</span></p>
+<p id=x174 class="phone s05"><cite>gkellogg:</cite> specification makes normative statement and test suite tests the normative statements.</p>
+<p id=x175 class=irc><cite>&lt;gkellogg&gt;</cite> &quot;Implementers can partially check their level of conformance to this specification by successfully passing the test cases of the JSON-LD test suite. Note, however, that passing all the tests in the test suite does not imply complete conformance to this specification. It only implies that the implementation conforms to aspects tested by the test suite.&quot;</p>
+<p id=x181 class="phone s05"><cite>gkellogg:</cite> some normative statements are hard to test<br>
+<span id=x182>… JSON-LD example</span><br>
+<span id=x183>… JSON-LD example</span><br>
+<span id=x184>… conformance to a CG note and a proper WG will provide conformance to changes it makes e.g. to Turtle</span><br>
+<span id=x185>… we have tests for TTL, NT (etc), SPARQL (syntax and eval) and semantics</span></p>
+<p id=x186 class=irc><cite>&lt;thomas_&gt;</cite> +1 to gkellogg</p>
+<p id=x187 class="phone s05"><cite>gkellogg:</cite> may be highlight semantics in the conformance section.</p>
+<p id=x189 class="phone s02"><cite>pchampin:</cite> semantics is the entailment</p>
+<p id=x194 class="phone s04"><cite>AndyS:</cite> if you implemented the syntax for Turtle,<br>
+<span id=x195>… would there be any more work to be compliant?</span><br>
+<span id=x196>… that would be the practical approach of many implementers</span></p>
+<p id=x204 class="phone s02"><cite>pchampin:</cite> have a python script to test implementation using SPARQL-star to test<br>
+<span id=x205>… approximation to investigate what system did</span><br>
+<span id=x206>… support inference in a consistent way</span><br>
+<span id=x207>… e.g. don't some &quot;leak&quot; triples not others</span></p>
+<p id=x208 class=irc><cite>&lt;rivettp&gt;</cite> gotta drop</p>
+<p id=x210 class="phone s06"><cite>olaf:</cite> what consequences of semantics does this have?</p>
+<p id=x211 class="phone s02"><cite>pchampin:</cite> e.g. rdflib - has D-entailment on literals. Triple stores != exactly the triple retrieved</p>
+<p id=x212 class=summary>(rdflib is not the only system to do that)<br>
+<span id=x213>… tests are tagged with an entailment regime. Some are OWL (uses owl:sameAs), some D-entailment.</span><br>
+<span id=x214>… conclusion: we need something though still unclear what.</span></p>
+<p id=x219 class=irc><cite>&lt;Fabio&gt;</cite> no no go ahead.</p>
+<p id=x220 class=irc><cite>&lt;Fabio&gt;</cite> you can close now,.</p>
+<p id=x221 class=irc><cite>&lt;william&gt;</cite> gotta go</p>
+<p id=x223 class=summary>bye all!</p>
+<p id=x225 class=irc><cite>&lt;gatemezing&gt;</cite> thanks all!</p>
+<p id=x226 class=irc><cite>&lt;Fabio&gt;</cite> thx bye</p>
+<p id=x227 class=irc><cite>&lt;gatemezing&gt;</cite> bye</p>
+<p id=x228 class=irc><cite>&lt;ora&gt;</cite> bye</p>
+<p id=x229 class=irc><cite>&lt;olaf&gt;</cite> Thanks for today! Bye</p>
+<p id=x230 class=irc><cite>&lt;Doerthe&gt;</cite> bye</p>
+<p id=x237 class=irc><cite>&lt;thomas_&gt;</cite> bye</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">pchampin to make the center bubble more salient and the bold keywords less salient</a></li>
+<li><a href="#a02">pchampin to move the TEP entailment regime to Â§7 and extend it to the rest of the vocabulary</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">merge PR #206</a></li>
+<li><a href="#r02">merge #209, then make a new PR to move the format parts in Â§7</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

@@ -236,6 +236,9 @@ namespace VDS.RDF.Parsing.Tokens
                           MOVE = 515,
                           TO = 516,
 
+                          STARTQUOTE = 600,
+                          ENDQUOTE = 601,
+
                           EOF = 1000;
     }
 }

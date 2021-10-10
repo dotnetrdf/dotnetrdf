@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF* -- 03 Dec 2020</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF*" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF*</h1>
+<h2>03 Dec 2020</h2>
+
+<p><a href='https://lists.w3.org/Archives/Public/public-rdf-star/2020Dec/0032.html'>Agenda</a></p>
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>pfps, pavel, Olaf, pchampin, thomas, AndyS, rivettp, Doerthe, blake_, james, gkellogg</dd>
+<dt>Regrets</dt>
+<dd>gatemezing</dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>pavel, pchampin</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">Open actions</a></li>
+<li><a href="#item02">Continue discussing the tests cases in the proposed semantics test-suite</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; pchampin: this is a test
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ... this is a continuation
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pavel
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> explains to pavel how to scribe <br>
+... any new folks here?
+</p>
+
+<h3 id="item01">Open actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> starting with the test cases
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/46">https://github.com/w3c/rdf-star/issues/46</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> that one is done, yaya
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/45">https://github.com/w3c/rdf-star/issues/45</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> next issue, embedded quads <br>
+... there was discussion
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; I'm not hearing anything (did when I first joined) will rejoin the call
+</p>
+
+<p class='phone'>
+<cite>blake_:</cite> this was about opening a discussion, not advocating for anything, just to have it on the table <br>
+... do we need t consider embedded quads? what does it mean?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> we will have some time for open discussion at the end, we can have it then if we want
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/40">https://github.com/w3c/rdf-star/issues/40</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> README included in the HTML output <br>
+... empty sceleton for SPARQL* test suite is there, so more progress! <br>
+... still need more tests. please open PRs with manifest entries, test data. expected results, etc.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/8">https://github.com/w3c/rdf-star/issues/8</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> next action on Olaf, semantics of BGP* and BIND/FIND
+</p>
+
+<p class='phone'>
+<cite>pavel:</cite> i looked, seems fine
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> let's keep it on the agenda for the next time
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> let's add tests for it, even if they don't pass yet
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> shall we split the tests on query answering and parsing?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> there're subsets already
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> it's parsing vs execution, not answering
+</p>
+
+<a name="action01"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> pchampin to put the discussion on action #8 in the next agenda
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> can we have a syntax test suite for Turtle*
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; action andys to add a test-suite for Turtle*
+</p>
+
+<a name="action02"></a>
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; <strong>ACTION:</strong> andys to add a test-suite for Turtle*
+</p>
+
+<h3 id="item02">Continue discussing the tests cases in the proposed semantics test-suite</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://w3c.github.io/rdf-star/tests/semantics/manifest.html#all-identical-embedded-triples-are-the-same">https://w3c.github.io/rdf-star/tests/semantics/manifest.html#all-identical-embedded-triples-are-the-same</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> last time we stopped there ^^ <br>
+... at the moment this is how the definitions in the Olaf's paper define RDF* <br>
+... and also how it's implemented right now <br>
+... embedded triples are one and the same thing as long as all SPO components are the same <br>
+... there was a concern about that (in the mailing list) <br>
+... could make it difficult to address some use cases, eg. Wikidata <br>
+... where we need to represent diff occurrences of the same statement <br>
+... since same statement can be said by different people and then they could be different <br>
+... some PG databases can have multi-edges and different attributes <br>
+... it's a known limitation, my position is these complicate things (though not impossible)
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; It's not just the Wikidata use case.  The examples related to provenance point to having multiple embedded triples with the same s,p,o.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> extending RDF* to more complex examples would require to distinguish occurrences of the same triple
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> are 2 triples in different NGs, are they the same?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> yeah
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; And it's not just the provenance examples - belief is another place where one might want to distinguish between different embedded triples with the same s,p.o.
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> if a triple exists in multiple NGs, does it exist only in the NG where it's stated?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> the meaning of the named graph isn't formalised <br>
+... so it's not easy
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> Wikidata semantics could be resolved ins ome interpretation of named graphs, no? <br>
+... at least it'd make sense to me <br>
+... it should allow you to speak differently depending on named graph
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> do we speak about triples as extensions or occurrences in graphs/document? i tried to discuss that in my long email
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I don't see how named graphs help in expressing Wikidata.  WIkidata has one "ground" but that ground can have multiple statements with the same s,p.o.
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> if 2 people want to say different things about the same triple, you have to differentiate in the semantics <br>
+... but defining semantics about all triples of the same type(?) makes it impossible
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> 2 embedde triples in 2 NGs represents the same thing <br>
+... but: i can describe some thing in a NG, e.g. rdf-star a :great-idea and in a different graph rdf-star a :broken <br>
+... i can do that, and the triple is still the same <br>
+... if someone merges the graphs then we get a contradiction. but they don't have to merge those graphs
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> i'd be interested in how it works
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> what we should try is enabling the basic building blocks are there to solve use cases <br>
+... it might need something else <br>
+... you could have RDF* triples as defined in the papers and be able to make statements <br>
+... statings vs statements (the former being the action of making the statement) <br>
+... the triple term right now can be annotated itself
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> if we enable basic blocks then RDF reification works
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> nope? <br>
+... agree with pfps that many UCs can be solved with reification <br>
+... but it's more on users than us
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> evidence that we have that users use RDF, ie those documents, and as i pointed out, those documents are in bad shape <br>
+... either someone needs to fix them up and provide good evidence
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> there's absemce of evidence for the use of RDF reification <br>
+... i want to get to a point where we can make progress without boiling the ocean
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Jerven do you want to say anything about reification
+</p>
+
+<p class='phone'>
+<cite>jerven:</cite> yes. reification solves our problem (to talk about the triple) <br>
+... i.e. talking about a relationship, it works fine as-is. <br>
+... but it's soo ugly <br>
+... and blows up data <br>
+... and queries! <br>
+... lots of joins too. that's problematic on large scale data. <br>
+... semantics is fine. but join performance and verbosity are problematic
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I wonder whether embedded triples would help at all in SPARQL performance.
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; so RDF* with the RDF reification semantics would be fine for you, Jerven?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> want to add what RDF* buys us re: reification, it adds atomicity
+</p>
+
+<p class='phone'>
+<cite>jerven:</cite> we'd like to have that
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; It would be nice to have some experiments on how fast SPARQL* queries are over embedded triples.
+</p>
+
+<p class='phone'>
+<cite>jerven:</cite> then the question is: do we constraint the rdf reification to say that your RDF reification graphs must be complete <br>
+... if you want RDF* enabled, you cannot have invalid/incomplete reification statements <br>
+... at some point semantics faces the practicality issue
+</p>
+
+<p class='phone'>
+<cite>blake:</cite> to respond re: reification verbosity <br>
+... i don't think any of those issues are necessarily <br>
+... those can be implementation details <br>
+... stores can have special treatments for RDF reification triples <br>
+... constraints can be enforced <br>
+... performance gains with RDF* are not a given
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; Blake, Jena did have such special treatment but they took it out
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +1 to blake
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> there was some experience with that <br>
+... experience wasn't very good <br>
+... first problem is partials <br>
+... a lot of low-level work needed to deal with reification <br>
+... maybe it's not such a big issues these days since hardware is better
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; And what is the burden of implementing triples as a new node type?
+</p>
+
+<p class='phone'>
+<cite>pavel:</cite> in theory, it is true that performance issues of reification can be optimized away, <br>
+... but in practice, it proved very hard <br>
+... It is difficult to not leak those ugly reification triples to the user.
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Work by Kevin Wilkinson and others: <a href="https://www2.cs.uic.edu/~ifc/SWDB/papers/Wilkinson_etal.pdf">https://www2.cs.uic.edu/~ifc/SWDB/papers/Wilkinson_etal.pdf</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: pavel
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> i don't know anyone saying that we should keep the standard reification. but its semantics is fine. <br>
+... i think we should keep that semantics, if RDF* would conform that'd be great
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> the syntax of Turtle* and SPARQL* would make it hard <br>
+... one could imagine that every occurrence in &lt;&lt;&gt;&gt; identifies a new occurrence.. <br>
+... but it'd make it very complex <br>
+... lots of practical issues will arise
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> by default i'd suggest that an annotation refers to the triple in the same named graph (?) <br>
+... others may have totally different opinions
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> so you'd not object to the test as written?
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> no idea :)
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> ok, we need to make progress in one way or another <br>
+... but the more we agree on, the better
+</p>
+
+<p class='phone'>
+<cite>blake:</cite> re: reification, it sounds like everyone is not against RDF* being syntactic sugar <br>
+... maybe with a better syntax and query patterns
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +1 for blake's comment that implementing embedded triples is hard too
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; [] rdf:subject :a, :b.
+</p>
+
+<p class='phone'>
+<cite>blake:</cite> all the points re: implementation, they're muted because the same would be required when embedded statements are first-class citizens <br>
+... so we can get away with syntactic sugar
+</p>
+
+<p class='phone'>
+<cite>jerven:</cite> in Uniprot we generate statement IDs which aren't quite valid in RDF/XML, so each statement gets an ID when we reify it <br>
+... and that works fine <br>
+... so we never have to generate reification quads again
+</p>
+
+<p class='irc'>
+&lt;<cite>Zakim</cite>&gt; AndyS, you wanted to suggest a strawpoll
+</p>
+
+<p class='phone'>
+<cite>jerven:</cite> i feel RDF* should be compatible with reification but we don't have to require it being as expressive
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> what does everyone think?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> same idea
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1 to Jerven
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> still don't know what RDF* is supposed to be good for. how can i approve any test then?
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1 to Jerven
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> agree, good question. strawpoll here
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: would you be happy with RDF* being syntactic sugar for standard reification (possibly with more constraints)?
+</p>
+
+<p class='irc'>
+&lt;<cite>blake</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>jerven</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; -0
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; -0
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1 "with more constraints"
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +0
+</p>
+
+<p class='irc'>
+&lt;<cite>jerven</cite>&gt; +1  "with more constraints"
+</p>
+
+<p class='irc'>
+&lt;<cite>Doerthe</cite>&gt; -0
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; Do you mean in terms of semantics?
+</p>
+
+<p class='phone'>
+0 (cannot answer)
+</p>
+
+<p class='phone'>
++1 to AndyS!
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; There are lots of sins that can be covered by syntactic sugar.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> it depends on what we mean by syntactic sugar (and pavel agrees)
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; +1
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> i mean that Turtle* docs can be rewritten into reification and that'd make no difference
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; I interpreted "syntactic sugar for RDF reofication" as keeping the RDF refication semantics
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='phone'>
+<cite>pavel:</cite> I couldn't answer the strawpoll.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I'm generally in favour of the syntactic sugar solution, particularly as it allows for other kinds of reification.
+</p>
+
+<p class='phone'>
+<cite>pavel:</cite> should the system return the reification triples? that would not be good
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; scribe: pavel
+</p>
+
+<p class='phone'>
+<cite>blake:</cite> sugar should not disallow synthetic URIs or triples
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; But the problem is if you have mixed syntax - some [[...]] and some rdf:subject.
+</p>
+
+<p class='phone'>
+<cite>blake:</cite> that could be another form of syntactic sugar?
+</p>
+
+<p class='phone'>
++1 to pfps
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> this needs to be explored, let's see if we have a ticket on it. but there seems to be no strong opposition so it's a serious option
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; But there is no gain without pain, and it is completely unclear to me as to even the magnitude of the pains for the various approaches.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> but not there are some different expectations from syntactic sugar <br>
+... gotta think till next week <br>
+... thanks everyone, no formal decision for now, but feels like progress nonetheless <br>
+... bye
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; One pain would be to allow embedded triples to be incomplete and transform rdf:subject etc into embedded triples.
+</p>
+
+<p class='irc'>
+&lt;<cite>jerven</cite>&gt; Thank you all.
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+<strong>[NEW]</strong> <strong>ACTION:</strong> andys to add a test-suite for Turtle* <br />
+<strong>[NEW]</strong> <strong>ACTION:</strong> pchampin to put the discussion on action #8 in the next agenda <br />
+&nbsp;<br />
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol></ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

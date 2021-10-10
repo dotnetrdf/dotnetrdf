@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 23 April 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>23 April 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-04-09.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Apr/0005.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/04/23-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-04-30.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gkellogg, james, pchampin, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>Olaf Hartg, William Van Woensel</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>gkellogg, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Old or new media-types for RDF-star</a></li>
+<li><a href="#t04">Attracting more implementation reports</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x028 class="phone s01"><cite>pchampin:</cite> Not too much feedback from the tweets and anouncements of the updated draft.</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x035 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x036 class="phone s01"><cite>pchampin:</cite> No open actions at the moment</p>
+<p id=x037 class="phone s02"><cite>gkellogg:</cite> I had an action to reorganize the concrete syntaxes, which is done.</p>
+<p id=x039 class=summary>Open PR #149 - splitting manifets</p>
+<p id=x040 class="phone s03"><cite>andys:</cite> not really technical, just organizational</p>
+</section>
+
+<section>
+<h3 id=t03>Old or new media-types for RDF-star</h3>
+<p id=x043 class="phone s01"><cite>pchampin:</cite> I want to discuss the media-type issue.</p>
+<p id=x044 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/43">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>43</a></p>
+<p id=x046 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/43#issuecomment-814772066">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>43#issuecomment-814772066</a></p>
+<p id=x049 class="phone s01"><cite>pchampin:</cite> We need to answer two separat equestions.<br>
+<span id=x050>… first, if we had the authority to update existing media types, would we want to update them with rdf-star features, or would it be better to have a new separate media type.</span><br>
+<span id=x051>… If we think the right way is to update existing media types, would we want to create an interim media type?</span></p>
+<p id=x054 class="phone s04"><cite>james:</cite> Or, do we want to be in a position to flagrantly abuse the exising media types.<br>
+<span id=x055>… There’s nothing in the process that permits us to do it, but nothing to stop us.</span></p>
+<p id=x056 class="phone s01"><cite>pchampin:</cite> I’ve been assuming that our answer to the first question is “yes”</p>
+<p id=x058 class="phone s04"><cite>james:</cite> If it gets to be a TR, it has the authority to claim the space. Until then, it can’t.<br>
+<span id=x059>… My answer to the first question is that if there were a WG that produced a TR, it would be appropriate.</span></p>
+<p id=x060 class="phone s01"><cite>pchampin:</cite> Some people might disagree.</p>
+<p id=x061 class=irc><cite>&lt;pchampin&gt;</cite> STRAWPOLL: do we consider that eventually, text/turtle (and other media-type covered by our CG-spec) should be update to include RDF-star features?</p>
+<p id=x062 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x063 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x064 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x065 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x066 class=irc><cite>&lt;pchampin&gt;</cite> &quot;eventually&quot; meaning &quot;by a WG having this authority&quot;</p>
+<p id=x067 class=irc><cite>&lt;TallTed&gt;</cite> &quot;text/star+turtle&quot;... except that Turtle is not a viable fallback, because Turtle-star is not a subset of Turtle</p>
+<p id=x068 class=irc><cite>&lt;TallTed&gt;</cite> text/turtle was unfortunately written not to include a version declaration, and adding one now would break existing tools as much as including Turtle-star data in text/turtle</p>
+<p id=x069 class=irc><cite>&lt;TallTed&gt;</cite> -0.8</p>
+<p id=x073 class="phone s02"><cite>gkellogg:</cite> Groups abuse media types all the time, whill in progress.</p>
+<p id=x078 class="phone s05"><cite>TallTed:</cite> The problem starts with groups that don’t have a statement about dispersing datatypes.<br>
+<span id=x079>… Putting turtle-star into text/turtle will break things.</span><br>
+<span id=x080>… THe only good answer is to presume there will be a new mediatype and act that way.</span><br>
+<span id=x081>… You build it in the spec and send it in for registration.</span><br>
+<span id=x082>… The only good thing is to register a new media type.</span></p>
+<p id=x091 class="phone s03"><cite>AndyS:</cite> Postel’s law on production and consumption.<br>
+<span id=x092>… Note that text/turtle was not done by the WG, but precedes that. so what came out as Turtle is different than the originally proposed registration.</span><br>
+<span id=x093>… Registrations can be changed, which might not be what expected, but it happens.</span><br>
+<span id=x094>… PREFIX/@prefix, charset, ...</span><br>
+<span id=x095>… THere are people who extend sparql, and still use the regular media type.</span></p>
+<p id=x100 class="phone s03"><cite>AndyS:</cite> Is there a use case where an updated processor would not want to receive turtle-star data?<br>
+<span id=x101>… On the discussions, this has been posed, but noone’s described a use case.</span><br>
+<span id=x102>… Whatever we do, there are going to be pain points.</span></p>
+<p id=x104 class="phone s04"><cite>james:</cite> I agree with Andy that it’s possible to change things. THis requires the authority to change the document which defined it.</p>
+<p id=x106 class="phone s03"><cite>AndyS:</cite> The only thing we can do is propose changes.<br>
+<span id=x107>… The entire document has no standing in process.</span></p>
+<p id=x108 class="phone s04"><cite>james:</cite> When there was a transition from SPARLQ 1.0 to 1.1, the language changed. There weren’t any requests to distinguish between them.</p>
+<p id=x109 class="phone s03"><cite>AndyS:</cite> There was never a discussion of changing the mime-type.</p>
+<p id=x113 class="phone s04"><cite>james:</cite> Going back to the question about breaking things. it’s concieveable that we could have proposed enodings which conform to text/turtle, but we didn't.<br>
+<span id=x114>… We might want to say why we didn’t chose to conform with the existing syntax.</span></p>
+<p id=x115 class="phone s01"><cite>pchampin:</cite> We could have encoded RDF-star in something which is still valid Turtle. (proposition)</p>
+<p id=x117 class="phone s04"><cite>james:</cite> The group decided that the turtle-star encoding has advantages that overweigh this. That should be mentioned somewhere.<br>
+<span id=x118>… Why didn’t we just use the reification vocabulary?</span></p>
+<p id=x119 class=irc><cite>&lt;TallTed&gt;</cite> Eric Prud'hommeaux, the contact person for text/turtle, is in this group (regularly comments on github, though he doesn't often if ever join calls) -- <a href="https://www.iana.org/assignments/media-types/text/turtle">https://<wbr>www.iana.org/<wbr>assignments/<wbr>media-types/<wbr>text/<wbr>turtle</a></p>
+<p id=x120 class=irc><cite>&lt;TallTed&gt;</cite> and he has failed to update that doc from pointing to <a href="https://www.w3.org/TeamSubmission/2008/SUBM-turtle-20080114/">https://<wbr>www.w3.org/<wbr>TeamSubmission/<wbr>2008/<wbr>SUBM-turtle-20080114/</a> to <a href="http://www.w3.org/TeamSubmission/2011/SUBM-turtle-20110328/">http://<wbr>www.w3.org/<wbr>TeamSubmission/<wbr>2011/<wbr>SUBM-turtle-20110328/</a> nor to <a href="http://www.w3.org/TR/2014/REC-turtle-20140225/">http://<wbr>www.w3.org/<wbr>TR/<wbr>2014/<wbr>REC-turtle-20140225/</a></p>
+<p id=x122 class="phone s01"><cite>pchampin:</cite> Given that Turtle has no “extension-points”, that could have been the place to do it.<br>
+<span id=x123>… We might have considered that theoretically.</span></p>
+<p id=x128 class="phone s02"><cite>gkellogg:</cite> It’s IANA’s fault. We should have sn IANA section to describe proposed changes and our rationalle.</p>
+<p id=x129 class="phone s06"><cite>thomas:</cite> One thought was to base everything in reification.</p>
+<p id=x130 class=irc><cite>&lt;AndyS&gt;</cite> Reasons against (one use per triple) reification: (1) too many triples (this is in RDF-star section 2.1) (2) partial (&quot;broken&quot;) reifications.</p>
+<p id=x131 class="phone s01"><cite>pchampin:</cite> I think that Peter’’s preferred way was to not have a different abstract syntax.</p>
+<p id=x132 class="phone s06"><cite>thomas:</cite> The thought was to express the semantics of RDF-star through reification.</p>
+<p id=x133 class="phone s01"><cite>pchampin:</cite> I think he would have preferred RDF-star to be another language which is logically equivalent to using reification.</p>
+<p id=x134 class=irc><cite>&lt;AndyS&gt;</cite> Also (and is in sec 2.1) - query in SPARQL is cumbersome -- obv can be solved by extending SPARQL syntax only ... which is where the original &lt;&lt;&gt;&gt; came from in DAWG days.</p>
+<p id=x135 class="phone s01"><cite>pchampin:</cite> We broke turtle with &lt;&lt; &gt;&gt;.</p>
+<p id=x136 class="phone s06"><cite>thomas:</cite> We could have formulated it in a way that a standard turtle processor could have understood it.</p>
+<p id=x138 class="phone s01"><cite>pchampin:</cite> I really don’t see a way to do that, but we maybe didn’t spend enough time on that.</p>
+<p id=x139 class="phone s06"><cite>thomas:</cite> I think we should go for x- mime types to make it clear that this is a proposal.</p>
+<p id=x142 class="phone s01"><cite>pchampin:</cite> That’s the second question.<br>
+<span id=x143>… There is a (small) majority that agreed to extend the existing languages.</span><br>
+<span id=x144>… In the mean-time, what do we suggest people do?</span></p>
+<p id=x145 class=irc><cite>&lt;pchampin&gt;</cite> STRAWPOLL: assuming we recommend to update text/turtle (and other mimetypes), do we recommend people to use the original original mimetype for RDF-star content?</p>
+<p id=x146 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x147 class=irc><cite>&lt;TallTed&gt;</cite> straw poll doesn't need to be yes/no question.  can be options (1) (2) (3)</p>
+<p id=x148 class=irc><cite>&lt;thomas&gt;</cite> -1</p>
+<p id=x149 class=irc><cite>&lt;james&gt;</cite> +0</p>
+<p id=x150 class=irc><cite>&lt;gkellogg&gt;</cite> +1 but with caution</p>
+<p id=x151 class=irc><cite>&lt;TallTed&gt;</cite> -0.9</p>
+<p id=x152 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x154 class=irc><cite>&lt;TallTed&gt;</cite> I'm not a full block, but strongly against.  I think this question needs to reach a broader audience -- at least all of RDF-DEV CG, beyond rdf-star-cg</p>
+<p id=x155 class="phone s01"><cite>pchampin:</cite> It’s fair that we have an IANA section to propose extending the types. It’s what do we do in the mean time?</p>
+<p id=x163 class="phone s02"><cite>gkellogg:</cite> there is no good solution, we need to caution people on the use of these format in production systems<br>
+<span id=x164>… while the profile parameter is not normatively ok, it could be a good option</span><br>
+<span id=x165>… we need to stay away from creating a new text/x-... mimetype; it has been shown to be an anti-pattern</span></p>
+<p id=x168 class="phone s06"><cite>thomas:</cite> How is it not an anti-pattern to publish text/turtle that it’s turtle?</p>
+<p id=x171 class="phone s03"><cite>AndyS:</cite> There are two sides to that.</p>
+<p id=x174 class="phone s04"><cite>james:</cite> what has the expeirence been with using wild headers? (I.e., that aren’t registered? If a server understool something like X-EXTENSION: turtle-star,<br>
+<span id=x175>… A server that understands that would serve it one way, and if it didn’t it would ignore it.</span><br>
+<span id=x176>… Servers would ignore an unregistered header.</span></p>
+<p id=x178 class="phone s03"><cite>AndyS:</cite> That would cover the case of clients who are aware of it but don’t want it.<br>
+<span id=x179>… When we went through RDF/SPARQL 1.1, I don’t remember there being particular difficulties.</span></p>
+<p id=x180 class=irc><cite>&lt;TallTed&gt;</cite> text/star-turtle would be legal albeit potentially confusing ... text/turtle-star likewise</p>
+<p id=x181 class=irc><cite>&lt;TallTed&gt;</cite> text/star+turtle fails because Turtle-star is not subset of Turtle</p>
+<p id=x182 class=irc><cite>&lt;TallTed&gt;</cite> *is* legal to do Link: rel=alt from ttl-star to ttl (or vice-versa)</p>
+<p id=x183 class=irc><cite>&lt;TallTed&gt;</cite> or use con-neg preference values ... which requires the different media type</p>
+<p id=x184 class="phone s03"><cite>AndyS:</cite> What if you do ACCEPT: */*? If it’s absent, is is presumed?</p>
+<p id=x186 class="phone s05"><cite>TallTed:</cite> If you don’t specified, it is assumed.<br>
+<span id=x187>… It’s a tool-specific choice.</span></p>
+<p id=x189 class="phone s01"><cite>pchampin:</cite> I need to think about a special header. It might mitigate the problem in the mean time.<br>
+<span id=x190>… I think I understand how to make a PR that covers these ideas.</span></p>
+</section>
+
+<section>
+<h3 id=t04>Attracting more implementation reports</h3>
+<p id=x196 class="phone s01"><cite>pchampin:</cite> We’d like to have more implementation reports. Any idea how to encourage people to submit them?<br>
+<span id=x197>… At the beginning of the work I created a small python script to test some implementations against semantics test suites? Is it appropriate for me to submit a response for someone else?</span></p>
+<p id=x198 class="phone s03"><cite>AndyS:</cite> You’d get into trouble. If you say it doesn’t pass, then you’re open.</p>
+<p id=x200 class=irc><cite>&lt;AndyS&gt;</cite> RFC 2616: not in 7231: &quot;If no Accept header field is present, then it is assumed that the client accepts all media types.&quot;</p>
+<p id=x201 class="phone s05"><cite>TallTed:</cite> It’s legitimate to run the test suite against any tool, but putting it in the report is a problem.</p>
+<p id=x202 class=irc><cite>&lt;TallTed&gt;</cite> ( mentioning @ericprud [ in regards to text/turtle IANA reg, discussed above ] to trigger his eyes on this log when it goes into github )</p>
+<p id=x208 class="phone s04"><cite>james:</cite> There was a researcher at INRIA who made an effort to establish a mechanism for uniformly testing SPARQL endpoints.<br>
+<span id=x209>… she didn’t have much success for a variety of reasons.</span><br>
+<span id=x210>… You have authority, but if you want acceptance, you need support.</span><br>
+<span id=x211>… If the tool has a community license, you can run it, but not say what the results were.</span></p>
+<p id=x212 class="phone s05"><cite>TallTed:</cite> It’s also legitimate to warn about licensing considerations.</p>
+<p id=x213 class="phone s02"><cite>gkellogg:</cite> How do we get people who have expressed support to actually report?</p>
+<p id=x214 class="phone s03"><cite>AndyS:</cite> It hasn’t been published long, and it may take some time.</p>
+<p id=x215 class="phone s05"><cite>TallTed:</cite> It’s also legitimat to run the test and submit the results to the implementor and ask “what’s up?”</p>
+<p id=x216 class="phone s01"><cite>pchampin:</cite> The polite thing is to give it back to then and ask them to submit something.</p>
+<p id=x217 class="phone s02"><cite>gkellogg:</cite> It’s never too late to submit an implementation report.</p>
+<p id=x218 class="phone s01"><cite>pchampin:</cite> I hope to have one for Rust soon.</p>
+</section>
+</main>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

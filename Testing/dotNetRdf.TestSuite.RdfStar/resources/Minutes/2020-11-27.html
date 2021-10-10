@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF* -- 27 Nov 2020</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF*" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF*</h1>
+<h2>27 Nov 2020</h2>
+
+<p><a href='https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0057.html'>Agenda</a></p>
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>pchampin, pfps, AndyS, thomas, Olaf, pavel, jerven, gkellogg, blake, gatemezing, Doerthe</dd>
+<dt>Regrets</dt>
+<dd></dd>
+<dt>Chair</dt>
+<dd>SV_MEETING_CHAIR </dd>
+<dt>Scribe</dt>
+<dd>gatemezing, pchampin</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">introduction</a></li>
+<li><a href="#item02">pending actions</a></li>
+<li><a href="#item03">query result format</a></li>
+<li><a href="#item04">test suite</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; hi all
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: gatemezing
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: gatemezing
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0057.html">https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0057.html</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; Agenda: <a href="https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0057.html">https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0057.html</a>
+</p>
+
+<h3 id="item01">introduction</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='phone'>
+<cite>gatemezing:</cite> I am Ghislain Atemezing, working for Mondeca (Paris), a SemWeb company. <br>
+... I have been in data-related groups at W3C. <br>
+... We have to manage metadata, so we are interested in RDF*.
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: gatemezing
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> specifies how to use the IRC to ask question.. <br>
+... the next point is about the pending actions
+</p>
+
+<h3 id="item02">pending actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> which are available here <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a> <br>
+... we have 2 exactly
+</p>
+
+<p class='irc'>
+&lt;<cite>Doerthe</cite>&gt; p+
+</p>
+
+<p class='irc'>
+&lt;<cite>Doerthe</cite>&gt; no
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> creates a test suites available here <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Great to see the test suite forming!
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> suggest to use the manifest (..)
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/8#issuecomment-734258118">https://github.com/w3c/rdf-star/issues/8#issuecomment-734258118</a>
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> had another action related to the semantics... and sent an email with the github issue <br>
+... where people need to review and discuss it <br>
+... the new version is SA mode, different from the one in the paper is PG mode
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> this will need to be added in the test suite.. something to decide within the group <br>
+... could be need more time for people to review? next week?
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; To clarify: the action was on the query semantics
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> It sounds good to postpone the discussion next week
+</p>
+
+<h3 id="item03">query result format</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/39">https://github.com/w3c/rdf-star/pull/39</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="http://champin.net/tmp/rdf-star-pr39.html#query-result-formats">http://champin.net/tmp/rdf-star-pr39.html#query-result-formats</a>
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> proposed by jeenbroekstra <br>
+... need a vote if to merge in the document <br>
+... that would give more confidence in the stability of the proposal
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> putting things in the document is not a sign of agreement of the entire content... <br>
+... even if the vote is positive today <br>
+... the vote is just a way for showing a formal decision on our progress <br>
+... to give a summary: the idea is to extend the result format, a kind of "straithforward" extension <br>
+... don't think controversal
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> Do we want to extend other result format?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> that can be a seperate discussion but something to take into account
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: merge pull-request 39 introducing extension of the XML an JSON format for SPARQL results
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>jerven</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +0
+</p>
+
+<p class='irc'>
+&lt;<cite>james_</cite>&gt; +0
+</p>
+
+<p class='irc'>
+&lt;<cite>blake</cite>&gt; +0
+</p>
+
+<p class='irc'>
+&lt;<cite>Doerthe</cite>&gt; +0
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> please vote (+1, 0, -1) <br>
+... asking if pfps has voted
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; my computer died so I have no context
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; APPROVED: merge pull-request 39 introducing extension of the XML an JSON format for SPARQL results
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> thanking the voters <br>
+... relating issues regarding separate namespace and so on
+</p>
+
+<h3 id="item04">test suite</h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> A good way to move forward is maybe to propose a test suite with a concrete results to decide on what we agree <br>
+... or disagree
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/37">https://github.com/w3c/rdf-star/issues/37</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://w3c.github.io/rdf-star/tests/semantics/manifest.html">https://w3c.github.io/rdf-star/tests/semantics/manifest.html</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> link available here <a href="https://w3c.github.io/rdf-star/tests/semantics/manifest.html">https://w3c.github.io/rdf-star/tests/semantics/manifest.html</a> of the manifest
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://w3c.github.io/rdf-star/tests/semantics/manifest.html#embeded-triples-everywhere">https://w3c.github.io/rdf-star/tests/semantics/manifest.html#embeded-triples-everywhere</a>
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> What are the tests about?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> They are entailments tests based on if this happen then... based on some graph databases <br>
+... used for the tests. There is a thread on the mailing list about the topic
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Consider beeing in both direction, and the way you set up the engine, ....
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; But isn't SPARQL BGP ASK matching supposed to be the same as simple entailment if there are no variables in the BGP?
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> I wondering if we need to update that to reflect ... <br>
+... I recognize the simple solutions but how to compare them with others?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> The tests are not supposed to be the solution but rather discuss the validation in general
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> We need a practical guidance of what we expect from the output of the engines <br>
+... getting out of something that work or correspond to what we have to go <br>
+... I do agree we can separate the examination from the methodology
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; If you want to test pieces of the systems, then you have to be careful to isolate that piece, yes.  That was the point of my message earlier today.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I suggest we can on the different test <br>
+... I agree that the results can someone be misleading
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://w3c.github.io/rdf-star/tests/semantics/manifest.html#embeded-triples-everywhere">https://w3c.github.io/rdf-star/tests/semantics/manifest.html#embeded-triples-everywhere</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; It's puzzling that Stardog fails the very first test
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; Stardog intentionally does not support annotations on objects
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> We could discuss on the general way and move forward
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; that is, embedded triples in the object position
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; maybe it should be split into two separate tests then
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> the first test passed also for EYE. see email <br>
+... pavel needs to explain?
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; Given that there is one system that handles embedded triples differently in subject and object positions, the other tests should include cases where there are embedded triples in object position.
+</p>
+
+<p class='phone'>
+<cite>pavel:</cite> We don't support this because we need minimum semantics for now <br>
+... and it's easy for Stardog to add more features than to retract them
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; btw we have the exact same position about nested embedded triples
+</p>
+
+<p class='phone'>
+Who is here?
+</p>
+
+<p class='phone'>
+<cite>jerven:</cite> Question: why we don't have emebedded triples in the property position? <br>
+... we need to put in down somwhere in the proposal
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> why would it be used for?
+</p>
+
+<p class='phone'>
+Is that use case somewhere in the use case list?
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; There is "generalized RDF" in RDF 1.1 that is more open.
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; :-)
+</p>
+
+<p class='phone'>
+<cite>pavel:</cite> we would be careful, guided by the use cases <br>
+... no issue from the technical part
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; Indeed, if the meaning of RDF* is defined as just a vocabulary extension to RDF, and embedded triples are IRIs, then embedded triples should be allowed in predicate position in surface syntaxes.  However, it looks as if embedded triples have to be blank nodes in this definition of RDF*, so they can't be in predicate position.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> We should stick for now with the restrictions
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1 to restricting the predicate position to IRIs
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: mark embeded-triples-everywhere as approved
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> we vote on each issue or group of issue
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james_</cite>&gt; +1
+</p>
+
+<p class='phone'>
+<cite>blake:</cite> I want to inquire a bit to see the aspects of embedded graph, embedded quad
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1 to blake: keeping the possibility open to have embedded quads in the future
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> A very good question by blake. There should be an issue for that in the repo. Yet another separate question <br>
+... that need to be checked and discussed <br>
+... Anyone wants to react?
+</p>
+
+<a name="action01"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> blake to submit an issue on embedded quads
+</p>
+
+<p class='phone'>
+<cite>james_:</cite> Embeded quad is actually in one of the use case. I react on the the point of using embedded triples in the predicate <br>
+... Describing a use case.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; I don't see how embedded triples as predicates advances similarity to property graphs.  I would need an example of a property graph to see how this might work.
+</p>
+
+<p class='phone'>
+Could james_ add that use case somewhere?
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; I don't understand
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED RDF* will allow embedded triples in subject and object position
+</p>
+
+<p class='irc'>
+&lt;<cite>jerven</cite>&gt; +1 if we rename the test to embeded-triples as subject and object (think about named graph for sparql*)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>james_</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; +1 (but i'd prefer 2 separate tests)
+</p>
+
+<p class='irc'>
+&lt;<cite>Doerthe</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> we have two missing voters
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>blake</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Agree - 2 tests would be nice.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; APPROVED: RDF* will allow embedded triples in subject and object position
+</p>
+
+<a name="action02"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> pchampin to split and rename test embeded-triple-everywhere
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; we are not going to have time to vote on each test individually :)
+</p>
+
+<p class='phone'>
+sure pavel
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://w3c.github.io/rdf-star/tests/semantics/manifest.html#all-identical-embedded-triples-are-the-same">https://w3c.github.io/rdf-star/tests/semantics/manifest.html#all-identical-embedded-triples-are-the-same</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> next test on identical embedded triples <br>
+... prefix : &lt;<a href="http://example.com/ns">http://example.com/ns</a>#&gt;  &lt;&lt; :a :b :c &gt;&gt; :p1 :o1. &lt;&lt; :a :b :c &gt;&gt; :p2 :o2. MUST entail  prefix : &lt;<a href="http://example.com/ns">http://example.com/ns</a>#&gt;  &lt;&lt; :a :b :c &gt;&gt; :p1 :o1; :p2 :o2. <br>
+... this use case can be viewed in neo4j or wikidata <br>
+... there are ways to go around them, since there are discussions
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; a?
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> I don't know if it's meaningful the test as it is <br>
+... it depends too much on how your parser acts not the abstract data model
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> the abstract syntax is perfectly clear on that... see def of embedded triple <br>
+... I agree that the way is presented it can be misleading
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> If you have the same line twice, what should happen?
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; &lt;&lt; :a :b :c &gt;&gt; :p :o . &lt;&lt; :a :b :c &gt;&gt; :p :o . ==&gt; one triple or two?
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; c.f. [] :p :o . [] :p :o . ==&gt; one triple or two?
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> this is my understanding since the begining and I don't want to change that
+</p>
+
+<p class='phone'>
+<cite>pfps_:</cite> Whether is possible to construct embedded triples by other mean? <br>
+... if you define RDF* as a mapping to RDF, that definitively an issue
+</p>
+
+<p class='irc'>
+&lt;<cite>blake_</cite>&gt; &lt;&lt; :a :b :c &gt;&gt; :p1 :o1.
+</p>
+
+<p class='irc'>
+&lt;<cite>blake_</cite>&gt; &lt;&lt; &lt;&lt; :a :b :c &gt;&gt; :p3 :o3 &gt;&gt; :p2 :o2 .
+</p>
+
+<p class='irc'>
+&lt;<cite>blake_</cite>&gt; ====  MUST entail?  =====
+</p>
+
+<p class='irc'>
+&lt;<cite>blake_</cite>&gt; &lt;&lt; :a :b :c &gt;&gt; :p1 :o1; :p3 :o3 .
+</p>
+
+<p class='phone'>
+<cite>blake_:</cite> what bout the above examples?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> a mix of variation of PG and SA mode
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps_</cite>&gt; A big question for RDF* is whether you can construct embedded triples by means other than the &lt;&lt;&gt;&gt; syntax.   If you can, then the uniqueness of embedded triples becomes much more complex.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> that's one test done <br>
+... hope once the core questions are off the way, the rest will follow <br>
+... please use the mailing list to discuss as well
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Thank you pchampin for chairing.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> thanks everyone <br>
+... thanks the chairs and pchampin
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; Thx all!
+</p>
+
+<p class='irc'>
+&lt;<cite>jerven</cite>&gt; Bye
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> talk to you next week
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; bye
+</p>
+
+<p class='phone'>
+bye
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+<strong>[NEW]</strong> <strong>ACTION:</strong> blake to submit an issue on embedded quads <br />
+<strong>[NEW]</strong> <strong>ACTION:</strong> pchampin to split and rename test embeded-triple-everywhere <br />
+&nbsp;<br />
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol></ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>
