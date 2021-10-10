@@ -47,4 +47,5 @@ namespace VDS.RDF.TestSuite.RdfStar
             Assert.ThrowsAny<RdfException>(() => parser.Load(g, t.Manifest.ResolveResourcePath(t.Action)));
         }
     }
+
 }

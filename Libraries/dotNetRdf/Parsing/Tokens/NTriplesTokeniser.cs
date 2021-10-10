@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.IO;
 
 namespace VDS.RDF.Parsing.Tokens
@@ -44,7 +45,6 @@ namespace VDS.RDF.Parsing.Tokens
         public NTriplesTokeniser(ParsingTextReader input, NTriplesSyntax syntax)
             : base(input)
         {
-            NQuadsMode = false;
             _in = input;
             Format = "NTriples";
             Syntax = syntax;
@@ -103,6 +103,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// In the case of NQuads a <see cref="UriToken">UriToken</see> may follow a Literal as the Context of that Triple and not its datatype so it's important to distinguish by using a <see cref="DataTypeToken">DataTypeToken</see> instead.
         /// </para>
         /// </remarks>
+        [Obsolete("This property is no longer used. The tokenizer now behaves consistently for NQuads and NTriples syntax. This property will be removed in a future release.")]
         public bool NQuadsMode { get; set; }
 
         /// <summary>
@@ -445,7 +446,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 // Uri for Data Type
                 IToken temp = TryGetUri();
-                return NQuadsMode ? new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1) : temp;
+                return new DataTypeToken("<" + temp.Value + ">", temp.StartLine, temp.StartPosition - 3, temp.EndPosition + 1);
             }
             throw UnexpectedCharacter(next, "expected a < to start a URI to specify a Data Type for a Typed Literal");
         }

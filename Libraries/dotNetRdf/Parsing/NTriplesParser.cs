@@ -439,9 +439,9 @@ namespace VDS.RDF.Parsing
                         case Token.LANGSPEC:
                             context.Tokens.Dequeue();
                             return context.Handler.CreateLiteralNode(objToken.Value, next.Value);
-                        case Token.URI:
-                            context.Tokens.Dequeue();
-                            return context.Handler.CreateLiteralNode(objToken.Value, ((IUriNode)TryParseUri(context, next.Value)).Uri);
+                        //case Token.URI:
+                        //    context.Tokens.Dequeue();
+                        //    return context.Handler.CreateLiteralNode(objToken.Value, ((IUriNode)TryParseUri(context, next.Value)).Uri);
                         case Token.DATATYPE:
                             context.Tokens.Dequeue();
                             return context.Handler.CreateLiteralNode(objToken.Value,

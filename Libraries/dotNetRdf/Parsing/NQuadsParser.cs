@@ -254,7 +254,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Setup Token Queue and Tokeniser
-                var tokeniser = new NTriplesTokeniser(input, AsNTriplesSyntax(Syntax)) { NQuadsMode = true };
+                var tokeniser = new NTriplesTokeniser(input, AsNTriplesSyntax(Syntax));
                 // Invoke the Parser
                 Parse(new TokenisingParserContext(handler, tokeniser, TokenQueueMode, false, TraceTokeniser, uriFactory));
             }
