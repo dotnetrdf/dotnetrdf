@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 28 May 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>28 May 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-05-21.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://www.w3.org/mid/438dcce8-738c-a690-3327-260ab9277bb9@ercim.eu"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/05/28-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-06-04.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gkellogg, james, ora, pchampin, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>olaf, william</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>gkellogg, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Admin</a></li>
+<li><a href="#t03">Open actions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x017 class=irc><cite>&lt;AndyS&gt;</cite> Don't forget - zoom call today.</p>
+<p id=x020 class=summary>Reminder that we’re on Zoom this week.</p>
+</section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x028 class="phone s01"><cite>pchampin:</cite> Olaf had tweeted about an interview on using RDF-star, but haven’t seen a reference.<br>
+<span id=x029>… Using Ontotext GraphDB?</span></p>
+<p id=x030 class=irc><cite>&lt;AndyS&gt;</cite> <a href="https://www.synaptica.com/rdf-star-graphdb-graphite/">https://<wbr>www.synaptica.com/<wbr>rdf-star-graphdb-graphite/</a></p>
+<p id=x032 class=irc><cite>&lt;AndyS&gt;</cite> Also - there was a blog from TopQuadrant.</p>
+</section>
+
+<section>
+<h3 id=t02>Admin</h3>
+<p id=x035 class="phone s01"><cite>pchampin:</cite> I think we’re narrowing the things we have to discuss, and it’s been more convenient to have calls less frequently. I think we can go to one call every two weeks.</p>
+<p id=x036 class=irc><cite>&lt;james&gt;</cite> +0</p>
+<p id=x042 class="phone s02"><cite>AndyS:</cite> The next objective is to get a community report done.<br>
+<span id=x043>… I’d think the intro and the SPARQL bits are what remains, both nearlly done.</span><br>
+<span id=x044>… When do we plan that for?</span></p>
+<p id=x045 class="phone s01"><cite>pchampin:</cite> Maybe we can defer the change of schedule until after the report is published.</p>
+<p id=x047 class="phone s03"><cite>thomas:</cite> GitHub has been active lately on semantics and vocabulary. Is there interest in becoming more concrete on semantic extensions?</p>
+<p id=x049 class="phone s01"><cite>pchampin:</cite> My understanding was that the vocabulary was not blocking for the publishing of the final report (first).<br>
+<span id=x050>… THe idea is to make it a bit more milestone-ish.</span></p>
+<p id=x052 class="phone s03"><cite>thomas:</cite> I feer it then becomes an afterthought and is left to the WG. I think the extension part should be as concrete as possible.</p>
+<p id=x053 class="phone s01"><cite>pchampin:</cite> I made a proposal following my action about what issues are considered to be blocking before “Final Report” milestone.</p>
+<p id=x054 class="phone s03"><cite>thomas:</cite> I’m fine with “milestone”.</p>
+<p id=x058 class="phone s01"><cite>pchampin:</cite> This was a list of blocking issues, and the vocabulary was not part of it.<br>
+<span id=x059>… My understanding is that we can discuss the vocabulary afterwards and have other milestones before a final final report.</span><br>
+<span id=x060>… It’s good to show progress before an upcoming charter draft.</span><br>
+<span id=x061>… I’m not proposing to stop our work after the FR is out. We have some open issues, and my goal is to address them.</span></p>
+<p id=x063 class="phone s03"><cite>thomas:</cite> It’s the fring bits of RDF-star that are left, and intrest will deminish.</p>
+<p id=x067 class="phone s04"><cite>ora:</cite> I think the questions of semantics are very important. ONe of the big mistakes with the original RDF spec is that we weren’t very formal, which was rectified later.<br>
+<span id=x068>… I’m in favor of working on semantic questions, but my feer is that we might want to address issues of schema.</span><br>
+<span id=x069>… At this point, it’s not clear how to write a schema that makes use of RDF-star.</span></p>
+<p id=x075 class="phone s01"><cite>pchampin:</cite> Regarding the vocabulary, it started with an idea to have a term for the “class” of embedded triples, so that we could describe a property to expect and embedded triple.<br>
+<span id=x076>… We also had the idea of having a standard way of expressing that something is an instance of a triple in a graph.</span><br>
+<span id=x077>… There was a question of what voculary to use, but the key was an IRI expressing the type of an embedded triple.</span><br>
+<span id=x078>… This opens a can of worms; we agreed not to decide where to put the vocabulary, so this is not low-hanging fruit, which is why I preferred to defer until after the next milestone.</span></p>
+<p id=x082 class="phone s03"><cite>thomas:</cite> THe two properties “occurance of” and “in graph” could be defined informally. THat would show how it can/should be done.</p>
+<p id=x084 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://w3c.github.io/rdf-star/cg-spec/editors_draft.html#occurrences-example">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>cg-spec/<wbr>editors_draft.html#occurrences-example</a></p>
+<p id=x085 class="phone s01"><cite>pchampin:</cite> The “in” hides it’s own issues. Is the object a graph, or a graph document, …</p>
+<p id=x086 class="phone s03"><cite>thomas:</cite> I think it can be solved pragmatically.</p>
+<p id=x088 class="phone s01"><cite>pchampin:</cite> I’m not sure something ambiguous is better than nothing.</p>
+<p id=x091 class="phone s04"><cite>ora:</cite> I wanted to say I agree with PA, but we have to go there soon. If not now, at least we should have some words to say that something like this is needed.<br>
+<span id=x092>… I don’t want to end up like the PG community, where there is no schema language.</span></p>
+<p id=x098 class="phone s05"><cite>gkellogg:</cite> we have to be careful about talking about graphs.<br>
+<span id=x099>… RDF does not really provides way to talk about graphs,</span><br>
+<span id=x100>… because the semantics of named graphs is not defined.</span><br>
+<span id=x101>… Talking about the default graph is sometimes done with &lt;&gt;.</span></p>
+<p id=x104 class="phone s03"><cite>thomas:</cite> If it can be done in SPARQL, that’s good enough for me.</p>
+<p id=x105 class="phone s01"><cite>pchampin:</cite> Can we make such a comitment for RDF?</p>
+<p id=x106 class="phone s03"><cite>thomas:</cite> We could use mild terms to suggest that it could/should be done.</p>
+<p id=x109 class="phone s05"><cite>gkellogg:</cite> some groups (VC) depend on the ability to use the graph name to identify it<br>
+<span id=x110>… If we need to define that, then it needs to be in the charter.</span><br>
+<span id=x111>… Certainly will attract people.</span></p>
+<p id=x113 class="phone s01"><cite>pchampin:</cite> Back to the final report, I propose to add a chapter on the RDF-star vocabulary, but only reference the open issues plus some non-normative notes about being addressed in the future.</p>
+<p id=x114 class=summary>STRAWPOLL have a &quot;placeholder&quot; section about the RDF-star vocabulary, containing links to the issues</p>
+<p id=x115 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x116 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x117 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x118 class=irc><cite>&lt;AndyS&gt;</cite> +1: Many issues raised are wider than RDF-star. A placeholder seems the way to go. (Separate RDF-DEV group?)</p>
+<p id=x120 class="phone s06"><cite>james:</cite> I’m perplexed as to the reluctance for using SPARQL expressions when so much work has been done. Even if you don’t know the consequences, it would help the discourse.<br>
+<span id=x121>… It would be worth to have this discussion in the chapter.</span></p>
+<p id=x122 class="phone s01"><cite>pchampin:</cite> I’m reluctant to make it a blocking condition on the milestone final report. After it’s published, I think we should address it.</p>
+<p id=x123 class="phone s06"><cite>james:</cite> Then why not put it in now? I’d like to make it as concrete as possible ASAP.</p>
+<p id=x124 class="phone s01"><cite>pchampin:</cite> My feeling is that it may draw us into discussions that will further delay the milestone.</p>
+<p id=x125 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x126 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x127 class=irc><cite>&lt;TallTed&gt;</cite> +0</p>
+<p id=x128 class=irc><cite>&lt;thomas&gt;</cite> how many &quot;final reports&quot; are there? what differentiates a first &quot;final report&quot; from others? will they be marked as molestones?</p>
+<p id=x131 class="phone s01"><cite>pchampin:</cite> I don’t know how many, just that we don’t exclude the possibility of having another one in the future.</p>
+<p id=x134 class="phone s03"><cite>thomas:</cite> I see the time pressure, but if it’s named “Final Report”, I don’t see how we have several of them.</p>
+<p id=x135 class="phone s05"><cite>gkellogg:</cite> We’re bound by the set of possible W3C document types, “draft” and “final”.</p>
+<p id=x136 class="phone s03"><cite>thomas:</cite> We could try to get the vocabulary right as James or I have proposed for the next 2-3 weeks. If we don’t get agreement, then we can defer, otherwise try to include.</p>
+<p id=x138 class=irc><cite>&lt;james&gt;</cite> nb. i am not even proposing that we get it &quot;right&quot;, just the the document indicates some application of the terms</p>
+<p id=x139 class="phone s03"><cite>thomas:</cite> Can we agree to work on it over the next three weeks?</p>
+<p id=x140 class="phone s01"><cite>pchampin:</cite> This work is a side-project for all of us, so we don’t have strict deadlines anyway.</p>
+<p id=x144 class="phone s02"><cite>AndyS:</cite> We can have multiple final reports, or split it into parts. Delaying on this point ...<br>
+<span id=x145>… I think it will interest other people, and we had an agreement on the process, but if we keep changing it, I lose confidence.</span></p>
+<p id=x148 class="phone s01"><cite>pchampin:</cite> Our first priority is to get a report out, and wanted to mention the section even if it’s not complete.<br>
+<span id=x149>… It’s a question of what the editor’s prorities are in the coming weeks. Merging the current PRs or working on a new PR.</span></p>
+<p id=x152 class="phone s03"><cite>thomas:</cite> I feel that more people want to postpone it, but I feer that it will be postponed for a long time.</p>
+<p id=x153 class="phone s01"><cite>pchampin:</cite> That’s reallly not the goal, there is a section that will need to be filled.</p>
+<p id=x154 class=summary>STRAWPOLL change to a call every 2 weeks start now</p>
+<p id=x155 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x156 class=irc><cite>&lt;james&gt;</cite> +0</p>
+<p id=x157 class=irc><cite>&lt;ora&gt;</cite> +0</p>
+<p id=x158 class=irc><cite>&lt;gkellogg&gt;</cite> 0</p>
+<p id=x159 class=irc><cite>&lt;TallTed&gt;</cite> +0</p>
+<p id=x160 class=irc><cite>&lt;thomas&gt;</cite> -1 for a few more weeks</p>
+<p id=x161 class=irc><cite>&lt;AndyS&gt;</cite> +0.8</p>
+<p id=x162 class=irc><cite>&lt;thomas&gt;</cite> i could  change my vote to -0.5</p>
+<p id=x163 class=irc><cite>&lt;pchampin&gt;</cite> let's postpone that decsion</p>
+</section>
+
+<section>
+<h3 id=t03>Open actions</h3>
+<p id=x167 class=summary><a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x168 class=summary><a href="https://github.com/w3c/rdf-star/issues/121">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>121</a></p>
+<p id=x169 class="phone s01"><cite>pchampin:</cite> PR #121 has a lot of work done.</p>
+<p id=x172 class="phone s05"><cite>gkellogg:</cite> some wordsmithing issues left, but I'm astisfied with the substance<br>
+<span id=x173>… I have always found SPARQL equality challenging</span><br>
+<span id=x174>… I'm passing all the tests.</span></p>
+<p id=x176 class="phone s02"><cite>AndyS:</cite> There are some more minor changes needed.<br>
+<span id=x177>… It’s important to have a stable ordering.</span></p>
+<p id=x179 class=summary><a href="https://github.com/w3c/rdf-star/issues/164">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>164</a></p>
+<p id=x180 class="phone s01"><cite>pchampin:</cite> Next was #1164 on Sparql Service Description. I’ll reference that in the TBD section.</p>
+<p id=x181 class=summary><a href="https://github.com/w3c/rdf-star/issues/166">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>166</a></p>
+<p id=x182 class="phone s01"><cite>pchampin:</cite> The section on the rationale for transparence/opacity. I noticed that PRs fail on CI, while AndyS’s succeeds.</p>
+<p id=x184 class="phone s02"><cite>AndyS:</cite> I avoided a lot of ReSpec features and just wrote raw HTML. I didn’t have the energy on how to drop in.<br>
+<span id=x185>… In addition to ARIA, there’s an empty-ID warning.</span></p>
+<p id=x189 class="phone s01"><cite>pchampin:</cite> To be clear, the idea is that the different semantics proposed in the document could be seen as layers of semantic extensions on top of the first one.<br>
+<span id=x190>… I didn’t think that would cause too much discussion,</span></p>
+<p id=x193 class="phone s03"><cite>thomas:</cite> I saw this as marketing. I made a mistake in an answer. I had some things mixed up. I still don’t like what we’re doing.<br>
+<span id=x194>… You’re leaving out common-sense entailments.</span><br>
+<span id=x195>… I’m not as concerned about it now, but I’d be much happier if we could point to something about semantic extensions, but we don’t have that now.</span></p>
+<p id=x197 class="phone s01"><cite>pchampin:</cite> I don’t want to have the debate about which is best, because we agreed to say that there was no concensus in the group. You might use this as a semantic extension, or as a replacement, but we couldn’t agree.<br>
+<span id=x198>… The term has a precise definition in the RDF spec. The alternative sematncis work on top of the opaque semantics.</span></p>
+<p id=x199 class="phone s03"><cite>thomas:</cite> I’m refering to my discussions with olaf.</p>
+<p id=x201 class="phone s01"><cite>pchampin:</cite> I’m just try to get to the point where we can merge the PR.<br>
+<span id=x202>… We’ll need to continue on GitHub. The goal was to see if we can make progress.</span></p>
+<p id=x203 class=summary><a href="https://github.com/w3c/rdf-star/issues/168">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>168</a></p>
+<p id=x204 class=summary><a href="https://github.com/w3c/rdf-star/issues/175">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>175</a></p>
+<p id=x207 class="phone s01"><cite>pchampin:</cite> The charter hasn’t progressed.<br>
+<span id=x208>… We haven’t done anything on the media-type or conneg discussions yet.</span><br>
+<span id=x209>… AndyS mentioned that it could break some things.</span></p>
+<p id=x212 class="phone s06"><cite>james:</cite> WRT #175, AndyS requested that it introduce an issue in the sparql-12 group, which I have.</p>
+<p id=x213 class=irc><cite>&lt;AndyS&gt;</cite> james - thx</p>
+<p id=x214 class="phone s03"><cite>thomas:</cite> Any feedback on my proposal?</p>
+<p id=x217 class="phone s01"><cite>pchampin:</cite> I see where you’re going. Having an alternative syntax for transparency is interesting, but until we’ve agreed on the vocabulary, I think it’s too early.<br>
+<span id=x218>… I think the issue raised by pfps on non-obvious ramifications is a bit embarassing,</span><br>
+<span id=x219>… It is dependent on our agreeing on how to add transparency.</span></p>
+</section>
+</main>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

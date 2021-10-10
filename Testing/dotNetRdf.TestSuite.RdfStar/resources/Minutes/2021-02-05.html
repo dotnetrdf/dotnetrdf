@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF* -- 05 Feb 2021</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF*" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF*</h1>
+<h2>05 Feb 2021</h2>
+
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>TallTed, pchampin, AndyS, gkellogg, rivettp, olaf, thomas, pfps</dd>
+<dt>Regrets</dt>
+<dd>Ora_Lassila</dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>AndyS, pchampin</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">Review pending actions</a></li>
+<li><a href="#item02">Discuss Gregg's PR on N-Triples* and N-Quads*</a></li>
+<li><a href="#item03">Discuss the naming issue</a></li>
+<li><a href="#item04">publishing of a "first public working draft"</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; OK
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: AndyS
+</p>
+
+<h3 id="item01">Review pending actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='phone'>
+Please "present+" if you are here and not on the list above.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/16">https://github.com/w3c/rdf-star/issues/16</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; presetn+
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Action on NT*. Gregg can claim success.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Close it.
+</p>
+
+<h3 id="item02">Discuss Gregg's PR on N-Triples* and N-Quads*</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/87">https://github.com/w3c/rdf-star/pull/87</a>
+</p>
+
+<p class='phone'>
+<cite>gregg:</cite> Nothing surprising. <br>
+... recursive parsing on &lt;&lt;&gt;&gt; triple terms. <br>
+... NQ is informative : NT*+graph label.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> any other inputs?
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; Maybe we change these names sooner than later?  N-Triples-star and N-Quads-star? (or, hey, what about N-star-Triples and N-star-Quads?)
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> happy
+</p>
+
+<p class='phone'>
+<cite>gatemezing:</cite> why NQ* not normative?
+</p>
+
+<p class='phone'>
+<cite>gregg:</cite> section does not make any normative statements
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> seems substantive enough to implement an NQ*
+</p>
+
+<p class='phone'>
+<cite>gregg:</cite> will update with a normative sentence.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: merge PR 87 in the CG report, after making the N-Quads* section normative (with the appropriate normative statement)
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1 modulo 2 fixes I just submitted...
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james_</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; +1
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution01">RESOLUTION: merge PR 87 in the CG report, after making the N-Quads* section normative (with the appropriate normative statement)</strong>
+</p>
+
+<h3 id="item03">Discuss the naming issue</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/20">https://github.com/w3c/rdf-star/issues/20</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> proposal is "RDF-star" for our work, "RDF* " is Olaf+Bryan's work.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Isn't * a Latin character (and even an ASCII character)?  It's just a character that some search engines appear to attach special meaning to.
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; "RDFstar" may be better than "RDF-star", especially but not only for web searching
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> RDFStar
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; RDFStar is RDFS tar
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; RDFstar then?
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; (ah, yes, the eternal "PenIsland.com" quandary)
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; RDFstar is somewhat better
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; all lowercase is super ...  rdfstar
+</p>
+
+<p class='phone'>
+<cite>gregg:</cite> other related terms. N-Triples etc.
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; RDFTNG, TurtleTNG, N-TriplesTNG, N-QuadsTNG, RDFTNG/XML, TriGTNG
+</p>
+
+<p class='phone'>
+<cite>gregg:</cite> use with SPARQL (SPARQL-star)
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; this kool aid is bad.
+</p>
+
+<p class='phone'>
+<cite>gregg:</cite> existing practice N-Triples.
+</p>
+
+<p class='phone'>
+<cite>ted:</cite> forking is not doing any good.
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> evolution of RDF <br>
+... fork in the road.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> name is the work of this group - no further implication
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; RDF 1.1*
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> input for future working group.
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; RDFbis ... RDFfuture ... RDFpossibilities
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; RDF 1.1 + Embedding
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; RDFembed
+</p>
+
+<p class='phone'>
+<cite>gregg:</cite> subgroup for the concerns
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; staRDF
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; RDF 1.1a
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; the initial criticism was searchability and that is probably justified. evereything else, like forkig etc, seems premature optimization to me
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; substituting "-star" (or "star") for all suffixes of "*" sort-of works, at least insofar as it fixes search engine issues and removes the regex(etc) wildcard, and within the cabal who know of this work
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; if it's *not* a fork, then "*"/"star" suffix is more painful.  "RDF-DEV"
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: replace "*" with "-star"
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; RDF-DEV-embedding
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; it's super long, but clear as a bell
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1 to strawapoll
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1 (to the strawpoll)
+</p>
+
+<p class='irc'>
+&lt;<cite>james_</cite>&gt; +1 for "-star" universally
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; Corralary might be JSON-LD CG-embedding
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; staRDF might actually be not such a bad idea...
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution02">RESOLUTION: replace "*" with "-star"</strong>
+</p>
+
+<p class='phone'>
+pchampin is a star.
+</p>
+
+<a name="action01"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> pchampin to update the current draft, replacing "*" with "-star"
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; worth noting -- <a href="https://www.google.com/search?q=rdf-star">https://www.google.com/search?q=rdf-star</a> 1.7M results vs <a href="https://www.google.com/search?q=rdfstar">https://www.google.com/search?q=rdfstar</a> 0.1M results
+</p>
+
+<h3 id="item04">publishing of a "first public working draft"</h3>
+
+<p class='irc'>
+&lt;<cite>james_</cite>&gt; "rdf-star" yields 44.9k
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> As in a WG, put out work-in-progress documents. <br>
+... at a URL with date (see normal WG process). <br>
+... send link to RDF-DEV ML.
+</p>
+
+<p class='irc'>
+&lt;<cite>james_</cite>&gt; ... the first one being the rdf* community group github site.
+</p>
+
+<p class='phone'>
+(and twitter and the rest)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> this does not imply that we all agree about what's in the document <br>
+... let the world know what's going on, attract interested people <br>
+... avoid getting stuck in our private "loops"
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; thomas_: disagreement on semantics
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1 to Andy's points to reach out and attracj more people out there
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; pchampin: text on main branch is a long way off discussions.
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; ... pull request in progress
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; thomas_: removing it gives the wrong impression
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; pchampin: new text is closer to current discussions
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1 major change PRs should be merged before FPWD is announced
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1 to merge PR - "editors working draft" is work-in-progress
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; james_: need a stable doc
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; pchampin: In a WG, a "Last Call" doc is that.
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: pchampin
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; scribe: AndyS
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: AndyS
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; From W3C process, I think it would be a “CG Draft” publication.
+</p>
+
+<p class='phone'>
+<cite>gregg:</cite> common practice is a "publications" area for a CG (dated links, immutable) <br>
+... Community Groups have "CG draft", and "CG report". Drafts form a one-way linked list.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; FCGD - First Community Group Draft with time stamp version - according to gregg
+</p>
+
+<p class='phone'>
+<cite>gregg:</cite> Landing page refers to most recent draft and also a live doc.
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; <a href="https://w3c.github.io/rdf-star/">https://w3c.github.io/rdf-star/</a>
+</p>
+
+<p class='phone'>
+<cite>rivettp:</cite> have a clear home page <br>
+... tag in GH
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; yes, the current page is a good starting point.
+</p>
+
+<p class='phone'>
+<cite>rivettp:</cite> READ as to status of docs
+</p>
+
+<p class='phone'>
+<cite>tallted:</cite> pipeline of technologies
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Yes, the current page <a href="https://w3c.github.io/rdf-star/">https://w3c.github.io/rdf-star/</a> by renaming RDF-* by RDF-star :)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: release a first CG draft after the merge of PR87
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; "RDF 1.1 star 0.5b"
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1 to the proposal
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james_</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas_</cite>&gt; -1
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; Perhaps add some editors notes on missing sections.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; ok
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; maybe publish current Editors Draft *with* addition of links in "Status of Document", to previews with (competing?) semantics PRs
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Thanks all!
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+<strong>[NEW]</strong> <strong>ACTION:</strong> pchampin to update the current draft, replacing "*" with "-star" <br />
+&nbsp;<br />
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol><li><a href="#resolution01">merge PR 87 in the CG report, after making the N-Quads* section normative (with the appropriate normative statement)</a></li>
+<li><a href="#resolution02">replace "*" with "-star"</a></li>
+</ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

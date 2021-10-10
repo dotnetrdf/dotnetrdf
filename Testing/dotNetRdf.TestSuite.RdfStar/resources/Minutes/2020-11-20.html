@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF* -- 20 Nov 2020</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF*" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF*</h1>
+<h2>20 Nov 2020</h2>
+
+<p><a href='https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0031.html'>Agenda</a></p>
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>pchampin, Gregg_Kellogg, AndyS, Doerthe, pfps, rivettp, pavel, gatemezing, thomas, Blake Regalia</dd>
+<dt>Regrets</dt>
+<dd></dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>AndyS</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">Issue #22: Do you need referential  opacity?</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='phone'>
+Please advertise the UC&amp;R work to your networks and ask them to add to <a href="https://github.com/w3c/rdf-star/issues/.">https://github.com/w3c/rdf-star/issues/.</a> Don't worry about duplication - better to get more input and sort out later.
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: AndyS
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; Meeting: RDF*
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; Chair: pchampin
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; Agenda: <a href="https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0031.html">https://lists.w3.org/Archives/Public/public-rdf-star/2020Nov/0031.html</a>
+</p>
+
+<h3 id="item01">Issue #22: Do you need referential  opacity?</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/22">https://github.com/w3c/rdf-star/issues/22</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> issue 22: "Do you need referential opacity?"
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; ... done some testing existing implementations
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> Several choices here - impls seem to be doing what was easiest at the time.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I think it is unlikely that there are implementations of the partial opacity that is not specific to blank nodes.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Can a system replace one ground term by another if they know the terms entail. <br>
+... do blank nodes work like they do outside &lt;&lt;&gt;&gt;
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; &lt;&lt; :s :p :o &gt;&gt; :p2 :o2.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ASK { &lt;&lt; _:x :p :o &gt;&gt; :p2 :o2. }
+</p>
+
+<p class='phone'>
+<cite>andys:</cite> people find it difficult to engage in this discussion <br>
+... what would be good is to have a set of test cases
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; +1 to test cases
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; test cases might help, but you have to be very careful to not pull in intended semantics of the terms used
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1 also to have test cases, hopefully we can agree on the different test case
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Blank nodes in SPARQL(*) will be variable-like.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; yes, one has to be very careful when using SPARQL(*) for this because of the status of blank nodes in queries
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; asking entailment queries gives better answers (as long as the RDF store supports entailment questions)
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> Rerential f opacity : my impl does not do entailment <br>
+... regimes. Don't understand what the implications are for the abstract syntax level.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> need a semantics for  the abstract syntax.
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> RDF semantics does not speak to owl:sameAs.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> literals are the similar <br>
+... D-entailment
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; "01"^^xsd:integer and "1"^^xsd:integer
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> so two URIs will not be deduced to denote the same thing in RDF (only).
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> different terms (different lexical form). Causes two triples. Some places in SPARQL take account of values [ed: expressions]
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> some systems store the value rather than the different lexical forms. <br>
+... like test cases idea.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> tests to define the decisions we have to make.
+</p>
+
+<p class='phone'>
+<cite>Blake_Regalia:</cite> javascript implementation
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; graphy
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Graphy by Blake_Regalia
+</p>
+
+<p class='phone'>
+<cite>Blake_Regalia:</cite> how does ref opaque relate to RDF* is "just" syntactic sugar and what are the combinations of choices.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> hard to answer the other questions before answering this for encoding RDF* in RDF. <br>
+... if we decide it is not opaque then it may be possible to use reification. <br>
+... (superman example)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; _:x rdf:subject :superam; :superman owl:same :clark  |=  _:x rdf:subject :clark
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; it is entirely possible to have an opaque semantics using RDF reification
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; &lt;&lt; :lifeUniverseAndEverything :anwser "042"^^xsd:integer &gt;&gt; :accordingTo :deepThought.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; AndyS: can we in parallel make progress for RDF* in the no-entailment case
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; a simple way to have a very strong notion of referential opacity is simply to use a fresh IRI for each occurrence of a triple
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; &lt;&lt; :lifeUniverseAndEverything :anwser "042"^^xsd:integer &gt;&gt; :accordingTo :deepThought.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ASK { &lt;&lt; :lifeUniverseAndEverything :anwser "42"^^xsd:integer &gt;&gt; :accordingTo :deepThought. }
+</p>
+
+<p class='phone'>
+<cite>Data:</cite> :lifeUniverseAndEverything :anwser "042"^^xsd:integer  and ASK { :lifeUniverseAndEverything :anwser "42"^^xsd:integer }
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Why would it be different to what the system does outside RDF*?
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; it wouldn't. normally systems deal with this via some sort of literal canonicalisation
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> If we are using an abstract syntax where embedded triples are treated different, need an extended D-entailment.
+</p>
+
+<p class='phone'>
++1 to pavel
+</p>
+
+<p class='phone'>
+<cite>Doerthe:</cite> collect examples of how we want is use RDF* <br>
+... work on N3 and RDF* - theoretical interest.
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> Gets back to original motivation. PG mode - graph includes triples. Can refer to that triple. <br>
+... would expect that entailment happens as it does to triple. <br>
+... could allow for different semantics and extend to work over entailed triples.
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> original intention was use of RDF* to make statements about triples in a provenance sense =&gt; opaque <br>
+... query semantics more important to me. <br>
+... test case: voting on result may lead to inconsistent/un-consensus outcomes
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> may be we focus on query <br>
+... how would it work under simple entailment and also other entail regimes.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Are we talking about this document <a href="https://www.w3.org/TR/sparql11-entailment/#DEntRegime">https://www.w3.org/TR/sparql11-entailment/#DEntRegime</a> when referencing D-Entailment?
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> under simple entailment none of these show up?
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; but simple entailment isn't useful - even SPARQL does more than simple entailment
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; ooh, my mistake then
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> SPARQL triple matching is simple-entailment with values in expressions only.
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> Use graph isomorphism for tests so not SPARQL dependent
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I will start the setup for a test suite
+</p>
+
+<a name="action01"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> pchampin to start a test suite, similar to the rdf-mt suite
+</p>
+
+<a name="action02"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> Olaf to write a first draft of the query semantics in the report
+</p>
+
+<p class='phone'>
+<cite>Olaf:</cite> offer to put draft of query semantic into the spec.  There is a GH issue.
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/8">https://github.com/w3c/rdf-star/issues/8</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>rivettp</cite>&gt; FYI next Friday is Thanksgiving weekend in the US and I will not be able to attend the call
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; Who can be here next week?
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>Olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>blake</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pavel</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ok, let's keep next week call
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; thanks all! bye
+</p>
+
+<p class='irc'>
+&lt;<cite>Doerthe</cite>&gt; thank you pierre-antoine :)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; and thanks to AndyS for scribing
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+<strong>[NEW]</strong> <strong>ACTION:</strong> Olaf to write a first draft of the query semantics in the report <br />
+<strong>[NEW]</strong> <strong>ACTION:</strong> pchampin to start a test suite, similar to the rdf-mt suite <br />
+&nbsp;<br />
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol></ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

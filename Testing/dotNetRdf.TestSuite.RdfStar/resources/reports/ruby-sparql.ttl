@@ -1,0 +1,1125 @@
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+<https://rubygems.org/gems/sparql> a doap:Project;
+   doap:name "Ruby SPARQL";
+   doap:shortdesc "SPARQL library for Ruby."@en;
+   doap:description "SPARQL Implements SPARQL 1.1 Query, Update and result formats for the Ruby RDF.rb library suite."@en;
+   doap:implements  <https://www.w3.org/TR/sparql11-query/>,
+                    <https://www.w3.org/TR/sparql11-update/>,
+                    <https://www.w3.org/TR/sparql11-results-json/>,
+                    <https://www.w3.org/TR/sparql11-results-csv-tsv/>,
+                    <https://www.w3.org/TR/rdf-sparql-XMLres/>,
+                    <https://w3c.github.io/rdf-star/rdf-star-cg-spec.html> ;
+   doap:developer   <https://greggkellogg.net/foaf#me>;
+   doap:maintainer  <https://greggkellogg.net/foaf#me>;
+   doap:documenter  <https://greggkellogg.net/foaf#me>;
+   dc:creator       <https://greggkellogg.net/foaf#me>, <https://ar.to/#self>;
+   foaf:maker       <https://greggkellogg.net/foaf#me>, <https://ar.to/#self>;
+   doap:blog        <https://greggkellogg.net/>;
+   doap:bug-database <https://github.com/ruby-rdf/sparql/issues>;
+   doap:category <https://dbpedia.org/resource/Resource_Description_Framework>,
+     <https://dbpedia.org/resource/Ruby_(programming_language)>;
+   doap:created "2008-07-15"^^xsd:date;
+   doap:download-page <https://rubygems.org/gems/sparql>;
+   doap:homepage <https://github.com/ruby-rdf/sparql>;
+   doap:license <https://unlicense.org/1.0/>;
+   doap:programming-language "Ruby" .
+
+<https://greggkellogg.net/foaf#me> a foaf:Person;
+   foaf:homepage <https://greggkellogg.net/>;
+   foaf:mbox <mailto:gregg@greggkellogg.net>;
+   foaf:mbox_sha1sum "35bc44e6d0070e5ad50ccbe0d24403c96af2b9bd";
+   foaf:name "Gregg Kellogg" .
+
+<https://ar.to/#self> a foaf:Person;
+   foaf:homepage <https://ar.to/>;
+   foaf:made <>;
+   foaf:mbox <mailto:arto.bendiken@gmail.com>;
+   foaf:mbox_sha1sum "a033f652c84a4d73b8c26d318c2395699dd2bdfb",
+     "d0737cceb55eb7d740578d2db1bc0727e3ed49ce";
+   foaf:name "Arto Bendiken" .
+
+<https://rubygems.org/gems/sparql> doap:release [
+  doap:name "sparql-3.1.7";
+  doap:revision "3.1.7";
+  doap:created "2021-05-29"^^xsd:date;
+] .
+<> foaf:primaryTopic <https://rubygems/gems/sparql> ;
+  dc:issued "2021-07-07T12:53:50-07:00"^^xsd:dateTime ;
+  foaf:maker <https://greggkellogg.net/foaf#me> .
+
+<https://greggkellogg.net/foaf#me> a earl:Assertor;
+  foaf:title "Implementor" .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - subject quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - object quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - subject quoted triple - vars""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - object quoted triple - vars""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-5>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple in VALUES""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-6>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple in CONSTRUCT""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-7>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triples in CONSTRUCT WHERE""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-inside-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - quoted triple inside blankNodePropertyList""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-inside-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - quoted triple inside collection""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-nested-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - nested quoted triple, subject position""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-nested-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - nested quoted triple, object position""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-compound-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - compound forms""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bnode-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - blank node subject""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bnode-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - blank node object""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bnode-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - blank node""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Annotation form""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Annotation example""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Annotation example""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Annotation with quoting""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Annotation on triple with quoted object""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Annotation with path""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Annotation with nested path""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-08>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Annotation in CONSTRUCT """;
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Annotation in CONSTRUCT WHERE""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Expressions - Embedded triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Expressions - Embedded triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Expressions - Functions""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Expressions - TRIPLE""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-5>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Expressions - Functions""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-6>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Expressions - BIND - CONSTRUCT""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - quoted triple as predicate""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - quoted triple outside triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - collection list in quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - literal in subject position of quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-5>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - blank node  as predicate in quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-6>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - compound blank node expression""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-7>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - incomplete quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-8>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - quad quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-9>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - variable in quoted triple in VALUES """;
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-10>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - blank node in quoted triple in VALUES """;
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-11>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - blank node in quoted triple in FILTER""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-12>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - blank node in quoted triple in BIND""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - empty annotation""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - triples in annotation""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - path - seq""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - path - alt""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - path - p*""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - path - p+""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-5>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - path - p?""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-6>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - path in CONSTRUCT""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-7>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - bad - path in CONSTRUCT""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update with quoting""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-5>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update with quoted object""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-6>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update with annotation template""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-7>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update with annotation, template and pattern""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-8>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update DATA with annotation""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update - bad syntax""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update - bad syntax""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update - bad syntax""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - update - bad syntax""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-results-1j>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - all graph triples (JSON results)""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-results-1x>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - all graph triples (XML results)""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - match constant quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - match quoted triple, var subject""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - match quoted triple, var predicate""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-5>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - match quoted triple, var object""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-6>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - no match of quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Asserted and quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star -  Asserted and quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Pattern - Variable for quoted triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Pattern - No match""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-5>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Pattern - match variables in triple terms""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-6>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Pattern - Nesting 1""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-7>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Pattern - Nesting - 2""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-8>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Pattern - Match and nesting""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-9>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Pattern - Same variable""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - CONSTRUCT with constant template""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - CONSTRUCT WHERE with constant template""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - CONSTRUCT - about every triple""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - CONSTRUCT with annotation syntax""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-5>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - CONSTRUCT WHERE with annotation syntax""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-graphs-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - GRAPH""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-graphs-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - GRAPHs with blank node""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple - BIND - CONSTRUCT""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple - Functions""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple - sameTerm""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple - value-equality""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple - value-inequality""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple - value-inequality""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-order-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple - ORDER BY""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-order-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Embedded triple - ordering""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Update""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Update - annotation""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+
+[ a earl:Assertion;
+  earl:assertedBy <https://greggkellogg.net/foaf#me>;
+  earl:subject <https://rubygems.org/gems/sparql>;
+  earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-3>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:name """SPARQL-star - Update - data""";
+    dc:date "2021-07-07T12:53:50-07:00"^^xsd:dateTime];
+  earl:mode earl:automatic ] .

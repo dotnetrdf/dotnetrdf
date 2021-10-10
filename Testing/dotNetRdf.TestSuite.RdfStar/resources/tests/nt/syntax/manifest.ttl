@@ -1,0 +1,101 @@
+## Distributed under both the "W3C Test Suite License" [1]
+## and the "W3C 3-clause BSD License".
+## [1] https://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## [2] https://www.w3.org/Consortium/Legal/2008/03-bsd-license
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
+PREFIX trs:    <https://w3c.github.io/rdf-star/tests/nt/syntax#>
+
+trs:manifest  rdf:type mf:Manifest ;
+    rdfs:label "N-Triples-star Syntax Tests" ;
+    mf:entries
+    (
+        trs:ntriples-star-1
+        trs:ntriples-star-2
+        trs:ntriples-star-3
+        trs:ntriples-star-4
+        trs:ntriples-star-5
+
+        trs:ntriples-star-bnode-1
+        trs:ntriples-star-bnode-2
+
+        trs:ntriples-star-nested-1
+        trs:ntriples-star-nested-2
+
+        trs:ntriples-star-bad-1
+        trs:ntriples-star-bad-2
+        trs:ntriples-star-bad-3
+        trs:ntriples-star-bad-4
+    ) .
+
+trs:ntriples-star-1 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-star - subject quoted triple" ;
+   mf:action    <ntriples-star-syntax-1.nt> ;
+   .
+
+trs:ntriples-star-2 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-star - object quoted triple" ;
+   mf:action    <ntriples-star-syntax-2.nt> ;
+   .
+
+trs:ntriples-star-3 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-star - subject and object quoted triples" ;
+   mf:action    <ntriples-star-syntax-3.nt> ;
+   .
+
+trs:ntriples-star-4 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-star - whitespace and terms" ;
+   mf:action    <ntriples-star-syntax-4.nt> ;
+   .
+
+trs:ntriples-star-5 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-star - Nested, no whitespace" ;
+   mf:action    <ntriples-star-syntax-5.nt> ;
+   .
+
+# Blank nodes
+
+trs:ntriples-star-bnode-1 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-star - Blank node subject" ;
+   mf:action    <ntriples-star-bnode-1.nt> ;
+   .
+
+trs:ntriples-star-bnode-2 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-star - Blank node object" ;
+   mf:action    <ntriples-star-bnode-2.nt> ;
+   .
+   
+trs:ntriples-star-nested-1 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-star - Nested subject term" ;
+   mf:action    <ntriples-star-nested-1.nt> ;
+   .
+
+trs:ntriples-star-nested-2 rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name      "N-Triples-star - Nested object term" ;
+   mf:action    <ntriples-star-nested-2.nt> ;
+   .
+
+## Bad syntax
+ 
+trs:ntriples-star-bad-1 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-star - Bad - quoted triple as predicate" ;
+    mf:action    <ntriples-star-bad-syntax-1.nt> ;
+    .
+    
+trs:ntriples-star-bad-2 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-star - Bad - quoted triple, literal subject" ;
+    mf:action    <ntriples-star-bad-syntax-2.nt> ;
+    .
+
+trs:ntriples-star-bad-3 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-star - Bad - quoted triple, literal predicate" ;
+    mf:action    <ntriples-star-bad-syntax-3.nt> ;
+    .
+
+trs:ntriples-star-bad-4 rdf:type rdft:TestNTriplesNegativeSyntax ;
+    mf:name      "N-Triples-star - Bad - quoted triple, blank node predicate" ;
+    mf:action    <ntriples-star-bad-syntax-4.nt> ;
+    .

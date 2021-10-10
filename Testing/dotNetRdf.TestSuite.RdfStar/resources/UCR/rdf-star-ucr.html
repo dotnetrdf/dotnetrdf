@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>RDF-star Use Cases and Requirements</title>
+
+    <script src='https://www.w3.org/Tools/respec/respec-w3c' async class='remove'></script>
+    <script class='remove'>
+      var respecConfig = {
+          specStatus: "unofficial",
+          editors: [{
+              name: "RDF Star Community",
+              url: "https://github.com/w3c/rdf-star/issues/29",
+          }],
+          github: "https://github.com/w3c/rdf-star/",
+	        shortName: "rdf-star-ucr",
+      };
+    </script>
+    <style>
+      .contributor:before { content: "Contributed by: "; font-weight: bold; }
+    </style>
+  </head>
+  
+  <body>
+    <h1>RDF-star Use Cases and Requirements</h1>
+    <section id='abstract'>
+      <p>
+        This document describes use cases that justify the extension of RDF in the current work in RDF star
+        community group. It is collaborative work and is a non-normative part of this group output.   
+      </p>
+    </section>
+    <section id='sotd'>
+      <p>
+        This document is a community working draft.
+      </p>
+    </section>
+
+    <section>
+      <h2>Introduction</h2>
+      <p>
+        This document collects together use cases and requirments for RDF-star.
+        These use case were provided by members of the 
+        <a href="https://www.w3.org/community/rdf-dev/">W3C RDF Community Group</a>
+        on the <a href="https://lists.w3.org/Archives/Public/public-rdf-star/"
+                  >RDF-star mailing list</a>
+        and <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aissue+is%3Aopen+label%3Ause-case">issues</a>
+        of the  community's GitHub repository.
+    </section>
+
+    <section>
+      <h2>Contributing Use Cases and Requirements</h2>
+      <p>
+        <a href="https://github.com/w3c/rdf-star/issues/new?template=use-case.md">Create a GitHub issue following the dedicated template</a>. The suggested form is:
+      </p>
+      <pre>
+        WHO:  As an &lt;actor&gt;
+        WHAT: I want a &lt;feature&gt;
+        WHY:  So that &lt;benefit&gt;
+      </pre>
+      <p>
+          This is not mandatory.
+      </p>
+    </section>
+
+    <section>
+      <h2>Submitted Use Cases</h2>
+
+      <section>
+        <h4>Similarity use case</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/31">Submitted Use Case</a></p>
+        <p>
+          As a materials scientist working with ontologies.  I want to enrich
+          relationships between objects. For example "A --similar--&gt; B"
+          with a similarity measure of 0.5, So that I can identify the pairs of objects with relationships of certain
+          "strength". Visualization of the edges with accordingly weighted thickness would be a huge
+          plus.
+        </p>
+      </section>
+
+      <section>
+        <h4>distinguish interpretation from representation</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/32">Submitted Use Case</a></p>
+        <p>
+          As a data service,<br/>
+          from an architectural perspective, interpretation should be
+          distinct from and cleanly layered over representation - both abstract and
+          concrete, in order to facilitate implementation and assure the ability to
+          support future use cases as knowledge evolves over time.
+        </p>
+        <p>
+          From this perspective, the standard treatment of blank node labels is an
+          anti-requirement, the lessons of which should dissuade from unnecessarily
+          restrictive relations between interpretation and representation.
+        </p>
+        <p>
+          The situation with blank node labels is a case where the interpretation was
+          fixed, to treat them as referentially opaque. that was a mistake. it would have
+          been better to separate the interpretation from the representation and to allow
+          alternatives.
+        </p>
+        <ul>
+          <li><a href="https://lists.w3.org/Archives/Public/semantic-web/2009Nov/0040.html"
+                 >https://lists.w3.org/Archives/Public/semantic-web/2009Nov/0040.html</a></li>
+          <li><a href="https://www.slideshare.net/PatHayes/blogic-iswc-2009-invited-talk"
+                 >https://www.slideshare.net/PatHayes/blogic-iswc-2009-invited-talk</a></li>
+          <li><a href="http://videolectures.net/iswc09_hayes_blogic/"
+                 >http://videolectures.net/iswc09_hayes_blogic/</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <h4>Natural representation of PG data in RDF</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/33">Submitted Use Case</a></p>
+        <p>
+          As a KG vendor, we want Stardog customers to have easy to use means to attach
+          properties to edges in their RDF graph or load property graph data with edge
+          properties. Here "easy" specifically means that neither the customer nor the
+          database should have to wreck the data model (and queries) to use any of the
+          workarounds available in plain RDF for that purpose (like the RDF
+          reification). For example, if the customer has 
+        </p>
+        <pre>:pavel :worksAt :Stardog</pre>
+        <p>edge in
+          the data and wants to add ... <tt>:since 2011</tt> to it, neither they nor the database
+          should have to transform it into a bunch of different triples like 
+        </p>
+        <pre>
+          []
+            rdf:subject :pavel ; 
+            rdf:property :worksAt ... 
+        </pre>
+        <p>
+          (and then also rewrite queries
+          so that <tt>?s :worksAt :Stardog</tt> still returns <tt>:pavel</tt>).
+        </p>
+        <p>
+          Also we want to enable customers to store that annotated statement in any named
+          graph they want so we don't want to use named graphs for representing statement-level
+          metadata.
+        </p>
+      </section>
+
+      <section>
+        <h4>Meta-properties over properties</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/35">Submitted Use Case</a></p>
+        <p>
+          As a data engineer,<br/>
+          I want to add meta-properties over properties, from an existing SQL-DB to a Graph-DB; that is for example
+          for a node of type PERSON, with a property :birthDate='1985-01-20', I want to be able to say
+          the property was created on '2020-11-10', by a user 'editor1' with the role 'writer'.
+        </p>
+        <p>
+          So that I do not need to transform the property into a relation plus yet another node.
+        </p>
+      </section>
+
+      <section>
+        <h4>Support Wikidata/Wikibase data model</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/36">Submitted Use Case</a></p>
+        <p>
+          As a member of the Wikidata community,<br/>
+          I would like to see triple stores
+          supporting the Wikidata/Wikibase data model as much as possible, so that
+          provenance information etc. can be represented in a way which is pleasing to the
+          mind and software-systems such as Wikibase.
+        </p>
+        <ul>
+          <li><a href="https://www.mediawiki.org/wiki/Wikibase/DataModel">https://www.mediawiki.org/wiki/Wikibase/DataModel</a></li>
+          <li><a href="https://www.mediawiki.org/wiki/Wikibase/Indexing/RDF_Dump_Format"
+                 >https://www.mediawiki.org/wiki/Wikibase/Indexing/RDF_Dump_Format</a></li>
+          <li><a href="https://phabricator.wikimedia.org/T206560">https://phabricator.wikimedia.org/T206560</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <h4>UniProt: attributed/evidenced triples</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/47">Submitted Use Case</a></p>
+        <p>
+          As an UniProt developer,<br/>
+          I want an easier way to talk about triples we have
+          asserted. So that querying and parsing data-models from evidenced triples
+          becomes simpler.
+          </p>
+        <pre>
+&lt;P26948&gt; up:annotation &lt;P26948#SIPDB6A831D8E2E2D2A&gt; .
+&lt;#_kb.P26948_up.annotation_A144DC8D56EA0928&gt; rdf:type rdf:Statement ;
+  rdf:subject &lt;P26948&gt; ;
+  rdf:predicate up:annotation ;
+  rdf:object &lt;P26948#SIPDB6A831D8E2E2D2A&gt; ;
+  up:attribution &lt;P26948#attribution-89AC1B682EEB440D50C4AEBB24FCA860&gt; .
+        </pre>
+        <p>
+          is a lot of bytes to type, and even worse the five joins 
+          are very expensive to perform.
+        </p>
+        <p>
+          Our use-case for RDFstar etc. is to allow us to talk about triples as we do now,
+          but with a higher performance and lower barrier to entry.
+        </p>
+        <p>
+          We currently depend on the RDF/XML rdf:ID to easily parse this in our inhouse
+          custom RDF parsers, and would like to keep this option open.
+        </p>
+        <p>
+          At the same time we deal with a lot of renaming (IRIs) for the same thing.
+          e.g. a related database might use http://identifiers.org/uniprot/P05067 instead
+          of http://purl.uniprot.org/uniprot/P05067. And a owl:sameAs is used to merge
+          these datasets. Our attributions/evidences should be found no matter which IRI
+          is used.
+        </p>
+      </section>
+
+      <section>
+        <h4>CSV and TSV results</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/48">Submitted Use Case</a></p>
+        <p>
+          As an user,<br/>
+          I want a to be able to retrieve SPARQL results as CSV or TSV
+          So that I can use different toolchains to analyze the results.
+        </p>
+        <p><a href="https://github.com/w3c/rdf-star/issues/48">Full use case and proposal.</a></p>
+      </section>
+
+      <section>
+        <h4>specify sh:message and sh:severity for individual constraints</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/29#issuecomment-727094263">Submitted Use Case</a></p>
+        <p>
+          As an ontologist/schema developer using SHACL<br/>
+          I want to specify sh:message and sh:severity for individual constraints,
+          e.g. attach to individual sh:minCount 1 triples because otherwise I would have
+          to create an individual shape (subject) just for this information.
+        </p>
+        <p>
+          (This use case is already implemented in TopBraid EDG product)
+        </p>
+      </section>
+
+      <section>
+        <h4>attribute nodes in relations with additional detail</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/29#issuecomment-728122573">Submitted Use Case</a></p>
+        <p>
+          As a data engineer<br/>
+          I want to attribute nodes in relations with additional
+          detail so that details on the nodes is kept seperate from the property.  E.g.:
+          two persons meet at a certain time (which is an attribute of the relation) and
+          one of them has a Covid-19 infection.
+        </p>
+      </section>
+
+      <section>
+        <h4>represent competing scenarios</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/29#issuecomment-728138330">Submitted Use Case</a></p>
+        <p>
+          As an analyst</br>
+          I want to represent competing scenarios
+          so that I can compare predispositions and possible outcomes.
+          As a dispatcher in an unfolding catastrophic event
+          I want to integrate new information into a developing model of the event
+          so that everybody can understand the dynamics and probable developments.
+          Both scenarios can benefit from referential transparency but also faithful reproduction of source
+          information.
+          </p>
+      </section>
+
+      <section>
+        <h4>annotate statements from other named graphs and datasets</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/29#issuecomment-728242767">Submitted Use Case</a></p>
+        <p>
+          As a knowledge worker<br/>
+          I want to annotate statements from other named graphs and datasets where I might not even have write access
+          so that I can make statements about statements on the web of data like about any other entity.
+        <p>
+      </section>
+
+      <section>
+        <h4>annotate commit deltas</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/29#issuecomment-728334375">Submitted Use Case</a></p>
+        <p>
+          I want to annotate commit deltas to an RDF graph, e.g.:
+          </p>
+        <pre>
+r:47e1cf2 a :Commit ; 
+     :delete &lt;&lt;:bob :age 23&gt;&gt; ;
+     :add &lt;&lt;:bob :age 24&gt;&gt;, &lt;&lt;:bob :gender :male&gt;&gt; .
+</pre>
+        <p>
+          so that a triple can be searched for across commit history in SPARQL-star.
+        </p>
+      </section>
+
+      <section id="rdfsSupport">
+        <h4>SPARQL-star/RDF-star and RDFS support</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/80#issuecomment-777292682">Submitted Use Case</a></p>
+        <p>
+          As a user, I want to express facts as triple statements `{:s :p :o}` within a
+          triplestore.  Later on I realise I want to add facts about this fact.  However
+          the {:s :p :o} triple has already been asserted in the triplestore, so I need to
+          add a reification.
+        </p>
+        <pre>
+          :key rdf:subject :s ; rdf:predicate :p ; rdf:object :o .
+        </pre>
+        <p>
+          Now I can add facts about the fact:
+        </p>
+        <pre>
+          :key :uom :cm ; :accuracy ".32" .
+        </pre>
+        <p>
+          So far 'standard' reification.
+        </p>
+        <p>
+          However, as a user I want to add some RDFS 'referential' integrity to help
+          manage the use of additional predicates such a :uom and :accuracy.  Since the
+          rdfs:domain of rdf:subject, rdf:predicate, and rdf:object, it can be inferred
+          that :key is a rdf:Statement.  This then implies that the rdfs:domain of :uom
+          and :accuracy is also rdf:Statement. Thus if I continue reifying other
+          statements, any predicates associated with the reified statement must have a
+          rdfs:domain of rdf:Statement.
+        </p>
+        <p>
+          So as a user who wants to add some RDFS-based control over the model, I would
+          introduce a rdfs:subClassOf so that predicates associated with this subClass
+          have a rdfs:domain of this subclass
+        </p>
+        <p>
+          Triple:
+        </p>
+        <pre>
+          :Peter :married :Beth
+          </pre>
+        <p>
+        Reified Triple:
+        </p>
+        <pre>
+        :marriageKey rdf:subject :Peter ; rdf:predicate :married ; rdf:object :Beth .
+
+        :marriageKey a :Marriage ;
+                :when "1980" ;
+    		        :where "Kelby" .
+        </pre>
+        <p>
+          with the following RDFS assertions:
+        </p>
+        <pre>
+          :Marriage rdfs:subClassOf rdf:Statement .
+        </pre>
+and
+        <pre>
+        :when rdfs:domain  :Marriage .
+        :where rdfs:domain  :Marriage .
+        </pre>
+        <p>
+          The benefits are that I can combine triple reification with RDFS providing the
+          same benefits that rdfs offers to rdfs:Class to rdf:Statement.
+        </p>
+
+      </section>
+
+
+      <section>
+        <h4>Time-sensitive data use case</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/120">Submitted Use Case</a></p>
+        <p>
+          As a Big Data and & AI platform-product owner<br/> 
+          I want the capacity to describe and query relations in the graph with the
+          dimension of temporal entity-events.
+        </p><p>
+          So that we could extract more power from the Graph, using relationships over
+          time in stuff like job-assignment, seasonal events, and so on. In a website with
+          a lot of annotated entities in each page and with the users navigating in that
+          contents over time, we could also look into the user and its semantics data over
+          time too.
+        </p><p>
+          So we could ask the RDF-star this kind of quotes:
+        </p>
+        <ul>
+          <li>"What is the semantic classes or entities for the user X with more consumption in the last 7 days"</li>
+          <li>"What is the last job for the user X?"</li>
+          <li>"What is the last edition of the program Y"</li>
+        </ul>
+      </section>
+
+      <section>
+        <h4>Uncertainty representation</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/132">Submitted Use Case</a></p>
+        <p>As a Ph.D. student working on uncertainty,<br/>
+          I want to use RDF* to represent uncertainty values for RDF statements, using the mUnc ontology.
+          This offers the possibility to evaluate the reliability of statements in a specific
+          context.
+        </p>
+        <p>
+          See <a href="https://ns.inria.fr/munc/">mUnc (Metadata with UNCertainty) OWL
+            ontology </a>for describing uncertainty information.
+        </p>
+      </section>
+
+      <section>
+        <h4>Compact Serialization of OWL Graphs</h4>
+        <p><a href="https://github.com/w3c/rdf-star/issues/148">Submitted Use Case</a></p>
+        <p>
+          As an OWL ontology provider who is responsible for providing multiple large
+          biomedical ontologies, many including rich graph structures (partonomies,
+          lineage hierarchies),
+        </p>
+        <p>
+          I want a compact OWL serialization that avoids generating 4 triples for each
+          existential axiom, whilst retaining semantic rigor.
+        </p>
+        <p>
+          So that users of my ontologies can naturally traverse ontology graphs using
+          simple triples, and optionally look up the OWL semantics of each triple.
+        </p>
+        <p>
+          This use case is outlined in more detail in my blog post: 
+          <a href="https://douroucouli.wordpress.com/2019/07/11/proposed-strategy-for-semantics-in-rdf-and-property-graphs"/
+             >Proposed strategy for semantics in RDF* and Property Graphs</a>.
+        </p>
+        <p>
+          The core idea is that instead of 4 triples for a TBox graph edge, as we have
+          now:
+        </p>
+<pre>Finger owl:subClassOf [
+  a owl:Restriction ;
+  owl:onProperty :part_of owl:someValuesFrom :Hand
+]
+</pre>
+        <p>
+          we would have a triple linking finger to hand, with the OWL semantics of the
+          triple specified as triples on the core triple:
+        </p>
+<pre>
+<<:finger :part-of :hand>> owlstar:hasInterpretation owlstar:SubClassOfSomeValuesFrom .
+</pre>
+        <p>
+          The proposed vocabulary is here <a href="https://github.com/cmungall/owlstar">https://github.com/cmungall/owlstar</a>.
+        </p>
+        <p>
+          Note I have phrased this use case as a provider of biomedical ontologies (I
+          provide some of the major ones, including GO, Uberon, Mondo, and am part of the
+          Open Bio Ontologies team), but I believe this would be broadly useful. In
+          particular I think this would be useful in Wikidata, which already provides
+          existential axioms as simple triples.
+        </p>
+      </section>
+      
+      <section>
+        <h2>Previous Material</h2>
+        <p>
+          From <a 
+                 href="https://github.com/w3c/EasierRDF/blob/master/RDFstar/RDFStarUCandRequirements.html">
+            EasierRDF-RDFstar/RDFStarUCandRequirements.html
+          </a>.
+        </p>
+
+      <section id="annotationsNotInGraph">
+        <h3>Annotations of triples that are not in the graph</h3>
+        <p class="contributor">Richard Cyganiak.</p>
+        <p>I want to be able to annotate triples that are not in the graph</p>
+        <p>As an web user, I want to be able to annotate any triples,
+          regardless of whether they are in the same graph or not. Then I can annotate
+          triples in a graph elsewhere on the web.
+        </p>
+      </section>
+
+		  <section id="annotationsTripleInGraph">
+        <h3>Annotations of triples where the triples are in another graph of the same RDF Dataset</h3>
+        <p class="contributor">Andy Seaborne</p>
+        <p>
+          As an information engineer, I want to be able to manage annotation triples
+          separately from the data triples themselves. I wish to have a separategraph in
+          the same RDF dataset.
+          This will make data management more convenient - e.g. publishing without
+          annotations; e.g. querying the data without the annotations visible.
+        </p>
+      </section>
+
+      <section id="graphmetadacombination">
+        <h3>Combination of RDF-star and graph-level metadata (named graphs)</h3>
+        <p class="contributor">Dan Brickley</p>
+        <p>I want to use an RDF-star triple to capture something like, 
+          e.g., "the graph denoted by IRI ex:mygraph contains the edge/triple (ex:Bob, foaf:knows, ex:Alice)."</p>
+      </section>
+            
+      <section id="combiningTrigNamedGraph">
+        <h3>Combining TriG / Named Graphs / RDF-star</h3>
+        <p class="contributor">Ghislain Atemezing</p>
+        <p>I want to combine TriG notation / Named Graph / RDF-star all together. What is feasible or not with RDF-star?</p>
+      </section>
+      
+      <section id="AssertingAnnotatedArcs">
+        <h3>Asserting Annotated Arcs</h3>
+        <p class="contributor">Jeff Lerman</p>
+      </section>
+
+  </body>
+</html>

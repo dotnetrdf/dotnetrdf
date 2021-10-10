@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 05 March 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>05 March 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-02-26.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Mar/0019.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/03/05-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-03-12.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gatemezing, gkellogg, james, olaf, ora, pchampin, rivettp, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>gatemezing, gkellogg, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">PR on SPARQL-star built-in functions</a></li>
+<li><a href="#t03">Should &lt;&lt;&gt;&gt; syntax be added to SPARQL-star expressions?</a></li>
+<li><a href="#t04">Define a URI for the class of embedded triples</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x038 class="phone s01"><cite>william:</cite> I’m William Van Woensel, currently a research associate in Canada, currently involved with standardizing Notation-3.<br>
+<span id=x039>… Obviously a bit of overlap with RDF-star. Cited-formulae are a similar construct, and would like to hear about crossover ideas.</span><br>
+<span id=x040>… I’ve tried keeping up with the mailing list and hope I can be enlightened.</span></p>
+</section>
+
+<section>
+<h3 id=t02>PR on SPARQL-star built-in functions</h3>
+<p id=x043 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/118">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>118</a></p>
+<p id=x044 class="phone s02"><cite>pchampin:</cite> I also put in a couple of related issues I’d like to close out.</p>
+<p id=x045 class="phone s03"><cite>olaf:</cite> When the PR is merged the related issues can be closed.</p>
+<p id=x046 class=irc><cite>&lt;james&gt;</cite> audio is very sporadic</p>
+<p id=x047 class=irc><cite>&lt;gatemezing&gt;</cite> I have issue to hear olaf</p>
+<p id=x048 class="phone s03"><cite>olaf:</cite> The PR brings in the 5 built-in functions for constructing and accessing triple components and to see if a term is a triple or not.</p>
+<p id=x049 class=irc><cite>&lt;thomas&gt;</cite> me too</p>
+<p id=x051 class="phone s02"><cite>pchampin:</cite> There has been some discussions on the mailing list and in te PR.</p>
+<p id=x054 class="phone s02"><cite>pchampin:</cite> I understnad james’ questions, but I don’t see how they relate to the PR</p>
+<p id=x056 class="phone s04"><cite>james:</cite> This is the first time there’s an explicit operator to construct such a term. It’s the first term in RDF, which in other parts of RDF has a behavior relating to the graph within which the statement is made.<br>
+<span id=x057>… It’s the first itme it can include a blank node which has such behavior. It depends on the relationship between the label and the designated node which is problemative.</span></p>
+<p id=x059 class=irc><cite>&lt;AndyS&gt;</cite> A previous case - BNODE().</p>
+<p id=x061 class="phone s04"><cite>james:</cite> This constructed triple term may have a behavior which is different and deserves to be described inline.</p>
+<p id=x062 class="phone s02"><cite>pchampin:</cite> Your concern is that the blank node constituents of a triple change the semantics.</p>
+<p id=x064 class="phone s04"><cite>james:</cite> I sent an answer about them being opaque terms. The document should be supportive of users and not require they understand all the implications.</p>
+<p id=x066 class="phone s03"><cite>olaf:</cite> I understand the concern, but I don’t think it’s that different from the SPARQL BNODE function.</p>
+<p id=x067 class="phone s04"><cite>james:</cite> I think readers would appreciate the reference.</p>
+<p id=x069 class="phone s05"><cite>AndyS:</cite> I don’t understand why you say it creates BNodes, as it contains them but not creates them.</p>
+<p id=x072 class="phone s04"><cite>james:</cite> I’m not saying it creates BNodes, but it’s the first time you can construct a statement containing bnodes. The behavior differs (slightly) from the way that statements are known in RDF.</p>
+<p id=x074 class="phone s02"><cite>pchampin:</cite> It creates a triple as a term.</p>
+<p id=x076 class="phone s02"><cite>pchampin:</cite> I think it’s an important distinction that it is not asserted, but embedded.</p>
+<p id=x079 class="phone s04"><cite>james:</cite> I’m trying to understand how blank nodes behave.</p>
+<p id=x084 class="phone s06"><cite>gkellogg:</cite> I can imagine systems where the bnode identity is key to its relationship with other nodes<br>
+<span id=x085>… relevant to isomorphism, normalization</span><br>
+<span id=x086>… Does adding an embedded triple change the relations of a bnode?</span><br>
+<span id=x087>… I think it does.</span></p>
+<p id=x091 class="phone s06"><cite>gkellogg:</cite> it’s worth stating, as it could violate some assumptions.</p>
+<p id=x093 class="phone s05"><cite>AndyS:</cite> When the tirple function creates an embedded triple, it’s not putting it in the graph. It would be not different than if you put annotation syntax into a CONSTRUCT.<br>
+<span id=x094>… The function does not affect the data.</span></p>
+<p id=x095 class=irc><cite>&lt;gatemezing&gt;</cite> good point AndyS</p>
+<p id=x097 class="phone s05"><cite>AndyS:</cite> As the subject of the PR, I don’t see a connection.</p>
+<p id=x098 class="phone s02"><cite>pchampin:</cite> Maybe the clarification james asked for would be welcome.</p>
+<p id=x101 class="phone s05"><cite>AndyS:</cite> I think it would be a good example that showed different behavior. We don’t know which is right and which is wrong.</p>
+<p id=x104 class="phone s06"><cite>gkellogg:</cite> it is true that an embedded triple does not put anything in the graph<br>
+<span id=x105>… but two graphs differing only by the embedded triples they use are not isomorphic</span></p>
+<p id=x107 class="phone s05"><cite>AndyS:</cite> but that does not concern this function<br>
+<span id=x108>… the function does not change the data; and you don't need the function to add embedded triples into the graph</span></p>
+<p id=x110 class=irc><cite>&lt;pchampin&gt;</cite> ... If there are different beheviours, let's enumerate them</p>
+<p id=x112 class="phone s05"><cite>AndyS:</cite> I don’t think Isomorphism is strictly defined in RDF.</p>
+<p id=x114 class="phone s02"><cite>pchampin:</cite> It is defined.</p>
+<p id=x115 class="phone s04"><cite>james:</cite> I reiterate my concerns as a reader; this is the place where things of this type are produced.</p>
+<p id=x116 class="phone s05"><cite>AndyS:</cite> There are other places it’s created.</p>
+<p id=x117 class="phone s04"><cite>james:</cite> Yes, but this is the place in the document where you actually construct one.</p>
+<p id=x119 class="phone s05"><cite>AndyS:</cite> I’d think it would be in the definition of RDF-star terms.<br>
+<span id=x120>… Parsing also produces them. I’m worried that focusing on the TRIPLE function misses the wider context.</span></p>
+<p id=x122 class="phone s02"><cite>pchampin:</cite> The creation of the term is not what causes problems. It’s when that created term gets used, either by CONSTRUCT or ...</p>
+<p id=x126 class="phone s04"><cite>james:</cite> That is true, but you can describe in each location, or have a summary in the place where you create one. If I want to understand what a parser does, I need to look somewhere.<br>
+<span id=x127>… I’d rather not to have to delve into the definition of a parser to understand this.</span><br>
+<span id=x128>… I thought everyplace that produces an embedded triple produces this type of thing, so this is where you would look.</span></p>
+<p id=x132 class="phone s03"><cite>olaf:</cite> Before the call, I was thinking about a discussion section to describe their context.<br>
+<span id=x133>… I can add some examples along the lines we’ve discussed, including constructing blank nodes within constructed triples.</span></p>
+<p id=x134 class="phone s04"><cite>james:</cite> I’d like to see that kind of text.</p>
+<p id=x136 class="phone s07"><cite>TallTed:</cite> I was going to suggest just that. The differing behavior should be called out with a cross-reference to the places where the effect differs. Point out the different places where it is described.</p>
+<p id=x138 class=irc><cite>&lt;gatemezing&gt;</cite> Yes, agree</p>
+<p id=x139 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x140 class="phone s02"><cite>pchampin:</cite> I think olaf has enough information to amend the PR. Once the modifications are done olaf can inform and we’ll give it a few days before merging.</p>
+<p id=x141 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x142 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x143 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x144 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: leave it to olaf to amend the PR, and merge it afer an announce on the mailing list</p>
+<p id=x145 class=irc><cite>&lt;rivettp_&gt;</cite> +1</p>
+<p id=x146 class=summary>+1</p>
+<p id=x147 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x148 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x149 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x150 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x151 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x152 class=irc><cite>&lt;TallTed&gt;</cite> +1 for the typed which echoed the spoken</p>
+<p id=x153 class=irc><cite>&lt;william&gt;</cite> +0</p>
+<p id=x154 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> leave it to olaf to amend the PR, and merge it afer an announce on the mailing list</p>
+</section>
+
+<section>
+<h3 id=t03>Should &lt;&lt;&gt;&gt; syntax be added to SPARQL-star expressions?</h3>
+<p id=x157 class="phone s02"><cite>pchampin:</cite> We now have a way to build a triple as a term using the TRIPLE function. There was discussion about also using the &lt;&lt; &gt;&gt; syntax.</p>
+<p id=x158 class=irc><cite>&lt;pchampin&gt;</cite> BIND(Triple(?s,?p?o) as ?t)</p>
+<p id=x159 class=irc><cite>&lt;pchampin&gt;</cite> BIND(&lt;&lt;?s ?p ?o&gt;&gt; as ?t)</p>
+<p id=x160 class="phone s02"><cite>pchampin:</cite> The idea would be to allow either way of creating an expression, but that requires some additions to the SPARQL-star grammar.</p>
+<p id=x161 class=irc><cite>&lt;thomas&gt;</cite> that looks natural and intuitive. I woud expect this to be possible</p>
+<p id=x162 class="phone s02"><cite>pchampin:</cite> The TRIPLE function would still be required for complex expressions. But this might be more natural in some cases.</p>
+<p id=x166 class="phone s05"><cite>AndyS:</cite> It’s quite doable and doesn’t really change parsing requirements.<br>
+<span id=x167>… You can’t put expressions inside &lt;&lt; &gt;&gt; because of grammar considerations (e.g. “+1”)</span><br>
+<span id=x168>… I’d rather have them added as a Primary Expression, so that it can be used anywhere such an expression can be used. It could create some odd legal usages, but better than a lot of special cases.</span></p>
+<p id=x173 class="phone s03"><cite>olaf:</cite> I understand it works from the grammar perspective, but whatabout from the evaluation semantics?<br>
+<span id=x174>… It could be interpreted as syntactic sugar and turn &lt;&lt; &gt;&gt; into TRIPLE()</span></p>
+<p id=x176 class="phone s05"><cite>AndyS:</cite> That would do for the definition of it s evaluation, but it’s not syntactic sugar.<br>
+<span id=x177>… Users typicalliy want to be sure that what they type in will come out again, and if you do a simple substitution it won’t. But the definition of evaluation would be the same.</span></p>
+<p id=x178 class="phone s03"><cite>olaf:</cite> An alternative would be to extend all the definitions of such expressions to define it explicitly.</p>
+<p id=x181 class="phone s05"><cite>AndyS:</cite> It makes little difference.<br>
+<span id=x182>… We don’t have things like COALESCE, which are more difficult.</span></p>
+<p id=x183 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/117">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>117</a></p>
+<p id=x189 class="phone s03"><cite>olaf:</cite> Working on this in a separate branch will be a bit tricky due to the other PRs. This will require overlapping changes.<br>
+<span id=x190>… Similar to the extension of VALUES, which overlaps.</span><br>
+<span id=x191>… I’d like to postpone working on this until we’ve merged the PR we talked about before.</span><br>
+<span id=x192>… Perhaps we can merge that PR and open a new ticket to satisfy james’ issues.</span></p>
+<p id=x193 class="phone s04"><cite>james:</cite> I’m happy that my point has been understood.</p>
+<p id=x194 class="phone s05"><cite>AndyS:</cite> You could just merge everything into one PR.</p>
+<p id=x196 class="phone s03"><cite>olaf:</cite> I thought about that, but I think it’s better to keep separate.<br>
+<span id=x197>… If we can merge the main PR and create a new issue, I can move forward more easily.</span></p>
+<p id=x198 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x199 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: merge PR 118 now, james will open an issue on the question he asked</p>
+<p id=x200 class=summary>+1</p>
+<p id=x201 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x202 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x203 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x204 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x205 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x206 class=irc><cite>&lt;william&gt;</cite> +0</p>
+<p id=x207 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x208 class=irc><cite>&lt;thomas&gt;</cite> 0</p>
+<p id=r02 class=resolution><strong>Resolution:</strong> merge PR 118 now, james will open an issue on the question he asked</p>
+</section>
+
+<section>
+<h3 id=t04>Define a URI for the class of embedded triples</h3>
+<p id=x213 class="phone s02"><cite>pchampin:</cite> AndyS suggested we added an IRI to describe the domain or range or properties which are embedded triples.<br>
+<span id=x214>… There’s been some discussion,, particularly regarding the namespace. AndyS suggested we define it in the RDF space (RDFS?). We can’t change the document, but a future WG could and we don’t want to add to namespace proliferation.</span></p>
+<p id=x215 class=irc><cite>&lt;gatemezing&gt;</cite> link to issue <a href="https://github.com/w3c/rdf-star/issues/102">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>102</a></p>
+<p id=x216 class="phone s02"><cite>pchampin:</cite> If we did another temporarily, it would end up becoming permanent.</p>
+<p id=x217 class="phone s05"><cite>AndyS:</cite> The main thing is the difficulty of changing the URIs down the road.</p>
+<p id=x221 class=irc><cite>&lt;AndyS&gt;</cite> Literal is in RDFS, Resource is RDFS, Property in RDF. Hmm.</p>
+<p id=x223 class="phone s06"><cite>gkellogg:</cite> the JSON-LD WG has already augmented the rdf: NS (rdf:JSON, rdf:direction)<br>
+<span id=x224>… there are some precedents</span></p>
+<p id=x225 class=irc><cite>&lt;ora&gt;</cite> Apart from &quot;namespace proliferation&quot;, I don't see why it would be terrible to add a new namespace.</p>
+<p id=x228 class=irc><cite>&lt;ora&gt;</cite> The distinction between RDF and RDFS namespaces has to do with how the work was done, it is not technical.</p>
+<p id=x230 class="phone s08"><cite>gatemezing:</cite> I wanted to understand the updates in an earlier namespace. The update was in 2019, so my concern is that there’s no metadata regarding the changes and the Turtle file doesn’t describe changes.</p>
+<p id=x231 class="phone s05"><cite>AndyS:</cite> There’s an isDefineBy link; it’s not directly there, but we’re not changing, only adding.</p>
+<p id=x232 class=irc><cite>&lt;thomas&gt;</cite> I find it rather daring to define that term in the RDF namespace</p>
+<p id=x233 class="phone s02"><cite>pchampin:</cite> Everything is managed through CVS (or was), so there is some history somewhere.</p>
+<p id=x235 class=irc><cite>&lt;gatemezing&gt;</cite> Thanks pchampin</p>
+<p id=x238 class="phone s02"><cite>pchampin:</cite> Technically, I’m now part of the W3C Team :)<br>
+<span id=x239>… I’ll discuss with Ivan.</span></p>
+<p id=x240 class=irc><cite>&lt;AndyS&gt;</cite> As part of RDF-DEV CG, in some sense we have &gt;0 authority but &lt;1.</p>
+<p id=x241 class=irc><cite>&lt;pchampin&gt;</cite> EmbTriple</p>
+<p id=x243 class="phone s02"><cite>pchampin:</cite> We need to discuss the term name itself, but that’s bikeshedding.<br>
+<span id=x244>… We’ll take that to the mailing list.</span></p>
+</section>
+</main>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">leave it to olaf to amend the PR, and merge it afer an announce on the mailing list</a></li>
+<li><a href="#r02">merge PR 118 now, james will open an issue on the question he asked</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

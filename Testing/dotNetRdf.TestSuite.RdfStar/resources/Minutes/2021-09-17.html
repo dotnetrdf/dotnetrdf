@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 17 September 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>17 September 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-09-03.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Sep/0006.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/09/17-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-10-01.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, Fabio_Vitali, gatemezing, olaf, ora, pchampin, rivettp, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>james</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>ora, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">PR #204: Classes for RDF-star terminology</a></li>
+<li><a href="#t04">Defining our path</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x027 class=irc><cite>&lt;AndyS&gt;</cite> We must be approaching 5 sigma on this by now.</p>
+<p id=x028 class=irc><cite>&lt;thomas&gt;</cite> if Ora in room -&gt; scribe Ora</p>
+</section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x033 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://mosaicrown.github.io/scg2021/">https://<wbr>mosaicrown.github.io/<wbr>scg2021/</a></p>
+<p id=x034 class="phone s01"><cite>pchampin:</cite> Last week's workshop...</p>
+<p id=x035 class="phone s01"><cite>pchampin:</cite> It went well, lively discussion, interesting things, papers will be on-line soon.</p>
+<p id=x036 class="phone s01"><cite>pchampin:</cite> Presentations were recorded.</p>
+<p id=x037 class="phone s01"><cite>pchampin:</cite> It was a hybrid conference, it was great to see people.</p>
+<p id=x038 class="phone s01"><cite>pchampin:</cite> There is a lot of interest for RDF-star.</p>
+<p id=x040 class="phone s02"><cite>olaf:</cite> Announcing that I have been selected to be an Amazon Scholar, I will work with the Amazon Neptune team. Still associate professor in Linköping too.</p>
+<p id=x042 class="phone s02"><cite>olaf:</cite> RDF-star is one of the topics.</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x046 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x047 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/195">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>195</a></p>
+<p id=x048 class="phone s01"><cite>pchampin:</cite> Confirmed that process does not limit what a new feature can be. It can be limited by the charter.</p>
+<p id=x049 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/196">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>196</a></p>
+<p id=x052 class="phone s03"><cite>ora:</cite> proposed a text explaining the distinction btw asserted and quoted<br>
+<span id=x053>… made a parallel with evaluated/quoted in LISP</span></p>
+<p id=x063 class="phone s04"><cite>AndyS:</cite> agreeing with what ora is saying<br>
+<span id=x064>… going back to the spec: a triple is a 3-tuple, that's all</span><br>
+<span id=x065>… there is an infinite set of it, &quot;floating around&quot;</span><br>
+<span id=x066>… they are asserted once put into a graph</span><br>
+<span id=x067>… in a given graph, a triple maybe both asserted and quoted</span></p>
+<p id=x071 class="phone s01"><cite>pchampin:</cite> I do not agree that the chevrons are a quoting operator, they are an embedding operator.</p>
+<p id=x073 class="phone s01"><cite>pchampin:</cite> In Lisp, you can simply remove the quote. Not so in RDF-star.</p>
+<p id=x074 class="phone s01"><cite>pchampin:</cite> Context of use makes a triple quoted or asserted.</p>
+<p id=x076 class="phone s01"><cite>pchampin:</cite> I do not disagree with the analogy, but it could be confusing.</p>
+<p id=x077 class=irc><cite>&lt;TallTed&gt;</cite> Nitpick:  Chevrons are the `«»` glyphs, which are distinct from double angle brackets `&lt;&lt; &gt;&gt;`.</p>
+<p id=x078 class=irc><cite>&lt;AndyS&gt;</cite> &quot;A quoted triple is a triple used as the subject or object of another triple.&quot;</p>
+<p id=x080 class=irc><cite>&lt;Zakim&gt;</cite> AndyS, you wanted to bring in some current spec text</p>
+<p id=x081 class="phone s04"><cite>AndyS:</cite> This line from the spec... change it to &quot;...can be used...&quot;.</p>
+<p id=x082 class="phone s04"><cite>AndyS:</cite> Chevrons are doing the quoting.</p>
+<p id=x085 class="phone s05"><cite>thomas:</cite> Aren't we making things too complicated?</p>
+<p id=x086 class="phone s01"><cite>pchampin:</cite> I am not making a distinction between quoted and embedded triples.</p>
+<p id=x087 class="phone s01"><cite>pchampin:</cite> The main role of the chevrons are to &quot;embed&quot; a triple. You can only do this in a certain context.</p>
+<p id=x088 class="phone s05"><cite>thomas:</cite> Also you can only quote in a certain context.</p>
+<p id=x092 class="phone s01"><cite>pchampin:</cite> Reluctant to see chevrons as a quoting operator.</p>
+<p id=x093 class=irc><cite>&lt;AndyS&gt;</cite> Writing a triple as (:s :p :o)   then  ( (:s :p :o) :q &quot;abc&quot; )</p>
+<p id=x106 class="phone s04"><cite>AndyS:</cite> Everyone has a different background, everyone's viewpoint is different.</p>
+<p id=x107 class="phone s04"><cite>AndyS:</cite> Is there anything wrong in the spec?</p>
+<p id=x108 class="phone s04"><cite>AndyS:</cite> What do we have to do, to change in the spec?</p>
+<p id=x109 class="phone s01"><cite>pchampin:</cite> Thinking was that something might be missing.</p>
+<p id=x110 class="phone s01"><cite>pchampin:</cite> I am not against adding Ora's paragraph.</p>
+<p id=x111 class="phone s01"><cite>pchampin:</cite> Details can confuse...</p>
+<p id=x112 class="phone s01"><cite>pchampin:</cite> If we think this adds to folks' understanding, then why not.</p>
+<p id=x113 class="phone s01"><cite>pchampin:</cite> Defer the decision as not everyone has read it.</p>
+<p id=x114 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> I can't understand where is the text going to end up...</p>
+<p id=x115 class="phone s01"><cite>pchampin:</cite> Ora please make this into a pull request.</p>
+<p id=x116 class="phone s01"><cite>pchampin:</cite> Mark as non-normative.</p>
+<p id=x117 class="phone s03"><cite>ora:</cite> OK</p>
+<p id=x118 class="phone s04"><cite>AndyS:</cite> I particularly like the last sentence.</p>
+<p id=a01 class=action><strong>Action:</strong> ora to turn his proposal in #196 into a PR</p>
+<p id=x122 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/201">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>201</a></p>
+<p id=x123 class="phone s01"><cite>pchampin:</cite> I did this.</p>
+<p id=x124 class="phone s01"><cite>pchampin:</cite> Nice side effect was creating some publicity for the Easier RDF repo, <a href="https://github.com/w3c/EasierRDF">https://<wbr>github.com/<wbr>w3c/<wbr>EasierRDF</a></p>
+<p id=x126 class="phone s01"><cite>pchampin:</cite> My feeling is the consensus is &quot;why not, but let's be careful&quot;.</p>
+<p id=x127 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x128 class="phone s01"><cite>pchampin:</cite> Next two actions are mine...</p>
+<p id=x129 class="phone s01"><cite>pchampin:</cite> Not everyone has reviewed the PRs.</p>
+<p id=x130 class="phone s01"><cite>pchampin:</cite> Still have to push the other one.</p>
+</section>
+
+<section>
+<h3 id=t03>PR #204: Classes for RDF-star terminology</h3>
+<p id=x135 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/204">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>204</a></p>
+<p id=x136 class="phone s01"><cite>pchampin:</cite> Fleshing out the vocabulary section.</p>
+<p id=x137 class="phone s04"><cite>AndyS:</cite> I took existing material, refined a bit.</p>
+<p id=x138 class="phone s04"><cite>AndyS:</cite> Discuss classes first, before discussing properties.</p>
+<p id=x141 class="phone s05"><cite>thomas:</cite> What is the source?</p>
+<p id=x142 class="phone s01"><cite>pchampin:</cite> &lt;scribe missed the answer...&gt;</p>
+<p id=x143 class="phone s05"><cite>thomas:</cite> Is that another term for graph?</p>
+<p id=x144 class="phone s01"><cite>pchampin:</cite> No, because of mutability.</p>
+<p id=x145 class="phone s05"><cite>thomas:</cite> I read it but meaning was not obvious.</p>
+<p id=x147 class="phone s01"><cite>pchampin:</cite> This is still bare, just trying to define terms not yet defined (RDF-star source).</p>
+<p id=x150 class="phone s05"><cite>thomas:</cite> It is difficult to discuss terms that are a mathematical abstraction but also very concrete.</p>
+<p id=x152 class="phone s05"><cite>thomas:</cite> No sense discussing this yet.</p>
+<p id=x153 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: merge #204</p>
+<p id=x154 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x155 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x156 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x157 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x158 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x160 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x161 class=irc><cite>&lt;thomas&gt;</cite> -1</p>
+<p id=x164 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x165 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> My list of issues goes up to #203. Where do I find 204?</p>
+<p id=x166 class=irc><cite>&lt;gatemezing&gt;</cite> AndyS: I guess we don't need to add axioms like disjointness between some clases?</p>
+<p id=x167 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> anyway +1</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> merge #204</p>
+</section>
+
+<section>
+<h3 id=t04>Defining our path</h3>
+<p id=x177 class="phone s01"><cite>pchampin:</cite> From AndyS' email: we should give ourselves some milestones, we are soon one year old, we have achieved a lot.</p>
+<p id=x178 class="phone s01"><cite>pchampin:</cite> Also the next step: chartering a WG.</p>
+<p id=x180 class="phone s01"><cite>pchampin:</cite> If all goes well, a future WG will take this up.</p>
+<p id=x182 class="phone s04"><cite>AndyS:</cite> I predict the WG will revisit a lot of things.</p>
+<p id=x183 class="phone s04"><cite>AndyS:</cite> Limited value in getting into really fine details.</p>
+<p id=x184 class="phone s04"><cite>AndyS:</cite> REC-grade doc not needed now.</p>
+<p id=x185 class="phone s04"><cite>AndyS:</cite> Early on in the WG there will be discussion by new people about what RDF-star really is.</p>
+<p id=x188 class=irc><cite>&lt;TallTed&gt;</cite> and what RDF-star is NOW, vs original and other earlier papers...</p>
+<p id=x189 class="phone s04"><cite>AndyS:</cite> We cannot possibly have considered everything.</p>
+<p id=x190 class="phone s05"><cite>thomas:</cite> Issue #170, referential opacity, is crucial.</p>
+<p id=x191 class="phone s05"><cite>thomas:</cite> Makes a difference in many use cases, such as provenance.</p>
+<p id=x192 class="phone s01"><cite>pchampin:</cite> A solution or a discussion?</p>
+<p id=x193 class="phone s05"><cite>thomas:</cite> A proposal, a solution.</p>
+<p id=x194 class=irc><cite>&lt;AndyS&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/170">170</a></p>
+<p id=x195 class="phone s05"><cite>thomas:</cite> We should evaluate how much effort this is.</p>
+<p id=x196 class="phone s04"><cite>AndyS:</cite> Another source of validation exists.</p>
+<p id=x197 class="phone s05"><cite>thomas:</cite> The proposed semantics does not cover usage.</p>
+<p id=x198 class="phone s01"><cite>pchampin:</cite> Evidence?</p>
+<p id=x199 class="phone s05"><cite>thomas:</cite> Look on the Web.</p>
+<p id=x200 class="phone s05"><cite>thomas:</cite> I do not have to provide evidence.</p>
+<p id=x201 class="phone s05"><cite>thomas:</cite> Want a proof of how referential opacity is easy.</p>
+<p id=x202 class="phone s05"><cite>thomas:</cite> Something that is worked out.</p>
+<p id=x203 class=irc><cite>&lt;olaf&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/202">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>202</a> is still an open action on me</p>
+<p id=x206 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/202">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>202</a></p>
+<p id=x207 class="phone s05"><cite>thomas:</cite> I need an answer, then I can comment.</p>
+<p id=x208 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://w3c.github.io/rdf-star/cg-spec/2021-07-01.html#alternatives-to-referential-opacity">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>cg-spec/<wbr>2021-07-01.html#alternatives-to-referential-opacity</a></p>
+<p id=x209 class="phone s01"><cite>pchampin:</cite> I did some prototyping in N3. I understand it is not a standard.</p>
+<p id=x210 class="phone s05"><cite>thomas:</cite> This is not how it would look in RDF.</p>
+<p id=x211 class="phone s01"><cite>pchampin:</cite> I do not share thomas' feeling on this.</p>
+<p id=x212 class="phone s01"><cite>pchampin:</cite> Please wait until that section is complete enough.</p>
+<p id=x213 class="phone s01"><cite>pchampin:</cite> PR not ready yet.</p>
+<p id=x214 class="phone s05"><cite>thomas:</cite> I am waiting, but I want to check how this works with use cases.</p>
+<p id=x215 class="phone s04"><cite>AndyS:</cite> We can change how often we have meetings if that helps.</p>
+<p id=x216 class="phone s01"><cite>pchampin:</cite> Let's use the tag &quot;later&quot; for some.</p>
+<p id=x218 class="phone s01"><cite>pchampin:</cite> Other than those, we can declare we are done.</p>
+<p id=a02 class=action><strong>Action:</strong> pchampin to review issues and propose to tag 'later' all but those necessary to finalize report</p>
+<p id=x221 class=irc><cite>&lt;TallTed&gt;</cite> confirming -- current meeting schedule is every 2 weeks, so next is Oct 1?</p>
+<p id=x225 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://w3c.github.io/rdf-star/cg-spec/2021-07-01.html#occurrences">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>cg-spec/<wbr>2021-07-01.html#occurrences</a></p>
+<p id=x228 class="phone s03"><cite>ora:</cite> would like to discuss the problem raised in our workshop paper</p>
+<p id=x229 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> can we have a link to the paper?</p>
+<p id=x230 class="phone s03"><cite>ora:</cite> the uniqueness of triples in RDF-star makes it impossible to model some common PG patterns</p>
+<p id=x231 class="phone s06"><cite>Paper:</cite> <a href="https://www.lassila.org/publications/2021/scg2021-lassila+etal.pdf">https://<wbr>www.lassila.org/<wbr>publications/<wbr>2021/<wbr>scg2021-lassila+etal.pdf</a></p>
+<p id=x232 class=summary>bye!</p>
+<p id=x233 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> @ora thanks</p>
+<p id=x234 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> bye</p>
+<p id=x235 class=irc><cite>&lt;thomas&gt;</cite> good bye</p>
+<p id=x236 class=irc><cite>&lt;TallTed&gt;</cite> ciao</p>
+<p id=x237 class=irc><cite>&lt;olaf&gt;</cite> bye</p>
+<p id=x238 class=irc><cite>&lt;gatemezing&gt;</cite> bye</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">ora to turn his proposal in #196 into a PR</a></li>
+<li><a href="#a02">pchampin to review issues and propose to tag 'later' all but those necessary to finalize report</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">merge #204</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

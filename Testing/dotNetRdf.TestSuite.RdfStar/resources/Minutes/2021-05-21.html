@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 21 May 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>21 May 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-05-14.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021May/0062.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/05/21-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-05-28.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gkellogg, james, olaf, ora, pchampin, rivettp, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>olaf</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Newcomers</a></li>
+<li><a href="#t04">Back to open actions</a></li>
+<li><a href="#t05">move to zoom?</a></li>
+<li><a href="#t06">Media types</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x023 class=irc><cite>&lt;ora&gt;</cite> For obvious reasons I will not volunteer...</p>
+<p id=x029 class="phone s01"><cite>pchampin:</cite> new people on the call !<br>
+<span id=x030>… but not in IRC</span></p>
+<p id=x031 class=irc><cite>&lt;pchampin&gt;</cite> and no microphone</p>
+</section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x035 class="phone s01"><cite>pchampin:</cite> announcements anyone?<br>
+<span id=x036>… none, it seems</span></p>
+<p id=x040 class=irc><cite>&lt;TallTed&gt;</cite> that's ancient!</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x044 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x046 class="phone s01"><cite>pchampin:</cite> open actions on me<br>
+<span id=x047>… still late on the charter for a possible WG</span></p>
+<p id=x048 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/164">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>164</a></p>
+<p id=x050 class="phone s01"><cite>pchampin:</cite> another open one is about SPARQL service description<br>
+<span id=x051>… not addressed yet</span></p>
+<p id=x052 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/165">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>165</a></p>
+<p id=x056 class="phone s01"><cite>pchampin:</cite> for the following reason<br>
+<span id=x057>… for the first final report we need tidying up the intro and SPARQL ???</span><br>
+<span id=x058>… propose to close this action</span></p>
+<p id=x059 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/121">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>121</a></p>
+<p id=x060 class=irc><cite>&lt;AndyS&gt;</cite> For issue #121 : PR <a href="https://github.com/w3c/rdf-star/pull/172">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>172</a>  Currently &quot;draft&quot; - Direction complete.  Presentation and HTML needs attention.  Includes tests.</p>
+<p id=x061 class="phone s01"><cite>pchampin:</cite> outstanding issue in the report was SPARQL comparison of RDF-star triples</p>
+<p id=x067 class="phone s02"><cite>AndyS:</cite> have made a draft<br>
+<span id=x068>… which includes tests</span><br>
+<span id=x069>… has good coverage</span><br>
+<span id=x070>… including ordering of embedded triples</span><br>
+<span id=x071>… because of the use case related to duplicates</span><br>
+<span id=x072>… the defined ordering is somewhat arbitrary</span></p>
+<p id=x073 class=irc><cite>&lt;ora&gt;</cite> arbitrary, but predictable, yes?</p>
+<p id=x074 class="phone s02"><cite>AndyS:</cite> other ways of ordering can be achieved by using the built-in functions</p>
+<p id=x078 class="phone s03"><cite>james:</cite> what about stable results?</p>
+<p id=x081 class="phone s02"><cite>AndyS:</cite> SPARQL order by has an extension point for unknow data types<br>
+<span id=x082>… hence, not possible to define the ordering</span><br>
+<span id=x083>… the extension will change the order</span></p>
+<p id=x085 class="phone s03"><cite>james:</cite> agree for unknow datatypes<br>
+<span id=x086>… still useful to provide an order for everything that is known</span></p>
+<p id=x088 class="phone s02"><cite>AndyS:</cite> yes that would be useful<br>
+<span id=x089>… happy to say that implementations should define the ordering</span></p>
+<p id=x092 class="phone s04"><cite>olaf:</cite> is this a general SPARQL issue?</p>
+<p id=x094 class="phone s03"><cite>james:</cite> it is broader<br>
+<span id=x095>… but there is a SPARQL-star element to it</span></p>
+<p id=a01 class=action><strong>Action:</strong> AndyS: Add text on &quot;good practice&quot; to have a stable ordering.</p>
+<p id=x099 class="phone s01"><cite>pchampin:</cite> as mentioned by Andy, we don't have the right people in our group to address this<br>
+<span id=x100>… may be added to tthe charter for he WG</span></p>
+<p id=a02 class=action><strong>Action:</strong> recorded: <a href="https://github.com/w3c/rdf-star/pull/172#issuecomment-846030677">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>172#issuecomment-846030677</a></p>
+<p id=x103 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/94">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>94</a></p>
+<p id=x105 class="phone s01"><cite>pchampin:</cite> next action is about example in the overview part</p>
+<p id=x106 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/171">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>171</a></p>
+<p id=x113 class="phone s01"><cite>pchampin:</cite> tidied up the intro<br>
+<span id=x114>… split text into backgroun + history section and an overview section</span><br>
+<span id=x115>… and added missing example about SPARQL-star Update</span><br>
+<span id=x116>… already got some corrections by TallTed</span><br>
+<span id=x117>… proposal to leave this PR open for a few workdays for people to comment</span></p>
+<p id=x122 class="phone s05"><cite>thomas:</cite> RDF/XML has an id attribute<br>
+<span id=x123>… which is a shortcut notation to annotate a triple</span><br>
+<span id=x124>… less verbose than RDF-star</span><br>
+<span id=x125>… different perspective</span><br>
+<span id=x126>… but shouldn't just say that RDF/XML has no solution to the problem that is the focus of RDF-star</span></p>
+<p id=x128 class="phone s01"><cite>pchampin:</cite> okay, that mention can be removed<br>
+<span id=x129>… please propose a change in the PR</span></p>
+<p id=x131 class="phone s01"><cite>pchampin:</cite> #94 can be closed once the PR is merged</p>
+<p id=x132 class=irc><cite>&lt;R__Michael&gt;</cite> sure!</p>
+<p id=x133 class=irc><cite>&lt;R__Michael&gt;</cite> Hello folks!</p>
+</section>
+
+<section>
+<h3 id=t03>Newcomers</h3>
+<p id=x136 class="phone s01"><cite>pchampin:</cite> new person on the call (Michael Cary)<br>
+<span id=x137>… unfortunately, sound problems</span></p>
+<p id=x138 class=irc><cite>&lt;R__Michael&gt;</cite> My current role is chief architect at a company called IHS Markit. I'm overseing a new divison that is buiding some exciting stuff</p>
+<p id=x139 class=irc><cite>&lt;R__Michael&gt;</cite> I've been passionate about the semantic web for some time, but very interested in participating and giving back to the community here.</p>
+<p id=x140 class=irc><cite>&lt;R__Michael&gt;</cite> RDF* is a key requirement for this project and I'm honored to be able to listen in and provide value anywhere I can</p>
+<p id=x141 class=irc><cite>&lt;R__Michael&gt;</cite> I also champion semantic concepts and developer conferences around the world</p>
+<p id=x142 class=irc><cite>&lt;R__Michael&gt;</cite> We're likely using Stardog</p>
+<p id=x143 class=irc><cite>&lt;R__Michael&gt;</cite> Actually just wrapped a call with them</p>
+<p id=x144 class=irc><cite>&lt;AndyS&gt;</cite> <a href="https://ihsmarkit.com/">https://<wbr>ihsmarkit.com/</a></p>
+<p id=x145 class=irc><cite>&lt;R__Michael&gt;</cite> I have a zoom pro account, happy to host at any time</p>
+<p id=x146 class=irc><cite>&lt;TallTed&gt;</cite> &quot;key requirement&quot; suggests there's a Use Case and/or some Requirements that might be added to relevant doc(s)!</p>
+<p id=x148 class="phone s01"><cite>pchampin:</cite> maybe we can/should move to Zoom<br>
+<span id=x149>… we could use the Zoom of Olaf's university</span></p>
+<p id=x150 class=irc><cite>&lt;R__Michael&gt;</cite> wonderful :)</p>
+<p id=x151 class="phone s01"><cite>pchampin:</cite> Michael, please contribute a use case description</p>
+<p id=x152 class=irc><cite>&lt;R__Michael&gt;</cite> Absolutely!</p>
+</section>
+
+<section>
+<h3 id=t04>Back to open actions</h3>
+<p id=x154 class="phone s01"><cite>pchampin:</cite> more on open actions ...</p>
+<p id=x155 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/166">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>166</a></p>
+<p id=x156 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/173">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>173</a></p>
+<p id=x169 class="phone s01"><cite>pchampin:</cite> #166 about a discussion on ref.opacity<br>
+<span id=x170>… PR #173 includes such a discussion</span><br>
+<span id=x171>… in this discussion, left the semantics as is</span><br>
+<span id=x172>… i.e., ref.opaque</span><br>
+<span id=x173>… because that's the least complex option to describe</span><br>
+<span id=x174>… another thing that was added ...</span><br>
+<span id=x175>… the other alternatives can be seen as smenatic extensions of the current solution</span><br>
+<span id=x176>… TallTed proposed some corrections already</span><br>
+<span id=x177>… will leave this PR open for some working days</span><br>
+<span id=x178>… everyone, yell if you want things to be changed in that PR</span></p>
+<p id=x182 class="phone s02"><cite>AndyS:</cite> forgot to mention ...<br>
+<span id=x183>… in section about SPARQL-star there were some issues about nesting</span><br>
+<span id=x184>… changed the indentation in the sections</span></p>
+<p id=x185 class="phone s01"><cite>pchampin:</cite> seems to be a convention when using respec</p>
+<p id=x186 class="phone s02"><cite>AndyS:</cite> didn't seem to damage anything</p>
+<p id=x187 class=irc><cite>&lt;TallTed&gt;</cite> respec ignores &lt;h#&gt; in place, makes it all work out *if* all the &lt;section&gt; are embedded/closed properly</p>
+<p id=x188 class="phone s02"><cite>AndyS:</cite> but the styling has changed</p>
+<p id=x189 class="phone s06"><cite>gkellogg:</cite> respec takes care of the rendering and of what ends up in the TOC</p>
+<p id=x191 class="phone s01"><cite>pchampin:</cite> another quick one ...</p>
+</section>
+
+<section>
+<h3 id=t05>move to zoom?</h3>
+<p id=x194 class="phone s01"><cite>pchampin:</cite> any opinions about moving to Zoom instead?<br>
+<span id=x195>… it may work more smoothly</span></p>
+<p id=x196 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: move away from BBC to Zoom?</p>
+<p id=x197 class=irc><cite>&lt;ora&gt;</cite> I am also happy to host the group on Amazon Chime.</p>
+<p id=x198 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x199 class=irc><cite>&lt;pchampin&gt;</cite> +0</p>
+<p id=x200 class=irc><cite>&lt;thomas&gt;</cite> +0</p>
+<p id=x201 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x202 class=irc><cite>&lt;AndyS&gt;</cite> Zoom or Google Meet or Chime.</p>
+<p id=x203 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x204 class=irc><cite>&lt;rivettp&gt;</cite> +0</p>
+<p id=x205 class=irc><cite>&lt;william&gt;</cite> +0</p>
+<p id=x206 class=irc><cite>&lt;james&gt;</cite> +0</p>
+<p id=x207 class=irc><cite>&lt;olaf&gt;</cite> +0</p>
+<p id=x208 class=irc><cite>&lt;TallTed&gt;</cite> fewer steps to join zoom call than BBB ... and standalone app lowers burden on web browsers</p>
+<p id=x209 class=irc><cite>&lt;TallTed&gt;</cite> +0.5</p>
+<p id=x210 class="phone s01"><cite>pchampin:</cite> so, generally a positive opinion</p>
+<p id=x211 class=irc><cite>&lt;R__Michael&gt;</cite> +0 I've managed to make BBB work over LTE (will also work from home office, but not &quot;office&quot; office)</p>
+<p id=x212 class="phone s01"><cite>pchampin:</cite> I can set up something via the W3C account</p>
+</section>
+
+<section>
+<h3 id=t06>Media types</h3>
+<p id=x217 class="phone s01"><cite>pchampin:</cite> next item on the agenda is about media types<br>
+<span id=x218>… we had discussions about this earlier</span><br>
+<span id=x219>… but james wanted to add something</span></p>
+<p id=x223 class="phone s03"><cite>james:</cite> concern is that the spec should a more informed stance on the topic<br>
+<span id=x224>… there is a lot of discussion in some github issue</span><br>
+<span id=x225>… requirements for media types put constraints</span><br>
+<span id=x226>… idea to do something more like what was done for the memento protocol</span></p>
+<p id=x227 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://www.w3.org/TR/dx-prof-conneg/">https://<wbr>www.w3.org/<wbr>TR/<wbr>dx-prof-conneg/</a></p>
+<p id=x231 class="phone s03"><cite>james:</cite> profile header?<br>
+<span id=x232>… in any case, as a reader of the report (not as implementer), a better founded discussion should be there</span><br>
+<span id=x233>… the work would benefit from implementers taking a stance on the issue</span><br>
+<span id=x234>… for example, the table suggested by ericp should be revisited</span></p>
+<p id=x238 class="phone s01"><cite>pchampin:</cite> I also would like the report to take a clearer stance on this issue<br>
+<span id=x239>… but there was not one stance that felt like consensus by the group</span></p>
+<p id=x240 class="phone s03"><cite>james:</cite> okay, but the group has sufficient experience to include the discussion in the report</p>
+<p id=x241 class="phone s02"><cite>AndyS:</cite> a specific item in the discussion resulted in the inclusion of profiles</p>
+<p id=x243 class="phone s03"><cite>james:</cite> headers would be sufficient to address the cases<br>
+<span id=x244>… as a reader, I would like to see the report mentioning it</span></p>
+<p id=x246 class="phone s01"><cite>pchampin:</cite> maybe that new document provide new info for the group to make progress on the issue</p>
+<p id=x248 class="phone s03"><cite>james:</cite> what it introduces is the notion that info should be included in out of band headers</p>
+<p id=x249 class="phone s06"><cite>gkellogg:</cite> it's broader</p>
+<p id=x250 class=irc><cite>&lt;TallTed&gt;</cite> Profiles aren't a viable media type solution, because the media type to which such profiles would be applied must be a superset of those profiles (including no profile) -- which isn't so with any RDF-star serialization media type.</p>
+<p id=x251 class="phone s06"><cite>gkellogg:</cite> there is some consideration for when groups update their media types</p>
+<p id=x252 class=irc><cite>&lt;TallTed&gt;</cite> It is fine to include things in the report on which we didn't achieve consensus, basically as &quot;open questions&quot;, optimally including as much info as we have.</p>
+<p id=x254 class="phone s06"><cite>gkellogg:</cite> it is worth highlighting that a future WG should consider this issue<br>
+<span id=x255>… we should not pre-decide for a potential WG</span></p>
+<p id=x257 class="phone s03"><cite>james:</cite> the report should not make an assessment<br>
+<span id=x258>… but it should mention the alternative</span></p>
+<p id=x260 class="phone s01"><cite>pchampin:</cite> yes, agree that it should be mentioned<br>
+<span id=x261>… also reluctant to write how it should be done</span></p>
+<p id=x264 class="phone s02"><cite>AndyS:</cite> if we are going to mention it, we need to mention that it changes the SPARQL protocol</p>
+<p id=x265 class="phone s01"><cite>pchampin:</cite> yes</p>
+<p id=x266 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: add a ref to <a href="https://www.w3.org/TR/dx-prof-conneg/">https://<wbr>www.w3.org/<wbr>TR/<wbr>dx-prof-conneg/</a> in the section on media-types</p>
+<p id=x267 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x268 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x269 class=irc><cite>&lt;AndyS&gt;</cite> +0</p>
+<p id=x270 class=irc><cite>&lt;thomas&gt;</cite> +1</p>
+<p id=x271 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x272 class=irc><cite>&lt;olaf&gt;</cite> +0</p>
+<p id=x273 class=irc><cite>&lt;R__Michael&gt;</cite> +1</p>
+<p id=x274 class=irc><cite>&lt;TallTed&gt;</cite> +0 haven't read that one yet</p>
+<p id=x275 class=irc><cite>&lt;william&gt;</cite> +0</p>
+<p id=x276 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x277 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> add a ref to <a href="https://www.w3.org/TR/dx-prof-conneg/">https://<wbr>www.w3.org/<wbr>TR/<wbr>dx-prof-conneg/</a> in the section on media-types</p>
+<p id=a03 class=action><strong>Action:</strong> pchampin to add ref to <a href="https://www.w3.org/TR/dx-prof-conneg/">https://<wbr>www.w3.org/<wbr>TR/<wbr>dx-prof-conneg/</a> (with warning about SPARQL protocol)</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">AndyS: Add text on &quot;good practice&quot; to have a stable ordering.</a></li>
+<li><a href="#a02">recorded: https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>172#issuecomment-846030677</a></li>
+<li><a href="#a03">pchampin to add ref to https://<wbr>www.w3.org/<wbr>TR/<wbr>dx-prof-conneg/ (with warning about SPARQL protocol)</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">add a ref to https://<wbr>www.w3.org/<wbr>TR/<wbr>dx-prof-conneg/ in the section on media-types</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

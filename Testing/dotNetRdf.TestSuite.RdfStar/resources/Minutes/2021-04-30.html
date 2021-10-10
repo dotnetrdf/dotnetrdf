@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 30 April 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>30 April 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-04-23.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Apr/0008.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/04/30-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-05-07.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gatemezing, gkellogg, james_, olaf, ora, pchampin, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>olaf</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">PR 161: Media-types</a></li>
+<li><a href="#t04">PR 162: Semantics</a></li>
+<li><a href="#t05">Open-ended discussions</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x015 class=irc><cite>&lt;AndyS&gt;</cite> Hi</p>
+<p id=x016 class=irc><cite>&lt;pchampin&gt;</cite> hi</p>
+<p id=x025 class=irc><cite>&lt;AndyS&gt;</cite> &quot;not knowing who has scribed, I nominate Ora&quot;</p>
+</section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x028 class="phone s01"><cite>pchampin:</cite> RDF-star will be presented at the KGC</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x037 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x038 class="phone s01"><cite>pchampin:</cite> no pending actions on github</p>
+<p id=x039 class="phone s02"><cite>andys:</cite> checkup on the issue about the SPARQL-star grammar</p>
+<p id=x040 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/163">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>163</a></p>
+<p id=x042 class="phone s01"><cite>pchampin:</cite> the grammar is not complete<br>
+<span id=x043>… double-pointy brackets for expressions are missing</span></p>
+<p id=x044 class=irc><cite>&lt;AndyS&gt;</cite> I've made it an &quot;action&quot; and assigned it to myself.</p>
+<p id=x047 class="phone s02"><cite>AndyS:</cite> wrapped up about organizing the manifests<br>
+<span id=x048>… has been merged</span></p>
+</section>
+
+<section>
+<h3 id=t03>PR 161: Media-types</h3>
+<p id=x055 class="phone s01"><cite>pchampin:</cite> wrote a section based on discussion from last week<br>
+<span id=x056>… including a listing of pros and cons of the different approaches</span><br>
+<span id=x057>… and clarification that the group didn't reach consensus</span><br>
+<span id=x058>… Hope that all arguments are captured</span></p>
+<p id=x062 class="phone s03"><cite>thomas:</cite> question: what ways are there to make explicit that an endpoint supports SPARQL-star?</p>
+<p id=x065 class="phone s01"><cite>pchampin:</cite> no answer</p>
+<p id=x066 class=irc><cite>&lt;TallTed&gt;</cite> <a href="https://example.org/sparql">https://example.org/sparql-star  :-)</a></p>
+<p id=x067 class="phone s04"><cite>gkellogg:</cite> it would be reasonable to add something for a SPARQL-star service description</p>
+<p id=x068 class=irc><cite>&lt;gatemezing&gt;</cite> +1 to add a SPARQL service description</p>
+<p id=x069 class=irc><cite>&lt;james_&gt;</cite> <a href="https://www.w3.org/TR/sparql11-service-description">https://<wbr>www.w3.org/<wbr>TR/<wbr>sparql11-service-description</a></p>
+<p id=x070 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://www.w3.org/TR/sparql11-service-description/#sd-feature">https://<wbr>www.w3.org/<wbr>TR/<wbr>sparql11-service-description/#sd-feature</a></p>
+<p id=x071 class="phone s04"><cite>gkellogg:</cite> retrieving the service descr. is not part of the protocol</p>
+<p id=x072 class=irc><cite>&lt;james_&gt;</cite> <a href="https://www.w3.org/TR/sparql11-service-description/#sd-resultFormat">https://<wbr>www.w3.org/<wbr>TR/<wbr>sparql11-service-description/#sd-resultFormat</a></p>
+<p id=x073 class="phone s04"><cite>gkellogg:</cite> it's a machine-readable approach</p>
+<p id=x074 class=irc><cite>&lt;TallTed&gt;</cite> It's not currently part of &quot;every client's&quot; activity; more part of advanced client's activity, when they're looking for a specific (typically more advanced) feature</p>
+<p id=x077 class="phone s01"><cite>pchampin:</cite> we may define an IRI for a SPARQL-star feature<br>
+<span id=x078>… to be used in such service description</span><br>
+<span id=x079>… and then encourage providers to include it in their service descr.</span></p>
+<p id=x080 class=irc><cite>&lt;james_&gt;</cite> the &quot;standard&quot; features are described in the service description recommendation</p>
+<p id=x082 class="phone s02"><cite>AndyS:</cite> another use of the service descr. ...<br>
+<span id=x083>… used by aggregators</span></p>
+<p id=x084 class=irc><cite>&lt;TallTed&gt;</cite> more details, including example features -- <a href="https://www.w3.org/TR/sparql11-service-description/#sd-Feature">https://<wbr>www.w3.org/<wbr>TR/<wbr>sparql11-service-description/#sd-Feature</a></p>
+<p id=a01 class=action><strong>Action:</strong> pchampin to add a paragraph on SPARQL service description and sd:feature</p>
+<p id=x086 class=irc><cite>&lt;TallTed&gt;</cite> <a href="https://www.w3.org/TR/sparql11-service-description/#sd-Language">https://<wbr>www.w3.org/<wbr>TR/<wbr>sparql11-service-description/#sd-Language</a> might be more appropriate, i.e., SPARQL-star is a different language than SPARQL 1.0 or SPARQL 1.1</p>
+<p id=x087 class="phone s01"><cite>pchampin:</cite> good approach for the optimistic perspective regarding the mimetypes</p>
+<p id=x089 class=irc><cite>&lt;ora&gt;</cite> Sorry I was late.</p>
+<p id=x090 class=irc><cite>&lt;TallTed&gt;</cite> see also <a href="https://www.w3.org/TR/sparql11-service-description/#lang-sparql10query">https://<wbr>www.w3.org/<wbr>TR/<wbr>sparql11-service-description/#lang-sparql10query</a> and following</p>
+<p id=x091 class="phone s01"><cite>pchampin:</cite> my fear is that having an x-... mimetype may make people use it</p>
+<p id=x096 class="phone s04"><cite>gkellogg:</cite> that's orthogonal to the service descr. issue<br>
+<span id=x097>… it's reasonable to have an RDF-star namespace</span></p>
+<p id=x102 class="phone s01"><cite>pchampin:</cite> will keep the PR on media types open for a few days<br>
+<span id=x103>… so that everyone can take a look and react</span><br>
+<span id=x104>… and if no complaints in a few days, then the PR will be merged</span></p>
+</section>
+
+<section>
+<h3 id=t04>PR 162: Semantics</h3>
+<p id=x109 class="phone s01"><cite>pchampin:</cite> made another PR about the semantics of RDF-star<br>
+<span id=x110>… it's less disruptive than the previous one</span><br>
+<span id=x111>… Two advantages:</span></p>
+<p id=x112 class=summary>first, get rid of hidden IRIs</p>
+<p id=x115 class=summary>second, it's consistent with SPARQL-star eval.semantics (at least, PA thinks so)</p>
+<p id=x119 class="phone s01"><cite>pchampin:</cite> doesn't change anything in the semantics-related test suites<br>
+<span id=x120>… any opinions about it?</span></p>
+<p id=x122 class=irc><cite>&lt;Zakim&gt;</cite> AndyS, you wanted to ask about simple literals</p>
+<p id=x124 class="phone s02"><cite>AndyS:</cite> talking about simple literals causes trouble<br>
+<span id=x125>… they don't exist in RDF but only in the syntax</span></p>
+<p id=x127 class="phone s01"><cite>pchampin:</cite> that's right<br>
+<span id=x128>… it was already in the previous version</span></p>
+<p id=x129 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://w3c.github.io/rdf-star/cg-spec/editors_draft.html#mapping">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>cg-spec/<wbr>editors_draft.html#mapping</a></p>
+<p id=x137 class="phone s01"><cite>pchampin:</cite> agree that they way it's phrased is ambiguous<br>
+<span id=x138>… Peter suggested something else</span><br>
+<span id=x139>… which is probably a better idea</span><br>
+<span id=x140>… PR will be adapted accordingly</span><br>
+<span id=x141>… Waiting for Dörthe and others to take a look</span><br>
+<span id=x142>… if no complaints in a couple of days, then it will be merged</span><br>
+<span id=x143>… only things it changes are things that none liked before</span></p>
+</section>
+
+<section>
+<h3 id=t05>Open-ended discussions</h3>
+<p id=x150 class="phone s02"><cite>AndyS:</cite> &quot;How do we get out of this&quot; question<br>
+<span id=x151>… how do we get to a finished version?</span><br>
+<span id=x152>… what time frame?</span><br>
+<span id=x153>… shall we call the next draft the &quot;last call&quot;?</span></p>
+<p id=x154 class=irc><cite>&lt;TallTed&gt;</cite> &quot;time&quot; isn't the best measurement.  &quot;the point where none of us see major issues&quot; would be good.</p>
+<p id=x157 class="phone s02"><cite>AndyS:</cite> agrees to TallTed<br>
+<span id=x158>… but there are no more major issues</span></p>
+<p id=x161 class="phone s05"><cite>TallTed:</cite> the point of this task force is to focus on a particular thing<br>
+<span id=x162>… if we don't see no major issues with that thing, then</span><br>
+<span id=x163>… the report should go to RDF-DEV CG</span></p>
+<p id=x166 class="phone s02"><cite>AndyS:</cite> The last call may go to RDF-DEV CG<br>
+<span id=x167>… Is there a list of remaining major issues?</span></p>
+<p id=x168 class=irc><cite>&lt;gatemezing&gt;</cite> We can tag here <a href="https://github.com/w3c/rdf-star/issues">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues</a> &quot;mejor issues&quot; ?</p>
+<p id=x169 class="phone s01"><cite>pchampin:</cite> tag issues in github</p>
+<p id=x171 class="phone s02"><cite>AndyS:</cite> tie that to the document</p>
+<p id=a02 class=action><strong>Action:</strong> create &quot;outsanding issues&quot; in the CG-report as being the things to complete before we're done</p>
+<p id=x177 class="phone s03"><cite>thomas:</cite> want to confirm that he is working on a longish email about the semantics<br>
+<span id=x178>… wants to convince the group of moving to transparency semantics</span></p>
+<p id=x181 class="phone s04"><cite>gkellogg:</cite> in addition to an email, a PR would be great<br>
+<span id=x182>… that PR should capture the alternative proposal</span></p>
+<p id=x183 class="phone s02"><cite>AndyS:</cite> instead of a PR (which freezes it), put it into a separate document</p>
+<p id=x184 class="phone s04"><cite>gkellogg:</cite> or on a wiki page</p>
+<p id=x188 class="phone s03"><cite>thomas:</cite> my aim is still to change it<br>
+<span id=x189>… I would like to have a discussion first</span><br>
+<span id=x190>… but, of course, prefer a note</span></p>
+<p id=x194 class="phone s01"><cite>pchampin:</cite> agrees that, at least, the rationale for the decision should be in the report<br>
+<span id=x195>… regarding freezing: we can have both</span><br>
+<span id=x196>… it's similar to the discussion of the seminal example</span><br>
+<span id=x197>… it's good to have the report as the single-point of reference</span></p>
+<p id=x200 class="phone s05"><cite>TallTed:</cite> what#s nice here is that we are not an immutable academic paper<br>
+<span id=x201>… we can make it a &quot;snapshot draft&quot;</span><br>
+<span id=x202>… which may include pointers to the discussions in the github issues, the mailing list, etc</span></p>
+<p id=x205 class="phone s01"><cite>pchampin:</cite> agrees<br>
+<span id=x206>… yet, it would be nicer for the reader of the report to have a summary in the report</span><br>
+<span id=x207>… rather than just a link to somewhere else</span></p>
+<p id=x208 class="phone s03"><cite>thomas:</cite> yes</p>
+<p id=a03 class=action><strong>Action:</strong> add a section about the rationale for semantic opacity / transparency</p>
+<p id=x210 class="phone s05"><cite>TallTed:</cite> may even be marked as a &quot;feature with risk&quot;</p>
+<p id=x214 class="phone s02"><cite>AndyS:</cite> this can get out of control<br>
+<span id=x215>… wouldn't have a report with a long discussion of the alternatives</span><br>
+<span id=x216>… counterproductive opposite the Property Graphs community</span><br>
+<span id=x217>… may seem as if nothing was agreed</span></p>
+<p id=x219 class="phone s01"><cite>pchampin:</cite> no, instead, intention is to give a rationale for the solution (semantics) that we keep in the end<br>
+<span id=x220>… really only explain the consequences of the semantics</span></p>
+<p id=x223 class="phone s05"><cite>TallTed:</cite> didn't think the focus of this work was to convert PG people to the RDF world<br>
+<span id=x224>… but instead to fill a perceived gap in RDF that might send people from RDF to PGs...</span></p>
+<p id=x227 class="phone s04"><cite>gkellogg:</cite> it provides a formal underpinning<br>
+<span id=x228>… marketing</span></p>
+<p id=x229 class="phone s01"><cite>pchampin:</cite> to Ted: I think it works both ways</p>
+<p id=x236 class="phone s04"><cite>gkellogg:</cite> another thing that came up...<br>
+<span id=x237>… difference between relationship and attributes in PGs</span><br>
+<span id=x238>… there is a distinction that some people see when comparing commercial PGs and RDF triple stores</span></p>
+<p id=x243 class="phone s01"><cite>pchampin:</cite> see how it is related to the PG versus RDF discussion<br>
+<span id=x244>… but not specific to RDF-star</span><br>
+<span id=x245>… usually, we consider this a representation issue</span><br>
+<span id=x246>… however, it may also be deeper</span></p>
+<p id=x247 class=irc><cite>&lt;gkellogg&gt;</cite> Discussion is in EasierRDF <a href="https://github.com/w3c/EasierRDF/issues/45">https://<wbr>github.com/<wbr>w3c/<wbr>EasierRDF/<wbr>issues/<wbr>45</a></p>
+<p id=x249 class="phone s01"><cite>pchampin:</cite> for instance, in Cypher the distinction is also in the query expressions<br>
+<span id=x250>… perhaps out of scope</span></p>
+<p id=x252 class="phone s04"><cite>gkellogg:</cite> suggest to take a look at the issue in EasierRDF github<br>
+<span id=x253>… and to chime in</span></p>
+<p id=x255 class="phone s02"><cite>AndyS:</cite> Actually, it is in OWL<br>
+<span id=x256>… datatype properties versus object properties</span></p>
+<p id=x260 class="phone s01"><cite>pchampin:</cite> okay, OWL has this distinction<br>
+<span id=x261>… but rarely any visual representations of RDF graphs</span><br>
+<span id=x262>… that make this distinction</span><br>
+<span id=x263>… e.g., by visualizing an RDF graph more in a PG-like manner</span></p>
+<p id=x271 class="phone s06"><cite>ora:</cite> comment on what Ted said earlier about the perceived gap between<br>
+<span id=x272>… PG and RDF</span><br>
+<span id=x273>… when talking to customers who are just starting</span><br>
+<span id=x274>… they almost always ask whether they should go for RDF or PG</span><br>
+<span id=x275>… and it seems to them that there is no going back</span><br>
+<span id=x276>… RDF-star may help to narrow the gap</span></p>
+<p id=x277 class=irc><cite>&lt;gatemezing&gt;</cite> Ora, that perception is not because you provide both PG and RDF in your tools?</p>
+<p id=x279 class="phone s02"><cite>AndyS:</cite> primarily about provenance of (RDF) data<br>
+<span id=x280>… and being able to handle it in a convenient way</span></p>
+<p id=x283 class="phone s06"><cite>ora:</cite> to the question from the chat: it is not only about that<br>
+<span id=x284>… not always the case</span><br>
+<span id=x285>… instead, more general discussions about graphs</span></p>
+<p id=x287 class=irc><cite>&lt;gatemezing&gt;</cite> Thanks ora! Makes sense</p>
+<p id=x288 class="phone s06"><cite>ora:</cite> even before a decision which type of DB to pick</p>
+<p id=x289 class="phone s01"><cite>pchampin:</cite> KGC next week, but no overlap with the call</p>
+<p id=x290 class=irc><cite>&lt;gatemezing&gt;</cite> Bye!</p>
+<p id=x291 class=irc><cite>&lt;william&gt;</cite> bye!</p>
+<p id=x292 class=irc><cite>&lt;ora&gt;</cite> Bye</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">pchampin to add a paragraph on SPARQL service description and sd:feature</a></li>
+<li><a href="#a02">create &quot;outsanding issues&quot; in the CG-report as being the things to complete before we're done</a></li>
+<li><a href="#a03">add a section about the rationale for semantic opacity / transparency</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

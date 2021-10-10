@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF-star -- 19 Feb 2021</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF-star" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF-star</h1>
+<h2>19 Feb 2021</h2>
+
+<p><a href='https://lists.w3.org/Archives/Public/public-rdf-star/2021Feb/0061.html'>Agenda</a></p>
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>gkellogg, gatemezing, james, pchampin, AndyS, olaf, thomas, TallTed, pfps</dd>
+<dt>Regrets</dt>
+<dd></dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>gatemezing</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">open actions</a></li>
+<li><a href="#item02">GH management</a></li>
+<li><a href="#item03">SPARQL-star update</a></li>
+<li><a href="#item04">PR at https://github.com/w3c/rdf-star/pull/65</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: gatemezing
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; chair: pchampin
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Do we need a rota? (from next meeting)
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Agenda: <a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Feb/0061.html">https://lists.w3.org/Archives/Public/public-rdf-star/2021Feb/0061.html</a>
+</p>
+
+<h3 id="item01">open actions</h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> we don't have new people today
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> RDF* was substituted to rdf-star. Time to close the related issue <br>
+... Next <strong>ACTION:</strong> we need it open
+</p>
+
+<h3 id="item02">GH management</h3>
+
+<p class='phone'>
+<cite>AndyS:</cite> how best to use the GH tools for a workflow that is minimal overhead for both reviewer and editor.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> opinions? james ?
+</p>
+
+<p class='phone'>
+<cite>james:</cite> Joined for the grammar's discussion
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> The discussion was to use the same tools than the one use by the SPARQL group <br>
+... so that to generate full grammar more efficiently <br>
+... so that we reuse those existing tools
+</p>
+
+<p class='phone'>
+<cite>james:</cite> Having a complete grammar is useful
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> james can you create an issue for that?
+</p>
+
+<p class='phone'>
+<cite>james:</cite> Will create an issue
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> can it be based on sections? issues? <br>
+... the same as we do for PR?
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Probably yes.
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> We need to figure out the issue
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> In the case of JSON-LD CG, single issue from a receiver's comment so that to construct a PR ... <br>
+... based on the comments received. We can't require people to have access to access - git features of Github <br>
+... We need to accept feedback from email lists
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> We don't have an email address in the FPCG's draft
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; grammar <a href="https://github.com/w3c/rdf-star/issues/104">https://github.com/w3c/rdf-star/issues/104</a>
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> we need to find a way to figure it out
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> The list to the mailing-list is not visible in the first draft <br>
+... agree with gkellogg to have one issue by income email's comment
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> Sounds good!
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; JSON-LD : The mailing list is in the Status section
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> gkellogg could you make a PR? - Agreed by gkellogg
+</p>
+
+<h3 id="item03">SPARQL-star update</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/98">https://github.com/w3c/rdf-star/pull/98</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> We have a PR at <a href="https://github.com/w3c/rdf-star/pull/98">https://github.com/w3c/rdf-star/pull/98</a>
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> This PR puts the content in Section 5 of the document <br>
+... splitted in two parts - overview and features and second part with definition part <br>
+... Now, this version is basically easier than a PG mode
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> the introduction is very nice. Any comments from the work? <br>
+... We can merge this PR
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSAL: merge PR 98 about SPARQL-star Update
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +0
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +0
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution01">RESOLUTION: merge PR 98 about SPARQL-star Update</strong>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> We can now merge this section - thanks @olaf! <br>
+... Any implementations already exist?
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> Ontotext GraphDB
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> We have to solve the issue of the annotation syntax in the query part
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/65">https://github.com/w3c/rdf-star/pull/65</a>
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> And then come back to this issue
+</p>
+
+<h3 id="item04">PR at <a href="https://github.com/w3c/rdf-star/pull/65">https://github.com/w3c/rdf-star/pull/65</a></h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> olaf could you remind us what it is about?
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> This PR #65 is about annotation syntax for SPARQL* that I proposed some times ago
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; please explain again why this is undesirable.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> james which details do you expect?
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I don't understand what can be a problem
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> a property with a concatenation of two predicates <br>
+... Sometimes is difficult to figure out which path we are considering - in the case of a simple example like :ASK { s :p/:q :o {| :a :b |} }
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> See this example ASK { ?x :p* ?y {| :a :b |} } - so nothing to annotate
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; ASK { ?s :p :o }
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> there is no path in SPARQL - there are just syntax
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I don't see an error in the syntax but to be interpret in the semantics
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> We are talking about path, so not obvious -
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> There is no ways in the embedded syntax like the annotation  - embedded triples are in the BGP
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> The expansion in the query side needs rewriting in the syntax level
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> maybe we need a section with the expansion part
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> There is a rule for the expansion in my PRs
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> If we choose to forbid annotations on patterns that are not triple part, could that be rejected by the grammar?
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> it does not make a difference in terms of evaluation
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; ;-)
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> paths work by calculating BGP...
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Is this created by the annotation syntax issue?
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Yes, the issue brings it up.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> My expectation was to expand by adding more constraints not necessarily in the grammar ...
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> That is exactly what we have in the PR.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> pfps brought the issue of the semantics <br>
+... so the ones with hidden triples <br>
+... There is a section on extended matching that will be affected
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I view the ability to see the reification triples as a feature, not a bug.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> RDF-star would be more useful if tied with other things...
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> you mean in particular reification when mentioning by the "rest of RDF"
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; For example, it is very useful to be able to have different versions of "embedded triples" that are more or less transparent.
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> I'd not expect such results in the simple entailment regime
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> I agree with olaf. <br>
+... I'd very nice to define an entailment regime where we can see the mapping
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; Exactly!
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Well that depends on what a "triple" is?
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> how many triples in the embedded triple?
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; with RDF*, we have to be clear about "asserted triples" and "embedded triples"
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; How many formulae are there in p &amp; q?   Not one, but three!
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; How many triples are in &lt;&lt; a b c&gt;&gt; d e.  Two!  One asserted triple and one embedded triple.
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +1 -&gt; rdf-star entailment routine as integral to the final report
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> SPARQL-star query is to query RDF-star graph not the mapping
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; So, contratrary to previous statements, SPARQL is not based on simple entailment.
+</p>
+
+<p class='phone'>
+Can we create an issue?
+</p>
+
+<p class='phone'>
+or send an email to continue the discussion?
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; <a href="https://www.w3.org/TR/sparql11-query/#BasicGraphPattern">https://www.w3.org/TR/sparql11-query/#BasicGraphPattern</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; I'd like to ask 2 more things: 1) will the draft be announced on semantic-web@w3.org? and 2) can we put a discussion about the relation between N3 and RDF* on the agenda for next friday?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> thanks everyone
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I'm not sure whether SPARQL BGP matching is or can be defined in terms of simple entailment.
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol><li><a href="#resolution01">merge PR 98 about SPARQL-star Update</a></li>
+</ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

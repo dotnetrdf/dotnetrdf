@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 11 June 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>11 June 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-06-04.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Jun/0010.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/06/11-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-06-18.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gkellogg, james, olaf, ora, pchampin, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>james, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Publishing a new report</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x026 class=irc><cite>&lt;ora&gt;</cite> I never volunteer because Zakim hates me.</p>
+<p id=x027 class=irc><cite>&lt;ora&gt;</cite> s/not said/said</p>
+<p id=x028 class=irc><cite>&lt;ora&gt;</cite> I know it is just tough love from zakim...</p>
+</section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x032 class="phone s01"><cite>pchampin:</cite> announcement of newcommers, none</p>
+<p id=x034 class="phone s02"><cite>olaf:</cite> i did not see mch as eswc. te only one was the same use case inoe of the recent blog posts<br>
+<span id=x035>… using rdfstr to capture access control statement. on top of graphdb and happy with the performance and withthe conciseness of the expression of the policies</span></p>
+<p id=x036 class=summary>both data and queries</p>
+<p id=x037 class=irc><cite>&lt;thomas&gt;</cite> which talk was that?</p>
+<p id=x039 class="phone s01"><cite>pchampin:</cite> also mentioned in the industry panel<br>
+<span id=x040>… the paper has &quot;rdf-star&quot; in its title.</span></p>
+<p id=x042 class=irc><cite>&lt;olaf&gt;</cite> The paper title is &quot;Use Case: Ontologies and RDF* for Knowledge Management&quot;</p>
+<p id=x044 class="phone s01"><cite>pchampin:</cite> another announcement: completed a rust implementation of the four parsers and intend to publish an earl report</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x047 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x049 class="phone s01"><cite>pchampin:</cite> open actions. 2 on me. 1. no news about the charter. 2. report on media type registrations, that the contact person should be reachable.<br>
+<span id=x050>… came to the conclusion that there is no issue.</span></p>
+<p id=x051 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/186">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>186</a></p>
+<p id=x056 class="phone s01"><cite>pchampin:</cite> reported in the action<br>
+<span id=x057>… difference btw contact and change controller as the controller remains the w3c</span><br>
+<span id=x058>… recommends to close the action</span></p>
+<p id=x061 class="phone s03"><cite>gkellogg:</cite> the issue behind this is that with turtle, where the registration has not been updated.<br>
+<span id=x062>… that w3c is the controller does not provide the actor to actually make the changes</span></p>
+<p id=x063 class="phone s04"><cite>TallTed:</cite> we need a path, the w3c role does not suffice</p>
+<p id=x064 class="phone s01"><cite>pchampin:</cite> push it to the w3c.</p>
+<p id=x065 class="phone s04"><cite>TallTed:</cite> make that the action</p>
+<p id=x066 class="phone s01"><cite>pchampin:</cite> we should take the initial action even if it is orthogonal to the group's task</p>
+<p id=x067 class="phone s04"><cite>TallTed:</cite> suggests to consolidate all requests</p>
+<p id=x068 class=irc><cite>&lt;gkellogg&gt;</cite> JSON-LD does have W3C as the change controller</p>
+<p id=x069 class="phone s04"><cite>TallTed:</cite> esp with regard to the change controller</p>
+<p id=x071 class="phone s01"><cite>pchampin:</cite> can we close that action?</p>
+</section>
+
+<section>
+<h3 id=t03>Publishing a new report</h3>
+<p id=x075 class="phone s01"><cite>pchampin:</cite> seeing no other actions, next agenda items.</p>
+<p id=x076 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/185">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>185</a></p>
+<p id=x077 class="phone s01"><cite>pchampin:</cite> first, thomas' pull request. that some discussion of distinction btw draft and final report.</p>
+<p id=x079 class="phone s01"><cite>pchampin:</cite> it is large, which is a concern.</p>
+<p id=x086 class="phone s05"><cite>thomas:</cite> summarizing: it was not intended to be merged. just to give an impression of how to tackle the problem which i see in the draft<br>
+<span id=x087>… it leaves too much out and does not adequately realted to other things in the field.</span><br>
+<span id=x088>… i would like to discuss it in a general way. among reactions was thai i undercut the effort, whcih was not the intention.</span><br>
+<span id=x089>… the effort does not do itself a favor if it leaves out the problems which we have discussed.</span><br>
+<span id=x090>… the general tone of the report should be more balanced.</span></p>
+<p id=x091 class=irc><cite>&lt;pchampin&gt;</cite> q.</p>
+<p id=x093 class="phone s05"><cite>thomas:</cite> question, is the general sentimet is that it is a &quot;no go&quot; or if it a start to be improved upon.</p>
+<p id=x096 class="phone s01"><cite>pchampin:</cite> having writte most of the sections which are called &quot;unbalanced&quot;, they were my understanding of the balance to this point.</p>
+<p id=x098 class="phone s03"><cite>gkellogg:</cite> stuck me that &quot;motivations and caveats&quot; is a new section. begins ewith the characterization that the semantics is new and unusual.</p>
+<p id=x100 class=summary>but, in itself it does make reference to issues with semantics which are &quot;important to discuss&quot;. muchof what is said there would better appear in an appendix.</p>
+<p id=x101 class=summary>the majority opinoion has supported &quot;opaque&quot; semantics and controversy is better left inan appendiy, ratehr than in themain body.</p>
+<p id=x102 class=irc><cite>&lt;AndyS&gt;</cite> s/opionoion/opinion/</p>
+<p id=x106 class="phone s05"><cite>thomas:</cite> i do not want to questiona design decision, but the problem is stil not clear and needs to be discussed in order to avoid untoward consequences.<br>
+<span id=x107>… granted, the introduction is too long.</span><br>
+<span id=x108>… not questioning the decided dirction, but it needs to presented with more care</span></p>
+<p id=x113 class="phone s04"><cite>TallTed:</cite> if i misunderstand &quot;opaque v7s transparent&quot;, then your explanation needs more work.<br>
+<span id=x114>… the current goal is towars a working group to work on rdf star. that need a clear problem statement.</span><br>
+<span id=x115>… all work in progress will be problematic, because none are implementing the propsa in the draft. so we need as clear a solution as possible.</span></p>
+<p id=x118 class="phone s05"><cite>thomas:</cite> we disagree as to whether the proposed solution actually covers the problem space<br>
+<span id=x119>… alot of people are implementing under misconceptions</span></p>
+<p id=x120 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://w3c.github.io/rdf-star/cg-spec/editors_draft.html#ref-opacity">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>cg-spec/<wbr>editors_draft.html#ref-opacity</a></p>
+<p id=x126 class="phone s01"><cite>pchampin:</cite> we do have things like &quot;that&quot; in the current draft.<br>
+<span id=x127>… there is a remarks section at the ned of the semantics section, whcih contains different things about the consequence sof the semantics.</span><br>
+<span id=x128>… esp expalinging the consequences of opacity and describing the alternatives</span><br>
+<span id=x129>… the text may give too much credit to the current formulation, but the structure with additional information is there already.</span><br>
+<span id=x130>… reluctant to put the qualification at the beginning of the exposition. that does not provide balance</span></p>
+<p id=x133 class="phone s05"><cite>thomas:</cite> i could make it shorter and move it into the overview<br>
+<span id=x134>… the sections to document the discussion remain valuable.</span></p>
+<p id=x136 class="phone s06"><cite>AndyS:</cite> the structure of the document is correct.</p>
+<p id=x141 class="phone s07"><cite>james:</cite> as a reader, I find one point in Thomas' proposal valuable<br>
+<span id=x142>… the semantics section belongs earlier in the document</span></p>
+<p id=x146 class="phone s01"><cite>pchampin:</cite> i do agree that the reorder could be beneficial</p>
+<p id=x151 class="phone s03"><cite>gkellogg:</cite> speaking for developers. detailed semantics belongs at the end.<br>
+<span id=x152>… that notwithstanding it is imported to understand what this is, which is not possible without discussing the semantics.</span><br>
+<span id=x153>… also important is explainable ai</span><br>
+<span id=x154>… but leave alternative semantics ducsissions to secondary locations so as not to confuse the reader</span></p>
+<p id=x157 class="phone s06"><cite>AndyS:</cite> there was a strong case make earlier, that people would implement wrongly<br>
+<span id=x158>… we have tests which should prevent that</span></p>
+<p id=x159 class="phone s04"><cite>TallTed:</cite> until the document is finalize, it cannot be implemented.</p>
+<p id=x160 class="phone s06"><cite>AndyS:</cite> why cannot we turn this into something which is observable</p>
+<p id=x161 class="phone s05"><cite>thomas:</cite> I think what I do is important, and you will benefit from it too.</p>
+<p id=x163 class="phone s05"><cite>thomas:</cite> test cases is not my world. that is a techcnical problem not soemthing to discuss</p>
+<p id=x168 class="phone s07"><cite>james:</cite> I'm sensitive to AndyS's position,<br>
+<span id=x169>… but ask him to consider Thomas' points</span></p>
+<p id=x170 class="phone s05"><cite>thomas:</cite> the concern is that the technical result will break and will benefit no one</p>
+<p id=x174 class="phone s01"><cite>pchampin:</cite> it _is_ a technical specification and beyond that people can do other stuff<br>
+<span id=x175>… beyond what is bjectively observeable i am not convinced there is much to do beyond authoring the specification</span><br>
+<span id=x176>… i invite other opinions</span></p>
+<p id=x177 class="phone s01"><cite>pchampin:</cite> now there are some concrete proposals implicit in the pr.</p>
+<p id=x178 class=summary>considering whether to move the semantics up to precede sparql-star looks more consistent</p>
+<p id=x179 class="phone s06"><cite>AndyS:</cite> in the rdf spec there are separate documents : concept and model theory</p>
+<p id=x180 class="phone s04"><cite>TallTed:</cite> authored by separate groups</p>
+<p id=x182 class="phone s04"><cite>TallTed:</cite> in this document there is one group and one document, which argues for purposeful interleaving.</p>
+<p id=x186 class="phone s03"><cite>gkellogg:</cite> we could procde multiple document, but that is not most useful<br>
+<span id=x187>… wait for that to get to the working group(s)</span><br>
+<span id=x188>… we woud be producing ten different specs, which we could do but the purpose of this groupd to lay out a coherent argument</span><br>
+<span id=x189>… it serves better to see that in one place</span></p>
+<p id=x190 class="phone s04"><cite>TallTed:</cite> that argues that the order does not matter that much</p>
+<p id=x191 class="phone s04"><cite>TallTed:</cite> it might be important to label the implementation reports are preliminary in order to avoid misconstrual</p>
+<p id=x192 class="phone s03"><cite>gkellogg:</cite> do not know what to add to an earl report as it just describes the details of execution</p>
+<p id=x195 class="phone s04"><cite>TallTed:</cite> general problem with w3c documents as they do not describe their contingencies<br>
+<span id=x196>… there are large efforts to implement this and customers are looking towards it, but that is irresponsible.</span></p>
+<p id=x197 class="phone s06"><cite>AndyS:</cite> does the document's draft status not suffice?</p>
+<p id=x198 class="phone s04"><cite>TallTed:</cite> it is intended to do the job, but it is not sufficient</p>
+<p id=x199 class="phone s06"><cite>AndyS:</cite> best taken up outside of this group.</p>
+<p id=x201 class="phone s01"><cite>pchampin:</cite> there is a w3c community process, ...</p>
+<p id=x203 class="phone s08"><cite>ora:</cite> the reason why there are multiple rdf specs to a large part has to doe with the work flow and division fo work.</p>
+<p id=x204 class=summary>responsibility for documents was contingent on working technology<br>
+<span id=x205>… unsure how to qualify the document to limit others's activites.</span></p>
+<p id=x209 class="phone s06"><cite>AndyS:</cite> we should invite implementation reported from enterprise implementers</p>
+<p id=x210 class="phone s03"><cite>gkellogg:</cite> concern is that people with look at the final report, where the stauts will say it is neither w3c nor w3c standards track.</p>
+<p id=x212 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x214 class="phone s03"><cite>gkellogg:</cite> we could put something in the processor which generate the html to add qualifications</p>
+<p id=x216 class="phone s05"><cite>thomas:</cite> wrt gregg's notion of order: semantics is too important to put it at the end.</p>
+<p id=x217 class="phone s03"><cite>gkellogg:</cite> user community does not demand an account of relation to the semantics.</p>
+<p id=x220 class="phone s05"><cite>thomas:</cite> if semantics is moved up it would be easier to integrate withthe text.</p>
+<p id=x225 class="phone s04"><cite>TallTed:</cite> ordering sections: go back to &quot;what is to be solved&quot;. more than one. they are not yet clearly statd and eliniated.<br>
+<span id=x226>… because of that suggestions of how to address them cannot be clearly stated.</span><br>
+<span id=x227>… there is more than one problem, but people focus on their own problems.</span><br>
+<span id=x228>… people say they want to annotate one triple, but they will actually want to annotate a string of triples.</span><br>
+<span id=x229>… that maybe work for anotehr group, but that will come.</span></p>
+<p id=x231 class=irc><cite>&lt;gkellogg&gt;</cite> Annotating multiple triples seems to be handled by the N3 group, which has a different theory of operation.</p>
+<p id=x232 class="phone s04"><cite>TallTed:</cite> re status: qualification, that &quot;htis is not standards&quot; is not adequate, as it turns out that documents are used in more ways that authorized</p>
+<p id=x235 class="phone s06"><cite>AndyS:</cite> w3c is trying to conform to the trend that efforts form around documents and it is difficult to act against the. this wheter that goes well or not. no working on the odcument will chage the way the communtay clusters and acts.<br>
+<span id=x236>… other examples are confusing: working group notes end up in tr space.</span><br>
+<span id=x237>… we are not exacerbating the situation.</span></p>
+<p id=x241 class="phone s08"><cite>ora:</cite> the importance of semantics<br>
+<span id=x242>… people focus just on concrete things, but that is a w3c failure not to make people appreciate that semantics is concrete</span><br>
+<span id=x243>… teds' &quot;groups of statements&quot; : that is a complex issue which is much larger than we can address is this group.</span></p>
+<p id=x244 class=irc><cite>&lt;AndyS&gt;</cite> <a href="https://w3c.github.io/rdf-star/reports/index.html">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>reports/<wbr>index.html</a> ==&gt; status section is &quot;This document is merely a W3C-internal document. ...This report describes the state of implementation conformance at the time of publication.&quot;</p>
+<p id=x245 class=irc><cite>&lt;TallTed&gt;</cite> &quot;How to annotate multiple statements&quot; may well be fodder for another group; worth noting sooner than later as &quot;potential work for future WG&quot;</p>
+<p id=x246 class="phone s01"><cite>pchampin:</cite> today was an important dicussion, but disappointment that we didi not get to discuss what to publish next</p>
+<p id=x247 class=irc><cite>&lt;thomas&gt;</cite> why not publish a new _draft_?</p>
+<p id=x250 class="phone s01"><cite>pchampin:</cite> reconvent next week (not bi-weekly) and the first point should be about publishing a draft<br>
+<span id=x251>… and other quick final word?</span></p>
+<p id=x252 class="phone s08"><cite>ora:</cite> we are not done when a clock runs out. were are done when we are done.</p>
+<p id=x253 class="phone s01"><cite>pchampin:</cite> want to signal progress by publishing drafts</p>
+<p id=x254 class="phone s01"><cite>pchampin:</cite> thanks to everyone.</p>
+</section>
+</main>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

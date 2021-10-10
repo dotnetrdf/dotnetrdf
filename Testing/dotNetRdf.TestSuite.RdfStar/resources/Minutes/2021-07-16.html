@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 16 July 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>16 July 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-07-02.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Jul/0009.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/07/16-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-09-03.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gkellogg, james, ora, pchampin, rivettp</dd>
+<dt>Regrets</dt><dd>william</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>james, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Renaming 'embedded' to 'quoted'</a></li>
+<li><a href="#t04">WG draft charter</a></li>
+<li><a href="#t05">AOB</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x027 class="phone s01"><cite>pchampin:</cite> announcements?</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x035 class="phone s01"><cite>pchampin:</cite> next item is open actions...</p>
+<p id=x036 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x037 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/193">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>193</a></p>
+<p id=x038 class="phone s01"><cite>pchampin:</cite> the &quot;quoted triple terminology shift&quot; is addressed in a pull request. let us discuss it.</p>
+</section>
+
+<section>
+<h3 id=t03>Renaming 'embedded' to 'quoted'</h3>
+<p id=x042 class="phone s01"><cite>pchampin:</cite> discussion of renaming... greg pull request addresses the spec and the grammars</p>
+<p id=x045 class="phone s02"><cite>greg:</cite> initiated pull request is pretty much andy's work. my text is a mechanical translation.<br>
+<span id=x046>… andy can talk abut substance.</span></p>
+<p id=x052 class="phone s03"><cite>james:</cite> I agree with the change,<br>
+<span id=x053>… but I would like to go on the record: &quot;quoting&quot; is not the right operation here.</span><br>
+<span id=x054>… Cf. the notion of quoting in LISP is blocking the process of interpreting.</span><br>
+<span id=x055>… Here, it does not prohibit processing, but simply changes it (ref. opacity vs. transparency).</span></p>
+<p id=x057 class="phone s04"><cite>ora:</cite> the difference is only there because you define the process to be 'interpretation'.<br>
+<span id=x058>… For me the process is &quot;asserting&quot;, and so this makes sense.</span></p>
+<p id=x059 class=irc><cite>&lt;pchampin&gt;</cite> +1 to what ora says</p>
+<p id=x060 class="phone s03"><cite>james:</cite> maybe you should include this explanation in the text</p>
+<p id=x061 class="phone s04"><cite>ora:</cite> I will look at the text and change it to that effect</p>
+<p id=x069 class="phone s01"><cite>pchampin:</cite> other comments?<br>
+<span id=x070>… : i reached out to olaf, as i felt he should be able to comment on it.</span><br>
+<span id=x071>… : he said he was ok with the renaming</span><br>
+<span id=x072>… : reviews the pull request and had concerns with lexical things.</span><br>
+<span id=x073>… : also feel the sectionon annotation syntax is redundant, confusing where it is.</span></p>
+<p id=x074 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/192.html#annotation-syntax">https://<wbr>pr-preview.s3.amazonaws.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>192.html#annotation-syntax</a></p>
+<p id=x076 class="phone s01"><cite>pchampin:</cite> : and does not add much to the text from the overview.<br>
+<span id=x077>… : reactions?</span></p>
+<p id=x079 class="phone s05"><cite>AndyS:</cite> i will look. have yet to have time</p>
+<p id=x080 class="phone s01"><cite>pchampin:</cite> ok. we can move forward?</p>
+<p id=x081 class=irc><cite>&lt;jay-gray&gt;</cite> good with me</p>
+<p id=x082 class="phone s06"><cite>STRAWPOLL:</cite> for merging once editors are satisfied...</p>
+<p id=x083 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x085 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x086 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x087 class=irc><cite>&lt;TallTed&gt;</cite> +1 for merge</p>
+<p id=x088 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x089 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x090 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x091 class=irc><cite>&lt;jay-gray&gt;</cite> +1</p>
+<p id=x092 class=irc><cite>&lt;TallTed&gt;</cite> Section title where this falls is &quot;2. Concepts and Abstract Syntax&quot;.  Annotation Syntax is definitely a Concept of RDF-star.</p>
+<p id=x095 class="phone s01"><cite>pchampin:</cite> TallTed, i note your point.<br>
+<span id=x096>… serves as a valid counter-argument to removing the section</span></p>
+<p id=x097 class="phone s05"><cite>AndyS:</cite> it needs some kind of mention, because people tend to engage the syntax in preference to the abstract data model</p>
+<p id=x098 class="phone s01"><cite>pchampin:</cite> agree that the explicit mention is justified. also find other redundancy between overview and other sections. just have to ensure that it does not confuse.</p>
+<p id=x102 class="phone s05"><cite>AndyS:</cite> found it difficult to change the overview. mentioning twice is better than neglecting them. as long as nothing is wrong it suffices.<br>
+<span id=x103>… : important is to get to the point where ne need to fiddle, but inprinciple &quot;are done&quot;</span></p>
+<p id=x105 class="phone s07"><cite>TallTed:</cite> usual pattern to review a document is as stand-alone, but for this document it needs to be redundant because no one reads everything.<br>
+<span id=x106>… : people are tolerant because they do not read eveyrthing</span></p>
+<p id=x108 class="phone s01"><cite>pchampin:</cite> agree. only concern is that for the few who read everything, might be confused by reapperance</p>
+<p id=x109 class="phone s01"><cite>pchampin:</cite> next, charter</p>
+</section>
+
+<section>
+<h3 id=t04>WG draft charter</h3>
+<p id=x112 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star-wg-charter/issues/1">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star-wg-charter/<wbr>issues/<wbr>1</a></p>
+<p id=x114 class="phone s01"><cite>pchampin:</cite> insufficient time to address the issue since last week. from discussion, most members are more favorable to a single large working group</p>
+<p id=x116 class="phone s01"><cite>pchampin:</cite> any objections or continue with that assumption?</p>
+<p id=x120 class="phone s01"><cite>pchampin:</cite> no objection. my first concern was that it would appear overambitious to those who must validate the charter.<br>
+<span id=x121>… proposals to address this?</span></p>
+<p id=x122 class="phone s04"><cite>ora:</cite> need to define scope so that there are very few additions and are addressing the ramifications so that the scope is clear</p>
+<p id=x123 class=irc><cite>&lt;AndyS&gt;</cite> +1 to ora's comments</p>
+<p id=x124 class="phone s01"><cite>pchampin:</cite> i tried to achieve that in the draft. aware that there is a long wish list for &quot;future&quot; rdf.</p>
+<p id=x125 class=irc><cite>&lt;jay-gray&gt;</cite> consistent with Andy's point about syntax, as an &quot;application developer&quot; we see the world thru the query language. for that reason we support a broader focus. harmony with SPARQL is important to us</p>
+<p id=x126 class="phone s04"><cite>ora:</cite> must be clear that this isnot to be the &quot;fix it all&quot; group</p>
+<p id=x127 class=irc><cite>&lt;TallTed&gt;</cite> &quot;RDF 1.2, not RDF 2.0&quot;</p>
+<p id=x132 class="phone s01"><cite>pchampin:</cite> not sure whether we discussed it last week: make it possible for recommendations to be open to new features.<br>
+<span id=x133>… : it can authorize new features without the entire draft process.</span><br>
+<span id=x134>… : the current draft opens that possibility. this would be way to deflect desire to add new things directly to the immediate scope</span><br>
+<span id=x135>… : that also has an impact on the specification's stability.</span></p>
+<p id=x139 class="phone s05"><cite>AndyS:</cite> related to w3c process changes. on new features. makes one nervous. are the features large or small.<br>
+<span id=x140>… : if it is a small fix, that is not a concern, but how big is a &quot;small&quot;  addition?</span><br>
+<span id=x141>… : another w3c variant is that working groups need not close. this makes it possible for a group to go dormant but return to effect errata in order to keep the documentup to date.</span></p>
+<p id=x143 class=irc><cite>&lt;TallTed&gt;</cite> &quot;RDF 1.2, not RDF 2.0; with (re)alignment of all existing RDF serializations to this RDF 1.2; and SPARQL 1.2 (which bumps the SPARQL 1.2 now under discussion to make SPARQL 1.3 or higher)&quot;</p>
+<p id=x144 class="phone s01"><cite>pchampin:</cite> &quot;maintenance&quot; group status. json-ld is a precedent</p>
+<p id=x145 class="phone s05"><cite>AndyS:</cite> is there a chair who chair announce &quot;time for maintenance&quot;?</p>
+<p id=x146 class="phone s01"><cite>pchampin:</cite> it is comfortable to know that the possibility exists, but an effort is involved to engage the process.</p>
+<p id=x149 class="phone s01"><cite>pchampin:</cite> if we say we are an &quot;rdf-star&quot; group, just attending to that one thing, but go into maintenance mode, it might be tricky to argue for that state<br>
+<span id=x150>… : may be difficult to distinguish &quot;too big&quot;, but there are criteria, like backward compatibility</span></p>
+<p id=x151 class="phone s07"><cite>TallTed:</cite> difficult to argue for &quot;new feature&quot;, because there is no way to turn it an and off. for rdf-star the translation to rdf is not clearly defined</p>
+<p id=x152 class="phone s01"><cite>pchampin:</cite> thinking about &quot;new features&quot; as pertaining to rdf-star itself</p>
+<p id=x153 class=irc><cite>&lt;AndyS&gt;</cite> <a href="https://www.w3.org/2020/Process-20200915/#revised-rec-features">https://<wbr>www.w3.org/<wbr>2020/<wbr>Process-20200915/#revised-rec-features</a></p>
+<p id=x155 class="phone s01"><cite>pchampin:</cite> rdf-star itself is too large to be a &quot;new feature&quot;<br>
+<span id=x156>… : this additional process would pertain to the rdf-star specification itself.</span></p>
+<p id=x157 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://www.w3.org/2020/Process-20200915/#allow-new-features">https://<wbr>www.w3.org/<wbr>2020/<wbr>Process-20200915/#allow-new-features</a></p>
+<p id=x158 class="phone s05"><cite>AndyS:</cite> does this pertain to just &quot;at risk&quot; features? this is not clear</p>
+<p id=x159 class="phone s01"><cite>pchampin:</cite> notes the relevant section of the process</p>
+<p id=x160 class="phone s05"><cite>AndyS:</cite> (discussion about process which requires the document to follow the details...)</p>
+<p id=x161 class="phone s01"><cite>pchampin:</cite> the goal is to mimic the &quot;evergreen&quot; standard, but that may make more sense for html than rdf</p>
+<p id=x162 class="phone s05"><cite>AndyS:</cite> the process is just to rigid to handle editorial corrections</p>
+<p id=x163 class="phone s01"><cite>pchampin:</cite> the maintenance option would be the proper solution for such a thing.</p>
+<p id=x164 class="phone s05"><cite>AndyS:</cite> it is not changing content or examples. it is errata</p>
+<p id=x165 class="phone s07"><cite>TallTed:</cite> namespace example is just errata</p>
+<p id=x166 class="phone s05"><cite>AndyS:</cite> we need more input from outside</p>
+<p id=a01 class=action><strong>Action:</strong> pchampin to find out what are the limitations of &quot;new feature&quot; in the new W3C process</p>
+</section>
+
+<section>
+<h3 id=t05>AOB</h3>
+<p id=x172 class="phone s01"><cite>pchampin:</cite> next meeting september third</p>
+<p id=x173 class=irc><cite>&lt;AndyS&gt;</cite> Have a good summer everyone!</p>
+<p id=x174 class=irc><cite>&lt;jay-gray&gt;</cite> bfn</p>
+<p id=x175 class=irc><cite>&lt;ora&gt;</cite> bye</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">pchampin to find out what are the limitations of &quot;new feature&quot; in the new W3C process</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF* -- 18 Dec 2020</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF*" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF*</h1>
+<h2>18 Dec 2020</h2>
+
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>AndyS, pfps, pchampin, gkellogg, blake, thomas, gatemezing, olaf, Doerthe_</dd>
+<dt>Regrets</dt>
+<dd>Pavel, Klinov</dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>AndyS, pchampin</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">Review pending actions</a></li>
+<li><a href="#item02">Discuss the SPARQL* annotation syntax proposed by Olaf</a></li>
+<li><a href="#item03">Discuss the overview section proposed by Bob</a></li>
+<li><a href="#item04">"unique triples"</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>blake</cite>&gt; p?
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; Has Zakim arived?
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; gkellogg: yes
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; scribe: AndyS
+</p>
+
+<h3 id="item01">Review pending actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/40">https://github.com/w3c/rdf-star/issues/40</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> test suite ... SPARQL* "in-progress"
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> Can start some SPARQL* syntax tests.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; successfully?  you mean that you have all the desired results or that you have results for all of them?
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> Notes JSON-LD for one set of tests. <br>
+... have both kinds
+</p>
+
+<h3 id="item02">Discuss the SPARQL* annotation syntax proposed by Olaf</h3>
+
+<p class='phone'>
+<cite>Andy:</cite> Key piece of work was extending isomorphism to handle nested &lt;&lt;&gt;&gt;
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/65">https://github.com/w3c/rdf-star/pull/65</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; AndyS notes that there are changes necessary for isomorphsim checks.
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> work ongoing for annotation with regard to SPARQL paths.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1 to postpone the resolution for this proposal
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> just copying over from Turtle has impacts wider than intended <br>
+... property paths e..g ":s :(:p|:q) ?o {| ... |}"
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +1 for annotating property path patterns :-)
+</p>
+
+<h3 id="item03">Discuss the overview section proposed by Bob</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/69">https://github.com/w3c/rdf-star/pull/69</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> bobdc has contributed an overview and introduction
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> current example needs to be changed <br>
+... suggests no ^^ use <br>
+... (datatype)
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> document is not fixed by a PR. Can have later discussion. <br>
+... prefer to have some text rather than none.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ack: gkellogg
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> It is non-normative text.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; My initial complaint was that strings were used as dates, but using the date dataype brings in the irrelevant issue of which datatypes need to be supported.
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> need to motivate RDF*
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> this should not be just a blunt specification for implemters <br>
+... this should be accessible to anyone
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1 to what Andy said
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; scribe: AndyS
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: merge PR 69 after removing the xsd:date literals from the example
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +0
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; 0
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution01">RESOLUTION: merge PR 69 after removing the xsd:date literals from the example</strong>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> please continue to raise comments and issues on doc text <br>
+... continuous improvement
+</p>
+
+<h3 id="item04">"unique triples"</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/64">https://github.com/w3c/rdf-star/issues/64</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/69">https://github.com/w3c/rdf-star/pull/69</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; Isn't this PR  <a href="https://github.com/w3c/rdf-star/pull/75">https://github.com/w3c/rdf-star/pull/75</a>?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> removed text about "type" (different meaning to computer science) <br>
+... tried to articulate common understanding (discussions, implementations)
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> people are sloppy in use of language but sometimes need to be exact. <br>
+... lots of levels : interpretations, models, abstract syntax, graphs, surface syntax. <br>
+... embedded triples are at several levels. <br>
+... e.g. replace "embedded triple" by "literal"and text should level-correct. <br>
+... unlike [] which is not the same term on each use in a Turtle file. <br>
+... We agree that &lt;&lt;&gt;&gt; are not like [] <br>
+... section 2.1 - unclear about "embedded triple"  - as surface syntax? as a term in a graph? as in model theory?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I see the point here.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Based on the previous discussion, are we going to clearly separate those three "context" of embedded triple?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> embedded triples in the abstract syntax denote themselves. <br>
+... occurrences of the same term.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; The point here is that the proposed addition of 2.1 needs to be clear as to what is what.   If 2.1 is talking about abstract syntax it should do so throughout (and be very careful about using concrete syntax), as the mapping from concrete syntax to abstract syntax may create multiple triples that "share" something derived from one piece of the concrete syntax document.
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; "occurrences of the same term" just that does not make sense
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> embedded triple - confusion from examples - for me, mathematical concept of 3 terms - like a literal
+</p>
+
+<p class='phone'>
+<cite>ora:</cite> clarifying question - embedded triple is a identifier - opaque to make statements about it ?
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> Q about Embedded triple and blank node.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; &lt;&lt; :s :p _:x &gt;&gt;
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Hmm.   What about &lt;&lt; :a :b [] &gt;&gt; in Turtle?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> several ways to consider it. <br>
+... blank node is like plain RDF <br>
+... existential variable
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; Does this go away if we replace each blank node with a new identifier?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> complex discussion <br>
+... SPARQL(*) bnodes are variables.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Blank node labels are part of concrete syntaxes, and are not part of RDF graphs.
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; A blank node is a blank node, not a variable.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> If a blank node is a variable, then embedded triple is no longer completely opaque.
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Why do we need blank nodes here? -
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; :alice :father [ :name "bob" {| :asserted :alice |} ].
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; the statement would have to be in the context of a question
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Well, there is nowhere the triple with subject :a, as triples can't have CURIES as subjects.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> difference btw blank node appearing only in an embedded triple
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; I assume &lt;&lt;:a :b []&gt;&gt; and &lt;&lt;:a :b []&gt;&gt; are not the "same" triple.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> and bnode appearing both inside and outside embedded triples
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; GTGN
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> the former may have a meaning, but not very useful
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1 ora  - they are different here
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; Hyvää joulua!
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Next telecon: 2020-01-08
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; Bye all! Happy end of year!
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol><li><a href="#resolution01">merge PR 69 after removing the xsd:date literals from the example</a></li>
+</ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

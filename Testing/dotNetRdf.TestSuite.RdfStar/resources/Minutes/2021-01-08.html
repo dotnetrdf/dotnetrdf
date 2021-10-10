@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF* -- 08 Jan 2021</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF*" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF*</h1>
+<h2>08 Jan 2021</h2>
+
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>gkellogg, pchampin, thomas, TallTed, AndyS, pfps</dd>
+<dt>Regrets</dt>
+<dd>gatemezing, olaf</dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>andys, pchampin, pfps</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">New people on the call introduce themselves</a></li>
+<li><a href="#item02">Review pending actions</a></li>
+<li><a href="#item03">sections on "triples vs occurences"</a></li>
+<li><a href="#item04">Annotation syntax</a></li>
+<li><a href="#item05">open-ended discussions</a></li>
+<li><a href="#item06">new semantics (open discussion)</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; present*
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ora, do you have problem connecting your audio?
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; Yep, hold on...
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; no problem
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; Now works!
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Achievement unlocked.
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; :-)
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I'll scribe if I can get someone to scribe for the bits I will be involved in.
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; We can tag team.
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: andys
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I guess Andy and I could cover scribe duties
+</p>
+
+<h3 id="item01">New people on the call introduce themselves</h3>
+
+<p class='phone'>
+Intro mielvds
+</p>
+
+<p class='phone'>
+Interests --KG, provenance, rights
+</p>
+
+<h3 id="item02">Review pending actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pchampin
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> syntax test suites for Turtle* and Sparql* have good coverage <br>
+... easy to amend based on future changes <br>
+... Did some cleanup to make it easier for other to work on the test suite. <br>
+... Conversion btw TTL and JSON-LD manifests. <br>
+... There are also some evaluation tests for Turtle*, mapping TTL files to NT files. <br>
+... Needs for tests.
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: AndyS
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: AndyS
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> passes all the tests at the moment
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; Create a test suite -- <a href="https://github.com/w3c/rdf-star/issues/40">https://github.com/w3c/rdf-star/issues/40</a>
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> and add SPARQL syntax if missing forms
+</p>
+
+<h3 id="item03">sections on "triples vs occurences"</h3>
+
+<p class='phone'>
+Tidied up material
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Tidied up material
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> Changed the example not text referring to example. <br>
+... not enough about occurrences vs types. <br>
+... reification applies to the triple type
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; Add material in the spec about the triple-occurrence distinction -- <a href="https://github.com/w3c/rdf-star/pull/75">https://github.com/w3c/rdf-star/pull/75</a>
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> reference to reification is 1999 spec not RDF 1.0 (2004), RDF 1.1 (2013)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/75">https://github.com/w3c/rdf-star/pull/75</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> agenda has bad link: should be <a href="https://github.com/w3c/rdf-star/pull/75">https://github.com/w3c/rdf-star/pull/75</a> <br>
+... intro is intended to be high level and concise, not all detail <br>
+... about reification is indeed to 1999 REC.
+</p>
+
+<a name="action01"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> thomas submit an issue about the link to the 1999 spec about reification
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ack: gkellogg
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; Hmm... I wrote the original 1999 part, oh goodness...
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> RDF 1.1 WG downplayed reification <br>
+... as were RDF containers
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; There were earlier discussions with references to modal logics as well...
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> issues about transformation to base RDF for reification <br>
+... vs single blank node for all uses
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Intention is one blank node per triple term --- not on agenda today to give time for people to read it
+</p>
+
+<h3 id="item04">Annotation syntax</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: pfps
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; annotation syntax for SPARQL* -- <a href="https://github.com/w3c/rdf-star/pull/65">https://github.com/w3c/rdf-star/pull/65</a>
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> proposal for annotations - as in property graphs - asserting the statement and also decorating it <br>
+... some proposals clash with other parts of RDF syntax
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; current syntax:  :s :p :o {| :q1 :r1; :q2 :r2 |}
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> {| was as popular as any other, but the stuff inside the curly braces is not triples, but property values
+</p>
+
+<p class='phone'>
+<cite>mielvds:</cite> there should be a real discussion about the syntax - maybe not now
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Also mentioned   :s :p :o @{ .... }
+</p>
+
+<p class='phone'>
+<cite>mielvds:</cite> should this stay within the triple structure <br>
+... is this what is pretty or what is most usable
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> there have been comments by others <br>
+... no particular rush, I can try out various versions quite easily as I have an easy-to-change Turtle* parse <br>
+... to have annotations inside annotations there needs to be a trailing delimiter
+</p>
+
+<p class='phone'>
+<cite>mielvds:</cite> &lt; vs { is an issue
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> yes, but they do do different things <br>
+... someone suggested using &lt;&lt; &gt;&gt; but this may not work <br>
+... the annotation syntax is for convenience so maybe nesting is not needed
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> there is no rush, the item is on the agenda because of the recent activity <br>
+... another issue is the position of the annotation - after object or after pedicate
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; "dropping down" would be nice, except that, andy, is it not the intent, that are not interchangable?
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; not exactly meaning to put a rush on this, but without at least a well-considered proposed notation, we can't discuss things well through email or github or much else... and significant changes later in the process are only likely to increase confusion in an already confusing topic
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> after predicate is close to property graphs and Neo4J <br>
+... after object appears to work better in Turtle
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> there are also complications in N3 with after predicate and certain delimiters
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; Perhaps “before the object”, rather than “after the predicate”, which allows for “,”
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> two separate issues - bracket style and position <br>
+... after the object works better in Turtle
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> nesting is allowed everywhere else so non-nesting annotations is a significant new thing
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> yes, and the grammar will be complicated a lot
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; pfps: there was proposal (mention) to have no nesting in annotation
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; sf
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> there should be a test for nested annotations <br>
+... using "before the object" will allow for more uses than "after the predicate" <br>
+... yarspg might be a nicer syntax - it's more like what PG users might expect
+</p>
+
+<p class='phone'>
+<cite>mielvds:</cite> maybe annotations are not so useful in Turtle but more useful in SPARQL
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> these parts of the syntax are very similar in Turtle and SPARQL
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> ... <br>
+... embedded triples are whole triples so it seems better to have the annotation after the object
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> but in shorthands the entire triple is not beforehand <br>
+... no rush, but can we reach some agreement now
+</p>
+
+<p class='phone'>
+<cite>mielvds:</cite> annotations after the embedded triples looks like quads
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> all this is for Turtle, so there are no quads
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; "annotation of a triple" is roughly "description of a triple", which seems more applicable to inscription (e.g., Turtle) than query (e.g., SPARQL).
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; Also, in RDF(-plain), Turtle and SPARQL graph patterns have been built to be copy-pasteable
+</p>
+
+<p class='phone'>
+<cite>mielvds:</cite> should the syntax go outside the triple syntax - annotations in both styles do this
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> annotation syntax does not add anything
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I concur
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> the Turtle* syntax examples show annotations, please take a look
+</p>
+
+<p class='phone'>
+<cite>mielvds:</cite> the question is whether Turtle* should go outside triple syntax
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> shall we just let this lie for now?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> sounds like a plan
+</p>
+
+<a name="action02"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> AndyS to gather in one place the proposals about the annotation syntax
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> picking the best answer may be difficult
+</p>
+
+<h3 id="item05">open-ended discussions</h3>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; BTW -- Good point to leave open possibility of n-ary syntax in some future
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; scribe:AndyS
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; pfps: it would be useful to have some rationale for the proposal for the proposed semantics
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; pfps: I'm having problems figuring out why the semantics is the way it is so I can't figure out why it is good or not
+</p>
+
+<h3 id="item06">new semantics (open discussion)</h3>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; I have to drop, sorry.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Use current RDF semantic by mapping RDF* to abstract RDF and hence leverage semantics. <br>
+... has been an idea embedded triples are literal-like (self-denote in every interpretation)
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> rdf:S* -- why not rdf:subject? (Similarly for P* and O*) <br>
+... RDF* has every URI/bnode/literal as a node in the RDF* graph (scribe: ????) <br>
+... no rationale why it is this way <br>
+... could have used existing reification vocabulary
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> will think it through
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; perhaps instead of `&lt;&lt; :s :p :o &gt;&gt;` as a new object type, we might should consider `" :s :p :o "^^rdfstar:embed` as a new typed literal
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I had a proposal for using RDF reification plus a couple of other properties that appears to capture the intended meaning of RDF*
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+<strong>[NEW]</strong> <strong>ACTION:</strong> AndyS to gather in one place the proposals about the annotation syntax <br />
+<strong>[NEW]</strong> <strong>ACTION:</strong> thomas submit an issue about the link to the 1999 spec about reification <br />
+&nbsp;<br />
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol></ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

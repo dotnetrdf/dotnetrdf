@@ -1,0 +1,45 @@
+require 'rdf'
+require 'rdf/turtle'
+require 'rdf/ordered_repo'
+
+desc "Default build all files"
+task default: [ "manifests.nt", "earl.jsonld", "earl.ttl", "index.html" ]
+
+desc "Remove generated files"
+task :clean do
+  %x(rm -f manifests.nt earl.jsonld earl.ttl index.html)
+end
+
+TEST_PARTIALS = %w{
+  nt/syntax
+  semantics
+  sparql/syntax
+  sparql/eval
+  trig/syntax
+  trig/eval
+  turtle/syntax
+  turtle/eval
+}
+
+file "manifests.nt" => TEST_PARTIALS.map {|p| "../tests/#{p}/manifest.ttl"} do
+  graph = RDF::OrderedRepo.new
+  TEST_PARTIALS.each do |path|
+    graph.load("../tests/#{path}/manifest.ttl", base_uri: "https://w3c.github.io/rdf-star/tests/#{path}/")
+  end
+  RDF::NTriples::Writer.open("manifests.nt") {|w| w << graph}
+end
+
+file "earl.jsonld" => (Dir.glob('*.ttl') - %w(earl.ttl)) do |task|
+  puts "write earl.jsonld"
+  system("earl-report --format json --strict -o earl.jsonld #{task.prereqs.join(' ')}") || abort("Error processing files")
+end
+
+file "earl.ttl" => %w(earl.jsonld) do
+  puts "write earl.ttl"
+  system("earl-report --json --format ttl -o earl.ttl earl.jsonld") || abort("Error writing Turtle")
+end
+
+file "index.html" => %w(template.haml earl.jsonld) do
+  puts "write index.html"
+  system("earl-report --json --format html --template template.haml -o index.html earl.jsonld") || abort("Error writing HTML")
+end

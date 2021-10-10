@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF-star -- 26 Feb 2021</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF-star" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF-star</h1>
+<h2>26 Feb 2021</h2>
+
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>pchampin, AndyS, thomas, ora, gkellogg, TallTed, olaf, gatemezing, james</dd>
+<dt>Regrets</dt>
+<dd></dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>ora</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">Review pending actions</a></li>
+<li><a href="#item02">SPARQL-star</a></li>
+<li><a href="#item03">relationship between RDF-star and Notation3</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: ora
+</p>
+
+<h3 id="item01">Review pending actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='phone'>
+<cite>phampin:</cite> Test suites
+</p>
+
+<p class='phone'>
+<cite>andys:</cite> work in progress <br>
+... we can close the action, for now
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/114">https://github.com/w3c/rdf-star/pull/114</a>
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> test suites can be difficult
+</p>
+
+<h3 id="item02">SPARQL-star</h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> outstanding pull requests and issues
+</p>
+
+<p class='phone'>
+<cite>phampin:</cite> (not too controversial, mostly)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; Subtopic: annotation syntax
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/pull/106">https://github.com/w3c/rdf-star/pull/106</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> annotation syntax
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/106.html#sparql-star-grammar">https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/106.html#sparql-star-grammar</a>
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> propose not to extend the grammar <br>
+... put a note in the spec, call it a restriction <br>
+... counterexample (example 5)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/106.html#example-5">https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/106.html#example-5</a>
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> cleaned up the grammar a bit, ready to be merged
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> there is a specific class of illegal examples, will add <br>
+... changes rendering subtly
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: merge PR 106 after gkellogg adds the specific class on example 5
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; The syntax test suite has an "bad syntax" test for the path ":p/:q" case.
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; the class name is â€œillegal-exampleâ€. I added a change note to the PR.
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution01">RESOLUTION: merge PR 106 after gkellogg adds the specific class on example 5</strong>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; SubTopic: allowing for triples in the VALUES clause
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/108">https://github.com/w3c/rdf-star/issues/108</a>
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> VALUES clause allows to bind values to variables; should extend to cover triples <br>
+... can create a pull request for this
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; Good idea.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> should we have a formal vote once the pull request is there?
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> there should be a vote for every pull request, but that can be a burden <br>
+... we can merge some time after the pull request is there, that gives folks time to comment
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> post on mailing list, leave three days to comment
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: olaf to implement the proposal in issue 108 into a PR, and merge its after 3 days if no objection
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; 1+
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; +0
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution02">RESOLUTION: olaf to implement the proposal in issue 108 into a PR, and merge its after 3 days if no objection</strong>
+</p>
+
+<p class='phone'>
+<cite>ghislain:</cite> are we allowing the use of the shortcut 'a' in the grammar? (scribe did not understand)
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/108#issuecomment-782853946">https://github.com/w3c/rdf-star/issues/108#issuecomment-782853946</a>
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> these are the parts of the grammar we propose to change
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/106.html#expand-syntax-forms">https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/106.html#expand-syntax-forms</a>
+</p>
+
+<p class='phone'>
+<cite>gatemezing:</cite> this is fine
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; SubTopic: build-in functions to (de-)construct triples
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/109">https://github.com/w3c/rdf-star/issues/109</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/27">https://github.com/w3c/rdf-star/issues/27</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> duplicate issues
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> built-in functions to allow us to access the components of a triple, and to test whether a bound value is a triple
+</p>
+
+<p class='phone'>
+(thanks gatemezing)
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> these should be like any standard built-ins
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> should using a specific namespace be cleaner?
+</p>
+
+<p class='phone'>
+(pchampin hears voices in his head ;-)
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> this is an unofficial extension, should not co-opt an existing namespace; maybe we need a RDF*/SPARQL* namespace?
+</p>
+
+<p class='phone'>
+<cite>andys:</cite> these are like keywords
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; <a href="https://www.w3.org/ns/sparql">https://www.w3.org/ns/sparql</a>#
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> symmetry argument can be made, makes sense
+</p>
+
+<p class='phone'>
+<cite>james:</cite> symmetry argument is paramount <br>
+... where will you ultimately put these, that's where they should go now
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> upper case or lower case? No clear pattern in the SPARQL spec
+</p>
+
+<p class='phone'>
+<cite>andys:</cite> they are case-insensitive <br>
+... except for "a", "true", and "false"
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> propose to create a pull request, leave it open for a couple of days for folks to comment
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: olaf to implement the proposal in issue 109 into a PR, and merge its after 3 days if no objection
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; 1+
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; 1+
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution03">RESOLUTION: olaf to implement the proposal in issue 109 into a PR, and merge its after 3 days if no objection</strong>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; SubTopic: removing the old version of the BIND operator
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; BIND(&lt;&lt;:bob ?p ?o&gt;&gt; AS ?t)
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; FYI-- 1.1 spec Grammar note 1 is about case-sensitivity
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> meaning of this is that every triple that matches has to be bound to ?t <br>
+... this is for matching, not for construction <br>
+... should this be called something else, since the standard BIND can construct
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; :bob ?p ?o . BIND(&lt;&lt;:bob ?p ?o&gt;&gt; AS ?t)
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> this would be a way to construct <br>
+... proposal is to remove this from the spec
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> asserted triples only?
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> no, any triples <br>
+... in the draft, it is now only for asserted triples, unlike in the original version <br>
+... original draft assumed PG mode
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> this is much more complex than I thought
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> implementation complexity: agreed, it can be used in both directions (find or construct)
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> the symmetry made it counter-intuitive
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> propose to remove it from the draft
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues/6#issuecomment-783305045">https://github.com/w3c/rdf-star/issues/6#issuecomment-783305045</a>
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> it would be nice to capture related use cases
+</p>
+
+<p class='phone'>
+<cite>andys:</cite> consequence of this is that we do not need the bracket syntax (?)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; bob ?p ?o . BIND(Triple(:bob, ?p, ?o) AS ?t)
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='phone'>
+<cite>andys:</cite> that would be preferable
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; bob ?p ?o . BIND(Triple(:bob, ?p, LANG(?o)) AS ?t)
+</p>
+
+<p class='phone'>
+<cite>andys:</cite> bracket syntax may be convenient, but not necessary
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; BIND(&lt;&lt;:bob a :Person&gt;&gt; AS ?t)
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> strange <br>
+... embedded triples are just terms
+</p>
+
+<p class='phone'>
+<cite>andys:</cite> this is an expression <br>
+... variables would be required to be bound <br>
+... could add it as a special case to BIND syntax, or it could be an expression that could be used anywhere
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; BIND(SUBJEC(&lt;&lt;:bob a :Person&gt;&gt;) AS ?t)
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; BIND(SUBJECT(&lt;&lt;:bob a :Person&gt;&gt;) AS ?t)
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; BIND(&lt;&lt;?s a :Person&gt;&gt; AS ?t)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; BIND("a"^^?dt AS ?t)
+</p>
+
+<p class='phone'>
+<cite>andys:</cite> move to issues
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSED: remove the old BIND (a.k.a. FIND) construct from SPARQL-star
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='phone'>
+0
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; 0
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; +0
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution04">RESOLUTION: remove the old BIND (a.k.a. FIND) construct from SPARQL-star</strong>
+</p>
+
+<a name="action01"></a>
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; <strong>ACTION:</strong> AndyS Raise new issue for the BIND(&lt;&lt;:bob a :Person&gt;&gt; AS ?t) discussions
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> the new BIND needs some more discussion
+</p>
+
+<h3 id="item03">relationship between RDF-star and Notation3</h3>
+
+<p class='phone'>
+<cite>thomas:</cite> Notation3 has formulae
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; +q
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> embedded triples would be similar? <br>
+... blank nodes?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Notation3 scopes bnodes within the formula
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; I was just going to say
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; that i'' comment on this later, because I can't typ that fast
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; anyway, the people really involved are not on the call
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; N3 semantics hasn't been decided, but atm I would say thomas's interpretation is correct with the addition of the blank node thing
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; yes yes, I know, but the deep semantics people
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; the chairs I mean
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; but nesting in RDFstar is different from citing a graph
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> it is possible to have different IRIs for the same thing <br>
+... this is what formulae enable
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> co-reference is not part of "core RDF"
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> "unique name assumption"
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; can we open a ticket on the relation w. N3? (Sorry for the mic thing)
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> let's open a ticket
+</p>
+
+<a name="action02"></a>
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <strong>ACTION:</strong> pchampin to open an issue on he relation btw N3 and RDF-star
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> this is not the appropriate semantics for embedded triples <br>
+... cf. occurrences
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; I see N3 as a strict superset of RDF-star, so whatever semantics RDF-star would influence those in N3 (IMHO)
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I may disagree
+</p>
+
+<p class='irc'>
+&lt;<cite>mielvds</cite>&gt; bye
+</p>
+
+<p class='phone'>
+bye, stay safe
+</p>
+
+<p class='irc'>
+&lt;<cite>gatemezing</cite>&gt; bye!
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; Thanks me if I have implemented them ;-)
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; bye all
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; rssagent, please leave
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+<strong>[NEW]</strong> <strong>ACTION:</strong> AndyS Raise new issue for the BIND(&lt;&lt;:bob a :Person&gt;&gt; AS ?t) discussions <br />
+<strong>[NEW]</strong> <strong>ACTION:</strong> pchampin to open an issue on he relation btw N3 and RDF-star <br />
+&nbsp;<br />
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol><li><a href="#resolution01">merge PR 106 after gkellogg adds the specific class on example 5</a></li>
+<li><a href="#resolution02">olaf to implement the proposal in issue 108 into a PR, and merge its after 3 days if no objection</a></li>
+<li><a href="#resolution03">olaf to implement the proposal in issue 109 into a PR, and merge its after 3 days if no objection</a></li>
+<li><a href="#resolution04">remove the old BIND (a.k.a. FIND) construct from SPARQL-star</a></li>
+</ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

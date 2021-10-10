@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 14 May 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>14 May 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-05-07.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021May/0051.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/05/14-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-05-21.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gkellogg, james, jbollema, olaf, ora, pchampin, rivettp, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>AndyS, olaf, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcement</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Referential opacity/transperency of embedded triples</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x022 class=irc><cite>&lt;jbollema&gt;</cite> hi</p>
+<p id=x033 class=irc><cite>&lt;ora&gt;</cite> I will not volunteer as a scribe because I know that Zakim prefers me anyway in the lottery. ;-)</p>
+</section>
+
+<section>
+<h3 id=t01>Announcement</h3>
+<p id=x041 class="phone s01"><cite>pchampin:</cite> no newcomers<br>
+<span id=x042>… and no announcements</span></p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x045 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x055 class="phone s01"><cite>pchampin:</cite> unfortunately, didn't find much time to work on open actions<br>
+<span id=x056>… about 166, deferred to today</span><br>
+<span id=x057>… 168 (charter) no progress because of work on another charter (signatures)</span><br>
+<span id=x058>… learned a lot during this process, which may come useful for working on our charter</span><br>
+<span id=x059>… action about service descriptions, no progress here either</span><br>
+<span id=x060>… we may discuss relevant IRIs to be defined</span><br>
+<span id=x061>… which means we need our own namespace</span><br>
+<span id=x062>… which may then contain all these IRIs</span><br>
+<span id=x063>… another option may be to leave this open for the potential WG to make a decision</span></p>
+<p id=x068 class="phone s02"><cite>gkellogg:</cite> we should record the issues/direction in sections now<br>
+<span id=x069>… because the start of a WG may need a long time</span><br>
+<span id=x070>… and things may become forgotten</span></p>
+<p id=x074 class="phone s03"><cite>thomas:</cite> about example &quot;has occurrence&quot; - that hasn't been discussed<br>
+<span id=x075>… better leave it out because it hasn't been discussed</span><br>
+<span id=x076>… or define a property for it because it is an important use case</span></p>
+<p id=x077 class="phone s01"><cite>pchampin:</cite> yes, defining such property may make sense</p>
+<p id=x082 class="phone s03"><cite>thomas:</cite> on the other hand, it's incomplete<br>
+<span id=x083>… because there would be no way to state where the occurrence is</span><br>
+<span id=x084>… or we may add vocabulary for that too</span></p>
+<p id=x089 class="phone s01"><cite>pchampin:</cite> makes sense, please create an issue<br>
+<span id=x090>… last action: create outstanding issues list</span><br>
+<span id=x091>… did some clean up</span><br>
+<span id=x092>… in github</span><br>
+<span id=x093>… but didn't remove any open issues in github</span></p>
+<p id=x094 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/121">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>121</a></p>
+<p id=x099 class="phone s01"><cite>pchampin:</cite> things that really need to be done before the final report: #121<br>
+<span id=x100>… Andy has text that may be included here</span><br>
+<span id=x101>… (this text is in the github issue)</span><br>
+<span id=x102>… additionally, the intro section needs to be tidied up</span><br>
+<span id=x103>… RDF-star vocab may wait</span></p>
+<p id=x105 class=irc><cite>&lt;AndyS&gt;</cite> Sounds good.</p>
+<p id=x107 class="phone s04"><cite>olaf:</cite> sounds good for me too</p>
+<p id=x109 class="phone s01"><cite>pchampin:</cite> everyone should look at the open issues in github<br>
+<span id=x110>… and see whether they find some of these important enough</span></p>
+<p id=a01 class=action><strong>Action:</strong> everyone to check in the issues if they believe one of the need to be addressed before &quot;final report&quot;</p>
+<p id=x116 class="phone s05"><cite>AndyS:</cite> merged a text in the doc<br>
+<span id=x117>… regarding comparison for SPARQL</span><br>
+<span id=x118>… that should be added</span></p>
+<p id=x122 class="phone s06"><cite>idea:</cite> define it recursively<br>
+<span id=x123>… first for S, then P, then O</span></p>
+<p id=x126 class="phone s07"><cite>jbollema:</cite> regarding #121<br>
+<span id=x127>… embedded triples should be last in the comparison order</span><br>
+<span id=x128>… because it allows for a slight optimization if the data is organized in a specific way</span></p>
+<p id=x130 class=irc><cite>&lt;AndyS&gt;</cite> Assign it to me.</p>
+<p id=a02 class=action><strong>Action:</strong> AndyS to make a PR for issue 121</p>
+<p id=x135 class="phone s08"><cite>james:</cite> symmetry should not be applied<br>
+<span id=x136>… (#121)</span></p>
+<p id=x137 class=irc><cite>&lt;rivettp&gt;</cite> question: regarding action 1, HOW should we indicate issues that we think should be addressed?</p>
+<p id=x139 class="phone s05"><cite>AndyS:</cite> think james misread<br>
+<span id=x140>… sameTerms is equals but not the other way around</span></p>
+<p id=x141 class="phone s08"><cite>james:</cite> will review it again</p>
+<p id=x143 class="phone s01"><cite>pchampin:</cite> the PR will be subject to review as well, of course</p>
+<p id=x144 class="phone s01"><cite>pchampin:</cite> anything else?</p>
+<p id=x146 class="phone s01"><cite>pchampin:</cite> none</p>
+<p id=x147 class=irc><cite>&lt;AndyS&gt;</cite> james - [[ &quot;A = B&quot; is defaults to &quot;sameTerm(A,B)&quot; as it does for URIs. ]] is only stating SPARQL normal for &quot;=&quot;. Can you suggest better text?</p>
+</section>
+
+<section>
+<h3 id=t03>Referential opacity/transperency of embedded triples</h3>
+<p id=x151 class="phone s03"><cite>thomas:</cite> wrote some emails<br>
+<span id=x152>… hope everyone read them</span><br>
+<span id=x153>… 5 sec summary may be difficult</span></p>
+<p id=x159 class="phone s01"><cite>pchampin:</cite> stepped back<br>
+<span id=x160>… this group is not an official WG</span><br>
+<span id=x161>… acting as a chair and editor is tricky here</span><br>
+<span id=x162>… became less convinced about the current solution</span><br>
+<span id=x163>… although it is still the best option on the table</span><br>
+<span id=x164>… it's not constructive to repeat arguments again and again</span></p>
+<p id=x170 class="phone s09"><cite>pchamin:</cite> disappointed that the 2nd strawpoll attracted little participation<br>
+<span id=x171>… didn't want to seem biased by invoking a 6-months old strawpoll as an argument</span><br>
+<span id=x172>… unfortunately, the new strawpoll has muddied the waters more than cleared it</span></p>
+<p id=x173 class="phone s03"><cite>thomas:</cite> strawpoll is not binding, right?</p>
+<p id=x174 class="phone s01"><cite>pchampin:</cite> right - we are not a WG</p>
+<p id=x183 class="phone s04"><cite>olaf:</cite> I didn't manage to read the long email, unfortunately.<br>
+<span id=x184>… I skimmed it. I am not totally agains moving towards a transparent semantics.</span><br>
+<span id=x185>… But I consider the opaque semantics as a better building block.</span><br>
+<span id=x186>… It allows to add &quot;local transparecy&quot; for dedicated properties.</span><br>
+<span id=x187>… I can't see how it could work the other way.</span><br>
+<span id=x188>… You were not convinced by my arguments; that might have been because I was targetting James' question.</span><br>
+<span id=x189>… It was modelled with SPARQL, but can be modelled otherwise.</span></p>
+<p id=x193 class="phone s03"><cite>thomas:</cite> strong feeling against attaching it to specific properties.<br>
+<span id=x194>… This is not how the semantic web works at the moment.</span><br>
+<span id=x195>… I understand that SPARQL is not the issue here, but I still find this solution too complex.</span><br>
+<span id=x196>… It is not how people use RDF.</span></p>
+<p id=x197 class="phone s04"><cite>olaf:</cite> I would like to see more concrete use cases which you think might not be possible.</p>
+<p id=x202 class="phone s03"><cite>thomas:</cite> everything does not work. This is not the way RDF-star is adverstised.<br>
+<span id=x203>… The SemWeb works in a transparent way. You can replace an identifier with another one.</span><br>
+<span id=x204>… Switching in the middle of a sentence from transparency to opacity is confusing.</span><br>
+<span id=x205>… Better to separate concerns, as proposed by Antoine Zimmermann: using literals for opacity.</span></p>
+<p id=x207 class="phone s04"><cite>olaf:</cite> you are making strong claims about how people use the Semantic Web.<br>
+<span id=x208>… If someone says that A owl:sameAs B, you don't have to accept it.</span></p>
+<p id=x212 class="phone s02"><cite>gkellogg:</cite> I out of my depth on this discussion.</p>
+<p id=x214 class="phone s02"><cite>gkellogg:</cite> Peter had reasonable examples in his email<br>
+<span id=x215>… such as the one about the Berlin population</span></p>
+<p id=x219 class="phone s01"><cite>pchampin:</cite> the problem is related; Peter's example shows something that can be confusing<br>
+<span id=x220>… and we need to address that</span></p>
+<p id=x228 class="phone s05"><cite>AndyS:</cite> Peter's example highlights difference between denotation and entailment<br>
+<span id=x229>… choice what to apply are local</span><br>
+<span id=x230>… entailment is about adding extra believes</span><br>
+<span id=x231>… local ontology comes into play</span><br>
+<span id=x232>… Peter argues from a syntax point of view</span><br>
+<span id=x233>… Also, it uses D-entailment</span></p>
+<p id=x235 class=summary>it uses the intuition that this entailment regime is usually considered as globally agreed upon<br>
+<span id=x236>… which is different from other entailment regimes</span></p>
+<p id=x243 class="phone s07"><cite>jbollema:</cite> my understanding of opacity ...<br>
+<span id=x244>… it is not permissive</span><br>
+<span id=x245>… because a query engine must not use owl:sameAs for embedded triples</span></p>
+<p id=x246 class=irc><cite>&lt;pchampin&gt;</cite> transparency is not &quot;allowing&quot;, it is &quot;mandating&quot;</p>
+<p id=x250 class="phone s07"><cite>jbollema:</cite> second part, having to preserve syntactic form of embedded triples<br>
+<span id=x251>… maybe a practical issue for systems</span><br>
+<span id=x252>… it may prevent practical optimizations</span></p>
+<p id=x256 class="phone s05"><cite>AndyS:</cite> that#s what I mentioned in my message<br>
+<span id=x257>… what you do locally is up to you</span><br>
+<span id=x258>… the issue is that the reverse is not possible</span></p>
+<p id=x265 class="phone s01"><cite>pchampin:</cite> to Jerven's question ...<br>
+<span id=x266>… semantic transparency is not just allowing it but mandating it</span><br>
+<span id=x267>… that's &quot;killing&quot; some use cases</span><br>
+<span id=x268>… e.g., provenance</span><br>
+<span id=x269>… opacity is not as restrictive</span><br>
+<span id=x270>… some things may require additional machinary</span><br>
+<span id=x271>… but that's the same in RDF</span></p>
+<p id=x272 class="phone s03"><cite>thomas:</cite> that's a bad argument because we are not caring only about RDF</p>
+<p id=x274 class="phone s01"><cite>pchampin:</cite> saying that this breaks the SemWeb doesn't make sense either</p>
+<p id=x276 class="phone s03"><cite>thomas:</cite> I think I explained in my emails what exactly is breaking the SemWeb<br>
+<span id=x277>… it is a feature if you can rely on what you get form something else</span></p>
+<p id=x278 class="phone s01"><cite>pchampin:</cite> yes but you can add</p>
+<p id=x279 class="phone s03"><cite>thomas:</cite> that#s dangerous</p>
+<p id=x280 class=irc><cite>&lt;jbollema&gt;</cite> they are dangeling in sparql query behaviour</p>
+<p id=x282 class="phone s03"><cite>thomas:</cite> provenance example ship1 versus ship2</p>
+<p id=x285 class=irc><cite>&lt;jbollema&gt;</cite> &lt;&lt; :a :b :c &gt;&gt; ?x ?y  would not be found &lt;&lt; :d :b :c &gt;&gt; ?x ?y . even if :a owl:sameAs :d was added to the graph and reasoned about</p>
+<p id=x287 class="phone s05"><cite>AndyS:</cite> You make strong statements<br>
+<span id=x288>… entailment is local but denotation is global</span></p>
+<p id=x292 class="phone s03"><cite>thomas:</cite> asking pchampin for the distinction between syntax and interpretation<br>
+<span id=x293>… the problem wouldn't exist if we had an explicit identifier for the embedded triple</span></p>
+<p id=x297 class="phone s01"><cite>pchampin:</cite> it really depends on what you want to identify with an embedded triple -- a triple or a statement<br>
+<span id=x298>… the triple itself is closer to the syntax and allows for more use cases</span></p>
+<p id=x301 class="phone s10"><cite>william:</cite> in N3 we have formulas which have ref.opacity<br>
+<span id=x302>… for quoted graphs</span><br>
+<span id=x303>… the reasons for choosing it this way is because it allows to add more things on top</span></p>
+<p id=x304 class=irc><cite>&lt;thomas&gt;</cite> but its a different use case</p>
+<p id=x305 class="phone s10"><cite>william:</cite> in contrast to having ref.transparency</p>
+<p id=x306 class=irc><cite>&lt;thomas&gt;</cite> because they stand for themselves</p>
+<p id=x307 class="phone s10"><cite>william:</cite> interpretation of cited formula may differ</p>
+<p id=x308 class=irc><cite>&lt;gkellogg&gt;</cite> Thatâ€™s a pretty convincing argument for defaul opacity.</p>
+<p id=x309 class="phone s10"><cite>william:</cite> ref.opacity is the building block that allows for this</p>
+<p id=x310 class="phone s11"><cite>STRAWPOLL:</cite> do we keep a referential opacity?</p>
+<p id=x311 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x312 class=irc><cite>&lt;william&gt;</cite> +1</p>
+<p id=x313 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x315 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x316 class=irc><cite>&lt;thomas&gt;</cite> -1</p>
+<p id=x317 class=irc><cite>&lt;AndyS&gt;</cite> +0.9</p>
+<p id=x318 class=irc><cite>&lt;james&gt;</cite> -1</p>
+<p id=x319 class=irc><cite>&lt;ora&gt;</cite> 0</p>
+<p id=x320 class=irc><cite>&lt;TallTed&gt;</cite> +0.5</p>
+<p id=x322 class=irc><cite>&lt;jbollema&gt;</cite> -1</p>
+<p id=x323 class=irc><cite>&lt;william&gt;</cite> for those who are interested: <a href="http://ceur-ws.org/Vol-2438/paper6.pdf">http://<wbr>ceur-ws.org/<wbr>Vol-2438/<wbr>paper6.pdf</a></p>
+<p id=x326 class="phone s01"><cite>pchampin:</cite> still hardly a consensus ... unfortunately<br>
+<span id=x327>… we have to reflect this lack of consensus in the document</span></p>
+<p id=x328 class=irc><cite>&lt;ora&gt;</cite> Good discussion</p>
+<p id=x329 class="phone s01"><cite>pchampin:</cite> other item on the agenda (mimetypes as propsoed by James') postponed to next week</p>
+<p id=x330 class=irc><cite>&lt;william&gt;</cite> thanks!</p>
+<p id=x331 class=irc><cite>&lt;jbollema&gt;</cite> bye</p>
+<p id=x332 class=summary>Bye!</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">everyone to check in the issues if they believe one of the need to be addressed before &quot;final report&quot;</a></li>
+<li><a href="#a02">AndyS to make a PR for issue 121</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

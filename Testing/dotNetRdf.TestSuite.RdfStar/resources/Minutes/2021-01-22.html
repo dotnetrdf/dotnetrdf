@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF-Star * -- 22 Jan 2021</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF-Star *" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF-Star *</h1>
+<h2>22 Jan 2021</h2>
+
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>AndyS, rivettp, pchampin, gkellogg, olaf, pfps, TallTed</dd>
+<dt>Regrets</dt>
+<dd></dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>olaf</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">pending actions</a></li>
+<li><a href="#item02">N-Triples*: call for volunteers</a></li>
+<li><a href="#item03">Continue last week's interrupted discussion on Syntactic Sugar / Mime types</a></li>
+<li><a href="#item04">Discuss the new semantics proposal</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; I have to drop at 15 past, because of a family commitment.
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; Also, I volunteer to scribe in our next meeting. Perhaps I will be sufficiently "
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; "up to speed" to do a decent job. ;-)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; scribe: olaf
+</p>
+
+<h3 id="item01">pending actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Jan/0065.html">https://lists.w3.org/Archives/Public/public-rdf-star/2021Jan/0065.html</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> actions can be closed <br>
+... test suite <br>
+... only missing item is about SPARQL* syntax <br>
+... this may be left open for the moment
+</p>
+
+<h3 id="item02">N-Triples*: call for volunteers</h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> no spec test for N-Triples* <br>
+... however, we are using this syntax already in the test suites <br>
+... anyone interested in writing/drafting this part of the spec? <br>
+... please chime in on the github issue <br>
+... shouldn't be too difficult to write that
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; ack: gkellogg
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> the parsing may be more difficult b/c it has to recursive <br>
+... gkellogg: can write it <br>
+... don't think the recursion makes it difficult <br>
+... what will be harder will be to extend this for quads
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://www.w3.org/TR/n-triples/#h2_sec-parsing">https://www.w3.org/TR/n-triples/#h2_sec-parsing</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> there is already something about triple construction
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> NTriples grammar is just text <br>
+... so the task is to simply copy the right pieces from that
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> we need a separate discussion for NQuads
+</p>
+
+<a name="action01"></a>
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; <strong>ACTION:</strong> gkellogg to contribute N-Trnples* section
+</p>
+
+<h3 id="item03">Continue last week's interrupted discussion on Syntactic Sugar / Mime types</h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> discussion last week started about syntactic sguar <br>
+... then it moved on to mime types <br>
+... (do we need to extend them / new ones) <br>
+... any more comments on this now?
+</p>
+
+<p class='phone'>
+<cite>ora:</cite> want to confirm, is there an impliciation that there may be docs that are Turtle* but <br>
+... do not use any of the new RDF* features?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> yes
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> does not work
+</p>
+
+<p class='phone'>
+<cite>ora:</cite> ACCEPT header may come into play in a client-server setting?
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> yes, but then the server has to change its current behavior <br>
+... whole result needs to be inspected before responding to ACCEPT <br>
+... tried to find definitive text on mime types <br>
+... couldn't find <br>
+... some examples in which the syntax has changed but the mime type did not <br>
+... XML <br>
+... it's difficult to change mime types <br>
+... old counterexample is Turtle itself
+</p>
+
+<p class='irc'>
+&lt;<cite>ora</cite>&gt; (Unfortunately I have to drop. Bummer, interesting conversation.) :-(
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> and SPARQL <br>
+... for these no change of mime type but the specs changed/evolved
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> raised examples of HTML and ?? <br>
+... it would be an exception to make an incompatible change and then change the mime type
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; HTML is not a good example IMO, because browser have a history of "accepting" invalid HTML anyway
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> we are not authorized the spec for Turtle <br>
+... so, reference for text/turtle would still be to the Turtle doc <br>
+... proposal to extend the mime type <br>
+... difficult to find examples of groups who have done something like this
+</p>
+
+<p class='phone'>
+<cite>james:</cite> would take Turtle and NTriples as example <br>
+... if a client says it understand Turtle <br>
+... would not return something that the client cannot understand
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> danger of locking out old clients
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> how was the transition for SPARQL?
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> took years to happen <br>
+... for SPARQL 1.1, SPARQL 1.0 works <br>
+... still systems out there that only speak RDF 1.0 <br>
+... semantics are different <br>
+... different triples may come out by parsing the same doc
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> to james' concern, I agree <br>
+... not comfortable for the server to break the contrast <br>
+... contract <br>
+... but maybe we are overinterpreting mime type as a strong contract
+</p>
+
+<p class='phone'>
+<cite>james:</cite> how else to interpret it? <br>
+... 500 error should be return
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> a robust client should read the whole doc in <br>
+... before passing it on to the application software
+</p>
+
+<p class='phone'>
+<cite>james:</cite> okay, but what's the effect of this on the contract?
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> our group cannot change the mimetype
+</p>
+
+<p class='phone'>
+<cite>james:</cite> if you have a process in which the client has given ACCEPT with SPARQL with SELECT <br>
+... but then sends a CONSTRUCT query
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> correct answer is you do not have to respect ACCEPT field <br>
+... server may still send back something in a different format <br>
+... no evidence in the doc about mimetypes that a change of the mimetypes is necessary <br>
+... what about */*?
+</p>
+
+<p class='phone'>
+<cite>james:</cite> in this case, the server can elect
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> but then the server has to cache the whole response to figure out the media type before responding
+</p>
+
+<p class='phone'>
+<cite>james:</cite> agrees with greg's suggestion to have a profile
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> but then the client has to be aware <br>
+... that the profile may break the content
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> cannot do that because profiles are subset not supersets <br>
+... instead , parameter is needed
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> requiring a parameter is a way to solve james' concern
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> parameters are not part of the registration <br>
+... profiles are
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: keep the old content-types, but augment them with a profile or parameter to make it explicit that the content MAY contain RDF*-specific features
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; "MAY augment"
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: keep the old content-types, but provide a way to augment them with a profile or parameter to make it explicit that the content MAY contain RDF*-specific features
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='phone'>
++0
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; -1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +0.5
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +0.5  seems like the minimum possible
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +0
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> as long as this is just a CG, I feel bad about changing Turtle and not being explicit about it <br>
+... publishing something as Turtle but that is not actually (pure) Turtle is not a good idea
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; all old Turtle is also new Turtle-star, but some new Turtle-star is not also old Turtle
+</p>
+
+<h3 id="item04">Discuss the new semantics proposal</h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> things are moving on the front of the new proposed semantics <br>
+... it build on the RDF semantics <br>
+... in current proposal the semantic of embedded triples is rigid and close to literals <br>
+... difference between literals and IRIs is that literals are constraint to mean the same in all possible interpretations <br>
+... their meaning is defined by the datatype <br>
+... embedded triples in the current semantics are a bit like that <br>
+... i.e., their meaning is the same in all possible interpretation <br>
+... their meaning is essentially the triples themselves <br>
+... Are we okay with embedded triples acting as something like a literal?
+</p>
+
+<p class='irc'>
+&lt;<cite>thomas</cite>&gt; is this a strawpoll?
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> discomfort with triples as literals is that <br>
+... this adds lots of additional machinary that's not necessary
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> understands the reluctance to add machinery <br>
+... to be clear, it's not a datatype
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> in contrast, there is a new datatype
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> but this datatype is not for triples
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> it is a hidden datatype <br>
+... and hidden predicates
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> if we didn't want to have bnodes inside embedded triples, <br>
+... (i.e., only ground emb. triples), then <br>
+... things would be much easier. <br>
+... however, the emb.triples have an internal structure <br>
+... that we want to preserve in some wa&lt; <br>
+... way
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> yet, is this extra stuff necessary?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> what cannot be ensured otherwise is that <br>
+... emb.triples with different, say, subject are different things.
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> where is that in the things that are written down? <br>
+... have to stop adding desiderata at some point
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> just trying to explain <br>
+... didn't want to sound like it must be like that
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: should &lt;&lt; :s :p :o &gt;&gt; and &lt;&lt; :s2 :p :o &gt;&gt; always denote different things?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> question to others ...strawpoll
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> do not understand the question
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; FYI: Stardog has an opinion in this area.
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; do :s and :s2 denote different things
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; If they always do, then how can extensions make them the same thing if :s and :s2 are the same?
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> problem with the semantics, it is so specific <br>
+... specific to special problem
+</p>
+
+<p class='irc'>
+&lt;<cite>Zakim</cite>&gt; TallTed, you wanted to say Embedded-triples-as-subjects can't be simple literals, because literals aren't allowed as subjects in RDF. At minimum, they have to be treated as
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> it's not for the use cases that people will use it for
+</p>
+
+<p class='phone'>
+<cite>TallTed:</cite> emb.triples cannot be literals <br>
+... would have to be treated as synt.sugar for single-triple named graphs <br>
+... and special treatment needed because things may not be meant to be asserted
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> reification is just one way to go about adding statements about statements
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> there were very long discussions about reification in the RDF WG
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> we can have a different semantics for embedded triples <br>
+... how to get from the ref.opacity to ref.transparency <br>
+... why go from a mainstream semantics to a specific one?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> why don't you go to standard reification if you want ref.transparency?
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> the proposed semantic have nothing to do with reification
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; There seem to be conflicting beliefs about what "everyone" wants to get from RDF-star.  It might be worthwhile to open a large-scale poll on just that -- is it somehow easier/better reification/annotation; is it a bridge between RDF Graphs and Property Graphs; is it something else?
+</p>
+
+<p class='phone'>
+<cite>thomas:</cite> doesn't make sense as a general solution
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> thanks for the lively discussion
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; It is possible to get referential opacity by adding extra properties to standard reification.  Then RDF* is just sugar for five (or so) triples.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> better understand the arguments of people
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+<strong>[NEW]</strong> <strong>ACTION:</strong> gkellogg to contribute N-Trnples* section <br />
+&nbsp;<br />
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol></ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

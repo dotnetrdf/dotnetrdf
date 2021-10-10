@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 9 April 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>9 April 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-03-26.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Apr/0002.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/04/09-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-04-23.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gkellogg, james, ora, pchampin, rivettp, TallTed</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>ora, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">publishing a new draft</a></li>
+<li><a href="#t04">RDF-star and dataset canonicalization</a></li>
+<li><a href="#t05">open-ended discussion</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x027 class=summary>new member: Julián</p>
+<p id=x028 class="phone s01"><cite>pchampin:</cite> I will take some time off next week, will not be on next call</p>
+<p id=x029 class="phone s01"><cite>pchampin:</cite> who will be the chair?</p>
+<p id=x030 class="phone s01"><cite>pchampin:</cite> propose we skip next week</p>
+<p id=x032 class="phone s01"><cite>pchampin:</cite> new pull request from gkellogg</p>
+<p id=x034 class="phone s01"><cite>pchampin:</cite> Trig-star</p>
+<p id=x037 class="phone s02"><cite>gkellogg:</cite> still some questions to be worked out</p>
+<p id=x038 class="phone s02"><cite>gkellogg:</cite> e.g., ordering</p>
+<p id=x039 class="phone s01"><cite>pchampin:</cite> examples in abstract syntax is a good idea</p>
+<p id=x040 class="phone s03"><cite>andys:</cite> prefer Turtle* first</p>
+<p id=x042 class="phone s02"><cite>gkellogg:</cite> will do a PR for ordering</p>
+<p id=a01 class=action><strong>Action:</strong> gkellogg to reorder the concrete sections: Turtle-star, TriG-star, N-Triples-star, N-Quads-star</p>
+<p id=x047 class=irc><cite>&lt;Zakim&gt;</cite> AndyS, you wanted to say that there is a TriX-star implementation (!!)</p>
+<p id=x048 class="phone s03"><cite>andys:</cite> I did a TriX-star implementation, for no reason whatsoever</p>
+<p id=x052 class=irc><cite>&lt;gkellogg&gt;</cite> I updated my TriX implementation too :)</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x054 class="phone s01"><cite>pchampin:</cite> no open actions</p>
+</section>
+
+<section>
+<h3 id=t03>publishing a new draft</h3>
+<p id=x056 class=irc><cite>&lt;AndyS&gt;</cite> The 2nd draft discussion -- <a href="https://w3c.github.io/rdf-star/Minutes/2021-03-19.html#t04">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>Minutes/<wbr>2021-03-19.html#t04</a></p>
+<p id=x057 class="phone s01"><cite>pchampin:</cite> canonicalization will probably not make it to the next draft</p>
+<p id=x058 class="phone s01"><cite>pchampin:</cite> we discussed that a new draft sooner rather than later would be a good thing</p>
+<p id=x059 class="phone s01"><cite>pchampin:</cite> publish often and early</p>
+<p id=x060 class="phone s01"><cite>pchampin:</cite> some things are pending...</p>
+<p id=x061 class="phone s01"><cite>pchampin:</cite> 5 PRs</p>
+<p id=x062 class="phone s01"><cite>pchampin:</cite> some have no impact on the draft</p>
+<p id=x063 class="phone s01"><cite>pchampin:</cite> test suite</p>
+<p id=x064 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/149">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>149</a></p>
+<p id=x065 class="phone s01"><cite>pchampin:</cite> does not stop us from publishing</p>
+<p id=x067 class=summary>(audio weirdness, did not capture everything...)</p>
+<p id=x068 class=summary>now fine again...</p>
+<p id=x069 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/129">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>129</a></p>
+<p id=x070 class="phone s01"><cite>pchampin:</cite> long standing PR: clarification of SPARQL functions</p>
+<p id=x071 class="phone s04"><cite>james:</cite> that's what I wanted to add</p>
+<p id=x072 class="phone s01"><cite>pchampin:</cite> olaf wanted to remove some examples</p>
+<p id=x073 class="phone s01"><cite>pchampin:</cite> recommend merging anyway</p>
+<p id=x075 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/155">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>155</a></p>
+<p id=x076 class="phone s01"><cite>pchampin:</cite> recent PR: extending the overview with examples using annotation syntax</p>
+<p id=x077 class="phone s01"><cite>pchampin:</cite> propose we leave a few days for people to react, merge next week</p>
+<p id=x078 class="phone s01"><cite>pchampin:</cite> after these merges we should publish</p>
+<p id=x079 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: merge PR 129 and 155 after a few days, and then release next public draft</p>
+<p id=x080 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x081 class=irc><cite>&lt;william&gt;</cite> +1</p>
+<p id=x082 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x083 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x084 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x085 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x086 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x087 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x089 class=irc><cite>&lt;Julian&gt;</cite> +1</p>
+<p id=x090 class="phone s01"><cite>pchampin:</cite> reminding we are not a formal group, wrt. voting</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> merge PR 129 and 155 after a few days, and then release next public draft</p>
+<p id=x093 class="phone s03"><cite>andys:</cite> what is the most pressing issue to close?</p>
+<p id=x094 class="phone s01"><cite>pchampin:</cite> I will be back the week after next</p>
+<p id=x095 class="phone s01"><cite>pchampin:</cite> several active issues</p>
+<p id=x096 class="phone s01"><cite>pchampin:</cite> we are in pretty good shape overall</p>
+<p id=x097 class="phone s01"><cite>pchampin:</cite> but still: introducing a new IRI</p>
+<p id=x098 class="phone s01"><cite>pchampin:</cite> mime-type</p>
+<p id=x099 class="phone s01"><cite>pchampin:</cite> do we want to include something about SHACL, possible SHEX?</p>
+<p id=x100 class="phone s03"><cite>andys:</cite> I think no need to do that</p>
+<p id=x101 class="phone s03"><cite>andys:</cite> once there is a CG report (our target), then the SHACL group can react</p>
+<p id=x102 class="phone s03"><cite>andys:</cite> similarly for SHEX</p>
+<p id=x103 class="phone s02"><cite>gkellogg:</cite> we did not address JSON-LD either</p>
+<p id=x104 class="phone s03"><cite>andys:</cite> label open issues as &quot;discussion items&quot;...?</p>
+<p id=x105 class="phone s01"><cite>pchampin:</cite> Notation3, semantics (at least) belong there</p>
+<p id=x106 class=irc><cite>&lt;pchampin&gt;</cite> STRAWPOLL: we won't include anything in our report about SHACL not SHEX</p>
+<p id=x107 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x108 class=irc><cite>&lt;william&gt;</cite> +0</p>
+<p id=x109 class=irc><cite>&lt;james&gt;</cite> +1</p>
+<p id=x110 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x112 class=irc><cite>&lt;AndyS&gt;</cite> +1 (better to come from those communities)</p>
+<p id=x113 class=irc><cite>&lt;Julian&gt;</cite> +1</p>
+<p id=x114 class=irc><cite>&lt;rivettp&gt;</cite> I think we should at least mention SHACL and OWL with an outline of possible impact</p>
+<p id=x115 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x116 class=irc><cite>&lt;rivettp&gt;</cite> -1</p>
+<p id=x117 class="phone s01"><cite>pchampin:</cite> I did not mean to not mention at all</p>
+<p id=x118 class="phone s01"><cite>pchampin:</cite> the idea is not to ignore, we can give some &quot;leads&quot;</p>
+<p id=x119 class="phone s05"><cite>rivettp:</cite> should be fine</p>
+<p id=x120 class=irc><cite>&lt;AndyS&gt;</cite> FYI: OWL-star  <a href="https://w3c.github.io/rdf-star/UCR/rdf-star-ucr.html#compact-serialization-of-owl-graphs">https://<wbr>w3c.github.io/<wbr>rdf-star/<wbr>UCR/<wbr>rdf-star-ucr.html#compact-serialization-of-owl-graphs</a>  -- from <a href="https://github.com/w3c/rdf-star/issues/148">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>148</a></p>
+<p id=x121 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x122 class="phone s01"><cite>pchampin:</cite> next public draft is very close to a final report</p>
+<p id=x124 class="phone s01"><cite>pchampin:</cite> editorial changes notwithstanding</p>
+</section>
+
+<section>
+<h3 id=t04>RDF-star and dataset canonicalization</h3>
+<p id=x127 class="phone s01"><cite>pchampin:</cite> this was raised by gkellogg</p>
+<p id=x128 class="phone s01"><cite>pchampin:</cite> there is a W3C WG charter proposed, linked data signature</p>
+<p id=x129 class="phone s01"><cite>pchampin:</cite> standard way of signing RDF datasets</p>
+<p id=x130 class="phone s01"><cite>pchampin:</cite> hence canonicalization</p>
+<p id=x131 class="phone s01"><cite>pchampin:</cite> question was raised about RDF* during preparation</p>
+<p id=x132 class="phone s01"><cite>pchampin:</cite> RDF-star included in the proposed charter</p>
+<p id=x134 class="phone s01"><cite>pchampin:</cite> understanding that RDF-star will not be a Rec by then</p>
+<p id=x135 class=summary>(thank you AndyS)</p>
+<p id=x136 class="phone s01"><cite>pchampin:</cite> dataset defined in terms of triples, nothing about embedded triples</p>
+<p id=x137 class="phone s01"><cite>pchampin:</cite> clarification is needed</p>
+<p id=x138 class="phone s02"><cite>gkellogg:</cite> canonicalization is challenging (math proofs), extending to RDF-star could be problematic</p>
+<p id=x139 class="phone s02"><cite>gkellogg:</cite> RDF-star dataset transformed to RDF dataset could be signed</p>
+<p id=x140 class="phone s02"><cite>gkellogg:</cite> but now we would have two versions of the same</p>
+<p id=x141 class="phone s02"><cite>gkellogg:</cite> let's not use language that restricts our work too much</p>
+<p id=x143 class="phone s03"><cite>andys:</cite> how about a short section about principles (embedded triples, etc.), any future work on RDF will need to deal with these</p>
+<p id=x144 class="phone s03"><cite>andys:</cite> that is, set requirements rather than offering solutions</p>
+<p id=x145 class="phone s02"><cite>gkellogg:</cite> they may not heed any of that</p>
+<p id=x146 class="phone s02"><cite>gkellogg:</cite> solution may involve introduction of a new vocabulary</p>
+<p id=x147 class="phone s02"><cite>gkellogg:</cite> make it possible to do a reverse transformation</p>
+<p id=x148 class="phone s03"><cite>andys:</cite> RDF-star system understand embedded triples natively, this may be a problem</p>
+<p id=x149 class="phone s01"><cite>pchampin:</cite> hidden IRIs...</p>
+<p id=x150 class="phone s03"><cite>andys:</cite> my point was that they are not isomorphic</p>
+<p id=x151 class="phone s02"><cite>gkellogg:</cite> canonical does not have to imply isomorphic</p>
+<p id=x152 class="phone s03"><cite>andys:</cite> what if two different things have the same canonicalization, because we missed something?</p>
+<p id=x153 class="phone s03"><cite>andys:</cite> you may need to know that something was originally RDF-star</p>
+<p id=x154 class=irc><cite>&lt;gkellogg&gt;</cite> Link to RDF C14N draft: <a href="https://json-ld.github.io/rdf-dataset-canonicalization/spec/">https://<wbr>json-ld.github.io/<wbr>rdf-dataset-canonicalization/<wbr>spec/</a></p>
+<p id=x155 class="phone s01"><cite>pchampin:</cite> introduce reification predicates only for this purpose?</p>
+<p id=x156 class="phone s01"><cite>pchampin:</cite> an RDF graph using these would be identified as coming from RDF-star</p>
+<p id=x157 class="phone s02"><cite>gkellogg:</cite> canonicalization algorithm should introduce extensible steps [?]</p>
+<p id=x158 class="phone s02"><cite>gkellogg:</cite> it is not our job to solve this, but make it possible for future groups to solve it</p>
+<p id=x159 class="phone s02"><cite>gkellogg:</cite> this is not simple to implement</p>
+<p id=x160 class="phone s02"><cite>gkellogg:</cite> math proof is required, changing the algorithm would invalidate the proof</p>
+<p id=x161 class="phone s03"><cite>andys:</cite> IRI spec explains how to turn an IRI into a URI</p>
+<p id=x162 class="phone s01"><cite>pchampin:</cite> what do we do after publishing the 2nd draft?</p>
+<p id=x163 class="phone s03"><cite>andys:</cite> mention it in the charter...</p>
+<p id=x164 class="phone s03"><cite>andys:</cite> we will not be recommending changes to the algorithm</p>
+<p id=x165 class="phone s02"><cite>gkellogg:</cite> similar to n3 and lists</p>
+<p id=x166 class="phone s01"><cite>pchampin:</cite> we will liaise at some point</p>
+<p id=x167 class="phone s01"><cite>pchampin:</cite> not much more we can do</p>
+<p id=x168 class="phone s01"><cite>pchampin:</cite> no time to discuss media type this time</p>
+</section>
+
+<section>
+<h3 id=t05>open-ended discussion</h3>
+<p id=x171 class="phone s02"><cite>gkellogg:</cite> namespace for hidden triples?</p>
+<p id=x172 class="phone s01"><cite>pchampin:</cite> type for hidden triples?</p>
+<p id=x173 class="phone s03"><cite>andys:</cite> new extension namespace for all groups to use</p>
+<p id=x174 class="phone s03"><cite>andys:</cite> &quot;rdfx&quot;</p>
+<p id=x175 class="phone s01"><cite>pchampin:</cite> temporary use?</p>
+<p id=x176 class="phone s03"><cite>andys:</cite> that is the idea, but reality may be different</p>
+<p id=x177 class="phone s03"><cite>andys:</cite> creating things is easy, getting rid of them not so much</p>
+<p id=x178 class="phone s01"><cite>pchampin:</cite> we could create a temporary RDF-star namespace, just as easy to fix (or not)</p>
+<p id=x180 class="phone s01"><cite>pchampin:</cite> put a time extent on these</p>
+<p id=x181 class=irc><cite>&lt;AndyS&gt;</cite> e.g. <a href="https://w3.org/ns/rdfx">https://<wbr>w3.org/<wbr>ns/<wbr>rdfx</a></p>
+<p id=x182 class="phone s03"><cite>andys:</cite> what's under &quot;ns&quot; at W3C?</p>
+<p id=x188 class="phone s06"><cite>ora:</cite> I don't understand the need for that NS<br>
+<span id=x189>… namespaces are cheap</span><br>
+<span id=x190>… the essential thing is that they must be unique</span><br>
+<span id=x191>… This notion of shared namespace is a misuse of the concept.</span><br>
+<span id=x192>… It may create clashed, which namespaces were invented to prevent.</span></p>
+<p id=x193 class=irc><cite>&lt;rivettp&gt;</cite> I think rdf namespaces are a mess because we have too many - people don't know when to use rdfs vs rdf</p>
+<p id=x194 class=irc><cite>&lt;william&gt;</cite> yes, indeed</p>
+<p id=x197 class="phone s02"><cite>gkellogg:</cite> there is a difference between something that is eventually meant for, say, the RDF namespace, as opposed to something that remains separate</p>
+<p id=x199 class=irc><cite>&lt;william&gt;</cite> thanks!</p>
+<p id=x200 class=irc><cite>&lt;gkellogg&gt;</cite> We need a CG to discuss transitional IRIs :)</p>
+<p id=x201 class=summary>bye</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">gkellogg to reorder the concrete sections: Turtle-star, TriG-star, N-Triples-star, N-Quads-star</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">merge PR 129 and 155 after a few days, and then release next public draft</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>RDF-star -- 12 Feb 2021</title>
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/base.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/StyleSheets/public.css">
+  <link type="text/css" rel="STYLESHEET" href="https://www.w3.org/2004/02/minutes-style.css">
+  <meta content="RDF-star" name="Title">  
+  <meta charset="utf-8">
+</head>
+
+<body>
+<p><a href="http://www.w3.org/"><img src="https://www.w3.org/Icons/w3c_home" alt="W3C" border="0"
+height="48" width="72"></a> 
+</p>
+
+
+<h1>RDF-star</h1>
+<h2>12 Feb 2021</h2>
+
+
+
+
+
+<h2><a name="attendees">Attendees</a></h2>
+
+<div class="intro">
+<dl>
+<dt>Present</dt>
+<dd>pchampin, AndyS, gkellogg, TallTed, gatemezing, olaf, thomas, rivettp_, pfps, (browser, crashed), twomas</dd>
+<dt>Regrets</dt>
+<dd></dd>
+<dt>Chair</dt>
+<dd>pchampin </dd>
+<dt>Scribe</dt>
+<dd>@gatemezing</dd>
+</dl>
+</div>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#agenda">Topics</a>
+	<ol>
+	<li><a href="#item01">pending actions</a></li>
+<li><a href="#item02">Discuss the new PR for semantics</a></li>
+<li><a href="#item03">publishing first draft</a></li>
+
+	</ol>
+  </li>
+  <li><a href="#ActionSummary">Summary of Action Items</a></li>
+  <li><a href="#ResolutionSummary">Summary of Resolutions</a></li>
+</ul>
+<hr>
+<div class="meeting">
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; scribe: @gatemezing
+</p>
+
+<h3 id="item01">pending actions</h3>
+
+<p class='irc'>
+&lt;<cite>pchampin1</cite>&gt; <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin1:</cite> we have to discuss on the pending actions <br>
+... on more work on SPARQL* and s/rdf*/rdf-star <br>
+... missing to do the same for the use case documents. We also have to rename them in the UC docs
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> AndyS can you work on those changes?
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; AndyS: yes
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> will assign an action to AndyS to help for the record
+</p>
+
+<h3 id="item02">Discuss the new PR for semantics</h3>
+
+<p class='phone'>
+<cite>pchampin:</cite> Next topic - discussing the semantics
+</p>
+
+<p class='irc'>
+&lt;<cite>scribe</cite>&gt; chair: pchampin
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> We have to solve some concerns regarding the semantics and if it can be added in the public draft <br>
+... Great summary by pfps on the mailing list on the current state of the affairs. see pfps message
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; <a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Feb/0039.html">https://lists.w3.org/Archives/Public/public-rdf-star/2021Feb/0039.html</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> asking pfps if he can summarize his points for non technical people here
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> Tried to find out the differences in the current proposals in the maling list and PRs on github <br>
+... only 3 of the 4 seem more important. <br>
+... A difference is one you generate RDF graph, do you do something special? <br>
+... The other importance is whether you use a hidden vocabulary o can't be assess except by using RDF-star <br>
+... If a scheme depends on the embedded semantics, there might be some issues.. <br>
+... Differences can occur when merging before/after two RDF-star graphs <br>
+... The question is whether an embedded triple with illed form litteral is clearly stated or not?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I agree that special datatype is a detail, and it could be done without.. <br>
+... Also agree that cornor case can be adapted in the proposal
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; SELECT * { ?x rdf:subject ?y }
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Do we expect RDF-star to retrieve embedded triples for that query?
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; If the RDF* vocabulary is not hidden, then the SPARQL(*) query above will return something in the presence of embedded triples.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> There are specific rdf terms...
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; And "SELECT * { ?s ?p ?o }" and similarly count queries.
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> The hidden vocab will allow systems to be more flexible
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; Ruby RDF also uses a special term for an RDF triple (RDF::Statement).
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> I'm in favour of hidden vocabularies and not see any convincing arguments to introduce specific URIs. <br>
+... Are they any arguments for that introduction?
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> It is to come up with variations of RDF-star and transparent embedded triples <br>
+... even though RDF-star are mostly (semi) transparent
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; SELECT * { ?s ?p ?o }
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; Ah, yes,  that's an issue.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Maybe have 2 levels of compliance
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I'm not in favour of "splitting" implementation.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> implementations that can operate also at level of interoperability/exchange
+</p>
+
+<p class='phone'>
+<cite>james:</cite> There's no reason that an implementation would have to create it separetly <br>
+... if you have a syntatic distinction, then you can do that. But if it's on the term, then it's more complicated
+</p>
+
+<p class='irc'>
+&lt;<cite>Zakim</cite>&gt; AndyS, you wanted to note a consequence of triples with real vocab.
+</p>
+
+<p class='phone'>
+<cite>AndyS:</cite> One of the consequence, it's that it could be partial... <br>
+... one of the possibility is to define a mapping from RDF triple terms into say reification <br>
+... adding an extra term was not an easy way of going
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I saw that pfps is not in favor of splitting the implementations <br>
+... The goal is to give flexibility to get things done in one way or another
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; AndyS: A new RDF term was not as problematic as dealing with reification quads (which can be partial AKA broken).
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; STRAWPOLL: 2 levels of compliance
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; -1
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> What about having 2 levels of compliance
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; -0.7
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; -1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; 0 (not sure I fully grok the details)
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +0
+</p>
+
+<p class='irc'>
+&lt;<cite>twomas</cite>&gt; 42
+</p>
+
+<p class='phone'>
++0
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; -0.5 (also not sure I fully grok, but to the extent I do, it doesn't seem a good path)
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> It would introduce for mapping from RDF to RDF-star graph? IMHO, I don't think so <br>
+... If we really consider as a mean to define semantics, we need to avoid complications by having 2 compliance levels
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; But aren't all RDF* and SPARQL* implementations non-conformant to every published description of RDF* and SPARQL*?
+</p>
+
+<p class='phone'>
+<cite>james:</cite> understanding RDF-star is not really 2 level of compliance
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> There is no much tractions for the idea
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; pfps - Blazegraph?
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> The original semantics of SPARQL-star was a mapping to RDF?
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; The original paper has two semantics, and they diverge.  Implementations appear to implement the direct semantics, not the indirect one.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> We have discussed a lot the hidden vocabulary, but not if we want to keep the abstract syntax and define a mapping ?
+</p>
+
+<p class='phone'>
+<cite>pfps:</cite> yes. Remember it was an answer to different ways to create RDF-star <br>
+... we should have to figure out this thing is supposed to work <br>
+... it seems like we don't have a common understanding how RDF-star should work.
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> we really need a huge rework of everything including SPARQL-star... <br>
+... the abstract syntax is something we did not argue a lot here <br>
+... I would like to hear others
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> I agree with pierre. <br>
+... I would claim for implementers to give them a big picture of what should come out when querying RDF-star
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> Are we ready to deal without abstract semantics? <br>
+... seem no strong opinion
+</p>
+
+<p class='phone'>
+<cite>james:</cite> I do agree with olaf that the semantics should be based on the abstract syntax. <br>
+... it should not prevent the editors to stop the publication
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> put something in the doc so that people can respond
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; PROPOSAL: include PR88  in the first public draftbefore publishing, with a link to an issue summarizing Peter's email about the altnatives
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>twomas</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pchampin</cite>&gt; +1
+</p>
+
+<p class='phone'>
++1
+</p>
+
+<p class='irc'>
+&lt;<cite>TallTed</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>james</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>AndyS</cite>&gt; +1
+</p>
+
+<p class='irc'>
+&lt;<cite>pfps</cite>&gt; I'll create an issue.
+</p>
+
+<p class='irc'>
+<strong class='resolution' id="resolution01">RESOLUTION: include PR88 in before publishing, with a link to an issue summarizing Peter's email about the altnatives</strong>
+</p>
+
+<h3 id="item03">publishing first draft</h3>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; Given that we have a few mins left, can we do a strawpoll on the question of whether we want to keep the abstract syntax?
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> I found no way to make links to previous draft <br>
+... having the links in the header generated by respec. It seems to work for WG.
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> It is manually done
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> We have 5 minutes left. What are the best way to have more attractions? <br>
+... We have something in the community blog <br>
+... Any other ideas? <br>
+... The semantic web mailing list as well
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> Also something in the CG, the RDF list and pchampin to give a talk <br>
+... in the next month or so...
+</p>
+
+<p class='phone'>
++1 to also present a summary in some events by the chairs
+</p>
+
+<p class='phone'>
+<cite>gkellogg:</cite> We are finishing the work in the JSON-LD  CG in one or 2 weeks
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> anyhing else?
+</p>
+
+<p class='phone'>
+Zamik, who is present?
+</p>
+
+<p class='irc'>
+&lt;<cite>gkellogg</cite>&gt; <a href="https://json-ld.github.io/json-ld-star/">https://json-ld.github.io/json-ld-star/</a>
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> thank you very much. We made some progress and congrats for the next coming first public draft
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> I would like to add the contributions in the draft
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> how do we suggest we proceed?
+</p>
+
+<p class='phone'>
+<cite>olaf:</cite> create an issue and ask everybody. It should be a short term without delaying the draft
+</p>
+
+<p class='phone'>
+<cite>pchampin:</cite> It should be a short term without delaying the draft
+</p>
+
+<p class='phone'>
+bye
+</p>
+
+<p class='irc'>
+&lt;<cite>olaf</cite>&gt; bye
+</p>
+
+
+</div>
+<h2><a name="ActionSummary">Summary of Action Items</a></h2>
+<!-- Action Items -->
+
+<h2><a name="ResolutionSummary">Summary of Resolutions</a></h2>
+<!-- Resolutions -->
+<ol><li><a href="#resolution01">include PR88 in before publishing, with a link to an issue summarizing Peter's email about the altnatives</a></li>
+</ol>
+
+
+[End of minutes] <br>
+<hr>
+
+<address>
+  Minutes manually created (not a transcript), formatted by David Booth's 
+  <a href="http://dev.w3.org/cvsweb/~checkout~/2002/scribe/scribedoc.htm">scribe.perl</a> version  (<a href="http://dev.w3.org/cvsweb/2002/scribe/">CVS log</a>)<br>
+  $Date$ 
+</address>
+<div class="diagnostics">
+
+</div>
+</body>
+</html>

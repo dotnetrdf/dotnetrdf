@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 26 March 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>26 March 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-03-19.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Mar/0046.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/03/26-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-04-09.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gkellogg, pchampin, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>AndyS</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Explanation about Merge</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x023 class=irc><cite>&lt;gkellogg&gt;</cite> <a href="https://gitter.im/lotico/rdf-star">https://<wbr>gitter.im/<wbr>lotico/<wbr>rdf-star</a></p>
+<p id=x025 class="phone s01"><cite>pchampin:</cite> Talk about RDF-star. Went well.<br>
+<span id=x026>… high attendance.</span></p>
+<p id=x027 class=irc><cite>&lt;gkellogg&gt;</cite> <a href="http://www.lotico.com/index.php/Metadata_for_RDF_Statements:_The_RDF-star_Approach">http://<wbr>www.lotico.com/<wbr>index.php/<wbr>Metadata_for_RDF_Statements:_The_RDF-star_Approach</a></p>
+<p id=x028 class="phone s01"><cite>pchampin:</cite> video published via Lotico event page.</p>
+<p id=x030 class="phone s02"><cite>thomas:</cite> semantics issue<br>
+<span id=x031>… need to be clear what is right and wrong use.</span></p>
+<p id=x032 class="phone s01"><cite>pchampin:</cite> Referential opacity does not preclude transparent interpretation (app can choose to use it transparently) but the reverse is not true - can't go opaque from transparent.</p>
+<p id=x039 class=irc><cite>&lt;TallTed&gt;</cite> nitpick, CGs emit &quot;reports&quot; not necessarily &quot;final reports&quot;</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x041 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x042 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/134">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>134</a></p>
+<p id=x044 class="phone s03"><cite>gkellog:</cite> we can have minority opinions.</p>
+<p id=x046 class="phone s03"><cite>gkellog:</cite> The URIs may change or go away. This group is &quot;suggesting&quot; an appraoch.<br>
+<span id=x047>… have a time limit on URIs.</span></p>
+<p id=x048 class=irc><cite>&lt;TallTed&gt;</cite> minting rdf:embeddedTriple would indeed be very bullying on a future WG that didn't want to include that in their amendment of rdf: ...</p>
+<p id=x049 class=irc><cite>&lt;TallTed&gt;</cite> That doesn't feel like a strong argument to me.</p>
+<p id=x050 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/136">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>136</a></p>
+<p id=x053 class=irc><cite>&lt;gkellogg&gt;</cite> We need people to implement and report on the semantics test suite.</p>
+<p id=x055 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/135">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>135</a></p>
+<p id=x056 class="phone s01"><cite>pchampin:</cite> Will do PRs in future for all by editorial fixes.</p>
+<p id=x057 class="phone s01"><cite>pchampin:</cite> Merge text - explains how to deal with blank nodes</p>
+<p id=x058 class=summary>PR <a href="https://github.com/w3c/rdf-star/pull/143">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>143</a></p>
+</section>
+
+<section>
+<h3 id=t03>Explanation about Merge</h3>
+<p id=x062 class=summary><a href="https://www.w3.org/TR/rdf11-concepts/#section-blank-nodes">https://<wbr>www.w3.org/<wbr>TR/<wbr>rdf11-concepts/#section-blank-nodes</a></p>
+<p id=x063 class="phone s01"><cite>pchampin:</cite> Merge vs union :: dataset default graph may be a union of named graphs.</p>
+<p id=x065 class="phone s02"><cite>thomas:</cite> Next week is Good Friday.</p>
+<p id=x066 class="phone s03"><cite>gkellog:</cite> Roadmap to &quot;done&quot;.</p>
+</section>
+</main>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 19 March 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>19 March 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-03-12.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Mar/0038.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/03/19-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-03-26.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, gatemezing, gkellogg, olaf, ora, pchampin, rivettp, TallTed, thomas</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>AndyS, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Implementation reports</a></li>
+<li><a href="#t04">What do we need to release our 2nd public draft?</a></li>
+<li><a href="#t05">Open-ended discussions</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x027 class="phone s01"><cite>pchampin:</cite> pchampin and olaf holding a Lotico event on RDF-star (March 25, 16:00 UTC))</p>
+<p id=x028 class=irc><cite>&lt;TallTed&gt;</cite> email announcement of the Lotico event - <a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Mar/0039.html">https://<wbr>lists.w3.org/<wbr>Archives/<wbr>Public/<wbr>public-rdf-star/<wbr>2021Mar/<wbr>0039.html</a></p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x031 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x034 class="phone s01"><cite>pchampin:</cite> Action to ask community about adding a URI to the RDF namespace</p>
+<p id=x038 class="phone s02"><cite>olaf:</cite> actions on me<br>
+<span id=x039>… (1) respond to james</span><br>
+<span id=x040>… (2) PR for &lt;&lt;&gt;&gt; for primaryExpressions</span><br>
+<span id=x041>… in-progress</span></p>
+<p id=x044 class="phone s03"><cite>AndyS:</cite> Gregg+Andy -- Getting nice URIs for tests in manifests</p>
+</section>
+
+<section>
+<h3 id=t03>Implementation reports</h3>
+<p id=x046 class=irc><cite>&lt;pchampin&gt;</cite> PR: <a href="https://github.com/w3c/rdf-star/pull/131">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>131</a></p>
+<p id=x047 class=irc><cite>&lt;gkellogg&gt;</cite> <a href="https://raw.githack.com/w3c/rdf-star/a8080d301f37c28636b3e99336cf9c242252d53f/reports/index.html">https://<wbr>raw.githack.com/<wbr>w3c/<wbr>rdf-star/<wbr>a8080d301f37c28636b3e99336cf9c242252d53f/<wbr>reports/<wbr>index.html</a></p>
+<p id=x055 class="phone s04"><cite>gkellogg:</cite> Infrastructure for handling EARL report and creating HTML for all impl reports.<br>
+<span id=x056>… WG process is 2 impls per feature.</span><br>
+<span id=x057>… Link off the RDF-star site from spec to external reports.</span><br>
+<span id=x058>… Andy asked that infra is one PR and then PR's per impl report to show how to do it and track the reports we receive</span><br>
+<span id=x059>… part of our CI</span><br>
+<span id=x060>… catch errors in incoming reports early.</span><br>
+<span id=x061>… stretch goal: GH Actions</span></p>
+<p id=x062 class=irc><cite>&lt;AndyS&gt;</cite> +1 to gkellogg's work to automate</p>
+<p id=x063 class=irc><cite>&lt;gatemezing&gt;</cite> +1 to the report. Great work.</p>
+<p id=x064 class="phone s04"><cite>gkellogg:</cite> may be ask previous implementations who have mentioned they support RDF*</p>
+<p id=x065 class="phone s01"><cite>pchampin:</cite> Could be a good point to do a 2nd draft report.</p>
+<p id=x066 class="phone s04"><cite>gkellogg:</cite> Manifests sorting out first, then PRs from #131 (reports)</p>
+<p id=x067 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: once the manifests are sorted out, merge the Impl Report infrastructure</p>
+<p id=x068 class="phone s01"><cite>pchampin:</cite> Can we get the manifests committed?</p>
+<p id=x069 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x070 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x071 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x072 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x073 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x074 class=irc><cite>&lt;william&gt;</cite> +1</p>
+<p id=x075 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x076 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x077 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> once the manifests are sorted out, merge the Impl Report infrastructure</p>
+</section>
+
+<section>
+<h3 id=t04>What do we need to release our 2nd public draft?</h3>
+<p id=x083 class="phone s01"><cite>pchampin:</cite> Reaching a (meta)stable point<br>
+<span id=x084>… some open issues</span><br>
+<span id=x085>… some can be closed</span></p>
+<p id=x092 class="phone s03"><cite>AndyS:</cite> good idea to publish, and to pick some issues<br>
+<span id=x093>… gives us a clock tick, allow us to focus</span></p>
+<p id=x098 class="phone s02"><cite>olaf:</cite> Good idea. Suggestion to include:<br>
+<span id=x099>… &lt;&lt;&gt;&gt; in expressions</span><br>
+<span id=x100>… extend the overview with more examples - becoming tutorial/primer style.</span></p>
+<p id=x101 class=irc><cite>&lt;ora&gt;</cite> +1 for Olaf's primer/tutorial section idea</p>
+<p id=x102 class="phone s01"><cite>pchampin:</cite> agree</p>
+<p id=x103 class=irc><cite>&lt;thomas&gt;</cite> +1 to Olaf's proposal</p>
+<p id=x105 class="phone s02"><cite>olaf:</cite> Reads better for new readers.</p>
+<p id=x107 class=irc><cite>&lt;gatemezing&gt;</cite> +1 to have such a primer section</p>
+<p id=x109 class="phone s01"><cite>pchampin:</cite> SPARQL operators<br>
+<span id=x110>… low hanging fruit. Examples in issue and tests.</span></p>
+<p id=x111 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/121">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>121</a></p>
+<p id=x112 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=a01 class=action><strong>Action:</strong> pchampin: Will write some text WRT RDF-star merge</p>
+<p id=x114 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x115 class=summary>Also <a href="https://github.com/w3c/rdf-star/pull/129">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>129</a></p>
+<p id=x117 class="phone s01"><cite>pchampin:</cite> proposed alt semantics - not getting much pull so withdraw PR.<br>
+<span id=x118>… semantic test suite needs updating to align with semantics defn.</span></p>
+<p id=a02 class=action><strong>Action:</strong> pchampin to align the Semantics test suite with the current content of the Semantics section</p>
+<p id=x122 class="phone s01"><cite>pchampin:</cite> Overview; functions&amp;operators; merge; impl reports<br>
+<span id=x123>… for 2nd draft.</span></p>
+<p id=x124 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: release 2nd public draft once {Overview; functions&amp;operators; merge; impl reports} are included</p>
+<p id=x125 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x126 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x127 class=irc><cite>&lt;thomas&gt;</cite> 0</p>
+<p id=x128 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x129 class=irc><cite>&lt;AndyS&gt;</cite> +1 -- and happy if less rather than push too far out</p>
+<p id=x130 class=irc><cite>&lt;gatemezing&gt;</cite> +1 if possible at least 3 months after the 1st report</p>
+<p id=x131 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x132 class=summary>&quot;publish early, publish often&quot;</p>
+<p id=x133 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x134 class=irc><cite>&lt;TallTed&gt;</cite> +1</p>
+<p id=x135 class=irc><cite>&lt;william&gt;</cite> +1</p>
+<p id=r02 class=resolution><strong>Resolution:</strong> release 2nd public draft once {Overview; functions&amp;operators; merge; impl reports} are included</p>
+<p id=x137 class=irc><cite>&lt;gatemezing&gt;</cite> Who is the author AndyS ?</p>
+<p id=x140 class=summary>me</p>
+</section>
+
+<section>
+<h3 id=t05>Open-ended discussions</h3>
+<p id=x144 class="phone s04"><cite>gkellogg:</cite> Industry input. Is this SA a possible barrier? Should we explain how RDF* -&gt; RDF-star ?</p>
+<p id=x145 class="phone s01"><cite>pchampin:</cite> Pavel was active we settled on this.</p>
+<p id=x148 class=irc><cite>&lt;pchampin&gt;</cite> AndyS: explaining how to use current RDF-star (e.g. annotation) to &quot;emulate&quot; PG-mode</p>
+<p id=x150 class=irc><cite>&lt;olaf&gt;</cite> ontotext</p>
+<p id=x151 class=irc><cite>&lt;gkellogg&gt;</cite> <a href="https://github.com/w3c/rdf-star#preliminary-implementations">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star#preliminary-implementations</a></p>
+<p id=x152 class=summary>New UC on uncertainty is definitely PG</p>
+<p id=x156 class="phone s05"><cite>thomas:</cite> Clarification Q: stop talking about PG but was decision to drop it?<br>
+<span id=x157>… is it a layer over SA?</span></p>
+<p id=x159 class="phone s01"><cite>pchampin:</cite> IIRC modes became confusing<br>
+<span id=x160>… need to check exactly what we decided</span></p>
+<p id=x161 class="phone s05"><cite>thomas:</cite> Does PG differ in a way that is not a layer over PG.</p>
+<p id=x166 class="phone s04"><cite>gkellogg:</cite> some systems may need to be PG - by either annotation or auto &quot;infer&quot; assert triple. Getting ahead of ourselves maybe.<br>
+<span id=x167>… some impls might have an index consideration.</span><br>
+<span id=x168>… impl reports may help highlight this</span></p>
+<p id=x173 class="phone s02"><cite>olaf:</cite> agree - systems have been built RDF* and states Property Graph-like.<br>
+<span id=x174>… annotation syntax. For them, change of syntax.</span></p>
+<p id=x175 class=irc><cite>&lt;pchampin&gt;</cite> annotation syntax: {| ... |}</p>
+<p id=x176 class="phone s05"><cite>thomas:</cite> Q: no statements about not-asserted triple?</p>
+<p id=x179 class="phone s01"><cite>pchampin:</cite> change is not claim full support?<br>
+<span id=x180>… media type may be involved</span></p>
+<p id=x181 class=irc><cite>&lt;william&gt;</cite> well I believe that's what Eye does</p>
+<p id=x182 class=irc><cite>&lt;pchampin&gt;</cite> AndyS: another way of providing PG features would be to pre-process &lt;&lt; &gt;&gt; to also assert them</p>
+<p id=x183 class=irc><cite>&lt;pchampin&gt;</cite> ... and maintain consistency for deletion</p>
+<p id=x184 class=irc><cite>&lt;pchampin&gt;</cite> ... some kind of inferencing</p>
+<p id=x185 class=irc><cite>&lt;thomas&gt;</cite> RDF-star and RDF-STAR</p>
+<p id=x186 class="phone s01"><cite>pchampin:</cite> PG-mode only tests will fail.</p>
+<p id=x188 class="phone s05"><cite>thomas:</cite> How many people need unasserted triples?</p>
+<p id=x190 class=irc><cite>&lt;TallTed&gt;</cite> unasserted are vital.   `Mary says &quot;the_moon is green_cheese&quot;.`</p>
+<p id=x194 class="phone s06"><cite>william:</cite> SA related to reification?</p>
+<p id=x196 class="phone s01"><cite>pchampin:</cite> Thanks everyone - meeting closed</p>
+<p id=x197 class=irc><cite>&lt;william&gt;</cite> thanks! bye</p>
+<p id=x198 class=irc><cite>&lt;olaf&gt;</cite> Thanks!</p>
+<p id=x199 class=irc><cite>&lt;gatemezing&gt;</cite> bye!</p>
+<p id=x200 class=irc><cite>&lt;thomas&gt;</cite> bye!</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">pchampin: Will write some text WRT RDF-star merge</a></li>
+<li><a href="#a02">pchampin to align the Semantics test suite with the current content of the Semantics section</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">once the manifests are sorted out, merge the Impl Report infrastructure</a></li>
+<li><a href="#r02">release 2nd public draft once {Overview; functions&amp;operators; merge; impl reports} are included</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 127 (Wed Dec 30 17:39:58 2020 UTC).</address>
+
+</body>
+</html>
