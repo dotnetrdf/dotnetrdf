@@ -303,4 +303,15 @@ namespace VDS.RDF.Writing
             set;
         }
     }
+
+    /// <summary>
+    /// Interface for writers that can support writing triple nodes in at least one of their syntax modes.
+    /// </summary>
+    public interface IRdfStarCapableWriter
+    {
+        /// <summary>
+        /// Gets whether the writer supports writing triple nodes in its current syntax mode.
+        /// </summary>
+        bool CanWriteTripleNodes { get; }
+    }
 }

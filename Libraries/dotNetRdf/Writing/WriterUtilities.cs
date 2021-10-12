@@ -133,6 +133,15 @@ namespace VDS.RDF.Writing
         /// Error message produced when a User attempts to serialize a Variable Node in a format which does not support it.
         /// </summary>
         public const string VariableNodesUnserializableError = "Variable Nodes cannot be serialized as {0}";
+        /// <summary>
+        /// Error message produced when a user attempts to serialize a TripleNode in a format which does not support it.
+        /// </summary>
+        public const string TripleNodesUnserializableError = "Triple Nodes cannot be serialized as {0}";
+        /// <summary>
+        /// Error message produced when a user attempts to serialize a triple containing a TripleNode predicates.
+        /// </summary>
+        public const string TripleNodePredicateUnserializableError =
+            "Triples with a Triple Node Predicate are not serializable in {0}";
 
         /// <summary>
         /// Gets an Error message indicating that Graph Literals are not serializable with the appropriate RDF format name inserted in the error.
@@ -212,6 +221,26 @@ namespace VDS.RDF.Writing
         public static string ThreadedOutputFailure(string format)
         {
             return string.Format(ThreadedOutputError, format);
+        }
+
+        /// <summary>
+        /// Gets an error message indicating that triple nodes are not serializable in the specified format.
+        /// </summary>
+        /// <param name="format">RDF format (syntax) name.</param>
+        /// <returns></returns>
+        public static string TripleNodesUnserializable(string format)
+        {
+            return string.Format(TripleNodesUnserializableError, format);
+        }
+
+        /// <summary>
+        /// Gets an error message indicating that triple nodes are not serializable in the predicate position of a triple.
+        /// </summary>
+        /// <param name="format">RDF format (syntax) name.</param>
+        /// <returns></returns>
+        public static string TripleNodePredicateUnserializable(string format)
+        {
+            return string.Format(TripleNodePredicateUnserializableError, format);
         }
     }
 

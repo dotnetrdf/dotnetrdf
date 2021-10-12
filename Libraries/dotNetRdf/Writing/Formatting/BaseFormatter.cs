@@ -78,6 +78,8 @@ namespace VDS.RDF.Writing.Formatting
                     return FormatUriNode((IUriNode)n, segment);
                 case NodeType.Variable:
                     return FormatVariableNode((IVariableNode)n, segment);
+                case NodeType.Triple:
+                    return FormatTripleNode((ITripleNode)n, segment);
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable(_format));
             }
@@ -149,6 +151,18 @@ namespace VDS.RDF.Writing.Formatting
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(_format));
             return b.ToString();
+        }
+
+        /// <summary>
+        /// Formats a triple node a a string for the given format.
+        /// </summary>
+        /// <param name="t">Triple node.</param>
+        /// <param name="segment">Triple segment being written.</param>
+        /// <returns></returns>
+        /// <remarks>This method should be overridden in formatters that support serializing <see cref="ITripleNode"/>s.</remarks>
+        protected virtual string FormatTripleNode(ITripleNode t, TripleSegment? segment)
+        {
+            throw new RdfOutputException(WriterErrorMessages.TripleNodesUnserializable(_format));
         }
 
         /// <summary>

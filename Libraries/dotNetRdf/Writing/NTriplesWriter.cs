@@ -40,7 +40,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue.</threadsafety>
     public class NTriplesWriter 
-        : BaseRdfWriter, IFormatterBasedWriter
+        : BaseRdfWriter, IFormatterBasedWriter, IRdfStarCapableWriter
     {
         private bool _sort = false;
 
@@ -89,6 +89,11 @@ namespace VDS.RDF.Writing
         /// Gets/Sets the NTriples syntax mode.
         /// </summary>
         public NTriplesSyntax Syntax { get; set; }
+
+        /// <summary>
+        /// Gets whether the current syntax mode supports writing RDF-Star triple nodes or not.
+        /// </summary>
+        public bool CanWriteTripleNodes => Syntax == NTriplesSyntax.Rdf11Star;
 
         /// <summary>
         /// Saves the Graph in NTriples Syntax to the given stream.
@@ -162,6 +167,16 @@ namespace VDS.RDF.Writing
                 case NodeType.Uri:
                     break;
 
+                case NodeType.Triple:
+                    if (Syntax != NTriplesSyntax.Rdf11Star)
+                    {
+                        throw new RdfOutputException(WriterErrorMessages.TripleNodesUnserializable(ToString()));
+                    }
+
+                    if (segment == TripleSegment.Predicate)
+                        throw new RdfOutputException(WriterErrorMessages.TripleNodePredicateUnserializable(ToString()));
+                    break;
+
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("NTriples"));
 
@@ -196,7 +211,13 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return Syntax == NTriplesSyntax.Original ? "NTriples" : "NTriples (RDF 1.1)";
+            return Syntax switch
+            {
+                NTriplesSyntax.Original => "NTriples",
+                NTriplesSyntax.Rdf11 => "NTriples (RDF 1.1)",
+                NTriplesSyntax.Rdf11Star => "NTriples (RDF-Star)",
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
     }
 }
