@@ -196,9 +196,28 @@ namespace VDS.RDF.Writing
             RoundTripTest(g, writer, parser);
         }
 
+        [Theory]
+        [MemberData(nameof(RoundTripTestData))]
+        public void WritingTripleNodes(IRdfWriter writer, IRdfReader parser)
+        {
+            if (writer is IRdfStarCapableWriter rdfStarWriter && rdfStarWriter.CanWriteTripleNodes)
+            {
+                var g = new Graph();
+                g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
+                ITripleNode quoted = new TripleNode(new Triple(g.CreateUriNode(":a"), g.CreateUriNode(":b"),
+                    g.CreateUriNode(":c")));
+                IUriNode subj = g.CreateUriNode(":s");
+                IUriNode pred = g.CreateUriNode(":p");
+                IUriNode obj = g.CreateUriNode(":o");
+                g.Assert(subj, pred, quoted);
+                g.Assert(quoted, pred, obj);
+                RoundTripTest(g, writer, parser);
+            }
+        }
+
         private void RoundTripTest(Graph original, IRdfWriter writer, IRdfReader parser)
         {
-            var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
+            var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11Star);
 
             _output.WriteLine("Input Data:");
             foreach (Triple t in original.Triples)
@@ -305,6 +324,7 @@ namespace VDS.RDF.Writing
             {
                 yield return new object[] { new NTriplesWriter(NTriplesSyntax.Original),new NTriplesParser(NTriplesSyntax.Original) };
                 yield return new object[] { new NTriplesWriter(NTriplesSyntax.Rdf11),new NTriplesParser(NTriplesSyntax.Rdf11) };
+                yield return new object[] { new NTriplesWriter(NTriplesSyntax.Rdf11Star), new NTriplesParser(NTriplesSyntax.Rdf11Star) };
             }
 
             if (formats.HasFlag(Formats.RdfA))

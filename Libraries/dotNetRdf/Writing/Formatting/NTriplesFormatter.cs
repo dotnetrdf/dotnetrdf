@@ -97,6 +97,8 @@ namespace VDS.RDF.Writing.Formatting
             {
                 case NTriplesSyntax.Original:
                     return "NTriples";
+                case NTriplesSyntax.Rdf11Star:
+                    return "NTriples (RDF-Star)";
                 default:
                     return "NTriples (RDF 1.1)";
             }
@@ -151,6 +153,30 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append('>');
             }
 
+            return output.ToString();
+        }
+
+        /// <summary>
+        /// Formats a triple node a a string for the given format.
+        /// </summary>
+        /// <param name="t">Triple node.</param>
+        /// <param name="segment">Triple segment being written.</param>
+        /// <returns></returns>
+        protected override string FormatTripleNode(ITripleNode t, TripleSegment? segment)
+        {
+            if (Syntax != NTriplesSyntax.Rdf11Star)
+            {
+                throw new RdfOutputException(
+                    WriterErrorMessages.TripleNodesUnserializable(this.FormatName + "/" + Syntax));
+            }
+            var output = new StringBuilder();
+            output.Append("<< ");
+            output.Append(Format(t.Triple.Subject, TripleSegment.Subject));
+            output.Append(" ");
+            output.Append(Format(t.Triple.Predicate, TripleSegment.Predicate));
+            output.Append(" ");
+            output.Append(Format(t.Triple.Object, TripleSegment.Object));
+            output.Append(" >>");
             return output.ToString();
         }
 

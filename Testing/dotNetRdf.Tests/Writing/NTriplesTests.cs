@@ -23,6 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using FluentAssertions;
+using HandlebarsDotNet;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -303,6 +305,103 @@ namespace VDS.RDF.Writing
             }
 
             Test(builder.ToString(), new NTriplesWriter(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11));
+        }
+
+        [Fact]
+        public void WritingNTriplesStar1()
+        {
+            var g = new Graph();g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
+            g.Assert(new Triple(
+                g.CreateUriNode(":s"),
+                g.CreateUriNode(":p"),
+                g.CreateTripleNode(
+                    new Triple(g.CreateUriNode(":a"),
+                        g.CreateUriNode(":b"),
+                        g.CreateUriNode(":c")))));
+            var writer = new NTriplesWriter(NTriplesSyntax.Rdf11Star);
+            var strWriter = new System.IO.StringWriter();
+            writer.Save(g, strWriter);
+            strWriter.ToString().Should().Be(
+                "<http://example.org/s> <http://example.org/p> << <http://example.org/a> <http://example.org/b> <http://example.org/c> >> ." + Environment.NewLine);
+        }
+
+        [Fact]
+        public void WritingNTriplesStar2()
+        {
+            var g = new Graph(); g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
+            g.Assert(new Triple(
+                g.CreateTripleNode(
+                    new Triple(g.CreateUriNode(":a"),
+                        g.CreateUriNode(":b"),
+                        g.CreateUriNode(":c"))),
+                g.CreateUriNode(":p"),
+                g.CreateUriNode(":o")
+            ));
+            var writer = new NTriplesWriter(NTriplesSyntax.Rdf11Star);
+            var strWriter = new System.IO.StringWriter();
+            writer.Save(g, strWriter);
+            strWriter.ToString().Should().Be(
+                "<< <http://example.org/a> <http://example.org/b> <http://example.org/c> >> <http://example.org/p> <http://example.org/o> ." + Environment.NewLine);
+        }
+
+        [Fact]
+        public void WritingNTriplesStar3()
+        {
+            var g = new Graph(); g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
+            g.Assert(new Triple(
+                g.CreateTripleNode(
+                    new Triple(g.CreateUriNode(":a"),
+                        g.CreateUriNode(":b"),
+                        g.CreateUriNode(":c"))),
+                g.CreateUriNode(":p"),
+                g.CreateUriNode(":o")
+            ));
+            var writer = new NTriplesWriter(NTriplesSyntax.Rdf11Star);
+            var strWriter = new System.IO.StringWriter();
+            writer.Save(g, strWriter);
+            strWriter.ToString().Should().Be(
+                "<< <http://example.org/a> <http://example.org/b> <http://example.org/c> >> <http://example.org/p> <http://example.org/o> ." + Environment.NewLine);
+        }
+
+        [Fact]
+        public void WritingNTriplesStar4()
+        {
+            var g = new Graph(); g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
+            g.Assert(new Triple(
+                g.CreateTripleNode(
+                    new Triple(g.CreateUriNode(":a"),
+                        g.CreateUriNode(":b"),
+                        g.CreateTripleNode(
+                            new Triple(
+                                g.CreateUriNode(":c"),
+                                g.CreateUriNode(":d"),
+                                g.CreateUriNode(":e")))
+                        )),
+                g.CreateUriNode(":p"),
+                g.CreateUriNode(":o")
+            ));
+            var writer = new NTriplesWriter(NTriplesSyntax.Rdf11Star);
+            var strWriter = new System.IO.StringWriter();
+            writer.Save(g, strWriter);
+            strWriter.ToString().Should().Be(
+                "<< <http://example.org/a> <http://example.org/b> << <http://example.org/c> <http://example.org/d> <http://example.org/e> >> >> <http://example.org/p> <http://example.org/o> ." + Environment.NewLine);
+        }
+
+        [Fact]
+        public void WritingNTriplesStar5()
+        {
+            var g = new Graph(); g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
+            g.Assert(new Triple(
+                g.CreateUriNode(":s"),
+                g.CreateUriNode(":p"),
+                g.CreateTripleNode(
+                    new Triple(g.CreateUriNode(":a"),
+                        g.CreateUriNode(":b"),
+                        g.CreateUriNode(":c")))));
+            var writer = new NTriplesWriter(NTriplesSyntax.Rdf11);
+            var strWriter = new System.IO.StringWriter();
+            RdfOutputException ex = Assert.Throws<RdfOutputException>(() => writer.Save(g, strWriter));
+            ex.Message.Should().Be(WriterErrorMessages.TripleNodesUnserializable("NTriples (RDF 1.1)"));
         }
 
         [Fact]

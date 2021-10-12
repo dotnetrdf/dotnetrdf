@@ -40,7 +40,7 @@ namespace VDS.RDF.Writing
     /// Class for serializing a Triple Store in the NQuads (NTriples plus context) syntax.
     /// </summary>
     public class NQuadsWriter 
-        : BaseStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter, IMultiThreadedWriter
+        : BaseStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter, IMultiThreadedWriter, IRdfStarCapableWriter
     {
         private int _threads = 4;
 
@@ -84,6 +84,11 @@ namespace VDS.RDF.Writing
         /// Gets/Sets the NQuads syntax mode.
         /// </summary>
         public NQuadsSyntax Syntax { get; set; }
+
+        /// <summary>
+        /// Gets whether the current syntax mode supports writing RDF-Star triple nodes or not.
+        /// </summary>
+        public bool CanWriteTripleNodes => Syntax == NQuadsSyntax.Rdf11;
 
         /// <summary>
         /// Saves a Store in NQuads format.
@@ -247,6 +252,15 @@ namespace VDS.RDF.Writing
                     break;
                 case NodeType.Uri:
                     break;
+                case NodeType.Triple:
+                    if (Syntax != NQuadsSyntax.Rdf11Star)
+                    {
+                        throw new RdfOutputException(WriterErrorMessages.TripleNodesUnserializable(ToString()));
+                    }
+
+                    if (segment == TripleSegment.Predicate)
+                        throw new RdfOutputException(WriterErrorMessages.TripleNodePredicateUnserializable(ToString()));
+                    break;
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("NQuads"));
                 default:
@@ -322,7 +336,12 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "NQuads";
+            return Syntax switch
+            {
+                NQuadsSyntax.Rdf11 => "NQuads (RDF 1.1)",
+                NQuadsSyntax.Rdf11Star => "NQuads (RDF-Star)",
+                _ => "NQuads"
+            };
         }
     }
 }
