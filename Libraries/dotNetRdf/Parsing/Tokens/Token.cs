@@ -238,6 +238,8 @@ namespace VDS.RDF.Parsing.Tokens
 
                           STARTQUOTE = 600,
                           ENDQUOTE = 601,
+                          STARTANNOTATION = 602,
+                          ENDANNOTATION = 603,
 
                           EOF = 1000;
     }
