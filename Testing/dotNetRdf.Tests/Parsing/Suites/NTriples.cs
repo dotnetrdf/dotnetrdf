@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -104,7 +105,7 @@ namespace VDS.RDF.Parsing.Suites
         : BaseRdfParserSuite
     {
         public NTriples11()
-            : base(new NTriplesParser(), new NTriplesParser(), @"ntriples11\")
+            : base(new NTriplesParser(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11), @"ntriples11\")
         {
             CheckResults = false;
             Parser.Warning += TestTools.WarningPrinter;
@@ -166,5 +167,37 @@ namespace VDS.RDF.Parsing.Suites
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
         }
+    }
+
+    public class NTriplesStar : BaseRdfParserSuite
+    {
+        public NTriplesStar()
+            : base(new NTriplesParser(NTriplesSyntax.Rdf11Star), new NTriplesParser(NTriplesSyntax.Rdf11Star), @"ntriples11\")
+        {
+            CheckResults = false;
+            Parser.Warning += TestTools.WarningPrinter;
+        }
+
+        [SkippableFact]
+        public void ParsingSuiteNTriples11()
+        {
+            //Nodes for positive and negative tests
+            var g = new Graph();
+            g.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
+            INode posSyntaxTest = g.CreateUriNode("rdft:TestNTriplesPositiveSyntax");
+            INode negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
+
+            //Run manifests
+            RunManifest(@"resources\ntriples11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+
+            if (Count == 0) Assert.True(false, "No tests found");
+
+            Console.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed");
+            Console.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
+
+            if (Failed > 0) Assert.True(false, Failed + " Tests failed: " + string.Join("\n", FailedTests.Select(f=>f.ToString())));
+            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate");
+        }
+
     }
 }

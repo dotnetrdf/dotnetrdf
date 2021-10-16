@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using FluentAssertions;
 using System;
 using System.IO;
 using System.Linq;
@@ -64,7 +65,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public Turtle11(ITestOutputHelper testOutputHelper)
-            : base(new TurtleParser(TurtleSyntax.W3C, true), new NTriplesParser(), "turtle11\\")
+            : base(new TurtleParser(TurtleSyntax.W3C, true), new NTriplesParser(NTriplesSyntax.Rdf11), "turtle11\\")
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -170,7 +171,7 @@ namespace VDS.RDF.Parsing.Suites
             var formatter = new NTriplesFormatter();
 
             var ttl = new Graph();
-            ttl.LoadFromFile(@"resources\\turtle11\localName_with_non_leading_extras.ttl");
+            ttl.LoadFromFile(@"resources\\turtle11\localName_with_non_leading_extras.ttl", new TurtleParser(TurtleSyntax.W3C, false));
             Assert.False(ttl.IsEmpty);
             Console.WriteLine("Subject from Turtle: " + ttl.Triples.First().Subject.ToString(formatter));
 
@@ -433,6 +434,61 @@ namespace VDS.RDF.Parsing.Suites
 
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
+        }
+    }
+
+    public class TurtleStar11 : BaseRdfParserSuite
+    {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public TurtleStar11(ITestOutputHelper testOutputHelper)
+            : base(new TurtleParser(TurtleSyntax.Rdf11Star, true), new NTriplesParser(NTriplesSyntax.Rdf11Star), "turtle11\\")
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
+        [Fact]
+        public void ParsingSuiteTurtleW3C()
+        {
+            //Nodes for positive and negative tests
+            var g = new Graph();
+            g.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
+            INode posSyntaxTest = g.CreateUriNode("rdft:TestTurtlePositiveSyntax");
+            INode negSyntaxTest = g.CreateUriNode("rdft:TestTurtleNegativeSyntax");
+            INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
+
+            //Run manifests
+            RunManifest("resources/turtle11/manifest.ttl", new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
+
+            if (Count == 0) Assert.True(false, "No tests found");
+
+            _testOutputHelper.WriteLine(Count + " Tests - " + Passed + " Passed - " + Failed + " Failed - " + Indeterminate + " Indeterminate");
+            _testOutputHelper.WriteLine(((Passed / (double)Count) * 100) + "% Passed");
+
+            if (Failed > 0)
+            {
+                if (Indeterminate == 0)
+                {
+                    Assert.True(false, Failed + " Tests failed and " + Passed + " Tests Passed\n\t" + string.Join("\n\t", FailedTests));
+                }
+                else
+                {
+                    Assert.True(false, Failed + " Test failed, " + Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed\n\t" + string.Join("\n\t", FailedTests));
+                }
+            }
+            Skip.If(Indeterminate > 0, Indeterminate + " Tests are indeterminate and " + Passed + " Tests Passed");
+        }
+
+        [Fact]
+        public void TestReservedEscapedLocalName()
+        {
+            var g = new Graph();
+            g.LoadFromString(@"@prefix p: <http://a.example/>.
+p:\_\~\.\-\!\$\&\'\(\)\*\+\,\;\=\/\?\#\@\%00 <http://a.example/p> <http://a.example/o> .",
+                new TurtleParser(TurtleSyntax.Rdf11Star, false));
+            var uriNode = g.Triples.First().Subject.Should().BeAssignableTo<IUriNode>().Subject;
+            uriNode.Uri.AbsoluteUri.Should()
+                .Be("http://a.example/_~.-!$&'()*+,;=/?#@%00");
         }
     }
 }

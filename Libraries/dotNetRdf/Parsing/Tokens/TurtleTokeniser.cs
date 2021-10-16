@@ -1085,7 +1085,8 @@ namespace VDS.RDF.Parsing.Tokens
             StartNewToken();
 
             // Grab all the Characters in the QName
-            while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax != TurtleSyntax.Original) && (!(next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
+            while(!(char.IsWhiteSpace(next) || next is ';' or ',' or '(' or ')' or '[' or ']' or '#' || (next == '.' && _syntax == TurtleSyntax.Original) || (next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
+            //while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax != TurtleSyntax.Original) && (!(next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
             {
                 // Can't have more than one Colon in a QName unless we're using the W3C syntax
                 if (next == ':' && !colonoccurred)
