@@ -190,19 +190,24 @@ namespace VDS.RDF
         /// </summary>
         /// <remarks>
         /// <para>
-        /// A <strong>Ground Triple</strong> is any Triple considered to state a single fixed fact.  In practise this means that the Triple does not contain any Blank Nodes.
+        /// A <strong>Ground Triple</strong> is any Triple considered to state a single fixed fact.  In practice this means that the Triple does not contain any Blank Nodes, and does not quote any triples containing blank nodes.
         /// </para>
         /// </remarks>
-        public bool IsGroundTriple => (Subject.NodeType != NodeType.Blank && Predicate.NodeType != NodeType.Blank && Object.NodeType != NodeType.Blank);
+        public bool IsGroundTriple => Subject.NodeType != NodeType.Blank && Predicate.NodeType != NodeType.Blank &&
+                                      Object.NodeType != NodeType.Blank &&
+                                      (Subject is not ITripleNode stn || stn.Triple.IsGroundTriple) &&
+                                      (Object is not ITripleNode otn || otn.Triple.IsGroundTriple);
 
         /// <summary>
         /// Checks whether the Triple involves a given Node.
         /// </summary>
         /// <param name="n">The Node to test upon.</param>
-        /// <returns>True if the Triple contains the given Node.</returns>
+        /// <returns>True if the Triple contains the given node or quotes a triple that involves the given node.</returns>
         public bool Involves(INode n)
         {
-            return (Subject.Equals(n) || Predicate.Equals(n) || Object.Equals(n));
+            return Subject.Equals(n) || Predicate.Equals(n) || Object.Equals(n) ||
+                   (Subject is ITripleNode stn && stn.Triple.Involves(n)) ||
+                   (Object is ITripleNode otn && otn.Triple.Involves(n));
         }
 
         /// <summary>
@@ -213,15 +218,7 @@ namespace VDS.RDF
         public bool Involves(Uri uri)
         {
             IUriNode temp = new UriNode(uri);
-
-            // Does the Subject involve this Uri?
-            if (Subject.Equals(temp)) return true;
-            // Does the Predicate involve this Uri?
-            if (Predicate.Equals(temp)) return true;
-            // Does the Object involve this Uri?
-            if (Object.Equals(temp)) return true;
-            // Not Involved!
-            return false;
+            return Involves(temp);
         }
 
         /// <summary>

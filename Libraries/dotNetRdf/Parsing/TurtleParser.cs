@@ -40,18 +40,20 @@ namespace VDS.RDF.Parsing
     public class TurtleParser 
         : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
-        private bool _traceParsing = false;
-        private bool _traceTokeniser = false;
+        private bool _traceParsing;
+        private bool _traceTokeniser;
+
 #pragma warning disable CS0618 // Type or member is obsolete
         private readonly bool _validateIris = Options.ValidateIris; // = false;
 #pragma warning restore CS0618 // Type or member is obsolete
+        
         //private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
-        private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
+        private readonly TurtleSyntax _syntax;
 
         /// <summary>
         /// Creates a new Turtle Parser.
         /// </summary>
-        public TurtleParser() { }
+        public TurtleParser(): this(TurtleSyntax.Rdf11Star, false) { }
 
         /// <summary>
         /// Creates a new Turtle Parser.
@@ -80,10 +82,7 @@ namespace VDS.RDF.Parsing
         /// Creates a new Turtle Parser which uses the given Token Queue Mode.
         /// </summary>
         /// <param name="queueMode">Queue Mode for Turtle.</param>
-        public TurtleParser(TokenQueueMode queueMode)
-        {
-            TokenQueueMode = queueMode;
-        }
+        public TurtleParser(TokenQueueMode queueMode) : this(queueMode, TurtleSyntax.Rdf11Star) { }
 
         /// <summary>
         /// Creates a new Turtle Parser which uses the given Token Queue Mode.
@@ -306,6 +305,7 @@ namespace VDS.RDF.Parsing
                         case Token.LEFTSQBRACKET:
                         case Token.QNAME:
                         case Token.URI:
+                        case Token.STARTQUOTE:
                             // Valid Subject of a Triple
                             TryParseTriples(context);
                             break;
@@ -448,6 +448,81 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        private ITripleNode TryParseQuotedTriple(TurtleParserContext context)
+        {
+            if (context.TraceParsing)
+            {
+                Console.WriteLine("Attempting to parse a quoted triple.");
+            }
+
+            IToken subjToken = context.Tokens.Dequeue();
+            INode subj = subjToken.TokenType switch
+            {
+                Token.BLANKNODE => context.Handler.CreateBlankNode(),
+                Token.BLANKNODEWITHID => context.Handler.CreateBlankNode(subjToken.Value.Substring(2)),
+                Token.QNAME => ParserHelper.TryResolveUri(context, subjToken, false, context.QNameUnescapeFunction),
+                Token.URI => ParserHelper.TryResolveUri(context, subjToken, false, context.QNameUnescapeFunction),
+                Token.STARTQUOTE => TryParseQuotedTriple(context),
+                Token.LEFTSQBRACKET => TryParseAnonBlankNode(context), // Blank node collections are not allowed in quoted triples
+                _ => throw ParserHelper.Error(
+                    $"Unexpected Token '{subjToken.GetType()}' encountered, this Token is not valid as the subject of a quoted triple",
+                    subjToken)
+            };
+
+            IToken predToken = context.Tokens.Dequeue();
+            INode pred = predToken.TokenType switch
+            {
+                Token.KEYWORDA =>
+                    context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "type")),
+                Token.QNAME => ParserHelper.TryResolveUri(context, predToken, false, context.QNameUnescapeFunction),
+                Token.URI => ParserHelper.TryResolveUri(context, predToken, false, context.QNameUnescapeFunction),
+                _ => throw ParserHelper.Error(
+                    $"Unexpected Token '{predToken.GetType()}' encountered, this Token is not valid as the predicate of a quoted triple", predToken)
+            };
+
+            IToken objToken = context.Tokens.Dequeue();
+            INode obj = objToken.TokenType switch
+            {
+                Token.BLANKNODE => context.Handler.CreateBlankNode(),
+                Token.BLANKNODEWITHID => context.Handler.CreateBlankNode(objToken.Value.Substring(2)),
+                Token.QNAME or Token.URI => ParserHelper.TryResolveUri(context, objToken, false,
+                    context.QNameUnescapeFunction),
+                Token.LITERAL or Token.LITERALWITHDT or Token.LITERALWITHLANG or Token.LONGLITERAL or Token.PLAINLITERAL
+                    => TryParseLiteral(context, objToken),
+                Token.STARTQUOTE => TryParseQuotedTriple(context),
+                Token.LEFTSQBRACKET => TryParseAnonBlankNode(context), // Blank node collections are not allowed in quoted triples
+                _ => throw ParserHelper.Error(
+                    $"Unexpected Token '{objToken.GetType()}' encountered, this Token is not valid as the object of a quoted triple",
+                    objToken)
+            };
+
+            IToken next = context.Tokens.Peek();
+            if (next.TokenType != Token.ENDQUOTE)
+            {
+                throw ParserHelper.Error(
+                    $"Unexpected token '{next.GetType()}' encountered. Expected a '>>' token to end a quoted triple.",
+                    next);
+            }
+            // Consume the ENDQUOTE
+            context.Tokens.Dequeue();
+
+            return context.Handler.CreateTripleNode(new Triple(subj, pred, obj));
+        }
+
+        private IBlankNode TryParseAnonBlankNode(TurtleParserContext context)
+        {
+            // Start of a Blank Node collection?
+            IToken next = context.Tokens.Peek();
+            if (next.TokenType != Token.RIGHTSQBRACKET)
+            {
+                throw ParserHelper.Error(
+                    $"Unexpected token '{next.GetType()}' encountered. Expected a ] to end an anonymous blank node.",
+                    next);
+            }
+            context.Tokens.Dequeue();
+            return context.Handler.CreateBlankNode();
+        }
+
         /// <summary>
         /// Tries to parse Triples.
         /// </summary>
@@ -502,10 +577,10 @@ namespace VDS.RDF.Parsing
                     {
                         // Start of a Blank Node Collection
                         subj = context.Handler.CreateBlankNode();
-                        TryParsePredicateObjectList(context, subj, true);
+                        TryParsePredicateObjectList(context, subj, true, false);
 
                         // In W3C Turtle we are allowed to have a dot to terminate a top level blank node predicate list
-                        if (_syntax == TurtleSyntax.W3C)
+                        if (_syntax != TurtleSyntax.Original)
                         {
                             next = context.Tokens.Peek();
                             if (next.TokenType == Token.DOT)
@@ -522,11 +597,15 @@ namespace VDS.RDF.Parsing
                     subj = ParserHelper.TryResolveUri(context, subjToken, false, context.QNameUnescapeFunction);
                     break;
 
+                case Token.STARTQUOTE:
+                    subj = TryParseQuotedTriple(context);
+                    break;
+
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + subjToken.GetType().ToString() + "' encountered, this Token is not valid as the subject of a Triple", subjToken);
             }
 
-            TryParsePredicateObjectList(context, subj, false);
+            TryParsePredicateObjectList(context, subj, false, false);
         }
 
         /// <summary>
@@ -535,7 +614,8 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parse Context.</param>
         /// <param name="subj">Subject of the Triples.</param>
         /// <param name="bnodeList">Whether this is a Blank Node Predicate Object list.</param>
-        private void TryParsePredicateObjectList(TurtleParserContext context, INode subj, bool bnodeList)
+        /// <param name="annotationList">Whether this is a triple annotation list.</param>
+        private void TryParsePredicateObjectList(TurtleParserContext context, INode subj, bool bnodeList, bool annotationList)
         {
             IToken predToken;
             INode pred = null;
@@ -611,7 +691,7 @@ namespace VDS.RDF.Parsing
                             context.Tokens.Dequeue();
                             return;
                         }
-                        TryParsePredicateObjectList(context, subj, bnodeList);
+                        TryParsePredicateObjectList(context, subj, bnodeList, annotationList);
                         return;
 
                     default:
@@ -619,9 +699,11 @@ namespace VDS.RDF.Parsing
 
                 }
 
-                TryParseObjectList(context, subj, pred, bnodeList);
-                if (context.Tokens.LastTokenType == Token.DOT && !bnodeList) return; //Dot terminates a normal Predicate Object list
-                if (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && bnodeList) return; //Trailing semicolon may terminate a Blank Node Predicate Object list
+                TryParseObjectList(context, subj, pred, bnodeList, annotationList);
+                if (context.Tokens.LastTokenType == Token.DOT && !bnodeList && !annotationList) return; //Dot terminates a normal Predicate Object list
+                if (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && bnodeList) return; 
+                if (context.Tokens.LastTokenType == Token.ENDANNOTATION && annotationList) return;
+                //Trailing semicolon may terminate a Blank Node Predicate Object list
                 if (context.Tokens.LastTokenType == Token.SEMICOLON && context.Tokens.Peek().TokenType == Token.DOT)
                 {
                     // Dot terminates a Predicate Object list with a trailing semicolon
@@ -638,7 +720,8 @@ namespace VDS.RDF.Parsing
         /// <param name="subj">Subject of the Triples.</param>
         /// <param name="pred">Predicate of the Triples.</param>
         /// <param name="bnodeList">Whether this is a Blank Node Object list.</param>
-        private void TryParseObjectList(TurtleParserContext context, INode subj, INode pred, bool bnodeList)
+        /// <param name="annotationList">Whether this is a triple annotation list.</param>
+        private void TryParseObjectList(TurtleParserContext context, INode subj, INode pred, bool bnodeList, bool annotationList)
         {
             IToken objToken, next;
             INode obj = null;
@@ -718,7 +801,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Start of a Blank Node Collection
                             obj = context.Handler.CreateBlankNode();
-                            TryParsePredicateObjectList(context, obj, true);
+                            TryParsePredicateObjectList(context, obj, true, false);
                         }
                         break;
 
@@ -764,6 +847,29 @@ namespace VDS.RDF.Parsing
                         obj = ParserHelper.TryResolveUri(context, objToken, false, context.QNameUnescapeFunction);
                         break;
 
+                    case Token.STARTQUOTE:
+                        obj = TryParseQuotedTriple(context);
+                        break;
+
+                    case Token.ENDANNOTATION:
+                        if (annotationList)
+                        {
+                            if (obj != null)
+                            {
+                                return;
+                            }
+
+                            throw ParserHelper.Error(
+                                "Unexpected |}. Expecting a valid object for the current triple annotation list",
+                                objToken);
+                        }
+                        else
+                        {
+                            throw ParserHelper.Error(
+                                "Unexpected |} encountered when not expecting the end of a triple annotation list",
+                                objToken);
+                        }
+
                     case Token.EOF:
                         throw ParserHelper.Error("Unexpected end of file while trying to parse an Object list", objToken);
 
@@ -772,10 +878,18 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Assert the Triple
-                if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
+                var triple = new Triple(subj, pred, obj);
+                if (!context.Handler.HandleTriple(triple)) ParserHelper.Stop();
 
-                // Expect a comma/semicolon/dot terminator if we are to continue
+                // Expect a comma/semicolon/dot terminator if we are to continue or an annotation
                 next = context.Tokens.Peek();
+                if (next.TokenType == Token.STARTANNOTATION)
+                {
+                    context.Tokens.Dequeue();
+                    TryParsePredicateObjectList(context, context.Handler.CreateTripleNode(triple), false, true);
+                    next = context.Tokens.Peek();
+                }
+
                 if (bnodeList)
                 {
                     // If in a Blank Node list a dot is not permitted but a ] is
@@ -783,10 +897,24 @@ namespace VDS.RDF.Parsing
                     {
                         throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Blank Node Object List, expected a comma, semicolon or ] to terminate the current Triple/list", next);
                     } 
-                } 
-                else if (next.TokenType != Token.COMMA && next.TokenType != Token.SEMICOLON && next.TokenType != Token.DOT)
+                } else if (annotationList)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse an Object list, expected a comma, semicolon or dot to terminate the current Triple", next);
+                    // If in a triple annotation list a dot is not permitted but a |} is
+                    if (next.TokenType != Token.COMMA && next.TokenType != Token.SEMICOLON &&
+                        next.TokenType != Token.ENDANNOTATION)
+                    {
+                        throw ParserHelper.Error(
+                            $"Unexpected Token '{next.GetType()}' encountered while trying to parse a triple annotation list. Expected a comma, semicolon or |}} to terminate the list.",
+                            next);
+                    }
+                }
+                else if (next.TokenType != Token.COMMA && next.TokenType != Token.SEMICOLON &&
+                         next.TokenType != Token.DOT)
+                {
+                    throw ParserHelper.Error(
+                        "Unexpected Token '" + next.GetType().ToString() +
+                        "' encountered while trying to parse an Object list, expected a comma, semicolon or dot to terminate the current Triple",
+                        next);
                 }
             } while (true);
         }
@@ -855,7 +983,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Blank Node Collection
                             obj = context.Handler.CreateBlankNode();
-                            TryParsePredicateObjectList(context, obj, true);
+                            TryParsePredicateObjectList(context, obj, true, false);
                         }
                         break;
                     case Token.LITERAL:
@@ -869,6 +997,10 @@ namespace VDS.RDF.Parsing
                     case Token.QNAME:
                     case Token.URI:
                         obj = ParserHelper.TryResolveUri(context, next, false, context.QNameUnescapeFunction);
+                        break;
+
+                    case Token.STARTQUOTE:
+                        obj = TryParseQuotedTriple(context);
                         break;
 
                     case Token.RIGHTBRACKET:

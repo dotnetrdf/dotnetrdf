@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -199,56 +200,40 @@ namespace VDS.RDF
             Assert.True(report.RemovedTriples.Any(), "Report should list removed triples");
         }
 
-        [Fact]
-        public void GraphDiffSlowOnEqualGraphsCase1()
+        public static IEnumerable<object[]> DiffCases()
         {
-            const string testGraphName = "case1";
+            var resourceDirectory = new DirectoryInfo(Path.Combine("resources", "diff_cases"));
+            foreach (FileInfo fileA in resourceDirectory.EnumerateFiles("*_a.ttl"))
+            {
+                var testCase = fileA.Name;
+                testCase = testCase.Substring(0, testCase.LastIndexOf('_'));
+                yield return new object[] {testCase};
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(DiffCases))]
+        public void EqualGraphTest(string testGraphName)
+        {
             TestGraphDiff(testGraphName);
         }
 
+        /* Helper test for debugging
         [Fact]
-        public void GraphDiffSlowOnEqualGraphsCase2()
+        public void TestSingle()
         {
-            const string testGraphName = "case2";
-            TestGraphDiff(testGraphName);
+            TestGraphDiff("case7");
         }
-
-        [Fact]
-        public void GraphDiffSlowOnEqualGraphsCase3()
-        {
-            const string testGraphName = "case3";
-            TestGraphDiff(testGraphName);
-        }
-
-        [Fact]
-        public void GraphDiffSlowOnEqualGraphsCase4()
-        {
-            const string testGraphName = "case4";
-            TestGraphDiff(testGraphName);
-        }
-
-        [Fact]
-        public void GraphDiffSlowOnEqualGraphsCase5()
-        {
-            const string testGraphName = "case5";
-            TestGraphDiff(testGraphName);
-        }
-
-        [Fact]
-        public void GraphDiffSlowOnEqualGraphsCase6()
-        {
-            const string testGraphName = "case6";
-            TestGraphDiff(testGraphName);
-        }
+        */
 
         private static void TestGraphDiff(string testGraphName)
         {
             var a = new Graph();
-            a.LoadFromFile(string.Format("resources\\diff_cases\\{0}_a.ttl", testGraphName));
+            a.LoadFromFile(Path.Combine("resources", "diff_cases", $"{testGraphName}_a.ttl"));
             var b = new Graph();
-            b.LoadFromFile(string.Format("resources\\diff_cases\\{0}_b.ttl", testGraphName));
+            b.LoadFromFile(Path.Combine("resources", "diff_cases", $"{testGraphName}_b.ttl"));
 
-            var diff = a.Difference(b);
+            GraphDiffReport diff = a.Difference(b);
 
             if (!diff.AreEqual)
             {

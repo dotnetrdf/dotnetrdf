@@ -435,7 +435,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     break;
 
                                 case '\'':
-                                    if (_syntax == TurtleSyntax.W3C)
+                                    if (_syntax != TurtleSyntax.Original)
                                     {
                                         if (!anycharallowed)
                                         {
@@ -573,6 +573,41 @@ namespace VDS.RDF.Parsing.Tokens
                                     break;
 
                                 case '{':
+                                    if (!anycharallowed)
+                                    {
+                                        // May be the start of an annotation
+                                        ConsumeCharacter();
+                                        var following = Peek();
+                                        if (following != '|')
+                                        {
+                                            // This is invalid syntax
+                                            throw Error("Unexpected Character (Code " + (int)next + "): " + next +
+                                                        "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
+                                        }
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.STARTANNOTATION;
+                                        return new StartAnnotationToken(CurrentLine, StartPosition);
+                                    }
+                                    break;
+
+                                case '|':
+                                    if (!anycharallowed)
+                                    {
+                                        // May be the end of an annotation
+                                        ConsumeCharacter();
+                                        var following = Peek();
+                                        if (following != '}')
+                                        {
+                                            // This is invalid syntax
+                                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
+                                        }
+
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.ENDANNOTATION;
+                                        return new EndAnnotationToken(CurrentLine, StartPosition);
+                                    }
+                                    break;
+                                    
                                 case '}':
                                     if (!anycharallowed)
                                     {
@@ -799,6 +834,12 @@ namespace VDS.RDF.Parsing.Tokens
                                                 throw Error("Unexpected <=, this appears to be an attempt to use Implied By which is not valid in Turtle");
                                             }
                                         }
+                                        else if (next == '<' && _syntax == TurtleSyntax.Rdf11Star)
+                                        {
+                                            // We have a STARTQUOTE token rather than the start of a URI
+                                            ConsumeCharacter();
+                                            return new StartQuoteToken(CurrentLine, StartPosition);
+                                        }
                                         else if (next == '>')
                                         {
                                             // Have an Empty Uri
@@ -817,14 +858,23 @@ namespace VDS.RDF.Parsing.Tokens
                                         ConsumeCharacter();
 
                                         // Produce the Token
-                                        if (_validateIris && _syntax == TurtleSyntax.W3C && !IriSpecsHelper.IsIri(Value.Substring(1, Length - 2))) throw Error("Illegal IRI " + Value + " encountered");
+                                        if (_validateIris && _syntax != TurtleSyntax.Original && !IriSpecsHelper.IsIri(Value.Substring(1, Length - 2))) throw Error("Illegal IRI " + Value + " encountered");
                                         return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
                                     }
                                     else if (!anycharallowed)
                                     {
+                                        ConsumeCharacter(false);
+                                        next = Peek();
+                                        if (next == '>')
+                                        {
+                                            ConsumeCharacter();
+                                            return new EndQuoteToken(CurrentLine, StartPosition);
+                                        }
+
                                         // Raise an Error
                                         throw UnexpectedCharacter(next, string.Empty);
                                     }
+
                                     break;
 
                                 #endregion
@@ -1035,7 +1085,8 @@ namespace VDS.RDF.Parsing.Tokens
             StartNewToken();
 
             // Grab all the Characters in the QName
-            while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax == TurtleSyntax.W3C))
+            while(!(char.IsWhiteSpace(next) || next is ';' or ',' or '(' or ')' or '[' or ']' or '#' || (next == '.' && _syntax == TurtleSyntax.Original) || (next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
+            //while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax != TurtleSyntax.Original) && (!(next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
             {
                 // Can't have more than one Colon in a QName unless we're using the W3C syntax
                 if (next == ':' && !colonoccurred)

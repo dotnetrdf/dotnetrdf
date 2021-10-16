@@ -44,6 +44,10 @@ namespace VDS.RDF.Parsing
         /// Turtle as standardised by the <a href="http://www.w3.org/TR/turtle/">W3C RDF Working Group</a>
         /// </summary>
         W3C,
+        /// <summary>
+        /// Turtle with RDF-Star syntax extensions
+        /// </summary>
+        Rdf11Star,
     }
 
     /// <summary>
@@ -240,6 +244,7 @@ namespace VDS.RDF.Parsing
             switch (syntax)
             {
                 case TurtleSyntax.W3C:
+                case TurtleSyntax.Rdf11Star:
                     // PN_PREFIX	::=	PN_CHARS_BASE ((PN_CHARS | '.')* PN_CHARS)?
 
                     if (cs.Length == 0) return true;
@@ -344,6 +349,7 @@ namespace VDS.RDF.Parsing
             switch (syntax)
             {
                 case TurtleSyntax.W3C:
+                case TurtleSyntax.Rdf11Star:
                     // PNAME_LN	::=	PNAME_NS PN_LOCAL
                     // PNAME_NS	::=	PN_PREFIX? ':'
 

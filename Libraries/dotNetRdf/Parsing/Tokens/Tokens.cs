@@ -855,5 +855,32 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="pos">Column at which the &gt;&gt; starts.</param>
         public EndQuoteToken(int line, int pos) : base(Token.ENDQUOTE, String.Empty, line, line, pos, pos + 2) { }
     }
+
+    /// <summary>
+    /// Token which represents the start of a triple annotation.
+    /// </summary>
+    public class StartAnnotationToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new {| token.
+        /// </summary>
+        /// <param name="line">Line at which the token starts.</param>
+        /// <param name="pos">Column at which the token starts.</param>
+        public StartAnnotationToken(int line, int pos): base(Token.STARTANNOTATION, string.Empty, line, line, pos, pos+2){}
+    }
+
+    /// <summary>
+    /// Token which represents the end of a triple annotation.
+    /// </summary>
+    public class EndAnnotationToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new |} token.
+        /// </summary>
+        /// <param name="line">Line at which the token starts.</param>
+        /// <param name="pos">Column at which the token starts.</param>
+        public EndAnnotationToken(int line, int pos) : base(Token.ENDANNOTATION, string.Empty, line, line, pos, pos + 2) { }
+    }
+
     #endregion
 }

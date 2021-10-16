@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentAssertions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,13 @@ namespace VDS.RDF.TestSuite.RdfStar
                     }
                 }
             }
+        }
+
+        public ManifestTestData GetTestData(Uri testUri)
+        {
+            IUriNode testNode = _manifestGraph.GetUriNode(testUri);
+            testNode.Should().NotBeNull($"Could not find test node {testUri}.");
+            return new ManifestTestData(_manifest, testNode);
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

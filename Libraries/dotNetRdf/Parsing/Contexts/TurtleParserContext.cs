@@ -163,10 +163,10 @@ namespace VDS.RDF.Parsing.Contexts
             {
                 switch (_syntax)
                 {
-                    case TurtleSyntax.W3C:
-                        return TurtleSpecsHelper.UnescapeQName;
-                    default:
+                    case TurtleSyntax.Original:
                         return s => s;
+                    default:
+                        return TurtleSpecsHelper.UnescapeQName;
                 }
             }
         }

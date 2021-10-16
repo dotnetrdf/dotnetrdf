@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using VDS.RDF.Parsing;
 using Xunit;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -209,7 +210,7 @@ namespace VDS.RDF
 
         public static void ShowDifferences(GraphDiffReport report, String lhsName, String rhsName)
         {
-            var formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11Star);
             lhsName = String.IsNullOrEmpty(lhsName) ? "1st Graph" : lhsName;
             rhsName = String.IsNullOrEmpty(rhsName) ? "2nd Graph" : rhsName;
 
@@ -276,7 +277,7 @@ namespace VDS.RDF
         }
         public static void ShowDifferences(GraphDiffReport report, String lhsName, String rhsName, ITestOutputHelper output)
         {
-            var formatter = new NTriplesFormatter();
+            var formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11Star);
             lhsName = String.IsNullOrEmpty(lhsName) ? "1st Graph" : lhsName;
             rhsName = String.IsNullOrEmpty(rhsName) ? "2nd Graph" : rhsName;
 

@@ -310,7 +310,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 HandleEscapes(Syntax == NTriplesSyntax.Original ? TokeniserEscapeMode.PermissiveUri : TokeniserEscapeMode.Uri);
             }
-            else if (Syntax == NTriplesSyntax.Rdf11 && c == ' ')
+            else if (Syntax != NTriplesSyntax.Original && c == ' ')
             {
                 throw Error("Spaces are not valid in URIs");
             }
