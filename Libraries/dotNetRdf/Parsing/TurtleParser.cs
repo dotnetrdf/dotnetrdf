@@ -40,18 +40,20 @@ namespace VDS.RDF.Parsing
     public class TurtleParser 
         : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
-        private bool _traceParsing = false;
-        private bool _traceTokeniser = false;
+        private bool _traceParsing;
+        private bool _traceTokeniser;
+
 #pragma warning disable CS0618 // Type or member is obsolete
         private readonly bool _validateIris = Options.ValidateIris; // = false;
 #pragma warning restore CS0618 // Type or member is obsolete
+        
         //private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
-        private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
+        private readonly TurtleSyntax _syntax;
 
         /// <summary>
         /// Creates a new Turtle Parser.
         /// </summary>
-        public TurtleParser() { }
+        public TurtleParser(): this(TurtleSyntax.Rdf11Star, false) { }
 
         /// <summary>
         /// Creates a new Turtle Parser.
@@ -80,10 +82,7 @@ namespace VDS.RDF.Parsing
         /// Creates a new Turtle Parser which uses the given Token Queue Mode.
         /// </summary>
         /// <param name="queueMode">Queue Mode for Turtle.</param>
-        public TurtleParser(TokenQueueMode queueMode)
-        {
-            TokenQueueMode = queueMode;
-        }
+        public TurtleParser(TokenQueueMode queueMode) : this(queueMode, TurtleSyntax.Rdf11Star) { }
 
         /// <summary>
         /// Creates a new Turtle Parser which uses the given Token Queue Mode.

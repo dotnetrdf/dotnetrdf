@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\dotNetRdf\dotNetRdf.csproj" />
+    <ProjectReference Include="..\dotNetRdf.TestSupport\dotNetRdf.TestSupport.csproj" />
     <None Update="resources\tests\**\*.*;resources\tests\*.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

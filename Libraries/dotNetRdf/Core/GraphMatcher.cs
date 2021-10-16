@@ -45,24 +45,34 @@ namespace VDS.RDF
     /// <li>If only one of the given graph is null then they are not equal</li>
     /// <li>If the given graphs are reference equal then they are equal</li>
     /// <li>If the given graphs have a different number of Triples they are not equal</li>
-    /// <li>Declare a list of triples which are the triples of the second graph called <em>TargetTriples</em></li>
+    /// <li>If the given graphs have a different number of quoted triples, they are not equal</li>
+    /// <li>Declare a list of triples which are the asserted triples of the second graph called <em>TargetTriples</em></li>
+    /// <li>Declare a set of triples which are the quoted triples of the second graph called <em>TargetQuoted</em></li>
     /// <li>Declare two dictionaries of Nodes to Integers which are called <em>SourceClassification</em> and <em>TargetClassification</em></li>
-    /// <li>For Each Triple in the Source Graph
+    /// <li>For Each Triple asserted in the Source Graph
     ///     <ol>
     ///     <li>If it is a ground triple and cannot be found and removed from <em>TargetTriples</em> then graphs are not equal since the triple does not exist in both graphs</li>
     ///     <li>If it contains blank nodes track the number of usages of this blank node in <em>SourceClassification</em></li>
     ///     </ol>
-    /// </li> 
+    /// </li>
+    /// <li>For Each Triple quoted in the Source Graph
+    ///     <ol>
+    ///     <li>If it is a ground triple and cannot be found and removed from <em>TargetQuoted</em> then graphs are not equal since the triple is not quoted in both graphs</li>
+    ///     <li>If it contains blank nodes track the number of usages of this blank node in <em>SourceClassification</em></li>
+    ///     </ol>
+    /// </li>
     /// <li>If there are any triples remaining in <em>TargetTriples</em> which are ground triples then graphs are not equal since the Source Graph does not contain them</li>
+    /// <li>If there are any triples remaining in <em>TargetQuoted</em> which are ground triples then graphs are not equal since the Source Graph does not quote them</li>
     /// <li>If all the triples from both graphs were ground triples (i.e. there were no blank nodes) then the graphs are equal</li>
-    /// <li>Iterate over the remaining triples in <em>TargetTriples</em> and populate the <em>TargetClassification</em></li>
+    /// <li>Iterate over the remaining triples in <em>TargetTriples</em> and <em>TargetQuoted</em> and populate the <em>TargetClassification</em></li>
     /// <li>If the count of the two classifications is different the graphs are not equal since there are differing numbers of blank nodes in the Graph</li>
     /// <li>Now build two additional dictionaries of Integers to Integers which are called <em>SourceDegreeClassification</em> and <em>TargetDegreeClassification</em>.  Iterate over <em>SourceClassification</em> and <em>TargetClassification</em> such that the corresponding degree classifications contain a mapping of the number of blank nodes with a given degree</li>
     /// <li>If the count of the two degree classifications is different the graphs are not equal since there are not the same range of blank node degrees in both graphs</li>
     /// <li>For All classifications in <em>SourceDegreeClassification</em> there must be a matching classification in <em>TargetDegreeClassification</em> else the graphs are not equal</li>
+    /// <li>From this point in the algorithm, we can merge the remaining quoted and asserted triples to be matched into a single set for source and target triples.</li>
     /// <li>Then build a possible mapping using the following rules:
     ///     <ol>
-    ///     <li>Any blank bode used only once (single-use) in the Source Graph should be mapped to an equivalent blank bode in the Target Graph.  If this is not possible then the graphs are not equal</li>
+    ///      <li>Any blank bode used only once (single-use) in the Source Graph should be mapped to an equivalent blank bode in the Target Graph.  If this is not possible then the graphs are not equal</li>
     ///     <li>Any blank node with a unique degree in the Source Graph should be mapped to an equivalent blank node in the Target Graph.  If this is not possible then the graphs are not equal</li>
     ///     <li>Any blank node used with unique constants (two other ground terms in a triple) in the Source Graph should be mapped to an equivalent blank bode in the Target Graph.  If this is not possible then the graphs are not equal.</li>
     ///     <li>Build up lists of dependent pairs of blank Nodes for both graphs</li>
@@ -95,7 +105,9 @@ namespace VDS.RDF
         private List<INode> _bound;
         private Dictionary<INode, INode> _mapping;
         private HashSet<Triple> _sourceTriples;
+        private HashSet<Triple> _sourceQuoted;
         private HashSet<Triple> _targetTriples;
+        private HashSet<Triple> _targetQuoted;
 
         /// <summary>
         /// Compares two Graphs for equality.
@@ -140,11 +152,19 @@ namespace VDS.RDF
                 return false;
             }
 
-            var gtCount = 0;
+            if (g.Triples.QuotedCount != h.Triples.QuotedCount)
+            {
+                Debug.WriteLine("[NOT EQUAL] Differing number of quoted triples between graphs");
+                return false;
+            }
+
+            int gtCount = 0, qgtCount = 0;
             var gNodes = new Dictionary<INode, int>();
             var hNodes = new Dictionary<INode, int>();
-            _targetTriples = new HashSet<Triple>(h.Triples);
-            foreach (Triple t in g.Triples)
+            _targetTriples = new HashSet<Triple>(h.Triples.Asserted);
+            _targetQuoted = new HashSet<Triple>(h.Triples.Quoted);
+
+            foreach (Triple t in g.Triples.Asserted)
             {
                 if (t.IsGroundTriple)
                 {
@@ -165,52 +185,43 @@ namespace VDS.RDF
                 else
                 {
                     // If not a Ground Triple remember which Blank Nodes we need to map
-                    if (t.Subject.NodeType == NodeType.Blank)
-                    {
-                        if (!gNodes.ContainsKey(t.Subject))
-                        {
-                            gNodes.Add(t.Subject, 1);
-                        }
-                        else
-                        {
-                            gNodes[t.Subject]++;
-                        }
-                    }
-                    if (t.Predicate.NodeType == NodeType.Blank)
-                    {
-                        if (!gNodes.ContainsKey(t.Predicate))
-                        {
-                            gNodes.Add(t.Predicate, 1);
-                        }
-                        else
-                        {
-                            gNodes[t.Predicate]++;
-                        }
-                    }
-                    if (t.Object.NodeType == NodeType.Blank)
-                    {
-                        if (!gNodes.ContainsKey(t.Object))
-                        {
-                            gNodes.Add(t.Object, 1);
-                        }
-                        else
-                        {
-                            gNodes[t.Object]++;
-                        }
-                    }
+                    GatherBlankNodes(t, gNodes);
                 }
             }
 
+            foreach (Triple t in g.Triples.Quoted)
+            {
+                if (t.IsGroundTriple)
+                {
+                    if (!h.ContainsQuotedTriple(t))
+                    {
+                        Debug.WriteLine("[NOT EQUAL] First graph contains a quoted ground triple which is not quoted in the second graph");
+                        return false;
+                    }
+                    if (!_targetQuoted.Remove(t))
+                    {
+                        Debug.WriteLine("[NOT EQUAL] First graph contains a ground triple which is not in the second graph");
+                        return false;
+                    }
+                    qgtCount++;
+                }
+                else
+                {
+                    GatherBlankNodes(t, gNodes);
+                }
+            }
+
+
             // If the other Graph still contains Ground Triples then the Graphs aren't equal
-            if (_targetTriples.Any(t => t.IsGroundTriple))
+            if (_targetTriples.Any(t => t.IsGroundTriple) || _targetQuoted.Any(t=>t.IsGroundTriple))
             {
                 Debug.WriteLine("[NOT EQUAL] Second Graph contains ground triples not present in first graph");
                 return false;
             }
             Debug.WriteLine("Validated that there are " + gtCount + " ground triples present in both graphs");
 
-            // If there are no Triples left in the other Graph, all our Triples were Ground Triples and there are no Blank Nodes to map the Graphs are equal
-            if (_targetTriples.Count == 0 && gtCount == g.Triples.Count && gNodes.Count == 0)
+            // If there are no Triples left in the other Graph, all our Triples (both asserted and quoted) were Ground Triples and there are no Blank Nodes to map the Graphs are equal
+            if (_targetTriples.Count == 0 && gtCount == g.Triples.Count && qgtCount == g.Triples.QuotedCount && gNodes.Count == 0)
             {
                 Debug.WriteLine("[EQUAL] Graphs contain only ground triples and all triples are present in both graphs");
                 return true;
@@ -219,39 +230,12 @@ namespace VDS.RDF
             // Now classify the remaining Triples from the other Graph
             foreach (Triple t in _targetTriples)
             {
-                if (t.Subject.NodeType == NodeType.Blank)
-                {
-                    if (!hNodes.ContainsKey(t.Subject))
-                    {
-                        hNodes.Add(t.Subject, 1);
-                    }
-                    else
-                    {
-                        hNodes[t.Subject]++;
-                    }
-                }
-                if (t.Predicate.NodeType == NodeType.Blank)
-                {
-                    if (!hNodes.ContainsKey(t.Predicate))
-                    {
-                        hNodes.Add(t.Predicate, 1);
-                    }
-                    else
-                    {
-                        hNodes[t.Predicate]++;
-                    }
-                }
-                if (t.Object.NodeType == NodeType.Blank)
-                {
-                    if (!hNodes.ContainsKey(t.Object))
-                    {
-                        hNodes.Add(t.Object, 1);
-                    }
-                    else
-                    {
-                        hNodes[t.Object]++;
-                    }
-                }
+                GatherBlankNodes(t, hNodes);
+            }
+
+            foreach (Triple t in _targetQuoted)
+            {
+                GatherBlankNodes(t, hNodes);
             }
 
             // First off we must have the same number of Blank Nodes in each Graph
@@ -314,6 +298,54 @@ namespace VDS.RDF
 
         }
 
+        private void GatherBlankNodes(Triple t, IDictionary<INode, int> nodeMap)
+        {
+            if (t.Subject.NodeType == NodeType.Blank)
+            {
+                if (!nodeMap.ContainsKey(t.Subject))
+                {
+                    nodeMap.Add(t.Subject, 1);
+                }
+                else
+                {
+                    nodeMap[t.Subject]++;
+                }
+            }
+            else if (t.Subject is ITripleNode tn)
+            {
+                GatherBlankNodes(tn.Triple, nodeMap);
+            }
+
+            if (t.Predicate.NodeType == NodeType.Blank)
+            {
+                if (!nodeMap.ContainsKey(t.Predicate))
+                {
+                    nodeMap.Add(t.Predicate, 1);
+                }
+                else
+                {
+                    nodeMap[t.Predicate]++;
+                }
+            }
+
+            if (t.Object.NodeType == NodeType.Blank)
+            {
+                if (!nodeMap.ContainsKey(t.Object))
+                {
+                    nodeMap.Add(t.Object, 1);
+                }
+                else
+                {
+                    nodeMap[t.Object]++;
+                }
+            }
+            else if (t.Object is ITripleNode tn)
+            {
+                GatherBlankNodes(tn.Triple, nodeMap);
+            }
+        }
+
+
         /// <summary>
         /// Uses a series of Rules to attempt to generate a mapping without the need for brute force guessing.
         /// </summary>
@@ -334,9 +366,9 @@ namespace VDS.RDF
             _mapping = new Dictionary<INode, INode>();
 
             // Initialise the Source Triples list
-            _sourceTriples = new HashSet<Triple>(from t in g.Triples
-                                                      where !t.IsGroundTriple
-                                                      select t);
+            _sourceTriples = new HashSet<Triple>(g.Triples.Where(t=>!t.IsGroundTriple));
+            _sourceTriples.UnionWith(new HashSet<Triple>(g.Triples.Quoted.Where(t => !t.IsGroundTriple)));
+            _targetTriples.UnionWith(_targetQuoted);
 
             // First thing consider the trivial mapping
             var trivialMapping = new Dictionary<INode, INode>();
@@ -354,30 +386,31 @@ namespace VDS.RDF
             Debug.WriteLine("Trivial Mapping (all Blank Nodes have identical IDs) did not hold");
 
             // Initialise the Unbound list
-            _unbound = (from n in hNodes.Keys
-                             select n).ToList();
+            _unbound = hNodes.Keys.ToList();
 
             // Map single use Nodes first to reduce the size of the overall mapping
             Debug.WriteLine("Mapping single use blank nodes");
             foreach (KeyValuePair<INode, int> pair in gNodes.Where(p => p.Value == 1))
             {
                 // Find the Triple we need to map
-                Triple toMap = (from t in _sourceTriples
-                                where t.Involves(pair.Key)
-                                select t).First();
-
-                foreach (INode n in _unbound.Where(n => hNodes[n] == pair.Value))
+                Triple toMap = _sourceTriples.FirstOrDefault(t => t.Involves(pair.Key));
+                if (toMap != null)
                 {
-                    // See if this Mapping works
-                    _mapping.Add(pair.Key, n);
-                    if (_targetTriples.Remove(toMap.MapTriple(h, _mapping)))
+                    foreach (INode n in _unbound.Where(n => hNodes[n] == pair.Value))
                     {
-                        _sourceTriples.Remove(toMap);
-                        _bound.Add(n);
-                        break;
+                        // See if this Mapping works
+                        _mapping.Add(pair.Key, n);
+                        if (_targetTriples.Remove(toMap.MapTriple(h, _mapping)))
+                        {
+                            _sourceTriples.Remove(toMap);
+                            _bound.Add(n);
+                            break;
+                        }
+
+                        _mapping.Remove(pair.Key);
                     }
-                    _mapping.Remove(pair.Key);
                 }
+
 
                 // There is a pathological case where we can't map anything this way because
                 // there are always dependencies between the blank nodes in which case we
@@ -429,52 +462,11 @@ namespace VDS.RDF
             // Then look for nodes which are associated with unique constants
             // By this we mean nodes that occur as the subject/object of a triple where the other two parts are non-blank
             Debug.WriteLine("Trying to map blank nodes based on unique constants associated with the nodes");
-            foreach (Triple t in _sourceTriples)
+            if (!MapNodesWithUniqueConstants(_sourceTriples, _targetTriples))
             {
-                if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType != NodeType.Blank && t.Object.NodeType != NodeType.Blank)
-                {
-                    // Ignore if already mapped
-                    if (_mapping.ContainsKey(t.Subject)) continue;
-
-                    // Are there any possible matches?
-                    // We only need to know about at most 2 possibilities since zero possiblities means non-equal graphs, one is a valid mapping and two or more is not mappable this way
-                    var possibles = new List<Triple>(_targetTriples.Where(x => x.Subject.NodeType == NodeType.Blank && x.Predicate.Equals(t.Predicate) && x.Object.Equals(t.Object)).Take(2));
-                    if (possibles.Count == 1)
-                    {
-                        // Precisely one possible match so map
-                        INode x = t.Subject;
-                        INode y = possibles.First().Subject;
-                        _mapping.Add(x, y);
-                        _bound.Add(y);
-                        _unbound.Remove(y);
-                    }
-                    else if (possibles.Count == 0)
-                    {
-                        // No possible matches so not equal graphs
-                        Debug.WriteLine("[NOT EQUAL] Node used in a triple with two constants where no candidate mapping for that triple could be found");
-                        _mapping = null;
-                        return false;
-                    }
-                }
-                else if (t.Subject.NodeType != NodeType.Blank && t.Predicate.NodeType != NodeType.Blank && t.Object.NodeType == NodeType.Blank)
-                {
-                    // Ignore if already mapped
-                    if (_mapping.ContainsKey(t.Object)) continue;
-
-                    // Are there any possible matches?
-                    // We only need to know about at most 2 possibilities since zero possiblities means non-equal graphs, one is a valid mapping and two or more is not mappable this way
-                    var possibles = new List<Triple>(_targetTriples.Where(x => x.Subject.Equals(t.Subject) && x.Predicate.Equals(t.Predicate) && x.Object.NodeType == NodeType.Blank).Take(2));
-                    if (possibles.Count == 1)
-                    {
-                        // Precisely one possible match so map
-                        INode x = t.Object;
-                        INode y = possibles.First().Object;
-                        _mapping.Add(x, y);
-                        _bound.Add(y);
-                        _unbound.Remove(y);
-                    }
-                }
+                return false;
             }
+
             Debug.WriteLine("Using unique constants associated with blank nodes allowed mapping of " + (_mapping.Count - mappedSoFar) + " blank nodes, " + _mapping.Count + " mapped out of a total " + gNodes.Count);
             mappedSoFar = _mapping.Count;
 
@@ -733,6 +725,67 @@ namespace VDS.RDF
                 Debug.WriteLine("Rules based mapping did not generate a complete mapping, falling back to divide and conquer mapping");
                 return TryDivideAndConquerMapping(g, h, gNodes, hNodes, sourceDependencies, targetDependencies);
             }
+        }
+
+        private bool MapNodesWithUniqueConstants(HashSet<Triple> sourceTriples, HashSet<Triple> targetTriples)
+        {
+            foreach (Triple t in sourceTriples)
+            {
+                if (t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType != NodeType.Blank &&
+                    t.Object.NodeType != NodeType.Blank)
+                {
+                    // Ignore if already mapped
+                    if (_mapping.ContainsKey(t.Subject)) continue;
+
+                    // Are there any possible matches?
+                    // We only need to know about at most 2 possibilities since zero possiblities means non-equal graphs, one is a valid mapping and two or more is not mappable this way
+                    var possibles = new List<Triple>(targetTriples.Where(x =>
+                            x.Subject.NodeType == NodeType.Blank && x.Predicate.Equals(t.Predicate) &&
+                            x.Object.Equals(t.Object))
+                        .Take(2));
+                    if (possibles.Count == 1)
+                    {
+                        // Precisely one possible match so map
+                        INode x = t.Subject;
+                        INode y = possibles.First().Subject;
+                        _mapping.Add(x, y);
+                        _bound.Add(y);
+                        _unbound.Remove(y);
+                    }
+                    else if (possibles.Count == 0)
+                    {
+                        // No possible matches so not equal graphs
+                        Debug.WriteLine(
+                            "[NOT EQUAL] Node used in a triple with two constants where no candidate mapping for that triple could be found");
+                        _mapping = null;
+                        return false;
+                    }
+                }
+                else if (t.Subject.NodeType != NodeType.Blank && t.Predicate.NodeType != NodeType.Blank &&
+                         t.Object.NodeType == NodeType.Blank)
+                {
+                    // Ignore if already mapped
+                    if (_mapping.ContainsKey(t.Object)) continue;
+
+                    // Are there any possible matches?
+                    // We only need to know about at most 2 possibilities since zero possiblities means non-equal graphs, one is a valid mapping and two or more is not mappable this way
+                    var possibles = new List<Triple>(targetTriples.Where(x =>
+                            x.Subject.Equals(t.Subject) && x.Predicate.Equals(t.Predicate) &&
+                            x.Object.NodeType == NodeType.Blank)
+                        .Take(2));
+                    if (possibles.Count == 1)
+                    {
+                        // Precisely one possible match so map
+                        INode x = t.Object;
+                        INode y = possibles.First().Object;
+                        _mapping.Add(x, y);
+                        _bound.Add(y);
+                        _unbound.Remove(y);
+                    }
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

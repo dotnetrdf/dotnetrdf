@@ -30,6 +30,9 @@ namespace VDS.RDF.TestSuite.RdfStar
         public Uri Action => Graph.GetTriplesWithSubjectPredicate(TestNode, Graph.CreateUriNode("mf:action"))
             .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
 
+        public Uri Result => Graph.GetTriplesWithSubjectPredicate(TestNode, Graph.CreateUriNode("mf:result"))
+            .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
+
         public override string ToString()
         {
             return Id;

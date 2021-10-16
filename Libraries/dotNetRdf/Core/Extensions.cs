@@ -633,10 +633,15 @@ namespace VDS.RDF
             {
                 s = mapping[t.Subject];
             }
+            else if (t.Subject is ITripleNode stn)
+            {
+                s = new TripleNode(stn.Triple.MapTriple(target, mapping));
+            }
             else
             {
                 s = t.Subject;
             }
+
             if (mapping.ContainsKey(t.Predicate))
             {
                 p = mapping[t.Predicate];
@@ -645,9 +650,14 @@ namespace VDS.RDF
             {
                 p = t.Predicate;
             }
+
             if (mapping.ContainsKey(t.Object))
             {
                 o = mapping[t.Object];
+            }
+            else if (t.Object is ITripleNode otn)
+            {
+                o = new TripleNode(otn.Triple.MapTriple(target, mapping));
             }
             else
             {

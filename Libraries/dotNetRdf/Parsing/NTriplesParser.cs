@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing
         /// Creates a new instance of the parser.
         /// </summary>
         public NTriplesParser()
-            : this(NTriplesSyntax.Rdf11)
+            : this(NTriplesSyntax.Rdf11Star)
         {
         }
 
