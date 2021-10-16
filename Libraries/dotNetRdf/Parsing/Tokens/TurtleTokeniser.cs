@@ -435,7 +435,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     break;
 
                                 case '\'':
-                                    if (_syntax == TurtleSyntax.W3C)
+                                    if (_syntax != TurtleSyntax.Original)
                                     {
                                         if (!anycharallowed)
                                         {
@@ -858,7 +858,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         ConsumeCharacter();
 
                                         // Produce the Token
-                                        if (_validateIris && _syntax == TurtleSyntax.W3C && !IriSpecsHelper.IsIri(Value.Substring(1, Length - 2))) throw Error("Illegal IRI " + Value + " encountered");
+                                        if (_validateIris && _syntax != TurtleSyntax.Original && !IriSpecsHelper.IsIri(Value.Substring(1, Length - 2))) throw Error("Illegal IRI " + Value + " encountered");
                                         return new UriToken(Value, CurrentLine, StartPosition, EndPosition);
                                     }
                                     else if (!anycharallowed)
@@ -1085,7 +1085,7 @@ namespace VDS.RDF.Parsing.Tokens
             StartNewToken();
 
             // Grab all the Characters in the QName
-            while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax == TurtleSyntax.W3C) && (!(next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
+            while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax != TurtleSyntax.Original) && (!(next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
             {
                 // Can't have more than one Colon in a QName unless we're using the W3C syntax
                 if (next == ':' && !colonoccurred)

@@ -580,7 +580,7 @@ namespace VDS.RDF.Parsing
                         TryParsePredicateObjectList(context, subj, true, false);
 
                         // In W3C Turtle we are allowed to have a dot to terminate a top level blank node predicate list
-                        if (_syntax == TurtleSyntax.W3C)
+                        if (_syntax != TurtleSyntax.Original)
                         {
                             next = context.Tokens.Peek();
                             if (next.TokenType == Token.DOT)
