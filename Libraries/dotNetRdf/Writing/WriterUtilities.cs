@@ -703,6 +703,20 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
+        /// Finds triple annotations (triples whose subject is another triple asserted in the graph) which can be compressed into annotation constructs in some RDF syntaxes.
+        /// </summary>
+        /// <param name="context">Writer context.</param>
+        public static void FindAnnotations(IAnnotationCompressingWriterContext context)
+        {
+            foreach (Triple annotatedTriple in context.Graph.Triples.Quoted.Where(context.Graph.ContainsTriple))
+            {
+                List<Triple> annotations = context.Graph.GetTriplesWithSubject(new TripleNode(annotatedTriple)).ToList();
+                context.Annotations[annotatedTriple] = annotations;
+                foreach (Triple annotation in annotations) context.TriplesDone.Add(annotation);
+            }
+        }
+
+        /// <summary>
         /// Encodes values for use in XML.
         /// </summary>
         /// <param name="value">Value to encode.</param>

@@ -73,6 +73,27 @@ namespace VDS.RDF.Writing.Formatting
     }
 
     /// <summary>
+    /// Formatter which formats Turtle-Star without any compression.
+    /// </summary>
+    public class UncompressedTurtleStarFormatter : NTriplesFormatter
+    {
+        /// <summary>
+        /// Creates a new uncompressed Turtle-Star formatter.
+        /// </summary>
+        public UncompressedTurtleStarFormatter():base(NTriplesSyntax.Rdf11Star, "Turtle-Star (Uncompressed)"){}
+
+        /// <summary>
+        /// Formats a sequence of characters as a String.
+        /// </summary>
+        /// <param name="cs">Characters.</param>
+        /// <returns>String.</returns>
+        public override string FormatChar(char[] cs)
+        {
+            return new string(cs);
+        }
+    }
+
+    /// <summary>
     /// Formatter which formats Turtle with QName compression.
     /// </summary>
     public class TurtleFormatter 
@@ -350,6 +371,13 @@ namespace VDS.RDF.Writing.Formatting
         protected override bool IsValidQName(string value)
         {
             return TurtleSpecsHelper.IsValidQName(value, TurtleSyntax.W3C);
+        }
+
+        /// <inheritdoc />
+        protected override string FormatTripleNode(ITripleNode t, TripleSegment? segment)
+        {
+            return "<< " + Format(t.Triple.Subject) + " " + Format(t.Triple.Predicate) + " " + Format(t.Triple.Object) +
+                   " >>";
         }
     }
 }

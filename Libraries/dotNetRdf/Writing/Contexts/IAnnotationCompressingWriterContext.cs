@@ -23,24 +23,18 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
-
-
 using System.Collections.Generic;
 
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Interface for Writer Contexts which store collection compression data.
+    /// Interface for writer contexts which store triple annotation compression data.
     /// </summary>
-    public interface ICollectionCompressingWriterContext : ICompressingWriterContext
+    public interface IAnnotationCompressingWriterContext : ICompressingWriterContext
     {
         /// <summary>
-        /// Gets the mapping from Blank Nodes to Collections.
+        /// Gets the mapping from asserted triples to triples that have the asserted triple as subject.
         /// </summary>
-        Dictionary<INode, OutputRdfCollection> Collections
-        {
-            get;
-        }
-
+        Dictionary<Triple, List<Triple>> Annotations { get; }
     }
 }

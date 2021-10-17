@@ -28,8 +28,8 @@ build_script:
   - ps: if ($env:APPVEYOR_REPO_TAG -eq "true") { msbuild Build\shfb\dotnetrdf.shfbproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /p:Configuration=Release /p:HelpFileVersion=$env:GitVersion_NuGetVersion }
 
 test_script:
-  - ps: dotnet test -c Release --filter "Category!=explicit" --framework netcoreapp3.1 Testing\unittest\unittest.csproj
-  - ps: dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\unittest\unittest.csproj
+  - ps: dotnet test -c Release --filter "Category!=explicit" --framework netcoreapp3.1 Testing\dotNetRdf.Tests\dotNetRdf.Tests.csproj
+  - ps: dotnet test -c Release --filter "Category!=explicit" --framework net472 Testing\dotNetRdf.Tests\dotNetRdf.Tests.csproj
   - ps: dotnet test -c Release --filter "Category=fulltext" --framework net472
 #  - cmd: docker build Testing\test_images\fuseki -t fuseki # Container build fails at the step where it creates the data directory /mnt/fuseki
   - cmd: docker run --rm -d -p 3030:3030 --name fuseki atomgraph/fuseki --mem /ds & exit 0

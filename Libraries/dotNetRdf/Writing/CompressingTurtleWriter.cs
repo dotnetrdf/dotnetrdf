@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
+using VDS.RDF.Storage.Management.Provisioning.Sesame;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
@@ -108,7 +109,8 @@ namespace VDS.RDF.Writing
         /// If the Compression Level is set to <see cref="WriterCompressionLevel.Minimal">Minimal</see> or above then full Predicate Object lists will be used for Triples.
         /// </para>
         /// <para>
-        /// If the Compression Level is set to <see cref="WriterCompressionLevel.More">More</see> or above then Blank Node Collections and Collection syntax will be used if the Graph contains Triples that can be compressed in that way.</para>
+        /// If the Compression Level is set to <see cref="WriterCompressionLevel.More">More</see> or above then Blank Node Collections and Collection syntax will be used if the Graph contains Triples that can be compressed in that way;
+        /// and if writing <see cref="TurtleSyntax.Rdf11Star"/> syntax, triple annotations syntax will be used if the graph contains asserted triples that are also quoted as the subject of one or more other triples.</para>
         /// </remarks>
 #pragma warning disable CS0618 // Type or member is obsolete
         public int CompressionLevel { get; set; } = Options.DefaultCompressionLevel; // = WriterCompressionLevel.More;
@@ -176,7 +178,7 @@ namespace VDS.RDF.Writing
             {
                 RaiseWarning("High Speed Write Mode in use - minimal syntax compression will be used");
                 context.CompressionLevel = WriterCompressionLevel.Minimal;
-                context.NodeFormatter = new UncompressedTurtleFormatter();
+                context.NodeFormatter = _syntax == TurtleSyntax.Rdf11Star ? new UncompressedTurtleStarFormatter() :  new UncompressedTurtleFormatter();
 
                 foreach (Triple t in context.Graph.Triples)
                 {
@@ -188,6 +190,7 @@ namespace VDS.RDF.Writing
                 if (context.CompressionLevel >= WriterCompressionLevel.More)
                 {
                     WriterHelper.FindCollections(context);
+                    if (_syntax == TurtleSyntax.Rdf11Star) WriterHelper.FindAnnotations(context);
                 }
 
                 // Get the Triples as a Sorted List
@@ -200,10 +203,8 @@ namespace VDS.RDF.Writing
                 int subjIndent = 0, predIndent = 0;
                 string temp;
 
-                for (var i = 0; i < ts.Count; i++)
+                foreach (Triple t in ts)
                 {
-                    Triple t = ts[i];
-
                     if (lastSubj == null || !t.Subject.Equals(lastSubj))
                     {
                         // Terminate previous Triples
@@ -253,13 +254,18 @@ namespace VDS.RDF.Writing
                     }
 
                     // Write the Object
-                    context.Output.Write(GenerateNodeOutput(context, t.Object, TripleSegment.Object, subjIndent + predIndent));
+                    temp = GenerateNodeOutput(context, t.Object, TripleSegment.Object, subjIndent + predIndent);
+                    context.Output.Write(temp);
+
+                    // Write any annotations on the object
+                    if (context.Annotations.ContainsKey(t))
+                    {
+                        context.Output.Write(GenerateAnnotationOutput(context, context.Annotations[t], subjIndent + predIndent + temp.Length + 1));
+                    }
                 }
 
                 // Terminate Triples
                 if (ts.Count > 0) context.Output.WriteLine(".");
-
-                return;
             }
             
         }
@@ -320,6 +326,19 @@ namespace VDS.RDF.Writing
                     return context.NodeFormatter.Format(n, segment);
 
                 case NodeType.Uri:
+                    return context.NodeFormatter.Format(n, segment);
+
+                case NodeType.Triple:
+                    if (_syntax != TurtleSyntax.Rdf11Star)
+                    {
+                        throw new RdfOutputException(
+                            WriterErrorMessages.TripleNodesUnserializable($"Turtle/{_syntax}"));
+                    }
+                    if (segment == TripleSegment.Predicate)
+                    {
+                        throw new RdfOutputException(WriterErrorMessages.TripleNodePredicateUnserializable("Turtle"));
+                    }
+
                     return context.NodeFormatter.Format(n, segment);
 
                 default:
@@ -403,6 +422,55 @@ namespace VDS.RDF.Writing
             return output.ToString();
         }
 
+        private string GenerateAnnotationOutput(CompressingTurtleWriterContext context, List<Triple> annotationTriples,
+            int indent)
+        {
+            var output = new StringBuilder();
+            string temp;
+            output.Append(" {| ");
+            WriterHelper.SortTriplesBySubjectPredicate(annotationTriples);
+            INode lastPred = null;
+            indent += 3;
+            int predIndent = 0;
+            foreach (Triple t in annotationTriples)
+            {
+                if (lastPred == null || !lastPred.Equals(t.Predicate))
+                {
+                    if (lastPred != null)
+                    {
+                        // New line for the next predicate
+                        output.AppendLine(";");
+                        if (context.PrettyPrint) output.Append(' ', indent);
+                    }
+
+                    temp = GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, indent);
+                    predIndent = temp.Length + 1;
+                    lastPred = t.Predicate;
+                    output.Append(temp);
+                    output.Append(' ');
+                }
+                else
+                {
+                    output.AppendLine(",");
+                    if (context.PrettyPrint) output.Append(' ', indent + predIndent);
+                }
+
+                // Write the Object
+                temp = GenerateNodeOutput(context, t.Object, TripleSegment.Object, indent + predIndent);
+                output.Append(temp);
+
+                // Write any annotations on the object
+                if (context.Annotations.ContainsKey(t))
+                {
+                    output.Append(GenerateAnnotationOutput(context, context.Annotations[t],
+                        indent + predIndent + temp.Length + 1));
+                }
+            }
+
+            output.Append(" |}");
+            return output.ToString();
+        }
+
         /// <summary>
         /// Helper method for generating Parser Warning Events.
         /// </summary>
@@ -426,7 +494,10 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "Turtle (Compressing Writer)" + (_syntax == TurtleSyntax.Original ? "" : " (W3C)");
+            return "Turtle (Compressing Writer)" + _syntax switch
+            {
+                TurtleSyntax.W3C => " (W3C)", TurtleSyntax.Rdf11Star => " (RDF-Star)", _ => ""
+            };
         }
     }
 }
