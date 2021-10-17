@@ -23,46 +23,36 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
-
+using System.Collections.Generic;
 using System.IO;
 using VDS.RDF.Parsing;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Writer Context for Turtle Writers.
+    /// Writer Context for Compressing Turtle Writers.
     /// </summary>
-    public class TurtleWriterContext 
-        : BaseWriterContext
+    public class CompressingTurtleWriterContext 
+        : TurtleWriterContext, ICollectionCompressingWriterContext, IAnnotationCompressingWriterContext
     {
-        /// <summary>
-        /// Creates a new Turtle Writer Context with default settings.
-        /// </summary>
-        /// <param name="g">Graph to write.</param>
-        /// <param name="output">TextWriter to write to.</param>
-        /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
-            : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
+        private readonly TripleCollection _triplesDone = new TripleCollection();
 
         /// <summary>
         /// Creates a new Turtle Writer Context with default settings.
         /// </summary>
         /// <param name="g">Graph to write.</param>
         /// <param name="output">TextWriter to write to.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output)
+        public CompressingTurtleWriterContext(IGraph g, TextWriter output)
             : this(g, output, TurtleSyntax.Original) { }
 
         /// <summary>
-        /// Creates a new Turtle Writer Context with custom settings.
+        /// Creates a new Turtle Writer Context with default settings.
         /// </summary>
         /// <param name="g">Graph to write.</param>
         /// <param name="output">TextWriter to write to.</param>
-        /// <param name="prettyPrint">Pretty Print Mode.</param>
-        /// <param name="hiSpeed">High Speed Mode.</param>
         /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, syntax) { }
+        public CompressingTurtleWriterContext(IGraph g, TextWriter output, TurtleSyntax syntax)
+            : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings.
@@ -71,8 +61,31 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="output">TextWriter to write to.</param>
         /// <param name="prettyPrint">Pretty Print Mode.</param>
         /// <param name="hiSpeed">High Speed Mode.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
+        public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
             : this(g, output, WriterCompressionLevel.More, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
+
+        
+        /// <summary>
+        /// Creates a new Turtle Writer Context with custom settings.
+        /// </summary>
+        /// <param name="g">Graph to write.</param>
+        /// <param name="output">TextWriter to write to.</param>
+        /// <param name="prettyPrint">Pretty Print Mode.</param>
+        /// <param name="hiSpeed">High Speed Mode.</param>
+        /// <param name="syntax">Turtle Syntax.</param>
+        public CompressingTurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
+            : this(g, output, WriterCompressionLevel.More, true, true, syntax) { }
+
+        /// <summary>
+        /// Creates a new Turtle Writer Context with custom settings.
+        /// </summary>
+        /// <param name="g">Graph to write.</param>
+        /// <param name="output">TextWriter to write to.</param>
+        /// <param name="compressionLevel">Compression Level to use.</param>
+        /// <param name="prettyPrint">Pretty Print Mode.</param>
+        /// <param name="hiSpeed">High Speed Mode.</param>
+        public CompressingTurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed)
+            : this(g, output, compressionLevel, prettyPrint, hiSpeed, TurtleSyntax.Original) { }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings.
@@ -83,11 +96,20 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="prettyPrint">Pretty Print Mode.</param>
         /// <param name="hiSpeed">High Speed Mode.</param>
         /// <param name="syntax">Turtle Syntax.</param>
-        public TurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
-            : base(g, output, compressionLevel, prettyPrint, hiSpeed) 
-        {
-            NodeFormatter = (syntax == TurtleSyntax.Original ? new TurtleFormatter(g) : new TurtleW3CFormatter(g));
-            _uriFormatter = (IUriFormatter)NodeFormatter;
-        }
+        public CompressingTurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed, TurtleSyntax syntax)
+            : base(g, output, compressionLevel, prettyPrint, hiSpeed, syntax) { }
+
+        /// <summary>
+        /// Represents the mapping from Blank Nodes to Collections.
+        /// </summary>
+        public Dictionary<INode, OutputRdfCollection> Collections { get; } = new Dictionary<INode, OutputRdfCollection>();
+
+        /// <inheritdoc />
+        public Dictionary<Triple, List<Triple>> Annotations { get; } = new Dictionary<Triple, List<Triple>>();
+
+        /// <summary>
+        /// Stores the Triples that should be excluded from standard output as they are part of collections or triple annotations.
+        /// </summary>
+        public BaseTripleCollection TriplesDone => _triplesDone;
     }
 }

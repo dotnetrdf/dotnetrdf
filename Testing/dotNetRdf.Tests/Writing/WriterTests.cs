@@ -310,6 +310,7 @@ namespace VDS.RDF.Writing
             {
                 yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.Original), new TurtleParser(TurtleSyntax.Original) };
                 yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C) };
+                yield return new object[] { new CompressingTurtleWriter(TurtleSyntax.Rdf11Star), new TurtleParser(TurtleSyntax.Rdf11Star) };
                 yield return new object[] { new Notation3Writer(),new Notation3Parser() };
             }
 

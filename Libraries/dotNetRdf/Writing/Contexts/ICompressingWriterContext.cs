@@ -23,24 +23,19 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
-
-
-using System.Collections.Generic;
-
 namespace VDS.RDF.Writing.Contexts
 {
     /// <summary>
-    /// Interface for Writer Contexts which store collection compression data.
+    /// Interface for writer contexts which store triple compression data.
     /// </summary>
-    public interface ICollectionCompressingWriterContext : ICompressingWriterContext
+    public interface ICompressingWriterContext : IWriterContext
     {
         /// <summary>
-        /// Gets the mapping from Blank Nodes to Collections.
+        /// Gets the Triples that should be excluded from standard output as they have been handled by the compression.
         /// </summary>
-        Dictionary<INode, OutputRdfCollection> Collections
+        BaseTripleCollection TriplesDone
         {
             get;
         }
-
     }
 }
