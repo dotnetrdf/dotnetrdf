@@ -260,18 +260,25 @@ namespace VDS.RDF
         /// <returns></returns>
         public static string ResolveUriOrQName(IToken t, INamespaceMapper nsmap, Uri baseUri)
         {
-            if (t.TokenType == Token.QNAME)
+            switch (t.TokenType)
             {
-                return ResolveQName(t.Value, nsmap, baseUri);
-            }
-            else if (t.TokenType == Token.URI)
-            {
-                var uriBase = (baseUri == null) ? string.Empty : baseUri.AbsoluteUri;
-                return ResolveUri(t.Value, uriBase);
-            }
-            else
-            {
-                throw new RdfParseException("Unable to resolve a '" + t.GetType().ToString() + "' Token into a URI", t);
+                case Token.QNAME:
+                    return ResolveQName(t.Value, nsmap, baseUri);
+                case Token.URI:
+                    {
+                        var uriBase = (baseUri == null) ? string.Empty : baseUri.AbsoluteUri;
+                        return ResolveUri(t.Value, uriBase);
+                    }
+                case Token.DATATYPE when t.Value.StartsWith("<"):
+                    {
+                        var dturi = t.Value.Substring(1, t.Value.Length - 2);
+                        var uriBase = (baseUri == null) ? string.Empty : baseUri.AbsoluteUri;
+                        return ResolveUri(dturi, uriBase);
+                    }
+                case Token.DATATYPE:
+                    return ResolveQName(t.Value, nsmap, baseUri);
+                default:
+                    throw new RdfParseException("Unable to resolve a '" + t.GetType().ToString() + "' Token into a URI", t);
             }
         }
 

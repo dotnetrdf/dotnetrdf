@@ -38,6 +38,7 @@ namespace VDS.RDF.Parsing.Tokens
         private readonly ParsingTextReader _in;
         private readonly TurtleSyntax _syntax = TurtleSyntax.W3C;
         private readonly bool _validateIris = false;
+        private readonly bool _withTrig = false;
 
         /// <summary>
         /// Creates a new Turtle Tokeniser.
@@ -60,8 +61,8 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">Input to read from.</param>
         /// <param name="validateIris">Whether to validate IRI tokens.</param>
-        public TurtleTokeniser(TextReader input, bool validateIris = false)
-            : this(ParsingTextReader.Create(input), validateIris) { }
+        public TurtleTokeniser(TextReader input, bool validateIris = false, bool withTrig = false)
+            : this(ParsingTextReader.Create(input), TurtleSyntax.W3C, validateIris, withTrig) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser.
@@ -70,8 +71,8 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="syntax">Turtle Syntax.</param>
         /// <param name="validateIris">Whether to validate IRI tokens.</param>
         /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
-        public TurtleTokeniser(StreamReader input, TurtleSyntax syntax, bool validateIris = false)
-            : this(ParsingTextReader.Create(input), syntax) { }
+        public TurtleTokeniser(StreamReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
+            : this(ParsingTextReader.Create(input), syntax, validateIris, withTrig) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser.
@@ -80,13 +81,14 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="syntax">Turtle Syntax.</param>
         /// <param name="validateIris">Whether to validate IRI tokens.</param>
         /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
-        public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax, bool validateIris = false)
+        public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
             : base(input)
         {
             _in = input;
-            Format = "Turtle";
+            Format = withTrig ? "TriG" : "Turtle";
             _syntax = syntax;
             _validateIris = validateIris;
+            _withTrig = withTrig;
         }
 
         /// <summary>
@@ -96,8 +98,8 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="syntax">Turtle Syntax.</param>
         /// <param name="validateIris">Whether to validate IRI tokens.</param>
         /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
-        public TurtleTokeniser(TextReader input, TurtleSyntax syntax, bool validateIris = false)
-            : this(ParsingTextReader.Create(input), syntax, validateIris) { }
+        public TurtleTokeniser(TextReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
+            : this(ParsingTextReader.Create(input), syntax, validateIris, withTrig) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error.
@@ -129,7 +131,7 @@ namespace VDS.RDF.Parsing.Tokens
                     switch (LastTokenType)
                     {
                         case Token.AT:
-                            return TryGetDirectiveToken();
+                            return TryGetDirectiveToken(true);
                         case Token.BOF:
                             if (_in.EndOfStream)
                             {
@@ -212,7 +214,12 @@ namespace VDS.RDF.Parsing.Tokens
                             }
                             else if (!UnicodeSpecsHelper.IsLetterModifier(next))
                             {
-                                // Have to assume start of a QName
+                                // Have to assume start of a QName or a directive
+                                //return TryGetDirectiveOrQNameToken();
+                                if (next is 'b' or 'B' or 'p' or 'P')
+                                {
+                                    return TryGetDirectiveOrQNameToken();
+                                }
                                 return TryGetQNameToken();                                
                             }
                         }
@@ -578,15 +585,21 @@ namespace VDS.RDF.Parsing.Tokens
                                         // May be the start of an annotation
                                         ConsumeCharacter();
                                         var following = Peek();
-                                        if (following != '|')
+                                        if (_syntax == TurtleSyntax.Rdf11Star && following == '|')
                                         {
-                                            // This is invalid syntax
-                                            throw Error("Unexpected Character (Code " + (int)next + "): " + next +
-                                                        "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
+                                            ConsumeCharacter();
+                                            LastTokenType = Token.STARTANNOTATION;
+                                            return new StartAnnotationToken(CurrentLine, StartPosition);
+                                        } 
+                                        if (_withTrig)
+                                        {
+                                            LastTokenType = Token.LEFTCURLYBRACKET;
+                                            return new LeftCurlyBracketToken(CurrentLine, StartPosition);
                                         }
-                                        ConsumeCharacter();
-                                        LastTokenType = Token.STARTANNOTATION;
-                                        return new StartAnnotationToken(CurrentLine, StartPosition);
+
+                                        // This is invalid syntax
+                                        throw Error("Unexpected Character (Code " + (int)next + "): " + next +
+                                                    "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
                                     }
                                     break;
 
@@ -611,6 +624,12 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '}':
                                     if (!anycharallowed)
                                     {
+                                        if (_withTrig)
+                                        {
+                                            ConsumeCharacter();
+                                            LastTokenType = Token.RIGHTCURLYBRACKET;
+                                            return new RightCurlyBracketToken(CurrentLine, StartPosition);
+                                        }
                                         // This is invalid syntax
                                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + "\nThis appears to be an attempt to use a Graph Literal which is not valid in Turtle");
                                     }
@@ -885,14 +904,14 @@ namespace VDS.RDF.Parsing.Tokens
                                 case 'B':
                                     if (!anycharallowed)
                                     {
-                                        return TryGetDirectiveToken();
+                                        return TryGetDirectiveToken(false);
                                     }
                                     break;
                                 case 'p':
                                 case 'P':
                                     if (!anycharallowed)
                                     {
-                                        return TryGetDirectiveToken();
+                                        return TryGetDirectiveToken(false);
                                     }
                                     break;
 
@@ -938,14 +957,53 @@ namespace VDS.RDF.Parsing.Tokens
             }
         }
 
+        private IToken TryGetDirectiveOrQNameToken()
+        {
+            var next = Peek();
+            switch (next)
+            {
+                case 'b' or 'B':
+                    while (Length < 4)
+                    {
+                        ConsumeCharacter();
+                        if (!Value.Equals("base".Substring(0, Length), StringComparison.OrdinalIgnoreCase)) break;
+                    }
+
+                    if (Value.Equals("base", StringComparison.OrdinalIgnoreCase))
+                    {
+                        LastTokenType = Token.BASEDIRECTIVE;
+                        return new BaseDirectiveToken(CurrentLine, StartPosition);
+                    }
+                    break;
+
+                case 'p' or 'P':
+                    while (Length < 6)
+                    {
+                        ConsumeCharacter();
+                        if (!Value.Equals("prefix".Substring(0, Length), StringComparison.OrdinalIgnoreCase)) break;
+                    }
+
+                    if (Value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
+                    {
+                        LastTokenType = Token.PREFIXDIRECTIVE;
+                        return new PrefixDirectiveToken(CurrentLine, StartPosition);
+                    }
+                    break;
+            }
+            // Was neither a base nor a prefix directive
+            if (Value.EndsWith(" ")) Backtrack();
+            return TryGetQNameToken(false);
+        }
+
         /// <summary>
         /// Internal Helper method which attempts to get a Directive Token.
         /// </summary>
         /// <returns></returns>
-        private IToken TryGetDirectiveToken()
+        private IToken TryGetDirectiveToken(bool caseSensitive)
         {
             // Buffers
             var next = Peek();
+            var comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
             // Which directive do we expect?
             // 1 = Prefix, 2 = Base
@@ -956,11 +1014,11 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     case -1:
                         // Not sure which directive we might see yet
-                        if (next == 'b')
+                        if (next == 'b' || (!caseSensitive && next == 'B'))
                         {
                             directiveExpected = 2;
                         }
-                        else if (next == 'p')
+                        else if (next == 'p' ||(!caseSensitive && next == 'P'))
                         {
                             directiveExpected = 1;
                         }
@@ -982,12 +1040,12 @@ namespace VDS.RDF.Parsing.Tokens
                         while (Length < 6)
                         {
                             ConsumeCharacter();
+                            if (!Value.Equals("prefix".Substring(0, Length), comparison))
+                            {
+                                throw Error("Expected a Prefix Directive and got '" + Value + "'");
+                            }
                         }
-#if NETCORE
-                        if (this.Value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
-#else
-                        if (Value.Equals("prefix", StringComparison.InvariantCultureIgnoreCase))
-#endif
+                        if (Value.Equals("prefix", comparison))
                         {
                             // Got a Prefix Directive
                             LastTokenType = Token.PREFIXDIRECTIVE;
@@ -1003,12 +1061,12 @@ namespace VDS.RDF.Parsing.Tokens
                         while (Length < 4)
                         {
                             ConsumeCharacter();
+                            if (!Value.Equals("base".Substring(0, Length), comparison))
+                            {
+                                throw Error("Expected a Base Directive and got '" + Value + "'");
+                            }
                         }
-#if NETCORE
-                        if (this.Value.Equals("base", StringComparison.OrdinalIgnoreCase))
-#else                        
-                        if (Value.Equals("base", StringComparison.InvariantCultureIgnoreCase))
-#endif
+                        if (Value.Equals("base", caseSensitive ? StringComparison.Ordinal: StringComparison.OrdinalIgnoreCase))
                         {
                             // Got a Base Directive
                             LastTokenType = Token.BASEDIRECTIVE;
@@ -1037,10 +1095,13 @@ namespace VDS.RDF.Parsing.Tokens
             // Drop leading white space
             while (char.IsWhiteSpace(next))
             {
-                // If we hit a New Line then Error
-                if (next == '\n' || next == '\r') 
+                if (_syntax == TurtleSyntax.Original)
                 {
-                    throw UnexpectedNewLine("Prefix");
+                    // If we hit a New Line then Error
+                    if (next is '\n' or '\r')
+                    {
+                        throw UnexpectedNewLine("Prefix");
+                    }
                 }
 
                 // Discard unecessary White Space
@@ -1076,16 +1137,24 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <returns></returns>
         /// <remarks>In fact this function may return a number of Tokens depending on the characters it finds.  It may find a QName, Plain Literal, Blank Node QName (with ID) or Keyword.  QName &amp; Keyword Validation is carried out by this function.</remarks>
-        private IToken TryGetQNameToken()
+        private IToken TryGetQNameToken(bool startNewToken = true)
         {
             var next = Peek();
             var colonoccurred = false;
             StringComparison comparison = (_syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 
-            StartNewToken();
+            if (startNewToken)
+            {
+                StartNewToken();
+            }
+            else
+            {
+                // Continuing with existing token so check if we have already encountered a :
+                colonoccurred = Value.Contains(":");
+            }
 
             // Grab all the Characters in the QName
-            while(!(char.IsWhiteSpace(next) || next is ';' or ',' or '(' or ')' or '[' or ']' or '#' || (next == '.' && _syntax == TurtleSyntax.Original) || (next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
+            while(!(char.IsWhiteSpace(next) || next is ';' or ',' or '(' or ')' or '[' or ']' or '#' or '{' or '}' or '"' || (next == '.' && _syntax == TurtleSyntax.Original) || (next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
             //while (!char.IsWhiteSpace(next) && next != ';' && next != ',' && next != '(' && next != ')' && next != '[' && next != ']' && next != '#' && (next != '.' || _syntax != TurtleSyntax.Original) && (!(next == '>' && _syntax == TurtleSyntax.Rdf11Star)))
             {
                 // Can't have more than one Colon in a QName unless we're using the W3C syntax
@@ -1197,6 +1266,11 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     LastTokenType = Token.PREFIXDIRECTIVE;
                     return new PrefixDirectiveToken(CurrentLine, StartPosition);
+                }
+                else if (_withTrig && value.Equals("graph", StringComparison.OrdinalIgnoreCase))
+                {
+                    LastTokenType = Token.GRAPH;
+                    return new GraphKeywordToken(CurrentLine, StartPosition);
                 }
                 else
                 {

@@ -63,16 +63,27 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         Original,
         /// <summary>
-        /// TriG as specified by the <a href="http://www.w3.org/2010/01/Turtle/Trig">TriG Member Submission</a>
+        /// TriG as specified by the <a href="  ">TriG Member Submission</a>
         /// </summary>
         /// <remarks>
         /// @base is permitted and both @base and @prefix may occur both inside and outside graphs but the tokens use Turtle Team Submission rules i.e. newer escape sequences and other changes in the official W3C specification of Turtle do not apply.
         /// </remarks>
         MemberSubmission,
+
         /// <summary>
-        /// TriG as specified by the <a href="https://www.w3.org/TR/trig/">W3C Recommendation</a>
+        /// TriG 1.0 as specified by the <a href="https://www.w3.org/TR/trig/">W3C Recommendation</a>
         /// </summary>
-        Recommendation,
+        /// Recommendation,
+
+        /// <summary>
+        /// Trig 1.1 as specified by the <a href="http://www.w3.org/TR/2014/REC-trig-20140225/">W3C Recommendation</a>
+        /// </summary>
+        Rdf11,
+
+        /// <summary>
+        /// Trig 1.1 with RDF-star syntax extensions
+        /// </summary>
+        Rdf11Star
     }
 
     /// <summary>

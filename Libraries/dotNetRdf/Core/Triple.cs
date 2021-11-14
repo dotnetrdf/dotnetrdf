@@ -26,13 +26,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Text;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.Writing.Serialization;
 
 namespace VDS.RDF
 {
@@ -42,7 +37,7 @@ namespace VDS.RDF
     public sealed class Triple
         : IComparable<Triple>
     {
-        private Uri _u = null;
+        private readonly IRefNode _graphName;
         private readonly int _hashcode;
 
         /// <summary>
@@ -55,13 +50,13 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
         public Triple(INode subj, INode pred, INode obj)
         {
-           // Store the Three Nodes of the Triple
-                Subject = subj;
-                Predicate = pred;
-                Object = obj;
+            // Store the Three Nodes of the Triple
+            Subject = subj;
+            Predicate = pred;
+            Object = obj;
 
-                // Compute Hash Code
-                _hashcode = Tools.CombineHashCodes(Subject, Predicate, Object);
+            // Compute Hash Code
+            _hashcode = Tools.CombineHashCodes(Subject, Predicate, Object);
         }
 
         /// <summary>
@@ -106,7 +101,7 @@ namespace VDS.RDF
         public Triple(INode subj, INode pred, INode obj, Uri graphUri)
             : this(subj, pred, obj)
         {
-            _u = graphUri;
+            _graphName = graphUri == null ? null : new UriNode(graphUri);
         }
 
         /// <summary>
@@ -123,6 +118,19 @@ namespace VDS.RDF
             : this(subj, pred, obj, graphUri)
         {
             Context = context;
+        }
+
+        /// <summary>
+        /// Constructs a triple associated with the specified graph.
+        /// </summary>
+        /// <param name="subj">Subject of the Triple.</param>
+        /// <param name="pred">Predicate of the Triple.</param>
+        /// <param name="obj">Object of the Triple.</param>
+        /// <param name="graph">Name of the graph the triple is associated with</param>
+        public Triple(IRefNode subj, IRefNode pred, INode obj, IRefNode graph):
+            this(subj, pred, obj)
+        {
+            _graphName = graph;
         }
 
         /// <summary>
@@ -150,22 +158,30 @@ namespace VDS.RDF
         /// Gets the Uri of the Graph this Triple was created for.
         /// </summary>
         /// <remarks>This is not necessarily the actual Graph Uri of the Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
+        [Obsolete("Replaced by GraphName")]
         public Uri GraphUri
         {
             get
             {
-                if (_u != null)
+                IRefNode graphNode = GraphName;
+                return graphNode switch
                 {
-                    return _u;
-                }
-                else if (Graph == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return Graph.BaseUri;
-                }
+                    IUriNode uriNode => uriNode.Uri,
+                    IBlankNode => throw new RdfException(
+                        "Attempt to read the GraphUri of a triple that targets a graph with a blank node name. Use GraphName instead of GraphUri."),
+                    _ => null
+                };
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the graph that this triple was created for.
+        /// </summary>
+        public IRefNode GraphName
+        {
+            get
+            {
+                return _graphName ?? Graph?.Name;
             }
         }
 

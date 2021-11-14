@@ -112,7 +112,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context.</param>
         /// <param name="t">Token to resolve.</param>
         /// <returns></returns>
-        public static INode TryResolveUri(IStoreParserContext context, IToken t)
+        public static IRefNode TryResolveUri(IStoreParserContext context, IToken t)
         {
             switch (t.TokenType)
             {
