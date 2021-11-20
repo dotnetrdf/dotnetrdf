@@ -7,13 +7,17 @@ using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.JsonLd
 {
     public class JsonLdTestSuiteBase
     {
-        public JsonLdTestSuiteBase()
+        private readonly ITestOutputHelper _output;
+
+        public JsonLdTestSuiteBase(ITestOutputHelper output)
         {
+            _output = output;
             // Ensure that we are using modern TLS2 for HTTPS connections (required to access the GitHub-hosted context files)
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -140,7 +144,8 @@ namespace VDS.RDF.JsonLd
                                 (expectedStore.Graphs.Count == 0 && actualStore.Graphs.Count == 1 &&
                                  actualStore.Graphs[(IRefNode)null].IsEmpty),
                         $"Test failed for input {Path.GetFileName(inputPath)}.\r\nActual graph count {actualStore.Graphs.Count} does not match expected graph count {expectedStore.Graphs.Count}.");
-                    AssertStoresEqual(expectedStore, actualStore, Path.GetFileName(inputPath));
+                    //AssertStoresEqual(expectedStore, actualStore, Path.GetFileName(inputPath));
+                    TestTools.AssertEqual(expectedStore, actualStore, _output);
                     break;
 
                 case JsonLdTestType.NegativeEvaluationTest:
@@ -160,70 +165,6 @@ namespace VDS.RDF.JsonLd
             }
         }
 
-        private void AssertStoresEqual(ITripleStore expectedTripleStore, ITripleStore actualTripleStore, string testFile)
-        {
-            foreach (IRefNode graphName in expectedTripleStore.Graphs.GraphNames)
-            {
-                if (graphName == null)
-                {
-                    Assert.True(actualTripleStore.HasGraph((IRefNode)null), 
-                        $"Test failed for input {testFile}.\r\nExpected a default graph to be present.");
-                    AssertGraphsEqual(expectedTripleStore[(IRefNode)null], actualTripleStore[(IRefNode)null],
-                        expectedTripleStore, actualTripleStore, testFile);
-                } 
-                else if (graphName.ToString().StartsWith("nquads:bnode:"))
-                {
-                    IRefNode matchedGraph = null;
-                    foreach (IRefNode actualGraphName in actualTripleStore.Graphs.GraphNames.Where(u =>
-                        u != null && u.ToString().StartsWith("nquads:bnode:")))
-                    {
-                        IGraph expectedGraph = expectedTripleStore[graphName];
-                        IGraph actualGraph = actualTripleStore[actualGraphName];
-                        if (actualGraph.Equals(expectedGraph, out _))
-                        {
-                            matchedGraph = actualGraphName;
-                            break;
-                        }
-                    }
-
-                    if (matchedGraph == null)
-                    {
-                        var expectedLines = MakeNQuadsList(expectedTripleStore);
-                        var actualLines = MakeNQuadsList(actualTripleStore);
-                        Assert.True(false,
-                            $"Test failed for input {testFile}.\r\nFailed to find a match for graph {graphName}.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
-                    }
-                    else
-                    {
-                        actualTripleStore.Graphs.Remove(matchedGraph);
-                    }
-                }
-                else
-                {
-                    if (!actualTripleStore.Graphs.Contains(graphName))
-                    {
-                        var expectedLines = MakeNQuadsList(expectedTripleStore);
-                        var actualLines = MakeNQuadsList(actualTripleStore);
-                        Assert.True(false,
-                            $"Test failed for input {testFile}.\r\nFailed to find a match for graph {graphName}.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
-                    }
-                    AssertGraphsEqual(expectedTripleStore[graphName], actualTripleStore[graphName],
-                        expectedTripleStore, actualTripleStore, testFile);
-                }
-            }
-        }
-
-        private void AssertGraphsEqual(IGraph expectedGraph, IGraph actualGraph, ITripleStore expectedStore, ITripleStore actualStore, string testFile)
-        {
-            var graphsEqual = actualGraph.Equals(expectedGraph, out _);
-            if (!graphsEqual)
-            {
-                var expectedLines = MakeNQuadsList(expectedStore);
-                var actualLines = MakeNQuadsList(actualStore);
-                Assert.True(graphsEqual,
-                    $"Test failed for input {testFile}.\r\nGraph {expectedGraph.BaseUri} differs in actual output from expected output.\r\nExpected:\r\n{expectedLines}\r\nActual:\r\n{actualLines}");
-            }
-        }
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters
         public virtual void JsonLdWriterTests(string testId, JsonLdTestType testType, string inputPath, string contextPath, 
             string expectedOutputPath, JsonLdErrorCode expectErrorCode, bool useNativeTypes, bool useRdfType, bool ordered, string rdfDirection)
@@ -380,18 +321,6 @@ namespace VDS.RDF.JsonLd
             if (o1.Count != o2.Count) return false;
             return o1.Properties().All(p => o2.ContainsKey(p.Name)) &&
                    o1.Properties().All(p => DeepEquals(p.Value, o2[p.Name], arraysAreOrdered));
-        }
-
-        private static string MakeNQuadsList(ITripleStore store)
-        {
-            var ser = new NQuadsWriter();
-            using (var expectedTextWriter = new System.IO.StringWriter())
-            {
-                ser.Save(store, expectedTextWriter);
-                var lines = expectedTextWriter.ToString().Split('\n').Select(x => x.Trim()).ToList();
-                lines.Sort();
-                return String.Join(Environment.NewLine, lines);
-            }
         }
 
         private static bool DeepEquals(JToken token1, JToken token2, bool ignoreArrayOrder, bool throwOnMismatch)

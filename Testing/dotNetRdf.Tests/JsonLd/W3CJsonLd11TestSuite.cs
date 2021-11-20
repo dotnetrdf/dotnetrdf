@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.JsonLd
 {
     public class W3CJsonLd11TestSuite : JsonLdTestSuiteBase
     {
+        public W3CJsonLd11TestSuite(ITestOutputHelper output):base(output){}
 
         [Theory]
         [MemberData(nameof(JsonLdTestSuiteDataSource.W3CExpandTests), MemberType = typeof(JsonLdTestSuiteDataSource))]
