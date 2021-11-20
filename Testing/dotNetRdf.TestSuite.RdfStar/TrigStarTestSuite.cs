@@ -65,19 +65,7 @@ namespace VDS.RDF.TestSuite.RdfStar
             var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11Star);
             var expected = new TripleStore();
             nqParser.Load(expected, t.Manifest.ResolveResourcePath(t.Result));
-            foreach (IGraph expectGraph in expected.Graphs)
-            {
-                Assert.True(actual.Graphs.Contains(expectGraph.Name));
-                IGraph actualGraph = actual.Graphs[expectGraph.Name];
-                GraphDiffReport diffReport = actualGraph.Difference(expectGraph);
-                if (!diffReport.AreEqual) TestTools.ShowDifferences(diffReport, _output);
-                Assert.True(diffReport.AreEqual);
-            }
-
-            foreach (IGraph actualGraph in actual.Graphs)
-            {
-                Assert.True(expected.Graphs.Contains(actualGraph.Name));
-            }
+            TestTools.AssertEqual(expected, actual, _output);
         }
 
         /* Helper method for debugging single tests
