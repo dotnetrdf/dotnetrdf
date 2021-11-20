@@ -344,12 +344,12 @@ namespace VDS.RDF.Parsing
             INode subj = NTriplesParser.TryParseSubject(context);
             INode predicate = NTriplesParser.TryParsePredicate(context);
             INode obj = NTriplesParser.TryParseObject(context);
-            Uri graphUri = TryParseContext(context);
-            if (!context.Handler.HandleTriple(new Triple(subj, predicate, obj, graphUri))) ParserHelper.Stop();
+            IRefNode graphName = TryParseContext(context);
+            if (!context.Handler.HandleTriple(new Triple(subj as IRefNode, predicate as IRefNode, obj, graphName))) ParserHelper.Stop();
         }
 
 
-        private Uri TryParseContext(TokenisingParserContext context)
+        private IRefNode TryParseContext(TokenisingParserContext context)
         {
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.DOT)
@@ -399,9 +399,9 @@ namespace VDS.RDF.Parsing
             // Finally return the Context URI
             return graphContext.NodeType switch
             {
-                NodeType.Uri => ((IUriNode)graphContext).Uri,
-                NodeType.Blank => context.UriFactory.Create("nquads:bnode:" + graphContext.GetHashCode()),
-                NodeType.Literal => context.UriFactory.Create("nquads:literal:" + graphContext.GetHashCode()),
+                NodeType.Uri => graphContext as IUriNode,
+                NodeType.Blank => graphContext as IBlankNode,
+                NodeType.Literal => context.Handler.CreateUriNode(context.UriFactory.Create("nquads:literal:" + graphContext.GetHashCode())),
                 _ => throw ParserHelper.Error(
                     "Cannot turn a Node of type '" + graphContext.GetType() + "' into a Context URI for a Triple",
                     next)
