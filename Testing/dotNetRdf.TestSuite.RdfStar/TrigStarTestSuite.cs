@@ -1,10 +1,6 @@
 ﻿using dotNetRdf.TestSupport;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VDS.RDF.Parsing;
 using Xunit;
 using Xunit.Abstractions;
@@ -84,6 +80,7 @@ namespace VDS.RDF.TestSuite.RdfStar
             }
         }
 
+        /* Helper method for debugging single tests
         [Fact]
         public void RunSingle()
         {
@@ -92,5 +89,6 @@ namespace VDS.RDF.TestSuite.RdfStar
                 Path.Combine("resources", "tests", "trig", "syntax", "manifest.ttl"))
                 .GetTestData(new Uri("https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-ann-2")));
         }
+        */
     }
 }
