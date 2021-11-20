@@ -34,14 +34,14 @@ namespace VDS.RDF.Parsing.Contexts
     /// <summary>
     /// Base Class for Store Parser Contexts.
     /// </summary>
-    public abstract class BaseStoreParserContext : IStoreParserContext
+    public abstract class BaseStoreParserContext : IParserContext
     {
         /// <summary>
         /// Is Parsing Traced?.
         /// </summary>
         protected bool _traceParsing = false;
 
-        private NamespaceMapper _nsmap = new NamespaceMapper(true);
+        private NestedNamespaceMapper _nsmap = new NestedNamespaceMapper(true);
         private Uri _baseUri;
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets the Namespace Map for the parser context.
         /// </summary>
-        public INamespaceMapper Namespaces
+        public INestedNamespaceMapper Namespaces
         {
             get
             {
