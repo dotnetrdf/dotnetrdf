@@ -20,7 +20,7 @@ namespace VDS.RDF.Parsing.Suites
         public static IEnumerable<object[]> GetTestData()
         {
             return new ManifestTestDataProvider(
-                new Uri("https://www.w3.org/2013/TrigTests/"),
+                new Uri("http://www.w3.org/2013/TriGTests/"),
                 Path.Combine("resources", "trig11", "manifest.ttl"));
         }
 
@@ -35,7 +35,7 @@ namespace VDS.RDF.Parsing.Suites
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigPositiveSyntax")]
         public void PositiveSyntaxTest(ManifestTestData t)
         {
-            if (t.Id == "https://www.w3.org/2013/TrigTests/#trig-syntax-minimal-whitespace-01")
+            if (t.Id == "http://www.w3.org/2013/TriGTests/#trig-syntax-minimal-whitespace-01")
             {
                 throw new SkipException(
                     "Turtle tokenizer does not currently handle backtracking when a DOT was meant to terminate a triple.");
@@ -49,7 +49,7 @@ namespace VDS.RDF.Parsing.Suites
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigNegativeSyntax")]
         public void NegativeSyntaxTest(ManifestTestData t)
         {
-            if (t.Id == "https://www.w3.org/2013/TrigTests/#trig-graph-bad-02")
+            if (t.Id == "http://www.w3.org/2013/TriGTests/#trig-graph-bad-02")
             {
                 throw new SkipException(
                     "Skipping dubious bad syntax test. Test asserts that a graph block must be followed by a DOT, but the specification does not require this.");
@@ -63,7 +63,17 @@ namespace VDS.RDF.Parsing.Suites
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigEval")]
         public void EvaluationTest(ManifestTestData t)
         {
-            throw new SkipException("TriG Evaluation Tests not yet implemented");
+            var trigParser = new TriGParser(TriGSyntax.Rdf11Star);
+            var actual = new TripleStore();
+            using (var reader = new StreamReader(t.Manifest.ResolveResourcePath(t.Action)))
+            {
+                trigParser.Load(actual, reader, t.Action);
+            }
+
+            var nqParser = new NQuadsParser(NQuadsSyntax.Rdf11Star);
+            var expected = new TripleStore();
+            nqParser.Load(expected, t.Manifest.ResolveResourcePath(t.Result));
+            TestTools.AssertEqual(expected, actual, _output);
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigNegativeEval")]
@@ -72,12 +82,14 @@ namespace VDS.RDF.Parsing.Suites
             throw new SkipException("TriG Evaluation Tests not yet implemented");
         }
 
+
         [SkippableFact]
         public void RunSingle()
         {
             InvokeTestRunner(new ManifestTestDataProvider(
-                new Uri("https://www.w3.org/2013/TrigTests/"),
-                Path.Combine("resources", "trig11", "manifest.ttl")).GetTestData(new Uri("https://www.w3.org/2013/TrigTests/#trig-syntax-minimal-whitespace-01")));
+                new Uri("http://www.w3.org/2013/TriGTests/"),
+                Path.Combine("resources", "trig11", "manifest.ttl"))
+                .GetTestData(new Uri("http://www.w3.org/2013/TriGTests/#number_sign_following_PNAME_NS")));
         }
     }
 }

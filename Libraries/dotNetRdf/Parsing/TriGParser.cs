@@ -276,7 +276,7 @@ namespace VDS.RDF.Parsing
                             }
                             break;
 
-                        case Token.QNAME or Token.URI or Token.LEFTSQBRACKET or Token.LEFTBRACKET when context.Syntax is TriGSyntax.Rdf11Star or TriGSyntax.Rdf11:
+                        case Token.QNAME or Token.URI or Token.BLANKNODEWITHID or Token.LEFTSQBRACKET or Token.LEFTBRACKET when context.Syntax is TriGSyntax.Rdf11Star or TriGSyntax.Rdf11:
                             TryParseTriplesOrGraph(context);
                             break;
 
@@ -460,6 +460,10 @@ namespace VDS.RDF.Parsing
                 case Token.URI:
                     graphOrSubjectNode =
                         context.Handler.CreateUriNode(context.UriFactory.Create(context.BaseUri, next.Value));
+                    break;
+                case Token.BLANKNODEWITHID:
+                    graphOrSubjectNode =
+                        context.Handler.CreateBlankNode(next.Value.Substring(2));
                     break;
                 case Token.LEFTSQBRACKET:
                     if (context.Tokens.Peek().TokenType == Token.RIGHTSQBRACKET)
@@ -650,7 +654,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        subjNode = ParserHelper.TryResolveUri(context, subj);
+                        subjNode = ParserHelper.TryResolveUri(context, subj, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.BLANKNODEWITHID:
@@ -805,7 +809,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        predNode = ParserHelper.TryResolveUri(context, pred);
+                        predNode = ParserHelper.TryResolveUri(context, pred, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.KEYWORDA:
@@ -841,10 +845,12 @@ namespace VDS.RDF.Parsing
                 // Parse the Object List
                 TryParseObjectList(context, graphNode, subj, predNode, annotationList);
                 if (context.Tokens.LastTokenType == Token.DOT && !bnodeList && !annotationList) return; //Dot terminates a normal Predicate Object list
-                if (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && bnodeList) return;
-                if (context.Tokens.LastTokenType == Token.ENDANNOTATION && annotationList) return;
-                //Trailing semicolon may terminate a Blank Node Predicate Object list
-                if (context.Tokens.LastTokenType == Token.SEMICOLON && 
+                //if (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && bnodeList) return;
+                //if (context.Tokens.LastTokenType == Token.ENDANNOTATION && annotationList) return;
+                //Trailing semicolon, ] or |} may terminate a Blank Node Predicate Object list
+                if ((context.Tokens.LastTokenType == Token.SEMICOLON ||
+                    (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && bnodeList) ||
+                    (context.Tokens.LastTokenType == Token.ENDANNOTATION && annotationList)) &&
                     context.Tokens.Peek().TokenType is Token.DOT or Token.RIGHTCURLYBRACKET)
                 {
                     // Dot or right curly terminates a Predicate Object list with a trailing semicolon
@@ -853,7 +859,7 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Check for End of Blank Node Collections
-                if (context.Tokens.Peek().TokenType == Token.RIGHTSQBRACKET)
+                if (context.Tokens.Peek().TokenType == Token.RIGHTSQBRACKET && bnodeList)
                 {
                     context.Tokens.Dequeue();
                     return;
@@ -888,7 +894,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        objNode = ParserHelper.TryResolveUri(context, obj);
+                        objNode = ParserHelper.TryResolveUri(context, obj, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.LITERAL:
