@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets whether Tokeniser Tracing is used.
+        /// Gets/Sets whether Tokenizer Tracing is used.
         /// </summary>
         public bool TraceTokeniser { get; set; } = false;
 
@@ -69,6 +69,13 @@ namespace VDS.RDF.Parsing
         /// Gets/Sets the TriG syntax used.
         /// </summary>
         public TriGSyntax Syntax { get; set; } = TriGSyntax.MemberSubmission;
+
+        /// <summary>
+        /// Gets/Sets whether the tokenizer should validate IRI strings.
+        /// </summary>
+        /// <remarks>IRI validation is currently only supported for the <see cref="TriGSyntax.Rdf11"/> and <see cref="TriGSyntax.Rdf11Star"/> syntax variants.
+        /// For other variants, the tokenizer used does not provide IRI validation.</remarks>
+        public bool ValidateIris { get; set; }
 
         /// <summary>
         /// Gets/Sets the token queue mode used.
@@ -186,8 +193,8 @@ namespace VDS.RDF.Parsing
                 ITokeniser tokeniser = Syntax switch
                 {
                     TriGSyntax.Original or TriGSyntax.MemberSubmission => new TriGTokeniser(input, Syntax),
-                    TriGSyntax.Rdf11 => new TurtleTokeniser(input, TurtleSyntax.W3C, withTrig: true),
-                    TriGSyntax.Rdf11Star => new TurtleTokeniser(input, TurtleSyntax.Rdf11Star, withTrig: true),
+                    TriGSyntax.Rdf11 => new TurtleTokeniser(input, TurtleSyntax.W3C, withTrig: true, validateIris:ValidateIris),
+                    TriGSyntax.Rdf11Star => new TurtleTokeniser(input, TurtleSyntax.Rdf11Star, withTrig: true, validateIris:ValidateIris),
                     _ => throw new RdfParseException($"Syntax mode {Syntax} is not currently supported by the parser.")
                 };
                 var context = new TriGParserContext(handler, tokeniser, TokenQueueMode, false,

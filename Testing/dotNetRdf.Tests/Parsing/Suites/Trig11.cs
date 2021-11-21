@@ -79,7 +79,11 @@ namespace VDS.RDF.Parsing.Suites
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigNegativeEval")]
         public void NegativeEvaluationTest(ManifestTestData t)
         {
-            throw new SkipException("TriG Evaluation Tests not yet implemented");
+            //throw new SkipException("TriG Evaluation Tests not yet implemented");
+            var trigParser = new TriGParser(TriGSyntax.Rdf11Star) { ValidateIris = true };
+            var actual = new TripleStore();
+            using var reader = new StreamReader(t.Manifest.ResolveResourcePath(t.Action));
+            Assert.ThrowsAny<RdfException> (()=>trigParser.Load(actual, reader, t.Action));
         }
 
 
@@ -89,7 +93,7 @@ namespace VDS.RDF.Parsing.Suites
             InvokeTestRunner(new ManifestTestDataProvider(
                 new Uri("http://www.w3.org/2013/TriGTests/"),
                 Path.Combine("resources", "trig11", "manifest.ttl"))
-                .GetTestData(new Uri("http://www.w3.org/2013/TriGTests/#number_sign_following_PNAME_NS")));
+                .GetTestData(new Uri("http://www.w3.org/2013/TriGTests/#trig-eval-bad-01")));
         }
     }
 }
