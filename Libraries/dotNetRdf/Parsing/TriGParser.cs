@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using VDS.RDF.Parsing.Contexts;
@@ -42,8 +43,6 @@ namespace VDS.RDF.Parsing
     public class TriGParser
         : IStoreReader, ITraceableTokeniser, ITokenisingParser
     {
-        private bool _tracetokeniser = false;
-        private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
         // private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
         /// <summary>
@@ -58,38 +57,25 @@ namespace VDS.RDF.Parsing
         /// <param name="syntax">Syntax.</param>
         public TriGParser(TriGSyntax syntax)
         {
-            _syntax = syntax;
+            Syntax = syntax;
         }
 
         /// <summary>
-        /// Gets/Sets whether Tokeniser Tracing is used.
+        /// Gets/Sets whether Tokenizer Tracing is used.
         /// </summary>
-        public bool TraceTokeniser
-        {
-            get
-            {
-                return _tracetokeniser;
-            }
-            set
-            {
-                _tracetokeniser = value;
-            }
-        }
+        public bool TraceTokeniser { get; set; } = false;
 
         /// <summary>
         /// Gets/Sets the TriG syntax used.
         /// </summary>
-        public TriGSyntax Syntax
-        {
-            get
-            {
-                return _syntax;
-            }
-            set
-            {
-                _syntax = value;
-            }
-        }
+        public TriGSyntax Syntax { get; set; } = TriGSyntax.MemberSubmission;
+
+        /// <summary>
+        /// Gets/Sets whether the tokenizer should validate IRI strings.
+        /// </summary>
+        /// <remarks>IRI validation is currently only supported for the <see cref="TriGSyntax.Rdf11"/> and <see cref="TriGSyntax.Rdf11Star"/> syntax variants.
+        /// For other variants, the tokenizer used does not provide IRI validation.</remarks>
+        public bool ValidateIris { get; set; }
 
         /// <summary>
         /// Gets/Sets the token queue mode used.
@@ -106,7 +92,7 @@ namespace VDS.RDF.Parsing
         public void Load(ITripleStore store, string filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8));
+            Load(store, new StreamReader(File.OpenRead(filename), Encoding.UTF8), new Uri(Path.GetFullPath(filename)));
         }
 
         /// <summary>
@@ -116,9 +102,20 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input to load from.</param>
         public void Load(ITripleStore store, TextReader input)
         {
+            Load(store, input, null);
+        }
+
+        /// <summary>
+        /// Loads the named Graphs from the TriG input into the given Triple Store.
+        /// </summary>
+        /// <param name="store">Triple Store to load into.</param>
+        /// <param name="input">Input to load from.</param>
+        /// <param name="baseUri">Base URI to use when resolving relative URIs in the input.</param>
+        public void Load(ITripleStore store, TextReader input, Uri baseUri)
+        {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            Load(new StoreHandler(store), input, store.UriFactory);
+            Load(new StoreHandler(store), input, baseUri, store.UriFactory);
         }
 
         /// <summary>
@@ -128,7 +125,7 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to load from.</param>
         public void Load(IRdfHandler handler, string filename)
         {
-            Load(handler, filename, UriFactory.Root);
+            Load(handler, filename, new Uri(Path.GetFullPath(filename)), UriFactory.Root);
         }
 
         /// <summary>
@@ -139,8 +136,21 @@ namespace VDS.RDF.Parsing
         /// <param name="uriFactory">URI factory to use.</param>
         public void Load(IRdfHandler handler, string filename, IUriFactory uriFactory)
         {
+            Load(handler, filename, new Uri(Path.GetFullPath(filename)), uriFactory);
+        }
+
+
+        /// <summary>
+        /// Loads an RDF dataset using an RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="filename">File to load from.</param>
+        /// <param name="baseUri">Base URI to use when resolving relative URIs in the input.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, string filename, Uri baseUri, IUriFactory uriFactory)
+        {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), uriFactory);
+            Load(handler, new StreamReader(File.OpenRead(filename), Encoding.UTF8), baseUri, uriFactory);
         }
 
         /// <summary>
@@ -161,6 +171,18 @@ namespace VDS.RDF.Parsing
         /// <param name="uriFactory">URI factory to use.</param>
         public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
         {
+            Load(handler, input, null, uriFactory);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset using and RDF handler.
+        /// </summary>
+        /// <param name="handler">RDF handler to use.</param>
+        /// <param name="input">File to load from.</param>
+        /// <param name="baseUri">Base URI to use when resolving relative URIs in the input.</param>
+        /// <param name="uriFactory">URI factory to use.</param>
+        public void Load(IRdfHandler handler, TextReader input, Uri baseUri, IUriFactory uriFactory)
+        {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
             if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
@@ -168,8 +190,17 @@ namespace VDS.RDF.Parsing
             try
             {
                 // Create the Parser Context and Invoke the Parser
-                var context = new TriGParserContext(handler, new TriGTokeniser(input, _syntax), TokenQueueMode, false,
-                    _tracetokeniser, uriFactory) {Syntax = _syntax};
+                ITokeniser tokeniser = Syntax switch
+                {
+                    TriGSyntax.Original or TriGSyntax.MemberSubmission => new TriGTokeniser(input, Syntax),
+                    TriGSyntax.Rdf11 => new TurtleTokeniser(input, TurtleSyntax.W3C, withTrig: true, validateIris:ValidateIris),
+                    TriGSyntax.Rdf11Star => new TurtleTokeniser(input, TurtleSyntax.Rdf11Star, withTrig: true, validateIris:ValidateIris),
+                    _ => throw new RdfParseException($"Syntax mode {Syntax} is not currently supported by the parser.")
+                };
+                var context = new TriGParserContext(handler, tokeniser, TokenQueueMode, false,
+                        TraceTokeniser, uriFactory)
+                    { Syntax = Syntax };
+                if (baseUri != null) context.BaseUri = baseUri;
                 Parse(context);
             }
             finally
@@ -218,15 +249,67 @@ namespace VDS.RDF.Parsing
                         case Token.PREFIXDIRECTIVE:
                             // Parse a Directive
                             TryParseDirective(context);
+                            if (Syntax is TriGSyntax.Original or TriGSyntax.MemberSubmission)
+                            {
+                                next = context.Tokens.Dequeue();
+                                if (next.TokenType != Token.DOT)
+                                {
+                                    throw ParserHelper.Error(
+                                        $"Expected a '.' after an @prefix or @base declaration. Found a {next.GetType()}.",
+                                        next);
+                                }
+                            }
                             break;
 
-                        case Token.QNAME:
-                        case Token.URI:
+                        case Token.AT:
+                            context.Tokens.Dequeue();
+                            next = context.Tokens.Peek();
+                            if (next.TokenType is Token.PREFIXDIRECTIVE or Token.BASEDIRECTIVE)
+                            {
+                                TryParseDirective(context);
+                                // Expect Turtle-style directives to be terminated with a DOT
+                                next = context.Tokens.Dequeue();
+                                if (next.TokenType != Token.DOT)
+                                {
+                                    throw ParserHelper.Error(
+                                        $"Expected a '.' after an @prefix or @base declaration.", next);
+                                }
+                            }
+                            else
+                            {
+                                throw ParserHelper.Error(
+                                    $"Unexpected token {next.TokenType}. Expected 'prefix' or 'base' after an @.",
+                                    next);
+                            }
+                            break;
+
+                        case Token.QNAME or Token.URI or Token.BLANKNODEWITHID or Token.LEFTSQBRACKET or Token.LEFTBRACKET when context.Syntax is TriGSyntax.Rdf11Star or TriGSyntax.Rdf11:
+                            TryParseTriplesOrGraph(context);
+                            break;
+
+                        case Token.QNAME or Token.URI or Token.LEFTSQBRACKET:
                         case Token.LEFTCURLYBRACKET:
+                        case Token.GRAPH:
                             // Parse a Graph
 
                             if (context.Syntax != TriGSyntax.Original)
                             {
+                                if (next.TokenType == Token.GRAPH)
+                                {
+                                    // Discardable marker
+                                    context.Tokens.Dequeue();
+
+                                    // In TriG 1.1 specification, GRAPH keyword must be followed by a graph name
+                                    next = context.Tokens.Peek();
+                                    if (Syntax is TriGSyntax.Rdf11 or TriGSyntax.Rdf11Star &&
+                                        next.TokenType is not (Token.URI or Token.QNAME or Token.BLANKNODE or Token.BLANKNODEWITHID or Token.LEFTSQBRACKET))
+                                    {
+                                        throw ParserHelper.Error(
+                                            $"Unexpected Token '{next.GetType()} encountered. Expected a URI or blank node to follow the GRAPH keyword.",
+                                            next);
+                                    }
+                                }
+
                                 // We must take care here because @prefix and @base directives may be Graph scoped so anything visible currently
                                 // remains visible and must be restored afterwards but anything inside the Graph is not visible outside of it
                                 Uri extBase = context.BaseUri;
@@ -350,11 +433,104 @@ namespace VDS.RDF.Parsing
                 throw ParserHelper.Error("Unexpected Token '" + directive.GetType().ToString() + "' encountered, expected a Base/Prefix Directive Token", directive);
             }
 
-            // Expect a DOT to Terminate
-            IToken dot = context.Tokens.Dequeue();
-            if (dot.TokenType != Token.DOT)
+            if (directive.Value.StartsWith("@"))
             {
-                throw ParserHelper.Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate a Base/Prefix Directive", dot);
+                // Expect a DOT to terminate Turtle-style prefixes
+                IToken dot = context.Tokens.Dequeue();
+                if (dot.TokenType != Token.DOT)
+                {
+                    throw ParserHelper.Error(
+                        "Unexpected Token '" + dot.GetType().ToString() +
+                        "' encountered, expected a Dot (Line Terminator) Token to terminate a Base/Prefix Directive",
+                        dot);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the parsing of an IRI or blank node which may be either a graph name or the subject of a triple.
+        /// </summary>
+        /// <param name="context"></param>
+        private void TryParseTriplesOrGraph(TriGParserContext context)
+        {
+            IToken next = context.Tokens.Dequeue();
+            IRefNode graphOrSubjectNode;
+            bool subjectIsBlankNodePropertyList = false;
+            bool subjectIsCollection = false;
+            switch (next.TokenType)
+            {
+                case Token.QNAME:
+                    graphOrSubjectNode = context.Handler.CreateUriNode(
+                        context.UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces,
+                            context.BaseUri)));
+                    break;
+                case Token.URI:
+                    graphOrSubjectNode =
+                        context.Handler.CreateUriNode(context.UriFactory.Create(context.BaseUri, next.Value));
+                    break;
+                case Token.BLANKNODEWITHID:
+                    graphOrSubjectNode =
+                        context.Handler.CreateBlankNode(next.Value.Substring(2));
+                    break;
+                case Token.LEFTSQBRACKET:
+                    if (context.Tokens.Peek().TokenType == Token.RIGHTSQBRACKET)
+                    {
+                        next = context.Tokens.Dequeue();
+                        graphOrSubjectNode = context.Handler.CreateBlankNode();
+                    }
+                    else
+                    {
+                        graphOrSubjectNode = context.Handler.CreateBlankNode();
+                        TryParsePredicateObjectList(context, null, graphOrSubjectNode, false, bnodeList:true, annotationList:false);
+                        subjectIsBlankNodePropertyList = true;
+                    }
+                    break;
+
+                case Token.LEFTBRACKET:
+                    graphOrSubjectNode= context.Handler.CreateBlankNode();
+                    TryParseCollection(context, null, graphOrSubjectNode);
+                    subjectIsCollection = true;
+                    break;
+
+                default:
+                    throw ParserHelper.Error("Expected an IRI or Blank Node", next);
+            }
+
+            next = context.Tokens.Peek();
+            if (next.TokenType == Token.LEFTCURLYBRACKET)
+            {
+                if (subjectIsCollection || subjectIsBlankNodePropertyList)
+                {
+                    throw ParserHelper.Error("Unexpected token '{'. An RDF collection or blank node property list cannot be used as a graph label.", next);
+                }
+                // parse graph content
+                Uri oldBase = context.BaseUri;
+                INamespaceMapper nsMap = new NamespaceMapper(context.Namespaces);
+                context.Tokens.Dequeue();
+                TryParseGraphContent(context, graphOrSubjectNode);
+                context.BaseUri = oldBase;
+                context.Namespaces.Clear();
+                foreach (var prefix in nsMap.Prefixes)
+                {
+                    if (!context.Handler.HandleNamespace(prefix, nsMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
+                }
+
+                context.Namespaces.Import(nsMap);
+            }
+            else
+            {
+                // Parse as triples in the default graph
+                TryParsePredicateObjectList(context, null, graphOrSubjectNode, subjectIsBlankNodePropertyList, false, false);
+                // Expect a Dot to Terminate
+                if (context.Tokens.LastTokenType != Token.DOT && context.Tokens.LastTokenType != Token.RIGHTCURLYBRACKET)
+                {
+                    // We only do this if we haven't returned because we already hit the Dot Token/Right Curly Bracket
+                    IToken dot = context.Tokens.Dequeue();
+                    if (dot.TokenType != Token.DOT && dot.TokenType != Token.RIGHTCURLYBRACKET)
+                    {
+                        throw ParserHelper.Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate Triples", dot);
+                    }
+                }
             }
         }
 
@@ -362,41 +538,71 @@ namespace VDS.RDF.Parsing
         {
             // Is there a name for the Graph?
             IToken next = context.Tokens.Dequeue();
-            Uri graphUri;
-            if (next.TokenType == Token.QNAME)
+            IRefNode graphNode;
+            switch (next.TokenType)
             {
-                // Try to resolve the QName
-                graphUri = context.UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, null));
+                case Token.QNAME:
+                    // Try to resolve the QName
+                    graphNode = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(next.Value, context.Namespaces, null)));
 
-                // Get the Next Token
-                next = context.Tokens.Dequeue();
-            }
-            else if (next.TokenType == Token.URI)
-            {
-                try
-                {
-                    // Ensure an absolute Uri
-                    graphUri = new Uri(next.Value, UriKind.Absolute);
-                }
-                catch (UriFormatException)
-                {
-                    throw ParserHelper.Error("The URI '" + next.Value + "' given as a Graph Name is not a valid Absolute URI", next);
-                }
+                    // Get the Next Token
+                    next = context.Tokens.Dequeue();
+                    break;
 
-                // Get the Next Token
-                next = context.Tokens.Dequeue();
-            }
-            else
-            {
-                // No Name so is a Default Graph
-                if (!context.DefaultGraphExists)
-                {
-                    graphUri = null;
-                }
-                else
-                {
-                    throw new RdfParseException("You cannot specify more than one Default (Unnamed) Graph in a TriG file", next);
-                }
+                case Token.URI:
+                    try
+                    {
+                        // Ensure an absolute Uri
+                        graphNode = context.Handler.CreateUriNode(new Uri(next.Value, UriKind.Absolute));
+                    }
+                    catch (UriFormatException)
+                    {
+                        throw ParserHelper.Error("The URI '" + next.Value + "' given as a Graph Name is not a valid Absolute URI", next);
+                    }
+
+                    // Get the Next Token
+                    next = context.Tokens.Dequeue();
+                    break;
+                
+                case Token.BLANKNODE:
+                    graphNode = context.Handler.CreateBlankNode();
+                    // Get the Next Token
+                    next = context.Tokens.Dequeue();
+                    break;
+                
+                case Token.BLANKNODEWITHID:
+                    graphNode = context.Handler.CreateBlankNode(next.Value);
+                    // Get the Next Token
+                    next = context.Tokens.Dequeue();
+                    break;
+
+                case Token.LEFTSQBRACKET:
+                    // Must be followed immediately by a ] as a blank node declaration
+                    next = context.Tokens.Dequeue();
+                    if (next.TokenType != Token.RIGHTSQBRACKET)
+                    {
+                        throw ParserHelper.Error(
+                            $"Expected a ] to end an anonymous blank node graph name declaration. Found {next}.", next);
+                    }
+
+                    graphNode = context.Handler.CreateBlankNode();
+                    next = context.Tokens.Dequeue();
+                    break;
+
+                default:
+                    {
+                        // No Name so is a Default Graph
+                        if (!context.DefaultGraphExists)
+                        {
+                            graphNode = null;
+                        }
+                        else
+                        {
+                            throw new RdfParseException("You cannot specify more than one Default (Unnamed) Graph in a TriG file", next);
+                        }
+
+                        break;
+                    }
             }
 
             // Is there a discardable Equals token?
@@ -406,24 +612,26 @@ namespace VDS.RDF.Parsing
             }
 
             // Should the see a Left Curly Bracket
-            if (next.TokenType == Token.LEFTCURLYBRACKET)
+            if (next.TokenType != Token.LEFTCURLYBRACKET) {
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket to start a Graph", next);
+            }
+
+            TryParseGraphContent(context, graphNode);
+        }
+
+        private void TryParseGraphContent(TriGParserContext context, IRefNode graphNode)
+        {
+            // Check that the Graph isn't empty i.e. the next token is not a } to close the Graph
+            IToken next = context.Tokens.Peek();
+            if (next.TokenType == Token.RIGHTCURLYBRACKET)
             {
-                // Check that the Graph isn't empty i.e. the next token is not a } to close the Graph
-                next = context.Tokens.Peek();
-                if (next.TokenType == Token.RIGHTCURLYBRACKET)
-                {
-                    // Empty Graph so just discard the }
-                    context.Tokens.Dequeue();
-                }
-                else
-                {
-                    // Parse Graph Contents
-                    TryParseTriples(context, graphUri);
-                }
+                // Empty Graph so just discard the }
+                context.Tokens.Dequeue();
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket to start a Graph", next);
+                // Parse Graph Contents
+                TryParseTriples(context, graphNode);
             }
 
             // May optionally end with a Dot Token
@@ -435,13 +643,14 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseTriples(TriGParserContext context, Uri graphUri)
+        private void TryParseTriples(TriGParserContext context, IRefNode graphNode)
         {
             do
             {
                 // Try to get the Subject
                 IToken subj = context.Tokens.Dequeue();
-                INode subjNode;
+                IRefNode subjNode;
+                bool parsedBlankNodePropertyList = false;
 
                 // Turn the Subject Token into a Node
                 switch (subj.TokenType)
@@ -452,7 +661,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        subjNode = ParserHelper.TryResolveUri(context, subj);
+                        subjNode = ParserHelper.TryResolveUri(context, subj, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.BLANKNODEWITHID:
@@ -475,7 +684,8 @@ namespace VDS.RDF.Parsing
                             subjNode = context.Handler.CreateBlankNode();
 
                             // Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
-                            TryParsePredicateObjectList(context, graphUri, subjNode);
+                            TryParsePredicateObjectList(context, graphNode, subjNode, false, true, false);
+                            parsedBlankNodePropertyList = true;
                         }
                         break;
 
@@ -494,17 +704,32 @@ namespace VDS.RDF.Parsing
                         {
                             // Collection
                             subjNode = context.Handler.CreateBlankNode();
-                            TryParseCollection(context, graphUri, subjNode);
+                            TryParseCollection(context, graphNode, subjNode);
                         }
                         break;
 
                     case Token.PREFIXDIRECTIVE:
                     case Token.BASEDIRECTIVE:
-                        if (context.Syntax == TriGSyntax.Original) throw ParserHelper.Error("@base/@prefix directives are not permitted to occur inside a Graph in this version of TriG, later versions of TriG support this feature and may be enabled by changing your syntax setting when you create a TriG Parser", subj);
+                        if (context.Syntax is TriGSyntax.Original or TriGSyntax.Rdf11 or TriGSyntax.Rdf11Star)
+                        {
+                            throw ParserHelper.Error("@base/@prefix directives are not permitted to occur inside a Graph in this version of TriG, other versions of TriG support this feature and may be enabled by changing your syntax setting when you create a TriG Parser", subj);
+                        }
 
                         // Parse the directive then continue
                         TryParseDirective(context, subj);
+                        next = context.Tokens.Dequeue();
+                        if (next.TokenType != Token.DOT)
+                        {
+                            throw ParserHelper.Error(
+                                $"Expected a `.` to follow a @base or @prefix directive, but found a {next.GetType()}",
+                                next);
+                        }
                         continue;
+
+                    case Token.STARTQUOTE:
+                        CheckQuotedTripleAllowed(subj);
+                        subjNode = TryParseQuotedTriple(context);
+                        break;
 
                     case Token.EOF:
                         throw ParserHelper.Error("Unexpected End of File while trying to parse Triples", subj);
@@ -514,17 +739,20 @@ namespace VDS.RDF.Parsing
                         throw ParserHelper.Error("Unexpected Token '" + subj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Subject of a Triple", subj);
                 }
 
+                
                 // Parse the Predicate Object List
-                TryParsePredicateObjectList(context, graphUri, subjNode);
+                TryParsePredicateObjectList(context, graphNode, subjNode, parsedBlankNodePropertyList, false, false);
+            
 
                 // Expect a Dot to Terminate
                 if (context.Tokens.LastTokenType != Token.DOT && context.Tokens.LastTokenType != Token.RIGHTCURLYBRACKET)
                 {
                     // We only do this if we haven't returned because we already hit the Dot Token/Right Curly Bracket
                     IToken dot = context.Tokens.Dequeue();
-                    if (dot.TokenType != Token.DOT && dot.TokenType != Token.RIGHTCURLYBRACKET)
+                    if (dot.TokenType is not (Token.DOT or Token.RIGHTCURLYBRACKET))
                     {
-                        throw ParserHelper.Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate Triples", dot);
+                        throw ParserHelper.Error(
+                            $"Unexpected Token '{dot.GetType()}' encountered, expected a Dot (Line Terminator) Token to terminate Triples.", dot);
                     }
                 }
 
@@ -537,9 +765,23 @@ namespace VDS.RDF.Parsing
             context.Tokens.Dequeue();
         }
 
-        private void TryParsePredicateObjectList(TriGParserContext context, Uri graphUri, INode subj)
+        private void CheckQuotedTripleAllowed(IToken startQuoteToken)
+        {
+            if (Syntax != TriGSyntax.Rdf11Star)
+            {
+                throw ParserHelper.Error(
+                    $"Unexpected StartQuoteToken. Quoted triples are only supported by the Rdf11Star syntax variant of this parser.",
+                    startQuoteToken);
+            }
+        }
+        private void TryParsePredicateObjectList(TriGParserContext context, IRefNode graphNode, IRefNode subj, bool emptyOk, bool bnodeList, bool annotationList)
         {
             var ok = false;
+            if (emptyOk && context.Tokens.Peek().TokenType is Token.DOT or Token.RIGHTCURLYBRACKET)
+            {
+                // Empty predicate object list
+                return;
+            }
             do
             {
                 // After our first run through we'll need to discard semicolons here
@@ -554,11 +796,16 @@ namespace VDS.RDF.Parsing
                         context.Tokens.Dequeue();
                         return;
                     }
+
+                    while (context.Tokens.Peek().TokenType == Token.SEMICOLON)
+                    {
+                        context.Tokens.Dequeue();
+                    }
                 }
 
                 // Try to get the Predicate
                 IToken pred = context.Tokens.Dequeue();
-                INode predNode;
+                IRefNode predNode;
 
                 switch (pred.TokenType)
                 {
@@ -569,7 +816,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        predNode = ParserHelper.TryResolveUri(context, pred);
+                        predNode = ParserHelper.TryResolveUri(context, pred, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.KEYWORDA:
@@ -603,18 +850,23 @@ namespace VDS.RDF.Parsing
                 ok = true;
 
                 // Parse the Object List
-                TryParseObjectList(context, graphUri, subj, predNode);
-
-                // Return if we hit the Dot Token/Right Curly Bracket/Right Square Bracket
-                if (context.Tokens.LastTokenType == Token.DOT ||
-                    context.Tokens.LastTokenType == Token.RIGHTCURLYBRACKET ||
-                    context.Tokens.LastTokenType == Token.RIGHTSQBRACKET)
+                TryParseObjectList(context, graphNode, subj, predNode, annotationList);
+                if (context.Tokens.LastTokenType == Token.DOT && !bnodeList && !annotationList) return; //Dot terminates a normal Predicate Object list
+                //if (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && bnodeList) return;
+                //if (context.Tokens.LastTokenType == Token.ENDANNOTATION && annotationList) return;
+                //Trailing semicolon, ] or |} may terminate a Blank Node Predicate Object list
+                if ((context.Tokens.LastTokenType == Token.SEMICOLON ||
+                    (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && bnodeList) ||
+                    (context.Tokens.LastTokenType == Token.ENDANNOTATION && annotationList)) &&
+                    context.Tokens.Peek().TokenType is Token.DOT or Token.RIGHTCURLYBRACKET)
                 {
+                    // Dot or right curly terminates a Predicate Object list with a trailing semicolon
+                    context.Tokens.Dequeue();
                     return;
                 }
 
                 // Check for End of Blank Node Collections
-                if (context.Tokens.Peek().TokenType == Token.RIGHTSQBRACKET)
+                if (context.Tokens.Peek().TokenType == Token.RIGHTSQBRACKET && bnodeList)
                 {
                     context.Tokens.Dequeue();
                     return;
@@ -623,9 +875,10 @@ namespace VDS.RDF.Parsing
             } while (context.Tokens.Peek().TokenType == Token.SEMICOLON); //Expect a semicolon if we are to continue
         }
 
-        private void TryParseObjectList(TriGParserContext context, Uri graphUri, INode subj, INode pred)
+        private void TryParseObjectList(TriGParserContext context, IRefNode graphNode, IRefNode subj, IRefNode pred, bool annotationList)
         {
             var ok = false;
+            INode objNode = null;
 
             do
             {
@@ -638,7 +891,6 @@ namespace VDS.RDF.Parsing
                 // Try to get the Object
                 IToken obj = context.Tokens.Dequeue();
                 IToken next;
-                INode objNode;
 
                 switch (obj.TokenType)
                 {
@@ -649,7 +901,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        objNode = ParserHelper.TryResolveUri(context, obj);
+                        objNode = ParserHelper.TryResolveUri(context, obj, false, context.QNameUnescapeFunction);
                         break;
 
                     case Token.LITERAL:
@@ -679,6 +931,14 @@ namespace VDS.RDF.Parsing
                             {
                                 throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token", next);
                             }
+                        }
+                        else if (next.TokenType == Token.DATATYPE)
+                        {
+                            // In RDF 1.1 mode, the Turtle tokenizer returns a DATATYPE token directly
+                            context.Tokens.Dequeue();
+                            Uri dt = context.UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces,
+                                context.BaseUri));
+                            objNode = context.Handler.CreateLiteralNode(obj.Value, dt);
                         }
                         else
                         {
@@ -713,7 +973,7 @@ namespace VDS.RDF.Parsing
                             objNode = context.Handler.CreateBlankNode();
 
                             // Do an extra call to TryParsePredicateObjectList to parse the Blank Node Collection
-                            TryParsePredicateObjectList(context, graphUri, objNode);
+                            TryParsePredicateObjectList(context, graphNode, (IBlankNode)objNode, false, true, false);
                         }
                         break;
 
@@ -740,10 +1000,32 @@ namespace VDS.RDF.Parsing
                         {
                             // Collection
                             objNode = context.Handler.CreateBlankNode();
-                            TryParseCollection(context, graphUri, objNode);
+                            TryParseCollection(context, graphNode, (IBlankNode)objNode);
                         }
                         break;
 
+                    case Token.STARTQUOTE:
+                        CheckQuotedTripleAllowed(obj);
+                        objNode = TryParseQuotedTriple(context);
+                        break;
+
+                    case Token.ENDANNOTATION:
+                        if (annotationList)
+                        {
+                            if (objNode != null)
+                            {
+                                return;
+                            }
+                            throw ParserHelper.Error(
+                                "Unexpected |}. Expecting a valid object for the current triple annotation list",
+                                obj);
+                        }
+                        else
+                        {
+                            throw ParserHelper.Error(
+                                "Unexpected |} encountered when not expecting the end of a triple annotation list",
+                                obj);
+                        }
                     case Token.EOF:
                         throw ParserHelper.Error("Unexpected End of File while trying to parse Object List", obj);
 
@@ -752,23 +1034,59 @@ namespace VDS.RDF.Parsing
                     case Token.SEMICOLON:
                         if (!ok)
                         {
-                            throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered before an Object list was parsed", obj);
+                            throw ParserHelper.Error(
+                                $"Unexpected Token '{obj.GetType()}' encountered before an Object list was parsed", obj);
                         }
                         return;
 
                     default:
                         // Unexpected Token
-                        throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Object of a Triple", obj);
+                        throw ParserHelper.Error(
+                            $"Unexpected Token '{obj.GetType()}' encountered, expected a URI/QName/Blank Node as the Object of a Triple", obj);
                 }
 
                 ok = true;
 
-                if (!context.Handler.HandleTriple(new Triple(subj, pred, objNode, graphUri))) ParserHelper.Stop();
+                var triple = new Triple(subj, pred, objNode, graphNode);
+                if (!context.Handler.HandleTriple(triple)) ParserHelper.Stop();
+
+                next = context.Tokens.Peek();
+                if (next.TokenType == Token.STARTANNOTATION)
+                {
+                    if (Syntax != TriGSyntax.Rdf11Star)
+                    {
+                        throw ParserHelper.Error(
+                            $"Unexpected {next.GetType()}. Annotations are only supported by the Rdf11Star syntax variant of this parser.",
+                            next);
+                    }
+
+                    context.Tokens.Dequeue();
+                    TryParsePredicateObjectList(context, graphNode, context.Handler.CreateTripleNode(triple), false, false, true);
+                    next = context.Tokens.Dequeue();
+                    if (next.TokenType != Token.ENDANNOTATION)
+                    {
+                        throw ParserHelper.Error(
+                            $"Unexpected token '{next.GetType()}' encountered while trying to parse an annotation list. Expected |}} to close the annotation list.",
+                            next);
+                    }
+
+                    next = context.Tokens.Peek();
+                }
+
+                if (annotationList)
+                {
+                    // A DOT is not permitted, but an ENDANNOTATION is
+                    if (next.TokenType is not (Token.COMMA or Token.SEMICOLON or Token.ENDANNOTATION))
+                    {
+                        throw ParserHelper.Error($"Unexpected token '{next.GetType()}' encountered while trying to parse a triple annotation. Expected a comma, semicolon or |}} to terminate the list.",
+                            next);
+                    }
+                }
 
             } while (context.Tokens.Peek().TokenType == Token.COMMA); //Expect a comma if we are to continue
         }
 
-        private void TryParseCollection(TriGParserContext context, Uri graphUri, INode subj)
+        private void TryParseCollection(TriGParserContext context, IRefNode graphNode, IRefNode subj)
         {
             // Create the Nodes we need
             IUriNode rdfFirst, rdfRest, rdfNil;
@@ -841,7 +1159,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             // Blank Node Collection
-                            TryParsePredicateObjectList(context, graphUri, item);
+                            TryParsePredicateObjectList(context, graphNode, (IBlankNode)item, false, true, false);
                         }
                         break;
 
@@ -858,7 +1176,7 @@ namespace VDS.RDF.Parsing
                         {
                             // Collection
                             item = context.Handler.CreateBlankNode();
-                            TryParseCollection(context, graphUri, item);
+                            TryParseCollection(context, graphNode, (IBlankNode)item);
                         }
                         break;
 
@@ -866,35 +1184,227 @@ namespace VDS.RDF.Parsing
                         item = context.Handler.CreateBlankNode(next.Value);
                         break;
 
+                    case Token.STARTQUOTE:
+                        CheckQuotedTripleAllowed(next);
+                        item = TryParseQuotedTriple(context);
+                        break;
+
                     case Token.EOF:
                         throw ParserHelper.Error("Unexpected End of File while trying to parse a Collection", next);
 
                     default:
                         // Unexpected Token
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName/Literal/Blank Node as an item in a Collection", next);
+                        throw ParserHelper.Error(
+                            $"Unexpected Token '{next.GetType()}' encountered, expected a URI/QName/Literal/Blank Node as an item in a Collection", next);
                 }
 
                 // Create the subj rdf:first item Triple
-                if (!context.Handler.HandleTriple((new Triple(subj, rdfFirst, item, graphUri)))) ParserHelper.Stop();
+                if (!context.Handler.HandleTriple((new Triple(subj, rdfFirst, item, graphNode)))) ParserHelper.Stop();
 
                 // Create the rdf:rest Triple
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
                     // End of Collection
                     context.Tokens.Dequeue();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, graphUri))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, graphNode))) ParserHelper.Stop();
                     return;
                 }
                 else
                 {
                     // Continuing Collection
                     temp = context.Handler.CreateBlankNode();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, temp, graphUri))) ParserHelper.Stop();
-                    subj = temp;
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, temp, graphNode))) ParserHelper.Stop();
+                    subj = (IBlankNode)temp;
                 }
             } while (true);
 
         }
+
+        private ITripleNode TryParseQuotedTriple(TriGParserContext context)
+        {
+            if (context.TraceParsing)
+            {
+                Console.WriteLine("Attempting to parse a quoted triple.");
+            }
+
+            IToken subjToken = context.Tokens.Dequeue();
+            INode subj = subjToken.TokenType switch
+            {
+                Token.BLANKNODE => context.Handler.CreateBlankNode(),
+                Token.BLANKNODEWITHID => context.Handler.CreateBlankNode(subjToken.Value.Substring(2)),
+                Token.QNAME => ParserHelper.TryResolveUri(context, subjToken, false, context.QNameUnescapeFunction),
+                Token.URI => ParserHelper.TryResolveUri(context, subjToken, false, context.QNameUnescapeFunction),
+                Token.STARTQUOTE => TryParseQuotedTriple(context),
+                Token.LEFTSQBRACKET => TryParseAnonBlankNode(context), // Blank node collections are not allowed in quoted triples
+                _ => throw ParserHelper.Error(
+                    $"Unexpected Token '{subjToken.GetType()}' encountered, this Token is not valid as the subject of a quoted triple",
+                    subjToken)
+            };
+
+            IToken predToken = context.Tokens.Dequeue();
+            INode pred = predToken.TokenType switch
+            {
+                Token.KEYWORDA =>
+                    context.Handler.CreateUriNode(context.UriFactory.Create(NamespaceMapper.RDF + "type")),
+                Token.QNAME => ParserHelper.TryResolveUri(context, predToken, false, context.QNameUnescapeFunction),
+                Token.URI => ParserHelper.TryResolveUri(context, predToken, false, context.QNameUnescapeFunction),
+                _ => throw ParserHelper.Error(
+                    $"Unexpected Token '{predToken.GetType()}' encountered, this Token is not valid as the predicate of a quoted triple", predToken)
+            };
+
+            IToken objToken = context.Tokens.Dequeue();
+            INode obj = objToken.TokenType switch
+            {
+                Token.BLANKNODE => context.Handler.CreateBlankNode(),
+                Token.BLANKNODEWITHID => context.Handler.CreateBlankNode(objToken.Value.Substring(2)),
+                Token.QNAME or Token.URI => ParserHelper.TryResolveUri(context, objToken, false,
+                    context.QNameUnescapeFunction),
+                Token.LITERAL or Token.LITERALWITHDT or Token.LITERALWITHLANG or Token.LONGLITERAL or Token.PLAINLITERAL
+                    => TryParseLiteral(context, objToken),
+                Token.STARTQUOTE => TryParseQuotedTriple(context),
+                Token.LEFTSQBRACKET => TryParseAnonBlankNode(context), // Blank node collections are not allowed in quoted triples
+                _ => throw ParserHelper.Error(
+                    $"Unexpected Token '{objToken.GetType()}' encountered, this Token is not valid as the object of a quoted triple",
+                    objToken)
+            };
+
+            IToken next = context.Tokens.Peek();
+            if (next.TokenType != Token.ENDQUOTE)
+            {
+                throw ParserHelper.Error(
+                    $"Unexpected token '{next.GetType()}' encountered. Expected a '>>' token to end a quoted triple.",
+                    next);
+            }
+            // Consume the ENDQUOTE
+            context.Tokens.Dequeue();
+
+            return context.Handler.CreateTripleNode(new Triple(subj, pred, obj));
+        }
+
+        private IBlankNode TryParseAnonBlankNode(TokenisingStoreParserContext context)
+        {
+            // Start of a Blank Node collection?
+            IToken next = context.Tokens.Peek();
+            if (next.TokenType != Token.RIGHTSQBRACKET)
+            {
+                throw ParserHelper.Error(
+                    $"Unexpected token '{next.GetType()}' encountered. Expected a ] to end an anonymous blank node.",
+                    next);
+            }
+            context.Tokens.Dequeue();
+            return context.Handler.CreateBlankNode();
+        }
+
+        /// <summary>
+        /// Tries to parse Literal Tokens into Literal Nodes.
+        /// </summary>
+        /// <param name="context">Parser Context.</param>
+        /// <param name="lit">Literal Token.</param>
+        /// <returns></returns>
+        private INode TryParseLiteral(TriGParserContext context, IToken lit)
+        {
+            IToken next;
+            string dturi;
+
+            switch (lit.TokenType)
+            {
+                case Token.LITERAL:
+                case Token.LONGLITERAL:
+                    next = context.Tokens.Peek();
+                    if (next.TokenType == Token.LANGSPEC)
+                    {
+                        // Has a Language Specifier
+                        next = context.Tokens.Dequeue();
+                        return context.Handler.CreateLiteralNode(lit.Value, next.Value);
+                    }
+                    else if (next.TokenType == Token.DATATYPE)
+                    {
+                        // Has a Datatype
+                        next = context.Tokens.Dequeue();
+                        try
+                        {
+                            if (next.Value.StartsWith("<"))
+                            {
+                                dturi = next.Value.Substring(1, next.Value.Length - 2);
+                                return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                            }
+                            else
+                            {
+                                dturi = Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri);
+                                return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(dturi));
+                            }
+                        }
+                        catch (RdfException rdfEx)
+                        {
+                            throw new RdfParseException("Unable to resolve the Datatype '" + next.Value + "' due to the following error:\n" + rdfEx.Message, next, rdfEx);
+                        }
+                    }
+                    else
+                    {
+                        // Just an untyped Literal
+                        return context.Handler.CreateLiteralNode(lit.Value);
+                    }
+
+                case Token.LITERALWITHDT:
+                    var litdt = (LiteralWithDataTypeToken)lit;
+                    try
+                    {
+                        if (litdt.DataType.StartsWith("<"))
+                        {
+                            dturi = litdt.DataType.Substring(1, litdt.DataType.Length - 2);
+                            return context.Handler.CreateLiteralNode(litdt.Value, context.UriFactory.Create(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
+                        }
+                        else
+                        {
+                            dturi = Tools.ResolveQName(litdt.DataType, context.Namespaces, context.BaseUri);
+                            return context.Handler.CreateLiteralNode(litdt.Value, context.UriFactory.Create(dturi));
+                        }
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the Datatype '" + litdt.DataType + "' due to the following error:\n" + rdfEx.Message, litdt, rdfEx);
+                    }
+
+                case Token.LITERALWITHLANG:
+                    var langlit = (LiteralWithLanguageSpecifierToken)lit;
+                    return context.Handler.CreateLiteralNode(langlit.Value, langlit.Language);
+
+                case Token.PLAINLITERAL:
+                    // Attempt to infer Type
+                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, TurtleSyntax))
+                    {
+                        if (TurtleSpecsHelper.IsValidDouble(lit.Value))
+                        {
+                            return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
+                        }
+                        else if (TurtleSpecsHelper.IsValidInteger(lit.Value))
+                        {
+                            return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+                        }
+                        else if (TurtleSpecsHelper.IsValidDecimal(lit.Value))
+                        {
+                            return context.Handler.CreateLiteralNode(lit.Value, context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
+                        }
+                        else
+                        {
+                            return context.Handler.CreateLiteralNode(lit.Value.ToLower(), context.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+                        }
+                    }
+                    else
+                    {
+                        throw ParserHelper.Error($"The value '{lit.Value}' is not valid as a Plain Literal in {this}", lit);
+                    }
+                default:
+                    throw ParserHelper.Error("Unexpected Token '" + lit.GetType().ToString() + "' encountered, expected a valid Literal Token to convert to a Node", lit);
+            }
+        }
+
+        private TurtleSyntax TurtleSyntax => Syntax switch
+        {
+            TriGSyntax.Rdf11 => TurtleSyntax.W3C,
+            TriGSyntax.Rdf11Star => TurtleSyntax.Rdf11Star,
+            _ => TurtleSyntax.W3C
+        };
 
         /// <summary>
         /// Helper method used to raise the Warning event if there is an event handler registered.
@@ -902,11 +1412,7 @@ namespace VDS.RDF.Parsing
         /// <param name="message">Warning message.</param>
         private void RaiseWarning(string message)
         {
-            StoreReaderWarning d = Warning;
-            if (d != null)
-            {
-                d(message);
-            }
+            Warning?.Invoke(message);
         }
 
         /// <summary>

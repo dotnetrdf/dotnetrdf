@@ -244,7 +244,7 @@ namespace VDS.RDF.Parsing
             const string data = "@prefix : <http://example.com/> . { :1 :p :o . }";
 
             var store = new TripleStore();
-            store.LoadFromString(data, new TriGParser(TriGSyntax.Recommendation));
+            store.LoadFromString(data, new TriGParser(TriGSyntax.Rdf11));
 
             Assert.Single(store.Graphs);
             Assert.Single(store.Triples);

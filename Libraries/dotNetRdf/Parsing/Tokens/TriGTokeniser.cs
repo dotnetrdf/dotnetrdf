@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Tokens
     {
         private ParsingTextReader _in;
         private int _lasttokentype = -1;
-        private TriGSyntax _syntax = TriGSyntax.Recommendation;
+        private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
 
         /// <summary>
         /// Creates a new TriG Tokeniser which reads Tokens from the given Stream.
@@ -354,7 +354,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw UnexpectedCharacter(next, "expected a : to end a Prefix specification");
             }
-            if (!TurtleSpecsHelper.IsValidQName(Value, _syntax == TriGSyntax.Recommendation ? TurtleSyntax.W3C : TurtleSyntax.Original))
+            if (!TurtleSpecsHelper.IsValidQName(Value, TurtleSyntax.Original))
             {
                 throw new RdfParseException("The value '" + Value + "' is not a valid Prefix in TriG", new PositionInfo(StartLine, CurrentLine, StartPosition, EndPosition));
             }
@@ -466,7 +466,7 @@ namespace VDS.RDF.Parsing.Tokens
                 _lasttokentype = Token.BLANKNODEWITHID;
                 return new BlankNodeWithIDToken(Value, CurrentLine, StartPosition, EndPosition);
             } 
-            else if (TurtleSpecsHelper.IsValidQName(Value, _syntax == TriGSyntax.Recommendation ? TurtleSyntax.W3C : TurtleSyntax.Original))
+            else if (TurtleSpecsHelper.IsValidQName(Value, TurtleSyntax.Original))
             {
                 // QName
                 _lasttokentype = Token.QNAME;
@@ -670,7 +670,7 @@ namespace VDS.RDF.Parsing.Tokens
                 _lasttokentype = Token.PLAINLITERAL;
                 return new PlainLiteralToken(Value, CurrentLine, StartPosition, EndPosition);
             }
-            else if (TurtleSpecsHelper.IsValidQName(value, _syntax == TriGSyntax.Recommendation ? TurtleSyntax.W3C : TurtleSyntax.Original))
+            else if (TurtleSpecsHelper.IsValidQName(value, TurtleSyntax.Original))
             {
                 // QName
                 _lasttokentype = Token.QNAME;

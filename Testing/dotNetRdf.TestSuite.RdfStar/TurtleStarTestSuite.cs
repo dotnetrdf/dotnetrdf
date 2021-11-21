@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using dotNetRdf.TestSupport;
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VDS.RDF.Parsing;
-using VDS.RDF;
 using Xunit;
 using Xunit.Abstractions;
 

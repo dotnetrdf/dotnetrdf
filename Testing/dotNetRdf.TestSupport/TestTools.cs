@@ -454,5 +454,37 @@ namespace VDS.RDF
                 Thread.CurrentThread.CurrentCulture = currentCulture;
             }
         }
+
+        public static void AssertEqual(ITripleStore expected, ITripleStore actual, ITestOutputHelper output)
+        {
+            var bnodeMap = new Dictionary<INode, INode>();
+
+            foreach (IGraph expectGraph in expected.Graphs)
+            {
+                if (expectGraph.Name is IBlankNode)
+                {
+                    // Has to match one unmapped graph in actual
+                    var match = actual.Graphs.Where(g => g.Name is IBlankNode && !bnodeMap.ContainsKey(g.Name))
+                        .Select(candidateGraph => new {name=candidateGraph.Name, diffReport=candidateGraph.Difference(expectGraph)})
+                        .FirstOrDefault(x => x.diffReport.AreEqual);
+                    Assert.True(match != null, $"Could not find a graph in the actual store that matches blank node named graph {expectGraph.Name} in the expected store.");
+                    bnodeMap[match.name] = expectGraph.Name;
+                }
+                else
+                {
+                    Assert.True(actual.Graphs.Contains(expectGraph.Name));
+                    IGraph actualGraph = actual.Graphs[expectGraph.Name];
+                    GraphDiffReport diffReport = actualGraph.Difference(expectGraph);
+                    if (!diffReport.AreEqual) ShowDifferences(diffReport, output);
+                    Assert.True(diffReport.AreEqual);
+                }
+            }
+
+            foreach (IGraph actualGraph in actual.Graphs)
+            {
+                Assert.True((actualGraph.Name != null && bnodeMap.ContainsKey(actualGraph.Name)) || 
+                            expected.Graphs.Contains(actualGraph.Name));
+            }
+        }
     }
 }

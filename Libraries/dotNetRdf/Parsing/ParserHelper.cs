@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context.</param>
         /// <param name="t">Token to resolve.</param>
         /// <returns></returns>
-        public static INode TryResolveUri(IParserContext context, IToken t)
+        public static IUriNode TryResolveUri(IParserContext context, IToken t)
         {
             return TryResolveUri(context, t, false);
         }
@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
         /// <param name="t">Token to resolve.</param>
         /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI.</param>
         /// <returns></returns>
-        public static INode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback)
+        public static IUriNode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback)
         {
             return TryResolveUri(context, t, allowDefaultPrefixFallback, s => s);
         }
@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing
         /// <param name="allowDefaultPrefixFallback">Whether when the default prefix is used but not defined it can fallback to the Base URI.</param>
         /// <param name="qnameUnescape">QName unescaping function.</param>
         /// <returns></returns>
-        public static INode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback, Func<string, string> qnameUnescape)
+        public static IUriNode TryResolveUri(IParserContext context, IToken t, bool allowDefaultPrefixFallback, Func<string, string> qnameUnescape)
         {
             switch (t.TokenType)
             {
@@ -112,7 +112,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context.</param>
         /// <param name="t">Token to resolve.</param>
         /// <returns></returns>
-        public static INode TryResolveUri(IStoreParserContext context, IToken t)
+        public static IRefNode TryResolveUri(IStoreParserContext context, IToken t)
         {
             switch (t.TokenType)
             {

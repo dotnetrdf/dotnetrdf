@@ -71,10 +71,10 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            IRefNode targetGraphName = t.GraphUri == null ? null : new UriNode(t.GraphUri);
+            IRefNode targetGraphName = t.GraphName;
             if (!Store.HasGraph(targetGraphName))
             {
-                var g = new Graph(t.GraphUri == null ? null : new UriNode(t.GraphUri));
+                var g = new Graph(t.GraphName);
                 Store.Add(g);
             }
             IGraph target = Store[targetGraphName];

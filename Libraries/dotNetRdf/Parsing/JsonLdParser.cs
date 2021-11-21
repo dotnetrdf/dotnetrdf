@@ -140,18 +140,22 @@ namespace VDS.RDF.Parsing
                     var graphName = p.Name;
                     var graph = p.Value as JObject;
                     if (graph == null) continue;
-                    Uri graphIri;
+                    IRefNode graphNode;
                     if (graphName == "@default")
                     {
-                        graphIri = null;
+                        graphNode = null;
                     }
                     else
                     {
                         if (IsBlankNodeIdentifier(graphName))
                         {
-                            graphIri = uriFactory.Create("nquads:bnode:" + graphName.Substring(2));
+                            graphNode = handler.CreateBlankNode(graphName.Substring(2));
                         } 
-                        else if (!(Uri.TryCreate(graphName, UriKind.Absolute, out graphIri) && graphIri.IsWellFormedOriginalString()))
+                        else if (Uri.TryCreate(graphName, UriKind.Absolute, out Uri graphIri) && graphIri.IsWellFormedOriginalString())
+                        {
+                            graphNode = handler.CreateUriNode(graphIri);
+                        }
+                        else
                         {
                             continue;
                         }
@@ -160,7 +164,7 @@ namespace VDS.RDF.Parsing
                     {
                         var subject = gp.Name;
                         var node = gp.Value as JObject;
-                        INode subjectNode;
+                        IRefNode subjectNode;
                         if (IsBlankNodeIdentifier(subject))
                         {
                             subjectNode = handler.CreateBlankNode(subject.Substring(2));
@@ -178,24 +182,23 @@ namespace VDS.RDF.Parsing
                             {
                                 foreach (JToken type in values)
                                 {
-                                    INode typeNode = MakeNode(handler, type, graphIri);
+                                    INode typeNode = MakeNode(handler, type, graphNode);
                                     if (typeNode != null)
                                     {
-                                        handler.HandleTriple(new Triple(subjectNode, rdfTypeNode, typeNode, graphIri));
+                                        handler.HandleTriple(new Triple(subjectNode, rdfTypeNode, typeNode, graphNode));
                                     }
                                 }
                             }
-                            else if (JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf ||
+                            else if ((JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf) ||
                                      Uri.IsWellFormedUriString(property, UriKind.Absolute))
                             {
                                 foreach (JToken item in values)
                                 {
-                                    INode predicateNode = MakeNode(handler, property, graphIri);
-                                    INode objectNode = MakeNode(handler, item, graphIri);
+                                    var predicateNode = MakeNode(handler, property, graphNode) as IRefNode;
+                                    INode objectNode = MakeNode(handler, item, graphNode);
                                     if (predicateNode != null && objectNode != null)
                                     {
-                                        handler.HandleTriple(new Triple(subjectNode, predicateNode, objectNode,
-                                            graphIri));
+                                        handler.HandleTriple(new Triple(subjectNode, predicateNode, objectNode, graphNode));
                                     }
                                 }
                             }
@@ -216,7 +219,7 @@ namespace VDS.RDF.Parsing
         private const string RdfValue = RdfNs + "value";
         private static readonly Regex ExponentialFormatMatcher = new Regex(@"(\d)0*E\+?0*");
 
-        private INode MakeNode(IRdfHandler handler, JToken token, Uri graphIri, bool allowRelativeIri = false)
+        private INode MakeNode(IRdfHandler handler, JToken token, IRefNode graphName, bool allowRelativeIri = false)
         {
             if (token is JValue)
             {
@@ -297,21 +300,21 @@ namespace VDS.RDF.Parsing
                         literalNode,
                         handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfValue)),
                         handler.CreateLiteralNode(literalValue, xsdString),
-                        graphIri));
+                        graphName));
                     if (!string.IsNullOrEmpty(language))
                     {
                         handler.HandleTriple(new Triple(
                             literalNode,
                             handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfLanguage)),
                             handler.CreateLiteralNode(language, xsdString),
-                            graphIri));
+                            graphName));
                     }
 
                     handler.HandleTriple(new Triple(
                         literalNode,
                         handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfDirection)),
                         handler.CreateLiteralNode(direction, xsdString),
-                        graphIri));
+                        graphName));
 
                     return literalNode;
                 }
@@ -333,20 +336,20 @@ namespace VDS.RDF.Parsing
             if (JsonLdUtils.IsListObject(token))
             {
                 var listArray = token["@list"] as JArray;
-                return MakeRdfList(handler, listArray, graphIri);
+                return MakeRdfList(handler, listArray, graphName);
             }
 
             if((token as JObject)?.Property("@id")!=null)
             {
                 // Must be a node object
                 var nodeObject = (JObject) token;
-                return MakeNode(handler, nodeObject["@id"], graphIri);
+                return MakeNode(handler, nodeObject["@id"], graphName);
             }
 
             return null;
         }
 
-        private INode MakeRdfList(IRdfHandler handler, JArray list, Uri graphIri)
+        private INode MakeRdfList(IRdfHandler handler, JArray list, IRefNode graphName)
         {
             IUriNode rdfFirst = handler.CreateUriNode(new Uri(RdfNs + "first"));
             IUriNode rdfRest = handler.CreateUriNode(new Uri(RdfNs + "rest"));
@@ -356,13 +359,13 @@ namespace VDS.RDF.Parsing
             for(var ix = 0; ix < list.Count; ix++)
             {
                 IBlankNode subject = bNodes[ix];
-                INode obj = MakeNode(handler, list[ix], graphIri);
+                INode obj = MakeNode(handler, list[ix], graphName);
                 if (obj != null)
                 {
-                    handler.HandleTriple(new Triple(subject, rdfFirst, obj, graphIri));
+                    handler.HandleTriple(new Triple(subject, rdfFirst, obj, graphName));
                 }
                 INode rest = (ix + 1 < list.Count) ? bNodes[ix + 1] : (INode)rdfNil;
-                handler.HandleTriple(new Triple(subject, rdfRest, rest, graphIri));
+                handler.HandleTriple(new Triple(subject, rdfRest, rest, graphName));
             }
             return bNodes[0];
         }

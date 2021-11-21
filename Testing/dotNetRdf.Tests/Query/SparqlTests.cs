@@ -654,5 +654,18 @@ WHERE  { ?s ?p ?o. BIND(?o / 2 AS ?a) }
             //@object is 25 when using German (Germany) regional format
             //@object is 0.25 when using English (United Kingdom) regional format
         }
+
+        [Fact]
+        public void SparqlDatasetTest()
+        {
+            var queryPath = Path.GetFullPath(Path.Combine("resources", "sparql", "dataset-1.rq"));
+            var queryParser = new SparqlQueryParser { DefaultBaseUri = new Uri(queryPath) };
+            var q = queryParser.ParseFromFile(queryPath);
+            var store = new WebDemandTripleStore();
+            var queryProcessor = new LeviathanQueryProcessor(store);
+            var result = q.Process(queryProcessor);
+            SparqlResultSet resultSet = Assert.IsAssignableFrom<SparqlResultSet>(result);
+            Assert.Equal(2, resultSet.Count);
+        }
     }
 }

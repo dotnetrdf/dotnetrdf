@@ -212,7 +212,7 @@ namespace VDS.RDF.Writing
             output.Append(NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
             output.Append(" ");
             output.Append(NodeToNTriples(context, t.Object, TripleSegment.Object));
-            if (t.GraphUri != null || graphName != null)
+            if (t.GraphName != null || graphName != null)
             {
                 // Favour graph name rather than per-triple graph name because we may have a triple with a different graph name than the containing graph
                 if (graphName != null)
@@ -223,7 +223,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     output.Append(" <");
-                    output.Append(context.UriFormatter.FormatUri(t.GraphUri));
+                    output.Append(context.NodeFormatter.Format(t.GraphName));
                     output.Append(">");
                 }
             }

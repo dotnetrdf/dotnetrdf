@@ -509,7 +509,7 @@ namespace VDS.RDF.Parsing
             return context.Handler.CreateTripleNode(new Triple(subj, pred, obj));
         }
 
-        private IBlankNode TryParseAnonBlankNode(TurtleParserContext context)
+        private IBlankNode TryParseAnonBlankNode(TokenisingParserContext context)
         {
             // Start of a Blank Node collection?
             IToken next = context.Tokens.Peek();

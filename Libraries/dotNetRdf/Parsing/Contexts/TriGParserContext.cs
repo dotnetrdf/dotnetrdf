@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Parsing.Contexts
@@ -35,7 +36,6 @@ namespace VDS.RDF.Parsing.Contexts
         : TokenisingStoreParserContext
     {
         private bool _defaultGraphExists = false;
-        private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
 
         /// <summary>
         /// Creates a new TriG Parser Context with default settings.
@@ -146,15 +146,20 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets/Sets the Syntax to be used.
         /// </summary>
-        public TriGSyntax Syntax
+        public TriGSyntax Syntax { get; set; } = TriGSyntax.MemberSubmission;
+
+        /// <summary>
+        /// Function for unescaping QNames.
+        /// </summary>
+        public Func<string, string> QNameUnescapeFunction
         {
             get
             {
-                return _syntax;
-            }
-            set
-            {
-                _syntax = value;
+                switch (Syntax)
+                {
+                    default:
+                        return TurtleSpecsHelper.UnescapeQName;
+                }
             }
         }
     }
