@@ -163,9 +163,12 @@ namespace VDS.RDF.Storage
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler),
                                 state);
                         }
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler,
-                                StorageHelper.HandleHttpError(response, "loading a Graph asynchronously from")),
-                            state);
+                        else
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler,
+                                    StorageHelper.HandleHttpError(response, "loading a Graph asynchronously from")),
+                                state);
+                        }
                     }
                     else
                     {
