@@ -33,9 +33,6 @@ namespace VDS.RDF.Writing.Contexts
     /// </summary>
     public class TriGWriterContext : ThreadedStoreWriterContext
     {
-        private int _compressionLevel = WriterCompressionLevel.Default;
-        private bool _n3compatability = false;
-
         /// <summary>
         /// Creates a new TriG Writer context.
         /// </summary>
@@ -48,37 +45,17 @@ namespace VDS.RDF.Writing.Contexts
         public TriGWriterContext(ITripleStore store, TextWriter output, bool prettyPrint, bool hiSpeedAllowed, int compressionLevel, bool n3compatability)
             : base(store, output, prettyPrint, hiSpeedAllowed)
         {
-            _compressionLevel = compressionLevel;
+            CompressionLevel = compressionLevel;
         }
 
         /// <summary>
         /// Gets/Sets the Compression Level.
         /// </summary>
-        public int CompressionLevel
-        {
-            get
-            {
-                return _compressionLevel;
-            }
-            set
-            {
-                _compressionLevel = value;
-            }
-        }
+        public int CompressionLevel { get; set; } = WriterCompressionLevel.Default;
 
         /// <summary>
         /// Gets/Sets N3 Compatability Mode.
         /// </summary>
-        public bool N3CompatabilityMode
-        {
-            get
-            {
-                return _n3compatability;
-            }
-            set
-            {
-                _n3compatability = value;
-            }
-        }
+        public bool N3CompatabilityMode { get; set; } = false;
     }
 }

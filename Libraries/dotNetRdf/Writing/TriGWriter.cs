@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VDS.RDF.Parsing;
@@ -83,6 +84,11 @@ namespace VDS.RDF.Writing
 #pragma warning disable CS0618 // Type or member is obsolete
         public bool UseMultiThreadedWriting { get; set; } = Options.AllowMultiThreadedWriting; // = false;
 #pragma warning restore CS0618 // Type or member is obsolete
+
+        /// <summary>
+        /// Get/Sets the syntax mode for the writer.
+        /// </summary>
+        public TriGSyntax Syntax { get; set; } = TriGSyntax.Rdf11Star;
 
         /// <summary>
         /// Saves a Store in TriG (Turtle with Named Graphs) format.
@@ -176,15 +182,12 @@ namespace VDS.RDF.Writing
                     // Optional Single Threaded Writing
                     foreach (IGraph g in store.Graphs)
                     {
-                        var graphContext = new TurtleWriterContext(g, new System.IO.StringWriter(), context.PrettyPrint, context.HighSpeedModePermitted);
-                        if (context.CompressionLevel > WriterCompressionLevel.None)
+                        var graphContext = new CompressingTurtleWriterContext(g, new System.IO.StringWriter(),
+                            context.PrettyPrint, context.HighSpeedModePermitted,
+                            Syntax == TriGSyntax.Rdf11Star ? TurtleSyntax.Rdf11Star : TurtleSyntax.W3C)
                         {
-                            graphContext.NodeFormatter = new TurtleFormatter(context.QNameMapper);
-                        }
-                        else
-                        {
-                            graphContext.NodeFormatter = new UncompressedTurtleFormatter();
-                        }
+                            NodeFormatter = GetNodeFormatter(context),
+                        };
                         context.Output.WriteLine(GenerateGraphOutput(context, graphContext));
                     }
 
@@ -216,7 +219,7 @@ namespace VDS.RDF.Writing
         /// <param name="globalContext">Context for writing the Store.</param>
         /// <param name="context">Context for writing the Graph.</param>
         /// <returns></returns>
-        private string GenerateGraphOutput(TriGWriterContext globalContext, TurtleWriterContext context)
+        private string GenerateGraphOutput(TriGWriterContext globalContext, CompressingTurtleWriterContext context)
         {
             if (context.Graph.Name != null)
             {
@@ -243,7 +246,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="globalContext">Context for writing the Store.</param>
         /// <param name="context">Context for writing the Graph.</param>
-        private void GenerateTripleOutput(TriGWriterContext globalContext, TurtleWriterContext context)
+        private void GenerateTripleOutput(TriGWriterContext globalContext, CompressingTurtleWriterContext context)
         {
             // Decide which write mode to use
             var hiSpeed = false;
@@ -260,18 +263,23 @@ namespace VDS.RDF.Writing
                 foreach (Triple t in context.Graph.Triples)
                 {
                     context.Output.Write(indentation);
-                    context.Output.Write(GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject));
+                    context.Output.Write(GenerateNodeOutput(context, t.Subject, TripleSegment.Subject));
                     context.Output.Write(' ');
-                    context.Output.Write(GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate));
+                    context.Output.Write(GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate));
                     context.Output.Write(' ');
-                    context.Output.Write(GenerateNodeOutput(globalContext, context, t.Object, TripleSegment.Object));
+                    context.Output.Write(GenerateNodeOutput(context, t.Object, TripleSegment.Object));
                     context.Output.WriteLine(".");
                 }
             }
             else
             {
+                if (context.CompressionLevel >= WriterCompressionLevel.More && Syntax == TriGSyntax.Rdf11Star)
+                {
+                    WriterHelper.FindAnnotations(context);
+                }
+
                 // Get the Triples as a Sorted List
-                var ts = context.Graph.Triples.ToList();
+                var ts = context.Graph.Triples.Where(t=>!context.TriplesDone.Contains(t)).ToList();
                 ts.Sort();
 
                 // Variables we need to track our writing
@@ -292,14 +300,14 @@ namespace VDS.RDF.Writing
                         if (context.PrettyPrint) context.Output.Write(new string(' ', baseIndent));
 
                         // Start a new set of Triples
-                        temp = GenerateNodeOutput(globalContext, context, t.Subject, TripleSegment.Subject);
+                        temp = GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         subjIndent = baseIndent + temp.Length + 1;
                         lastSubj = t.Subject;
 
                         // Write the first Predicate
-                        temp = GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
+                        temp = GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -313,7 +321,7 @@ namespace VDS.RDF.Writing
                         if (context.PrettyPrint) context.Output.Write(new string(' ', subjIndent));
 
                         // Write the next Predicate
-                        temp = GenerateNodeOutput(globalContext, context, t.Predicate, TripleSegment.Predicate);
+                        temp = GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -328,7 +336,15 @@ namespace VDS.RDF.Writing
                     }
 
                     // Write the Object
-                    context.Output.Write(GenerateNodeOutput(globalContext, context, t.Object, TripleSegment.Object));
+                    temp = GenerateNodeOutput( context, t.Object, TripleSegment.Object);
+                    context.Output.Write(temp);
+
+                    // Write any annotations on the object
+                    if (context.Annotations.ContainsKey(t))
+                    {
+                        context.Output.Write(GenerateAnnotationOutput(context, context.Annotations[t], subjIndent + predIndent + temp.Length + 1));
+                    }
+
                 }
 
                 // Terminate Triples
@@ -336,15 +352,64 @@ namespace VDS.RDF.Writing
             }
         }
 
+
+        private string GenerateAnnotationOutput(CompressingTurtleWriterContext context, List<Triple> annotationTriples,
+            int indent)
+        {
+            var output = new StringBuilder();
+            string temp;
+            output.Append(" {| ");
+            WriterHelper.SortTriplesBySubjectPredicate(annotationTriples);
+            INode lastPred = null;
+            indent += 3;
+            int predIndent = 0;
+            foreach (Triple t in annotationTriples)
+            {
+                if (lastPred == null || !lastPred.Equals(t.Predicate))
+                {
+                    if (lastPred != null)
+                    {
+                        // New line for the next predicate
+                        output.AppendLine(";");
+                        if (context.PrettyPrint) output.Append(' ', indent);
+                    }
+
+                    temp = GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                    predIndent = temp.Length + 1;
+                    lastPred = t.Predicate;
+                    output.Append(temp);
+                    output.Append(' ');
+                }
+                else
+                {
+                    output.AppendLine(",");
+                    if (context.PrettyPrint) output.Append(' ', indent + predIndent);
+                }
+
+                // Write the Object
+                temp = GenerateNodeOutput(context, t.Object, TripleSegment.Object);
+                output.Append(temp);
+
+                // Write any annotations on the object
+                if (context.Annotations.ContainsKey(t))
+                {
+                    output.Append(GenerateAnnotationOutput(context, context.Annotations[t],
+                        indent + predIndent + temp.Length + 1));
+                }
+            }
+
+            output.Append(" |}");
+            return output.ToString();
+        }
+
         /// <summary>
         /// Generates Output for Nodes in Turtle syntax.
         /// </summary>
-        /// <param name="globalContext">Context for writing the Store.</param>
         /// <param name="context">Context for writing the Graph.</param>
         /// <param name="n">Node to generate output for.</param>
         /// <param name="segment">Segment of the Triple being written.</param>
         /// <returns></returns>
-        private string GenerateNodeOutput(TriGWriterContext globalContext, TurtleWriterContext context, INode n, TripleSegment segment)
+        private string GenerateNodeOutput(TurtleWriterContext context, INode n, TripleSegment segment)
         {
             switch (n.NodeType)
             {
@@ -358,6 +423,18 @@ namespace VDS.RDF.Writing
                 case NodeType.Literal:
                     if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("TriG"));
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("TriG"));
+                    break;
+
+                case NodeType.Triple:
+                    if (Syntax != TriGSyntax.Rdf11Star)
+                    {
+                        throw new RdfOutputException(WriterErrorMessages.TripleNodesUnserializable(ToString()));
+                    }
+
+                    if (segment == TripleSegment.Predicate)
+                    {
+                        throw new RdfOutputException(WriterErrorMessages.TripleNodePredicateUnserializable(ToString()));
+                    }
                     break;
 
                 case NodeType.Uri:
@@ -384,15 +461,10 @@ namespace VDS.RDF.Writing
                     IGraph g = globalContext.Store.Graphs[u];
 
                     // Generate the Graph Output and add to Stream
-                    var context = new TurtleWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
-                    if (globalContext.CompressionLevel > WriterCompressionLevel.None)
-                    {
-                        context.NodeFormatter = new TurtleFormatter(globalContext.QNameMapper);
-                    }
-                    else
-                    {
-                        context.NodeFormatter = new UncompressedTurtleFormatter();
-                    }
+                    var context = new CompressingTurtleWriterContext(g, new System.IO.StringWriter(),
+                        globalContext.PrettyPrint, globalContext.HighSpeedModePermitted,
+                        Syntax == TriGSyntax.Rdf11Star ? TurtleSyntax.Rdf11Star : TurtleSyntax.W3C);
+                    context.NodeFormatter = GetNodeFormatter(globalContext);
                     var graphContent = GenerateGraphOutput(globalContext, context);
                     try
                     {
@@ -417,6 +489,17 @@ namespace VDS.RDF.Writing
             }
         }
 
+        private INodeFormatter GetNodeFormatter(TriGWriterContext globalContext)
+        {
+            if (globalContext.CompressionLevel > WriterCompressionLevel.None)
+            {
+                return Syntax is TriGSyntax.Rdf11 or TriGSyntax.Rdf11Star ? new TurtleW3CFormatter(globalContext.QNameMapper) : new TurtleFormatter(globalContext.QNameMapper);
+            }
+
+            return Syntax == TriGSyntax.Rdf11Star ? new UncompressedTurtleStarFormatter() : new UncompressedTurtleFormatter();
+
+        }
+
         /// <inheritdoc />
         public override event StoreWriterWarning Warning;
 
@@ -435,7 +518,14 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "TriG";
+            return "TriG" + Syntax switch
+            {
+                TriGSyntax.Original => " (Original)",
+                TriGSyntax.MemberSubmission => " (Submission)",
+                TriGSyntax.Rdf11 => " (RDF 1.1)",
+                TriGSyntax.Rdf11Star => "(RDF-Star)",
+                _ => ""
+            };
         }
     }
 }
