@@ -78,6 +78,7 @@ namespace VDS.RDF
         /// </remarks>
         public Uri Create(Uri baseUri, string relativeUri)
         {
+            if (baseUri == null) return Create(relativeUri);
             if (!InternUris)
             {
                 return new Uri(baseUri, relativeUri);
