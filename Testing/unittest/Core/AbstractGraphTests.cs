@@ -106,6 +106,16 @@ namespace VDS.RDF
         }
 
         [Fact]
+        public void GraphClear()
+        {
+            IGraph g = GetInstance();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.Clear();
+            g.IsEmpty.Should().BeTrue("expect an empty graph after Clear()");
+            g.Triples.Count.Should().Be(0);
+        }
+
+        [Fact]
         public void NodesPropertyShouldNotReturnPredicateNodes()
         {
             var g = GetInstance();
