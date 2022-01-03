@@ -656,19 +656,10 @@ namespace VDS.RDF.Query.Datasets
         {
             if (_activeGraph.Value == null)
             {
-                if (_defaultGraph.Value == null)
-                {
-                    return ContainsTripleInternal(t);
-                }
-                else
-                {
-                    return _defaultGraph.Value.ContainsTriple(t);
-                }
+                return _defaultGraph.Value?.ContainsTriple(t) ?? ContainsTripleInternal(t);
             }
-            else
-            {
-                return _activeGraph.Value.ContainsTriple(t);
-            }
+
+            return _activeGraph.Value.ContainsTriple(t);
         }
 
         /// <summary>
@@ -677,6 +668,29 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="t">Triple to search for.</param>
         /// <returns></returns>
         protected abstract bool ContainsTripleInternal(Triple t);
+
+
+        /// <summary>
+        /// Gets whether the dataset contains a specific quoted triple.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <returns>True if the dataset contains <paramref name="t"/> as a quoted triple, false otherwise.</returns>
+        public bool ContainsQuotedTriple(Triple t)
+        {
+            if (_activeGraph.Value == null)
+            {
+                return _defaultGraph.Value?.ContainsQuotedTriple(t) ?? ContainsQuotedTripleInternal(t);
+            }
+
+            return _activeGraph.Value.ContainsQuotedTriple(t);
+        }
+
+        /// <summary>
+        /// Determines whether the Dataset contains a specific quoted triple.
+        /// </summary>
+        /// <param name="t">Triple to search for.</param>
+        /// <returns></returns>
+        protected abstract bool ContainsQuotedTripleInternal(Triple t);
 
         /// <summary>
         /// Gets all the Triples in the Dataset.
@@ -706,6 +720,20 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> QuotedTriples
+        {
+            get
+            {
+                if (_activeGraph.Value != null)
+                {
+                    return _activeGraph.Value.QuotedTriples;
+                }
+
+                return _defaultGraph.Value == null ? GetAllQuotedTriples() : _defaultGraph.Value.QuotedTriples;
+            }
+        }
+
         private IEnumerable<Triple> GetTriples(Func<IGraph, IEnumerable<Triple>> graphFunc,
             Func<IEnumerable<Triple>> fallback)
         {
@@ -718,6 +746,12 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <returns></returns>
         protected abstract IEnumerable<Triple> GetAllTriples();
+
+        /// <summary>
+        /// Abstract method that concrete implementations must implement to return an enumerable of all the quoted triples in the Dataset.
+        /// </summary>
+        /// <returns></returns>
+        protected abstract IEnumerable<Triple> GetAllQuotedTriples();
 
         /// <inheritdoc />
         public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)

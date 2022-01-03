@@ -181,6 +181,9 @@ namespace VDS.RDF.Query.Spin
         public BaseTripleCollection Triples => throw new NotImplementedException();
 
         /// <inheritdoc />
+        public IEnumerable<Triple> QuotedTriples => throw new NotImplementedException();
+
+        /// <inheritdoc />
         public IUriFactory UriFactory { 
             get => throw new NotImplementedException();
             set => throw new NotImplementedException();

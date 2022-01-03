@@ -112,6 +112,12 @@ namespace VDS.RDF
         /// </summary>
         public virtual BaseTripleCollection Triples => _triples;
 
+        /// <summary>
+        /// Gets the quoted triples in the graph.
+        /// </summary>
+        public virtual IEnumerable<Triple> QuotedTriples => _triples.SubjectNodes.OfType<ITripleNode>()
+            .Union(_triples.ObjectNodes.OfType<ITripleNode>()).Select(tn => tn.Triple);
+
         /// <inheritdoc />
         public virtual IEnumerable<INode> Nodes => _triples.SubjectNodes.Union(_triples.ObjectNodes);
 

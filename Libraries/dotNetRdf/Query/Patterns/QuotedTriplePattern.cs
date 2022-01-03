@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
@@ -40,7 +41,14 @@ namespace VDS.RDF.Query.Patterns
 
         public override bool Accepts(IPatternEvaluationContext context, INode obj)
         {
-            throw new NotImplementedException();
+            if (obj is ITripleNode tripleNode)
+            {
+                return QuotedTriple.Subject.Accepts(context, tripleNode.Triple.Subject) &&
+                       QuotedTriple.Predicate.Accepts(context, tripleNode.Triple.Predicate) &&
+                       QuotedTriple.Object.Accepts(context, tripleNode.Triple.Object);
+            }
+
+            return false;
         }
 
         public override INode Construct(ConstructContext context)
@@ -54,10 +62,20 @@ namespace VDS.RDF.Query.Patterns
         }
 
         // TODO: Change signature of PatternItem to allow for patterns with multiple variables
-        public override string VariableName => QuotedTriple.Variables.FirstOrDefault();
+        public override string VariableName => null;
 
         public bool HasNoExplicitVariables => QuotedTriple.HasNoExplicitVariables;
         
         public bool HasNoBlankVariables => QuotedTriple.HasNoBlankVariables;
+
+        public ISet CreateResults(INode node)
+        {
+            if (node is ITripleNode tn)
+            {
+                return QuotedTriple.CreateResult(tn.Triple);
+            }
+
+            return new Set();
+        }
     }
 }

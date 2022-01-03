@@ -997,7 +997,19 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public bool ContainsQuotedTriple(Triple t)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public IEnumerable<Triple> Triples
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<Triple> QuotedTriples
         {
             get { throw new NotImplementedException(); }
         }

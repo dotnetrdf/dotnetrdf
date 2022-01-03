@@ -78,5 +78,14 @@ namespace VDS.RDF.TestSuite.RdfStar
                 results.Should().BeAssignableTo<SparqlResultSet>().Which.Should().BeEquivalentTo(resultSet);
             }
         }
+
+        [Fact]
+        public void RunSingle()
+        {
+            ManifestTestData testData =
+                SparqlStarEvalTests.GetTestData(
+                    new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-5"));
+            InvokeTestRunner(testData);
+        }
     }
 }

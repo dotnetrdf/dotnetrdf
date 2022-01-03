@@ -371,6 +371,19 @@ namespace VDS.RDF.Query.Datasets
             return _dataset.ContainsTriple(t);
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Triple> QuotedTriples => _dataset.QuotedTriples;
+
+        /// <summary>
+        /// Gets whether the dataset contains a specific quoted triple.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <returns>True if the dataset contains <paramref name="t"/> as a quoted triple, false otherwise.</returns>
+        public virtual bool ContainsQuotedTriple(Triple t)
+        {
+            return _dataset.ContainsQuotedTriple(t);
+        }
+
         /// <summary>
         /// Gets all triples from the dataset.
         /// </summary>

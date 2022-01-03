@@ -69,6 +69,11 @@ namespace VDS.RDF
         /// </summary>
         BaseTripleCollection Triples { get; }
 
+        /// <summary>
+        /// Gets the quoted triples in the graph.
+        /// </summary>
+        IEnumerable<Triple> QuotedTriples { get; }
+
         #endregion
 
         #region Assertion & Retraction

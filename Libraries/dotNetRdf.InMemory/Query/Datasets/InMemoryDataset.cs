@@ -223,6 +223,11 @@ namespace VDS.RDF.Query.Datasets
             return _store.Contains(t);
         }
 
+        protected override bool ContainsQuotedTripleInternal(Triple t)
+        {
+            return Graphs.Any(g => g.ContainsQuotedTriple(t));
+        }
+
         /// <summary>
         /// Gets all the Triples in the underlying in-memory store.
         /// </summary>
@@ -230,6 +235,11 @@ namespace VDS.RDF.Query.Datasets
         protected override IEnumerable<Triple> GetAllTriples()
         {
             return _store.Triples;
+        }
+
+        protected override IEnumerable<Triple> GetAllQuotedTriples()
+        {
+            return Graphs.SelectMany(g => g.QuotedTriples).Distinct();
         }
 
         /// <summary>

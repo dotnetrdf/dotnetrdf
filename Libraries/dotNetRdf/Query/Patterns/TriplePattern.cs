@@ -224,10 +224,14 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public ISet CreateResult(Triple t)
         {
-            var s = new Set();
+            ISet s = new Set();
             if (Subject.VariableName != null)
             {
                 s.Add(Subject.VariableName, t.Subject);
+            }
+            else if (Subject is QuotedTriplePattern qtp)
+            {
+                s = qtp.CreateResults(t.Subject)?.Join(s) ?? s;
             }
             if (Predicate.VariableName != null && !Predicate.Repeated)
             {
@@ -236,6 +240,9 @@ namespace VDS.RDF.Query.Patterns
             if (Object.VariableName != null && !Object.Repeated)
             {
                 s.Add(Object.VariableName, t.Object);
+            } else if (Object is QuotedTriplePattern qtp)
+            {
+                s = qtp.CreateResults(t.Object)?.Join(s) ?? s;
             }
             return s;
         }

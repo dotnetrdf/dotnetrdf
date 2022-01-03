@@ -125,6 +125,9 @@ namespace VDS.RDF
         /// </summary>
         public virtual BaseTripleCollection Triples => _g.Triples;
 
+        /// <inheritdoc />
+        public virtual IEnumerable<Triple> QuotedTriples => _g.QuotedTriples;
+
         /// <summary>
         /// Asserts a Triple in the Graph.
         /// </summary>
