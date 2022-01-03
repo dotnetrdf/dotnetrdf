@@ -49,6 +49,11 @@ namespace VDS.RDF.Parsing
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
         /// <summary>
+        /// Creates a new parser instance that parses SPARQL 1.1 syntax and uses the default (root) URI Factory.
+        /// </summary>
+        public SparqlUpdateParser():this(SparqlQuerySyntax.Sparql_1_1, RDF.UriFactory.Root){}
+
+        /// <summary>
         /// Creates a new parser instance that uses the specified URI factory to create URIs.
         /// </summary>
         /// <param name="uriFactory">The factory to use when creating URIs while parsing the update.</param>
