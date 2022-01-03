@@ -1499,6 +1499,7 @@ namespace VDS.RDF.Parsing
                 case Token.LITERAL:
                 case Token.LONGLITERAL:
                 case Token.PLAINLITERAL:
+                case Token.STARTQUOTE:
                     // Must then be followed be a non-empty Property List
                     context.LocalTokens.Push(next);
                     TryParsePredicateObjectList(context, p,2);
@@ -1663,12 +1664,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParsePredicateObjectList(SparqlQueryParserContext context, GraphPattern p, int expectedCount)
+        private void TryParsePredicateObjectList(SparqlQueryParserContext context, GraphPattern p, int expectedCount, PatternItem overrideSubject = null)
         {
             PatternItem subj, pred, obj;
             
-            // Subject is first thing on the Stack
-            subj = TryCreatePatternItem(context, context.LocalTokens.Pop());
+            // Subject is first thing on the Stack or the override passed as the optional argument
+            subj = overrideSubject ?? TryCreatePatternItem(context, context.LocalTokens.Pop());
 
             // Start grabbing other stuff off the Stack and Parsing
             IToken next, lit, temp;
@@ -1698,6 +1699,33 @@ namespace VDS.RDF.Parsing
                     case Token.PLAINLITERAL:
                     case Token.KEYWORDA:
                         context.LocalTokens.Push(next);
+                        context.Tokens.Dequeue();
+                        break;
+
+                    case Token.STARTQUOTE:
+                        context.LocalTokens.Push(next);
+                        context.Tokens.Dequeue();
+                        break;
+
+                    case Token.ENDQUOTE:
+                        if (context.LocalTokens.Count < 4)
+                        {
+                            throw ParserHelper.Error(
+                                $"Encountered an ENDQUOTE token inside a Triple Pattern, but there are not enough tokens to form a valid Quoted Triple Pattern.",
+                                next);
+                        }
+                        IToken qtObj = context.LocalTokens.Pop();
+                        IToken qtPred = context.LocalTokens.Pop();
+                        IToken qtSubj = context.LocalTokens.Pop();
+                        IToken start = context.LocalTokens.Pop();
+                        if (start.TokenType != Token.STARTQUOTE)
+                        {
+                            throw ParserHelper.Error(
+                                $"Encountered an ENDQUOTE token without a matching STARTQUOTE at the expected position in the token stream.",
+                                next);
+                        }
+                        // TODO: token type validation for qtSubj, qtPred and qtObj
+                        context.LocalTokens.Push(new QuotedTripleToken(start, qtSubj, qtPred, qtObj, next));
                         context.Tokens.Dequeue();
                         break;
 
@@ -1941,9 +1969,9 @@ namespace VDS.RDF.Parsing
                         // End of the Triple Patterns
 
                         // Allow for trailing semicolon and Blank Node Collection lists
-                        if (context.LocalTokens.Count == expectedCount - 2 && (context.Tokens.LastTokenType == Token.SEMICOLON || (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && p.TriplePatterns.Count > 0)))
+                        if (context.LocalTokens.Count == expectedCount - 2 && (context.Tokens.LastTokenType == Token.SEMICOLON || (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET && p.TriplePatterns.Count > 0) || context.Tokens.LastTokenType == Token.ENDANNOTATION))
                         {
-                            if (context.Tokens.LastTokenType == Token.RIGHTSQBRACKET)
+                            if (context.Tokens.LastTokenType is Token.RIGHTSQBRACKET or Token.ENDANNOTATION)
                             {
                                 context.Tokens.Dequeue();
                             }
@@ -1976,6 +2004,75 @@ namespace VDS.RDF.Parsing
                         context.Tokens.Dequeue();
                         return;
 
+                    case Token.STARTANNOTATION:
+                        {
+
+                            context.Tokens.Dequeue();
+                            if (context.LocalTokens.Count < expectedCount)
+                            {
+                                throw ParserHelper.Error(
+                                    "Encountered a STARTANNOTATION Token to terminate a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern",
+                                    next);
+                            }
+                            else if (context.LocalTokens.Count > expectedCount)
+                            {
+                                throw ParserHelper.Error(
+                                    "Encountered a STARTANNOTATION Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern - " +
+                                    ExcessTokensString(context, expectedCount), next);
+                            }
+
+                            IToken objToken = context.LocalTokens.Pop();
+                            IToken predToken = context.LocalTokens.Pop();
+                            obj = TryCreatePatternItem(context, objToken);
+                            if (predToken.TokenType == Token.PATH)
+                            {
+                                // The annotated triple is not allowed a property path for its predicate.
+                                throw ParserHelper.Error(
+                                    "Encountered an annotated triple pattern containing a property path expression.",
+                                    predToken);
+                            }
+
+                            pred = TryCreatePatternItem(context, predToken);
+
+                            var tp = new TriplePattern(subj, pred, obj);
+                            p.AddTriplePattern(tp);
+                            TryParsePredicateObjectList(context, p, 2, new QuotedTriplePattern(tp));
+                            break;
+                        }
+
+                    case Token.ENDANNOTATION:
+                        {
+                            context.Tokens.Dequeue();
+                            if (context.LocalTokens.Count < expectedCount)
+                            {
+                                throw ParserHelper.Error(
+                                    "Encountered an ENDANNOTATION Token to terminate a Triple Pattern annotation but there are not enough Tokens to form a valid Triple Pattern",
+                                    next);
+                            }
+                            if (context.LocalTokens.Count > expectedCount)
+                            {
+                                throw ParserHelper.Error(
+                                    "Encountered an ENDANNOTATION Token to terminate a Triple Pattern annotation but there are too many Tokens to form a valid Triple Pattern - " +
+                                    ExcessTokensString(context, expectedCount), next);
+                            }
+
+                            IToken objToken = context.LocalTokens.Pop();
+                            IToken predToken = context.LocalTokens.Pop();
+                            obj = TryCreatePatternItem(context, objToken);
+                            if (predToken.TokenType == Token.PATH)
+                            {
+                                path = ((PathToken)predToken).Path;
+                                p.AddTriplePattern(new PropertyPathPattern(subj, path, obj));
+                            }
+                            else
+                            {
+
+                                pred = TryCreatePatternItem(context, predToken);
+                                p.AddTriplePattern(new TriplePattern(subj, pred, obj));
+                            }
+
+                            return;
+                        }
                     case Token.LEFTCURLYBRACKET:
                     case Token.RIGHTCURLYBRACKET:
                     case Token.OPTIONAL:
@@ -1990,7 +2087,7 @@ namespace VDS.RDF.Parsing
                         // End of the Triple Patterns
 
                         // Allow for trailing semicolon and Blank Node Collection lists
-                        if (context.LocalTokens.Count == expectedCount - 2 && (context.Tokens.LastTokenType == Token.SEMICOLON || ((context.Tokens.LastTokenType == Token.RIGHTSQBRACKET || context.Tokens.LastTokenType == Token.RIGHTBRACKET) && p.TriplePatterns.Count > 0)))
+                        if (context.LocalTokens.Count == expectedCount - 2 && (context.Tokens.LastTokenType is Token.SEMICOLON or Token.ENDANNOTATION || (context.Tokens.LastTokenType is Token.RIGHTSQBRACKET or Token.RIGHTBRACKET && p.TriplePatterns.Count > 0)))
                         {
                             return;
                         }
@@ -1998,6 +2095,10 @@ namespace VDS.RDF.Parsing
                         // Check length of Stack
                         if (context.LocalTokens.Count < expectedCount)
                         {
+                            if (context.LocalTokens.Count == 0)
+                            {
+                                throw ParserHelper.Error("Encountered a Token which terminates a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
+                            }
                             temp = context.LocalTokens.Peek();
                             if (next.TokenType == Token.LEFTCURLYBRACKET && context.SyntaxMode != SparqlQuerySyntax.Sparql_1_0 && context.LocalTokens.Count == expectedCount - 1 && (temp.TokenType == Token.QNAME || temp.TokenType == Token.URI || temp.TokenType == Token.KEYWORDA))
                             {
@@ -2031,7 +2132,8 @@ namespace VDS.RDF.Parsing
                             p.AddTriplePattern(new TriplePattern(subj, pred, obj));
                         }
                         return;
-                    
+
+
                     default:
                         throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' while trying to Parse Triple Patterns", next);
                 }
@@ -2210,6 +2312,24 @@ namespace VDS.RDF.Parsing
                             // rdf:rest Pattern
                             p.AddTriplePattern(new TriplePattern(TryCreatePatternItem(context, blank), new NodeMatchPattern(rdfRest), new NodeMatchPattern(rdfNil)));
                             break;
+
+                        case Token.STARTQUOTE:
+                            context.Tokens.Dequeue();
+                            var qt = new QuotedTriplePattern(TryParseQuotedTriplePattern(context));
+                            if (first)
+                            {
+                                p.AddTriplePattern(new TriplePattern(TryCreatePatternItem(context, blank), new NodeMatchPattern(rdfFirst), qt));
+                            }
+                            else
+                            {
+                                var blank2 = new BlankNodeWithIDToken(context.GetNewBlankNodeID(), next.StartLine,
+                                    next.StartPosition, next.EndPosition);
+                                p.AddTriplePattern(new TriplePattern(TryCreatePatternItem(context, blank), new NodeMatchPattern(rdfRest), TryCreatePatternItem(context, blank2)));
+                                blank = blank2;
+                                p.AddTriplePattern(new TriplePattern(TryCreatePatternItem(context, blank), new NodeMatchPattern(rdfFirst), qt));
+                            }
+
+                            continue;
 
                         default:
                             throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered while trying to parse a Collection", next);
@@ -3599,6 +3719,17 @@ namespace VDS.RDF.Parsing
                                 values.Add(null);
                                 break;
 
+                            case Token.STARTQUOTE:
+                                TriplePattern qt = TryParseQuotedTriplePattern(context);
+                                if (qt.Variables.Any())
+                                {
+                                    throw ParserHelper.Error(
+                                        $"Encountered a Quoted Triple in a VALUES clause containing one or more variables.",
+                                        next);
+                                }
+                                values.Add(new QuotedTriplePattern(qt));
+                                break;
+
                             default:
                                 throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Token for a URI/Literal or an UNDEF keyword as part of a tuple in a VALUES clause", next);
                         }
@@ -3723,11 +3854,127 @@ namespace VDS.RDF.Parsing
                 case Token.KEYWORDA:
                     return new NodeMatchPattern(new UriNode(UriFactory.Create(NamespaceMapper.RDF + "type")));
 
+                case Token.STARTQUOTE:
+                    return new QuotedTriplePattern(TryParseQuotedTriplePattern(context));
+
+                case Token.QUOTEDTRIPLE:
+                    var qt = (QuotedTripleToken)t;
+                    return new QuotedTriplePattern(new TriplePattern(TryCreatePatternItem(context, qt.Subject),
+                        TryCreatePatternItem(context, qt.Predicate), TryCreatePatternItem(context, qt.Object)));
+
                 default:
                     throw ParserHelper.Error("Unable to Convert a '" + t.GetType() + "' to a Pattern Item in a Triple Pattern", t);
             }
         }
 
+        private TriplePattern TryParseQuotedTriplePattern(SparqlQueryParserContext context)
+        {
+            PatternItem subj = TryParseQuotedSubjectOrObject(context);
+            PatternItem pred = TryParseVerb(context);
+            PatternItem obj = TryParseQuotedSubjectOrObject(context);
+            IToken next = context.Tokens.Dequeue();
+            if (next.TokenType != Token.ENDQUOTE)
+            {
+                throw ParserHelper.Error(
+                    $"Unexpected {next.GetType()}. Expected a >> to close a quoted triple pattern.", next);
+            }
+            return new TriplePattern(subj, pred, obj);
+        }
+
+        private PatternItem TryParseQuotedSubjectOrObject(SparqlQueryParserContext context)
+        {
+            IToken next = context.Tokens.Dequeue();
+            do
+            {
+                switch (next.TokenType)
+                {
+                    case Token.COMMENT:
+                        // Comments are discardable
+                        break;
+
+                    case Token.VARIABLE:
+                        // Variable
+                        context.Query.AddVariable(next.Value);
+                        return TryCreatePatternItem(context, next);
+
+                    case Token.URI:
+                    case Token.QNAME:
+                    case Token.LITERAL:
+                    case Token.LONGLITERAL:
+                    case Token.PLAINLITERAL:
+                    case Token.STARTQUOTE:
+                        return TryCreatePatternItem(context, next);
+
+                    case Token.BLANKNODE:
+                    case Token.BLANKNODEWITHID:
+                        // Check list of Blank Node usages
+                        if (context.BlankNodeIDUsages.ContainsKey(next.Value))
+                        {
+                            if (context.CheckBlankNodeScope &&
+                                context.BlankNodeIDUsages[next.Value] != context.GraphPatternID)
+                            {
+                                throw ParserHelper.Error(
+                                    "Invalid use of Blank Node Label '" + next.Value +
+                                    "', this Label has already been used in a different Graph Pattern", next);
+                            }
+                        }
+                        else
+                        {
+                            context.BlankNodeIDUsages.Add(next.Value, context.GraphPatternID);
+                        }
+
+                        return TryCreatePatternItem(context, next);
+
+                    case Token.LEFTSQBRACKET:
+                        var bnode = new BlankNodeWithIDToken(context.GetNewBlankNodeID(), 0, 0, 0);
+                        next = context.Tokens.Peek();
+                        if (next.TokenType == Token.RIGHTSQBRACKET)
+                        {
+                            context.Tokens.Dequeue();
+                            return TryCreatePatternItem(context, bnode);
+                        }
+                        else
+                        {
+                            throw ParserHelper.Error(
+                                $"Unexpected blank node collection while parsing a quoted triple pattern subject or object.",
+                                next);
+                        }
+
+                    default:
+                        throw ParserHelper.Error(
+                            $"Unexpected {next.GetType()} token while parsing a quoted triple pattern subject or object.", next);
+                }
+            } while (true);
+        }
+
+        private PatternItem TryParseVerb(SparqlQueryParserContext context)
+        {
+            do
+            {
+                IToken next = context.Tokens.Dequeue();
+                switch (next.TokenType)
+                {
+                    case Token.COMMENT:
+                        // Ignore comments
+                        break;
+
+                    case Token.VARIABLE:
+                        context.Query.AddVariable(next.Value);
+                        return TryCreatePatternItem(context, next);
+
+                    case Token.URI:
+                    case Token.QNAME:
+                    case Token.KEYWORDA:
+                        return TryCreatePatternItem(context, next);
+
+                    default:
+                        throw ParserHelper.Error(
+                            $"Unexpected {next.GetType()} token while parsing a quoted triple pattern predicate.",
+                            next);
+                }
+            } while (true);
+        }
+        
         private Uri ResolveQName(SparqlQueryParserContext context, string qname)
         {
             return UriFactory.Create(Tools.ResolveQName(qname, context.Query.NamespaceMap, context.Query.BaseUri));

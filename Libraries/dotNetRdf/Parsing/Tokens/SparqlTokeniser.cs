@@ -235,14 +235,34 @@ namespace VDS.RDF.Parsing.Tokens
                                     return new CommaToken(CurrentLine, StartPosition);
 
                                 case '<':
-                                    // Start of a Uri or a Less Than
-                                    return TryGetUri();
+                                    ConsumeCharacter();
+                                    next = Peek();
+                                    if (next != '<')
+                                    {
+                                        return TryGetUri(true);
+                                    }
+
+                                    if (SupportsSparqlStar())
+                                    {
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.STARTQUOTE;
+                                        return new StartQuoteToken(CurrentLine, StartPosition);
+                                    }
+
+                                    throw Error(
+                                        "Unexpected RDF-Star Start Quote token. The current syntax mode does not support SPARQL-Star syntax extensions.");
 
                                 case '>':
                                     // Greater Than
                                     ConsumeCharacter();
                                     next = Peek();
-                                    if (next == '=')
+                                    if (SupportsSparqlStar() && next == '>')
+                                    {
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.ENDQUOTE;
+                                        return new EndQuoteToken(CurrentLine, StartPosition);
+                                    }
+                                    else if (next == '=')
                                     {
                                         // Greater Than or Equal To
                                         ConsumeCharacter();
@@ -332,6 +352,12 @@ namespace VDS.RDF.Parsing.Tokens
                                         LastTokenType = Token.OR;
                                         return new OrToken(CurrentLine, StartPosition);
                                     }
+                                    else if (next == '}')
+                                    {
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.ENDANNOTATION;
+                                        return new EndAnnotationToken(CurrentLine, StartPosition);
+                                    }
                                     else
                                     {
                                         // Path Alternative
@@ -365,6 +391,13 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '{':
                                     // Left Bracket
                                     ConsumeCharacter();
+                                    next = Peek();
+                                    if (next == '|')
+                                    {
+                                        ConsumeCharacter();
+                                        LastTokenType = Token.STARTANNOTATION;
+                                        return new StartAnnotationToken(CurrentLine, StartPosition);
+                                    }
                                     LastTokenType = Token.LEFTCURLYBRACKET;
                                     return new LeftCurlyBracketToken(CurrentLine, StartPosition);
 
@@ -424,6 +457,11 @@ namespace VDS.RDF.Parsing.Tokens
                     }
                 }
             }
+        }
+
+        private bool SupportsSparqlStar()
+        {
+            return _syntax == SparqlQuerySyntax.Sparql_Star_1_1;
         }
 
         private IToken TryGetComment()
@@ -670,10 +708,10 @@ namespace VDS.RDF.Parsing.Tokens
             return new PrefixToken(Value, CurrentLine, StartPosition, CurrentPosition);
         }
 
-        private IToken TryGetUri()
+        private IToken TryGetUri(bool consumedStart = false)
         {
             // Consume first thing which must be a <
-            ConsumeCharacter();
+            if (!consumedStart) { ConsumeCharacter(); }
 
             var next = Peek();
             if (next == '=')
@@ -1352,6 +1390,21 @@ namespace VDS.RDF.Parsing.Tokens
                         // Year Function Keyword
                         LastTokenType = Token.YEAR;
                         return new YearKeywordToken(CurrentLine, StartPosition);
+                    case SparqlSpecsHelper.SparqlStarKeywordTriple:
+                        LastTokenType = Token.TRIPLE;
+                        return new TripleKeywordToken(CurrentLine, StartPosition);
+                    case SparqlSpecsHelper.SparqlStarKeywordIsTriple:
+                        LastTokenType = Token.ISTRIPLE;
+                        return new IsTripleKeywordToken(CurrentLine, StartPosition);
+                    case SparqlSpecsHelper.SparqlStarKeywordSubject:
+                        LastTokenType = Token.SUBJECT;
+                        return new SubjectKeywordToken(CurrentLine, StartPosition);
+                    case SparqlSpecsHelper.SparqlStarKeywordPredicate:
+                        LastTokenType = Token.PREDICATE;
+                        return new PredicateKeywordToken(CurrentLine, StartPosition);
+                    case SparqlSpecsHelper.SparqlStarKeywordObject:
+                        LastTokenType = Token.OBJECT;
+                        return new ObjectKeywordToken(CurrentLine, StartPosition);
                     default:
                         throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword");
                 }

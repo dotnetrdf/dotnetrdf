@@ -1532,4 +1532,110 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     #endregion
+
+    #region SPARQL-Star Tokens
+
+    /// <summary>
+    /// Composite token representing a Quoted Triple.
+    /// </summary>
+    public class QuotedTripleToken : BaseToken
+    {
+        /// <summary>
+        /// Get the token representing the quoted triple subject.
+        /// </summary>
+        public IToken Subject { get; }
+        
+        /// <summary>
+        /// Get the token representing the quoted triple predicate.
+        /// </summary>
+        public IToken Predicate { get; }
+
+        /// <summary>
+        /// Get the triple representing the quoted triple object.
+        /// </summary>
+        public IToken Object { get; }
+
+        /// <summary>
+        /// Creates a Quoted Triple token.
+        /// </summary>
+        /// <param name="start">The STARTQUOTE token.</param>
+        /// <param name="subj">The subject token.</param>
+        /// <param name="pred">The predicate token.</param>
+        /// <param name="obj">The object token.</param>
+        /// <param name="end">The ENDQUOTE token.</param>
+        public QuotedTripleToken(IToken start, IToken subj, IToken pred, IToken obj, IToken end) 
+        : base(Token.QUOTEDTRIPLE, $"{start.Value} {subj.Value} {pred.Value} {obj.Value} {end.Value}",
+            start.StartLine, end.EndLine, start.StartPosition, end.EndPosition)
+        {
+            Subject = subj;
+            Predicate = pred;
+            Object = obj;
+        }
+    }
+
+    /// <summary>
+    /// Represents the TRIPLE keyword token.
+    /// </summary>
+    public class TripleKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new TRIPLE Keyword Token.
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on.</param>
+        /// <param name="pos">Position the Keyword occurs at.</param>
+        public TripleKeywordToken(int line, int pos) : base(Token.TRIPLE, "TRIPLE", line, line, pos, pos + 6) { }
+    }
+
+    /// <summary>
+    /// Token representing the ISTRIPLE keyword.
+    /// </summary>
+    public class IsTripleKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new ISTRIPLE Keyword Token.
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on.</param>
+        /// <param name="pos">Position the Keyword occurs at.</param>
+        public IsTripleKeywordToken(int line, int pos): base(Token.ISTRIPLE, "ISTRIPLE", line, line, pos, pos+8){}
+    }
+
+    /// <summary>
+    /// Token representing the SUBJECT keyword.
+    /// </summary>
+    public class SubjectKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new SUBJECT Keyword Token.
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on.</param>
+        /// <param name="pos">Position the Keyword occurs at.</param>
+        public SubjectKeywordToken(int line, int pos) : base(Token.SUBJECT, "SUBJECT", line, line, pos, pos + 7) { }
+    }
+
+    /// <summary>
+    /// Token representing the PREDICATE keyword.
+    /// </summary>
+    public class PredicateKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new PREDICATE Keyword Token.
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on.</param>
+        /// <param name="pos">Position the Keyword occurs at.</param>
+        public PredicateKeywordToken(int line, int pos) : base(Token.SUBJECT, "PREDICATE", line, line, pos, pos + 9) { }
+    }
+
+    /// <summary>
+    /// Token representing the OBJECT keyword.
+    /// </summary>
+    public class ObjectKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new OBJECT Keyword Token.
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on.</param>
+        /// <param name="pos">Position the Keyword occurs at.</param>
+        public ObjectKeywordToken(int line, int pos) : base(Token.SUBJECT, "OBJECT", line, line, pos, pos + 6) { }
+    }
+    #endregion
 }
