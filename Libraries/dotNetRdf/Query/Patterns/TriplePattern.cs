@@ -49,21 +49,26 @@ namespace VDS.RDF.Query.Patterns
         public TriplePattern(PatternItem subj, PatternItem pred, PatternItem obj)
         {
             Subject = subj;
-            if (pred is BlankNodePattern)
+            switch (pred)
             {
-                throw new RdfParseException("Cannot use a Triple Pattern with a Blank Node Predicate in a SPARQL Query");
+                case BlankNodePattern:
+                    throw new RdfParseException("Cannot use a Triple Pattern with a Blank Node Predicate in a SPARQL Query");
+                case QuotedTriplePattern:
+                    throw new RdfParseException(
+                        "Cannot use a Triple Pattern with a Triple Node predicate in a SPARQL Query");
             }
+
             Predicate = pred;
             Object = obj;
 
             // Decide on the Index Type
-            if (Subject is NodeMatchPattern)
+            if (Subject is NodeMatchPattern or QuotedTriplePattern)
             {
-                if (Predicate is NodeMatchPattern)
+                if (Predicate is NodeMatchPattern or QuotedTriplePattern)
                 {
                     IndexType = TripleIndexType.SubjectPredicate;
                 }
-                else if (Object is NodeMatchPattern)
+                else if (Object is NodeMatchPattern or QuotedTriplePattern)
                 {
                     IndexType = TripleIndexType.SubjectObject;
                 }
@@ -72,9 +77,9 @@ namespace VDS.RDF.Query.Patterns
                     IndexType = TripleIndexType.Subject;
                 }
             }
-            else if (Predicate is NodeMatchPattern)
+            else if (Predicate is NodeMatchPattern or QuotedTriplePattern)
             {
-                if (Object is NodeMatchPattern)
+                if (Object is NodeMatchPattern or QuotedTriplePattern)
                 {
                     IndexType = TripleIndexType.PredicateObject;
                 }
@@ -83,7 +88,7 @@ namespace VDS.RDF.Query.Patterns
                     IndexType = TripleIndexType.Predicate;
                 }
             }
-            else if (Object is NodeMatchPattern)
+            else if (Object is NodeMatchPattern or QuotedTriplePattern)
             {
                 IndexType = TripleIndexType.Object;
             }
@@ -263,9 +268,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (Subject is NodeMatchPattern || Subject is BlankNodePattern || Subject is FixedBlankNodePattern) &&
-                       (Predicate is NodeMatchPattern || Predicate is BlankNodePattern || Predicate is FixedBlankNodePattern) &&
-                       (Object is NodeMatchPattern || Object is BlankNodePattern || Object is FixedBlankNodePattern);
+                return Subject is NodeMatchPattern or BlankNodePattern or FixedBlankNodePattern or QuotedTriplePattern { HasNoExplicitVariables: true } &&
+                       Predicate is NodeMatchPattern or BlankNodePattern or FixedBlankNodePattern &&
+                       Object is NodeMatchPattern or BlankNodePattern or FixedBlankNodePattern or QuotedTriplePattern { HasNoExplicitVariables: true };
             }
         }
 
@@ -276,9 +281,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (Subject is NodeMatchPattern || Subject is VariablePattern || Subject is FixedBlankNodePattern) &&
-                       (Predicate is NodeMatchPattern || Predicate is VariablePattern || Predicate is FixedBlankNodePattern) &&
-                       (Object is NodeMatchPattern || Object is VariablePattern || Object is FixedBlankNodePattern);
+                return Subject is NodeMatchPattern or VariablePattern or FixedBlankNodePattern or QuotedTriplePattern{HasNoBlankVariables:true} &&
+                       Predicate is NodeMatchPattern or VariablePattern or FixedBlankNodePattern &&
+                       Object is NodeMatchPattern or VariablePattern or FixedBlankNodePattern or QuotedTriplePattern{HasNoBlankVariables:true};
             }
         }
 

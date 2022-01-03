@@ -47,6 +47,7 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query
@@ -433,6 +434,15 @@ namespace VDS.RDF.Query
                     if (SyntaxMode == SparqlQuerySyntax.Sparql_1_0 && SparqlSpecsHelper.IsFunctionKeyword11(next.Value)) throw Error("The function " + next.Value + " is not supported in SPARQL 1.0", next);
                     return TryParseBuiltInCall(tokens);
 
+                case Token.ISTRIPLE:
+                case Token.TRIPLE:
+                case Token.SUBJECT:
+                case Token.PREDICATE:
+                case Token.OBJECT:
+                    if (SyntaxMode != SparqlQuerySyntax.Sparql_Star_1_1)
+                        throw Error("The function " + next.Value + " is only supported in SPARQL-STAR 1.1", next);
+                    return TryParseBuiltInCall(tokens);
+
                 case Token.AVG:
                 case Token.COUNT:
                 case Token.GROUPCONCAT:
@@ -467,6 +477,10 @@ namespace VDS.RDF.Query
                 case Token.VARIABLE:
                     tokens.Dequeue();
                     return new VariableTerm(next.Value);
+
+                case Token.STARTQUOTE:
+                    tokens.Dequeue();
+                    return TryParseQuotedTripleExpression(tokens);
 
                 default:
                     throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Primary Expression",next);
@@ -809,6 +823,19 @@ namespace VDS.RDF.Query
                     tempcontext.Query.NamespaceMap.Import(_nsmapper);
                     return new ExistsFunction(_parser.TryParseGraphPattern(tempcontext, true), mustExist);
 
+                case Token.TRIPLE:
+                    return new TripleFunction(TryParseBrackettedExpression(tokens),
+                        TryParseBrackettedExpression(tokens, false),
+                        TryParseBrackettedExpression(tokens, false));
+                case Token.ISTRIPLE:
+                    return new IsTripleFunction(TryParseBrackettedExpression(tokens));
+                case Token.SUBJECT:
+                    return new SubjectFunction(TryParseBrackettedExpression(tokens));
+                case Token.PREDICATE:
+                    return new PredicateFunction(TryParseBrackettedExpression(tokens));
+                case Token.OBJECT:
+                    return new ObjectFunction(TryParseBrackettedExpression(tokens));
+
                 default:
                     throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Built-in Function call", next);
             }
@@ -906,7 +933,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        private ISparqlExpression TryParseRdfLiteral(Queue<IToken> tokens)
+        private ConstantTerm TryParseRdfLiteral(Queue<IToken> tokens)
         {
             // First Token will be the String value of this RDF Literal
             IToken str = tokens.Dequeue();
@@ -920,7 +947,8 @@ namespace VDS.RDF.Query
                     tokens.Dequeue();
                     return new ConstantTerm(new LiteralNode(str.Value, next.Value, NormalizeLiteralValues));
                 }
-                else if (next.TokenType == Token.HATHAT)
+
+                if (next.TokenType == Token.HATHAT)
                 {
                     tokens.Dequeue();
 
@@ -944,7 +972,8 @@ namespace VDS.RDF.Query
                         // Should be a Number
                         return TryParseNumericLiteral(dtlit, tokens, false);
                     }
-                    else if (XmlSpecsHelper.XmlSchemaDataTypeBoolean.Equals(u.AbsoluteUri))
+
+                    if (XmlSpecsHelper.XmlSchemaDataTypeBoolean.Equals(u.AbsoluteUri))
                     {
                         // Appears to be a Boolean
                         bool b;
@@ -952,30 +981,104 @@ namespace VDS.RDF.Query
                         {
                             return new ConstantTerm(new BooleanNode(b));
                         }
-                        else
-                        {
-                            return new ConstantTerm(new StringNode(dtlit.Value, dtlit.DataType));
-                        }
+
+                        return new ConstantTerm(new StringNode(dtlit.Value, dtlit.DataType));
                     }
-                    else
-                    {
-                        // Just a datatyped Literal Node
-                        return new ConstantTerm(new LiteralNode(str.Value, u, NormalizeLiteralValues));
-                    }
+
+                    // Just a datatyped Literal Node
+                    return new ConstantTerm(new LiteralNode(str.Value, u, NormalizeLiteralValues));
                 }
-                else
-                {
-                    return new ConstantTerm(new LiteralNode(str.Value, NormalizeLiteralValues));
-                }
-            }
-            else
-            {
+
                 return new ConstantTerm(new LiteralNode(str.Value, NormalizeLiteralValues));
             }
 
+            return new ConstantTerm(new LiteralNode(str.Value, NormalizeLiteralValues));
+
         }
 
-        private ISparqlExpression TryParseBooleanOrNumericLiteral(Queue<IToken> tokens)
+        private TripleNodeTerm TryParseQuotedTripleExpression(Queue<IToken> tokens)
+        {
+            INode subj = TryParseVarOrTerm(tokens);
+            INode pred = TryParseVerb(tokens);
+            INode obj = TryParseVarOrTerm(tokens);
+            var next = tokens.Peek();
+            if (next.TokenType == Token.ENDQUOTE) { tokens.Dequeue();}
+            else
+            {
+                throw ParserHelper.Error(
+                    $"Expected a >> token to close a quoted triple expression. Found a {next.GetType()}.", next);
+            }
+            return new TripleNodeTerm(new TripleNode(new Triple(subj, pred, obj)));
+        }
+
+        private INode TryParseVarOrTerm(Queue<IToken> tokens)
+        {
+            IToken next = tokens.Peek();
+            switch (next.TokenType)
+            {
+                case Token.URI:
+                    tokens.Dequeue();
+                    Uri u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri.ToSafeString()));
+                    return new UriNode(u);
+
+                case Token.QNAME:
+                    tokens.Dequeue();
+                    Uri qn = UriFactory.Create(Tools.ResolveQName(next.Value, _nsmapper, _baseUri));
+                    return new UriNode(qn);
+
+                case Token.LITERAL:
+                case Token.LONGLITERAL:
+                    return TryParseRdfLiteral(tokens).Node;
+
+                case Token.PLAINLITERAL:
+                    return TryParseBooleanOrNumericLiteral(tokens).Node;
+
+                case Token.VARIABLE:
+                    tokens.Dequeue();
+                    return new VariableNode(next.Value);
+
+                case Token.STARTQUOTE:
+                    tokens.Dequeue();
+                    return TryParseQuotedTripleExpression(tokens).Node;
+
+                default:
+                    throw ParserHelper.Error(
+                        $"Unexpected {next.GetType()} token while parsing the subject or object of a Quoted Triple Expression. Expected an IRI, QName, Literal, Variable or Quoted Triple.",
+                        next);
+            }
+        }
+
+        private INode TryParseVerb(Queue<IToken> tokens)
+        {
+            IToken next = tokens.Peek();
+            switch (next.TokenType)
+            {
+                case Token.URI:
+                    tokens.Dequeue();
+                    Uri u = UriFactory.Create(Tools.ResolveUri(next.Value, _baseUri.ToSafeString()));
+                    return new UriNode(u);
+
+                case Token.QNAME:
+                    tokens.Dequeue();
+                    Uri qn = UriFactory.Create(Tools.ResolveQName(next.Value, _nsmapper, _baseUri));
+                    return new UriNode(qn);
+
+                case Token.VARIABLE:
+                    tokens.Dequeue();
+                    return new VariableNode(next.Value);
+
+                case Token.KEYWORDA:
+                    tokens.Dequeue();
+                    return new UriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+
+                default:
+                    throw ParserHelper.Error(
+                        $"Unexpected {next.GetType()} token while parsing the predicate of a Quoted Triple Expression. Expected an IRI, QName, Variable or 'a'.",
+                        next);
+            }
+        }
+
+        private ConstantTerm TryParseBooleanOrNumericLiteral(Queue<IToken> tokens)
         {
             // First Token must be a Plain Literal
             IToken lit = tokens.Dequeue();
@@ -994,7 +1097,7 @@ namespace VDS.RDF.Query
             }
         }
 
-        private ISparqlExpression TryParseNumericLiteral(IToken literal, Queue<IToken> tokens, bool requireValidLexicalForm)
+        private ConstantTerm TryParseNumericLiteral(IToken literal, Queue<IToken> tokens, bool requireValidLexicalForm)
         {
             switch (literal.TokenType)
             {

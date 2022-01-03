@@ -179,7 +179,12 @@ namespace VDS.RDF.Query
                       SparqlKeywordTo = "TO",
                       SparqlKeywordUUID = "UUID",
                       SparqlKeywordStrUUID = "STRUUID",
-                      SparqlKeywordCall = "CALL"
+                      SparqlKeywordCall = "CALL",
+                      SparqlStarKeywordIsTriple = "ISTRIPLE",
+                      SparqlStarKeywordObject = "OBJECT",
+                      SparqlStarKeywordPredicate = "PREDICATE",
+                      SparqlStarKeywordSubject = "SUBJECT",
+                      SparqlStarKeywordTriple = "TRIPLE"
                       ;
 
         /// <summary>
@@ -239,6 +244,7 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordIsIri, 
                                                       SparqlKeywordIsLiteral, 
                                                       SparqlKeywordIsNumeric,
+                                                      SparqlStarKeywordIsTriple,
                                                       SparqlKeywordIsUri, 
                                                       SparqlKeywordLang,
                                                       SparqlKeywordLangMatches, 
@@ -248,6 +254,8 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordMonth,
                                                       SparqlKeywordNotIn,
                                                       SparqlKeywordNow,
+                                                      SparqlStarKeywordObject,
+                                                      SparqlStarKeywordPredicate,
                                                       SparqlKeywordRand,
                                                       SparqlKeywordRegex, 
                                                       SparqlKeywordRound,
@@ -258,6 +266,7 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordSha384,
                                                       SparqlKeywordSha512,
                                                       SparqlKeywordStr,
+                                                      SparqlStarKeywordSubject,
                                                       SparqlKeywordContains,
                                                       SparqlKeywordReplace,
                                                       SparqlKeywordStrAfter,
@@ -270,6 +279,7 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordStrUUID,
                                                       SparqlKeywordSubStr,
                                                       SparqlKeywordTimezone,
+                                                      SparqlStarKeywordTriple,
                                                       SparqlKeywordTz,
                                                       SparqlKeywordUCase,
                                                       SparqlKeywordUri,

@@ -23,43 +23,49 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
+using System;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode
 {
     /// <summary>
-    /// Available Query Syntaxes.
+    /// Class representing the SPARQL-Star PREDICATE() function.
     /// </summary>
-    public enum SparqlQuerySyntax
+    public class PredicateFunction : BaseUnaryExpression
     {
         /// <summary>
-        /// Use SPARQL 1.0
+        /// Create a new PREDICATE() function expression.
         /// </summary>
-        Sparql_1_0,
+        /// <param name="expr">Expression to apply the function to.</param>
+        public PredicateFunction(ISparqlExpression expr) : base(expr) { }
 
-        /// <summary>
-        /// Use SPARQL 1.1
-        /// </summary>
-        Sparql_1_1,
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"PREDICATE({InnerExpression})";
+        }
 
-        /// <summary>
-        /// Use the latest SPARQL specification supported by the library (currently SPARQL 1.1) with some extensions
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Extensions include the following:
-        /// </para>
-        /// <ul>
-        /// <li><strong>LET</strong> assignments (we recommend using the SPARQL 1.1 standards BIND instead)</li>
-        /// <li>Additional aggregates - <strong>NMAX</strong>, <strong>NMIN</strong>, <strong>MEDIAN</strong> and <strong>MODE</strong> (we recommend using the Leviathan Function Library URIs for these instead to make them usable in SPARQL 1.1 mode)</li>
-        /// <li><strong>UNSAID</strong> alias for <strong>NOT EXISTS</strong> (we recommend using the SPARQL 1.1 standard NOT EXISTS instead</li>
-        /// <li><strong>EXISTS</strong> and <strong>NOT EXISTS</strong> are permitted as Graph Patterns (only allowed in FILTERs in SPARQL 1.1)</li>
-        /// </ul>
-        /// </remarks>
-        Extended,
+        /// <inheritdoc />
+        public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
+        {
+            throw new NotImplementedException();
+        }
 
-        /// <summary>
-        /// Use SPARQL 1.1 with the SPARQL-Star syntax extensions
-        /// </summary>
-        Sparql_Star_1_1,
+        /// <inheritdoc />
+        public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public override SparqlExpressionType Type => SparqlExpressionType.Function;
+
+        /// <inheritdoc />
+        public override string Functor => SparqlSpecsHelper.SparqlStarKeywordPredicate;
+
+        /// <inheritdoc />
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new PredicateFunction(transformer.Transform(InnerExpression));
+        }
     }
 }

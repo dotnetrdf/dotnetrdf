@@ -48,17 +48,31 @@ namespace VDS.RDF.Parsing
     {
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
-        // OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
-        /// <summary>
-        /// Create a new parser instance.
-        /// </summary>
-        public SparqlUpdateParser() : this(RDF.UriFactory.Root) { }
-
         /// <summary>
         /// Creates a new parser instance that uses the specified URI factory to create URIs.
         /// </summary>
-        /// <param name="uriFactory"></param>
-        public SparqlUpdateParser(IUriFactory uriFactory) { UriFactory = uriFactory; }
+        /// <param name="uriFactory">The factory to use when creating URIs while parsing the update.</param>
+        public SparqlUpdateParser(IUriFactory uriFactory) :this(SparqlQuerySyntax.Sparql_1_1, uriFactory){}
+
+        /// <summary>
+        /// Creates a new parser instance that uses the specified query syntax and URI factory.
+        /// </summary>
+        /// <param name="syntax">The syntax mode to support when parsing the update.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs while parsing the update.</param>
+        public SparqlUpdateParser(SparqlQuerySyntax syntax = SparqlQuerySyntax.Sparql_1_1, IUriFactory uriFactory = null)
+        {
+            Syntax = syntax;
+            UriFactory = uriFactory ?? RDF.UriFactory.Root;
+        }
+
+        /// <summary>
+        /// Get or set the syntax mode to support when parsing the update.
+        /// </summary>
+        public SparqlQuerySyntax Syntax
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets/Sets whether Tokeniser Tracing is used.
@@ -173,7 +187,7 @@ namespace VDS.RDF.Parsing
             {
                 // Start the actual parsing
                 var context = new SparqlUpdateParserContext(
-                    new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1), UriFactory)
+                    new SparqlTokeniser(input, Syntax), UriFactory)
                 {
                     AllowUnknownFunctions = AllowUnknownFunctions,
                 };

@@ -240,6 +240,13 @@ namespace VDS.RDF.Parsing.Tokens
                           ENDQUOTE = 601,
                           STARTANNOTATION = 602,
                           ENDANNOTATION = 603,
+                          QUOTEDTRIPLE = 604,
+
+                          ISTRIPLE = 650,
+                          OBJECT = 651,
+                          PREDICATE = 652,
+                          SUBJECT = 653,
+                          TRIPLE = 654,
 
                           EOF = 1000;
     }
