@@ -31,6 +31,14 @@ namespace dotNetRdf.TestSupport
         public Uri Result => Graph.GetTriplesWithSubjectPredicate(TestNode, Graph.CreateUriNode("mf:result"))
             .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
 
+        public INode ActionNode => Graph.GetTriplesWithSubjectPredicate(TestNode, Graph.CreateUriNode("mf:action"))
+            .Select(t => t.Object).FirstOrDefault();
+
+        public Uri Query => Graph.GetTriplesWithSubjectPredicate(ActionNode, Graph.CreateUriNode("qt:query"))
+            .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
+
+        public Uri Data => Graph.GetTriplesWithSubjectPredicate(ActionNode, Graph.CreateUriNode("qt:data"))
+            .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
         public override string ToString()
         {
             return Id;

@@ -19,6 +19,7 @@ namespace dotNetRdf.TestSupport
         {
             _manifestGraph = new Graph() { BaseUri = baseUri };
             _manifestGraph.NamespaceMap.AddNamespace("mf", UriFactory.Root.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
+            _manifestGraph.NamespaceMap.AddNamespace("qt", UriFactory.Root.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-query#"));
             _manifestGraph.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
             _manifestGraph.LoadFromFile(manifestPath);
             _manifest = new Manifest(_manifestGraph, manifestPath);
