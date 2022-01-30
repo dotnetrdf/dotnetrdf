@@ -1,0 +1,418 @@
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dawg:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix doap:    <http://usefulinc.com/ns/doap#> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs07> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind06> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-02> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-07> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind08> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind04> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs05> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#owlds01> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#d-ent-01> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs12> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs11> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind03> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind05> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind01> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-03> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs06> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdf03> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs03> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs13> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind02> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdf02> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs02> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#paper-sparqldl-Q1-rdfs> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#owlds02> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-04> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdf01> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs10> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind07> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdf04> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-08> .
+
+<http://code.google.com/p/arq-inference/>
+      rdf:type      earl:Software ;
+      rdf:type      doap:Project ;
+      dc:creator    _:b1 ;
+      dc:title      "ARQ+Inference" ;
+      dct:hasVersion  "0.1" ;
+      doap:homepage  "http://code.google.com/p/arq-inference/" ;
+      doap:maintainer  _:b1 ;
+      doap:name     "ARQ+Inference" ;
+      doap:release  [ rdf:type      doap:Version ;
+                      doap:created  "2012-10-18+02:00"^^xsd:date ;
+                      doap:name     "ARQ+Inference"
+                    ] ;
+      foaf:homepage  <http://code.google.com/p/arq-inference/> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-01> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-09> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs01> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs08> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs04> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-06> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-05> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#rdfs09> .
+
+_:b1
+      rdf:type      foaf:Person ;
+      foaf:homepage  <http://www.uni-ulm.de/in/ki/glimm> ;
+      foaf:name     "Birte Glimm" .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://code.google.com/p/arq-inference/> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-10-18+02:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://code.google.com/p/arq-inference/> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent2> .

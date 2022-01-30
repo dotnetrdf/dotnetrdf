@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang='en' prefix='dawgt:   http://www.w3.org/2001/sw/DataAccess/tests/test-dawg# mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# mfx:    http://jena.hpl.hp.com/2005/05/test-manifest-extra# qt:     http://www.w3.org/2001/sw/DataAccess/tests/test-query# sd:      http://www.w3.org/ns/sparql-service-description# ut:     http://www.w3.org/2009/sparql/tests/test-update#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body: {bacground-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 110px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      SPARQL Graph Store Protocol
+    </title>
+    <style>
+      em.rfc2119 { 
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>SPARQL Graph Store Protocol</h1>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        
+      </p>
+      <p>This page describes W3C SPARQL Working Group&#39;s SPARQL1.0 test suite.</p>
+      
+      <p><strong>$HOST$</strong> is the host where the Graph Store Protocol implementation is listening</p>
+      
+      <p><strong>$GRAPHSTORE$</strong> is the path of the URL of the graph store</p>
+      
+      <p><strong>$NEWPATH$</strong> is the URL returned in the Location HTTP header</p>
+      
+      <p>HTTP response messages are in the format:</p>
+      
+      <pre><code>HTTP Status code&#x000A;Headers&#x000A;&lt;space&gt;&#x000A;Body                    &#x000A;</code></pre>
+      
+      <h3>Contributing Tests</h3>
+      
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      
+      <h3>Distribution</h3>
+      
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      
+      <h3>Disclaimer</h3>
+      
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot; AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Test Descriptions
+      </h2>
+      <dl class='test-description'>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__initial_state'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__initial_state'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__initial_state:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__initial_state' property='mf:name'>PUT - Initial state</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__initial_state' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>PUT $GRAPHSTORE$/person/1.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;&lt;http://$HOST$/$GRAPHSTORE$/person/1&gt; a foaf:Person;&#x000A;    foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:fn &quot;John Doe&quot;&#x000A;    ].&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <p><code>201 Created</code></p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__initial_state'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__initial_state'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__initial_state:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__initial_state' property='mf:name'>GET of PUT - Initial state</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__initial_state' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET $GRAPHSTORE$?graph=$GRAPHSTORE$/person/1.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;Accept: text/turtle&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;Content-Length: ...&#x000A;&#x000A;&lt;http://$HOST$/$GRAPHSTORE$/person/1&gt; a foaf:Person;&#x000A;   foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:fn &quot;John Doe&quot;&#x000A;   ].&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__graph_already_in_store'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__graph_already_in_store'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__graph_already_in_store:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__graph_already_in_store' property='mf:name'>PUT - graph already in store</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__graph_already_in_store' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>PUT $GRAPHSTORE$/person/1.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;&lt;http://$HOST$/$GRAPHSTORE$/person/1&gt; a foaf:Person;&#x000A;    foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:fn &quot;Jane Doe&quot;&#x000A;    ].&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>204 No Content&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__graph_already_in_store'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__graph_already_in_store'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__graph_already_in_store:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__graph_already_in_store' property='mf:name'>GET of PUT - graph already in store</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__graph_already_in_store' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET $GRAPHSTORE$/person/1.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;Accept: text/turtle&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;Content-Length: ...&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;&lt;http://$HOST$/$GRAPHSTORE$/person/1&gt; a foaf:Person;&#x000A;   foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:fn &quot;Jane Doe&quot;&#x000A;   ] .&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__default_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__default_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__default_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__default_graph' property='mf:name'>PUT - default graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__default_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>PUT $GRAPHSTORE$?default HTTP/1.1&#x000A;Host: $HOST$&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;[]  a foaf:Person;&#x000A;    foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:given-name &quot;Alice&quot;&#x000A;    ] .&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>201 Created&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__default_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__default_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__default_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__default_graph' property='mf:name'>GET of PUT - default graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_put__default_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET $GRAPHSTORE$?default HTTP/1.1&#x000A;Host: $HOST$&#x000A;Accept: text/turtle&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;Content-Length: ...&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;[]  a foaf:Person;&#x000A;    foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:given-name &quot;Alice&quot;&#x000A;    ] .&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__mismatched_payload'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__mismatched_payload'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__mismatched_payload:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__mismatched_payload' property='mf:name'>PUT - mismatched payload</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#put__mismatched_payload' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>PUT $GRAPHSTORE$/person/1.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;&lt;http://$HOST$/$GRAPHSTORE$/person/1&gt; a foaf:Person;&#x000A;    foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:fn &quot;Jane Doe&quot;&#x000A;    ].&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>400 Bad Request&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__existing_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__existing_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__existing_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__existing_graph' property='mf:name'>DELETE - existing graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__existing_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>DELETE $GRAPHSTORE$/person/2.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_delete__existing_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_delete__existing_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_delete__existing_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_delete__existing_graph' property='mf:name'>GET of DELETE - existing graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_delete__existing_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET $GRAPHSTORE$/person/2.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>404 Not Found&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__nonexistent_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__nonexistent_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__nonexistent_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__nonexistent_graph' property='mf:name'>DELETE - non-existent graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#delete__nonexistent_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>DELETE $GRAPHSTORE$/person/2.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>404 Not Found&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__existing_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__existing_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__existing_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__existing_graph' property='mf:name'>POST - existing graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__existing_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__existing_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__existing_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__existing_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__existing_graph' property='mf:name'>GET of POST - existing graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__existing_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST $GRAPHSTORE$/person/1.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;&#x000A;&lt;http://$HOST$/$GRAPHSTORE$/person/1&gt; foaf:name &quot;Jane Doe&quot;&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__multipart_formdata'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__multipart_formdata'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__multipart_formdata:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__multipart_formdata' property='mf:name'>POST - multipart/form-data</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__multipart_formdata' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST $GRAPHSTORE$/person/1.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;Content-Type: multipart/form-data; boundary=a6fe4cd636164618814be9f8d3d1a0de&#x000A;&#x000A;--a6fe4cd636164618814be9f8d3d1a0de&#x000A;Content-Disposition: form-data; name=&quot;lastName.ttl&quot;; filename=&quot;lastName.ttl&quot;&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;&lt;http://$HOST$/$GRAPHSTORE$/person/1&gt; foaf:familyName &quot;Doe&quot;&#x000A;&#x000A;--a6fe4cd636164618814be9f8d3d1a0de&#x000A;Content-Disposition: form-data; name=&quot;firstName.ttl&quot;; filename=&quot;firstName.ttl&quot;&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;&lt;http://$HOST$/$GRAPHSTORE$/person/1&gt; foaf:givenName &quot;Jane&quot;&#x000A;&#x000A;--a6fe4cd636164618814be9f8d3d1a0de--&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__multipart_formdata'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__multipart_formdata'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__multipart_formdata:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__multipart_formdata' property='mf:name'>GET of POST - multipart/form-data</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__multipart_formdata' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET $GRAPHSTORE$/person/1.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;Content-Length: ...&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;&lt;http://$HOST$/$GRAPHSTORE$/person/1&gt; a foaf:Person;&#x000A;    foaf:name           &quot;Jane Doe&quot;;&#x000A;    foaf:givenName      &quot;Jane&quot;;&#x000A;    foaf:familyName     &quot;Doe&quot;;&#x000A;    foaf:businessCard [&#x000A;        a               v:VCard;&#x000A;        v:fn            &quot;Jane Doe&quot;&#x000A;    ] .&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__create__new_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__create__new_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__create__new_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__create__new_graph' property='mf:name'>POST - create new graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#post__create__new_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST $GRAPHSTORE$ HTTP/1.1&#x000A;Host: $HOST$&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;[]  a foaf:Person;&#x000A;    foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:given-name &quot;Alice&quot;&#x000A;    ] .&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>201 Created&#x000A;Location: $NEWPATH$&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__create__new_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__create__new_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__create__new_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__create__new_graph' property='mf:name'>GET of POST - create new graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__create__new_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET $NEWPATH$ HTTP/1.1&#x000A;Host: $HOST$&#x000A;Accept: text/turtle&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;Content-Length: ...&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;[]  a foaf:Person;&#x000A;    foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:given-name &quot;Alice&quot;&#x000A;    ] .&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__after_noop'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__after_noop'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__after_noop:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__after_noop' property='mf:name'>GET of POST - after noop</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#get_of_post__after_noop' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET $NEWPATH$ HTTP/1.1&#x000A;Host: $HOST$&#x000A;Accept: text/turtle&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;Content-Length: ...&#x000A;&#x000A;@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .&#x000A;@prefix v: &lt;http://www.w3.org/2006/vcard/ns#&gt; .&#x000A;&#x000A;[]  a foaf:Person;&#x000A;    foaf:businessCard [&#x000A;        a v:VCard;&#x000A;        v:given-name &quot;Alice&quot;&#x000A;    ] .&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_an_existing_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_an_existing_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_an_existing_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_an_existing_graph' property='mf:name'>HEAD on an existing graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_an_existing_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>HEAD $GRAPHSTORE$/person/1.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>200 OK&#x000A;Content-Type: text/turtle; charset=utf-8&#x000A;Content-Length: ...&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_a_nonexisting_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_a_nonexisting_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_a_nonexisting_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_a_nonexisting_graph' property='mf:name'>HEAD on a non-existing graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#head_on_a_nonexisting_graph' typeof='mf:GraphStoreProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>HEAD $GRAPHSTORE$/person/4.ttl HTTP/1.1&#x000A;Host: $HOST$&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>404 Not Found&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:GraphStoreProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-27#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

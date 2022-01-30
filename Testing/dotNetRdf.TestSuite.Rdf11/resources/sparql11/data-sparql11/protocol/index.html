@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang='en' prefix='dawgt:   http://www.w3.org/2001/sw/DataAccess/tests/test-dawg# mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# mfx:    http://jena.hpl.hp.com/2005/05/test-manifest-extra# qt:     http://www.w3.org/2001/sw/DataAccess/tests/test-query# sd:      http://www.w3.org/ns/sparql-service-description# ut:     http://www.w3.org/2009/sparql/tests/test-update#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body: {bacground-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 110px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      SPARQL Protocol
+    </title>
+    <style>
+      em.rfc2119 { 
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>SPARQL Protocol</h1>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        
+      </p>
+      <p>This page describes W3C SPARQL Working Group&#39;s SPARQL1.0 test suite.</p>
+      
+      <h3>Configuration</h3>
+      
+      <p>When accessed without any query parameters, the CGI provides an HTML form that
+      may be used to validate a Protocol implementation. The parameters are:</p>
+      
+      <ul>
+      <li>&quot;query_url&quot; -- query endpoint URL</li>
+      <li>&quot;update_url&quot; -- update endpoint URL</li>
+      <li>&quot;software&quot; -- The Protocol implementation IRI that will be used if <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html">conneg</a> is used and requests RDF</li>
+      </ul>
+      
+      <p>The following parameters <em>should</em> also be accounted for (in a future version):</p>
+      
+      <ul>
+      <li>does the default graph change based on other graphs (e.g. acts as the union of named graphs)?</li>
+      </ul>
+      
+      <h3>Requirements</h3>
+      
+      <p>It is assumed that the Protocol implementation provides support for all of SPARQL (1.0)
+       and also SPARQL 1.1 Query/Update support for:</p>
+      
+      <ul>
+      <li>Select expressions</li>
+      <li>CLEAR</li>
+      <li>DROP</li>
+      <li>LOAD</li>
+      </ul>
+      
+      <p>The following RDF files are loaded as appropriate to properly setup the
+      graphstore/dataset for some tests:</p>
+      
+      <ul>
+      <li>http://kasei.us/2009/09/sparql/data/data0.rdf</li>
+      <li>http://kasei.us/2009/09/sparql/data/data1.rdf</li>
+      <li>http://kasei.us/2009/09/sparql/data/data2.rdf</li>
+      <li>http://kasei.us/2009/09/sparql/data/data3.rdf</li>
+      </ul>
+      
+      <p>Finally, it is assumed that implementations can produce application/rdf+xml and
+      application/sparql-results+xml when requested using <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec12.html">conneg</a>.</p>
+      
+      <h3>Contributing Tests</h3>
+      
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      
+      <h3>Distribution</h3>
+      
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      
+      <h3>Disclaimer</h3>
+      
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot; AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Test Descriptions
+      </h2>
+      <dl class='test-description'>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_form'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_form'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_form:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_form' property='mf:name'>query via URL-encoded POST</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_form' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/x-www-url-form-urlencoded&#x000A;Content-Length: XXX&#x000A;&#x000A;query=ASK%20%7B%7D&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_get'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_get'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_get:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_get' property='mf:name'>GET query with protocol-specified default graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_get' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET /sparql?query=ASK%20%7B%20%3Chttp%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf%3E%20a%20%3Ftype%20.%20%3Chttp%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf%3E%20a%20%3Ftype%20.%20%7D&amp;default-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf&amp;default-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_post'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_post'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_post:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_post' property='mf:name'>POST query with protocol-specified default graphs</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_default_graphs_post' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/?default-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf&amp;default-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK { &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; ?p ?o . &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; ?p ?o }&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_post'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_post'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_post:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_post' property='mf:name'>POST query with protocol-specified named graphs</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_post' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/?named-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf&amp;named-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK { GRAPH ?g { ?s ?p ?o } }&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_get'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_get'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_get:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_get' property='mf:name'>GET query with protocol-specified named graphs</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_named_graphs_get' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET /sparql/?named-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf&amp;named-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf&amp;query=ASK%20%7B%20GRAPH%20%3Fg%20%7B%20%3Fs%20%3Fp%20%3Fo%20%7D%20%7D HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_full'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_full'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_full:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_full' property='mf:name'>query with protocol-specified dataset (both named and default graphs)</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_dataset_full' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/?default-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata3.rdf&amp;named-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf&amp;named-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;SELECT ?g ?x ?s { ?x ?y ?o  GRAPH ?g { ?s ?p ?o } }&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_multiple_dataset'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_multiple_dataset'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_multiple_dataset:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_multiple_dataset' property='mf:name'>query specifying dataset in both query string and protocol; test for use of protocol-specified dataset</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_multiple_dataset' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/?default-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK FROM &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; { &lt;data1.rdf&gt; ?p ?o }&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_get'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_get'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_get:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_get' property='mf:name'>query via GET</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_get' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET /sparql?query=ASK%20%7B%7D&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_select'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_select'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_select:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_select' property='mf:name'>query appropriate content type (expect one of: XML, JSON, CSV, TSV)</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_select' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;SELECT (1 AS ?value) {}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml, application/sparql-results+json, text/tab-separated-values, or text/csv&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_ask'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_ask'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_ask:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_ask' property='mf:name'>query appropriate content type (expect one of: XML, JSON)</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_ask' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK {}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_describe'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_describe'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_describe:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_describe' property='mf:name'>query appropriate content type (expect one of: RDF/XML, Turtle, N-Triples, RDFa)</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_describe' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;DESCRIBE &lt;http://example.org/&gt;&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/rdf+xml, application/rdf+json or text/turtle&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_construct'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_construct'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_construct:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_construct' property='mf:name'>query appropriate content type (expect one of: RDF/XML, Turtle, N-Triples, RDFa)</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_content_type_construct' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;CONSTRUCT { &lt;s&gt; &lt;p&gt; 1 } WHERE {}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/rdf+xml, application/rdf+json or text/turtle&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graph'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graph'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graph:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graph' property='mf:name'>update with protocol-specified default graph</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graph' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql?using-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-update&#x000A;Content-Length: XXX&#x000A;&#x000A;PREFIX dc: &lt;http://purl.org/dc/terms/&gt;&#x000A;PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;&#x000A;CLEAR ALL ;&#x000A;INSERT DATA {&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; {&#x000A;        &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; a foaf:Document&#x000A;    }&#x000A;} ;&#x000A;INSERT {&#x000A;    GRAPH &lt;http://example.org/protocol-update-dataset-test/&gt; {&#x000A;        ?s a dc:BibliographicResource&#x000A;    }&#x000A;}&#x000A;WHERE {&#x000A;    ?s a foaf:Document&#x000A;}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;</code></pre>
+            
+            <p>followed by</p>
+            
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Accept: application/sparql-results+xml&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK {&#x000A;    GRAPH &lt;http://example.org/protocol-update-dataset-test/&gt; {&#x000A;        &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; a &lt;http://purl.org/dc/terms/BibliographicResource&gt;&#x000A;    }&#x000A;}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graphs'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graphs'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graphs:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graphs' property='mf:name'>update with protocol-specified default graphs</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_default_graphs' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql?using-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf&amp;using-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-update&#x000A;Content-Length: XXX&#x000A;&#x000A;PREFIX dc: &lt;http://purl.org/dc/terms/&gt;&#x000A;PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;&#x000A;CLEAR ALL ;&#x000A;INSERT DATA {&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; { &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; a foaf:Document }&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; { &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; a foaf:Document }&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data3.rdf&gt; { &lt;http://kasei.us/2009/09/sparql/data/data3.rdf&gt; a foaf:Document }&#x000A;} ;&#x000A;INSERT {&#x000A;    GRAPH &lt;http://example.org/protocol-update-dataset-graphs-test/&gt; {&#x000A;        ?s a dc:BibliographicResource&#x000A;    }&#x000A;}&#x000A;WHERE {&#x000A;    ?s a foaf:Document&#x000A;}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;</code></pre>
+            
+            <p>followed by</p>
+            
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Accept: application/sparql-results+xml&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK {&#x000A;    GRAPH &lt;http://example.org/protocol-update-dataset-graphs-test/&gt; {&#x000A;        &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; a &lt;http://purl.org/dc/terms/BibliographicResource&gt; .&#x000A;        &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; a &lt;http://purl.org/dc/terms/BibliographicResource&gt; .&#x000A;    }&#x000A;    FILTER NOT EXISTS {&#x000A;        GRAPH &lt;http://example.org/protocol-update-dataset-graphs-test/&gt; {&#x000A;            &lt;http://kasei.us/2009/09/sparql/data/data3.rdf&gt; a &lt;http://purl.org/dc/terms/BibliographicResource&gt; .&#x000A;        }&#x000A;    }&#x000A;}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_named_graphs'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_named_graphs'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_named_graphs:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_named_graphs' property='mf:name'>update with protocol-specified named graphs</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_named_graphs' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql?using-named-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf&amp;using-named-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-update&#x000A;Content-Length: XXX&#x000A;&#x000A;PREFIX dc: &lt;http://purl.org/dc/terms/&gt;&#x000A;PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;&#x000A;CLEAR ALL ;&#x000A;INSERT DATA {&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; { &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; a foaf:Document }&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; { &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; a foaf:Document }&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data3.rdf&gt; { &lt;http://kasei.us/2009/09/sparql/data/data3.rdf&gt; a foaf:Document }&#x000A;} ;&#x000A;INSERT {&#x000A;    GRAPH &lt;http://example.org/protocol-update-dataset-named-graphs-test/&gt; {&#x000A;        ?s a dc:BibliographicResource&#x000A;    }&#x000A;}&#x000A;WHERE {&#x000A;    GRAPH ?g {&#x000A;        ?s a foaf:Document&#x000A;    }&#x000A;}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;</code></pre>
+            
+            <p>followed by</p>
+            
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Accept: application/sparql-results+xml&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK {&#x000A;    GRAPH &lt;http://example.org/protocol-update-dataset-named-graphs-test/&gt; {&#x000A;        &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; a &lt;http://purl.org/dc/terms/BibliographicResource&gt; .&#x000A;        &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; a &lt;http://purl.org/dc/terms/BibliographicResource&gt; .&#x000A;    }&#x000A;    FILTER NOT EXISTS {&#x000A;        GRAPH &lt;http://example.org/protocol-update-dataset-named-graphs-test/&gt; {&#x000A;            &lt;http://kasei.us/2009/09/sparql/data/data3.rdf&gt; a &lt;http://purl.org/dc/terms/BibliographicResource&gt; .&#x000A;        }&#x000A;    }&#x000A;}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_full'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_full'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_full:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_full' property='mf:name'>update with protocol-specified dataset (both named and default graphs)</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_dataset_full' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql?using-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata1.rdf&amp;using-named-graph-uri=http%3A%2F%2Fkasei.us%2F2009%2F09%2Fsparql%2Fdata%2Fdata2.rdf HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-update&#x000A;Content-Length: XXX&#x000A;&#x000A;PREFIX dc: &lt;http://purl.org/dc/terms/&gt;&#x000A;PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;&#x000A;CLEAR ALL ;&#x000A;INSERT DATA {&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; { &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; a foaf:Document }&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; { &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; a foaf:Document }&#x000A;    GRAPH &lt;http://kasei.us/2009/09/sparql/data/data3.rdf&gt; { &lt;http://kasei.us/2009/09/sparql/data/data3.rdf&gt; a foaf:Document }&#x000A;} ;&#x000A;INSERT {&#x000A;    GRAPH &lt;http://example.org/protocol-update-dataset-full-test/&gt; {&#x000A;        ?s &lt;http://example.org/in&gt; ?in&#x000A;    }&#x000A;}&#x000A;WHERE {&#x000A;    {&#x000A;        GRAPH ?g { ?s a foaf:Document }&#x000A;        BIND(?g AS ?in)&#x000A;    }&#x000A;    UNION&#x000A;    {&#x000A;        ?s a foaf:Document .&#x000A;        BIND(&quot;default&quot; AS ?in)&#x000A;    }&#x000A;}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;</code></pre>
+            
+            <p>followed by</p>
+            
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Accept: application/sparql-results+xml&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK {&#x000A;    GRAPH &lt;http://example.org/protocol-update-dataset-full-test/&gt; {&#x000A;        &lt;http://kasei.us/2009/09/sparql/data/data1.rdf&gt; &lt;http://example.org/in&gt; &quot;default&quot; .&#x000A;        &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; &lt;http://example.org/in&gt; &lt;http://kasei.us/2009/09/sparql/data/data2.rdf&gt; .&#x000A;    }&#x000A;    FILTER NOT EXISTS {&#x000A;        GRAPH &lt;http://example.org/protocol-update-dataset-full-test/&gt; {&#x000A;            &lt;http://kasei.us/2009/09/sparql/data/data3.rdf&gt; ?p ?o&#x000A;        }&#x000A;    }&#x000A;}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_form'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_form'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_form:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_form' property='mf:name'>update via URL-encoded POST</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_form' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/x-www-url-form-urlencoded&#x000A;Content-Length: XXX&#x000A;&#x000A;update=CLEAR%20ALL&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_direct'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_direct'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_direct:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_direct' property='mf:name'>update via POST directly</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_post_direct' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-update&#x000A;Content-Length: XXX&#x000A;&#x000A;CLEAR ALL&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_base_uri'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_base_uri'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_base_uri:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_base_uri' property='mf:name'>test for service-defined BASE URI ("which MAY be the service endpoint")</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#update_base_uri' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-update&#x000A;Content-Length: XXX&#x000A;&#x000A;CLEAR GRAPH &lt;http://example.org/protocol-base-test/&gt; ;&#x000A;INSERT DATA { GRAPH &lt;http://example.org/protocol-base-test/&gt; { &lt;http://example.org/s&gt; &lt;http://example.org/p&gt; &lt;test&gt; } }&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;</code></pre>
+            
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Accept: application/sparql-results+xml&#x000A;Content-Length: XXX&#x000A;&#x000A;SELECT ?o WHERE {&#x000A;    GRAPH &lt;http://example.org/protocol-base-test/&gt; {&#x000A;        &lt;http://example.org/s&gt; &lt;http://example.org/p&gt; ?o&#x000A;    }&#x000A;}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml&#x000A;&#x000A;one result with `?o` bound to an IRI that is _not_ `&lt;test&gt;`&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_direct'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_direct'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_direct:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_direct' property='mf:name'>query via POST directly</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#query_post_direct' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK {}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>2xx or 3xx response&#x000A;Content-Type: application/sparql-results+xml or application/sparql-results+json&#x000A;&#x000A;true&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_method'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_method'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_method:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_method' property='mf:name'>invoke query operation with a method other than GET or POST</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_method' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>PUT /sparql?query=ASK%20%7B%7D            &#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_queries'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_queries'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_queries:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_queries' property='mf:name'>invoke query operation with more than one query string</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_queries' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET /sparql?query=ASK%20%7B%7D&amp;query=SELECT%20%2A%20%7B%7D&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_wrong_media_type'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_wrong_media_type'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_wrong_media_type:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_wrong_media_type' property='mf:name'>invoke query operation with a POST with media type that's not url-encoded or application/sparql-query</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_wrong_media_type' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: text/plain&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK {}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_form_type'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_form_type'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_form_type:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_form_type' property='mf:name'>invoke query operation with url-encoded body, but without application/x-www-url-form-urlencoded media type</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_form_type' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Length: XXX&#x000A;&#x000A;query=ASK%20%7B%7D&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_direct_type'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_direct_type'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_direct_type:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_direct_type' property='mf:name'>invoke query operation with SPARQL body, but without application/sparql-query media type</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_missing_direct_type' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK {}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_non_utf8'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_non_utf8'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_non_utf8:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_non_utf8' property='mf:name'>invoke query operation with direct POST, but with a non-UTF8 encoding (UTF-16)</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_non_utf8' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <p>(content body encoded in utf-16)</p>
+            
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-query; charset=UTF-16&#x000A;Content-Length: XXX&#x000A;&#x000A;ASK {}&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_syntax'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_syntax'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_syntax:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_syntax' property='mf:name'>invoke query operation with invalid query syntax (4XX result)</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_query_syntax' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET /sparql?query=ASK%20%7B&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_get'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_get'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_get:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_get' property='mf:name'>invoke update operation with GET</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_get' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>GET /sparql?update=CLEAR%20ALL&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_updates'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_updates'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_updates:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_updates' property='mf:name'>invoke update operation with more than one update string</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_multiple_updates' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/x-www-url-form-urlencoded&#x000A;Content-Length: XXX&#x000A;&#x000A;update=CLEAR%20NAMED&amp;update=CLEAR%20DEFAULT&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_wrong_media_type'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_wrong_media_type'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_wrong_media_type:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_wrong_media_type' property='mf:name'>invoke update operation with a POST with media type that's not url-encoded or application/sparql-update</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_wrong_media_type' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: text/plain&#x000A;Content-Length: XXX&#x000A;&#x000A;CLEAR NAMED&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_missing_form_type'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_missing_form_type'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_missing_form_type:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_missing_form_type' property='mf:name'>invoke update operation with url-encoded body, but without application/x-www-url-form-urlencoded media type</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_missing_form_type' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Length: XXX&#x000A;&#x000A;update=CLEAR%20NAMED&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_non_utf8'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_non_utf8'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_non_utf8:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_non_utf8' property='mf:name'>invoke update operation with direct POST, but with a non-UTF8 encoding</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_non_utf8' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <p>(content body encoded in utf-16)</p>
+            
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/sparql-update; charset=UTF-16&#x000A;Content-Length: XXX&#x000A;&#x000A;CLEAR NAMED&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_syntax'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_syntax'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_syntax:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_syntax' property='mf:name'>invoke update operation with invalid update syntax</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_syntax' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/x-www-url-form-urlencoded&#x000A;Content-Length: XXX&#x000A;&#x000A;update=CLEAR%20XYZ&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_dataset_conflict'>
+          <a class='testlink' href='#http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_dataset_conflict'>
+            http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_dataset_conflict:
+          </a>
+          <span about='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_dataset_conflict' property='mf:name'>invoke update with both using-graph-uri/using-named-graph-uri parameter and USING/WITH clause</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#bad_update_dataset_conflict' typeof='mf:ProtocolTest'>
+          <div property='rdfs:comment'>
+            <h4>Request</h4>
+            
+            <pre><code>POST /sparql/ HTTP/1.1&#x000A;Host: www.example&#x000A;User-agent: sparql-client/0.1&#x000A;Content-Type: application/x-www-url-form-urlencoded&#x000A;Content-Length: XXX&#x000A;&#x000A;using-named-graph-uri=http%3A%2F%2Fexample%2Fpeople&amp;update=%09%09PREFIX%20foaf%3A%20%20%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0A%09%09WITH%20%3Chttp%3A%2F%2Fexample%2Faddresses%3E%0A%09%09DELETE%20%7B%20%3Fperson%20foaf%3AgivenName%20%27Bill%27%20%7D%0A%09%09INSERT%20%7B%20%3Fperson%20foaf%3AgivenName%20%27William%27%20%7D%0A%09%09WHERE%20%7B%0A%09%09%09%3Fperson%20foaf%3AgivenName%20%27Bill%27%0A%09%09%7D%0A&#x000A;</code></pre>
+            
+            <h4>Response</h4>
+            
+            <pre><code>4xx&#x000A;</code></pre>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:ProtocolTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3' property='dawgt:approvedBy'>http://www.w3.org/2009/sparql/meeting/2012-11-20#resolution_3</a>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

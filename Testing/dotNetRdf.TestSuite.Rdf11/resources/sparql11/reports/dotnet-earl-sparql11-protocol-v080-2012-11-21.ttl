@@ -1,0 +1,327 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix prot: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+
+<http://www.dotnetrdf.org/leviathan#> doap:homepage <http://www.dotnetrdf.org/>;
+                                      doap:name "Leviathan (dotNetRDF)".
+
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_post_form .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_dataset_default_graphs_post .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_dataset_named_graphs_post .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_dataset_named_graphs_get .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_dataset_full .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_multiple_dataset .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_get .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_content_type_select .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_content_type_ask .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_content_type_describe .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_content_type_construct .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:info "Expected true SPARQL boolean result, but got false" ;
+		earl:outcome earl:fail ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:update_dataset_default_graph .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:fail ;
+		earl:info "Expected true SPARQL boolean result, but got false" ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:update_dataset_default_graphs .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:fail ;
+		earl:info "Expected true SPARQL boolean result, but got false" ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:update_dataset_named_graphs .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:info "Expected true SPARQL boolean result, but got false" ;
+		earl:outcome earl:fail ;
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:update_dataset_full .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:update_post_form .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:update_post_direct .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_post_direct .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:update_base_uri .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_query_method .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_multiple_queries .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_query_wrong_media_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_query_missing_form_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_query_missing_direct_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_query_non_utf8 .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_query_syntax .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_update_get .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_multiple_updates .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_dataset_default_graph .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_update_wrong_media_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_update_missing_form_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_update_non_utf8 .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_update_syntax .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:bad_update_dataset_conflict .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		dc:date "2012-11-21T19:00:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test prot:query_dataset_default_graphs_get .

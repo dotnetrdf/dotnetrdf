@@ -1,0 +1,498 @@
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dawg:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix doap:    <http://usefulinc.com/ns/doap#> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent7> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-09> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#paper-sparqldl-Q4> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-05> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-03> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#simple7> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#paper-sparqldl-Q1> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind01> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#simple1> .
+
+<http://trowl.eu>
+      rdf:type      earl:Software ;
+      rdf:type      doap:Project ;
+      dc:creator    _:b1 ;
+      dc:title      "TrOWL" ;
+      dct:hasVersion  "1.0" ;
+      doap:homepage  "http://trowl.eu" ;
+      doap:maintainer  _:b1 ;
+      doap:name     "TrOWL" ;
+      doap:release  [ rdf:type      doap:Version ;
+                      doap:created  "2012-12-11+00:00"^^xsd:date ;
+                      doap:name     "TrOWL"
+                    ] ;
+      foaf:homepage  <http://trowl.eu> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#paper-sparqldl-Q3> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent8> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind07> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-10> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-13> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-04> .
+
+_:b1
+      rdf:type      foaf:Person ;
+      foaf:homepage  <http://homepages.abdn.ac.uk/jeff.z.pan/pages/> ;
+      foaf:name     "Jeff Z. Pan" .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#simple6> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind06> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#owlds01> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind04> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#plainLit> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent5> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-07> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind02> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#paper-sparqldl-Q2> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-11> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind05> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent2> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind03> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent10> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#simple3> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#simple5> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-01> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent9> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#lang> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent6> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent4> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-08> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-06> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#bind08> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#simple8> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-12> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:fail
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#owlds02> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#parent3> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#simple4> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#paper-sparqldl-Q5> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#sparqldl-02> .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://trowl.eu> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-12-11+00:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://trowl.eu> ;
+      earl:test     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#simple2> .

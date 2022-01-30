@@ -1,0 +1,39 @@
+# EARL report by test_SPARQL11
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+[] a earl:Assertion ;
+	earl:assertedBy <http://swobjects.org/test_SPARQL11> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-22T08:36"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://swobjects.org/sparql> ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service3> .
+[] a earl:Assertion ;
+	earl:assertedBy <http://swobjects.org/test_SPARQL11> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-22T08:36"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://swobjects.org/sparql> ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service4a> .
+[] a earl:Assertion ;
+	earl:assertedBy <http://swobjects.org/test_SPARQL11> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-22T08:36"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://swobjects.org/sparql> ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service5> .
+[] a earl:Assertion ;
+	earl:assertedBy <http://swobjects.org/test_SPARQL11> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-22T08:36"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://swobjects.org/sparql> ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service6> .

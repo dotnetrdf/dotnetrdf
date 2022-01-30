@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang='en' prefix='mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# rdft: http://www.w3.org/ns/rdftest#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body: {bacground-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 110px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      N-Triples tests
+    </title>
+    <style>
+      em.rfc2119 { 
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>N-Triples tests</h1>
+    <dl class='editor'>
+      <dt>Document Editor</dt>
+      <dd>
+        <a href='mailto:eric+turtle@w3.org'>
+          Eric Prud'hommeaux
+        </a>
+        – W3C
+      </dd>
+      <dd>
+        <a href='mailto:gregg@greggkellogg.net'>
+          Gregg Kellogg
+        </a>
+        – Kellogg Associates
+      </dd>
+    </dl>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        
+      </p>
+      <p>This page describes W3C RDF Working Group&#39;s N-Triples test suite. This test suite contains two kinds of tests:</p>
+      
+      <ul>
+      <li>Positive syntax (<code>rdft:TestNTriplesPositiveSyntax</code>) - an input N-Triples file with no syntax errors.</li>
+      <li>Negative syntax (rdft:TestNTriplesNegativeSyntax) - an input N-Triples file with at least one syntax error.</li>
+      </ul>
+      
+      <p>These tests are also described in <a href="manifest.ttl">Turtle</a> format in this directory for convenience. All tests have a name (<code>mf:name</code>) and an input (<code>mf:action</code>).</p>
+      
+      <ul>
+      <li>An implementation passes a positive syntax test if it parses the
+      input.</li>
+      <li>An implementation passes a negative syntax test if it fails to parse
+      the input.</li>
+      </ul>
+      
+      <p>Tests can be run from the web or by downloading either a <a href="TESTS.tar.gz">tarball</a> or <a href="TESTS.zip">zip file</a>.</p>
+      
+      <p>The home of the test suite is <a href="http://www.w3.org/2013/N-TriplesTests/">http://www.w3.org/2013/N-TriplesTests/</a>.</p>
+      
+      <p>See <a href="http://www.w3.org/2011/rdf-wg/wiki/RDF_Test_Suites">http://www.w3.org/2011/rdf-wg/wiki/RDF_Test_Suites</a> for more details.</p>
+      
+      <h2>Contributing Tests</h2>
+      
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      
+      <h2>Distribution</h2>
+      
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      
+      <h2>Disclaimer</h2>
+      
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot; AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Test Descriptions
+      </h2>
+      <dl class='test-description'>
+        <dt id='#nt-syntax-file-01'>
+          <a class='testlink' href='##nt-syntax-file-01'>
+            #nt-syntax-file-01:
+          </a>
+          <span about='#nt-syntax-file-01' property='mf:name'>nt-syntax-file-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-file-01' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>Empty file</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-file-01.nt' property='mf:action'>nt-syntax-file-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-file-02'>
+          <a class='testlink' href='##nt-syntax-file-02'>
+            #nt-syntax-file-02:
+          </a>
+          <span about='#nt-syntax-file-02' property='mf:name'>nt-syntax-file-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-file-02' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>Only comment</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-file-02.nt' property='mf:action'>nt-syntax-file-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-file-03'>
+          <a class='testlink' href='##nt-syntax-file-03'>
+            #nt-syntax-file-03:
+          </a>
+          <span about='#nt-syntax-file-03' property='mf:name'>nt-syntax-file-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-file-03' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>One comment, one empty line</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-file-03.nt' property='mf:action'>nt-syntax-file-03.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-uri-01'>
+          <a class='testlink' href='##nt-syntax-uri-01'>
+            #nt-syntax-uri-01:
+          </a>
+          <span about='#nt-syntax-uri-01' property='mf:name'>nt-syntax-uri-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-uri-01' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>Only IRIs</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-uri-01.nt' property='mf:action'>nt-syntax-uri-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-uri-02'>
+          <a class='testlink' href='##nt-syntax-uri-02'>
+            #nt-syntax-uri-02:
+          </a>
+          <span about='#nt-syntax-uri-02' property='mf:name'>nt-syntax-uri-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-uri-02' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>IRIs with Unicode escape</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-uri-02.nt' property='mf:action'>nt-syntax-uri-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-uri-03'>
+          <a class='testlink' href='##nt-syntax-uri-03'>
+            #nt-syntax-uri-03:
+          </a>
+          <span about='#nt-syntax-uri-03' property='mf:name'>nt-syntax-uri-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-uri-03' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>IRIs with long Unicode escape</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-uri-03.nt' property='mf:action'>nt-syntax-uri-03.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-uri-04'>
+          <a class='testlink' href='##nt-syntax-uri-04'>
+            #nt-syntax-uri-04:
+          </a>
+          <span about='#nt-syntax-uri-04' property='mf:name'>nt-syntax-uri-04</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-uri-04' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>Legal IRIs</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-uri-04.nt' property='mf:action'>nt-syntax-uri-04.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-string-01'>
+          <a class='testlink' href='##nt-syntax-string-01'>
+            #nt-syntax-string-01:
+          </a>
+          <span about='#nt-syntax-string-01' property='mf:name'>nt-syntax-string-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-string-01' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>string literal</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-string-01.nt' property='mf:action'>nt-syntax-string-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-string-02'>
+          <a class='testlink' href='##nt-syntax-string-02'>
+            #nt-syntax-string-02:
+          </a>
+          <span about='#nt-syntax-string-02' property='mf:name'>nt-syntax-string-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-string-02' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>langString literal</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-string-02.nt' property='mf:action'>nt-syntax-string-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-string-03'>
+          <a class='testlink' href='##nt-syntax-string-03'>
+            #nt-syntax-string-03:
+          </a>
+          <span about='#nt-syntax-string-03' property='mf:name'>nt-syntax-string-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-string-03' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>langString literal with region</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-string-03.nt' property='mf:action'>nt-syntax-string-03.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-str-esc-01'>
+          <a class='testlink' href='##nt-syntax-str-esc-01'>
+            #nt-syntax-str-esc-01:
+          </a>
+          <span about='#nt-syntax-str-esc-01' property='mf:name'>nt-syntax-str-esc-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-str-esc-01' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>string literal with escaped newline</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-str-esc-01.nt' property='mf:action'>nt-syntax-str-esc-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-str-esc-02'>
+          <a class='testlink' href='##nt-syntax-str-esc-02'>
+            #nt-syntax-str-esc-02:
+          </a>
+          <span about='#nt-syntax-str-esc-02' property='mf:name'>nt-syntax-str-esc-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-str-esc-02' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>string literal with Unicode escape</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-str-esc-02.nt' property='mf:action'>nt-syntax-str-esc-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-str-esc-03'>
+          <a class='testlink' href='##nt-syntax-str-esc-03'>
+            #nt-syntax-str-esc-03:
+          </a>
+          <span about='#nt-syntax-str-esc-03' property='mf:name'>nt-syntax-str-esc-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-str-esc-03' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>string literal with long Unicode escape</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-str-esc-03.nt' property='mf:action'>nt-syntax-str-esc-03.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bnode-01'>
+          <a class='testlink' href='##nt-syntax-bnode-01'>
+            #nt-syntax-bnode-01:
+          </a>
+          <span about='#nt-syntax-bnode-01' property='mf:name'>nt-syntax-bnode-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bnode-01' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>bnode subject</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bnode-01.nt' property='mf:action'>nt-syntax-bnode-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bnode-02'>
+          <a class='testlink' href='##nt-syntax-bnode-02'>
+            #nt-syntax-bnode-02:
+          </a>
+          <span about='#nt-syntax-bnode-02' property='mf:name'>nt-syntax-bnode-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bnode-02' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>bnode object</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bnode-02.nt' property='mf:action'>nt-syntax-bnode-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bnode-03'>
+          <a class='testlink' href='##nt-syntax-bnode-03'>
+            #nt-syntax-bnode-03:
+          </a>
+          <span about='#nt-syntax-bnode-03' property='mf:name'>nt-syntax-bnode-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bnode-03' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>Blank node labels may start with a digit</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bnode-03.nt' property='mf:action'>nt-syntax-bnode-03.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-datatypes-01'>
+          <a class='testlink' href='##nt-syntax-datatypes-01'>
+            #nt-syntax-datatypes-01:
+          </a>
+          <span about='#nt-syntax-datatypes-01' property='mf:name'>nt-syntax-datatypes-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-datatypes-01' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>xsd:byte literal</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-datatypes-01.nt' property='mf:action'>nt-syntax-datatypes-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-datatypes-02'>
+          <a class='testlink' href='##nt-syntax-datatypes-02'>
+            #nt-syntax-datatypes-02:
+          </a>
+          <span about='#nt-syntax-datatypes-02' property='mf:name'>nt-syntax-datatypes-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-datatypes-02' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>integer as xsd:string</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-datatypes-02.nt' property='mf:action'>nt-syntax-datatypes-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-uri-01'>
+          <a class='testlink' href='##nt-syntax-bad-uri-01'>
+            #nt-syntax-bad-uri-01:
+          </a>
+          <span about='#nt-syntax-bad-uri-01' property='mf:name'>nt-syntax-bad-uri-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-uri-01' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad IRI : space (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-uri-01.nt' property='mf:action'>nt-syntax-bad-uri-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-uri-02'>
+          <a class='testlink' href='##nt-syntax-bad-uri-02'>
+            #nt-syntax-bad-uri-02:
+          </a>
+          <span about='#nt-syntax-bad-uri-02' property='mf:name'>nt-syntax-bad-uri-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-uri-02' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad IRI : bad escape (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-uri-02.nt' property='mf:action'>nt-syntax-bad-uri-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-uri-03'>
+          <a class='testlink' href='##nt-syntax-bad-uri-03'>
+            #nt-syntax-bad-uri-03:
+          </a>
+          <span about='#nt-syntax-bad-uri-03' property='mf:name'>nt-syntax-bad-uri-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-uri-03' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad IRI : bad long escape (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-uri-03.nt' property='mf:action'>nt-syntax-bad-uri-03.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-uri-04'>
+          <a class='testlink' href='##nt-syntax-bad-uri-04'>
+            #nt-syntax-bad-uri-04:
+          </a>
+          <span about='#nt-syntax-bad-uri-04' property='mf:name'>nt-syntax-bad-uri-04</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-uri-04' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad IRI : character escapes not allowed (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-uri-04.nt' property='mf:action'>nt-syntax-bad-uri-04.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-uri-05'>
+          <a class='testlink' href='##nt-syntax-bad-uri-05'>
+            #nt-syntax-bad-uri-05:
+          </a>
+          <span about='#nt-syntax-bad-uri-05' property='mf:name'>nt-syntax-bad-uri-05</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-uri-05' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad IRI : character escapes not allowed (2) (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-uri-05.nt' property='mf:action'>nt-syntax-bad-uri-05.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-uri-06'>
+          <a class='testlink' href='##nt-syntax-bad-uri-06'>
+            #nt-syntax-bad-uri-06:
+          </a>
+          <span about='#nt-syntax-bad-uri-06' property='mf:name'>nt-syntax-bad-uri-06</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-uri-06' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad IRI : relative IRI not allowed in subject (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-uri-06.nt' property='mf:action'>nt-syntax-bad-uri-06.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-uri-07'>
+          <a class='testlink' href='##nt-syntax-bad-uri-07'>
+            #nt-syntax-bad-uri-07:
+          </a>
+          <span about='#nt-syntax-bad-uri-07' property='mf:name'>nt-syntax-bad-uri-07</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-uri-07' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad IRI : relative IRI not allowed in predicate (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-uri-07.nt' property='mf:action'>nt-syntax-bad-uri-07.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-uri-08'>
+          <a class='testlink' href='##nt-syntax-bad-uri-08'>
+            #nt-syntax-bad-uri-08:
+          </a>
+          <span about='#nt-syntax-bad-uri-08' property='mf:name'>nt-syntax-bad-uri-08</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-uri-08' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad IRI : relative IRI not allowed in object (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-uri-08.nt' property='mf:action'>nt-syntax-bad-uri-08.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-uri-09'>
+          <a class='testlink' href='##nt-syntax-bad-uri-09'>
+            #nt-syntax-bad-uri-09:
+          </a>
+          <span about='#nt-syntax-bad-uri-09' property='mf:name'>nt-syntax-bad-uri-09</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-uri-09' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad IRI : relative IRI not allowed in datatype (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-uri-09.nt' property='mf:action'>nt-syntax-bad-uri-09.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-prefix-01'>
+          <a class='testlink' href='##nt-syntax-bad-prefix-01'>
+            #nt-syntax-bad-prefix-01:
+          </a>
+          <span about='#nt-syntax-bad-prefix-01' property='mf:name'>nt-syntax-bad-prefix-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-prefix-01' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>@prefix not allowed in n-triples (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-prefix-01.nt' property='mf:action'>nt-syntax-bad-prefix-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-base-01'>
+          <a class='testlink' href='##nt-syntax-bad-base-01'>
+            #nt-syntax-bad-base-01:
+          </a>
+          <span about='#nt-syntax-bad-base-01' property='mf:name'>nt-syntax-bad-base-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-base-01' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>@base not allowed in N-Triples (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-base-01.nt' property='mf:action'>nt-syntax-bad-base-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-struct-01'>
+          <a class='testlink' href='##nt-syntax-bad-struct-01'>
+            #nt-syntax-bad-struct-01:
+          </a>
+          <span about='#nt-syntax-bad-struct-01' property='mf:name'>nt-syntax-bad-struct-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-struct-01' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>N-Triples does not have objectList (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-struct-01.nt' property='mf:action'>nt-syntax-bad-struct-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-struct-02'>
+          <a class='testlink' href='##nt-syntax-bad-struct-02'>
+            #nt-syntax-bad-struct-02:
+          </a>
+          <span about='#nt-syntax-bad-struct-02' property='mf:name'>nt-syntax-bad-struct-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-struct-02' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>N-Triples does not have predicateObjectList (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-struct-02.nt' property='mf:action'>nt-syntax-bad-struct-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-lang-01'>
+          <a class='testlink' href='##nt-syntax-bad-lang-01'>
+            #nt-syntax-bad-lang-01:
+          </a>
+          <span about='#nt-syntax-bad-lang-01' property='mf:name'>nt-syntax-bad-lang-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-lang-01' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>langString with bad lang (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-lang-01.nt' property='mf:action'>nt-syntax-bad-lang-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-esc-01'>
+          <a class='testlink' href='##nt-syntax-bad-esc-01'>
+            #nt-syntax-bad-esc-01:
+          </a>
+          <span about='#nt-syntax-bad-esc-01' property='mf:name'>nt-syntax-bad-esc-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-esc-01' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad string escape (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-esc-01.nt' property='mf:action'>nt-syntax-bad-esc-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-esc-02'>
+          <a class='testlink' href='##nt-syntax-bad-esc-02'>
+            #nt-syntax-bad-esc-02:
+          </a>
+          <span about='#nt-syntax-bad-esc-02' property='mf:name'>nt-syntax-bad-esc-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-esc-02' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad string escape (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-esc-02.nt' property='mf:action'>nt-syntax-bad-esc-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-esc-03'>
+          <a class='testlink' href='##nt-syntax-bad-esc-03'>
+            #nt-syntax-bad-esc-03:
+          </a>
+          <span about='#nt-syntax-bad-esc-03' property='mf:name'>nt-syntax-bad-esc-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-esc-03' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>Bad string escape (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-esc-03.nt' property='mf:action'>nt-syntax-bad-esc-03.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-string-01'>
+          <a class='testlink' href='##nt-syntax-bad-string-01'>
+            #nt-syntax-bad-string-01:
+          </a>
+          <span about='#nt-syntax-bad-string-01' property='mf:name'>nt-syntax-bad-string-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-string-01' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>mismatching string literal open/close (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-string-01.nt' property='mf:action'>nt-syntax-bad-string-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-string-02'>
+          <a class='testlink' href='##nt-syntax-bad-string-02'>
+            #nt-syntax-bad-string-02:
+          </a>
+          <span about='#nt-syntax-bad-string-02' property='mf:name'>nt-syntax-bad-string-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-string-02' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>mismatching string literal open/close (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-string-02.nt' property='mf:action'>nt-syntax-bad-string-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-string-03'>
+          <a class='testlink' href='##nt-syntax-bad-string-03'>
+            #nt-syntax-bad-string-03:
+          </a>
+          <span about='#nt-syntax-bad-string-03' property='mf:name'>nt-syntax-bad-string-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-string-03' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>single quotes (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-string-03.nt' property='mf:action'>nt-syntax-bad-string-03.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-string-04'>
+          <a class='testlink' href='##nt-syntax-bad-string-04'>
+            #nt-syntax-bad-string-04:
+          </a>
+          <span about='#nt-syntax-bad-string-04' property='mf:name'>nt-syntax-bad-string-04</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-string-04' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>long single string literal (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-string-04.nt' property='mf:action'>nt-syntax-bad-string-04.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-string-05'>
+          <a class='testlink' href='##nt-syntax-bad-string-05'>
+            #nt-syntax-bad-string-05:
+          </a>
+          <span about='#nt-syntax-bad-string-05' property='mf:name'>nt-syntax-bad-string-05</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-string-05' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>long double string literal (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-string-05.nt' property='mf:action'>nt-syntax-bad-string-05.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-string-06'>
+          <a class='testlink' href='##nt-syntax-bad-string-06'>
+            #nt-syntax-bad-string-06:
+          </a>
+          <span about='#nt-syntax-bad-string-06' property='mf:name'>nt-syntax-bad-string-06</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-string-06' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>string literal with no end (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-string-06.nt' property='mf:action'>nt-syntax-bad-string-06.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-string-07'>
+          <a class='testlink' href='##nt-syntax-bad-string-07'>
+            #nt-syntax-bad-string-07:
+          </a>
+          <span about='#nt-syntax-bad-string-07' property='mf:name'>nt-syntax-bad-string-07</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-string-07' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>string literal with no start (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-string-07.nt' property='mf:action'>nt-syntax-bad-string-07.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-num-01'>
+          <a class='testlink' href='##nt-syntax-bad-num-01'>
+            #nt-syntax-bad-num-01:
+          </a>
+          <span about='#nt-syntax-bad-num-01' property='mf:name'>nt-syntax-bad-num-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-num-01' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>no numbers in N-Triples (integer) (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-num-01.nt' property='mf:action'>nt-syntax-bad-num-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-num-02'>
+          <a class='testlink' href='##nt-syntax-bad-num-02'>
+            #nt-syntax-bad-num-02:
+          </a>
+          <span about='#nt-syntax-bad-num-02' property='mf:name'>nt-syntax-bad-num-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-num-02' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>no numbers in N-Triples (decimal) (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-num-02.nt' property='mf:action'>nt-syntax-bad-num-02.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-bad-num-03'>
+          <a class='testlink' href='##nt-syntax-bad-num-03'>
+            #nt-syntax-bad-num-03:
+          </a>
+          <span about='#nt-syntax-bad-num-03' property='mf:name'>nt-syntax-bad-num-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-bad-num-03' typeof='rdft:TestNTriplesNegativeSyntax'>
+          <div property='rdfs:comment'>
+            <p>no numbers in N-Triples (float) (negative test)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesNegativeSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-bad-num-03.nt' property='mf:action'>nt-syntax-bad-num-03.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#nt-syntax-subm-01'>
+          <a class='testlink' href='##nt-syntax-subm-01'>
+            #nt-syntax-subm-01:
+          </a>
+          <span about='#nt-syntax-subm-01' property='mf:name'>nt-syntax-subm-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#nt-syntax-subm-01' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>Submission test from Original RDF Test Cases</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>action</dt>
+            <dd>
+              <a href='nt-syntax-subm-01.nt' property='mf:action'>nt-syntax-subm-01.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#comment_following_triple'>
+          <a class='testlink' href='##comment_following_triple'>
+            #comment_following_triple:
+          </a>
+          <span about='#comment_following_triple' property='mf:name'>comment_following_triple</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#comment_following_triple' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>Tests comments after a triple</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='comment_following_triple.nt' property='mf:action'>comment_following_triple.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal'>
+          <a class='testlink' href='##literal'>
+            #literal:
+          </a>
+          <span about='#literal' property='mf:name'>literal</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal &quot;&quot;&quot;x&quot;&quot;&quot;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal.nt' property='mf:action'>literal.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_all_controls'>
+          <a class='testlink' href='##literal_all_controls'>
+            #literal_all_controls:
+          </a>
+          <span about='#literal_all_controls' property='mf:name'>literal_all_controls</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_all_controls' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal<em>all</em>controls &#39;\x00\x01\x02\x03\x04...&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_all_controls.nt' property='mf:action'>literal_all_controls.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_all_punctuation'>
+          <a class='testlink' href='##literal_all_punctuation'>
+            #literal_all_punctuation:
+          </a>
+          <span about='#literal_all_punctuation' property='mf:name'>literal_all_punctuation</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_all_punctuation' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal<em>all</em>punctuation &#39;!&quot;#$%&amp;()...&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_all_punctuation.nt' property='mf:action'>literal_all_punctuation.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_ascii_boundaries'>
+          <a class='testlink' href='##literal_ascii_boundaries'>
+            #literal_ascii_boundaries:
+          </a>
+          <span about='#literal_ascii_boundaries' property='mf:name'>literal_ascii_boundaries</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_ascii_boundaries' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal<em>ascii</em>boundaries &#39;\x00\x26\x28...&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_ascii_boundaries.nt' property='mf:action'>literal_ascii_boundaries.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_2_dquotes'>
+          <a class='testlink' href='##literal_with_2_dquotes'>
+            #literal_with_2_dquotes:
+          </a>
+          <span about='#literal_with_2_dquotes' property='mf:name'>literal_with_2_dquotes</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_2_dquotes' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with 2 squotes &quot;&quot;&quot;a&quot;&quot;b&quot;&quot;&quot;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_2_dquotes.nt' property='mf:action'>literal_with_2_dquotes.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_2_squotes'>
+          <a class='testlink' href='##literal_with_2_squotes'>
+            #literal_with_2_squotes:
+          </a>
+          <span about='#literal_with_2_squotes' property='mf:name'>literal_with_2_squotes</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_2_squotes' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with 2 squotes &quot;x&#39;&#39;y&quot;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_2_squotes.nt' property='mf:action'>literal_with_2_squotes.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_BACKSPACE'>
+          <a class='testlink' href='##literal_with_BACKSPACE'>
+            #literal_with_BACKSPACE:
+          </a>
+          <span about='#literal_with_BACKSPACE' property='mf:name'>literal_with_BACKSPACE</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_BACKSPACE' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with BACKSPACE</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_BACKSPACE.nt' property='mf:action'>literal_with_BACKSPACE.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_CARRIAGE_RETURN'>
+          <a class='testlink' href='##literal_with_CARRIAGE_RETURN'>
+            #literal_with_CARRIAGE_RETURN:
+          </a>
+          <span about='#literal_with_CARRIAGE_RETURN' property='mf:name'>literal_with_CARRIAGE_RETURN</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_CARRIAGE_RETURN' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with CARRIAGE RETURN</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_CARRIAGE_RETURN.nt' property='mf:action'>literal_with_CARRIAGE_RETURN.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_CHARACTER_TABULATION'>
+          <a class='testlink' href='##literal_with_CHARACTER_TABULATION'>
+            #literal_with_CHARACTER_TABULATION:
+          </a>
+          <span about='#literal_with_CHARACTER_TABULATION' property='mf:name'>literal_with_CHARACTER_TABULATION</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_CHARACTER_TABULATION' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with CHARACTER TABULATION</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_CHARACTER_TABULATION.nt' property='mf:action'>literal_with_CHARACTER_TABULATION.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_dquote'>
+          <a class='testlink' href='##literal_with_dquote'>
+            #literal_with_dquote:
+          </a>
+          <span about='#literal_with_dquote' property='mf:name'>literal_with_dquote</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_dquote' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with dquote &quot;x&quot;y&quot;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_dquote.nt' property='mf:action'>literal_with_dquote.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_FORM_FEED'>
+          <a class='testlink' href='##literal_with_FORM_FEED'>
+            #literal_with_FORM_FEED:
+          </a>
+          <span about='#literal_with_FORM_FEED' property='mf:name'>literal_with_FORM_FEED</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_FORM_FEED' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with FORM FEED</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_FORM_FEED.nt' property='mf:action'>literal_with_FORM_FEED.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_LINE_FEED'>
+          <a class='testlink' href='##literal_with_LINE_FEED'>
+            #literal_with_LINE_FEED:
+          </a>
+          <span about='#literal_with_LINE_FEED' property='mf:name'>literal_with_LINE_FEED</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_LINE_FEED' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with LINE FEED</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_LINE_FEED.nt' property='mf:action'>literal_with_LINE_FEED.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_numeric_escape4'>
+          <a class='testlink' href='##literal_with_numeric_escape4'>
+            #literal_with_numeric_escape4:
+          </a>
+          <span about='#literal_with_numeric_escape4' property='mf:name'>literal_with_numeric_escape4</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_numeric_escape4' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with numeric escape4 \u</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_numeric_escape4.nt' property='mf:action'>literal_with_numeric_escape4.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_numeric_escape8'>
+          <a class='testlink' href='##literal_with_numeric_escape8'>
+            #literal_with_numeric_escape8:
+          </a>
+          <span about='#literal_with_numeric_escape8' property='mf:name'>literal_with_numeric_escape8</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_numeric_escape8' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with numeric escape8 \U</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_numeric_escape8.nt' property='mf:action'>literal_with_numeric_escape8.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_REVERSE_SOLIDUS'>
+          <a class='testlink' href='##literal_with_REVERSE_SOLIDUS'>
+            #literal_with_REVERSE_SOLIDUS:
+          </a>
+          <span about='#literal_with_REVERSE_SOLIDUS' property='mf:name'>literal_with_REVERSE_SOLIDUS</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_REVERSE_SOLIDUS' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with REVERSE SOLIDUS</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_REVERSE_SOLIDUS.nt' property='mf:action'>literal_with_REVERSE_SOLIDUS.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_REVERSE_SOLIDUS2'>
+          <a class='testlink' href='##literal_with_REVERSE_SOLIDUS2'>
+            #literal_with_REVERSE_SOLIDUS2:
+          </a>
+          <span about='#literal_with_REVERSE_SOLIDUS2' property='mf:name'>literal_with_REVERSE_SOLIDUS2</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_REVERSE_SOLIDUS2' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>REVERSE SOLIDUS at end of literal</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_REVERSE_SOLIDUS2.nt' property='mf:action'>literal_with_REVERSE_SOLIDUS2.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_squote'>
+          <a class='testlink' href='##literal_with_squote'>
+            #literal_with_squote:
+          </a>
+          <span about='#literal_with_squote' property='mf:name'>literal_with_squote</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_squote' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal with squote &quot;x&#39;y&quot;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_squote.nt' property='mf:action'>literal_with_squote.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#literal_with_UTF8_boundaries'>
+          <a class='testlink' href='##literal_with_UTF8_boundaries'>
+            #literal_with_UTF8_boundaries:
+          </a>
+          <span about='#literal_with_UTF8_boundaries' property='mf:name'>literal_with_UTF8_boundaries</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#literal_with_UTF8_boundaries' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>literal<em>with</em>UTF8_boundaries &#39;\x80\x7ff\x800\xfff...&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='literal_with_UTF8_boundaries.nt' property='mf:action'>literal_with_UTF8_boundaries.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#langtagged_string'>
+          <a class='testlink' href='##langtagged_string'>
+            #langtagged_string:
+          </a>
+          <span about='#langtagged_string' property='mf:name'>langtagged_string</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#langtagged_string' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>langtagged string &quot;x&quot;@en</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='langtagged_string.nt' property='mf:action'>langtagged_string.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#lantag_with_subtag'>
+          <a class='testlink' href='##lantag_with_subtag'>
+            #lantag_with_subtag:
+          </a>
+          <span about='#lantag_with_subtag' property='mf:name'>lantag_with_subtag</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#lantag_with_subtag' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>lantag with subtag &quot;x&quot;@en-us</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='lantag_with_subtag.nt' property='mf:action'>lantag_with_subtag.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#minimal_whitespace'>
+          <a class='testlink' href='##minimal_whitespace'>
+            #minimal_whitespace:
+          </a>
+          <span about='#minimal_whitespace' property='mf:name'>minimal_whitespace</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#minimal_whitespace' typeof='rdft:TestNTriplesPositiveSyntax'>
+          <div property='rdfs:comment'>
+            <p>tests absense of whitespace between subject, predicate, object and end-of-statement</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>rdft:TestNTriplesPositiveSyntax</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Proposed'>rdft:Proposed</dd>
+            <dt>action</dt>
+            <dd>
+              <a href='minimal_whitespace.nt' property='mf:action'>minimal_whitespace.nt</a>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

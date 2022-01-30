@@ -1,0 +1,6 @@
+---
+:format: :json
+:manifest:
+- https://dvcs.w3.org/hg/rdf/raw-file/default/rdf-mt/tests/manifest.ttl
+:bibRef: ! '[[RDF11-MT]]'
+:name: RDF Semantics

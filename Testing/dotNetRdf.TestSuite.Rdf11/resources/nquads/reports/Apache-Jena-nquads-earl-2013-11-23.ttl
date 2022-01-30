@@ -1,0 +1,1079 @@
+@prefix dc:    <http://purl.org/dc/elements/1.1/> .
+@prefix rdft:  <http://www.w3.org/ns/rdftest#> .
+@prefix earl:  <http://www.w3.org/ns/earl#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix turtletest: <http://www.w3.org/2013/TurtleTests/manifest.ttl#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix doap:  <http://usefulinc.com/ns/doap#> .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_dquotes>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS2>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-05>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-06>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-01>
+] .
+
+_:b0    a              foaf:Person ;
+        foaf:homepage  <http://people.apache.org/~andy> ;
+        foaf:name      "Andy Seaborne" .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#lantag_with_subtag>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-05>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-09>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape4>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CHARACTER_TABULATION>
+] .
+
+<http://jena.apache.org/#riot>
+        a                doap:Project , earl:Software ;
+        dc:creator       _:b0 ;
+        dc:title         "Apache Jena RIOT" ;
+        dct:isPartOf     [ foaf:homepage  <http://jena.apache.org/> ] ;
+        doap:homepage    "http://jena.apache.org/" ;
+        doap:maintainer  _:b0 ;
+        doap:name        "Apache Jena RIOT" ;
+        doap:release     [ a             doap:Version ;
+                           doap:created  "2013-11-23+00:00"^^xsd:date ;
+                           doap:name     "RIOT"
+                         ] ;
+        foaf:homepage    <http://jena.apache.org/> .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_controls>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-07>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_squotes>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#minimal_whitespace>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-06>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-prefix-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-subm-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_squote>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-06>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-04>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_dquote>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-uri-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_punctuation>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape8>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_BACKSPACE>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-lang-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#comment_following_triple>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_UTF8_boundaries>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-03>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-04>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-04>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-07>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_FORM_FEED>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_ascii_boundaries>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-base-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-06>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-04>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-05>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CARRIAGE_RETURN>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-quint-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-02>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#langtagged_string>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-04>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-05>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-08>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_LINE_FEED>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-01>
+] .
+
+[ a                earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#riot> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ a             earl:TestResult ;
+                     dc:date       "2013-11-23+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#riot> ;
+  earl:test        <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-01>
+] .
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix rdft:    <http://www.w3.org/ns/rdftest#> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix doap:    <http://usefulinc.com/ns/doap#> .
+
+<http://jena.apache.org/#riot>
+    a           doap:Project ;
+    <http://projects.apache.org/ns/asfext#implements>
+                [ a           <http://projects.apache.org/ns/asfext#Standard> ;
+                  <http://projects.apache.org/ns/asfext#body>
+                              "W3C" ;
+                  <http://projects.apache.org/ns/asfext#id>
+                              "" ;
+                  <http://projects.apache.org/ns/asfext#title>
+                              "SPARQL" ;
+                  <http://projects.apache.org/ns/asfext#url>
+                              <http://www.w3.org/TR/rdf-sparql-query/>
+                ] ;
+    <http://projects.apache.org/ns/asfext#implements>
+                [ a           <http://projects.apache.org/ns/asfext#Standard> ;
+                  <http://projects.apache.org/ns/asfext#body>
+                              "W3C" ;
+                  <http://projects.apache.org/ns/asfext#id>
+                              "" ;
+                  <http://projects.apache.org/ns/asfext#title>
+                              "Resource Description Framework" ;
+                  <http://projects.apache.org/ns/asfext#url>
+                              <http://www.w3.org/RDF/>
+                ] ;
+    <http://projects.apache.org/ns/asfext#pmc>
+                <http://jena.apache.org> ;
+    doap:bug-database
+                <https://issues.apache.org/jira/browse/JENA> ;
+    doap:category
+                <http://projects.apache.org/category/library> ;
+    doap:created
+                "2012-05-03" ;
+    doap:description
+                "Apache Jena provides a complete framework for building Semantic Web and Linked Data applications in Java, and provides: parsers for RDF/XML, Turtle and N-triples; a Java programming API; a complete implementation of the SPARQL query language; a rule-based inference engine for RDFS and OWL entailments; TDB (a non-SQL persistent triple store); SDB (a persistent triples store built on a relational store) and Fuseki, an RDF server using web protocols. Jena complies with all relevant recommendations for RDF and related technologies from the W3C." ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:rvesse@apache.org> ;
+                  foaf:name   "Rob Vesse"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:castagna@apache.org> ;
+                  foaf:name   "Paolo Castagna"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:chrisdollin@apache.org> ;
+                  foaf:name   "Chris Dollin"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:sallen@apache.org> ;
+                  foaf:name   "Stephen Allen"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:ijd@apache.org> ;
+                  foaf:name   "Ian Dickinson"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:damian@apache.org> ;
+                  foaf:name   "Damian Steer"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:andy@apache.org> ;
+                  foaf:name   "Andy Seaborne"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:claude@apache.org> ;
+                  foaf:name   "Claude Warren"
+                ] ;
+    doap:developer
+                [ a           foaf:Person ;
+                  foaf:mbox   <mailto:der@apache.org> ;
+                  foaf:name   "Dave Reynolds"
+                ] ;
+    doap:download-page
+                <http://jena.apache.org/download/index.html> ;
+    doap:homepage
+                <http://jena.apache.org> ;
+    doap:license
+                <http://usefulinc.com/doap/licenses/asl20> ;
+    doap:mailing-list
+                <http://jena.apache.org/help_and_support/index.html> ;
+    doap:name   "Apache Jena"@en ;
+    doap:programming-language
+                "Java"@en ;
+    doap:release
+                [ a           doap:Version ;
+                  doap:created
+                              "2013-11-23"@en ;
+                  doap:name   "apache-jena-2.11.1"@en ;
+                  doap:revision
+                              "2.11.1"@en
+                ] ;
+    doap:repository
+                [ a           doap:SVNRepository ;
+                  doap:browse
+                              <http://svn.apache.org/viewvc/jena/> ;
+                  doap:location
+                              <http://svn.apache.org/repos/asf/jena/trunk/>
+                ] ;
+    doap:shortdesc
+                "A framework for developing Semantic Web and Linked Data applications in Java."@en .
+
