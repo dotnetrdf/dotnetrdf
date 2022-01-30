@@ -1,0 +1,3069 @@
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://github.com/JuPfu/chelona>
+	a doap:Project, earl:TestSubject, earl:Software;
+	doap:name "Chelona" ;
+	doap:homepage <https://github.com/JuPfu/chelona> ;
+	doap:license <https://www.apache.org/licenses/LICENSE-2.0> ;
+	doap:shortdesc "A Parboiled2 based Scala Parser for the W3C RDF 1.1 Turtle and Trig Languages"@en ;
+	doap:description "Cheló̱na is a reader / writer for the W3C RDF 1.1 Turtle and Trig Languages written in Scala."@en ;
+	doap:created "2014-11-22"^^xsd:date ;
+	doap:programming-language "Scala" ;
+	doap:implements <https://www.w3.org/TR/trig/> ;
+	doap:category <http://dbpedia.org/resource/Resource_Description_Framework> ;
+	doap:category <http://dbpedia.org/resource/Scala_(programming_language)> ;
+	doap:bug-database <https://github.com/JuPfu/chelona/issues/> ;
+	doap:developer <https://github.com/JuPfu#me> ;
+	doap:maintainer <https://github.com/JuPfu#me> ;
+	doap:documenter <https://github.com/JuPfu#me> ;
+	doap:repository <https://github.com/JuPfu/chelona/> ;
+	a doap:GitRepository ;
+	doap:location <https://github.com/JuPfu/chelona/> ;
+	doap:browse <https://github.com/JuPfu/chelona> .
+
+<http://github.com/JuPfu> a foaf:OnlineAccount;
+   dc:created "2014-08-23"^^xsd:date;
+   doap:homepage <http://github.com/JuPfu>;
+   foaf:accountName "JuPfu";
+   foaf:accountServiceHomepage <http://github.com/>;
+   foaf:name "GitHub";
+   foaf:page <http://github.com/JuPfu> .
+   
+<https://github.com/JuPfu#me> a foaf:Person;
+     foaf:mbox <mailto:juergen.pfundt@gmail.com> ;
+     foaf:name "Jürgen Pfundt" ;
+     foaf:account <https://github.com/JuPfu> ;
+     foaf:based_near "Frankfurt, Germany" ;
+     foaf:weblog <https://poundblog.wordpress.com> .
+ 
+<> foaf:primaryTopic <https://github.coms/JuPfu/chelona> ;
+   	dc:issued "2015-06-08"^^xsd:date ;
+   	foaf:maker <https://github.com/JuPfu> .
+	  
+<https://github.com/JuPfu#me>
+	a foaf:Person, earl:Assertor ;
+	foaf:name "Jürgen Pfundt" ;
+    foaf:title "Implementor" ;
+	rdfs:seeAlso <https://github.com/JuPfu> .
+	
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-str-esc-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.088"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-kw-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.222"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-file-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.245"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.254"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#prefix_only_IRI>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.268"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#sole_blankNodePropertyList>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.278"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-missing-ns-dot-end>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.289"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-prefix-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.303"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL2_with_UTF8_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.312"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.325"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.333"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-eval-bad-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.365"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-struct-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.382"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-12>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.403"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-esc-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.481"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-minimal-whitespace-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.534"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-prefix-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.542"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.552"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.562"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-prefix-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.575"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-eval-bad-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.599"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.621"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#collection_subject>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.632"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-14>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.646"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.663"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#blankNodePropertyList_as_object>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.673"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-turtle-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.680"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL1_with_UTF8_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.686"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-12>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.701"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.715"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-15>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.724"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.733"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.743"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-lists-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.748"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-22>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.756"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.767"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#first>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.772"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-10>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.781"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.786"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-datatypes-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.793"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_escaped_LINE_FEED>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.800"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-ns-dot-start>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.807"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-10>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.816"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-14>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.829"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-ln-colons>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.836"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-str-esc-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.846"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-base-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.852"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.862"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#negative_numeric>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.870"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.879"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-pname-esc-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.887"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-eval-struct-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.897"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.909"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#last>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.915"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-ln-escape>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.931"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG2_with_UTF8_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.939"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-base-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.946"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#IRI_with_four_digit_numeric_escape>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.956"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-string-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.975"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#IRIREF_datatype>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.980"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_CARRIAGE_RETURN>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.989"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#number_sign_following_localName>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:50.996"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-string-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.014"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#collection_object>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.022"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.030"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-base-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.036"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.050"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-collection-graph-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.079"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_CHARACTER_TABULATION>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.087"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-esc-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.097"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#prefix_with_PN_CHARS_BASE_character_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.106"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.120"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-pname-esc-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.126"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-lists-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.136"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-19>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.146"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-ln-dash-start>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.153"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.160"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#langtagged_LONG>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.166"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-num-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.183"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-LITERAL2_with_langtag_and_datatype>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.194"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.214"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-16>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.222"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-uri-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.229"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-missing-ns-dot-start>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.237"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG2_with_2_squotes>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.244"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#comment_following_PNAME_NS>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.249"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-11>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.265"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#percent_escaped_localName>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.282"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.288"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-26>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.304"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#localname_with_COLON>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.317"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.332"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-base-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.340"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.349"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-pname-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.365"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.375"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-prefix-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.380"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-11>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.407"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-kw-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.415"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#bareword_double>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.422"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-17>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.434"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-08>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.449"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-struct-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.457"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-number-dot-in-anon>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.473"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-string-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.482"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-kw-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.500"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.515"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.531"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#old_style_prefix>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.543"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-collection-graph-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.552"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-turtle-bad-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.566"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-25>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.575"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#positive_numeric>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.593"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-num-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.613"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-num-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.623"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-prefix-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.631"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG2_ascii_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.639"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#localName_with_non_leading_extras>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.651"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#nested_collection>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.658"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.662"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.667"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL1_all_controls>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.671"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG1_with_1_squote>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.675"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-11>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.685"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-esc-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.693"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-base-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.696"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-uri-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.703"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-lang-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.711"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#langtagged_non_LONG>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.715"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-prefix-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.719"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.738"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#bareword_a_predicate>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.781"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.788"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG1_with_UTF8_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.797"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#labeled_blank_node_graph>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.805"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-08>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.814"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-10>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.821"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.829"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-11>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.836"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-list-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.859"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#localName_with_nfc_PN_CHARS_BASE_character_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.869"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG1_with_2_squotes>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.879"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-base-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.885"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#alternating_iri_graphs>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.897"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-08>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.905"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-list-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.913"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-turtle-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.923"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-kw-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.928"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-file-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.932"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_true>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.940"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-list-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.947"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-prefix-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.951"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-10>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.962"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#comment_following_localName>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.970"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-num-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.982"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.987"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:51.993"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-15>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.014"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_escaped_CARRIAGE_RETURN>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.020"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.027"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-10>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.033"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.038"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-eval-bad-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.045"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.049"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-uri-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.054"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-num-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.063"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#labeled_blank_node_with_leading_digit>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.067"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-08>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.071"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-uri-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.076"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-turtle-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.081"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#prefix_reassigned_and_used>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.085"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#prefix_with_non_leading_extras>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.089"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-turtle-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.094"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-base-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.099"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-kw-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.106"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#IRI_with_eight_digit_numeric_escape>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.133"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-27>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.150"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#double_lower_case_e>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.155"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#labeled_blank_node_subject>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.159"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#objectList_with_two_objects>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.166"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-uri-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.172"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-pname-esc-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.177"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_false>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.184"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.189"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#predicateObjectList_with_two_objectLists>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.192"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-base-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.196"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#localName_with_leading_underscore>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.200"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#nested_blankNodePropertyLists>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.206"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.214"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-pname-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.220"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_REVERSE_SOLIDUS>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.224"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#labeled_blank_node_object>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.228"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#default_namespace_IRI>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.233"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-prefix-08>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.260"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.271"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#labeled_blank_node_with_leading_underscore>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.276"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-prefix-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.279"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.293"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-base-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.298"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#repeated_semis_at_end>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.302"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#HYPHEN_MINUS_in_localName>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.306"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.310"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-list-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.315"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-prefix-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.321"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#old_style_base>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.326"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-18>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.330"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-uri-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.334"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#bareword_integer>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.338"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL2_ascii_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.345"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#labeled_blank_node_with_PN_CHARS_BASE_character_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.348"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#anonymous_blank_node_graph>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.355"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-eval-bad-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.373"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.381"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.386"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-struct-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.389"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-turtle-bad-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.393"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_escaped_CHARACTER_TABULATION>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.396"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.402"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL1_all_punctuation>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.408"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#lantag_with_subtag>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.423"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-uri-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.427"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#prefixed_IRI_predicate>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.432"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-ln-dots>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.436"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-lists-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.440"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-ns-dot-end>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.450"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-lists-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.456"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#number_sign_following_PNAME_NS>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.460"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-21>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.465"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.470"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#blankNodePropertyList_as_subject>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.475"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.479"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#prefixed_IRI_object>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.483"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-08>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.526"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.535"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-struct-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.538"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.543"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-eval-struct-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.549"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.559"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-ns-dots>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.581"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#anonymous_blank_node_object>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.586"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-string-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.591"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#IRI_subject>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.595"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-13>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.599"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_FORM_FEED>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.605"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-kw-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.628"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#underscore_in_localName>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.632"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-prefix-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.638"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG2>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.648"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-turtle-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.655"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.660"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-08>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.673"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.679"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#SPARQL_style_base>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.684"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.688"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.695"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-kw-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.700"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-08>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.707"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_BACKSPACE>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.711"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-uri-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.718"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-16>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.725"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.729"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-prefix-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.741"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.798"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-12>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.803"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL1_ascii_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.814"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#SPARQL_style_prefix>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.819"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-esc-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.824"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-turtle-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.832"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#two_LITERAL_LONG2s>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.838"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-string-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.847"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-bnodeplist-graph-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.853"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#IRI_with_all_punctuation>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.857"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-struct-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.861"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#labeled_blank_node_with_non_leading_extras>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.867"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG1_ascii_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.873"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-ln-escape-start>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.880"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-23>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.890"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.903"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-str-esc-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.907"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-07>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.912"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bnode-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.916"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_numeric_escape8>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.921"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.934"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#localName_with_leading_digit>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.939"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-10>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.947"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-pname-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.953"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-uri-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.957"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG2_with_1_squote>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.961"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-blank-label-dot-end>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.967"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-datatypes-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.975"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#langtagged_LONG_with_subtag>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.980"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#blankNodePropertyList_containing_collection>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:52.995"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.001"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#blankNodePropertyList_with_multiple_triples>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.008"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-n3-extras-10>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.014"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-06>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.019"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-string-05>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.046"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-string-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.056"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-number-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.063"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-blank-label>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.071"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_LINE_FEED>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.076"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-10>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.080"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#empty_collection>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.084"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-struct-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.088"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-string-11>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.093"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-02>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.099"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-file-03>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.102"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-prefix-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.105"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-lists-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.109"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#alternating_bnode_graphs>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.125"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-prefix-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.170"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-prefix-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.176"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_escaped_BACKSPACE>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.194"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#bareword_decimal>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.199"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#prefixed_name_datatype>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.207"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#anonymous_blank_node_subject>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.213"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_escaped_FORM_FEED>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.219"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#reserved_escaped_localName>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.224"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#localName_with_assigned_nfc_PN_CHARS_BASE_character_boundaries>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.229"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL1>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.233"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-09>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.252"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-24>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.256"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#numeric_with_leading_0>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.262"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-kw-graph-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.267"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-13>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.273"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-20>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.279"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-prefix-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.284"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-graph-bad-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.290"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#repeated_semis_not_at_end>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.301"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-kw-01>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.306"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-subm-13>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.311"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-bad-struct-17>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.315"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#literal_with_numeric_escape4>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.318"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#trig-syntax-struct-04>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.321"^^xsd:dateTime];
+  earl:mode earl:automatic ] .
+[ a earl:Assertion;
+  earl:assertedBy <https://github.com/JuPfu#me>;
+  earl:subject <https://github.com/JuPfu/chelona>;
+  earl:test <http://www.w3.org/2013/TrigTests/manifest.ttl#LITERAL_LONG2_with_REVERSE_SOLIDUS>;
+  earl:result [
+    a earl:TestResult;
+    earl:outcome earl:passed;
+    dc:date "2015-06-21T23:24:53.326"^^xsd:dateTime];
+  earl:mode earl:automatic ] .

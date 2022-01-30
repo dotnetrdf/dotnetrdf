@@ -1,0 +1,194 @@
+# Unapproved RDF Schema and Semantics tests
+## Distributed under both the W3C Test Suite License[1] and the W3C 3-
+## clause BSD License[2]. To contribute to a W3C Test Suite, see the
+## policies and contribution forms [3]
+##
+## 1. http://www.w3.org/Consortium/Legal/2008/04-testsuite-license
+## 2. http://www.w3.org/Consortium/Legal/2008/03-bsd-license
+## 3. http://www.w3.org/2004/10/27-testcases
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+<> rdf:type mf:Manifest ;
+  rdfs:label "Unapproved RDF Semantics tests" ;
+  mf:entries (
+    <#horst-complete-rules>
+    <#ill-formed-string>
+    <#inconsistent-recognizing-integer>
+    <#langstring-disjoint-string>
+    <#langstring-not-subclassof-string>
+    <#langstring>
+    <#manifest>
+    <#only-one-class>
+    <#only-one-property>
+    <#only-two-classes>
+    <#only-two-properties>
+    <#rdf11-tautology>
+    <#resource-is-literal>
+    <#same-as-one>
+    <#unrecognized-datatype001>
+    <#unrecognized-datatype002>
+    <#unrecognized-datatype003>
+    <#well-formed-html>
+  ) .
+
+<#ill-formed-string> a mf:PositiveEntailmentTest;
+  mf:name "ill-formed-string";
+  rdfs:comment """
+    XSD Strings do not allow the null code point \0000.
+  """;
+  mf:entailmentRegime "Simple" ;
+  mf:recognizedDatatypes ( xsd:string ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/ill-formed-string.ttl>;
+  mf:result false .
+
+<#well-formed-html> a mf:NegativeEntailmentTest;
+  mf:name "well-formed-html";
+  rdfs:comment """
+    rdf:HTML does allow the null code point \0000.
+  """;
+  mf:entailmentRegime "Simple" ;
+  mf:recognizedDatatypes ( rdf:HTML ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/well-formed-html.ttl>;
+  mf:result false .
+
+<#langstring-disjoint-string> a mf:PositiveEntailmentTest;
+  mf:name "langstring-disjoint-string";
+  rdfs:comment """
+    langStrings are not strings.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes ( xsd:string rdf:langString ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/langstring-disjoint-string.ttl>;
+  mf:result false .
+
+<#langstring-not-subclassof-string> a mf:PositiveEntailmentTest;
+  mf:name "langstring-not-subclassof-string";
+  rdfs:comment """
+    rdf:langString not a subclass of xsd:string.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes ( xsd:string rdf:langString ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/langstring-not-subclassof-string.ttl>;
+  mf:result false .
+
+<#unrecognized-datatype001> a mf:NegativeEntailmentTest;
+  mf:name "unrecognized-datatype001";
+  rdfs:comment """
+    Literals typed with unrecognized datatypes may denote anything, including another datatype's value.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes ( xsd:integer ) ;
+  mf:unrecognizedDatatypes ( ex:dt ) ;
+  mf:action <az-tests/unrecognized-datatype001.ttl>;
+  mf:result false .
+
+<#unrecognized-datatype002> a mf:NegativeEntailmentTest;
+  mf:name "unrecognized-datatype002";
+  rdfs:comment """
+    Unrecognized datatypes may denote anything.
+	Literals typed with unrecognized datatypes will not be inferred to be
+	member of the datatype.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes ( ) ;
+  mf:unrecognizedDatatypes ( ex:dt ) ;
+  mf:action <az-tests/unrecognized-datatype002.ttl>;
+  mf:result <az-tests/unrecognized-datatype003.ttl> .
+
+<#rdf11-tautology> a mf:PositiveEntailmentTest;
+  mf:name "rdf11-tautology";
+  rdfs:comment """
+    In RDF 1.1, all IRIs denote.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes ( ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <rdfms-seq-representation/empty.nt>;
+  mf:result <az-tests/rdf11-tautology.ttl> .
+
+<#langstring> a mf:PositiveEntailmentTest;
+  mf:name "langstring";
+  rdfs:comment """
+    Language-tagged strings are now typed with rdf:langString.
+  """;
+  mf:entailmentRegime "RDF" ;
+  mf:recognizedDatatypes ( rdf:langString ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/langstring001.ttl>;
+  mf:result <az-tests/langstring002.ttl> .
+
+<#horst-complete-rules> a mf:PositiveEntailmentTest;
+  mf:name "horst-complete-rules";
+  rdfs:comment """
+    Entailment that was not captured by the rules in RDF 1.0 Semantics.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes ( ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/horst-complete-rules001.ttl>;
+  mf:result <az-tests/horst-complete-rules002.ttl> .
+
+<#inconsistent-recognizing-integer> a mf:PositiveEntailmentTest;
+  mf:name "inconsistent-recognizing-integer";
+  rdfs:comment """
+    If everything is an integer and another datatype is recognized (such as xsd:string)
+	then there is an inconsistency.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes (  xsd:integer xsd:string ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/inconsistent-recognizing-integer.ttl>;
+  mf:result false .
+
+<#resource-is-literal> a mf:PositiveEntailmentTest;
+  mf:name "resource-is-literal";
+  rdfs:comment """
+    In RDF 1.1, all IRIs denote, so if something applies to all resources, it applies to all IRIs.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes (  ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/resource-is-literal001.ttl>;
+  mf:result <az-tests/resource-is-literal002.ttl> .
+
+<#only-one-property> a mf:PositiveEntailmentTest;
+  mf:name "only-one-property";
+  rdfs:comment """
+    This forces all interpretations to have only one property, which has strange consequences.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes (  xsd:nonNegativeInteger xsd:nonPositiveInteger ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/only-one-property.ttl>;
+  mf:result false .
+
+<#only-one-class> a mf:PositiveEntailmentTest;
+  mf:name "only-one-property";
+  rdfs:comment """
+    This forces all interpretations to have only one class, which has strange consequences.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes (  xsd:nonNegativeInteger xsd:nonPositiveInteger ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/only-one-class.ttl>;
+  mf:result false .
+
+<#same-as-one> a mf:PositiveEntailmentTest;
+  mf:name "same-as-one";
+  rdfs:comment """
+    This forces two names to denote the number 1, so everything that applies to one name applies to the other.
+  """;
+  mf:entailmentRegime "RDFS" ;
+  mf:recognizedDatatypes (  xsd:nonNegativeInteger xsd:nonPositiveInteger ) ;
+  mf:unrecognizedDatatypes ( ) ;
+  mf:action <az-tests/same-as-one001.nt>;
+  mf:result <az-tests/same-as-one002.nt> .

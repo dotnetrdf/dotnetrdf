@@ -1,0 +1,102 @@
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dawg:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix doap:    <http://usefulinc.com/ns/doap#> .
+@prefix manifest: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#> .
+
+<http://jena.apache.org/#arq>
+      rdf:type      earl:Software ;
+      rdf:type      doap:Project ;
+      dc:creator    _:person ;
+      dc:title      "ARQ" ;
+      dct:hasVersion  "2.9.3" ;
+      dct:isPartOf  [ foaf:homepage  <http://incubator.apache.org/jena>
+                    ] ;
+      doap:homepage  "http://incubator.apache.org/jena" ;
+      doap:maintainer  _:person ;
+      doap:name     "ARQ" ;
+      doap:release  [ rdf:type      doap:Version ;
+                      doap:created  "2012-08-06+01:00"^^xsd:date ;
+                      doap:name     "ARQ"
+                    ] ;
+      foaf:homepage  <http://incubator.apache.org/jena> .
+
+_:person
+      rdf:type      foaf:Person ;
+      foaf:homepage  <http://people.apache.org/~andy> ;
+      foaf:name     "Andy Seaborne" .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://jena.apache.org/#arq> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-08-06+01:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://jena.apache.org/#arq> ;
+      earl:test     manifest:service1 .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://jena.apache.org/#arq> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-08-06+01:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://jena.apache.org/#arq> ;
+      earl:test     manifest:service2 .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://jena.apache.org/#arq> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-08-06+01:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://jena.apache.org/#arq> ;
+      earl:test     manifest:service3 .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://jena.apache.org/#arq> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-08-06+01:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://jena.apache.org/#arq> ;
+      earl:test     manifest:service4a .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://jena.apache.org/#arq> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-08-06+01:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://jena.apache.org/#arq> ;
+      earl:test     manifest:service5 .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://jena.apache.org/#arq> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-08-06+01:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://jena.apache.org/#arq> ;
+      earl:test     manifest:service6 .
+
+[]    rdf:type      earl:Assertion ;
+      earl:assertedBy  <http://jena.apache.org/#arq> ;
+      earl:mode     earl:automatic ;
+      earl:result   [ rdf:type      earl:TestResult ;
+                      dc:date       "2012-08-06+01:00"^^xsd:date ;
+                      earl:outcome  earl:pass
+                    ] ;
+      earl:subject  <http://jena.apache.org/#arq> ;
+      earl:test     manifest:service7 .
+

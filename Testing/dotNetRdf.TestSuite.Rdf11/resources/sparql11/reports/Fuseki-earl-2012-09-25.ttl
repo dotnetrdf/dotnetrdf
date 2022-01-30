@@ -1,0 +1,347 @@
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dawg:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix doap:    <http://usefulinc.com/ns/doap#> .
+@prefix prot:    <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/protocol/manifest#> .
+
+<http://jena.apache.org/#fuseki>
+      rdf:type      earl:Software ;
+      rdf:type      doap:Project ;
+      dc:creator    _:b1 ;
+      dc:title      "Fuseki" ;
+      dct:hasVersion  "0.2.6" ;
+      dct:isPartOf  [ foaf:homepage  <http://jena.apache.org/>
+                    ] ;
+      doap:homepage  "http://jena.apache.org/" ;
+      doap:maintainer  _:b1 ;
+      doap:name     "Apache Jena Fuseki" ;
+      doap:release  [ rdf:type      doap:Version ;
+                      doap:created  "2012-10-01+00:00"^^xsd:date ;
+                      doap:name     "Apache Jena Fuseki"
+                    ] ;
+      foaf:homepage  <http://jena.apache.org/> .
+
+_:b1
+      rdf:type      foaf:Person ;
+      foaf:homepage  <http://people.apache.org/~andy> ;
+      foaf:name     "Andy Seaborne" .
+
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_post_form .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_dataset_default_graphs_post .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_dataset_named_graphs_post .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_dataset_named_graphs_get .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_dataset_full .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_multiple_dataset .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_get .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_content_type_select .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_content_type_ask .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_content_type_describe .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_content_type_construct .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:update_dataset_default_graph .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:update_dataset_default_graphs .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:update_dataset_named_graphs .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:update_dataset_full .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:update_post_form .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:update_post_direct .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_post_direct .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:update_base_uri .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_query_method .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_multiple_queries .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_query_wrong_media_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_query_missing_form_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_query_missing_direct_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_query_non_utf8 .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_query_syntax .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_update_get .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_multiple_updates .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_dataset_default_graph .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_update_wrong_media_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_update_missing_form_type .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_update_non_utf8 .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_update_syntax .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:bad_update_dataset_conflict .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/protocol_validator#validator> ;
+	earl:result [
+		earl:outcome earl:pass ;
+		dc:date "2012-09-25T15:15:15Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://jena.apache.org/#fuseki> ;
+	earl:test prot:query_dataset_default_graphs_get .

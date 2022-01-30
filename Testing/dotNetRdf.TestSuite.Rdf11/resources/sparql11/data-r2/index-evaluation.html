@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang='en' prefix='mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# qt:     http://www.w3.org/2001/sw/DataAccess/tests/test-query# dawgt:   http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body: {bacground-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 110px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      SPARQL Query Evaluation tests
+    </title>
+    <style>
+      em.rfc2119 { 
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>SPARQL Query Evaluation tests</h1>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        
+      </p>
+      <p>This page describes W3C SPARQL Working Group&#39;s SPARQL1.0 test suite.</p>
+      
+      <h3>Contributing Tests</h3>
+      
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      
+      <h3>Distribution</h3>
+      
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      
+      <h3>Disclaimer</h3>
+      
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot; AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Referenced Manifests
+      </h2>
+      <ul>
+        <li>
+          <a href='algebra/index.html' inlist property='mf:include'>algebra/</a>
+        </li>
+        <li>
+          <a href='ask/index.html' inlist property='mf:include'>ask/</a>
+        </li>
+        <li>
+          <a href='basic/index.html' inlist property='mf:include'>basic/</a>
+        </li>
+        <li>
+          <a href='bnode-coreference/index.html' inlist property='mf:include'>bnode-coreference/</a>
+        </li>
+        <li>
+          <a href='boolean-effective-value/index.html' inlist property='mf:include'>boolean-effective-value/</a>
+        </li>
+        <li>
+          <a href='bound/index.html' inlist property='mf:include'>bound/</a>
+        </li>
+        <li>
+          <a href='cast/index.html' inlist property='mf:include'>cast/</a>
+        </li>
+        <li>
+          <a href='construct/index.html' inlist property='mf:include'>construct/</a>
+        </li>
+        <li>
+          <a href='dataset/index.html' inlist property='mf:include'>dataset/</a>
+        </li>
+        <li>
+          <a href='distinct/index.html' inlist property='mf:include'>distinct/</a>
+        </li>
+        <li>
+          <a href='expr-builtin/index.html' inlist property='mf:include'>expr-builtin/</a>
+        </li>
+        <li>
+          <a href='expr-equals/index.html' inlist property='mf:include'>expr-equals/</a>
+        </li>
+        <li>
+          <a href='expr-ops/index.html' inlist property='mf:include'>expr-ops/</a>
+        </li>
+        <li>
+          <a href='graph/index.html' inlist property='mf:include'>graph/</a>
+        </li>
+        <li>
+          <a href='i18n/index.html' inlist property='mf:include'>i18n/</a>
+        </li>
+        <li>
+          <a href='open-world/index.html' inlist property='mf:include'>open-world/</a>
+        </li>
+        <li>
+          <a href='optional-filter/index.html' inlist property='mf:include'>optional-filter/</a>
+        </li>
+        <li>
+          <a href='optional/index.html' inlist property='mf:include'>optional/</a>
+        </li>
+        <li>
+          <a href='reduced/index.html' inlist property='mf:include'>reduced/</a>
+        </li>
+        <li>
+          <a href='regex/index.html' inlist property='mf:include'>regex/</a>
+        </li>
+        <li>
+          <a href='solution-seq/index.html' inlist property='mf:include'>solution-seq/</a>
+        </li>
+        <li>
+          <a href='sort/index.html' inlist property='mf:include'>sort/</a>
+        </li>
+        <li>
+          <a href='triple-match/index.html' inlist property='mf:include'>triple-match/</a>
+        </li>
+        <li>
+          <a href='type-promotion/index.html' inlist property='mf:include'>type-promotion/</a>
+        </li>
+      </ul>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

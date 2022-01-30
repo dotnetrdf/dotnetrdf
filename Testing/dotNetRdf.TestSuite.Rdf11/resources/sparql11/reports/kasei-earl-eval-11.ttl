@@ -1,0 +1,2296 @@
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+@prefix earl: <http://www.w3.org/ns/earl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xml: <http://www.w3.org/XML/1998/namespace>.
+@prefix rdfquery: <http://kasei.us/code/rdf-query/#>.
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+
+<> foaf:primaryTopic rdfquery:project ;
+	dct:issued "2012-11-09T18:58:00Z"^^xsd:dateTime ;
+	foaf:maker <http://kasei.us/about/foaf.xrdf#greg> ;
+	.
+
+rdfquery:project
+	a doap:Project ;
+	doap:name "RDF::Query" ;
+	doap:homepage <http://metacpan.org/dist/RDF-Query/> .
+
+<http://kasei.us/about/foaf.xrdf#greg> a foaf:Person ;
+	foaf:name "Gregory Todd Williams" ;
+	foaf:mbox <mailto:gwilliams@cpan.org> ;
+	foaf:mbox_sha1sum "f80a0f19d2a0897b89f48647b2fb5ca1f0bc1cb8" ;
+	foaf:homepage <http://kasei.us/> .
+
+rdfquery:dawg-harness
+	a earl:Software ;
+	dct:title "RDF::Query DAWG test harness" ;
+	foaf:maker <http://kasei.us/about/foaf.xrdf#greg> .
+
+
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-data-spo1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-data-spo-named1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-data-spo-named2> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-data-spo-named3> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-where-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-where-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-where-03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-where-04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-using-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-05a> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-data-same-bnode> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-where-same-bnode> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/basic-update/manifest#insert-where-same-bnode2> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-where/manifest#dawg-delete-where-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-where/manifest#dawg-delete-where-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-where/manifest#dawg-delete-where-03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-where/manifest#dawg-delete-where-04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-where/manifest#dawg-delete-where-05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-where/manifest#dawg-delete-where-06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#values1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#values2> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#values3> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#values4> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#values5> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#values6> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#values7> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#values8> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#inline1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#inline2> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-by-exclusion-nex-1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-by-exclusion-minus-1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#temporal-proximity-by-exclusion-nex-1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#set-equals-1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#exists-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#exists-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#full-minuend> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#partial-minuend> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg07> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg08b> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-groupconcat-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-groupconcat-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-groupconcat-03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-sum-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-sum-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-avg-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-avg-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-min-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-min-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-max-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-max-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-sample-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-err-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-err-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-empty-group2> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind07> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind08> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind10> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind11> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-data/manifest#dawg-delete-data-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-data/manifest#dawg-delete-data-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-data/manifest#dawg-delete-data-03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-data/manifest#dawg-delete-data-04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-data/manifest#dawg-delete-data-05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-data/manifest#dawg-delete-data-06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/clear/manifest#dawg-clear-default-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/clear/manifest#dawg-clear-graph-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/clear/manifest#dawg-clear-named-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/clear/manifest#dawg-clear-all-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery07> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery08> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery09> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery10> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery11> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery12> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery13> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery14> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp07> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-07> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-with-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-with-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-with-03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-with-04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-with-05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-with-06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-using-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-using-02a> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-using-03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-using-04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-using-05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete/manifest#dawg-delete-using-06a> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-insert/manifest#dawg-delete-insert-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-insert/manifest#dawg-delete-insert-01b> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-insert/manifest#dawg-delete-insert-01c> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-insert/manifest#dawg-delete-insert-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-insert/manifest#dawg-delete-insert-04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-insert/manifest#dawg-delete-insert-04b> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-insert/manifest#dawg-delete-insert-05b> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/delete-insert/manifest#dawg-delete-insert-06b> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp07> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp08> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp09> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp10> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp11> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp12> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp14> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp16> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp21> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp23> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp25> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp28a> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp30> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp31> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp32> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp33> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp34> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp35> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp36> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp37> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/move/manifest#move01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/move/manifest#move02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/move/manifest#move03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/move/manifest#move04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/move/manifest#move06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/move/manifest#move07> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/copy/manifest#copy01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/copy/manifest#copy02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/copy/manifest#copy03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/copy/manifest#copy04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/copy/manifest#copy06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/copy/manifest#copy07> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/add/manifest#add01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/add/manifest#add02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/add/manifest#add03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/add/manifest#add04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/add/manifest#add05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/add/manifest#add06> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/add/manifest#add07> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/add/manifest#add08> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-default-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-graph-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-named-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/drop/manifest#dawg-drop-all-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#csv01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#tsv01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#csv02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#tsv02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#csv03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#tsv03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#load-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#load-into-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#clear-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#clear-default-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#create-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#drop-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#drop-default-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#copy-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#copy-to-default-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#move-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#move-to-default-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#add-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/update-silent/manifest#add-to-default-silent> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group04> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group05> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service2> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service3> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service4a> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service5> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service6> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service/manifest#service7> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strdt01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strdt02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strdt03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strlang01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strlang02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strlang03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#isnumeric01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#abs01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#ceil01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#floor01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#round01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#concat01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#concat02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#substring01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#substring02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#length01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#ucase01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#lcase01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#encode01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#contains01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#starts01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#ends01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#plus-1> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#plus-2> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#md5-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#md5-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha1-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha1-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha256-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha256-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha512-01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha512-02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#minutes> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#seconds> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#hours> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#month> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#year> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#day> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#timezone> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#tz> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#bnode01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#bnode02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#in01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#in02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#notin01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#notin02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#now01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#rand01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#iri01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#if01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#if02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#coalesce01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strbefore01a> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strbefore02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strafter01a> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strafter02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#replace01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#replace02> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#replace03> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#uuid01> .
+[] a earl:Assertion;
+	earl:assertedBy rdfquery:dawg-harness ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed
+	] ;
+	earl:subject rdfquery:project ;
+	earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#struuid01> .

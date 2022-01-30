@@ -1,0 +1,5 @@
+---
+:format: :json
+:manifest: http://www.w3.org/2013/N-QuadsTests/manifest.ttl
+:bibRef: ! '[[N-QUADS]]'
+:name: N-Quads

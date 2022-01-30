@@ -1,0 +1,3390 @@
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+<> a earl:Software, doap:Project;
+  doap:name "N-Quads";
+  dc:bibliographicCitation "[[N-QUADS]]";
+  earl:generatedBy <http://rubygems.org/gems/earl-report>;
+  earl:assertions
+    <Apache-Jena-nquads-earl-2013-11-23.ttl>,
+    <RIOT-jena-details.ttl>,
+    <n3js-earl-report-nquads.ttl>,
+    <raptor2012-earl-nquads.ttl>,
+    <rdf.rb-earl-2013-11-24.ttl>,
+    <rdflib_nquads-2013-12-22T19-22-34.ttl>;
+  earl:testSubjects (
+    <http://jena.apache.org/#riot>
+    <http://librdf.org/raptor/>
+    <http://rubygems.org/gems/rdf>
+    <https://github.com/RDFLib/rdflib>
+    <https://github.com/RubenVerborgh/N3.js#n3js>);
+  mf:entries (
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl>) .
+    
+
+<http://rubygems.org/gems/earl-report> a earl:Software, doap:Project;
+  doap:name "earl-report";
+  doap:shortdesc "Earl Report summary generator"@en;
+  doap:description "EarlReport generates HTML+RDFa rollups of multiple EARL reports"@en;
+  doap:homepage <https://github.com/gkellogg/earl-report>;
+  doap:programming-language "Ruby";
+  doap:license <http://unlicense.org>;
+  doap:release <https://github.com/gkellogg/earl-report/tree/0.3.4>;
+  doap:developer <http://greggkellogg.net/foaf#me> .
+
+    
+
+# Manifests
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl> a earl:Report, mf:Manifest;
+  dc:title "N-Quads tests";
+  mf:name "N-Quads tests";
+  mf:entries (
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-04>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-05>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-06>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-04>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-05>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-06>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-uri-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-quint-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-04>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-04>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-05>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-06>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-07>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-08>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-09>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-prefix-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-base-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-lang-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-04>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-05>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-06>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-07>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-02>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-03>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-subm-01>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#comment_following_triple>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_controls>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_punctuation>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_ascii_boundaries>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_dquotes>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_squotes>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_BACKSPACE>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CARRIAGE_RETURN>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CHARACTER_TABULATION>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_dquote>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_FORM_FEED>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_LINE_FEED>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape4>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape8>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS2>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_squote>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_UTF8_boundaries>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#langtagged_string>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#lantag_with_subtag>
+    <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#minimal_whitespace>) .
+
+#
+# Subject Definitions
+#
+<http://jena.apache.org/#riot> a earl:TestSubject, doap:Project;
+  doap:name "Apache Jena";
+  doap:description "Apache Jena provides a complete framework for building Semantic Web and Linked Data applications in Java, and provides: parsers for RDF/XML, Turtle and N-triples; a Java programming API; a complete implementation of the SPARQL query language; a rule-based inference engine for RDFS and OWL entailments; TDB (a non-SQL persistent triple store); SDB (a persistent triples store built on a relational store) and Fuseki, an RDF server using web protocols. Jena complies with all relevant recommendations for RDF and related technologies from the W3C."@en;
+  doap:programming-language "Java";
+ .
+
+<http://jena.apache.org/#riot> doap:developer
+   [ a foaf:Person;
+     foaf:name "Rob Vesse" ] .
+
+<http://jena.apache.org/#riot> doap:developer
+   [ a foaf:Person;
+     foaf:name "Paolo Castagna" ] .
+
+<http://jena.apache.org/#riot> doap:developer
+   [ a foaf:Person;
+     foaf:name "Chris Dollin" ] .
+
+<http://jena.apache.org/#riot> doap:developer
+   [ a foaf:Person;
+     foaf:name "Stephen Allen" ] .
+
+<http://jena.apache.org/#riot> doap:developer
+   [ a foaf:Person;
+     foaf:name "Ian Dickinson" ] .
+
+<http://jena.apache.org/#riot> doap:developer
+   [ a foaf:Person;
+     foaf:name "Damian Steer" ] .
+
+<http://jena.apache.org/#riot> doap:developer
+   [ a foaf:Person;
+     foaf:name "Andy Seaborne" ] .
+
+<http://jena.apache.org/#riot> doap:developer
+   [ a foaf:Person;
+     foaf:name "Claude Warren" ] .
+
+<http://jena.apache.org/#riot> doap:developer
+   [ a foaf:Person;
+     foaf:name "Dave Reynolds" ] .
+
+
+<http://librdf.org/raptor/> a earl:TestSubject, doap:Project;
+  doap:name "Raptor";
+  doap:programming-language "C";
+ .
+
+<http://librdf.org/raptor/> doap:developer <http://www.dajobe.org/#me> .
+
+<http://www.dajobe.org/#me> a foaf:Person;
+  foaf:homepage <http://www.dajobe.org/>;
+  foaf:name "Dave Beckett" .
+
+
+<http://rubygems.org/gems/rdf> a earl:TestSubject, doap:Project;
+  doap:name "RDF.rb";
+  doap:description "RDF.rb is a pure-Ruby library for working with Resource Description Framework (RDF) data."@en;
+ .
+
+<http://rubygems.org/gems/rdf> doap:developer <http://ar.to/#self> .
+
+<http://ar.to/#self> a foaf:Person;
+  foaf:homepage <http://ar.to/>;
+  foaf:name "Arto Bendiken" .
+
+<http://rubygems.org/gems/rdf> doap:developer <http://bhuga.net/#ben> .
+
+<http://bhuga.net/#ben> a foaf:Person;
+  foaf:homepage <http://bhuga.net/>;
+  foaf:name "Ben Lavender" .
+
+<http://rubygems.org/gems/rdf> doap:developer <http://greggkellogg.net/foaf#me> .
+
+<http://greggkellogg.net/foaf#me> a foaf:Person;
+  foaf:homepage <http://greggkellogg.net/>;
+  foaf:name "Gregg Kellogg" .
+
+
+<https://github.com/RDFLib/rdflib> a earl:TestSubject, doap:Project;
+  doap:name "rdflib";
+ .
+
+<https://github.com/RDFLib/rdflib> doap:developer <http://gromgull.net/me> .
+
+<http://gromgull.net/me> a foaf:Person;
+  foaf:homepage <http://gromgull.net>;
+  foaf:name "Gunnar Aastrand Grimnes" .
+
+
+<https://github.com/RubenVerborgh/N3.js#n3js> a earl:TestSubject, doap:Project;
+  doap:name "N3.js";
+  doap:description "N3.js is an asynchronous, streaming RDF parser for JavaScript."@en;
+  doap:programming-language "JavaScript";
+ .
+
+<https://github.com/RubenVerborgh/N3.js#n3js> doap:developer <http://ruben.verborgh.org/#me> .
+
+<http://ruben.verborgh.org/#me> a foaf:Person;
+  foaf:homepage <http://ruben.verborgh.org/>;
+  foaf:name "Ruben Verborgh" .
+
+
+#
+# Test Case Definitions
+#
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-uri-01";
+  dc:description "URI graph with URI triple"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-uri-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-uri-02";
+  dc:description "URI graph with BNode subject"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-uri-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-uri-03";
+  dc:description "URI graph with BNode object"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-uri-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-04> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-uri-04";
+  dc:description "URI graph with simple literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-uri-04.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-04>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-04>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-04>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-04>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-04>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-05> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-uri-05";
+  dc:description "URI graph with language tagged literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-uri-05.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-05>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-05>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-05>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-05>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-05>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-06> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-uri-06";
+  dc:description "URI graph with datatyped literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-uri-06.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-06>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-06>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-06>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-06>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-uri-06>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bnode-01";
+  dc:description "BNode graph with URI triple"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bnode-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bnode-02";
+  dc:description "BNode graph with BNode subject"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bnode-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bnode-03";
+  dc:description "BNode graph with BNode object"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bnode-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-04> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bnode-04";
+  dc:description "BNode graph with simple literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bnode-04.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-04>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-04>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-04>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-04>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-04>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-05> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bnode-05";
+  dc:description "BNode graph with language tagged literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bnode-05.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-05>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-05>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-05>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-05>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-05>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-06> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bnode-06";
+  dc:description "BNode graph with datatyped literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bnode-06.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-06>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-06>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-06>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-06>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bnode-06>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bad-literal-01";
+  dc:description "Graph name may not be a simple literal (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bad-literal-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bad-literal-02";
+  dc:description "Graph name may not be a language tagged literal (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bad-literal-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bad-literal-03";
+  dc:description "Graph name may not be a datatyped literal (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bad-literal-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-literal-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-uri-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bad-uri-01";
+  dc:description "Graph name URI must be absolute (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bad-uri-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-uri-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-uri-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-uri-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-uri-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-uri-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-quint-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nq-syntax-bad-quint-01";
+  dc:description "N-Quads does not have a fifth element (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nq-syntax-bad-quint-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-quint-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-quint-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-quint-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-quint-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nq-syntax-bad-quint-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-file-01";
+  dc:description "Empty file"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-file-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-file-02";
+  dc:description "Only comment"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-file-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-file-03";
+  dc:description "One comment, one empty line"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-file-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-file-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-uri-01";
+  dc:description "Only IRIs"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-uri-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-uri-02";
+  dc:description "IRIs with Unicode escape"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-uri-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-uri-03";
+  dc:description "IRIs with long Unicode escape"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-uri-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-04> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-uri-04";
+  dc:description "Legal IRIs"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-uri-04.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-04>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-04>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-04>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-04>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-uri-04>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-string-01";
+  dc:description "string literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-string-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-string-02";
+  dc:description "langString literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-string-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-string-03";
+  dc:description "langString literal with region"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-string-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-string-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-str-esc-01";
+  dc:description "string literal with escaped newline"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-str-esc-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-str-esc-02";
+  dc:description "string literal with Unicode escape"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-str-esc-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-str-esc-03";
+  dc:description "string literal with long Unicode escape"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-str-esc-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-str-esc-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bnode-01";
+  dc:description "bnode subject"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bnode-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bnode-02";
+  dc:description "bnode object"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bnode-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bnode-03";
+  dc:description "Blank node labels may start with a digit"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bnode-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bnode-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-datatypes-01";
+  dc:description "xsd:byte literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-datatypes-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-datatypes-02";
+  dc:description "integer as xsd:string"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-datatypes-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-datatypes-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-uri-01";
+  dc:description "Bad IRI : space (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-uri-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-uri-02";
+  dc:description "Bad IRI : bad escape (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-uri-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-uri-03";
+  dc:description "Bad IRI : bad long escape (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-uri-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-04> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-uri-04";
+  dc:description "Bad IRI : character escapes not allowed (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-uri-04.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-04>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-04>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-04>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-04>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-04>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-05> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-uri-05";
+  dc:description "Bad IRI : character escapes not allowed (2) (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-uri-05.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-05>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-05>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-05>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-05>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-05>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-06> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-uri-06";
+  dc:description "Bad IRI : relative IRI not allowed in subject (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-uri-06.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-06>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-06>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-06>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-06>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-06>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-07> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-uri-07";
+  dc:description "Bad IRI : relative IRI not allowed in predicate (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-uri-07.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-07>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-07>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-07>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-07>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-07>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-08> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-uri-08";
+  dc:description "Bad IRI : relative IRI not allowed in object (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-uri-08.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-08>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-08>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-08>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-08>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-08>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-09> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-uri-09";
+  dc:description "Bad IRI : relative IRI not allowed in datatype (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-uri-09.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-09>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-09>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-09>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-09>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-uri-09>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-prefix-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-prefix-01";
+  dc:description "@prefix not allowed in n-triples (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-prefix-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-prefix-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-prefix-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-prefix-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-prefix-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-prefix-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-base-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-base-01";
+  dc:description "@base not allowed in N-Triples (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-base-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-base-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-base-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-base-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-base-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-base-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-struct-01";
+  dc:description "N-Triples does not have objectList (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-struct-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-struct-02";
+  dc:description "N-Triples does not have predicateObjectList (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-struct-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-struct-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-lang-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-lang-01";
+  dc:description "langString with bad lang (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-lang-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-lang-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-lang-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-lang-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-lang-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-lang-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-esc-01";
+  dc:description "Bad string escape (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-esc-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-esc-02";
+  dc:description "Bad string escape (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-esc-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-esc-03";
+  dc:description "Bad string escape (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-esc-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-esc-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-string-01";
+  dc:description "mismatching string literal open/close (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-string-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-string-02";
+  dc:description "mismatching string literal open/close (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-string-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-string-03";
+  dc:description "single quotes (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-string-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-04> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-string-04";
+  dc:description "long single string literal (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-string-04.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-04>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-04>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-04>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-04>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-04>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-05> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-string-05";
+  dc:description "long double string literal (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-string-05.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-05>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-05>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-05>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-05>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-05>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-06> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-string-06";
+  dc:description "string literal with no end (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-string-06.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-06>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-06>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-06>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-06>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-06>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-07> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-string-07";
+  dc:description "string literal with no start (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-string-07.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-07>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-07>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-07>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-07>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-string-07>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-num-01";
+  dc:description "no numbers in N-Triples (integer) (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-num-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-02> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-num-02";
+  dc:description "no numbers in N-Triples (decimal) (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-num-02.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-02>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-02>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-02>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-02>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-02>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-03> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-bad-num-03";
+  dc:description "no numbers in N-Triples (float) (negative test)"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-bad-num-03.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-03>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-03>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-03>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-03>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-bad-num-03>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-subm-01> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "nt-syntax-subm-01";
+  dc:description "Submission test from Original RDF Test Cases"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/nt-syntax-subm-01.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-subm-01>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-subm-01>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-subm-01>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-subm-01>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#nt-syntax-subm-01>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#comment_following_triple> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "comment_following_triple";
+  dc:description "Tests comments after a triple"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/comment_following_triple.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#comment_following_triple>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#comment_following_triple>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#comment_following_triple>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#comment_following_triple>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#comment_following_triple>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal";
+  dc:description "literal \"\"\"x\"\"\""@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_controls> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_all_controls";
+  dc:description "literal_all_controls '\\x00\\x01\\x02\\x03\\x04...'"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_all_controls.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_controls>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_controls>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_controls>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_controls>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_controls>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_punctuation> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_all_punctuation";
+  dc:description "literal_all_punctuation '!\"#$%&()...'"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_all_punctuation.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_punctuation>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_punctuation>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_punctuation>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_punctuation>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_all_punctuation>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_ascii_boundaries> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_ascii_boundaries";
+  dc:description "literal_ascii_boundaries '\\x00\\x26\\x28...'"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_ascii_boundaries.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_ascii_boundaries>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_ascii_boundaries>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_ascii_boundaries>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_ascii_boundaries>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_ascii_boundaries>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_dquotes> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_2_dquotes";
+  dc:description "literal with 2 squotes \"\"\"a\"\"b\"\"\""@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_2_dquotes.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_dquotes>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_dquotes>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_dquotes>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_dquotes>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_dquotes>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_squotes> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_2_squotes";
+  dc:description "literal with 2 squotes \"x''y\""@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_2_squotes.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_squotes>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_squotes>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_squotes>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_squotes>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_2_squotes>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_BACKSPACE> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_BACKSPACE";
+  dc:description "literal with BACKSPACE"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_BACKSPACE.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_BACKSPACE>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_BACKSPACE>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_BACKSPACE>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_BACKSPACE>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_BACKSPACE>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CARRIAGE_RETURN> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_CARRIAGE_RETURN";
+  dc:description "literal with CARRIAGE RETURN"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_CARRIAGE_RETURN.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CARRIAGE_RETURN>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CARRIAGE_RETURN>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CARRIAGE_RETURN>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CARRIAGE_RETURN>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CARRIAGE_RETURN>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CHARACTER_TABULATION> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_CHARACTER_TABULATION";
+  dc:description "literal with CHARACTER TABULATION"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_CHARACTER_TABULATION.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CHARACTER_TABULATION>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CHARACTER_TABULATION>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CHARACTER_TABULATION>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CHARACTER_TABULATION>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_CHARACTER_TABULATION>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_dquote> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_dquote";
+  dc:description "literal with dquote \"x\"y\""@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_dquote.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_dquote>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_dquote>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_dquote>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_dquote>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_dquote>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_FORM_FEED> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_FORM_FEED";
+  dc:description "literal with FORM FEED"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_FORM_FEED.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_FORM_FEED>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_FORM_FEED>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_FORM_FEED>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_FORM_FEED>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_FORM_FEED>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_LINE_FEED> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_LINE_FEED";
+  dc:description "literal with LINE FEED"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_LINE_FEED.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_LINE_FEED>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_LINE_FEED>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_LINE_FEED>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_LINE_FEED>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_LINE_FEED>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape4> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_numeric_escape4";
+  dc:description "literal with numeric escape4 \\u"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_numeric_escape4.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape4>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape4>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape4>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape4>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape4>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape8> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_numeric_escape8";
+  dc:description "literal with numeric escape8 \\U"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_numeric_escape8.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape8>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape8>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape8>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape8>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_numeric_escape8>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_REVERSE_SOLIDUS";
+  dc:description "literal with REVERSE SOLIDUS"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_REVERSE_SOLIDUS.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS2> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_REVERSE_SOLIDUS2";
+  dc:description "REVERSE SOLIDUS at end of literal"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_REVERSE_SOLIDUS2.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS2>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS2>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS2>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS2>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_REVERSE_SOLIDUS2>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_squote> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_squote";
+  dc:description "literal with squote \"x'y\""@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_squote.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_squote>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_squote>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_squote>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_squote>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_squote>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_UTF8_boundaries> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "literal_with_UTF8_boundaries";
+  dc:description "literal_with_UTF8_boundaries '\\x80\\x7ff\\x800\\xfff...'"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/literal_with_UTF8_boundaries.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_UTF8_boundaries>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_UTF8_boundaries>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_UTF8_boundaries>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_UTF8_boundaries>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#literal_with_UTF8_boundaries>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#langtagged_string> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "langtagged_string";
+  dc:description "langtagged string \"x\"@en"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/langtagged_string.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#langtagged_string>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#langtagged_string>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#langtagged_string>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#langtagged_string>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#langtagged_string>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#lantag_with_subtag> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "lantag_with_subtag";
+  dc:description "lantag with subtag \"x\"@en-us"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/lantag_with_subtag.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#lantag_with_subtag>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#lantag_with_subtag>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#lantag_with_subtag>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#lantag_with_subtag>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#lantag_with_subtag>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/N-QuadsTests/manifest.ttl#minimal_whitespace> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/ns/earl#TestCase>;
+  dc:title "minimal_whitespace";
+  dc:description "tests absense of whitespace between subject, predicate, object and end-of-statement"@en;
+  mf:action <http://www.w3.org/2013/N-QuadsTests/minimal_whitespace.nq>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://jena.apache.org/#riot>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#minimal_whitespace>;
+      earl:subject <http://jena.apache.org/#riot>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www.dajobe.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#minimal_whitespace>;
+      earl:subject <http://librdf.org/raptor/>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://greggkellogg.net/foaf#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#minimal_whitespace>;
+      earl:subject <http://rubygems.org/gems/rdf>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://gromgull.net/me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#minimal_whitespace>;
+      earl:subject <https://github.com/RDFLib/rdflib>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://ruben.verborgh.org/#me>;
+      earl:test <http://www.w3.org/2013/N-QuadsTests/manifest.ttl#minimal_whitespace>;
+      earl:subject <https://github.com/RubenVerborgh/N3.js#n3js>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+

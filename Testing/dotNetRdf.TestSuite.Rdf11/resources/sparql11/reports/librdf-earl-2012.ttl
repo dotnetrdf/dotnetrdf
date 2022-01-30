@@ -1,0 +1,3122 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dawgt: <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix qt: <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<http://librdf.org/rasqal/>
+    doap:homepage <http://librdf.org/rasqal/> ;
+    doap:name "Rasqal" ;
+    doap:release [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ], [
+        doap:created "2012-05-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+        doap:name "Rasqal 0.9.29" ;
+        a doap:Version
+    ] ;
+    a doap:Project .
+
+_:r1336968566r10066r1
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r1 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group05> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strdt03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strlang03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#ceil01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#floor01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#round01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#concat02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#substring01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#substring02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#length01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r1 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group06> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#ucase01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#lcase01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#encode01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#plus-1> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#plus-2> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha1-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha256-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha512-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#seconds> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#timezone> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r1 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group07> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#iri01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#if01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strbefore01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strafter01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#replace01> .
+
+_:r1336968566r10066r15
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#replace03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strdt01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strdt02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strlang01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#strlang02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#isnumeric01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#abs01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#concat01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#contains01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#starts01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#ends01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#md5-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#md5-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha1-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha256-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r15 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#sha512-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#minutes> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#hours> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#month> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#year> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#day> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#tz> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#bnode01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#bnode02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#in01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r15 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#in02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#notin01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#notin02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#now01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#rand01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#if02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#coalesce01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r99 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/functions/manifest#replace02> .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r15 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists03> .
+
+_:r1336968566r10066r221
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r221 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#csv01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r221 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#csv02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r221 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#csv03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r221 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#tsv03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r221 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#tsv01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r221 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#tsv02> .
+
+_:r1336968566r10066r235
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_24> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r15 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists04> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_25> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_26> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_27> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_28> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_29> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_35> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_36> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_37> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_1> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_2> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r15 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists05> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_3> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_4> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_5> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_6> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_7> .
+
+_:r1336968566r10066r27
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_8> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_9> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_10> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_11> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_12> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_13> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_14> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_15> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_16> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_17> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_18> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_19> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_20> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_21> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_22> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_23> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_30> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_31> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_32> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_33> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_34> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_38> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_39> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_40> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_41> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_42> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_43> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_44> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_45> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_46> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_47> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_48> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_49> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_50> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r235 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_51> .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp03> .
+
+_:r1336968566r10066r341
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r341 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r341 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r341 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r341 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#jsonres04> .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+_:r1336968566r10066r355
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg08b> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp06> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-groupconcat-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-min-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg04> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg05> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg06> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg07> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg08> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp07> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg09> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg10> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg11> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg12> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-groupconcat-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-groupconcat-03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-sum-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-sum-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-avg-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-avg-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r1 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group04> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp08> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-min-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-max-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-max-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-sample-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-err-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r355 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-err-02> .
+
+_:r1336968566r10066r411
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_25> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_27> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_28> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp09> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_31> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_32> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_38> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_39> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_40> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_1> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_2> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_3> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_4> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_5> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp10> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_6> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_7> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_8> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_9> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_10> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_11> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_12> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_13> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_14> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_15> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp11> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_16> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_17> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_18> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_19> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_20> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_21> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_22> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_23> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_24> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_26> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp14> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_29> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_30> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_33> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_34> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_35> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_36> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_37> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_41> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_42> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_43> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp28> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_44> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_45> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_46> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_47> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_48> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_49> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_50> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_51> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r411 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-1/manifest#test_52> .
+
+_:r1336968566r10066r517
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp30> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r517 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-by-exclusion-nex-1> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r517 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-by-exclusion-minus-1> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r517 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#temporal-proximity-by-exclusion-nex-1> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r517 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r517 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r517 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#set-equals-1> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r517 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#subset-03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r517 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#exists-01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r517 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#exists-02> .
+
+_:r1336968566r10066r537
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp31> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r537 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#b1> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r537 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#b2> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r537 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#b3> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r537 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#b4> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r537 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#b5> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r537 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#b6> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r537 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#b7> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r537 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#b8> .
+
+_:r1336968566r10066r555
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r555 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-fed/manifest#test_1> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp32> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r555 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-fed/manifest#test_2> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r555 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-fed/manifest#test_3> .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+_:r1336968566r10066r569
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind07> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp33> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind04> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind05> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind06> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind08> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind10> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r569 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind11> .
+
+_:r1336968566r10066r591
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r591 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r591 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r591 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r1 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp34> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r591 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere04> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r591 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere05> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r591 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/construct/manifest#constructwhere06> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy [
+        a <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+        <http://xmlns.com/foaf/0.1/name> "Dave Beckett"
+    ] ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-update-2/manifest#syntax-update-other-01> .
+
+_:r1336968566r10066r609
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r609 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r609 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r609 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r609 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp04> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r27 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/property-path/manifest#pp35> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r609 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp05> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r609 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp06> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r609 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/project-expression/manifest#projexp07> .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+_:r1336968566r10066r69
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery02> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:fail
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery10> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery01> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r1 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/grouping/manifest#group03> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery04> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery05> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery06> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery07> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery08> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery09> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery11> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery12> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery13> .
+
+[]
+    a earl:Assertion ;
+    earl:assertedBy _:r1336968566r10066r69 ;
+    earl:result [
+        a earl:TestResult ;
+        earl:outcome earl:pass
+    ] ;
+    earl:subject <http://librdf.org/rasqal/> ;
+    earl:test <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery14> .
+
+_:r1336968566r10066r99
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://xmlns.com/foaf/0.1/homepage> <http://www.dajobe.org/> ;
+    <http://xmlns.com/foaf/0.1/name> "Dave Beckett" .
+

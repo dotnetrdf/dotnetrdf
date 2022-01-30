@@ -1,0 +1,1 @@
+<http://www.w3.org/2000/01/rdf-schema#Resource> <http://www.w3.org/2000/01/rdf-schema#subClassOf> "a" .

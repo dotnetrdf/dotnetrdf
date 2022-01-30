@@ -1,0 +1,233 @@
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dawg:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix doap:    <http://usefulinc.com/ns/doap#> .
+@prefix gsp:     <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/http-rdf-update/manifest#> .
+@prefix validator: <http://metacognition.info/gsp_validation/> .
+
+<http://jena.apache.org/#fuseki>
+      rdf:type      earl:Software ;
+      rdf:type      doap:Project ;
+      dc:creator    _:b1 ;
+      dc:title      "Fuseki" ;
+      dct:hasVersion  "0.2.6" ;
+      dct:isPartOf  [ foaf:homepage  <http://jena.apache.org/>
+                    ] ;
+      doap:homepage  "http://jena.apache.org/" ;
+      doap:maintainer  _:b1 ;
+      doap:name     "Apache Jena Fuseki" ;
+      doap:release  [ rdf:type      doap:Version ;
+                      doap:created  "2012-10-01+00:00"^^xsd:date ;
+                      doap:name     "Apache Jena Fuseki"
+                    ] ;
+      foaf:homepage  <http://jena.apache.org/> .
+
+_:b1
+      rdf:type      foaf:Person ;
+      foaf:homepage  <http://people.apache.org/~andy> ;
+      foaf:name     "Andy Seaborne" .
+
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_post__existing_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:post__multipart_formdata .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_post__multipart_formdata .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:post__create__new_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:post__create__new_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_post__create__new_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:post__empty_graph_to_existing_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_post__after_noop .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:put__initial_state .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_put__initial_state .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:head_on_an_existing_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:head_on_a_nonexisting_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:put__graph_already_in_store .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_put__graph_already_in_store .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:put__default_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_put__default_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:put__mismatched_payload .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:put__empty_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_put__empty_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:put__replace_empty_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_replacement_for_empty_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:delete__existing_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:get_of_delete__existing_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:delete__nonexistent_graph .
+
+[] a earl:Assertion;
+    earl:assertedBy validator:validator;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-26"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://jena.apache.org/#fuseki>;
+    earl:test gsp:post__existing_graph .

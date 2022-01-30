@@ -1,0 +1,90 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sdtest: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/service-description/manifest#> .
+@prefix doap: <http://usefulinc.com/ns/doap#>.
+
+<http://www.dotnetrdf.org/leviathan#> doap:homepage <http://www.dotnetrdf.org/>;
+                                      doap:name "Leviathan (dotNetRDF)".
+
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/sdvalidator#validator> ;
+	earl:result [
+		dc:date "2012-11-09T22:38:39Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test sdtest:returns-rdf .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/sdvalidator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-09T22:38:39Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test sdtest:typed-named-graph .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/sdvalidator#validator> ;
+	earl:result [
+		dc:date "2012-11-09T22:38:39Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test sdtest:typed-graph .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/sdvalidator#validator> ;
+	earl:result [
+		dc:date "2012-11-09T22:38:39Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test sdtest:dataset-with-graph .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/sdvalidator#validator> ;
+	earl:result [
+		dc:date "2012-11-09T22:38:39Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test sdtest:recognized-language .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/sdvalidator#validator> ;
+	earl:result [
+		dc:date "2012-11-09T22:38:39Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test sdtest:has-endpoint-triple .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/sdvalidator#validator> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:pass ;
+		dc:date "2012-11-09T22:38:39Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test sdtest:conforms-to-schema .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/sdvalidator#validator> ;
+	earl:result [
+		dc:date "2012-11-09T22:38:39Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		a earl:TestResult ;
+		earl:outcome earl:pass
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test sdtest:typed-service .
+[] a earl:Assertion ;
+	earl:assertedBy <http://www.w3.org/2009/sparql/sdvalidator#validator> ;
+	earl:result [
+		dc:date "2012-11-09T22:38:39Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+		earl:outcome earl:pass ;
+		a earl:TestResult
+	] ;
+	earl:subject <http://www.dotnetrdf.org/leviathan#> ;
+	earl:test sdtest:typed-dataset .
