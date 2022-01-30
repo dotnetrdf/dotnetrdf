@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang='en' prefix='mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# qt:     http://www.w3.org/2001/sw/DataAccess/tests/test-query# dawgt:   http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body: {bacground-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 110px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      open world value testing tests
+    </title>
+    <style>
+      em.rfc2119 { 
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>open world value testing tests</h1>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        
+      </p>
+      <p>This page describes W3C SPARQL Working Group&#39;s SPARQL1.0 test suite.</p>
+      
+      <h3>Contributing Tests</h3>
+      
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      
+      <h3>Distribution</h3>
+      
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      
+      <h3>Disclaimer</h3>
+      
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot; AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Test Descriptions
+      </h2>
+      <dl class='test-description'>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-01'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-01'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-01:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-01' property='mf:name'>open-eq-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-01' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>graph match - no lexical form in data (assumes no value matching)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-01.rq' property='qt:query'>open-eq-01.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-1.ttl' property='qt:data'>data-1.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-01-result.srx' property='mf:result'>open-eq-01-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-02'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-02'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-02:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-02' property='mf:name'>open-eq-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-02' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>graph match - unknown type</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-02.rq' property='qt:query'>open-eq-02.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-1.ttl' property='qt:data'>data-1.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-02-result.srx' property='mf:result'>open-eq-02-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-03'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-03'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-03:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-03' property='mf:name'>open-eq-03</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-03' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Filter(?v=1)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-03.rq' property='qt:query'>open-eq-03.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-1.ttl' property='qt:data'>data-1.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-03-result.srx' property='mf:result'>open-eq-03-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-04'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-04'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-04:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-04' property='mf:name'>open-eq-04</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-04' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Filter(?v!=1)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-04.rq' property='qt:query'>open-eq-04.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-1.ttl' property='qt:data'>data-1.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-04-result.srx' property='mf:result'>open-eq-04-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-05'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-05'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-05:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-05' property='mf:name'>open-eq-05</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-05' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>FILTER(?v = unknown type)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-05.rq' property='qt:query'>open-eq-05.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-1.ttl' property='qt:data'>data-1.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-05-result.srx' property='mf:result'>open-eq-05-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-06'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-06'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-06:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-06' property='mf:name'>open-eq-06</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-06' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>FILTER(?v != unknown type)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-06.rq' property='qt:query'>open-eq-06.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-1.ttl' property='qt:data'>data-1.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-06-result.srx' property='mf:result'>open-eq-06-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-07'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-07'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-07:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-07' property='mf:name'>open-eq-07</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-07' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Test of &#39;=&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>requires</dt>
+            <dd>
+              <span property='mf:requires' resource='mf:StringSimpleLiteralCmp'>mf:StringSimpleLiteralCmp</span>
+              <span property='mf:requires' resource='mf:LangTagAwareness'>mf:LangTagAwareness</span>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-07.rq' property='qt:query'>open-eq-07.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-2.ttl' property='qt:data'>data-2.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-07-result.srx' property='mf:result'>open-eq-07-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-08'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-08'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-08:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-08' property='mf:name'>open-eq-08</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-08' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Test of &#39;!=&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>requires</dt>
+            <dd>
+              <span property='mf:requires' resource='mf:StringSimpleLiteralCmp'>mf:StringSimpleLiteralCmp</span>
+              <span property='mf:requires' resource='mf:KnownTypesDefault2Neq'>mf:KnownTypesDefault2Neq</span>
+              <span property='mf:requires' resource='mf:LangTagAwareness'>mf:LangTagAwareness</span>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-08.rq' property='qt:query'>open-eq-08.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-2.ttl' property='qt:data'>data-2.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-08-result.srx' property='mf:result'>open-eq-08-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-09'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-09'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-09:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-09' property='mf:name'>open-eq-09</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-09' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Test of &#39;=&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-09.rq' property='qt:query'>open-eq-09.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-2.ttl' property='qt:data'>data-2.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-09-result.srx' property='mf:result'>open-eq-09-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-10'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-10'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-10:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-10' property='mf:name'>open-eq-10</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-10' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Test of &#39;!=&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>requires</dt>
+            <dd>
+              <span property='mf:requires' resource='mf:KnownTypesDefault2Neq'>mf:KnownTypesDefault2Neq</span>
+              <span property='mf:requires' resource='mf:LangTagAwareness'>mf:LangTagAwareness</span>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-10.rq' property='qt:query'>open-eq-10.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-2.ttl' property='qt:data'>data-2.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-10-result.srx' property='mf:result'>open-eq-10-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-11'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-11'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-11:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-11' property='mf:name'>open-eq-11</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-11' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>test of &#39;=&#39; || &#39;!=&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>requires</dt>
+            <dd>
+              <span property='mf:requires' resource='mf:KnownTypesDefault2Neq'>mf:KnownTypesDefault2Neq</span>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-11.rq' property='qt:query'>open-eq-11.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-2.ttl' property='qt:data'>data-2.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-11-result.srx' property='mf:result'>open-eq-11-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-12'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-12'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-12:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-12' property='mf:name'>open-eq-12</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-12' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>find pairs that don&#39;t value-compare</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>requires</dt>
+            <dd>
+              <span property='mf:requires' resource='mf:KnownTypesDefault2Neq'>mf:KnownTypesDefault2Neq</span>
+              <span property='mf:requires' resource='mf:LangTagAwareness'>mf:LangTagAwareness</span>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-eq-12.rq' property='qt:query'>open-eq-12.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-2.ttl' property='qt:data'>data-2.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-eq-12-result.srx' property='mf:result'>open-eq-12-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-1'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-1'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-1:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-1' property='mf:name'>date-1</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-1' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Added type : xsd:date &#39;=&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval'></dd>
+            <dt>requires</dt>
+            <dd>
+              <span property='mf:requires' resource='mf:XsdDateOperations'>mf:XsdDateOperations</span>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='date-1.rq' property='qt:query'>date-1.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-3.ttl' property='qt:data'>data-3.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='date-1-result.srx' property='mf:result'>date-1-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-2'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-2'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-2:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-2' property='mf:name'>date-2</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-2' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Added type : xsd:date &#39;!=&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>requires</dt>
+            <dd>
+              <span property='mf:requires' resource='mf:XsdDateOperations'>mf:XsdDateOperations</span>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='date-2.rq' property='qt:query'>date-2.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-3.ttl' property='qt:data'>data-3.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='date-2-result.srx' property='mf:result'>date-2-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-3'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-3'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-3:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-3' property='mf:name'>date-3</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-3' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Added type : xsd:date &#39;&gt;&#39;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>requires</dt>
+            <dd>
+              <span property='mf:requires' resource='mf:XsdDateOperations'>mf:XsdDateOperations</span>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='date-3.rq' property='qt:query'>date-3.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-3.ttl' property='qt:data'>data-3.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='date-3-result.srx' property='mf:result'>date-3-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-4'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-4'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-4:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-4' property='mf:name'>date-4</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#date-4' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>xsd:date ORDER BY</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='date-4.rq' property='qt:query'>date-4.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-3.ttl' property='qt:data'>data-3.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='date-4-result.srx' property='mf:result'>date-4-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-01'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-01'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-01:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-01' property='mf:name'>open-cmp-01</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-01' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Find things that compare with &lt; or &gt;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007AprJun/att-0082/2007-06-12-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-cmp-01.rq' property='qt:query'>open-cmp-01.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-4.ttl' property='qt:data'>data-4.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-cmp-01-result.srx' property='mf:result'>open-cmp-01-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-02'>
+          <a class='testlink' href='#http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-02'>
+            http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-02:
+          </a>
+          <span about='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-02' property='mf:name'>open-cmp-02</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-02' typeof='mf:QueryEvaluationTest'>
+          <div property='rdfs:comment'>
+            <p>Find things that compare with &lt;= and &gt;</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:QueryEvaluationTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='dawgt:Approved'>dawgt:Approved</dd>
+            <dt>approvedBy</dt>
+            <dd>
+              <a href='http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0118/04-dawg-minutes.html' property='dawgt:approvedBy'>http://lists.w3.org/Archives/Public/public-rdf-dawg/2007JulSep/att-0118/04-dawg-minutes.html</a>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <dl class='test-detail'>
+                <dt>query</dt>
+                <dd>
+                  <a href='open-cmp-02.rq' property='qt:query'>open-cmp-02.rq</a>
+                </dd>
+                <dt>data</dt>
+                <dd>
+                  <a href='data-4.ttl' property='qt:data'>data-4.ttl</a>
+                </dd>
+              </dl>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='open-cmp-02-result.srx' property='mf:result'>open-cmp-02-result.srx</a>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

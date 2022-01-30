@@ -1,0 +1,356 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix myfoaf: <http://metacognition.info/public_rdf/n3/foaf.ttl#> .
+@prefix software: <http://metacognition.info/software/> .
+@prefix test: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/entailment/manifest#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+software:fuxi a doap:Project;
+    doap:maintainer myfoaf:chime;
+    doap:name "FuXi";
+    doap:release [ a doap:Version;
+            doap:name "1.4" ];
+    foaf:homepage <http://code.google.com/p/fuxi/> .
+
+myfoaf:chime a foaf:Person;
+    foaf:homepage <http://metacognition.info>;
+    foaf:name "Chimezie Ogbuji" .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:paper-sparqldl-Q5 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:parent2 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:plainLit .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdf01 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdf02 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdf03 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdf04 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs02 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs03 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs04 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs06 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs07 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs08 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs09 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs10 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:fail ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs11 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs12 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rdfs13 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rif01 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rif02 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rif03 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rif04 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:fail ];
+    earl:subject software:fuxi;
+    earl:test test:rif05 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:rif06 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-01 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-02 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:owlds02 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:fail ];
+    earl:subject software:fuxi;
+    earl:test test:paper-sparqldl-Q1-rdfs .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date ];
+    earl:subject software:fuxi;
+    earl:test test:paper-sparqldl-Q4 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:fail ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-03 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-04 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:fail ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-05 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-06 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-07 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-08 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-09 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:fail ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-10 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:fail ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-11 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:fail ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-12 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:fail ];
+    earl:subject software:fuxi;
+    earl:test test:sparqldl-13 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:lang .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-11-27"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject software:fuxi;
+    earl:test test:owlds01 .
+
+

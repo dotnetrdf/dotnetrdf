@@ -1,0 +1,27 @@
+# 
+#   Copyright World Wide Web Consortium, (Massachusetts Institute of
+#   Technology, Institut National de Recherche en Informatique et en
+#   Automatique, Keio University).
+#  
+#   All Rights Reserved.
+#  
+#   Please see the full Copyright clause at
+#   <http://www.w3.org/Consortium/Legal/copyright-software.html>
+# 
+#   Author: Frank Manola
+# 
+#   Description:
+# 
+#   Related issue:
+# 
+#     http://www.w3.org/2000/03/rdf-tracking/#rdfs-no-cycles-in-subPropertyOf
+# 
+#   $Id$
+# 
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subPropertyOf/test001#A> rdfs:subPropertyOf <http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subPropertyOf/test001#B> .
+
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subPropertyOf/test001#B> rdfs:subPropertyOf <http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subPropertyOf/test001#A> .
+
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subPropertyOf/test001#X> rdfs:subPropertyOf <http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subPropertyOf/test001#X> .

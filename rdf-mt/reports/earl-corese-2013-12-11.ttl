@@ -1,0 +1,435 @@
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix earl:    <http://www.w3.org/ns/earl#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dawg:    <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix doap:    <http://usefulinc.com/ns/doap#> .
+
+<http://www-sop.inria.fr/members/Olivier.Corby#me> a foaf:Person ;
+   foaf:homepage <http://www-sop.inria.fr/members/Olivier.Corby> ;
+   foaf:name "Olivier Corby" . 
+
+<http://wimmics.inria.fr/corese>
+      a  doap:Project ;
+      dc:creator    <http://wimmics.inria.fr> ;
+      foaf:maker    <http://wimmics.inria.fr> ;
+      doap:name     "Corese" ; 
+      doap:developer <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      doap:license <http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html> ;
+      foaf:description "Corese is a Semantic Web Factory implementing RDF, RDFS, SPARQL 1.1 Query & Update and Inference Rules, developed at Inria & I3S" ;
+      foaf:homepage  <http://wimmics.inria.fr/corese> .
+      
+      
+
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:10"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-intensional-xsd-integer-decimal-compatible> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:10"^^xsd:dateTime ;  
+      earl:outcome earl:failed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-intensional-xsd-integer-string-incompatible> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:11"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-1> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:11"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-2> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:11"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-plain-literal-and-xsd-string> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:11"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-range-clash> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:11"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-between-datatypes> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:12"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-1> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:12"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-2> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:12"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test008> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:12"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test009> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:13"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test010> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:13"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subClassOf-intensional> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:13"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subPropertyOf-intensional> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:13"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test003> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:14"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test004> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:14"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test002> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:14"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test003> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:14"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test004> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:15"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007a> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:15"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007b> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:15"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007c> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:16"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-container-membership-superProperty-test001> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:16"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-domain> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:16"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-range> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:16"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test001> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:16"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test002> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:17"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subClassOf-test001> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:17"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subPropertyOf-test001> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:17"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subClassOf-a-Property-test001> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:17"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subPropertyOf-semantics-test001> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:18"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test001> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:18"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test002> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:18"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test003> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:18"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test004> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:19"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-1> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:19"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-2> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:19"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-1> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:19"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-2> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:20"^^xsd:dateTime ;  
+      earl:outcome earl:failed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-3> .  
+   
+[] a earl:Assertion ;  
+    earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me> ;  
+    earl:result [  
+      a earl:TestResult ;  
+      dc:date "2013-12-09T10:36:20"^^xsd:dateTime ;  
+      earl:outcome earl:passed  
+    ] ; 
+   earl:subject <http://wimmics.inria.fr/corese> ;  
+   earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-4> .  
+   

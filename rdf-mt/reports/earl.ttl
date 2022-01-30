@@ -1,0 +1,1265 @@
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+<> a earl:Software, doap:Project;
+  doap:name "RDF Semantics";
+  dc:bibliographicCitation "[[RDF11-MT]]";
+  earl:generatedBy <http://rubygems.org/gems/earl-report>;
+  earl:assertions
+    <ClioPatria-earl-results-2013-12-16.ttl>,
+    <earl-corese-2013-12-11.ttl>,
+    <swertia-earl-20140104-earl.ttl>;
+  earl:testSubjects (
+    <http://cliopatria.swi-prolog.org/packs/rdf-mt>
+    <http://wimmics.inria.fr/corese>
+    <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>);
+  mf:entries (
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl>) .
+    
+
+<http://rubygems.org/gems/earl-report> a earl:Software, doap:Project;
+  doap:name "earl-report";
+  doap:shortdesc "Earl Report summary generator"@en;
+  doap:description "EarlReport generates HTML+RDFa rollups of multiple EARL reports"@en;
+  doap:homepage <https://github.com/gkellogg/earl-report>;
+  doap:programming-language "Ruby";
+  doap:license <http://unlicense.org>;
+  doap:release <https://github.com/gkellogg/earl-report/tree/0.3.1>;
+  doap:developer <http://greggkellogg.net/foaf#me> .
+
+    
+
+# Manifests
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl> a earl:Report, mf:Manifest;
+  dc:title "RDF Schema and Semantics tests";
+  mf:name "RDF Schema and Semantics tests";
+  mf:entries (
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-intensional-xsd-integer-decimal-compatible>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-1>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-2>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-1>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-2>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-between-datatypes>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-range-clash>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test008>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test009>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test010>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-plain-literal-and-xsd-string>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subClassOf-intensional>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subPropertyOf-intensional>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test003>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test004>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test002>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test003>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test004>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007a>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007b>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007c>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-container-membership-superProperty-test001>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-range>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-domain>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test001>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test002>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subClassOf-test001>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subPropertyOf-test001>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subClassOf-a-Property-test001>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subPropertyOf-semantics-test001>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test001>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test002>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test003>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test004>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-1>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-2>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-1>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-2>
+    <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-4>) .
+
+#
+# Subject Definitions
+#
+<http://cliopatria.swi-prolog.org/packs/rdf-mt> a earl:TestSubject, doap:Project;
+  doap:name "ClioPatria RDF semantics pack";
+ .
+
+<http://cliopatria.swi-prolog.org/packs/rdf-mt> doap:developer <http://cliopatria.swi-prolog.org/user/jan> .
+
+<http://cliopatria.swi-prolog.org/user/jan> a foaf:Person;
+  foaf:homepage <http://www.cs.vu.nl/~janw/>;
+  foaf:name "Jan Wielemaker" .
+
+
+<http://wimmics.inria.fr/corese> a earl:TestSubject, doap:Project;
+  doap:name "Corese";
+ .
+
+<http://wimmics.inria.fr/corese> doap:developer <http://www-sop.inria.fr/members/Olivier.Corby#me> .
+
+<http://www-sop.inria.fr/members/Olivier.Corby#me> a foaf:Person;
+  foaf:homepage <http://www-sop.inria.fr/members/Olivier.Corby>;
+  foaf:name "Olivier Corby" .
+
+
+<https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> a earl:TestSubject, doap:Project;
+  doap:name "Swertia/RDF-1.1";
+  doap:description "An adaptation of the Swertia RDF-Based Semantic Translation Plugin for the RDF-1.1 CfI. For reasoning, the following FOL theorem prover has been applied: E 1.8 by Stephan Schulz (http://www.eprover.org)"@en;
+ .
+
+<https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> doap:developer <mailto:schneid@fzi.de> .
+
+<mailto:schneid@fzi.de> a foaf:Person;
+  foaf:homepage <http://swertia.sourceforge.org/>;
+  foaf:name "Michael Schneider" .
+
+
+#
+# Test Case Definitions
+#
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-intensional-xsd-integer-decimal-compatible> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "datatypes-intensional-xsd-integer-decimal-compatible";
+  dc:description """
+    The claim that xsd:integer is a subClassOF xsd:decimal is not
+    incompatible with using the intensional semantics for
+    datatypes.
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes-intensional/test001.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-intensional-xsd-integer-decimal-compatible>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-intensional-xsd-integer-decimal-compatible>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-intensional-xsd-integer-decimal-compatible>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-1> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "datatypes-non-well-formed-literal-1";
+  dc:description """
+    Used to be a postitive test to itself.
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test002.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-1>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-1>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-1>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-2> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "datatypes-non-well-formed-literal-2";
+  dc:description """
+    Ill-formed datatyped literals now are inconsistent.
+    Used to be negative entailment to <datatypes/test002b.nt>
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test002.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-2>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-2>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-non-well-formed-literal-2>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-1> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "datatypes-semantic-equivalence-within-type-1";
+  dc:description """
+    Demonstrating the semantic equivalence of two lexical forms of
+    the same datatyped value.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//datatypes/test003b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test003a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-1>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-1>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-1>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-2> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "datatypes-semantic-equivalence-within-type-2";
+  dc:description """
+    As semantic-equivalence-within-type-1; the entailment works
+    both ways.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//datatypes/test003a.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test003b.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-2>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-2>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-within-type-2>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-between-datatypes> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "datatypes-semantic-equivalence-between-datatypes";
+  dc:description """
+    Members of different datatypes may be semantically equivalent.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//datatypes/test005b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test005a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-between-datatypes>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-between-datatypes>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-semantic-equivalence-between-datatypes>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-range-clash> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "datatypes-range-clash";
+  dc:description """
+    Where sufficient DT knowledge is available, a range clash may
+    be detected; the document then contains a contradiction.
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test006.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-range-clash>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-range-clash>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-range-clash>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test008> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "datatypes-test008";
+  dc:description """
+    From decisions listed in
+    http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Oct/0098.html
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//datatypes/test008b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test008a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test008>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test008>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test008>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test009> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "datatypes-test009";
+  dc:description """
+    From decisions listed in
+    http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Oct/0098.html
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//datatypes/test009b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test009a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test009>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test009>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test009>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test010> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "datatypes-test010";
+  dc:description """
+    From decisions listed in
+    http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Oct/0098.html
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test010.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test010>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test010>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-test010>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-plain-literal-and-xsd-string> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "datatypes-plain-literal-and-xsd-string";
+  dc:description """
+    A plain literal denotes the same thing as its corresponding
+    xsd:string, where one exists.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//datatypes/test011b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//datatypes/test011a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-plain-literal-and-xsd-string>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-plain-literal-and-xsd-string>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#datatypes-plain-literal-and-xsd-string>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subClassOf-intensional> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "horst-01-subClassOf-intensional";
+  dc:description """
+    rdfs:subClassOf has intensional semantics, not extensional.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//horst-01/test002.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//horst-01/test001.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subClassOf-intensional>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subClassOf-intensional>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subClassOf-intensional>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subPropertyOf-intensional> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "horst-01-subPropertyOf-intensional";
+  dc:description """
+    rdfs:subPropertyOf has intensional semantics, not extensional.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//horst-01/test004.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//horst-01/test003.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subPropertyOf-intensional>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subPropertyOf-intensional>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#horst-01-subPropertyOf-intensional>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test003> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "rdf-charmod-uris-test003";
+  dc:description """
+    An international URI ref and its %-escaped form label
+    different nodes in the graph. No model theoretic relationship
+    holds between them.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdf-charmod-uris/test002.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdf-charmod-uris/test001.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test003>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test003>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test003>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test004> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "rdf-charmod-uris-test004";
+  dc:description """
+    An international URI ref and its %-escaped form label
+    different nodes in the graph. No model theoretic relationship
+    holds between them.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdf-charmod-uris/test001.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdf-charmod-uris/test002.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test004>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test004>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdf-charmod-uris-test004>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test002> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "rdfms-seq-representation-test002";
+  dc:description """
+    Statement of the MT closure rule.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfms-seq-representation/test002.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfms-seq-representation/empty.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test002>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test002>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test002>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test003> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "rdfms-seq-representation-test003";
+  dc:description """
+    Statement of the MT closure rule.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfms-seq-representation/test003b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfms-seq-representation/test003a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test003>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test003>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test003>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test004> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "rdfms-seq-representation-test004";
+  dc:description """
+    Statement of the MT closure rule.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfms-seq-representation/test004.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfms-seq-representation/empty.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test004>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test004>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-seq-representation-test004>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007a> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "rdfms-xmllang-test007a";
+  dc:description """
+    Plain literals are distinguishable on the basis of language
+    tags.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfms-xmllang/test007b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfms-xmllang/test007a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007a>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007a>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007a>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007b> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "rdfms-xmllang-test007b";
+  dc:description """
+    Plain literals are distinguishable on the basis of language
+    tags.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfms-xmllang/test007c.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfms-xmllang/test007b.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007b>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007b>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007b>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007c> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "rdfms-xmllang-test007c";
+  dc:description """
+    Plain literals are distinguishable on the basis of language
+    tags.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfms-xmllang/test007a.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfms-xmllang/test007c.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007c>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007c>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfms-xmllang-test007c>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-container-membership-superProperty-test001> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "rdfs-container-membership-superProperty-test001";
+  dc:description """
+    While it is a superproperty, _:a <rdfs:contains (@@member?)>
+    _:b . does NOT entail _:a <rdf:_n> _:b . for any _n.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfs-container-membership-superProperty/not1C.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfs-container-membership-superProperty/not1P.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-container-membership-superProperty-test001>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-container-membership-superProperty-test001>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-container-membership-superProperty-test001>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-range> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "rdfs-domain-and-range-intensionality-range";
+  dc:description """
+    RDF Semantics defines rdfs:range to have an intensional
+    reading. However, semantic extensions may give an extensional
+    reading to range. The premise/conclusion pair is a
+    non-entailment for RDFS reasoning, but may hold in semantic
+    extensions.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfs-domain-and-range/nonconclusions005.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfs-domain-and-range/premises005.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-range>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-range>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-range>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-domain> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "rdfs-domain-and-range-intensionality-domain";
+  dc:description """
+    RDF Semantics defines rdfs:range to have an intensional
+    reading of domain. However, semantic extensions may give an
+    extensional reading to domain. The premise/conclusion pair is
+    a non-entailment for RDFS reasoning, but may hold in semantic
+    extensions.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfs-domain-and-range/nonconclusions006.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfs-domain-and-range/premises006.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-domain>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-domain>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-domain-and-range-intensionality-domain>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test001> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "rdfs-entailment-test001";
+  dc:description """
+    rdf:XMLLiteral support is no longer mandatory.
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfs-entailment/test001.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test001>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test001>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test001>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test002> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "rdfs-entailment-test002";
+  dc:description """
+    Use to be from an inconsistent graph, any entailment can be drawn. This
+    is an example.
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfs-entailment/test002p.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test002>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test002>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-entailment-test002>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subClassOf-test001> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "rdfs-no-cycles-in-subClassOf-test001";
+  dc:description """
+    Cycles are permitted in subClassOf; therefore, no error occurs
+    and the following entailment holds trivially.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfs-no-cycles-in-subClassOf/test001.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfs-no-cycles-in-subClassOf/test001.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subClassOf-test001>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subClassOf-test001>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subClassOf-test001>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subPropertyOf-test001> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "rdfs-no-cycles-in-subPropertyOf-test001";
+  dc:description """
+    Cycles are permitted in subPropertyOf; therefore, no error
+    occurs and the following entailment holds trivially.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfs-no-cycles-in-subPropertyOf/test001.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfs-no-cycles-in-subPropertyOf/test001.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subPropertyOf-test001>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subPropertyOf-test001>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-no-cycles-in-subPropertyOf-test001>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subClassOf-a-Property-test001> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "rdfs-subClassOf-a-Property-test001";
+  dc:description """
+    an instance of the Property class may have an rdfs:subClassOf
+    property. the meaning of such a property is defined by the
+    model theory. The wording of the formal resolution is a bit
+    bare, so let me add a few words of explanation. What this
+    means is that a resource can be both a class and a property.
+    This test is encoded as follows: a Property may have a
+    subclass (that is, such an RDF graph is satisfiable)
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfs-subClassOf-a-Property/test001.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subClassOf-a-Property-test001>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subClassOf-a-Property-test001>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subClassOf-a-Property-test001>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subPropertyOf-semantics-test001> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "rdfs-subPropertyOf-semantics-test001";
+  dc:description """
+    The inheritance semantics of the subPropertyOf relationship
+    needs to be clarified. => subProperties inherit conjunctively
+    the domain and range of their superproperties
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//rdfs-subPropertyOf-semantics/test002.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//rdfs-subPropertyOf-semantics/test001.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subPropertyOf-semantics-test001>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subPropertyOf-semantics-test001>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#rdfs-subPropertyOf-semantics-test001>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test001> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "statement-entailment-test001";
+  dc:description """
+    RDFCore WG RESOLVED that a reified statement was a stating,
+    not a statement. The following entailment does not, therefore,
+    hold.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//statement-entailment/test001b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//statement-entailment/test001a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test001>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test001>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test001>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test002> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "statement-entailment-test002";
+  dc:description """
+    RDFCore WG RESOLVED that a statement does NOT entail its
+    reification. The following entailment does not, therefore,
+    hold.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//statement-entailment/test002b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//statement-entailment/test002a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test002>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test002>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test002>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test003> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "statement-entailment-test003";
+  dc:description """
+    RDFCore WG RESOLVED that a reified statement was a stating,
+    not a statement. The following entailment does not, therefore,
+    hold. This is the same as test001, but using RDFS-entailment.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//statement-entailment/test001b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//statement-entailment/test001a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test003>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test003>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test003>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test004> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "statement-entailment-test004";
+  dc:description """
+    RDFCore WG RESOLVED that a statement does NOT entail its
+    reification. The following entailment does not, therefore,
+    hold. This is the same as test002, but using RDFS-entailment.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//statement-entailment/test002b.nt>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//statement-entailment/test002a.nt>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test004>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test004>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#statement-entailment-test004>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-1> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "tex-01-language-tag-case-1";
+  dc:description """
+    The case of the language tag is not significant.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//tex-01/test002.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//tex-01/test001.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-1>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-1>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-1>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-2> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "tex-01-language-tag-case-2";
+  dc:description """
+    The case of the language tag is not significant.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//tex-01/test001.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//tex-01/test002.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-2>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-2>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#tex-01-language-tag-case-2>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-1> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest>;
+  dc:title "xmlsch-02-whitespace-facet-1";
+  dc:description """
+    A well-formed typed literal is not related to an ill-formed
+    literal. Even if they only differ by whitespace.
+  """@en;
+  mf:result <http://www.w3.org/2013/rdf-mt-tests//xmlsch-02/test002.ttl>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//xmlsch-02/test001.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-1>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-1>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-1>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-2> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "xmlsch-02-whitespace-facet-2";
+  dc:description """
+    Ill-formed datatyped literals now are inconsistent.
+    Used to be negative entailment to <xmlsch-02/test001.ttl> .
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//xmlsch-02/test002.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-2>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-2>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-2>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+
+<http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-4> a earl:TestCriterion, earl:TestCase, <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest>;
+  dc:title "xmlsch-02-whitespace-facet-4";
+  dc:description """
+    Ill-formed datatyped literals now are inconsistent.
+    Used to be negative entailment.
+  """@en;
+  mf:result <false>;
+  mf:action <http://www.w3.org/2013/rdf-mt-tests//xmlsch-02/test002.ttl>;
+  earl:assertions (
+    [ a earl:Assertion;
+      earl:assertedBy <http://cliopatria.swi-prolog.org/user/jan>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-4>;
+      earl:subject <http://cliopatria.swi-prolog.org/packs/rdf-mt>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <http://www-sop.inria.fr/members/Olivier.Corby#me>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-4>;
+      earl:subject <http://wimmics.inria.fr/corese>;
+      earl:mode earl:notAvailable;
+      earl:result [ a earl:TestResult; earl:outcome earl:passed ]]
+    [ a earl:Assertion;
+      earl:assertedBy <mailto:schneid@fzi.de>;
+      earl:test <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl#xmlsch-02-whitespace-facet-4>;
+      earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>;
+      earl:mode earl:automatic;
+      earl:result [ a earl:TestResult; earl:outcome earl:failed ]]
+  ) .
+

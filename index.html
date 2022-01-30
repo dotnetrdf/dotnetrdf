@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+*{margin:0;padding:0;}
+body {
+	font: 12px arial, helvetica,arial,freesans,clean,sans-serif;
+	color:black;
+	line-height:1.4em;
+	background-color: #F8F8F8;
+	padding: 0em 2em;
+}
+
+table {
+	font-size:inherit;
+	font:100%;
+	margin:1em;
+}
+
+p {
+	margin-bottom: 1em;
+}
+
+td {  
+  padding-left: 0.3em;
+}
+
+th {  
+  font-weight: bold;  
+  text-align: center;  
+  background-color: NavyBlue !important; 
+  font-size: 110%;
+  background: hsl(180, 30%, 50%); 
+  color: #fff;
+}
+
+th a:link {
+  color: #fff;
+}
+
+th a:visited {
+  color: #aaa;
+}
+
+tr:nth-child(even) { background-color: hsl(180, 30%, 93%) }
+
+table th{border-bottom:1px solid #bbb;padding:.2em 1em;}
+table td{border-bottom:1px solid #ddd;padding:.2em 1em;}
+
+
+select,option{padding:0 .25em;}
+optgroup{margin-top:.5em;}
+
+pre,code{font:12px Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;}
+pre {
+	margin:1em 0;
+	background-color:#eee;
+	border:1px solid #ddd;
+	padding:5px;
+	line-height:1.5em;
+	color:#444;
+	overflow:auto;
+	-webkit-box-shadow:rgba(0,0,0,0.07) 0 1px 2px inset;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;border-radius:3px;
+}
+pre code {
+	padding:0;
+	font-size:10px;
+	background-color:#eee;
+	border:none;
+}
+code {
+	background-color:#f8f8ff;
+	color:#444;
+	padding:0 .2em;
+	border:1px solid #dedede;
+}
+
+img{border:0;max-width:100%;}
+abbr{border-bottom:none;}
+
+a{color:#4183c4;}
+
+a:link, a:active {
+  background: transparent;
+  text-decoration:none;
+}
+
+a:visited {
+  color: #529;
+  background: transparent;
+}
+
+a:hover{background-color: yellow; color: #00e;}
+
+a code,a:link code,a:visited code{color:#4183c4;}
+
+a:link img, a:visited img {
+   border-style: none
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	margin-bottom: 0.5em;
+	margin-top: 1em;
+	padding-bottom: 0.15em;
+	border-bottom: 1px solid #ccc;
+	background: transparent;
+	color: #005a9c;
+	font-weight: normal;
+}
+
+h1
+{
+	border-bottom: none;
+	background: transparent;
+	/* color: #000; */
+}
+
+h4, h5, h6 {border: none;}
+
+
+hr{border:1px solid #ddd;}
+
+ul{margin:1em 0 1em 2em;}
+ol{margin:1em 0 1em 2em;}
+ul li,ol li{
+	margin-bottom:.1em;
+}
+ul ul,ul ol,ol ol,ol ul{margin-top:0;margin-bottom:0;}
+
+ul.toc {
+  list-style: disc;
+  list-style: none;
+}
+
+blockquote{margin:1em 0;border-left:5px solid #ddd;padding-left:.6em;color:#555;}
+dt{font-weight:bold;margin-left:1em;}
+dd{margin-left:2em;margin-bottom:1em;}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+
+em.rfc2119 { 
+  text-transform: lowercase;
+  font-variant:   small-caps;
+  font-style:     normal;
+  color:          #900;
+}
+
+@media print {
+	table, pre {
+		page-break-inside: avoid;
+	}
+	pre {
+		word-wrap: break-word;
+	}
+}
+</style>
+<title>Tests and Implementation reports for RDF and SPARQL</title>
+</head>
+<body>
+<h1>RDF Test Curation</h1>
+
+<p>Product of W3C’s <a href="https://www.w3.org/community/rdf-tests/">RDF Test Curation Community Group</a>. Please consult that page for further details on the goals and deliverables of the that group.</p>
+
+<p>Current test suites:</p>
+
+<ul>
+	<li><a href="nquads/">N-Quads tests</a> (<a href="nquads/reports/">implementation report</a>)</li>
+	<li><a href="ntriples/">N-Triples tests</a> (<a href="ntriples/reports/">implementation report</a>)</li>
+	<li><a href="rdf-mt/">RDF Schema and Semantics tests</a> (<a href="rdf-mt/reports/">implementation report</a>)</li>
+	<li><a href="rdf-xml/">RDF/XML Syntax tests</a> (<a href="rdf-xml/reports/">implementation report</a>)</li>
+	<li><a href="sparql11/">SPARQL1.1 tests</a> (<a href="sparql11/reports/">implementation report</a>)</li>
+	<li><a href="trig/">RDF/XML Syntax tests</a> (<a href="trig/reports/">implementation report</a>)</li>
+	<li><a href="turtle/">Turtle tests</a> (<a href="turtle/reports/">implementation report</a>)</li>
+</ul>
+
+<p>
+  Note that the <a href="http://rdfa.info/test-suite/">RDFa Test Suite</a> is a hosted service and managed through the <a href="http://github.com/rdfa/rdfa-website">rdfa/rdfa-website</a> GitHub repository. <a href="http://github.com/rdfa/rdfa-website/issues">Issues</a> should be filed in that repository.
+  The <a href="http://json-ld.org/test-suite/">JSON-LD Test Suite</a> is managed through the <a href="https://github.com/json-ld/json-ld.org/">json-ld/json-ld.org</a> GitHub repository. <a href="http://github.com/json-ld/json-ld.org/issues">Issues</a> should be filed in that repository.
+</p>
+
+<p>The work of the CG is being performed on <a href="http://github.com/w3c/rdf-tests" target="_blank" rel="external nofollow">GitHub</a>. The list of test suites managed, is available through the <a href="https://w3c.github.io/rdf-tests/" target="_blank" rel="external nofollow">HTML view</a>. The general process followed is the following:</p>
+<ul>
+<li>New test suites may be added via a PR request against the rdf-tests repository, or by filing an issue using the <a href="http://github.com/w3c/rdf-tests/issues" target="_blank" rel="external nofollow">issue tracker</a> for subsequent activity.</li>
+<li>Proposed changes to a given test suite may be discussed on <a href="mailto:public-rdf-tests@w3.org" target="_blank">public-rdf-tests@w3.org</a> (<a href="https://lists.w3.org/Archives/Public/public-rdf-tests/" target="_blank">archive</a>), but ultimately should result in an <em>issue</em> being created on the <a href="http://github.com/w3c/rdf-tests/issues" target="_blank" rel="external nofollow">issue tracker</a>.</li>
+<li>Changes should either be made on a separate fork of the repository, and integrated via pull request, or on a feature branch within the main repository (prefix branch name with &#8220;feature-&#8221; or &#8220;issue-n-&#8220;, where &#8220;n&#8221; is the issue number relating to the proposed update). Any change that results in a functional change to an existing test suite <em class="rfc2119">MUST</em> be included by consensus of this group, and the related comments group of the associated working group, and <em class="rfc2119">SHOULD</em> have two implementations which pass the tests. Once consensus is reached, a pull request including this feature branch may be integrated into the main branch.<br />
+Note that naming conventions for tests often make conflicting overlaps inevitable, so consider this when naming new tests and formatting the test manifests.</li>
+<li>Some updates, e.g. more extensive updates to the SPARQL test suite, may require branching off of, and merging back into, a separate feature branch, so that a set of changes can be staged before updating the main branch.</li>
+<li>After a changes to a given test suite become stable, a “release” branch can be created to record the state of the test suite at that time.</li>
+<li>All changes affecting a given test suite should be broadcast to the appropriate comments list (<a href="mailto:public-rdf-comments@w3.org">public-rdf-comments@w3.org</a> or <a href="mailto:public-sparql-dev@w3.org">public-sparql-dev@w3.org</a> at this point).</li>
+<li>Implementations can typically access a given test suite using the <a href="https://w3c.github.io/rdf-tests/" target="_blank" rel="external nofollow">HTML view</a>. For example, the Turtle test manifest can be accessed at  <a href="https://w3c.github.io/rdf-tests/turtle/manifest.ttl" rel="external nofollow">https://w3c.github.io/rdf-tests/turtle/manifest.ttl</a>. Accessing test suites though an alternative branch via HTTP requires the use of a different facility, such as <a href="https://raw.githubusercontent.com/w3c/rdf-tests/main/turtle/manifest.ttl" target="_blank" rel="external nofollow">https://raw.githubusercontent.com/w3c/rdf-tests/main/turtle/manifest.ttl</a>, where &#8220;main&#8221; is replaced by the appropriate branch name.</li>
+</ul>
+
+<p>The group is chaired by <a href="http://greggkellogg.net/foaf#me">Gregg Kellogg</a>. The W3C staff contact is xxx. If you are member of the Community Group, and you want to gain a “push” right to this repository, please contact <a href="mailto:gregg@greggkellogg.net">gregg@greggkellogg.net</a>, providing your github ID.</p>
+</body>
+</html>

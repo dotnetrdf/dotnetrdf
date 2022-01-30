@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang='en' prefix='mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest# rdft: http://www.w3.org/ns/rdftest#'>
+  <head>
+    <meta content='text/html;charset=utf-8' http-equiv='Content-Type'>
+    <meta content='width=device-width, initial-scale=1.0' name='viewport'>
+    <link href='https://www.w3.org/StyleSheets/TR/base' rel='stylesheet' type='text/css'>
+    <style>
+      body: {bacground-image: none;}
+      dl.editor>dd {
+        margin: 0 0 0 40px;
+      }
+      dl.test-detail {
+        padding: 0.5em;
+      }
+      dl.test-detail>dt {
+        float: left;
+        clear: left;
+        text-align: right;
+        font-weight: bold;
+        color: green;
+      }
+      dl.test-detail>dt:after {content: ": "}
+      dl.test-detail>dd {
+        margin: 0 0 0 210px;
+        padding: 0 0 0.5em 0;
+      }
+      dl.test-description>dt {margin-top: 2em;}
+      dd {margin-left: 0;}
+      dd code {display: inline;}
+      footer {text-align: center;}
+    </style>
+    <title>
+      RDF Schema and Semantics tests
+    </title>
+    <style>
+      em.rfc2119 { 
+        text-transform: lowercase;
+        font-variant:   small-caps;
+        font-style:     normal;
+        color:          #900;
+      }
+      a.testlink {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.testlink:hover {
+        text-decoration: underline;
+      }
+      .warning {color: orange;}
+      .error {color: red;}
+    </style>
+  </head>
+  <body resource='' typeof='mf:Manifest'>
+    <p>
+      <a href='http://www.w3.org/'>
+        <img alt='W3C' height='48' src='http://www.w3.org/Icons/w3c_home' width='72'>
+      </a>
+    </p>
+    <h1 property='rdfs:label'>RDF Schema and Semantics tests</h1>
+    <dl class='editor'>
+      <dt>Document Editor</dt>
+      <dd>
+        Peter Patel-Schneider – Nuance
+      </dd>
+      <dd>
+        <a href='mailto:gregg@greggkellogg.net'>
+          Gregg Kellogg
+        </a>
+        – Kellogg Associates
+      </dd>
+    </dl>
+    <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a> © 2010 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a><sup>®</sup> (<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a>, <a href="http://www.ercim.org/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved. W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>, and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    <hr title='Separator for header'>
+    <div>
+      <h2 id='abstract'>Abstract</h2>
+      <p property='rdfs:comment'>
+        
+      </p>
+      <p>This page describes W3C RDF Working Group&#39;s Entailment test suite. This test suite contains two kinds of tests:</p>
+      
+      <ul>
+      <li>Positive Entailment Tests (<code>rdft:PositiveEntailmentTest</code>)</li>
+      <li>Positive Entailment Tests (rdft:NegativeEntailmentTest)</li>
+      </ul>
+      
+      <p>These tests are also described in <a href="manifest.ttl">Turtle</a> format in this directory for convenience. The manifest files in this directory lists all of the approved tests in the RDF WG&#39;s RDF Entailment test suite. All tests have a name (<code>mf:name</code>) and an input (<code>mf:action</code>).</p>
+      
+      <p>Each test is one of the above kinds of tests. All tests have</p>
+      
+      <ul>
+      <li>a name (<code>mf:name</code>),</li>
+      <li>an input RDF graph URL (<code>mf:action</code>),</li>
+      <li>an output RDF graph URL or the special marker false (<code>mf:result</code>),</li>
+      <li>an entailment regime, which is &quot;simple&quot;, &quot;RDF&quot;, or &quot;RDFS&quot; (<code>mf:entailmentRegime</code>),</li>
+      <li>a list of recognized datatypes (<code>mf:recognizedDatatypes</code>),</li>
+      <li>a list of unrecognized datatypes (<code>mf:unrecognizedDatatypes</code>).</li>
+      </ul>
+      
+      <p>An implementation passes a Positive (Negative) Entailment Test if, when
+      configured to 
+      1. perform entailment under the entailment regime of the test or some
+         entailment regime that is stronger (weaker) than the entailment regime and
+      2. recognize all the datatypes in the list of recognized datatypes and
+         none of the datatypes in the list of unrecognized datatypes,
+        * for tests that have an output graph, determines that the input RDF graph entails (does not entail) the output RDF graph
+        * for tests that have false as output, either determines that the input
+          RDF graph entails (does not entail) an inconsistent RDF graph or that the input RDF graph is inconsistent (consistent).</p>
+      
+      <p>An implementation also passes a test if when configured differently from a
+      correct configuration as given above nonetheless produces the given result, and the result is correct in the configured entailment regime with the configured recognized datatypes.</p>
+      
+      <p>Tests can be run from the web or by downloading either a <a href="TESTS.tar.gz">tarball</a> or <a href="TESTS.zip">zip file</a>.</p>
+      
+      <p>The home of the test suite is <a href="http://www.w3.org/2013/rdf-mt-tests/">http://www.w3.org/2013/rdf-mt-tests/</a>.</p>
+      
+      <p>See <a href="http://www.w3.org/2011/rdf-wg/wiki/RDF_Test_Suites">http://www.w3.org/2011/rdf-wg/wiki/RDF_Test_Suites</a> for more details. Per RFC 3986 section 5.1.3, the base IRI for parsing each file is the retrieval IRI for that file, but changing base IRIs should not affect any testing results.</p>
+      
+      <h2>Contributing Tests</h2>
+      
+      <p>The test manifests and entries are built automatically from <a href="manifest.ttl">manifest.ttl</a> using a Rake task. Tests may be contributed via pull request to <a href="https://github.com/w3c/rdf-tests">https://github.com/w3c/rdf-tests</a> with suitable changes to the <a href="manifest.ttl">manifest.ttl</a> and referenced files.</p>
+      
+      <h2>Distribution</h2>
+      
+      <p>Distributed under both the <a href="http://www.w3.org/Consortium/Legal/2008/04-testsuite-license">W3C Test Suite License</a> and the <a href="http://www.w3.org/Consortium/Legal/2008/03-bsd-license">W3C 3-clause BSD License</a>. To contribute to a W3C Test Suite, see the <a href="http://www.w3.org/2004/10/27-testcases">policies and contribution forms</a>.</p>
+      
+      <h2>Disclaimer</h2>
+      
+      <p>UNDER BOTH MUTUALLY EXCLUSIVE LICENSES, THIS DOCUMENT AND ALL DOCUMENTS, TESTS AND SOFTWARE THAT LINK THIS STATEMENT ARE PROVIDED &quot;AS IS,&quot; AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+        COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.</p>
+    </div>
+    <div>
+      <h2>
+        Test Descriptions
+      </h2>
+      <dl class='test-description'>
+        <dt id='#datatypes-intensional-xsd-integer-decimal-compatible'>
+          <a class='testlink' href='##datatypes-intensional-xsd-integer-decimal-compatible'>
+            #datatypes-intensional-xsd-integer-decimal-compatible:
+          </a>
+          <span about='#datatypes-intensional-xsd-integer-decimal-compatible' property='mf:name'>datatypes-intensional-xsd-integer-decimal-compatible</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-intensional-xsd-integer-decimal-compatible' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>The claim that xsd:integer is a subClassOF xsd:decimal is not incompatible with using the intensional semantics for datatypes.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:integer'>xsd:integer</code>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:decimal'>xsd:decimal</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes-intensional/test001.nt' property='mf:action'>datatypes-intensional/test001.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-non-well-formed-literal-1'>
+          <a class='testlink' href='##datatypes-non-well-formed-literal-1'>
+            #datatypes-non-well-formed-literal-1:
+          </a>
+          <span about='#datatypes-non-well-formed-literal-1' property='mf:name'>datatypes-non-well-formed-literal-1</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-non-well-formed-literal-1' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Without datatype knowledge, a &#39;badly-formed&#39; datatyped literal cannot be detected. Used to be a postitive test to itself.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:unrecognizedDatatypes' resource='xsd:integer'>xsd:integer</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test002.nt' property='mf:action'>datatypes/test002.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-non-well-formed-literal-2'>
+          <a class='testlink' href='##datatypes-non-well-formed-literal-2'>
+            #datatypes-non-well-formed-literal-2:
+          </a>
+          <span about='#datatypes-non-well-formed-literal-2' property='mf:name'>datatypes-non-well-formed-literal-2</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-non-well-formed-literal-2' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>With appropriate datatype knowledge, a &#39;badly-formed&#39; datatyped literal can be detected. Ill-formed datatyped literals now are inconsistent. Used to be negative entailment to <datatypes/test002b.nt></p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:integer'>xsd:integer</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test002.nt' property='mf:action'>datatypes/test002.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-semantic-equivalence-within-type-1'>
+          <a class='testlink' href='##datatypes-semantic-equivalence-within-type-1'>
+            #datatypes-semantic-equivalence-within-type-1:
+          </a>
+          <span about='#datatypes-semantic-equivalence-within-type-1' property='mf:name'>datatypes-semantic-equivalence-within-type-1</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-semantic-equivalence-within-type-1' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Demonstrating the semantic equivalence of two lexical forms of the same datatyped value.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:integer'>xsd:integer</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test003a.nt' property='mf:action'>datatypes/test003a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='datatypes/test003b.nt' property='mf:result'>datatypes/test003b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-semantic-equivalence-within-type-2'>
+          <a class='testlink' href='##datatypes-semantic-equivalence-within-type-2'>
+            #datatypes-semantic-equivalence-within-type-2:
+          </a>
+          <span about='#datatypes-semantic-equivalence-within-type-2' property='mf:name'>datatypes-semantic-equivalence-within-type-2</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-semantic-equivalence-within-type-2' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>As semantic-equivalence-within-type-1; the entailment works both ways.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:integer'>xsd:integer</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test003b.nt' property='mf:action'>datatypes/test003b.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='datatypes/test003a.nt' property='mf:result'>datatypes/test003a.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-semantic-equivalence-between-datatypes'>
+          <a class='testlink' href='##datatypes-semantic-equivalence-between-datatypes'>
+            #datatypes-semantic-equivalence-between-datatypes:
+          </a>
+          <span about='#datatypes-semantic-equivalence-between-datatypes' property='mf:name'>datatypes-semantic-equivalence-between-datatypes</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-semantic-equivalence-between-datatypes' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Members of different datatypes may be semantically equivalent.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:decimal'>xsd:decimal</code>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:integer'>xsd:integer</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test005a.nt' property='mf:action'>datatypes/test005a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='datatypes/test005b.nt' property='mf:result'>datatypes/test005b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-range-clash'>
+          <a class='testlink' href='##datatypes-range-clash'>
+            #datatypes-range-clash:
+          </a>
+          <span about='#datatypes-range-clash' property='mf:name'>datatypes-range-clash</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-range-clash' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Where sufficient DT knowledge is available, a range clash may be detected; the document then contains a contradiction.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:integer'>xsd:integer</code>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:string'>xsd:string</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test006.nt' property='mf:action'>datatypes/test006.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-test008'>
+          <a class='testlink' href='##datatypes-test008'>
+            #datatypes-test008:
+          </a>
+          <span about='#datatypes-test008' property='mf:name'>datatypes-test008</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-test008' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>From decisions listed in http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Oct/0098.html</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>simple</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test008a.nt' property='mf:action'>datatypes/test008a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='datatypes/test008b.nt' property='mf:result'>datatypes/test008b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-test009'>
+          <a class='testlink' href='##datatypes-test009'>
+            #datatypes-test009:
+          </a>
+          <span about='#datatypes-test009' property='mf:name'>datatypes-test009</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-test009' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>From decisions listed in http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Oct/0098.html</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>simple</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:unrecognizedDatatypes' resource='xsd:integer'>xsd:integer</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test009a.nt' property='mf:action'>datatypes/test009a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='datatypes/test009b.nt' property='mf:result'>datatypes/test009b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-test010'>
+          <a class='testlink' href='##datatypes-test010'>
+            #datatypes-test010:
+          </a>
+          <span about='#datatypes-test010' property='mf:name'>datatypes-test010</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-test010' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>From decisions listed in http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Oct/0098.html</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:integer'>xsd:integer</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test010.nt' property='mf:action'>datatypes/test010.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#datatypes-plain-literal-and-xsd-string'>
+          <a class='testlink' href='##datatypes-plain-literal-and-xsd-string'>
+            #datatypes-plain-literal-and-xsd-string:
+          </a>
+          <span about='#datatypes-plain-literal-and-xsd-string' property='mf:name'>datatypes-plain-literal-and-xsd-string</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#datatypes-plain-literal-and-xsd-string' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>A plain literal denotes the same thing as its corresponding xsd:string, where one exists.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:string'>xsd:string</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='datatypes/test011a.nt' property='mf:action'>datatypes/test011a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='datatypes/test011b.nt' property='mf:result'>datatypes/test011b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#horst-01-subClassOf-intensional'>
+          <a class='testlink' href='##horst-01-subClassOf-intensional'>
+            #horst-01-subClassOf-intensional:
+          </a>
+          <span about='#horst-01-subClassOf-intensional' property='mf:name'>horst-01-subClassOf-intensional</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#horst-01-subClassOf-intensional' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>rdfs:subClassOf has intensional semantics, not extensional.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='horst-01/test001.ttl' property='mf:action'>horst-01/test001.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='horst-01/test002.ttl' property='mf:result'>horst-01/test002.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#horst-01-subPropertyOf-intensional'>
+          <a class='testlink' href='##horst-01-subPropertyOf-intensional'>
+            #horst-01-subPropertyOf-intensional:
+          </a>
+          <span about='#horst-01-subPropertyOf-intensional' property='mf:name'>horst-01-subPropertyOf-intensional</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#horst-01-subPropertyOf-intensional' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>rdfs:subPropertyOf has intensional semantics, not extensional.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='horst-01/test003.ttl' property='mf:action'>horst-01/test003.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='horst-01/test004.ttl' property='mf:result'>horst-01/test004.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdf-charmod-uris-test003'>
+          <a class='testlink' href='##rdf-charmod-uris-test003'>
+            #rdf-charmod-uris-test003:
+          </a>
+          <span about='#rdf-charmod-uris-test003' property='mf:name'>rdf-charmod-uris-test003</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdf-charmod-uris-test003' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>An international URI ref and its %-escaped form label different nodes in the graph. No model theoretic relationship holds between them.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdf-charmod-uris/test001.ttl' property='mf:action'>rdf-charmod-uris/test001.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdf-charmod-uris/test002.ttl' property='mf:result'>rdf-charmod-uris/test002.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdf-charmod-uris-test004'>
+          <a class='testlink' href='##rdf-charmod-uris-test004'>
+            #rdf-charmod-uris-test004:
+          </a>
+          <span about='#rdf-charmod-uris-test004' property='mf:name'>rdf-charmod-uris-test004</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdf-charmod-uris-test004' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>An international URI ref and its %-escaped form label different nodes in the graph. No model theoretic relationship holds between them.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdf-charmod-uris/test002.ttl' property='mf:action'>rdf-charmod-uris/test002.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdf-charmod-uris/test001.ttl' property='mf:result'>rdf-charmod-uris/test001.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfms-seq-representation-test002'>
+          <a class='testlink' href='##rdfms-seq-representation-test002'>
+            #rdfms-seq-representation-test002:
+          </a>
+          <span about='#rdfms-seq-representation-test002' property='mf:name'>rdfms-seq-representation-test002</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfms-seq-representation-test002' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Statement of the MT closure rule.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfms-seq-representation/empty.nt' property='mf:action'>rdfms-seq-representation/empty.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfms-seq-representation/test002.nt' property='mf:result'>rdfms-seq-representation/test002.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfms-seq-representation-test003'>
+          <a class='testlink' href='##rdfms-seq-representation-test003'>
+            #rdfms-seq-representation-test003:
+          </a>
+          <span about='#rdfms-seq-representation-test003' property='mf:name'>rdfms-seq-representation-test003</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfms-seq-representation-test003' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Statement of the MT closure rule.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfms-seq-representation/test003a.nt' property='mf:action'>rdfms-seq-representation/test003a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfms-seq-representation/test003b.nt' property='mf:result'>rdfms-seq-representation/test003b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfms-seq-representation-test004'>
+          <a class='testlink' href='##rdfms-seq-representation-test004'>
+            #rdfms-seq-representation-test004:
+          </a>
+          <span about='#rdfms-seq-representation-test004' property='mf:name'>rdfms-seq-representation-test004</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfms-seq-representation-test004' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Statement of the MT closure rule.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfms-seq-representation/empty.nt' property='mf:action'>rdfms-seq-representation/empty.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfms-seq-representation/test004.nt' property='mf:result'>rdfms-seq-representation/test004.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfms-xmllang-test007a'>
+          <a class='testlink' href='##rdfms-xmllang-test007a'>
+            #rdfms-xmllang-test007a:
+          </a>
+          <span about='#rdfms-xmllang-test007a' property='mf:name'>rdfms-xmllang-test007a</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfms-xmllang-test007a' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Plain literals are distinguishable on the basis of language tags.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>simple</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfms-xmllang/test007a.nt' property='mf:action'>rdfms-xmllang/test007a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfms-xmllang/test007b.nt' property='mf:result'>rdfms-xmllang/test007b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfms-xmllang-test007b'>
+          <a class='testlink' href='##rdfms-xmllang-test007b'>
+            #rdfms-xmllang-test007b:
+          </a>
+          <span about='#rdfms-xmllang-test007b' property='mf:name'>rdfms-xmllang-test007b</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfms-xmllang-test007b' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Plain literals are distinguishable on the basis of language tags.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>simple</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfms-xmllang/test007b.nt' property='mf:action'>rdfms-xmllang/test007b.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfms-xmllang/test007c.nt' property='mf:result'>rdfms-xmllang/test007c.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfms-xmllang-test007c'>
+          <a class='testlink' href='##rdfms-xmllang-test007c'>
+            #rdfms-xmllang-test007c:
+          </a>
+          <span about='#rdfms-xmllang-test007c' property='mf:name'>rdfms-xmllang-test007c</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfms-xmllang-test007c' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Plain literals are distinguishable on the basis of language tags.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>simple</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfms-xmllang/test007c.nt' property='mf:action'>rdfms-xmllang/test007c.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfms-xmllang/test007a.nt' property='mf:result'>rdfms-xmllang/test007a.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfs-container-membership-superProperty-test001'>
+          <a class='testlink' href='##rdfs-container-membership-superProperty-test001'>
+            #rdfs-container-membership-superProperty-test001:
+          </a>
+          <span about='#rdfs-container-membership-superProperty-test001' property='mf:name'>rdfs-container-membership-superProperty-test001</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfs-container-membership-superProperty-test001' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>While it is a superproperty, <em>:a <rdfs:contains (@@member?)> _:b . does NOT entail _:a &lt;rdf:</em>n&gt; _:b . for any _n.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfs-container-membership-superProperty/not1P.ttl' property='mf:action'>rdfs-container-membership-superProperty/not1P.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfs-container-membership-superProperty/not1C.ttl' property='mf:result'>rdfs-container-membership-superProperty/not1C.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfs-domain-and-range-intensionality-range'>
+          <a class='testlink' href='##rdfs-domain-and-range-intensionality-range'>
+            #rdfs-domain-and-range-intensionality-range:
+          </a>
+          <span about='#rdfs-domain-and-range-intensionality-range' property='mf:name'>rdfs-domain-and-range-intensionality-range</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfs-domain-and-range-intensionality-range' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>RDF Semantics defines rdfs:range to have an intensional reading. However, semantic extensions may give an extensional reading to range. The premise/conclusion pair is a non-entailment for RDFS reasoning, but may hold in semantic extensions.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfs-domain-and-range/premises005.ttl' property='mf:action'>rdfs-domain-and-range/premises005.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfs-domain-and-range/nonconclusions005.ttl' property='mf:result'>rdfs-domain-and-range/nonconclusions005.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfs-domain-and-range-intensionality-domain'>
+          <a class='testlink' href='##rdfs-domain-and-range-intensionality-domain'>
+            #rdfs-domain-and-range-intensionality-domain:
+          </a>
+          <span about='#rdfs-domain-and-range-intensionality-domain' property='mf:name'>rdfs-domain-and-range-intensionality-domain</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfs-domain-and-range-intensionality-domain' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>RDF Semantics defines rdfs:range to have an intensional reading of domain. However, semantic extensions may give an extensional reading to domain. The premise/conclusion pair is a non-entailment for RDFS reasoning, but may hold in semantic extensions.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfs-domain-and-range/premises006.ttl' property='mf:action'>rdfs-domain-and-range/premises006.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfs-domain-and-range/nonconclusions006.ttl' property='mf:result'>rdfs-domain-and-range/nonconclusions006.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfs-entailment-test001'>
+          <a class='testlink' href='##rdfs-entailment-test001'>
+            #rdfs-entailment-test001:
+          </a>
+          <span about='#rdfs-entailment-test001' property='mf:name'>rdfs-entailment-test001</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfs-entailment-test001' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Indicating a simple inconsistency drawn from RDFS. RDFS can only produce inconsistencies through badly-formed XMLLiteral datatypes. rdf:XMLLiteral support is no longer mandatory.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral'>http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfs-entailment/test001.nt' property='mf:action'>rdfs-entailment/test001.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfs-entailment-test002'>
+          <a class='testlink' href='##rdfs-entailment-test002'>
+            #rdfs-entailment-test002:
+          </a>
+          <span about='#rdfs-entailment-test002' property='mf:name'>rdfs-entailment-test002</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfs-entailment-test002' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Datatype clashes can occur in RDFS entailment. Use to be from an inconsistent graph, any entailment can be drawn. This is an example.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:string'>xsd:string</code>
+              <code inlist property='mf:recognizedDatatypes' resource='http://www.w3.org/1999/02/22-rdf-syntax-ns#langString'>http://www.w3.org/1999/02/22-rdf-syntax-ns#langString</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfs-entailment/test002p.nt' property='mf:action'>rdfs-entailment/test002p.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfs-no-cycles-in-subClassOf-test001'>
+          <a class='testlink' href='##rdfs-no-cycles-in-subClassOf-test001'>
+            #rdfs-no-cycles-in-subClassOf-test001:
+          </a>
+          <span about='#rdfs-no-cycles-in-subClassOf-test001' property='mf:name'>rdfs-no-cycles-in-subClassOf-test001</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfs-no-cycles-in-subClassOf-test001' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Cycles are permitted in subClassOf; therefore, no error occurs and the following entailment holds trivially.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfs-no-cycles-in-subClassOf/test001.ttl' property='mf:action'>rdfs-no-cycles-in-subClassOf/test001.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfs-no-cycles-in-subClassOf/test001.nt' property='mf:result'>rdfs-no-cycles-in-subClassOf/test001.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfs-no-cycles-in-subPropertyOf-test001'>
+          <a class='testlink' href='##rdfs-no-cycles-in-subPropertyOf-test001'>
+            #rdfs-no-cycles-in-subPropertyOf-test001:
+          </a>
+          <span about='#rdfs-no-cycles-in-subPropertyOf-test001' property='mf:name'>rdfs-no-cycles-in-subPropertyOf-test001</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfs-no-cycles-in-subPropertyOf-test001' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>Cycles are permitted in subPropertyOf; therefore, no error occurs and the following entailment holds trivially.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfs-no-cycles-in-subPropertyOf/test001.ttl' property='mf:action'>rdfs-no-cycles-in-subPropertyOf/test001.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfs-no-cycles-in-subPropertyOf/test001.nt' property='mf:result'>rdfs-no-cycles-in-subPropertyOf/test001.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfs-subClassOf-a-Property-test001'>
+          <a class='testlink' href='##rdfs-subClassOf-a-Property-test001'>
+            #rdfs-subClassOf-a-Property-test001:
+          </a>
+          <span about='#rdfs-subClassOf-a-Property-test001' property='mf:name'>rdfs-subClassOf-a-Property-test001</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfs-subClassOf-a-Property-test001' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>an instance of the Property class may have an rdfs:subClassOf property. the meaning of such a property is defined by the model theory. The wording of the formal resolution is a bit bare, so let me add a few words of explanation. What this means is that a resource can be both a class and a property. This test is encoded as follows: a Property may have a subclass (that is, such an RDF graph is satisfiable)</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfs-subClassOf-a-Property/test001.nt' property='mf:action'>rdfs-subClassOf-a-Property/test001.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#rdfs-subPropertyOf-semantics-test001'>
+          <a class='testlink' href='##rdfs-subPropertyOf-semantics-test001'>
+            #rdfs-subPropertyOf-semantics-test001:
+          </a>
+          <span about='#rdfs-subPropertyOf-semantics-test001' property='mf:name'>rdfs-subPropertyOf-semantics-test001</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#rdfs-subPropertyOf-semantics-test001' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>The inheritance semantics of the subPropertyOf relationship needs to be clarified. =&gt; subProperties inherit conjunctively the domain and range of their superproperties</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='rdfs-subPropertyOf-semantics/test001.nt' property='mf:action'>rdfs-subPropertyOf-semantics/test001.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='rdfs-subPropertyOf-semantics/test002.nt' property='mf:result'>rdfs-subPropertyOf-semantics/test002.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#statement-entailment-test001'>
+          <a class='testlink' href='##statement-entailment-test001'>
+            #statement-entailment-test001:
+          </a>
+          <span about='#statement-entailment-test001' property='mf:name'>statement-entailment-test001</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#statement-entailment-test001' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>RDFCore WG RESOLVED that a reified statement was a stating, not a statement. The following entailment does not, therefore, hold.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='statement-entailment/test001a.nt' property='mf:action'>statement-entailment/test001a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='statement-entailment/test001b.nt' property='mf:result'>statement-entailment/test001b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#statement-entailment-test002'>
+          <a class='testlink' href='##statement-entailment-test002'>
+            #statement-entailment-test002:
+          </a>
+          <span about='#statement-entailment-test002' property='mf:name'>statement-entailment-test002</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#statement-entailment-test002' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>RDFCore WG RESOLVED that a statement does NOT entail its reification. The following entailment does not, therefore, hold.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='statement-entailment/test002a.nt' property='mf:action'>statement-entailment/test002a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='statement-entailment/test002b.nt' property='mf:result'>statement-entailment/test002b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#statement-entailment-test003'>
+          <a class='testlink' href='##statement-entailment-test003'>
+            #statement-entailment-test003:
+          </a>
+          <span about='#statement-entailment-test003' property='mf:name'>statement-entailment-test003</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#statement-entailment-test003' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>RDFCore WG RESOLVED that a reified statement was a stating, not a statement. The following entailment does not, therefore, hold. This is the same as test001, but using RDFS-entailment.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='statement-entailment/test001a.nt' property='mf:action'>statement-entailment/test001a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='statement-entailment/test001b.nt' property='mf:result'>statement-entailment/test001b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#statement-entailment-test004'>
+          <a class='testlink' href='##statement-entailment-test004'>
+            #statement-entailment-test004:
+          </a>
+          <span about='#statement-entailment-test004' property='mf:name'>statement-entailment-test004</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#statement-entailment-test004' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>RDFCore WG RESOLVED that a statement does NOT entail its reification. The following entailment does not, therefore, hold. This is the same as test002, but using RDFS-entailment.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='statement-entailment/test002a.nt' property='mf:action'>statement-entailment/test002a.nt</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='statement-entailment/test002b.nt' property='mf:result'>statement-entailment/test002b.nt</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#tex-01-language-tag-case-1'>
+          <a class='testlink' href='##tex-01-language-tag-case-1'>
+            #tex-01-language-tag-case-1:
+          </a>
+          <span about='#tex-01-language-tag-case-1' property='mf:name'>tex-01-language-tag-case-1</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#tex-01-language-tag-case-1' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>The case of the language tag is not significant.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='tex-01/test001.ttl' property='mf:action'>tex-01/test001.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='tex-01/test002.ttl' property='mf:result'>tex-01/test002.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#tex-01-language-tag-case-2'>
+          <a class='testlink' href='##tex-01-language-tag-case-2'>
+            #tex-01-language-tag-case-2:
+          </a>
+          <span about='#tex-01-language-tag-case-2' property='mf:name'>tex-01-language-tag-case-2</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#tex-01-language-tag-case-2' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>The case of the language tag is not significant.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDF</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code property='mf:recognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='tex-01/test002.ttl' property='mf:action'>tex-01/test002.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='tex-01/test001.ttl' property='mf:result'>tex-01/test001.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#xmlsch-02-whitespace-facet-1'>
+          <a class='testlink' href='##xmlsch-02-whitespace-facet-1'>
+            #xmlsch-02-whitespace-facet-1:
+          </a>
+          <span about='#xmlsch-02-whitespace-facet-1' property='mf:name'>xmlsch-02-whitespace-facet-1</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#xmlsch-02-whitespace-facet-1' typeof='mf:NegativeEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>A well-formed typed literal is not related to an ill-formed literal. Even if they only differ by whitespace.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:NegativeEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:int'>xsd:int</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='xmlsch-02/test001.ttl' property='mf:action'>xmlsch-02/test001.ttl</a>
+            </dd>
+            <dt>result</dt>
+            <dd>
+              <a href='xmlsch-02/test002.ttl' property='mf:result'>xmlsch-02/test002.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#xmlsch-02-whitespace-facet-2'>
+          <a class='testlink' href='##xmlsch-02-whitespace-facet-2'>
+            #xmlsch-02-whitespace-facet-2:
+          </a>
+          <span about='#xmlsch-02-whitespace-facet-2' property='mf:name'>xmlsch-02-whitespace-facet-2</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#xmlsch-02-whitespace-facet-2' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>A well-formed typed literal is not related to an ill-formed literal. Even if they only differ by whitespace. Ill-formed datatyped literals now are inconsistent. Used to be negative entailment to <xmlsch-02/test001.ttl> .</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:int'>xsd:int</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='xmlsch-02/test002.ttl' property='mf:action'>xmlsch-02/test002.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+        <dt id='#xmlsch-02-whitespace-facet-4'>
+          <a class='testlink' href='##xmlsch-02-whitespace-facet-4'>
+            #xmlsch-02-whitespace-facet-4:
+          </a>
+          <span about='#xmlsch-02-whitespace-facet-4' property='mf:name'>xmlsch-02-whitespace-facet-4</span>
+        </dt>
+        <dd inlist property='mf:entry' resource='#xmlsch-02-whitespace-facet-4' typeof='mf:PositiveEntailmentTest'>
+          <div property='rdfs:comment'>
+            <p>An integer with whitespace is ill-formed. Ill-formed datatyped literals now are inconsistent. Used to be negative entailment.</p>
+          </div>
+          <dl class='test-detail'>
+            <dt>type</dt>
+            <dd>mf:PositiveEntailmentTest</dd>
+            <dt>approval</dt>
+            <dd property='mf:approval' resource='rdft:Approved'>rdft:Approved</dd>
+            <dt>entailmentRegime</dt>
+            <dd property='mf:entailmentRegime'>RDFS</dd>
+            <dt>recognizedDatatypes</dt>
+            <dd>
+              <code inlist property='mf:recognizedDatatypes' resource='xsd:int'>xsd:int</code>
+            </dd>
+            <dt>unrecognizedDatatypes</dt>
+            <dd>
+              <code property='mf:unrecognizedDatatypes' resource='rdf:nil'>none</code>
+            </dd>
+            <dt>action</dt>
+            <dd>
+              <a href='xmlsch-02/test002.ttl' property='mf:action'>xmlsch-02/test002.ttl</a>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+    </div>
+    <footer>
+      <p><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright ©</a> 2015 <a href="http://www.w3.org/">W3C</a>® (<a href="http://www.csail.mit.edu/">MIT</a>, <a href="http://www.ercim.org/">ERCIM</a>, <a href="http://www.keio.ac.jp/">Keio</a>, <a href="http://ev.buaa.edu.cn/">Beihang</a>). W3C® <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>, <a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a href="http://www.w3.org/Consortium/Legal/copyright-documents">document use</a> rules apply.</p>
+    </footer>
+  </body>
+</html>

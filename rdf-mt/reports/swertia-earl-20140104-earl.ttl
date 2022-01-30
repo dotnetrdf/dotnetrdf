@@ -1,0 +1,453 @@
+@base <http://www.w3.org/2013/rdf-mt-tests//manifest.ttl> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+
+# ================
+# === METADATA ===
+# ================
+
+# Header:
+<> foaf:primaryTopic <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   dc:issued "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+   foaf:maker <mailto:schneid@fzi.de> .
+
+# Project:
+<https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/>
+   a doap:Project ; 
+   a earl:TestSubject ;
+   a earl:Software ;
+   doap:name          "Swertia/RDF-1.1" ;
+   doap:homepage      <http://swertia.sourceforge.net/> ;
+   doap:description   "An adaptation of the Swertia RDF-Based Semantic Translation Plugin for the RDF-1.1 CfI. For reasoning, the following FOL theorem prover has been applied: E 1.8 by Stephan Schulz (http://www.eprover.org)"@en ;
+   doap:developer     <mailto:schneid@fzi.de> ;
+   doap:maintainer    <mailto:schneid@fzi.de> ;
+   doap:documenter    <mailto:schneid@fzi.de> ;
+   foaf:maker         <mailto:schneid@fzi.de> ;
+   dc:creator         <mailto:schneid@fzi.de> .
+
+# Developer:
+<mailto:schneid@fzi.de> 
+   a foaf:Person ; 
+   a earl:Assertor ;
+   foaf:name "Michael Schneider" ;
+   foaf:title "Project Lead and Developer" ;
+   foaf:homepage <http://swertia.sourceforge.org/> .
+
+# ====================
+# === TEST RESULTS ===
+# ====================
+
+[] a earl:Assertion;
+   earl:test <#datatypes-intensional-xsd-integer-decimal-compatible> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-intensional-xsd-integer-string-incompatible> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-non-well-formed-literal-1> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-non-well-formed-literal-2> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-semantic-equivalence-within-type-1> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-semantic-equivalence-within-type-2> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-semantic-equivalence-between-datatypes> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-range-clash> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-test008> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-test009> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-test010> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#datatypes-plain-literal-and-xsd-string> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#horst-01-subClassOf-intensional> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#horst-01-subPropertyOf-intensional> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdf-charmod-uris-test003> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdf-charmod-uris-test004> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfms-seq-representation-test002> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfms-seq-representation-test003> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfms-seq-representation-test004> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfms-xmllang-test007a> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfms-xmllang-test007b> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfms-xmllang-test007c> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfs-container-membership-superProperty-test001> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfs-domain-and-range-intensionality-range> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfs-domain-and-range-intensionality-domain> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfs-entailment-test001> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfs-entailment-test002> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfs-no-cycles-in-subClassOf-test001> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfs-no-cycles-in-subPropertyOf-test001> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfs-subClassOf-a-Property-test001> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#rdfs-subPropertyOf-semantics-test001> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#statement-entailment-test001> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#statement-entailment-test002> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#statement-entailment-test003> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#statement-entailment-test004> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#tex-01-language-tag-case-1> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#tex-01-language-tag-case-2> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#xmlsch-02-whitespace-facet-1> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:passed ] .
+
+[] a earl:Assertion;
+   earl:test <#xmlsch-02-whitespace-facet-2> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#xmlsch-02-whitespace-facet-3> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .
+
+[] a earl:Assertion;
+   earl:test <#xmlsch-02-whitespace-facet-4> ;
+   earl:subject <https://sourceforge.net/projects/swertia/files/reports/evaluations/rdf11mt/> ;
+   earl:assertedBy <mailto:schneid@fzi.de> ;
+   earl:mode earl:automatic ;
+   earl:result [
+      a earl:TestResult ;
+      dc:date "2014-01-04T15:12:30-08:00"^^xsd:dateTime ;
+      earl:outcome earl:failed ] .

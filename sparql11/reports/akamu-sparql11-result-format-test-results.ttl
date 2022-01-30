@@ -1,0 +1,98 @@
+@prefix csvtsv: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/csv-tsv-res/manifest#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix json: <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/json-res/manifest#> .
+@prefix myfoaf: <http://metacognition.info/public_rdf/n3/foaf.ttl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://code.google.com/p/akamu/> a doap:Project;
+    doap:maintainer myfoaf:chime;
+    doap:name "Akamu";
+    doap:release [ a doap:Version;
+            doap:name "Akamu" ] .
+
+myfoaf:chime a foaf:Person;
+    foaf:homepage <http://metacognition.info>;
+    foaf:name "Chimezie Ogbuji" .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test csvtsv:csv01 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test csvtsv:csv02 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test csvtsv:csv03 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test csvtsv:tsv01 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test csvtsv:tsv02 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test csvtsv:tsv03 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test json:jsonres01 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test json:jsonres02 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test json:jsonres03 .
+
+[] a earl:Assertion;
+    earl:assertedBy myfoaf:chime;
+    earl:result [ a earl:TestResult;
+            dc:date "2012-10-23"^^xsd:date;
+            earl:outcome earl:pass ];
+    earl:subject <http://code.google.com/p/akamu/>;
+    earl:test json:jsonres04 .

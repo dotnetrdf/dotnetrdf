@@ -1,0 +1,4 @@
+#  Processed by Id: cwm.py,v 1.92 2002/03/22 21:36:00 timbl Exp 
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://example/stuff#something> rdf:_1 <http://example/stuff#somethingElse> .

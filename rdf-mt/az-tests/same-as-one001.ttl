@@ -1,0 +1,5 @@
+<http://example.org/foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
+<http://example.org/foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2001/XMLSchema#nonPositiveInteger> .
+<http://example.org/bar> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2001/XMLSchema#nonNegativeInteger> .
+<http://example.org/bar> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2001/XMLSchema#nonPositiveInteger> .
+<http://example.org/foo> <http://example.org/baz1> <http://example.org/baz2> .

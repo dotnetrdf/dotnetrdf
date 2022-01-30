@@ -1,0 +1,661 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix nt: <http://www.w3.org/2013/N-TriplesTests/manifest.ttl#> .
+
+<http://librdf.org/raptor/> a doap:Project ;
+    doap:name "Raptor" ;
+    doap:homepage <http://librdf.org/raptor/> ;
+    doap:developer <http://www.dajobe.org/#me> ;
+    doap:implements <http://www.w3.org/TR/turtle/> ;
+    doap:implements <http://www.w3.org/TR/n-quads/> ;
+    doap:implements <http://www.w3.org/TR/n-triples/> ;
+    doap:implements <http://www.w3.org/TR/rdf-syntax-grammar/> ;
+    doap:implements <http://www.w3.org/TR/rdf-json/> ;
+    doap:implements <http://www.w3.org/TR/trig/> ;
+    doap:implements <http://www.w3.org/TR/2008/REC-rdfa-syntax-20081014/> ;
+    doap:download-page <http://librdf.org/raptor/> ;
+    doap:programming-language "C" ;
+    doap:release [
+        doap:created "2013-12-13"^^xsd:date ;
+        doap:name "Raptor 2.0.12" ;
+        a doap:Version
+    ]
+    .
+
+<http://www.dajobe.org/#me> a foaf:Person ;
+    foaf:homepage <http://www.dajobe.org/> ;
+    foaf:name "Dave Beckett" ;
+    .
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-file-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-file-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-file-03 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-uri-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-uri-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-uri-03 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-uri-04 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-string-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-string-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-string-03 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-str-esc-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-str-esc-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-str-esc-03 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bnode-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bnode-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bnode-03 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-datatypes-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-datatypes-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-subm-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:comment_following_triple .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_all_controls .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_all_punctuation .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_ascii_boundaries .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_false .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_true .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_2_dquotes .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_2_squotes .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_BACKSPACE .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_CARRIAGE_RETURN .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_CHARACTER_TABULATION .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_FORM_FEED .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_LINE_FEED .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_REVERSE_SOLIDUS .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_REVERSE_SOLIDUS2 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_UTF8_boundaries .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_dquote .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_numeric_escape4 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_numeric_escape8 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:literal_with_squote .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:langtagged_string .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:lantag_with_subtag .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:minimal_whitespace .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-uri-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-uri-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-uri-03 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-uri-04 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-uri-05 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-uri-06 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-uri-07 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-uri-08 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-uri-09 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-prefix-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-base-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-struct-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-struct-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-lang-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-esc-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-esc-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-esc-03 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-string-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-string-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-string-03 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-string-04 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-string-05 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-string-06 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-string-07 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-num-01 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-num-02 .
+
+  [] a earl:Assertion ;
+      earl:assertedBy <http://www.dajobe.org/#me> ;
+      earl:result [
+	a earl:TestResult ;
+	earl:outcome earl:passed
+      ] ;
+      earl:subject <http://librdf.org/raptor/> ;
+      earl:test nt:nt-syntax-bad-num-03 .
+

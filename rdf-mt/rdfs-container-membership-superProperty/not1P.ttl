@@ -1,0 +1,4 @@
+#  Processed by Id: cwm.py,v 1.92 2002/03/22 21:36:00 timbl Exp
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://example/stuff#something> rdfs:member <http://example/stuff#somethingElse> .
