@@ -51,14 +51,19 @@ namespace VDS.RDF.Query.Patterns
             return false;
         }
 
+        /// <inheritdoc />
         public override INode Construct(ConstructContext context)
         {
-            throw new NotImplementedException();
+            INode subjectNode = QuotedTriple.Subject.Construct(context);
+            INode predicateNode = QuotedTriple.Predicate.Construct(context);
+            INode objectNode = QuotedTriple.Object.Construct(context);
+            return new TripleNode(new Triple(subjectNode, predicateNode, objectNode));
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return $"<< {QuotedTriple.Subject} {QuotedTriple.Predicate} {QuotedTriple.Object} >>";
         }
 
         // TODO: Change signature of PatternItem to allow for patterns with multiple variables
@@ -68,6 +73,12 @@ namespace VDS.RDF.Query.Patterns
         
         public bool HasNoBlankVariables => QuotedTriple.HasNoBlankVariables;
 
+        
+        /// <summary>
+        /// Create a set of bindings by matching <paramref name="node"/> to this pattern.
+        /// </summary>
+        /// <param name="node">The node to match</param>
+        /// <returns>A set of result bindings, which may be empty if <paramref name="node"/> does not match this pattern.</returns>
         public ISet CreateResults(INode node)
         {
             if (node is ITripleNode tn)

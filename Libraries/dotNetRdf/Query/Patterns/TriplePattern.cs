@@ -322,5 +322,23 @@ namespace VDS.RDF.Query.Patterns
         {
             return Subject.ToString() + " " + Predicate.ToString() + " " + Object.ToString();
         }
+
+        /// <summary>
+        /// Wrap this triple pattern as a quoted triple match pattern.
+        /// </summary>
+        /// <returns>A <see cref="NodeMatchPattern"/> if the subject, predicate and object of this pattern are not variables,
+        /// A <see cref="QuotedTriplePattern"/> that wraps this pattern otherwise.</returns>
+        public PatternItem AsQuotedPatternItem()
+        {
+            if (Subject is NodeMatchPattern subjectNodeMatchPattern &&
+                Predicate is NodeMatchPattern predicateNodeMatchPattern &&
+                Object is NodeMatchPattern objectNodeMatchPattern)
+            {
+                return new NodeMatchPattern(new TripleNode(new Triple(subjectNodeMatchPattern.Node,
+                    predicateNodeMatchPattern.Node, objectNodeMatchPattern.Node)));
+            }
+
+            return new QuotedTriplePattern(this);
+        }
     }
 }
