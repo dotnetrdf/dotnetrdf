@@ -93,7 +93,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         {
             ManifestTestData testData =
                 SparqlStarEvalTests.GetTestData(
-                    new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-1"));
+                    new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-2"));
             InvokeTestRunner(testData);
         }
     }

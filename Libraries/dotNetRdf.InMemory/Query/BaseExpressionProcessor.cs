@@ -49,6 +49,7 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode;
 using VDS.RDF.Query.Expressions.Functions.XPath;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
@@ -1027,6 +1028,13 @@ namespace VDS.RDF.Query
             INode result = isLiteral.InnerExpression.Accept(this, context, binding);
             return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Literal);
 
+        }
+
+        public virtual IValuedNode ProcessIsTripleFunction(IsTripleFunction isTriple, TContext context,
+            TBinding binding)
+        {
+            INode result = isTriple.InnerExpression.Accept(this, context, binding);
+            return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Triple);
         }
 
         public virtual IValuedNode ProcessIsNumericFunction(IsNumericFunction isNumeric, TContext context, TBinding binding)
@@ -2243,6 +2251,30 @@ namespace VDS.RDF.Query
             return result.AsSafeBoolean()
                 ? ifElse.TrueBranchExpression.Accept(this, context, binding)
                 : ifElse.FalseBranchExpression.Accept(this, context, binding);
+        }
+
+        public IValuedNode ProcessSubjectFunction(SubjectFunction subjectFunction, TContext context, TBinding binding)
+        {
+            IValuedNode innerValue = subjectFunction.InnerExpression.Accept(this, context, binding);
+            if (innerValue is ITripleNode tn) return tn.Triple.Subject.AsValuedNode();
+            throw new RdfQueryException("Value passed to SUBJECT function is not a Triple Node. Received a " +
+                                        innerValue.NodeType);
+        }
+
+        public IValuedNode ProcessPredicateFunction(PredicateFunction predicateFunction, TContext context, TBinding binding)
+        {
+            IValuedNode innerValue = predicateFunction.InnerExpression.Accept(this, context, binding);
+            if (innerValue is ITripleNode tn) return tn.Triple.Predicate.AsValuedNode();
+            throw new RdfQueryException("Value passed to PREDICATE function is not a Triple Node. Received a " +
+                                        innerValue.NodeType);
+        }
+
+        public IValuedNode ProcessObjectFunction(ObjectFunction objectFunction, TContext context, TBinding binding)
+        {
+            IValuedNode innerValue = objectFunction.InnerExpression.Accept(this, context, binding);
+            if (innerValue is ITripleNode tn) return tn.Triple.Object.AsValuedNode();
+            throw new RdfQueryException("Value passed to OBJECT function is not a Triple Node. Received a " +
+                                        innerValue.NodeType);
         }
 
         public virtual IValuedNode ProcessBooleanCast(BooleanCast cast, TContext context, TBinding binding)

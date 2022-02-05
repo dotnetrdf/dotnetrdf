@@ -1622,7 +1622,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="line">Line the Keyword occurs on.</param>
         /// <param name="pos">Position the Keyword occurs at.</param>
-        public PredicateKeywordToken(int line, int pos) : base(Token.SUBJECT, "PREDICATE", line, line, pos, pos + 9) { }
+        public PredicateKeywordToken(int line, int pos) : base(Token.PREDICATE, "PREDICATE", line, line, pos, pos + 9) { }
     }
 
     /// <summary>
@@ -1635,7 +1635,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="line">Line the Keyword occurs on.</param>
         /// <param name="pos">Position the Keyword occurs at.</param>
-        public ObjectKeywordToken(int line, int pos) : base(Token.SUBJECT, "OBJECT", line, line, pos, pos + 6) { }
+        public ObjectKeywordToken(int line, int pos) : base(Token.OBJECT, "OBJECT", line, line, pos, pos + 6) { }
     }
     #endregion
 }

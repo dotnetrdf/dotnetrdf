@@ -14,6 +14,7 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode;
 using VDS.RDF.Query.Expressions.Functions.XPath;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
@@ -116,6 +117,7 @@ namespace VDS.RDF.Query
         T VisitIsIriFunction(IsIriFunction isIri);
         T VisitIsLiteralFunction(IsLiteralFunction isLiteral);
         T VisitIsNumericFunction(IsNumericFunction isNumeric);
+        T VisitIsTripleFunction(IsTripleFunction isTripleFunction);
         T VisitLangMatchesFunction(LangMatchesFunction langMatches);
         T VisitRegexFunction(RegexFunction regex);
         T VisitSameTermFunction(SameTermFunction sameTerm);
@@ -165,6 +167,11 @@ namespace VDS.RDF.Query
         T VisitCallFunction(CallFunction call);
         T VisitCoalesceFunction(CoalesceFunction coalesce);
         T VisitIfElseFunction(IfElseFunction ifElse);
+
+        // Triple Node Functions
+        T VisitSubjectFunction(SubjectFunction subjectFunction);
+        T VisitPredicateFunction(PredicateFunction predicateFunction);
+        T VisitObjectFunction(ObjectFunction objectFunction);
 
         // XPath Functions
         T VisitBooleanCast(BooleanCast cast);

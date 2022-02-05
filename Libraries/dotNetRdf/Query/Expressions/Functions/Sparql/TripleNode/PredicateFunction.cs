@@ -47,13 +47,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode
         /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            throw new NotImplementedException();
+            return processor.ProcessPredicateFunction(this, context, binding);
         }
 
         /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
-            throw new NotImplementedException();
+            return visitor.VisitPredicateFunction(this);
         }
 
         /// <inheritdoc />
