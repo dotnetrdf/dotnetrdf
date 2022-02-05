@@ -46,7 +46,7 @@ namespace VDS.RDF.Nodes
         public static IValuedNode AsValuedNode(this INode n)
         {
             if (n == null) return null;
-            if (n is IValuedNode) return (IValuedNode)n;
+            if (n is IValuedNode valuedNode) return valuedNode;
 
             switch (n.NodeType)
             {
@@ -245,6 +245,10 @@ namespace VDS.RDF.Nodes
                 case NodeType.Variable:
                     var v = (IVariableNode)n;
                     return new VariableNode(v.VariableName);
+                case NodeType.Triple:
+                    var tn = (ITripleNode)n;
+                    return new TripleNode(new Triple(tn.Triple.Subject.AsValuedNode(),
+                        tn.Triple.Predicate.AsValuedNode(), tn.Triple.Object.AsValuedNode()));
                 default:
                     throw new RdfQueryException("Cannot create a valued node for an unknown node type");
             }

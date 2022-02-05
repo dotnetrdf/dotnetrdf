@@ -70,6 +70,7 @@ namespace VDS.RDF.Query
         TResult ProcessDistinctModifier(DistinctModifier distinct, TContext context, TBinding binding);
         TResult ProcessGraphPatternTerm(GraphPatternTerm graphPattern, TContext context, TBinding binding);
         TResult ProcessVariableTerm(VariableTerm variable, TContext context, TBinding binding);
+        TResult ProcessTripleNodeTerm(TripleNodeTerm tripleNodeTerm, TContext context, TBinding binding);
         TResult ProcessAdditionExpression(AdditionExpression addition, TContext context, TBinding binding);
 
         TResult ProcessDivisionExpression(DivisionExpression division, TContext context, TBinding binding);

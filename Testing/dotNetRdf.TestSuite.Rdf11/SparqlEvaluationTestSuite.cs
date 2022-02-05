@@ -22,7 +22,7 @@ namespace VDS.RDF.TestSuite.RdfStar
             _output = output;
         }
 
-        [Theory]
+        [Theory(Skip = "To be completed")]
         [MemberData(nameof(SparqlQueryEvalTests))]
         public void RunQueryEvaluationTest(ManifestTestData t)
         {

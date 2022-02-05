@@ -253,19 +253,17 @@ namespace VDS.RDF.Query
 
                                 // Construct the Triples for each Solution
                                 if (context.OutputMultiset is IdentityMultiset) context.OutputMultiset = new SingletonMultiset();
+                                var constructContext = new ConstructContext(rdfHandler, false);
                                 foreach (ISet s in context.OutputMultiset.Sets)
                                 {
-                                    // List<Triple> constructedTriples = new List<Triple>();
                                     try
                                     {
-                                        var constructContext = new ConstructContext(rdfHandler, s, false);
+                                        constructContext.Set = s;
                                         foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns.OfType<IConstructTriplePattern>())
                                         {
                                             try
-
                                             {
                                                 if (!rdfHandler.HandleTriple(p.Construct(constructContext))) ParserHelper.Stop();
-                                                // constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                                             }
                                             catch (RdfQueryException)
                                             {
@@ -280,7 +278,6 @@ namespace VDS.RDF.Query
                                         // entire solution is discarded
                                         continue;
                                     }
-                                    // h.Assert(constructedTriples);
                                 }
                                 rdfHandler.EndRdf(true);
                             }
@@ -550,7 +547,7 @@ namespace VDS.RDF.Query
                                 if (context.InputMultiset.ContainsVariable(
                                     ((IAssignmentPattern) triplePatterns[i]).VariableName))
                                     throw new RdfQueryException(
-                                        "Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+                                        "Cannot use a BIND assignment to BIND to a variable that has previously been declared");
                             }
                             else
                             {

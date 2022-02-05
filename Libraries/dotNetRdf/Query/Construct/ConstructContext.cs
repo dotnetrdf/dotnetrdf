@@ -37,11 +37,7 @@ namespace VDS.RDF.Query.Construct
     /// </summary>
     public class ConstructContext
     {
-        private static ThreadIsolatedReference<NodeFactory> _globalFactory = new ThreadIsolatedReference<NodeFactory>(() => new NodeFactory());
-        private ISet _s;
-        private INodeFactory _factory;
-        private IGraph _g;
-        private bool _preserveBNodes = false;
+        private static readonly ThreadIsolatedReference<NodeFactory> _globalFactory = new(() => new NodeFactory());
         private Dictionary<string, INode> _bnodeMap;
         private MultiDictionary<INode, INode> _nodeMap;
 
@@ -56,12 +52,11 @@ namespace VDS.RDF.Query.Construct
         /// Either the <paramref name="s">Set</paramref>  or <paramref name="g">Graph</paramref> parameters may be null if required.
         /// </para>
         /// </remarks>
-        public ConstructContext(IGraph g, ISet s, bool preserveBNodes)
+        public ConstructContext(IGraph g, bool preserveBNodes)
         {
-            _g = g;
-            _factory = (_g != null ? (INodeFactory)_g : _globalFactory.Value);
-            _s = s;
-            _preserveBNodes = preserveBNodes;
+            Graph = g;
+            NodeFactory = Graph as INodeFactory ?? _globalFactory.Value;
+            PreserveBlankNodes = preserveBNodes;
         }
 
         /// <summary>
@@ -75,53 +70,41 @@ namespace VDS.RDF.Query.Construct
         /// Either the <paramref name="s">Set</paramref>  or <paramref name="factory">Factory</paramref> parameters may be null if required.
         /// </para>
         /// </remarks>
-        public ConstructContext(INodeFactory factory, ISet s, bool preserveBNodes)
+        public ConstructContext(INodeFactory factory, bool preserveBNodes)
         {
-            _factory = (factory != null ? factory : _globalFactory.Value);
-            _s = s;
-            _preserveBNodes = preserveBNodes;
+            NodeFactory = factory ?? _globalFactory.Value;
+            PreserveBlankNodes = preserveBNodes;
+        }
+
+        internal ConstructContext(ISet s, bool preserveBNodes)
+        {
+            NodeFactory = _globalFactory.Value;
+            Set = s;
+            PreserveBlankNodes = preserveBNodes;
+        }
+
+        internal ConstructContext(bool preserveBNodes)
+        {
+            NodeFactory = _globalFactory.Value;
+            PreserveBlankNodes = preserveBNodes;
         }
 
         /// <summary>
         /// Gets the Set that this Context pertains to.
         /// </summary>
-        public ISet Set
-        {
-            get
-            {
-                return _s;
-            }
-        }
+        public ISet Set { get; internal set; }
 
         /// <summary>
         /// Gets the Graph that Triples should be constructed in.
         /// </summary>
-        public IGraph Graph
-        {
-            get
-            {
-                return _g;
-            }
-        }
+        public IGraph Graph { get; }
 
-        private INodeFactory NodeFactory
-        {
-            get
-            {
-                return _factory;
-            }
-        }
+        private INodeFactory NodeFactory { get; }
 
         /// <summary>
         /// Gets whether Blank Nodes bound to variables should be preserved.
         /// </summary>
-        public bool PreserveBlankNodes
-        {
-            get
-            {
-                return _preserveBNodes;
-            }
-        }
+        public bool PreserveBlankNodes { get; }
 
         /// <summary>
         /// Creates a new Blank Node for this Context.
@@ -140,17 +123,17 @@ namespace VDS.RDF.Query.Construct
             if (_bnodeMap.ContainsKey(id)) return _bnodeMap[id];
 
             INode temp;
-            if (_g != null)
+            if (Graph != null)
             {
-                temp = _g.CreateBlankNode();
+                temp = Graph.CreateBlankNode();
             }
-            else if (_factory != null)
+            else if (NodeFactory != null)
             {
-                temp = _factory.CreateBlankNode();
+                temp = NodeFactory.CreateBlankNode();
             }
-            else if (_s != null)
+            else if (Set != null)
             {
-                temp = new BlankNode(id.Substring(2) + _s.ID);
+                temp = new BlankNode(id.Substring(2) + Set.ID);
             }
             else
             {
@@ -185,35 +168,46 @@ namespace VDS.RDF.Query.Construct
 
                 case NodeType.Variable:
                     var v = (IVariableNode)n;
-                    temp = _factory.CreateVariableNode(v.VariableName);
+                    temp = NodeFactory.CreateVariableNode(v.VariableName);
                     break;
 
                 case NodeType.GraphLiteral:
                     var g = (IGraphLiteralNode)n;
-                    temp = _factory.CreateGraphLiteralNode(g.SubGraph);
+                    temp = NodeFactory.CreateGraphLiteralNode(g.SubGraph);
                     break;
 
                 case NodeType.Uri:
                     var u = (IUriNode)n;
-                    temp = _factory.CreateUriNode(u.Uri);
+                    temp = NodeFactory.CreateUriNode(u.Uri);
                     break;
 
                 case NodeType.Literal:
                     var l = (ILiteralNode)n;
                     if (l.DataType != null)
                     {
-                        temp = _factory.CreateLiteralNode(l.Value, l.DataType);
+                        temp = NodeFactory.CreateLiteralNode(l.Value, l.DataType);
                     } 
                     else if (!l.Language.Equals(string.Empty))
                     {
-                        temp = _factory.CreateLiteralNode(l.Value, l.Language);
+                        temp = NodeFactory.CreateLiteralNode(l.Value, l.Language);
                     } 
                     else
                     {
-                        temp = _factory.CreateLiteralNode(l.Value);
+                        temp = NodeFactory.CreateLiteralNode(l.Value);
                     }
                     break;
-                
+
+                case NodeType.Triple:
+                    var t = (ITripleNode)n;
+                    var _s = GetNode(t.Triple.Subject);
+                    var _p = GetNode(t.Triple.Predicate);
+                    var _o = GetNode(t.Triple.Object);
+                    var _t = new Triple(_s, _p, _o);
+                    temp = NodeFactory.CreateTripleNode(_t);
+                    //temp = _factory.CreateTripleNode(new Triple(GetNode(t.Triple.Subject), GetNode(t.Triple.Predicate),
+                    //    GetNode(t.Triple.Object)));
+                    break;
+
                 default:
                     throw new RdfQueryException("Cannot construct unknown Node Types");
             }

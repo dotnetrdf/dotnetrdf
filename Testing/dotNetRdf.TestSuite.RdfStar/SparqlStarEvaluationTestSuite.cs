@@ -57,7 +57,16 @@ namespace VDS.RDF.TestSuite.RdfStar
             }
 
             var tripleStore = new TripleStore();
-            tripleStore.LoadFromFile(dataInputPath);
+            if (dataInputPath.EndsWith(".trig"))
+            {
+                tripleStore.LoadFromFile(dataInputPath, new TriGParser(TriGSyntax.Rdf11Star));
+            }
+            else
+            {
+                var g = new Graph();
+                g.LoadFromFile(dataInputPath, new TurtleParser(TurtleSyntax.Rdf11Star, false));
+                tripleStore.Add(g);
+            }
 
             var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_Star_1_1);
             SparqlQuery query = queryParser.ParseFromFile(queryInputPath);
@@ -84,7 +93,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         {
             ManifestTestData testData =
                 SparqlStarEvalTests.GetTestData(
-                    new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-5"));
+                    new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-1"));
             InvokeTestRunner(testData);
         }
     }

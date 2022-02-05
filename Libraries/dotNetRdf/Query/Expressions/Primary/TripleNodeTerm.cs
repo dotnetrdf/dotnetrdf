@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
-            throw new NotImplementedException();
+            return processor.ProcessTripleNodeTerm(this, context, binding);
         }
 
         /// <inheritdoc />
@@ -62,7 +62,13 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <inheritdoc />
-        public IEnumerable<string> Variables => Enumerable.Empty<string>();
+        public IEnumerable<string> Variables {
+            get
+            {
+                return Node.Triple.Nodes.OfType<IVariableNode>().Select(vn => vn.VariableName).Distinct();
+            }
+
+        }
 
         /// <inheritdoc />
         public SparqlExpressionType Type => SparqlExpressionType.Primary;

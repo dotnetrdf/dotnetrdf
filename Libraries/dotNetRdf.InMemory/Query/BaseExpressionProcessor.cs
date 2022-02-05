@@ -157,6 +157,20 @@ namespace VDS.RDF.Query
             return GetBoundValue(variable.Name, context, binding);
         }
 
+        public IValuedNode ProcessTripleNodeTerm(TripleNodeTerm tnTerm, TContext context, TBinding binding)
+        {
+            INode s = BindNode(tnTerm.Node.Triple.Subject, context, binding);
+            INode p = BindNode(tnTerm.Node.Triple.Predicate, context, binding);
+            INode o = BindNode(tnTerm.Node.Triple.Object, context, binding);
+            return new TripleNode(new Triple(s, p, o)).AsValuedNode();
+        }
+
+        private INode BindNode(INode n, TContext context, TBinding binding)
+        {
+            if (n is IVariableNode vn) return GetBoundValue(vn.VariableName, context, binding);
+            return n;
+        }
+
         public virtual IValuedNode ProcessAdditionExpression(AdditionExpression addition, TContext context, TBinding binding)
         {
             return ApplyBinaryOperator(addition, SparqlOperatorType.Add, context, binding);

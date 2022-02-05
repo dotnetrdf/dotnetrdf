@@ -641,7 +641,7 @@ namespace VDS.RDF.Update
                         // Triples from raw Triple Patterns
                         try
                         {
-                            var constructContext = new ConstructContext(g, s, true);
+                            var constructContext = new ConstructContext(g, true){Set = s};
                             foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns
                                 .OfType<IConstructTriplePattern>())
                             {
@@ -717,7 +717,7 @@ namespace VDS.RDF.Update
 
                             // Do the actual Deletions
                             IGraph h = context.Data.GetModifiableGraph(graphName);
-                            var constructContext = new ConstructContext(h, s, true);
+                            var constructContext = new ConstructContext(h, true){Set = s};
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
@@ -821,7 +821,7 @@ namespace VDS.RDF.Update
                 // Delete the actual Triples
                 INode subj, pred, obj;
 
-                var constructContext = new ConstructContext(target, null, false);
+                var constructContext = new ConstructContext(target, false);
                 foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                 {
                     subj = p.Subject.Construct(constructContext);
@@ -1025,7 +1025,7 @@ namespace VDS.RDF.Update
                     try
                     {
                         // Create a new Construct Context for each Solution
-                        var constructContext = new ConstructContext(null, s, true);
+                        var constructContext = new ConstructContext(s, true);
 
                         // Triples from raw Triple Patterns
                         if (cmd.InsertPattern.TriplePatterns.Count > 0)
@@ -1189,7 +1189,7 @@ namespace VDS.RDF.Update
                 return;
             }
 
-            var constructContext = new ConstructContext(null, null, false);
+            var constructContext = new ConstructContext(false);
             foreach (GraphPattern pattern in patterns)
             {
                 if (!InsertDataCommand.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
@@ -1396,7 +1396,7 @@ namespace VDS.RDF.Update
                         // If the Default Graph is non-existent then Deletions have no effect on it
                         if (g != null)
                         {
-                            var constructContext = new ConstructContext(g, s, true);
+                            var constructContext = new ConstructContext(g, true) {Set = s};
                             foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
@@ -1467,7 +1467,7 @@ namespace VDS.RDF.Update
 
                             // Do the actual Deletions
                             IGraph h = context.Data.GetModifiableGraph(graphName);
-                            var constructContext = new ConstructContext(h, s, true);
+                            var constructContext = new ConstructContext(h, true) {Set = s};
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
@@ -1496,7 +1496,7 @@ namespace VDS.RDF.Update
                     var insertedTriples = new List<Triple>();
                     try
                     {
-                        var constructContext = new ConstructContext(g, s, true);
+                        var constructContext = new ConstructContext(g, true) { Set = s };
                         foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
                             try
@@ -1582,7 +1582,7 @@ namespace VDS.RDF.Update
                             }
 
                             // Do the actual Insertions
-                            var constructContext = new ConstructContext(h, s, true);
+                            var constructContext = new ConstructContext(h, true) { Set = s };
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
