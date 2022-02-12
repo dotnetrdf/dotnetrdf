@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         // TODO: Change signature of PatternItem to allow for patterns with multiple variables
-        public override string VariableName => null;
+        public override string VariableName => QuotedTriple.Subject.VariableName ?? QuotedTriple.Predicate.VariableName ?? QuotedTriple.Object.VariableName;
 
         public bool HasNoExplicitVariables => QuotedTriple.HasNoExplicitVariables;
         

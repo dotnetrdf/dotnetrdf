@@ -270,8 +270,12 @@ namespace VDS.RDF.Query
 
             if (a == null) throw new RdfQueryException("Cannot evaluate a > when one argument is Null");
 
-            var compare = NodeComparer.Compare(a, b);//a.CompareTo(b);
-            return new BooleanNode(compare > 0);
+            if (NodeComparer.TryCompare(a, b, out var compare))
+            {
+                return new BooleanNode(compare > 0);
+            }
+
+            return null;
         }
 
         public virtual IValuedNode ProcessGreaterThanOrEqualToExpression(GreaterThanOrEqualToExpression gte, TContext context,
@@ -290,8 +294,12 @@ namespace VDS.RDF.Query
                 throw new RdfQueryException("Cannot evaluate a >= when one argument is null");
             }
 
-            var compare = NodeComparer.Compare(a, b);// a.CompareTo(b);
-            return new BooleanNode(compare >= 0);
+            if (NodeComparer.TryCompare(a, b, out var compare))
+            {
+                return new BooleanNode(compare >= 0);
+            }
+
+            return null;
         }
 
         public virtual IValuedNode ProcessLessThanExpression(LessThanExpression lt, TContext context, TBinding binding)
@@ -301,9 +309,12 @@ namespace VDS.RDF.Query
             b = lt.RightExpression.Accept(this, context, binding);
 
             if (a == null) throw new RdfQueryException("Cannot evaluate a < when one argument is Null");
-            var compare = NodeComparer.Compare(a, b);
-            return new BooleanNode(compare < 0);
+            if (NodeComparer.TryCompare(a, b, out int compare))
+            {
+                return new BooleanNode(compare < 0);
+            }
 
+            return null;
         }
 
         public virtual IValuedNode ProcessLessThanOrEqualToExpression(LessThanOrEqualToExpression lte, TContext context, TBinding binding)
@@ -320,8 +331,7 @@ namespace VDS.RDF.Query
                 throw new RdfQueryException("Cannot evaluate a <= when one argument is a Null");
             }
 
-            var compare = NodeComparer.Compare(a, b);
-            return new BooleanNode(compare <= 0);
+            return NodeComparer.TryCompare(a, b, out var compare) ? new BooleanNode(compare <= 0) : null;
         }
 
         public virtual IValuedNode ProcessNotEqualsExpression(NotEqualsExpression ne, TContext context, TBinding binding)

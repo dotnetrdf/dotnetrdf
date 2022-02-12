@@ -62,13 +62,13 @@ namespace VDS.RDF.Query.Patterns
             Object = obj;
 
             // Decide on the Index Type
-            if (Subject is NodeMatchPattern or QuotedTriplePattern)
+            if (Subject.VariableName == null)
             {
-                if (Predicate is NodeMatchPattern or QuotedTriplePattern)
+                if (Predicate.VariableName == null)
                 {
                     IndexType = TripleIndexType.SubjectPredicate;
                 }
-                else if (Object is NodeMatchPattern or QuotedTriplePattern)
+                else if (Object.VariableName == null)
                 {
                     IndexType = TripleIndexType.SubjectObject;
                 }
@@ -77,24 +77,20 @@ namespace VDS.RDF.Query.Patterns
                     IndexType = TripleIndexType.Subject;
                 }
             }
-            else if (Predicate is NodeMatchPattern or QuotedTriplePattern)
+            else if (Predicate.VariableName == null)
             {
-                if (Object is NodeMatchPattern or QuotedTriplePattern)
-                {
-                    IndexType = TripleIndexType.PredicateObject;
-                }
-                else
-                {
-                    IndexType = TripleIndexType.Predicate;
-                }
+                IndexType = Object.VariableName == null ? TripleIndexType.PredicateObject : TripleIndexType.Predicate;
             }
-            else if (Object is NodeMatchPattern or QuotedTriplePattern)
+            else if (Object.VariableName == null)
             {
                 IndexType = TripleIndexType.Object;
             }
 
             // Determine variables used
-            if (Subject.VariableName != null) _vars.Add(Subject.VariableName);
+            if (Subject.VariableName != null)
+            {
+                _vars.Add(Subject.VariableName);
+            }
             if (Predicate.VariableName != null)
             {
                 if (!_vars.Contains(Predicate.VariableName))
