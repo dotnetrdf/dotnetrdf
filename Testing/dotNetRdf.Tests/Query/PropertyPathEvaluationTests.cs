@@ -527,7 +527,7 @@ select ?superclass where {
   filter(!isBlank(?superclass))
 }
 ");
-            var processor = new LeviathanQueryProcessor(dataset);
+            var processor = new LeviathanQueryProcessor(dataset, options=>options.QueryExecutionTimeout = -1);
             var results = processor.ProcessQuery(query);
             Assert.NotNull(results);
             TestTools.ShowResults(results, _output);

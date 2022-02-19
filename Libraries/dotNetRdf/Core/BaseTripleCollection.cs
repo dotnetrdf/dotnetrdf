@@ -66,7 +66,7 @@ namespace VDS.RDF
         public abstract int Count { get; }
 
         /// <summary>
-        /// Gets the number of quoted triples in the triple collection
+        /// Gets the number of quoted triples in the triple collection.
         /// </summary>
         public abstract int QuotedCount { get; }
 

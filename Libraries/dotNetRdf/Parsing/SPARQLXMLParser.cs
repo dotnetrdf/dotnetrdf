@@ -389,90 +389,103 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         private INode ParseValue(SparqlXmlParserContext context)
         {
-            if (context.Input.Name.Equals("uri"))
+            switch (context.Input.Name)
             {
-                return ParserHelper.TryResolveUri(context, context.Input.ReadElementContentAsString());
-            }
-            else if (context.Input.Name.Equals("literal"))
-            {
-                if (context.Input.AttributeCount == 0)
-                {
-                    // Literal with no Data Type/Language Specifier
-                    return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
-                }
-                else if (context.Input.AttributeCount >= 1)
-                {
-                    string lang = null;
-                    Uri dt = null;
-                    while (context.Input.MoveToNextAttribute())
+                case "uri":
+                    return ParserHelper.TryResolveUri(context, context.Input.ReadElementContentAsString());
+                case "literal":
+                    switch (context.Input.AttributeCount)
                     {
-                        if (context.Input.Name.Equals("xml:lang"))
+                        case 0:
+                            // Literal with no Data Type/Language Specifier
+                            return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
+                        case >= 1:
+                            {
+                                string lang = null;
+                                Uri dt = null;
+                                while (context.Input.MoveToNextAttribute())
+                                {
+                                    switch (context.Input.Name)
+                                    {
+                                        case "xml:lang":
+                                            // Language is specified
+                                            lang = context.Input.Value;
+                                            break;
+                                        case "datatype":
+                                            // Data Type is specified
+                                            dt = ((IUriNode) ParserHelper.TryResolveUri(context, context.Input.Value)).Uri;
+                                            break;
+                                        default:
+                                            RaiseWarning("SPARQL Result Set has a <literal> element with an unknown attribute '" + context.Input.Name + "'!");
+                                            break;
+                                    }
+                                }
+
+                                if (lang != null && dt != null) throw new RdfParseException("Cannot have both a 'xml:lang' and a 'datatype' attribute on a <literal> element");
+
+                                context.Input.MoveToContent();
+                                if (lang != null)
+                                {
+                                    return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), lang);
+                                }
+
+                                return dt != null ? context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), dt) : context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
+                            }
+                        default:
+                            throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <literal> element has too many Attributes, only 1 of 'xml:lang' or 'datatype' may be specified!");
+                    }
+
+                case "bnode":
+                    {
+                        var bnodeID = context.Input.ReadElementContentAsString();
+                        if (bnodeID.StartsWith("_:"))
                         {
-                            // Language is specified
-                            lang = context.Input.Value;
+                            return context.Handler.CreateBlankNode(bnodeID.Substring(2));
                         }
-                        else if (context.Input.Name.Equals("datatype"))
+                        else if (bnodeID.Contains("://"))
                         {
-                            // Data Type is specified
-                            dt = ((IUriNode) ParserHelper.TryResolveUri(context, context.Input.Value)).Uri;
+                            return context.Handler.CreateBlankNode(bnodeID.Substring(bnodeID.IndexOf("://") + 3));
+                        }
+                        else if (bnodeID.Contains(":"))
+                        {
+                            return context.Handler.CreateBlankNode(bnodeID.Substring(bnodeID.LastIndexOf(':') + 1));
                         }
                         else
                         {
-                            RaiseWarning("SPARQL Result Set has a <literal> element with an unknown attribute '" + context.Input.Name + "'!");
+                            return context.Handler.CreateBlankNode(bnodeID);
                         }
                     }
+                case "unbound":
+                    // HACK: This is a really ancient feature of the SPARQL Results XML format (from Working Draft in 2005) which we support to ensure compatability with old pre-standardisation SPARQL endpoints (like 3store based ones)
+                    context.Input.ReadInnerXml();
+                    return null;
 
-                    if (lang != null && dt != null) throw new RdfParseException("Cannot have both a 'xml:lang' and a 'datatype' attribute on a <literal> element");
+                case "triple":
+                    context.Input.ReadStartElement("triple");
+                    INode s, p, o = null;
+                    if (!context.Input.IsStartElement("subject"))
+                        throw new RdfParseException(
+                            $"Unable to parse a SPARQL Result Set since a <triple> element. Expected to find <subject> as the first child of <triple>.");
+                    context.Input.Read();
+                    s = ParseValue(context);
+                    context.Input.ReadEndElement();
+                    if (!context.Input.IsStartElement("predicate"))
+                        throw new RdfParseException(
+                            $"Unable to parse a SPARQL Result Set since a <triple> element. Expected to find <predicate> as the second child of <triple>.");
+                    context.Input.Read();
+                    p = ParseValue(context);
+                    context.Input.ReadEndElement();
+                    if (!context.Input.IsStartElement("object"))
+                        throw new RdfParseException(
+                            $"Unable to parse a SPARQL Result Set since a <triple> element. Expected to find <object> as the third child of <triple>.");
+                    context.Input.Read();
+                    o = ParseValue(context);
+                    context.Input.ReadEndElement();
+                    context.Input.ReadEndElement();
+                    return context.Handler.CreateTripleNode(new Triple(s, p, o));
 
-                    context.Input.MoveToContent();
-                    if (lang != null)
-                    {
-                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), lang);
-                    } 
-                    else if (dt != null)
-                    {
-                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), dt);
-                    }
-                    else
-                    {
-                        // Just a plain literal with lots of custom attributes
-                        return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
-                    }
-                }
-                else
-                {
-                    throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <literal> element has too many Attributes, only 1 of 'xml:lang' or 'datatype' may be specified!");
-                }
-            }
-            else if (context.Input.Name.Equals("bnode"))
-            {
-                var bnodeID = context.Input.ReadElementContentAsString();
-                if (bnodeID.StartsWith("_:"))
-                {
-                    return context.Handler.CreateBlankNode(bnodeID.Substring(2));
-                }
-                else if (bnodeID.Contains("://"))
-                {
-                    return context.Handler.CreateBlankNode(bnodeID.Substring(bnodeID.IndexOf("://") + 3));
-                }
-                else if (bnodeID.Contains(":"))
-                {
-                    return context.Handler.CreateBlankNode(bnodeID.Substring(bnodeID.LastIndexOf(':') + 1));
-                }
-                else
-                {
-                    return context.Handler.CreateBlankNode(bnodeID);
-                }
-            }
-            else if (context.Input.Name.Equals("unbound"))
-            {
-                // HACK: This is a really ancient feature of the SPARQL Results XML format (from Working Draft in 2005) which we support to ensure compatability with old pre-standardisation SPARQL endpoints (like 3store based ones)
-                context.Input.ReadInnerXml();
-                return null;
-            }
-            else
-            {
-                throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element contains an unexpected element <" + context.Input.Name + ">!");
+                default:
+                    throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element contains an unexpected element <" + context.Input.Name + ">!");
             }
         }
 

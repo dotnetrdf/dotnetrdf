@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
@@ -39,13 +40,13 @@ namespace VDS.RDF.Query.Patterns
             QuotedTriple = qtPattern;
         }
 
-        public override bool Accepts(IPatternEvaluationContext context, INode obj)
+        public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
         {
             if (obj is ITripleNode tripleNode)
             {
-                return QuotedTriple.Subject.Accepts(context, tripleNode.Triple.Subject) &&
-                       QuotedTriple.Predicate.Accepts(context, tripleNode.Triple.Predicate) &&
-                       QuotedTriple.Object.Accepts(context, tripleNode.Triple.Object);
+                return QuotedTriple.Subject.Accepts(context, tripleNode.Triple.Subject, s) &&
+                       QuotedTriple.Predicate.Accepts(context, tripleNode.Triple.Predicate, s) &&
+                       QuotedTriple.Object.Accepts(context, tripleNode.Triple.Object, s);
             }
 
             return false;
@@ -61,19 +62,50 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <inheritdoc />
+        public override INode Bind(ISet variableBindings)
+        {
+            return new TripleNode(new Triple(QuotedTriple.Subject.Bind(variableBindings),
+                QuotedTriple.Predicate.Bind(variableBindings),
+                QuotedTriple.Object.Bind(variableBindings)));
+        }
+
+        /// <inheritdoc />
+        public override void AddBindings(INode forNode, ISet toSet)
+        {
+            if (forNode is not ITripleNode tn)
+            {
+                return;
+            }
+
+            QuotedTriple.Subject.AddBindings(tn.Triple.Subject, toSet);
+            QuotedTriple.Predicate.AddBindings(tn.Triple.Predicate, toSet);
+            QuotedTriple.Object.AddBindings(tn.Triple.Object, toSet);
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"<< {QuotedTriple.Subject} {QuotedTriple.Predicate} {QuotedTriple.Object} >>";
         }
 
-        // TODO: Change signature of PatternItem to allow for patterns with multiple variables
-        public override string VariableName => QuotedTriple.Subject.VariableName ?? QuotedTriple.Predicate.VariableName ?? QuotedTriple.Object.VariableName;
+        /// <inheritdoc />
+        public override IEnumerable<string> Variables => QuotedTriple.Subject.Variables
+            .Concat(QuotedTriple.Predicate.Variables).Concat(QuotedTriple.Object.Variables).Distinct();
 
+        /// <summary>
+        /// Returns true if the quoted triple pattern does not contain any <see cref="VariablePattern"/> pattern items.
+        /// </summary>
         public bool HasNoExplicitVariables => QuotedTriple.HasNoExplicitVariables;
         
+        /// <summary>
+        /// Returns true if the quoted triple pattern dost not contain any <see cref="BlankNodePattern"/> pattern items.
+        /// </summary>
         public bool HasNoBlankVariables => QuotedTriple.HasNoBlankVariables;
 
-        
+        /// <inheritdoc />
+        public override bool IsFixed => QuotedTriple.Variables.Count == 0;
+
+
         /// <summary>
         /// Create a set of bindings by matching <paramref name="node"/> to this pattern.
         /// </summary>

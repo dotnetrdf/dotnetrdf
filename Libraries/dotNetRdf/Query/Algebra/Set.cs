@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 _values.Add(variable, value);
             }
-            else
+            else if (!_values[variable].Equals(value))
             {
                 throw new RdfQueryException("The value of a variable in a Set cannot be changed");
             }

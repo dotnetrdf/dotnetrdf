@@ -62,13 +62,13 @@ namespace VDS.RDF.Query.Patterns
             Object = obj;
 
             // Decide on the Index Type
-            if (Subject.VariableName == null)
+            if (Subject.IsFixed)
             {
-                if (Predicate.VariableName == null)
+                if (Predicate.IsFixed)
                 {
                     IndexType = TripleIndexType.SubjectPredicate;
                 }
-                else if (Object.VariableName == null)
+                else if (Object.IsFixed)
                 {
                     IndexType = TripleIndexType.SubjectObject;
                 }
@@ -77,70 +77,55 @@ namespace VDS.RDF.Query.Patterns
                     IndexType = TripleIndexType.Subject;
                 }
             }
-            else if (Predicate.VariableName == null)
+            else if (Predicate.IsFixed)
             {
-                IndexType = Object.VariableName == null ? TripleIndexType.PredicateObject : TripleIndexType.Predicate;
+                IndexType = Object.IsFixed ? TripleIndexType.PredicateObject : TripleIndexType.Predicate;
             }
-            else if (Object.VariableName == null)
+            else if (Object.IsFixed)
             {
                 IndexType = TripleIndexType.Object;
             }
 
             // Determine variables used
-            if (Subject.VariableName != null)
+            if (!Subject.IsFixed)
             {
-                _vars.Add(Subject.VariableName);
+                _vars.AddRange(Subject.Variables);
             }
-            if (Predicate.VariableName != null)
+            if (!Predicate.IsFixed)
             {
-                if (!_vars.Contains(Predicate.VariableName))
+                foreach (var pv in Predicate.Variables)
                 {
-                    _vars.Add(Predicate.VariableName);
+                    if (!_vars.Contains(pv)) _vars.Add(pv);
                 }
-                else
-                {
-                    Predicate.Repeated = true;
-                }
+                Predicate.Repeated = Subject.Equals(Predicate);
             }
-            if (Object.VariableName != null)
+            if (!Object.IsFixed)
             {
-                if (!_vars.Contains(Object.VariableName))
+                foreach (var ov in Object.Variables)
                 {
-                    _vars.Add(Object.VariableName);
+                    if (!_vars.Contains(ov)) _vars.Add(ov);
                 }
-                else
-                {
-                    Object.Repeated = true;
-                }
+
+                Object.Repeated = Object.Equals(Subject) || Object.Equals(Predicate);
             }
             _vars.Sort();
             if (_vars.Count == 0) IndexType = TripleIndexType.NoVariables;
         }
 
         /// <summary>
-        /// Gets whether a given Triple is accepted by this Pattern in the given Context.
+        /// Evaluates a triple match pattern against the given triple.
         /// </summary>
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Triple to test.</param>
-        /// <returns></returns>
-        public bool Accepts(IPatternEvaluationContext context, Triple obj)
+        /// <returns>A set of variable bindings if the <paramref name="obj"/> matches, null otherwise.</returns>
+        public ISet Evaluate(IPatternEvaluationContext context, Triple obj)
         {
-            if (!Predicate.Repeated && !Object.Repeated)
-            {
-                return (Subject.Accepts(context, obj.Subject) && Predicate.Accepts(context, obj.Predicate) && Object.Accepts(context, obj.Object));
-            }
-            else if (Predicate.Repeated && !Object.Repeated)
-            {
-                return (Subject.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && Object.Accepts(context, obj.Object));
-            }
-            else if (!Predicate.Repeated && Object.Repeated)
-            {
-                return (Subject.Accepts(context, obj.Subject) && Predicate.Accepts(context, obj.Predicate) && obj.Subject.Equals(obj.Object));
-            }
-            else
-            {
-                return (Subject.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && obj.Subject.Equals(obj.Object));
-            }
+            ISet set = new Set();
+            return Subject.Accepts(context, obj.Subject, set) &&
+                   Predicate.Accepts(context, obj.Predicate, set) &&
+                   Object.Accepts(context, obj.Object, set)
+                ? set
+                : null;
         }
 
         /// <summary>
@@ -187,11 +172,13 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<string>(); } }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessTriplePattern(this, context);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitTriplePattern(this);
@@ -207,8 +194,10 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (Subject is VariablePattern && Predicate is VariablePattern && Object is VariablePattern)  &&
-                    (Subject.VariableName != Predicate.VariableName && Predicate.VariableName != Object.VariableName && Subject.VariableName != Object.VariableName);
+                return Subject is VariablePattern svp  && Predicate is VariablePattern pvp && Object is VariablePattern ovp &&
+                       svp.VariableName != pvp.VariableName &&
+                       pvp.VariableName != ovp.VariableName &&
+                       svp.VariableName != ovp.VariableName;
             }
 
         }
@@ -221,24 +210,19 @@ namespace VDS.RDF.Query.Patterns
         public ISet CreateResult(Triple t)
         {
             ISet s = new Set();
-            if (Subject.VariableName != null)
+            if (!Subject.IsFixed)
             {
-                s.Add(Subject.VariableName, t.Subject);
+                Subject.AddBindings(t.Subject, s);
             }
-            else if (Subject is QuotedTriplePattern qtp)
+
+            if (!Predicate.IsFixed && !Predicate.Repeated)
             {
-                s = qtp.CreateResults(t.Subject)?.Join(s) ?? s;
+                Predicate.AddBindings(t.Predicate, s);
             }
-            if (Predicate.VariableName != null && !Predicate.Repeated)
+
+            if (!Object.IsFixed && !Object.Repeated)
             {
-                s.Add(Predicate.VariableName, t.Predicate);
-            }
-            if (Object.VariableName != null && !Object.Repeated)
-            {
-                s.Add(Object.VariableName, t.Object);
-            } else if (Object is QuotedTriplePattern qtp)
-            {
-                s = qtp.CreateResults(t.Object)?.Join(s) ?? s;
+                Object.AddBindings(t.Object, s);
             }
             return s;
         }

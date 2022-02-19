@@ -25,6 +25,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
@@ -35,15 +37,13 @@ namespace VDS.RDF.Query.Patterns
     public class BlankNodePattern 
         : PatternItem
     {
-        private string _name;
-
         /// <summary>
         /// Creates a new Pattern representing a Blank Node.
         /// </summary>
         /// <param name="name">Blank Node ID.</param>
         public BlankNodePattern(string name)
         {
-            _name = "_:" + name;
+            ID = "_:" + name;
         }
 
         /// <summary>
@@ -60,13 +60,10 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Blank Node ID.
         /// </summary>
-        public string ID
-        {
-            get
-            {
-                return _name;
-            }
-        }
+        public string ID { get; }
+
+        /// <inheritdoc />
+        public override bool IsFixed => false;
 
         /// <summary>
         /// Checks whether the given Node is a valid value for the Temporary Variable.
@@ -74,27 +71,16 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        public override bool Accepts(IPatternEvaluationContext context, INode obj)
+        public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
         {
-            if (context.RigorousEvaluation || RigorousEvaluation)
+            if (s.ContainsVariable(ID)) return obj.Equals(s[ID]);
+            if ((context.RigorousEvaluation || RigorousEvaluation) && context.ContainsVariable(ID) && !context.ContainsValue(ID, obj))
             {
-                if (context.ContainsVariable(_name))
-                {
-                    return context.ContainsValue(_name, obj);
-                }
-                else if (Repeated)
-                {
-                    return true;
-                }
-                else
-                {
-                    return true;
-                }
+                return false;
             }
-            else
-            {
-                return true;
-            }
+
+            s.Add(ID, obj);
+            return true;
         }
 
         /// <summary>
@@ -104,7 +90,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override INode Construct(ConstructContext context)
         {
-            return context.GetBlankNode(_name);
+            return context.GetBlankNode(ID);
         }
 
         /// <summary>
@@ -113,18 +99,25 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return _name;
+            return ID;
         }
 
         /// <summary>
         /// Gets the Temporary Variable Name of this Pattern.
         /// </summary>
-        public override string VariableName
+        public override IEnumerable<string> Variables => ID.AsEnumerable();
+
+        /// <inheritdoc />
+        public override void AddBindings(INode forNode, ISet toSet)
         {
-            get
-            {
-                return _name;
-            }
+            toSet.Add(ID, forNode);
+        }
+
+        /// <inheritdoc />
+        public override INode Bind(ISet variableBindings)
+        {
+            //return new BlankNode(ID.Substring(2));
+            return variableBindings[ID];
         }
     }
 }

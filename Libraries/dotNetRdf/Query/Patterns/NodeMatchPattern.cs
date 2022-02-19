@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Writing.Formatting;
 
@@ -61,16 +62,14 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        public override bool Accepts(IPatternEvaluationContext context, INode obj)
+        public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
         {
             if (context.RigorousEvaluation || RigorousEvaluation)
             {
                 return Node.Equals(obj);
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         /// <summary>
@@ -82,6 +81,18 @@ namespace VDS.RDF.Query.Patterns
             return context.GetNode(Node);
         }
 
+        /// <inheritdoc />
+        public override INode Bind(ISet variableBindings)
+        {
+            return Node;
+        }
+
+        /// <inheritdoc />
+        public override void AddBindings(INode forNode, ISet toSet)
+        {
+            // No-op for fixed item patterns
+        }
+
         /// <summary>
         /// Gets a String representation of the Node.
         /// </summary>
@@ -90,6 +101,9 @@ namespace VDS.RDF.Query.Patterns
         {
             return new SparqlFormatter().Format(Node);
         }
+
+        /// <inheritdoc />
+        public override bool IsFixed => true;
 
         /// <summary>
         /// Gets the Node that this Pattern matches.

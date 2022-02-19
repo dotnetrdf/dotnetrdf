@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Paths
             SparqlContext = context;
             PathStart = start;
             PathEnd = end;
-            if (PathStart.VariableName == null && PathEnd.VariableName == null) CanAbortEarly = true;
+            if (PathStart.IsFixed && PathEnd.IsFixed) CanAbortEarly = true;
             PathStart.RigorousEvaluation = true;
             PathEnd.RigorousEvaluation = true;
         }

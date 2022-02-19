@@ -136,6 +136,11 @@ namespace VDS.RDF.Query.Algebra
             return false;
         }
 
+        public override bool ContainsVariables(IEnumerable<string> vars)
+        {
+            return false;
+        }
+
         /// <summary>
         /// Returns true since the Null Multiset is disjoint with all Multisets.
         /// </summary>

@@ -192,12 +192,12 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether a given triple is accepted by this pattern.
+        /// Evaluate the given triple against this pattern, returning a set of variable bindings if it matches or null if it does not.
         /// </summary>
-        /// <param name="context">Context.</param>
-        /// <param name="t">Triple.</param>
+        /// <param name="context"></param>
+        /// <param name="t"></param>
         /// <returns></returns>
-        bool Accepts(IPatternEvaluationContext context, Triple t);
+        ISet Evaluate(IPatternEvaluationContext context, Triple t);
 
         /// <summary>
         /// Creates a set from a Triple.

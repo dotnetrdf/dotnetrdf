@@ -317,7 +317,7 @@ namespace VDS.RDF
         /// <summary>
         /// Returns an integer indicating the ordering of this Node compared to a Triple Node.
         /// </summary>
-        /// <param name="other">Triple Node to compare with</param>
+        /// <param name="other">Triple Node to compare with.</param>
         /// <returns></returns>
         public override int CompareTo(ITripleNode other)
         {

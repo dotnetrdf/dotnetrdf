@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public bool AreBothTerms()
         {
-            return PathStart.VariableName == null && PathEnd.VariableName == null;
+            return PathStart.IsFixed && PathEnd.IsFixed;
         }
 
         /// <summary>

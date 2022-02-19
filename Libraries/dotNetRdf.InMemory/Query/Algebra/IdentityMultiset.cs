@@ -147,6 +147,11 @@ namespace VDS.RDF.Query.Algebra
             return false;
         }
 
+        public override bool ContainsVariables(IEnumerable<string> vars)
+        {
+            return false;
+        }
+
         /// <summary>
         /// Returns False since the Identity Multiset is not disjoint with anything.
         /// </summary>

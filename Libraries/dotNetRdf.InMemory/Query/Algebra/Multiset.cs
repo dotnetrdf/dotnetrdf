@@ -139,6 +139,11 @@ namespace VDS.RDF.Query.Algebra
             return _variables.Contains(var);
         }
 
+        public override bool ContainsVariables(IEnumerable<string> vars)
+        {
+            return vars.All(_variables.Contains);
+        }
+
         /// <summary>
         /// Determines whether this Multiset is disjoint with another Multiset.
         /// </summary>

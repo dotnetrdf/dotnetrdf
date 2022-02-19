@@ -24,7 +24,8 @@
 // </copyright>
 */
 
-using System;
+using System.Collections.Generic;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
@@ -35,20 +36,18 @@ namespace VDS.RDF.Query.Patterns
     public class VariablePattern 
         : PatternItem
     {
-        private readonly string _varname;
-
         /// <summary>
         /// Creates a new Variable Pattern.
         /// </summary>
         /// <param name="name">Variable name.</param>
         public VariablePattern(string name)
         {
-            _varname = name;
+            VariableName = name;
 
             // Strip leading ?/$ if present
-            if (_varname.StartsWith("?") || _varname.StartsWith("$"))
+            if (VariableName.StartsWith("?") || VariableName.StartsWith("$"))
             {
-                _varname = _varname.Substring(1);
+                VariableName = VariableName.Substring(1);
             }
         }
 
@@ -69,27 +68,15 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        public override bool Accepts(IPatternEvaluationContext context, INode obj)
+        public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
         {
-            if (context.RigorousEvaluation || RigorousEvaluation)
+            if (s.ContainsVariable(VariableName)) return s[VariableName].Equals(obj);
+            if ((context.RigorousEvaluation || RigorousEvaluation) && context.ContainsVariable(VariableName) && !context.ContainsValue(VariableName, obj))
             {
-                if (context.ContainsVariable(_varname))
-                {
-                    return context.ContainsValue(_varname, obj);
-                }
-                else if (Repeated)
-                {
-                    return true;
-                }
-                else
-                {
-                    return true;
-                }
+                return false;
             }
-            else
-            {
-                return true;
-            }
+            s.Add(VariableName, obj);
+            return true;
         }
 
         /// <summary>
@@ -99,34 +86,26 @@ namespace VDS.RDF.Query.Patterns
         /// <returns>The Node which is bound to this Variable in this Solution.</returns>
         public override INode Construct(ConstructContext context)
         {
-            INode value = context.Set[_varname];
+            INode value = context.Set[VariableName];
 
             if (value == null) throw new RdfQueryException("Unable to construct a Value for this Variable for this solution as it is bound to a null");
-            switch (value.NodeType)
+            return value.NodeType switch
             {
-                case NodeType.Blank:
-                    return new BlankNode(((IBlankNode)value).InternalID);
-                    //if (!context.PreserveBlankNodes && value.GraphUri != null)
-                    //{
-                    //    // Rename Blank Node based on the Graph Uri Hash Code
-                    //    var hash = value.GraphUri.GetEnhancedHashCode();
-                    //    if (hash >= 0)
-                    //    {
-                    //        return new BlankNode(((IBlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
-                    //    }
-                    //    else
-                    //    {
-                    //        return new BlankNode(((IBlankNode)value).InternalID + hash);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    return new BlankNode(((IBlankNode)value).InternalID);
-                    //}
+                NodeType.Blank => new BlankNode(((IBlankNode)value).InternalID),
+                _ => context.GetNode(value),
+            };
+        }
 
-                default:
-                    return context.GetNode(value);
-            }
+        /// <inheritdoc />
+        public override INode Bind(ISet variableBindings)
+        {
+            return variableBindings[VariableName];
+        }
+
+        /// <inheritdoc />
+        public override void AddBindings(INode forNode, ISet toSet)
+        {
+            toSet.Add(VariableName, forNode);
         }
 
         /// <summary>
@@ -135,12 +114,20 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return "?" + _varname;
+            return "?" + VariableName;
         }
+
+        /// <summary>
+        /// Gets the name of the variable that this pattern matches.
+        /// </summary>
+        public string VariableName { get; }
 
         /// <summary>
         /// Gets the Name of the Variable this Pattern matches.
         /// </summary>
-        public override string VariableName => _varname;
+        public override IEnumerable<string> Variables => VariableName.AsEnumerable();
+
+        /// <inheritdoc />
+        public override bool IsFixed => false;
     }
 }

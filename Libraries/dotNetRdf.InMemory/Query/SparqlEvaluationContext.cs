@@ -326,12 +326,12 @@ namespace VDS.RDF.Query
             // Stuff for more precise indexing
             IEnumerable<INode> values = null;
             IEnumerable<ISet> valuePairs = null;
-            var subjVar = triplePattern.Subject.VariableName;
-            var predVar = triplePattern.Predicate.VariableName;
-            var objVar = triplePattern.Object.VariableName;
-            var boundSubj = (subjVar != null && InputMultiset.ContainsVariable(subjVar));
-            var boundPred = (predVar != null && InputMultiset.ContainsVariable(predVar));
-            var boundObj = (objVar != null && InputMultiset.ContainsVariable(objVar));
+            var subjVars = triplePattern.Subject.Variables.ToList();
+            var predVars = triplePattern.Predicate.Variables.ToList();
+            var objVars = triplePattern.Object.Variables.ToList();
+            var boundSubj = !triplePattern.Subject.IsFixed && InputMultiset.ContainsVariables(subjVars);
+            var boundPred = !triplePattern.Predicate.IsFixed && InputMultiset.ContainsVariables(predVars);
+            var boundObj = !triplePattern.Object.IsFixed && InputMultiset.ContainsVariables(objVars);
 
             // Expand quoted triple patterns in subject or object position of the triple pattern
             if (triplePattern.Subject is QuotedTriplePattern subjectTriplePattern)
@@ -348,6 +348,16 @@ namespace VDS.RDF.Query
                         new NodeMatchPattern(tn))));
             }
 
+            // Here each of the variable lists should contain either 1 or 0 items
+            if (subjVars.Count > 1 || predVars.Count > 1 || objVars.Count > 1)
+            {
+                throw new RdfQueryException(
+                    "Internal error evaluating triple pattern. Found a pattern item with multiple variables when a maximum of one is expected.");
+            }
+
+            var subjVar = subjVars.FirstOrDefault();
+            var predVar = predVars.FirstOrDefault();
+            var objVar = objVars.FirstOrDefault();
             switch (triplePattern.IndexType)
             {
                 case TripleIndexType.Subject:
@@ -672,10 +682,8 @@ namespace VDS.RDF.Query
             {
                 foreach (Triple t in GetTriples(triplePattern))
                 {
-                    if (triplePattern.Accepts(this, t))
-                    {
-                        OutputMultiset.Add(triplePattern.CreateResult(t));
-                    }
+                    ISet result = triplePattern.Evaluate(this, t);
+                    if (result != null) OutputMultiset.Add(result);
                 }
             }
         }

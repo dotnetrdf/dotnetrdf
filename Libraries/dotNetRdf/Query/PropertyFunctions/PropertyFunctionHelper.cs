@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.PropertyFunctions
             // the collection forms to provide extended arguments
             foreach (PatternItem key in funcInfo.Keys)
             {
-                if (key.VariableName != null && key.VariableName.StartsWith("_:"))
+                if (key is BlankNodePattern)
                 {
                     // If LHS is a blank node may be collection form
                     var count = funcInfo[key].Patterns.Count;
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.PropertyFunctions
                     funcInfo[key].SubjectArgs.Add(key);
                 }
                 PatternItem searchKey = funcInfo[key].Patterns.First().Object;
-                if (searchKey.VariableName != null && searchKey.VariableName.StartsWith("_:"))
+                if (searchKey is BlankNodePattern)
                 {
                     // If RHS is a blank node may be collection form
                     var count = funcInfo[key].Patterns.Count;
@@ -148,12 +148,9 @@ namespace VDS.RDF.Query.PropertyFunctions
                 any = false;
                 foreach (IMatchTriplePattern tp in ps.ToList())
                 {
-                    if (tp.Subject.VariableName == nextSubj.VariableName)
+                    if (tp.Subject.Variables.All(v=>nextSubj.Variables.Contains(v)))
                     {
-                        var predItem = tp.Predicate as NodeMatchPattern;
-                        if (predItem == null) continue;
-                        var predNode = predItem.Node as IUriNode;
-                        if (predNode == null) continue;
+                        if (tp.Predicate is not NodeMatchPattern { Node: IUriNode predNode }) continue;
                         if (!argSeen && predNode.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfListFirst))
                         {
                             funcInfo[key].Patterns.Add(tp);
@@ -166,7 +163,7 @@ namespace VDS.RDF.Query.PropertyFunctions
                         {
                             funcInfo[key].Patterns.Add(tp);
                             ps.Remove(tp);
-                            recurse = tp.Object.VariableName != null;
+                            recurse = !tp.Object.IsFixed;
                             nextSubj = tp.Object;
                             any = true;
                             argSeen = false;

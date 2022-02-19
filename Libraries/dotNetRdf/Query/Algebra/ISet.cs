@@ -120,6 +120,13 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <returns></returns>
         ISet Copy();
+
+        /// <summary>
+        /// Return true if this set contains a non-null value for all of the specified variables.
+        /// </summary>
+        /// <param name="vars">Variable names</param>
+        /// <returns></returns>
+        bool BindsAll(IEnumerable<string> vars);
     }
 
     /// <summary>
@@ -219,6 +226,13 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <returns></returns>
         public abstract ISet Copy();
+
+
+        /// <inheritdoc />
+        public virtual bool BindsAll(IEnumerable<string> variables)
+        {
+            return variables.All(v => this[v] != null);
+        }
 
         /// <summary>
         /// Gets whether the Set is equal to another set.
