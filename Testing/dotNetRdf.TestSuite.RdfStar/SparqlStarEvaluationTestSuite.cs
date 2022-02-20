@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Update;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -94,12 +95,48 @@ namespace VDS.RDF.TestSuite.RdfStar
             }
         }
 
+        [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#UpdateEvaluationTest")]
+        public void UpdateEvaluationTest(ManifestTestData t)
+        {
+            var updateRequestPath = t.Manifest.ResolveResourcePath(t.UpdateRequest);
+            var dataInputPath = t.Manifest.ResolveResourcePath(t.UpdateData);
+            var resultInputPath = t.Manifest.ResolveResourcePath(t.UpdateResult);
+
+            var resultStore = new TripleStore();
+            resultStore.LoadFromFile(resultInputPath, new TriGParser(TriGSyntax.Rdf11Star));
+
+            var tripleStore = new TripleStore();
+            if (dataInputPath.EndsWith(".nq"))
+            {
+                tripleStore.LoadFromFile(dataInputPath, new NQuadsParser(NQuadsSyntax.Rdf11Star));
+            } else if (dataInputPath.EndsWith(".trig"))
+            {
+                tripleStore.LoadFromFile(dataInputPath, new TriGParser(TriGSyntax.Rdf11Star));
+            }
+            else
+            {
+                Assert.True(false, $"Unexpected data input path: {dataInputPath}");
+            }
+
+            var updateEngine = new LeviathanUpdateProcessor(tripleStore, options =>
+            {
+                options.UsePLinqEvaluation = false;
+#if DEBUG
+                options.QueryExecutionTimeout = -1;
+#endif
+            });
+            var updateParser = new SparqlUpdateParser(SparqlQuerySyntax.Sparql_Star_1_1);
+            SparqlUpdateCommandSet updateCommandSet = updateParser.ParseFromFile(updateRequestPath);
+            updateEngine.ProcessCommandSet(updateCommandSet);
+            TestTools.AssertEqual(resultStore, tripleStore, _output);
+        }
+
         [Fact]
         public void RunSingle()
         {
             ManifestTestData testData =
                 SparqlStarEvalTests.GetTestData(
-                    new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-results-1x"));
+                    new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-1"));
             InvokeTestRunner(testData);
         }
     }

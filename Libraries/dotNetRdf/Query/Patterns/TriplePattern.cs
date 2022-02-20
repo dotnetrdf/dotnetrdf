@@ -30,6 +30,7 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Patterns
 {
@@ -53,6 +54,9 @@ namespace VDS.RDF.Query.Patterns
             {
                 case BlankNodePattern:
                     throw new RdfParseException("Cannot use a Triple Pattern with a Blank Node Predicate in a SPARQL Query");
+                case NodeMatchPattern { Node: ITripleNode }:
+                    throw new RdfParseException(
+                        "Cannot use a triple pattern with a quoted triple predicate in a SPARQL query.");
                 case QuotedTriplePattern:
                     throw new RdfParseException(
                         "Cannot use a Triple Pattern with a Triple Node predicate in a SPARQL Query");

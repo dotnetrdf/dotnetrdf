@@ -23,6 +23,7 @@ namespace dotNetRdf.TestSupport
             Graph = new Graph { BaseUri = baseUri };
             Graph.NamespaceMap.AddNamespace("mf", UriFactory.Root.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
             Graph.NamespaceMap.AddNamespace("qt", UriFactory.Root.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-query#"));
+            Graph.NamespaceMap.AddNamespace("ut", UriFactory.Root.Create("http://www.w3.org/2009/sparql/tests/test-update#"));
             Graph.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
             _mfInclude = Graph.CreateUriNode("mf:include");
             LocalDirectory = Path.GetDirectoryName(localFilePath);

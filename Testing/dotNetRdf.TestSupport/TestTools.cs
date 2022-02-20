@@ -483,7 +483,8 @@ namespace VDS.RDF
             foreach (IGraph actualGraph in actual.Graphs)
             {
                 Assert.True((actualGraph.Name != null && bnodeMap.ContainsKey(actualGraph.Name)) || 
-                            expected.Graphs.Contains(actualGraph.Name));
+                            expected.Graphs.Contains(actualGraph.Name) || actualGraph.IsEmpty, 
+                    $"Found an unexpected graph {actualGraph.Name} in the store after update.");
             }
         }
     }
