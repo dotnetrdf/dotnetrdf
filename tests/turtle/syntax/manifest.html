@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<meta charset="UTF-8">
+<html lang="en"><meta charset="UTF-8">
 <style>
     .included a, .entries a {
         text-decoration: none;
@@ -52,9 +52,15 @@
         background-color: lightPink;
     }
 </style>
-<title>manifest</title>
-<h1>manifest</h1>
-<p>Generated from <a href="manifest.jsonld">manifest.jsonld</a></p><p><strong>Entries:</strong></p>
+<title>Turtle-star Syntax Tests</title>
+<h1>Turtle-star Syntax Tests</h1>
+<table class="properties">
+<tr class="generated"><th>Generated from:</th><td><a href="manifest.jsonld">manifest.jsonld</a></td>
+<tr class="creator"><th>creator:</th><td> RDF-star Interest Group within the W3C RDF-DEV Community Group</td>
+<tr class="issued"><th>issued:</th><td>2021-06-21</td>
+<tr class="modified"><th>modified:</th><td>2021-07-18</td>
+</table>
+<p><strong>Entries:</strong></p>
 <ul class="entries">
 <li class="proposed"><a href="#turtle-star-1">Turtle-star - subject quoted triple</a>
 <li class="proposed"><a href="#turtle-star-2">Turtle-star - object quoted triple</a>
@@ -447,22 +453,22 @@ PREFIX : &lt;http://example.com/ns#&gt;
 &lt;&lt; &lt;http://example/s1&gt; &lt;http://example/p1&gt; &lt;http://example/o1&gt; &gt;&gt; &lt;http://example/q&gt; &lt;&lt; &lt;http://example/s2&gt; &lt;http://example/p2&gt; &lt;http://example/o2&gt; &gt;&gt; .
 </pre>
 <div>MUST be accepted</div>
-</section><section id="nt-ttl-star-4" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+</section><section id="nt-ttl-star-4" class="entry proposed TestTurtlePositiveSyntax">
 <h2>N-Triples-star as Turtle-star - whitespace and terms <a href="#nt-ttl-star-4">🔗</a></h2>
 <table class="properties">
 <tr class="status"><th>status:</th><td>proposed</td>
-<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+<tr class="type"><th>type:</th><td>TestTurtlePositiveSyntax</td>
 </table>
 <div><code><a href="nt-ttl-star-syntax-4.ttl">nt-ttl-star-syntax-4.ttl</a></code></div>
 <pre>
 &lt;&lt;&lt;http://example/s1&gt;&lt;http://example/p1&gt;&lt;http://example/o1&gt;&gt;&gt;&lt;http://example/q&gt;&lt;&lt;&lt;http://example/s2&gt;&lt;http://example/p2&gt;&lt;http://example/o2&gt;&gt;&gt;.
 </pre>
 <div>MUST be accepted</div>
-</section><section id="nt-ttl-star-5" class="entry proposed rdft:TestNTriplesPositiveSyntax">
+</section><section id="nt-ttl-star-5" class="entry proposed TestTurtlePositiveSyntax">
 <h2>N-Triples-star as Turtle-star - Nested, no whitespace <a href="#nt-ttl-star-5">🔗</a></h2>
 <table class="properties">
 <tr class="status"><th>status:</th><td>proposed</td>
-<tr class="type"><th>type:</th><td>rdft:TestNTriplesPositiveSyntax</td>
+<tr class="type"><th>type:</th><td>TestTurtlePositiveSyntax</td>
 </table>
 <div><code><a href="nt-ttl-star-syntax-5.ttl">nt-ttl-star-syntax-5.ttl</a></code></div>
 <pre>
@@ -562,4 +568,4 @@ _:b0 &lt;http://example/p&gt; &lt;http://example/o&gt; .
 &lt;&lt; &lt;http://example/s&gt; _:label &lt;http://example/o&gt; &gt;&gt; &lt;http://example/q&gt; &lt;http://example/z&gt; .
 </pre>
 <div>MUST be rejected</div>
-</section>
+</section></html>

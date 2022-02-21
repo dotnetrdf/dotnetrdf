@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 21 January 2022</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>21 January 2022</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2022-01-07.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2022Jan/0062.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2022/01/21-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2022-02-11.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, Dominik, fabio_vitali, gkellogg, olaf, ora, pchampin, rivettp</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>gkellogg</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x033 class="phone s01"><cite>Dominik:</cite> my first time here. I work in University in Poland. subjects RDF and Property Graphs.<br>
+<span id=x034>… I'm also in the N3 CG, LDBC Schema WG also working on Property Graphs and Schema.</span></p>
+<p id=x035 class=irc><cite>&lt;ora&gt;</cite> RDF and PGs, sounds interesting!</p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x040 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x044 class="phone s02"><cite>pchampin:</cite> Some of these actions were about reaching out to developers.</p>
+<p id=x045 class="phone s03"><cite>ora:</cite> I was to write a blog post and to talk to PatH.</p>
+<p id=x046 class="phone s02"><cite>pchampin:</cite> I ment Olaf :)</p>
+<p id=x047 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/240">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>240</a></p>
+<p id=x055 class="phone s04"><cite>olaf:</cite> I emailed Ontotext and Pavel from Star Dog. They both responded.<br>
+<span id=x056>… Pavel has to check with the rest of the company, and wants to look again at our report.</span><br>
+<span id=x057>… In which case many tests may have failed and they may not be excited about publishing.</span><br>
+<span id=x058>… What they had implemented was for PG mode, so even we have SA mode, most likely many of their tests will fail.</span><br>
+<span id=x059>… I need to follow up with Pavel.</span><br>
+<span id=x060>… Ontotext immediately replied that they would be happy to send an implementation report.</span><br>
+<span id=x061>… Generally, they're positive and we can expect something sometime.</span><br>
+<span id=x062>… OTOH, he also involved RDF4J as they have a shared implementation, and perhaps it makes sense to have a shared report.</span></p>
+<p id=x065 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/243">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>243</a></p>
+<p id=x067 class="phone s03"><cite>ora:</cite> I started on the blog post but got side-tracked by work responsibilities.<br>
+<span id=x068>… It will be a blog post on the AWS blog.</span></p>
+<p id=x069 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/244">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>244</a></p>
+<p id=x074 class="phone s03"><cite>ora:</cite> I also reached out to Pat Hayes (wonderful credentials).<br>
+<span id=x075>… We talked about the Neptune 1G effort to unify RDF and PG.</span><br>
+<span id=x076>… I explained my take on RDF-star, which I considered to be important, which he understood.</span><br>
+<span id=x077>… I said my worry is that we don't open the flood-gates for all kinds of changes to RDF and keep it tightly scoped.</span><br>
+<span id=x078>… THen we ended up speaking about his B-Logic proposal. It was an ISWC Keynote in 2009.</span></p>
+<p id=x079 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://www2.slideshare.net/PatHayes/blogic-iswc-2009-invited-talk">Pat Haye's BLogic</a></p>
+<p id=x080 class="phone s02"><cite>pchampin:</cite> This pops up regularly, paerticularly in N3 CG</p>
+<p id=x083 class="phone s03"><cite>ora:</cite> For due diligence, we should read his slides carefully.<br>
+<span id=x084>… THat said, I want to be sure we keep RDF-star tightly scoped.</span><br>
+<span id=x085>… It will be very interesting for many people to read his ideas.</span></p>
+<p id=x086 class=irc><cite>&lt;pchampin&gt;</cite> <a href="http://videolectures.net/iswc09_hayes_blogic/">Pat Haye's BLogic talk</a></p>
+<p id=x087 class=irc><cite>&lt;pchampin&gt;</cite> that is, if you have a &quot;modern browser&quot; with flash enabled!!</p>
+<p id=x090 class="phone s03"><cite>ora:</cite> It extends RDF semantics, without replacing any.<br>
+<span id=x091>… It basically extends RDF to a full 1st order Predicate Calculus.</span><br>
+<span id=x092>… It also has an interesting take on Named Graphs.</span></p>
+<p id=x096 class="phone s02"><cite>pchampin:</cite> I also posted a version that requires Flash to view.<br>
+<span id=x097>… The slides are on slideshare, but there was a video lecture where you need flash.</span><br>
+<span id=x098>… I agree that B-Logic is interesting, although it goes beyond our tight scope.</span><br>
+<span id=x099>… I have some thoughts on defining RDF-star on top of B-Logic.</span></p>
+<p id=x102 class="phone s03"><cite>ora:</cite> Interesting is what he calls &quot;surfaces&quot;, both negative and positive and neutral.<br>
+<span id=x103>… This allows you to reason over things that you might not believe in.</span></p>
+<p id=x104 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/241">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>241</a></p>
+<p id=x106 class="phone s02"><cite>pchampin:</cite> This action was on my reaching out to Corese implementers. They have an implementation which complies (mostly).<br>
+<span id=x107>… THey're willing to upgrade Corese and implement a submission report.</span></p>
+<p id=x108 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/242">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>242</a></p>
+<p id=x109 class="phone s02"><cite>pchampin:</cite> Next is RDF4J.</p>
+<p id=x113 class="phone s05"><cite>AndyS:</cite> I emailed Jerven, who isn't that keen on submitting a report.<br>
+<span id=x114>… Theirs tracks more the PG mode of the old spec.</span><br>
+<span id=x115>… I haven't pushed them any further, even if it is via reification, I don't know why they couldn't pass the test suite.</span></p>
+<p id=x116 class="phone s02"><cite>pchampin:</cite> The semantics might pose a problem for them.</p>
+<p id=x117 class="phone s05"><cite>AndyS:</cite> I believe they do have an EARL report generator.</p>
+<p id=x119 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/245">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>245</a></p>
+<p id=x120 class="phone s02"><cite>pchampin:</cite> The last issue was to create a draft blog post for the CG blog.</p>
+<p id=x121 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://docs.google.com/document/d/1h84N2HnKxc7m-TPH4_Zu4L4ja9NJnKnv70ay6iOLuXo/edit">https://<wbr>docs.google.com/<wbr>document/<wbr>d/<wbr>1h84N2HnKxc7m-TPH4_Zu4L4ja9NJnKnv70ay6iOLuXo/<wbr>edit</a></p>
+<p id=x128 class="phone s02"><cite>pchampin:</cite> From my perspective, the post is in good shape. Compared with the initial plan, the scope of the post is smaller.<br>
+<span id=x129>… I thought there was enough content. It focuses on Provenance.</span><br>
+<span id=x130>… Including simple statements, and more going on to complex.</span><br>
+<span id=x131>… One point was to have some arguments to bring to the issue raised by PFPS a couple of weeks ago about the examples in the report being broken because they don't use intermediary nodes.</span><br>
+<span id=x132>… We worked on the Google Doc and not on the mailing list to try to constrain the conversation before it is posted.</span><br>
+<span id=x133>… I propose we publish it right now.</span></p>
+<p id=x135 class=irc><cite>&lt;rivettp&gt;</cite> looking at it now, I'd liek to chiem in</p>
+<p id=x136 class=irc><cite>&lt;rivettp&gt;</cite> give me until end of day please</p>
+<p id=x137 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: publish the CG blog post ASAP</p>
+<p id=x138 class=irc><cite>&lt;fabio_vitali&gt;</cite> can I have access please? Fvitali@gmail.com</p>
+<p id=x139 class="phone s05"><cite>AndyS:</cite> I think we should publish it. It's not designed to be a technical document.</p>
+<p id=x140 class=summary>+1</p>
+<p id=x141 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x142 class="phone s04"><cite>olaf:</cite> I didn't have a chance to look at it, but if you're fine with it I say go ahead and publish.</p>
+<p id=x144 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x145 class=irc><cite>&lt;olaf&gt;</cite> +0</p>
+<p id=x146 class=irc><cite>&lt;rivettp&gt;</cite> are we using US English or British English?</p>
+<p id=x147 class=irc><cite>&lt;AndyS&gt;</cite> English English</p>
+<p id=x148 class=irc><cite>&lt;rivettp&gt;</cite> in US it's modeling</p>
+<p id=x149 class=irc><cite>&lt;rivettp&gt;</cite> I'd vote for publishing Monday</p>
+<p id=x152 class="phone s06"><cite>fabio_vitali:</cite> What kind of feedback are you looking for?</p>
+<p id=x154 class="phone s02"><cite>pchampin:</cite> The idea was to write it collectively.<br>
+<span id=x155>… On the blog we would credit the RDF-star task force, so everyone has a chance to contribute.</span></p>
+<p id=x156 class="phone s06"><cite>fabio_vitali:</cite> If I have some opinions on the appropriateness would you like comments in the doc, a mail, or what?</p>
+<p id=x157 class="phone s02"><cite>pchampin:</cite> We can start the conversation here.</p>
+<p id=x160 class="phone s06"><cite>fabio_vitali:</cite> One problem I have is about the negative example.<br>
+<span id=x161>… It may be too early to talk about limitations of RDF-star. I also think there's a more correct solution to prevent the errors from occuring.</span><br>
+<span id=x162>… The problem may then disappear which could become advice. (using two levels of nesting).</span></p>
+<p id=x166 class="phone s02"><cite>pchampin:</cite> I'm not sure I agree in this situation. The goal isn't to claim that the proposed solution is the only way to do it, but to highlight the use of additional nodes.<br>
+<span id=x167>… A agree that in some cases double-nesting might be a solution.</span><br>
+<span id=x168>… Do we agree that the negative example is broken?</span><br>
+<span id=x169>… It's not just about bad modeling, it's &quot;lossy&quot;.</span></p>
+<p id=x170 class=irc><cite>&lt;rivettp&gt;</cite> OK I've finished it now and am happy with it - I suggested some changes e.g. to use &quot;SPARQL-star&quot;</p>
+<p id=x171 class="phone s06"><cite>fabio_vitali:</cite> I wouldn't say &quot;broken&quot;, but yes.</p>
+<p id=x173 class=irc><cite>&lt;fabio_vitali&gt;</cite> Sorry about the Latin, but this is a case of &quot;Excutatio non petita, accusatio manifesta&quot;: if you make excuses that are not requested, you are accusing yourself of something nobody would have cared about.</p>
+<p id=x174 class="phone s02"><cite>pchampin:</cite> Lets continue discussion into the beginning of next week.</p>
+<p id=x175 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: publish the CG blog post in the beginning of next week</p>
+<p id=x177 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x178 class=summary>+1</p>
+<p id=x179 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x180 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x181 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x182 class=irc><cite>&lt;ora&gt;</cite> 1+</p>
+<p id=x183 class=irc><cite>&lt;fabio_vitali&gt;</cite> +1</p>
+<p id=x184 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x185 class=irc><cite>&lt;Dominik&gt;</cite> +1</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> publish the CG blog post in the beginning of next week</p>
+<p id=x187 class="phone s02"><cite>pchampin:</cite> We'll continue the conversation on the Google Doc.</p>
+<p id=x191 class="phone s04"><cite>olaf:</cite> Since you mention DanBri, I think the final report isn't published on the CG page yet.</p>
+<p id=x192 class="phone s02"><cite>pchampin:</cite> Yes, I don't think Dan responded to my email.</p>
+<p id=a01 class=action><strong>Action:</strong> ping Dan for publishing the final report</p>
+<p id=x195 class=irc><cite>&lt;fabio_vitali&gt;</cite> I added a comment on the Google Docs message</p>
+<p id=x196 class="phone s05"><cite>AndyS:</cite> there is a proposal from Oracle for RDFn that addresses some of the PG issues.</p>
+<p id=x197 class=irc><cite>&lt;AndyS&gt;</cite> <a href="https://blogs.oracle.com/oraclespatial/post/rdfn-extending-rdf-to-support-named-triples">https://<wbr>blogs.oracle.com/<wbr>oraclespatial/<wbr>post/<wbr>rdfn-extending-rdf-to-support-named-triples</a></p>
+<p id=x198 class="phone s05"><cite>AndyS:</cite> It's been around for a while, but not sure of its status.</p>
+<p id=x199 class=irc><cite>&lt;AndyS&gt;</cite> <a href="https://www.linkedin.com/pulse/rdfn-name-every-triple-quad-manually-member-otherwise-das-ph-d-/">https://<wbr>www.linkedin.com/<wbr>pulse/<wbr>rdfn-name-every-triple-quad-manually-member-otherwise-das-ph-d-/</a></p>
+<p id=x204 class="phone s05"><cite>AndyS:</cite> It's written more from the PG outlook.<br>
+<span id=x205>… I don't suggest we do anything about it in particular, except that we've noticed it. I don't think its anything more than a theoretical proposal.</span></p>
+<p id=x206 class="phone s02"><cite>pchampin:</cite> Should we mention it?</p>
+<p id=x207 class="phone s05"><cite>AndyS:</cite> Unless we do a comprehensive survey, we would have missed other things likelly.</p>
+<p id=x208 class=irc><cite>&lt;fabio_vitali&gt;</cite> I have been trying to suggest that rdf-star start thinking about non-asserted named graphs, too</p>
+<p id=x211 class="phone s02"><cite>pchampin:</cite> Named graphs are introduced, but not the main point.<br>
+<span id=x212>… It depends on how a property is defined, but ends up with repeated triples.</span></p>
+<p id=x213 class="phone s02"><cite>pchampin:</cite> This could be modeled or emulated on RDF-star, as it gives you the ability to refer to a triple.</p>
+<p id=x215 class="phone s05"><cite>AndyS:</cite> It may be a slightly higher-level model, but it has details to be figured out.</p>
+<p id=x218 class="phone s03"><cite>ora:</cite> I read Oracle's proposal and found it interesting. I think we should encourage them to join the WG.<br>
+<span id=x219>… I can reach out to the author.</span></p>
+<p id=x220 class="phone s05"><cite>AndyS:</cite> I told them there's going to be a WG.</p>
+<p id=x222 class="phone s03"><cite>ora:</cite> We found in original RDF group that the more people you bring in the room, the better.</p>
+<p id=x224 class="phone s04"><cite>olaf:</cite> I wanted to say that he'll probably show up in the WG with this proposal as a counter-proposal.<br>
+<span id=x225>… I read it some time ago, but didn't think it really did enough and doesn't have clear definitions.</span></p>
+<p id=x226 class="phone s02"><cite>pchampin:</cite> I think it makes sense to be pro-active.</p>
+<p id=x228 class="phone s06"><cite>fabio_vitali:</cite> This article is two years old. I wonder if they've gone on to do something with it, or it just was an arbitrary statement.</p>
+<p id=x230 class="phone s05"><cite>AndyS:</cite> It was last updated in 2021-09.</p>
+<p id=x231 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star-wg-charter/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star-wg-charter/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x232 class="phone s02"><cite>pchampin:</cite> I created two small PRs to the charter about RDF/XML and additional specifications to be included in the charter.</p>
+<p id=x233 class=irc><cite>&lt;rivettp&gt;</cite> regarding implementation reports has anyone reached out to Cambridge Semantics for Anzo? They have a presentation about rdf-star on their website</p>
+<p id=x238 class="phone s02"><cite>pchampin:</cite> This will depend on proposals emerging, and then re-charter to include.<br>
+<span id=x239>… But, we keep the door open for producing other normative documents.</span><br>
+<span id=x240>… We'll focus on the charter in the next call. In the mean time, I'll try to iron out the missing details, but please comment on the issues and PRs.</span><br>
+<span id=x241>… I think we need to list all the SPARQL documents so that they can be consistent.</span><br>
+<span id=x242>… I'd like us to discuss the charter and consider submitting it to the semweb mailing list before going to the official process.</span></p>
+<p id=x243 class=irc><cite>&lt;fabio_vitali&gt;</cite> why &quot;next week&quot;? Not in two weeks?</p>
+<p id=x244 class=irc><cite>&lt;fabio_vitali&gt;</cite> thanks</p>
+<p id=x245 class="phone s02"><cite>pchampin:</cite> We also need to find chairs. Ora said he'd considered (IIRC).</p>
+<p id=x247 class=irc><cite>&lt;ora&gt;</cite> I would consider, depending on my employer's opinion on this.</p>
+<p id=x248 class="phone s05"><cite>AndyS:</cite> How many chairs are typical now?</p>
+<p id=x249 class="phone s02"><cite>pchampin:</cite> Now two chairs are most common.</p>
+<p id=x251 class="phone s02"><cite>pchampin:</cite> We also need to consider editors, but Chairs are most important and need to be on the charter.<br>
+<span id=x252>… PhilA is probably going to chair the RDF C14N WG.</span></p>
+<p id=x254 class="phone s07"><cite>rivettp:</cite> I mentioned Cambridge Semantics.</p>
+<p id=x255 class="phone s02"><cite>pchampin:</cite> No one has reached out that I know of.</p>
+<p id=x256 class="phone s05"><cite>AndyS:</cite> I might have a contact.</p>
+<p id=x257 class="phone s04"><cite>olaf:</cite> I have contacts too, I'll reach out.</p>
+<p id=a02 class=action><strong>Action:</strong> olaf to reach out to Cambridge Semantics (Anzo)</p>
+<p id=x260 class=irc><cite>&lt;fabio_vitali&gt;</cite> thank you and bye</p>
+<p id=x261 class="phone s02"><cite>pchampin:</cite> back in two weeks.</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">ping Dan for publishing the final report</a></li>
+<li><a href="#a02">olaf to reach out to Cambridge Semantics (Anzo)</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">publish the CG blog post in the beginning of next week</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

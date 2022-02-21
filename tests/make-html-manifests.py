@@ -10,6 +10,8 @@ DIR = Path(__file__).parent
 def main():
     for i in [
         ["semantics", "manifest.jsonld"],
+        ["trig", "syntax", "manifest.jsonld"],
+        ["trig", "eval", "manifest.jsonld"],
         ["turtle", "syntax", "manifest.jsonld"],
         ["turtle", "eval", "manifest.jsonld"],
         ["nt", "syntax", "manifest.jsonld"],
@@ -28,14 +30,27 @@ def make_html(path: Path):
 
     print(html)
     with html.open('w') as out:
+        label = manifest.get('label').get('en')
+        creator = manifest.get('creator')[0].get('foaf:name')
+        issued = manifest.get('issued')
+        modified = manifest.get('modified')
+
         out.write("<!DOCTYPE html>\n")
+        out.write('<html lang="en">')
         out.write('<meta charset="UTF-8">')
         out.write(STYLE)
-        out.write(f"<title>{path.stem}</title>\n")
-        out.write(f"<h1>{path.stem}</h1>\n")
-        out.write(f'<p>Generated from <a href="{path.name}">{path.name}</a></p>')
+        out.write(f"<title>{label}</title>\n")
+        out.write(f"<h1>{label}</h1>\n")
         if 'comment' in manifest:
             out.write(f"<p>{manifest['comment']}</p>\n")
+        out.write('<table class="properties">\n')
+        out.write(f'<tr class="generated"><th>Generated from:</th><td><a href="{path.name}">{path.name}</a></td>\n')
+        out.write(f'<tr class="creator"><th>creator:</th><td>{creator}</td>\n')
+        out.write(f'<tr class="issued"><th>issued:</th><td>{issued}</td>\n')
+        out.write(f'<tr class="modified"><th>modified:</th><td>{modified}</td>\n')
+        if 'seeAlso' in manifest:
+            out.write(f'<tr class="seeAlso"><th>see also:</th><td><a href="{manifest["seeAlso"]}">{manifest["seeAlso"]}</a></td></tr>\n')
+        out.write('</table>\n')
 
         include = manifest.get('include')
         if include:
@@ -83,6 +98,8 @@ def make_html(path: Path):
                 approval = "proposed"
             out.write(f'<section id="{eid[1:]}" class="entry {approval} {typ}">\n')
             out.write(f'<h2>{name} <a href="{eid}">🔗</a></h2>\n')
+            if 'comment' in entry:
+                out.write(f"<p>{entry['comment']}</p>\n")
             out.write('<table class="properties">\n')
             out.write(f'<tr class="status"><th>status:</th><td>{approval}</td>\n')
             out.write(f'<tr class="type"><th>type:</th><td>{readable_type(entry)}</td>\n')
@@ -105,9 +122,8 @@ def make_html(path: Path):
                 out.write("<div>a contradiction</div>")
             elif result:
                 write_file(out, result, dir, cls="result")
-            if 'comment' in entry:
-                out.write(f"<p>{entry['comment']}</p>\n")
             out.write("</section>")
+        out.write('</html>')
 
 def get_entry_id(entry: dict, default: str) -> str:
     eid = entry.get('@id', '')

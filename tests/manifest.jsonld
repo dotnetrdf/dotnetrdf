@@ -2,7 +2,20 @@
     "@context": "manifest-context.jsonld",
     "@id" : "manifest",
     "@type": "Manifest",
-    "label": "RDF-star test suite",
+    "label": {"en": "RDF-star test suite"},
+    "prefLabel": {"fr": "Les tests de RDF-star",
+              "es": "Conjunto de pruebas de RDF-star"
+            },
+    "issued": "2021-06-21",
+    "modified": "2021-07-18",
+    "license": "https://www.w3.org/Consortium/Legal/2008/03-bsd-license",
+    "creator": [{
+               "@id": "_:b0",
+               "@type": "foaf:Organization",
+               "foaf:homepage": "https://w3c.github.io/rdf-star/",
+               "foaf:name": "W3C RDF-star Working Group"
+
+    }],
     "seeAlso": "https://w3c.github.io/rdf-tests/",
     "include": [
       "nt/syntax/manifest.jsonld",

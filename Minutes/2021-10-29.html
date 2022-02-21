@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 29 October 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>29 October 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-10-15.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://www.w3.org/mid/dc7349d4-f119-82b1-7728-3fd447b85d8e@ercim.eu"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/10/29-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-11-12.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, Doerthe, Fabio_Vitali, gatemezing, gkellogg, olaf, ora, pchampin, rivettp, TallTed</dd>
+<dt>Regrets</dt><dd>gkellogg</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>gatemezing, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Pending Pull-Requests</a></li>
+<li><a href="#t04">WG chartering</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section><p id=x018 class=irc><cite>&lt;fabio_vitali&gt;</cite> Hello</p>
+</section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x034 class=irc><cite>&lt;fabio_vitali&gt;</cite> MUCH better</p>
+<p id=x035 class=irc><cite>&lt;fabio_vitali&gt;</cite> Thank you</p>
+<p id=x048 class="phone s01"><cite>pchampin:</cite> asking for anouncements<br>
+<span id=x049>… quick one: we'll have our next call in 2 weeks, so take care about the the time changing in Europe</span><br>
+<span id=x050>… It will be at the usual local time for everyone</span></p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x054 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x055 class="phone s01"><cite>pchampin:</cite> Asking for any other comments. None. So let's move on</p>
+<p id=x056 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/211">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>211</a> : improve figure</p>
+<p id=x058 class="phone s01"><cite>pchampin:</cite> Starting with easy ones see issue #211<br>
+<span id=x059>… made some few changes, added links to blocks.</span></p>
+<p id=x061 class="phone s01"><cite>pchampin:</cite> no objection to close it. So it's closed.</p>
+<p id=x062 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/207">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>207</a> : marking issues as proposed-later</p>
+<p id=x063 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/169">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>169</a> : occurence vocabulary</p>
+<p id=x064 class="phone s01"><cite>pchampin:</cite> marked one on the occurence vocab</p>
+<p id=x067 class="phone s01"><cite>pchampin:</cite> RDF-Triples are unique. There is a section in the report targeting occurences, as well as the vocab section</p>
+<p id=x068 class=irc><cite>&lt;AndyS&gt;</cite> +1 esp as a likely discussion in the WG so there is only so much that can be done by this team.</p>
+<p id=x069 class="phone s02"><cite>gatemezing:</cite> good question about the semantics of &quot;proposed-later&quot;</p>
+<p id=x072 class=irc><cite>&lt;Zakim&gt;</cite> TallTed, you wanted to ask what &quot;proposed-later&quot; label means</p>
+<p id=x073 class="phone s03"><cite>TallTed:</cite> What is the proposed-later label means?</p>
+<p id=x074 class="phone s01"><cite>pchampin:</cite> This is a temporary label to be submitted to the group as &quot;later&quot;</p>
+<p id=x079 class="phone s04"><cite>olaf:</cite> Agreed on not adding this discussion on the report</p>
+<p id=x082 class="phone s02"><cite>gatemezing:</cite> no objection as well</p>
+<p id=x083 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: mark issue 169 as 'later' (defer to future WG)</p>
+<p id=x084 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x085 class=irc><cite>&lt;gatemezing&gt;</cite> +1</p>
+<p id=x086 class=irc><cite>&lt;TallTed&gt;</cite> +0</p>
+<p id=x087 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x088 class=irc><cite>&lt;fabio_vitali&gt;</cite> +1</p>
+<p id=x089 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x090 class=irc><cite>&lt;Doerthe&gt;</cite> +1</p>
+<p id=x091 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x092 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> mark issue 169 as 'later' (defer to future WG)</p>
+<p id=x094 class="phone s01"><cite>pchampin:</cite> I'll keep my action open and make the change right now.</p>
+<p id=x096 class="phone s01"><cite>pchampin:</cite> We have open actions in concrete grammars, moving entailment regimes will be handle in the next agendum</p>
+</section>
+
+<section>
+<h3 id=t03>Pending Pull-Requests</h3>
+<p id=x099 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pulls">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pulls</a></p>
+<p id=x100 class="phone s01"><cite>pchampin:</cite> list of 3 PRs at <a href="https://github.com/w3c/rdf-star/pulls">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pulls</a></p>
+<p id=x102 class=irc><cite>&lt;fabio_vitali&gt;</cite> you guys are too fast for me</p>
+<p id=x103 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/217">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>217</a> : Metadata</p>
+<p id=x105 class="phone s02"><cite>gatemezing:</cite> PR is good for me. Up to you to decide.</p>
+<p id=x108 class=irc><cite>&lt;olaf&gt;</cite> Fabio, too fast in what sense?</p>
+<p id=x109 class="phone s01"><cite>pchampin:</cite> saw TallTed idea to avoid having the generated files in the repo.</p>
+<p id=x113 class=irc><cite>&lt;fabio_vitali&gt;</cite> @olaf: it takes three-four seconds for me to click on the link, read the topic and try to form an opinion, and you are already discussing the next one</p>
+<p id=x114 class=irc><cite>&lt;fabio_vitali&gt;</cite> not complaining, just noting</p>
+<p id=x116 class="phone s01"><cite>pchampin:</cite> Please fabio_vitali do not hesitate to stop the chairs when they go faster</p>
+<p id=x117 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/215">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>215</a> : TEPs and RDF-star vocab</p>
+<p id=x118 class="phone s01"><cite>pchampin:</cite> Turn to TEPs (Transparency Enabling Properties)</p>
+<p id=x119 class=irc><cite>&lt;fabio_vitali&gt;</cite> Stupid questions: why the plural? Why are there properties instead of a single one?</p>
+<p id=x120 class="phone s01"><cite>pchampin:</cite> we have now a formal semantics, included IRIs for TPEs,</p>
+<p id=x121 class=irc><cite>&lt;fabio_vitali&gt;</cite> Stupid question: why the plural? Why are there properties instead of a single one?</p>
+<p id=x122 class=irc><cite>&lt;fabio_vitali&gt;</cite> thank you</p>
+<p id=x125 class="phone s01"><cite>pchampin:</cite> proposed to finish the discussion on-line and merge if there is a consensus</p>
+<p id=x126 class="phone s01"><cite>pchampin:</cite> olaf is suggesting to change the orders of some sections <a href="https://github.com/w3c/rdf-star/pull/215#issuecomment-954706145">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>215#issuecomment-954706145</a></p>
+<p id=x127 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/215.html#ref-opacity">https://<wbr>pr-preview.s3.amazonaws.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>215.html#ref-opacity</a></p>
+<p id=x128 class="phone s04"><cite>olaf:</cite> It's not a strong opinion</p>
+<p id=x130 class=summary>olaf proposal: reorder subsubsections as follow: referential opacity, alternatives to ref opacity, TEPs</p>
+<p id=x131 class="phone s01"><cite>pchampin:</cite> I hear olaf as if he is far from his phone?!</p>
+<p id=x135 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/218">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>218</a> : full EBNF of syntaxes</p>
+<p id=x142 class="phone s01"><cite>pchampin:</cite> the idea is to have this PR in the html document in the appendices<br>
+<span id=x143>… once the technical issue is solved, this would be nice to have in the report</span><br>
+<span id=x144>… this PR is also good to be merged</span></p>
+<p id=x145 class="phone s01"><cite>pchampin:</cite> Chartering of the WG will take time anyway</p>
+</section>
+
+<section>
+<h3 id=t04>WG chartering</h3>
+<p id=x151 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star-wg-charter/">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star-wg-charter/</a></p>
+<p id=x165 class="phone s01"><cite>pchampin:</cite> The repo for the charter is on github<br>
+<span id=x166>… the new W3C WG will chartered a family of RDF and SPARQL documents</span><br>
+<span id=x167>… there is still open questions regarding additional features w.r.t. W3C process to avoid all rounds of the normal process,</span><br>
+<span id=x168>… making it lighter even if it can raised issues on stability and implementations</span></p>
+<p id=x170 class=irc><cite>&lt;rivettp&gt;</cite> has anyone given any thought to including SHACL in the scope of the &quot;family&quot;?</p>
+<p id=x173 class="phone s01"><cite>pchampin:</cite> one of the question not yet adressed is that probably I will be the W3C point contact<br>
+<span id=x174>… so I could not continue as chair if that happens</span><br>
+<span id=x175>… We need to identify potential chair(s) to be involved in the charter</span></p>
+<p id=x178 class="phone s01"><cite>pchampin:</cite> including SHACL? the maturity of the REC, the timing problem and even logistic issues</p>
+<p id=x180 class="phone s05"><cite>AndyS:</cite> Agreed not including SHACL</p>
+<p id=x182 class=irc><cite>&lt;Zakim&gt;</cite> TallTed, you wanted to suggest listing SHACL-star (and possibly other things not yet discussed) as an optional stretch goal</p>
+<p id=x183 class="phone s05"><cite>AndyS:</cite> but it manages to handle it, that's great</p>
+<p id=x184 class="phone s03"><cite>TallTed:</cite> Listing it at least in the draft, even if it is not tackle could be fair</p>
+<p id=x185 class="phone s01"><cite>pchampin:</cite> Not putting it as requirement, but indeed include it</p>
+<p id=x187 class="phone s05"><cite>AndyS:</cite> suggested to propose to write something around that in the document. Thanks AndyS !</p>
+<p id=x188 class="phone s01"><cite>pchampin:</cite> This remind me the JSON-LD CG vs RDF WG</p>
+<p id=x189 class="phone s03"><cite>TallTed:</cite> The difference here is that SHACL exists compare to the situation some years ago with JSON-LD (not existing at the time)</p>
+<p id=x192 class="phone s06"><cite>ora:</cite> anybody working on R2RML-star?</p>
+<p id=x193 class=irc><cite>&lt;ora&gt;</cite> R2RML</p>
+<p id=x194 class=irc><cite>&lt;olaf&gt;</cite> RML-star</p>
+<p id=x199 class=irc><cite>&lt;olaf&gt;</cite> &quot;RML-star: A Declarative Mapping Language for RDF-star Generation&quot; by Thomas Delva, JuliÃ¡n Arenas-Guerrero, Ana Iglesias-Molina, Oscar Corcho, David Chaves-Fraga, Anastasia Dimou</p>
+<p id=x200 class=irc><cite>&lt;olaf&gt;</cite> <a href="http://ceur-ws.org/Vol-2980/paper374.pdf">http://<wbr>ceur-ws.org/<wbr>Vol-2980/<wbr>paper374.pdf</a></p>
+<p id=x201 class=irc><cite>&lt;ora&gt;</cite> :-)</p>
+<p id=x206 class="phone s01"><cite>pchampin:</cite> let's think about some names for the next calls</p>
+<p id=x212 class="phone s01"><cite>pchampin:</cite> conformance section should have to wait<br>
+<span id=x213>… I suggest to discuss it in the next call</span></p>
+<p id=x215 class=irc><cite>&lt;fabio_vitali&gt;</cite> thank you</p>
+<p id=x217 class="phone s01"><cite>pchampin:</cite> thanks everyone<br>
+<span id=x218>… find some names for future chairs</span></p>
+<p id=x219 class=irc><cite>&lt;TallTed&gt;</cite> 11/11 == US Veterans Day, UK Remembrance Day.  Not typically a day off.</p>
+<p id=x220 class=irc><cite>&lt;Doerthe&gt;</cite> bye</p>
+<p id=x221 class=irc><cite>&lt;gatemezing&gt;</cite> bye</p>
+<p id=x222 class=irc><cite>&lt;AndyS&gt;</cite> bye</p>
+<p id=x223 class=irc><cite>&lt;ora&gt;</cite> bye</p>
+</section>
+</main>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">mark issue 169 as 'later' (defer to future WG)</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

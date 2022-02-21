@@ -82,14 +82,32 @@
             { value: "Bruno P. Kinoshita (Apache Software Foundation)"},
             { value: "Holger Knublauch (TopQuadrant, Inc.)" },
             { value: "Andreas Kuckartz" },
+            { value: "Pete Rivett (agnos.ai)" },
             { value: "William Van Woensel (Dalhousie University)"},
             { value: "Miel Vander Sande (meemoo)" },
+            { value: "Fabio Vitali (University of Bologna)" },
           ]
         },
       ],
       github: {
         repoURL: "w3c/rdf-star",
         branch: "main",
+      },
+      localBiblio: {
+        "EBNF-NOTATION": {
+          title: "EBNF NOTATION",
+          href: "http://www.w3.org/TR/REC-xml/#sec-notation",
+          publisher: "W3C",
+          date: "26 November 2008",
+          status: "W3C Recommendation",
+          authors: [
+            "Tim Bray",
+            "Jean Paoli",
+            "C. M. Sperberg-McQueen",
+            "Eve Maler",
+            "François Yergeau"
+          ]
+        }
       },
       wgPublicList: "public-rdf-star",
       shortName: "rdf-star",
@@ -200,10 +218,21 @@
     .heavy { color:black; font-weight:bold }
     .small { font-size: smaller; }
 
+    #structure-map table {
+      background-image: url("visual-map-bg.svg");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+
+    #structure-map table td {
+      width: 33.34%;
+    }
+
     #structure-map .box {
       display: block;
       border: thin solid gray;
       border-radius: 0.5em;
+      background-color: white;
       margin: 0.7em 1em;
       padding: 0.35em 0.5em;
       box-shadow: 0.25em 0.25em 0.5em darkgray;
@@ -274,7 +303,7 @@
     <section class="informative">
       <h2>Overview</h2>
 
-<p>This specification describes RDF-star, an extension of RDF's conceptual data model and concrete syntaxes, providing a more compact form of reification. This model and syntaxes enable the creation of concise triples that reference other triples as subject and object resources.
+<p>This specification describes RDF-star, an extension of RDF's conceptual data model and concrete syntaxes, which provides a compact alternative to <a href="https://www.w3.org/TR/rdf11-mt/#reification">standard RDF reification</a>. This model and its syntaxes enable the creation of concise triples that reference other triples as subject and object resources.
 Triples that include a triple as a subject or an object are known as <a>RDF-star triples</a>. The following dataset shows the example RDF-star triples from above using the <a href="#turtle-star">Turtle-star</a> syntax, which uses double angle brackets to enclose a triple serving as a subject or object resource:</p>
 
       <pre data-transform="updateExample"
@@ -291,8 +320,8 @@ PREFIX :    <http://www.example.org/>
 
 <p>After declaring a prefix so that IRIs can be abbreviated, the first triple in this example asserts that employee38 has a familyName of "Smith". Note that this dataset does not assert that employee38 has a jobTitle of "Assistant Designer"; it says that employee22 has made that claim. In other words, the triple "employee38 has a jobTitle of 'Assistant Designer'" is not what we call an <a>asserted triple</a>, like "employee38 has a familyName of 'Smith'" above; rather, it is known as a <a>quoted triple</a>.</p>
 
-<p>If we added the triple `:employee38 :jobTitle "Assistant Designer"` below the triple about employee22's claim in the example above, then this triple about employee38's jobTitle would be both a <a>quoted</a> and an <a>asserted</a> triple.
-This pattern is quite common, so Turtle-star offers a dedicated syntax for it, called the annotation syntax, illustrated in <a href="#example-annotation"></a> below. Note that this construct is purely syntactic sugar, as it can be expanded using only the double angle brackets.</p>
+<p>If we added the triple `:employee38 :jobTitle "Assistant Designer"` to the example above, then this triple about employee38's jobTitle would be both a <a>quoted</a> and an <a>asserted</a> triple.
+This pattern is quite common, so Turtle-star offers a dedicated syntax for it, called the <a>annotation syntax</a>, illustrated in <a href="#example-annotation"></a> below. Note that this construct is purely syntactic sugar, as it can be expanded using only the double angle brackets.</p>
 
 <pre data-transform="updateExample"
      data-content-type="text/turtle"
@@ -325,7 +354,7 @@ This pattern is quite common, so Turtle-star offers a dedicated syntax for it, c
 PREFIX : <http://www.example.org/> 
 
 SELECT ?claimer WHERE {
-   ?claimer :claims << :employee38 ?property ?value >>
+   << :employee38 ?property ?value >> :accordingTo ?claimer
 }
 -->
 </pre>
@@ -348,6 +377,21 @@ INSERT {
 -->
 </pre>
 
+    </section>
+    <section>
+      <h2>Common misconceptions</h2>
+
+      <p>People coming to RDF-star may have wrong ideas about what it is or how to use it. The purpose of this section is to dispel the most common misconceptions.
+
+      <p>RDF-star is <em>not</em> syntactic sugar for <a href="https://www.w3.org/TR/rdf11-mt/#reification">standard reification</a>. While the latter is a vocabulary that fits into the standard RDF model (abstract syntax), RDF-star extends that model (see <a href="#concepts"></a>) with a new construct, namely <a>quoted triples</a>. Note also that the two are not mutually exclusive: standard reification can be used in conjunction with RDF-star.
+
+      <p>Unlike reified statements, RDF-star <a>quoted triples</a> are unique: wherever `&lt;&lt; :employee38 :jobTitle "Assistant Designer" &gt;&gt;` appears, it always denotes one and the same thing. This impacts the modeling choices one has to make when using RDF-star; this is further discussed in <a href="#occurrences"></a>.
+
+      <p>Finally, <a>quoted triples</a> are referentially opaque. This means that two <a>quoted triples</a> containing distinct but equivalent terms (i.e., coreferences, known to denote the same thing) are nonetheless considered to be different triples. <a href="#ref-opacity"></a> and the following sections discuss the rationale for this design, and how some form of referential transparency can still be added to RDF-star if and when needed.
+    </section>
+
+    <section>
+      <h2>Conventions</h2>
 <p>For the remainder of this document, examples will assume that the following prefixes have been declared to represent the IRIs shown with them here: </p>
 
 <table>
@@ -360,6 +404,7 @@ INSERT {
 <tr><td>`dbr:`</td><td>`&lt;http://dbpedia.org/resource/&gt;`</td></tr>
 <tr><td>`dc:`</td><td>`&lt;http://purl.org/dc/elements/1.1/&gt;`</td></tr>
 <tr><td>`dct:`</td><td>`&lt;http://purl.org/dc/terms/&gt;`</td></tr>
+<tr><td>`rdf-star:`</td><td>`&lt;http://www.w3.org/ns/rdf-star#&gt;`</td></tr>
 </table>
 
     </section>
@@ -373,36 +418,39 @@ INSERT {
       <figure id="structure-map">
         <table>
           <tr>
-            <td rowspan=3>
-              <div class="box">
-                <strong>querying</strong><br>
-                <a href="#sparql-star"></a><br>
+            <td>
+            <td rowspan=2>
+              <div class="box" style="margin-bottom: 5em;">
+                <a href="#concepts"></a><br>
+                <strong>can be...</strong>
               </div>
+            <td>
+          <tr>
+            <td>
               <div class="box">
-                <strong>updating</strong><br>
-                  <a href="#sparql-star-update"></a>
+                <em>... serialized with</em><br>
+                <a href="#concrete-syntaxes"></a>
               </div>
             <td>
               <div class="box">
-                <strong>reasoning</strong><br>
-                <a href="#rdf-star-semantics"></a>
-              </div>
-            <td>
-            <td rowspan=3>
-              <div class="box">
-                <strong>representing</strong><br>
+                <em>... represented by</em><br>
                 <a href="#rdf-star-vocabulary"></a>
               </div>
           <tr>
             <td>
               <div class="box">
-                <a href="#concepts"></a>
+                <em>... queried with</em><br>
+                <a href="#sparql-star"></a><br>
               </div>
-          <tr>
             <td>
               <div class="box">
-                <strong>serializing</strong><br>
-                <a href="#concrete-syntaxes"></a>
+                <em>... updated with</em><br>
+                <a href="#sparql-star-update"></a>
+              </div>
+            <td>
+              <div class="box">
+                <em>... interpreted through</em><br>
+                <a href="#rdf-star-semantics"></a>
               </div>
         </table>
         <figcaption>A visual map of the sections of this document</figcaption>
@@ -410,7 +458,32 @@ INSERT {
     </section>
 
     <section id="conformance">
-      <div class=issue data-number="3"></div>
+      <p>A system supports RDF-star for input if it supports an input syntax for 
+        an RDF 1.1 standard syntax that has additional syntax for  
+        <a>quoted triples</a>.
+        Such input syntaxes include those in the 
+        <a href="https://w3c.github.io/rdf-star/tests/">RDF-star test suite</a>
+        (<a href="https://w3c.github.io/rdf-star/tests/nt/syntax/">N-Triples-star syntax tests</a>,
+        <a href="https://w3c.github.io/rdf-star/tests/turtle/syntax/">Turtle-star syntax tests</a>,
+        or <a href="https://w3c.github.io/rdf-star/tests/trig/syntax/">TriG-star syntax tests</a>).
+      </p>
+
+      <p>A system supports RDF-star for output if it supports an output syntax for
+        an RDF 1.1 standard syntax that has additional syntax for  
+        <a>quoted triples</a>.
+        Such output syntaxes include those in the
+        <a href="https://w3c.github.io/rdf-star/tests/">RDF-star test suite</a>
+        (<a href="https://w3c.github.io/rdf-star/tests/nt/syntax/">N-Triples-star syntax tests</a>,
+        <a href="https://w3c.github.io/rdf-star/tests/turtle/syntax/">Turtle-star syntax tests</a>,
+        or <a href="https://w3c.github.io/rdf-star/tests/trig/syntax/">TriG-star syntax tests</a>).
+      </p>
+      <p> 
+        A system supports SPARQL-star if it passes
+        the <a href="https://w3c.github.io/rdf-star/tests/sparql/syntax/"
+           >SPARQL-star syntax</a> test suite
+        and the <a href="https://w3c.github.io/rdf-star/tests/sparql/eval/"
+           >SPARQL-star evaluation</a> test suites.
+      </p>
     </section>
 
   </section>
@@ -594,7 +667,6 @@ INSERT {
             dct:creator :bob.
         -->
       </pre>
-
     </section>
 
   </section>
@@ -620,7 +692,8 @@ INSERT {
     <section id="annotation-syntax">
       <h2>Annotation Syntax</h2>
       <p>There are syntax additions for <a>quoted triples</a> and also for
-        <em>annotation syntax</em> which provides a convenient shortcut in Turtle-star and
+        <dfn data-lt="annotation-syntax">annotation syntax</dfn>
+        which provides a convenient shortcut in Turtle-star and
         TriG-star syntaxes. It is used to both assert a triple and have that triple be the
         subject of further triples. It uses delimiters `{|` and `|}` following an asserted
         triple to make that triple, as a <a>quoted triple</a>, the subject of the
@@ -749,8 +822,10 @@ INSERT {
         </tr>
       </table>
 
-      <p class="note">As with N-Triples-star,
-        the changes are that <a href="#grammar-production-subject">`subject`</a>
+      <p class="note">The complete grammar may be found in <a href="#turtle-star-ebnf"></a>.</p>
+
+      <p class="note">
+        The changes are that <a href="#grammar-production-subject">`subject`</a>
         and <a href="#grammar-production-object">`object`</a> productions
         have been extended to accept <a>quoted triples</a>,
         which are described by the new productions <a href="#grammar-production-quotedTriple">27t</a>
@@ -843,7 +918,7 @@ INSERT {
       <p>Because the above example includes the triple (|b|, `http://example.org/#name`, `"Alice"`)
         as an <a>asserted triple</a>,
         the same RDF-star graph may also be represented
-        by using the Turtle-star annotation syntax as follows:</p>
+        by using the Turtle-star <a>annotation syntax</a> as follows:</p>
 
       <pre class="example"
            data-transform="updateExample"
@@ -994,6 +1069,8 @@ INSERT {
           </td>
         </tr>
       </table>
+
+      <p class="note">The complete grammar may be found in <a href="#trig-star-ebnf"></a>.</p>
     </section>
 
     <section id="trig-star-parsing">
@@ -1066,7 +1143,7 @@ INSERT {
         which replace the productions having the same number
         (if any) in the original grammar.</p>
 
-      <table class="n-triples-star-ebnf">
+      <table class="grammar">
         <tbody id="grammar-productions" class="ebnf">
           <tr id="grammar-production-nt-subject">
             <td>[3]</td>
@@ -1089,7 +1166,9 @@ INSERT {
         </tbody>
       </table>
 
-      <p class="note">The changes are
+      <p class="note">The complete grammar may be found in <a href="#n-triples-star-ebnf"></a>.</p>
+
+      <p class="note">The changes are that
         <a href="#grammar-production-nt-subject">`subject`</a>
         and <a href="#grammar-production-nt-object">`object`</a> productions
         have been extended to accept <a>quoted triples</a>,
@@ -1131,6 +1210,8 @@ INSERT {
 
     <p>The [[N-QUADS]] format is extended to describe the
       N-Quads-star format using the same production updates described in the <a href="#n-triples-star-grammar">N-Triples-star Grammar</a>.</p>
+
+    <p class="note">The complete grammar may be found in <a href="#n-quads-star-ebnf"></a>.</p>
 
     <p class="note">As RDF-star describes <a>quoted triples</a> and not quoted quads,
       the <a data-cite="N-QUADS#grammar-production-graphLabel">`graphLabel`</a>
@@ -1851,6 +1932,8 @@ INSERT {
           </td>
         </tr>
       </table>
+
+      <p class="note">The complete grammar may be found in <a href="#sparql-star-ebnf"></a>.</p>
 
       <p>
         This introduces a notation for <dfn>quoted triple patterns</dfn>
@@ -3002,7 +3085,7 @@ style="color:black;font-weight:bold">sameTerm</code></dfn></b>
       <section id="ref-opacity">
         <h2>Referential opacity</h2>
 
-        <p>The way the <a>unstar mapping</a> is defined, the denotation of a <a>quoted triple</a> does not only depend on the denotation of its component terms, but also on their syntactical form (for IRIs and literals). This behavior is referred to as <a href="https://en.wikipedia.org/wiki/Opaque_context">referential opacity</a>. A consequence is that two different triples, that would be semantically equivalent if asserted, are not automatically considered to denote the same thing when <a>quoted</a>. In the example below, assuming <a data-cite="RDF11-MT#datatype-entailment">D-entailment</a>: while `"42"^^xsd:integer` and `"042"^^xsd:integer` denote the same thing (namely, the number 42), the two <a>quoted triples</a> are allowed to have different denotations, and so the entailment does not hold.</p>
+        <p>The way the <a>unstar mapping</a> is defined, the denotation of a <a>quoted triple</a> does not only depend on the denotation of its component terms, but also on their syntactical form (for IRIs and literals). This behavior is referred to as <a href="https://en.wikipedia.org/wiki/Opaque_context">referential opacity</a>. A consequence is that two different triples, that would be semantically equivalent if asserted, are not automatically considered to denote the same thing when <a>quoted</a>. In the example below, assuming <a data-cite="RDF11-MT#datatype-entailment">D-entailment</a>: while `"104232"^^xsd:nonNegativeInteger` and `"000104232"^^xsd:nonNegativeInteger` denote the same thing (namely, the number 104232), the two <a>quoted triples</a> are allowed to have different denotations, and so the entailment does not hold.</p>
 
         <pre id="ref-opacity-d-entailment"
         data-transform="updateExample"
@@ -3012,11 +3095,15 @@ style="color:black;font-weight:bold">sameTerm</code></dfn></b>
         <!--
         #### under D-entailment
 
-        <h2g2.ttl> :contains << :lue :answer "42"^^xsd::integer >>.
+        << dbr:Linköping dbo:populationTotal "104232"^^xsd::nonNegativeInteger >>
+            :source <https://dbpedia.org/data/Linköping>.
 
         #### does NOT entail
 
-        <h2g2.ttl> :contains << :lue :answer "042"^^xsd::integer >>.
+        << dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger >>
+            :source <https://dbpedia.org/data/Linköping>.
+        
+        # (notice the leading zeros in the literal)
         -->
         </pre>
 
@@ -3039,7 +3126,7 @@ style="color:black;font-weight:bold">sameTerm</code></dfn></b>
         -->
         </pre>
 
-        <p>This is well suited for use-cases where the syntactical form of the annotated statements may be significant (like <a href="../UCR/rdf-star-ucr.html#annotate-statements-from-other-named-graphs-and-datasets">annotating statements from other graphs</a> or <a href="../UCR/rdf-star-ucr.html#annotate-commit-deltas">annotating commit deltas</a>). On the other hand, other use-cases would expect some degree of referential transparency. Consider the case of <a href="../UCR/rdf-star-ucr.html#meta-properties-over-properties">attributed/evidenced triples</a>. The annotation is understood to be about the fact asserted by the triple rather than the triple itself. As illustrated in the example below, one might then expect more inferences than provided by the current semantics.</p>
+        <p>Note that this may lead to counter-intuitive results when the <a href="#annotation-syntax">annotation syntax</a> is used, as illustrated in the example below.</p>
 
         <pre id="ref-opacity-annotation"
         data-transform="updateExample"
@@ -3054,28 +3141,67 @@ style="color:black;font-weight:bold">sameTerm</code></dfn></b>
 
         #### does NOT entail
 
-        dbr:Linköping dbo:populationTotal "0104232"^^xsd::nonNegativeInteger
+        dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger
             {| :source <https://dbpedia.org/data/Linköping> |}.
+        
+        # (notice the leading zeros in the literal)
 
         #### more precisely, it DOES entail
 
-        dbr:Linköping dbo:populationTotal "0104232"^^xsd::nonNegativeInteger.
+        dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger.
 
         #### but it does NOT entail
 
-        << dbr:Linköping dbo:populationTotal "0104232"^^xsd::nonNegativeInteger >>
+        << dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger >>
             :source <https://dbpedia.org/data/Linköping>.
         -->
         </pre>
 
-        <p>Note that the current semantics does not forbid the additional inferences to be drawn. However, they would require additional knowledge and an appropriate <a data-cite="RDF11-MT#dfn-semantic-extension">semantic extension</a> (such as the one discussed in <a href="#selective-ref-transparency"></a>). This makes RDF-star less readily usable for (but not incompatible with) that latter kind of use-cases.</p>
+      </section>
 
+      <section id="selective-ref-transparency">
+        <h2>Selective referential transparency</h2>
+
+        <p>Referencial opacity is well suited for use-cases where the syntactical form of the annotated statements may be significant (like <a href="https://w3c.github.io/rdf-star/UCR/rdf-star-ucr.html#annotate-statements-from-other-named-graphs-and-datasets">annotating statements from other graphs</a> or <a href="https://w3c.github.io/rdf-star/UCR/rdf-star-ucr.html#annotate-commit-deltas">annotating commit deltas</a>). On the other hand, other use-cases would expect some degree of referential transparency. Consider the case of <a href="https://w3c.github.io/rdf-star/UCR/rdf-star-ucr.html#meta-properties-over-properties">attributed/evidenced triples</a>. The annotation is understood to be about the fact asserted by the triple rather than the triple itself. In this use case, one might then expect more inferences than provided by the base semantics. Consider the following example.</p>
+
+        <pre id="selective-ref-opacity"
+        data-transform="updateExample"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+        >
+        <!--
+        << dbr:Linköping dbo:populationTotal "104232"^^xsd::nonNegativeInteger >>
+          :measuredOn "2010-12-31"^^xsd:date ;
+          :source <https://dbpedia.org/data/Linköping.ttl> .
+
+        ### Candidate entailment #1
+
+        << dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger >>
+          :measuredOn "2010-12-31"^^xsd:date .
+
+        ### Candidate entailment #2
+
+        << dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger >>
+          :source <https://dbpedia.org/data/Linköping.ttl> .
+
+        # (notice the leading zeros in the literal in both candidate entailments)
+        -->
+        </pre>
+
+        <p>One could argue that the candidate entailment #1 is desirable because the property `:measuredOn` is understood to be about the <em>statement</em> made by the subject triple (that statement was true on the given date, regardless of its RDF expression, in this case using an object value equivalent to `104232`). On the other hand, the candidate entailment #2 may be considered not desirable because the predicate `:source` is about the triple itself (that specific triple was parsed from the given Turtle file).</p>
+
+        <p>In Section <a href="#rdf-star-vocabulary"></a>, we introduce the notion of <dfn data-lt="TEP">transparency-enabling property (TEP)</dfn>, for selectively enabling this kind of entailment on specific properties. The basis of the idea is that each such property&nbsp;|p| is identified by adding to the RDF-star graph a triple of the form (|p|, `rdf:type`, `rdf-star:TransparencyEnablingProperty`); i.e., for the previous example, this triple would be (`:measuredOn`, `rdf:type`, `rdf-star:TransparencyEnablingProperty`).
+        This would make candidate entailment #1 above valid. The semantics of such TEPs is formally defined in Section <a href="#vocabulary-semantics"></a>.</p>
+
+        <p>Notice that enabling referential transparency based on such TEPs is only local to the RDF-star graph(s) in which the property is stated to be a TEP (or where this statement can be inferred as per the entailment regime considered). In other words, for every graph&nbsp;|G| in which a property is <em>not</em> stated to be transparency enabling, all quoted triples appearing in |G| as subject or object of that property are stilled considered as referentially opaque, even if there may exist some other graph in which the property is stated to be transparency enabling.</p>
+
+        <p class=note>This proposal for TEPs makes no distinction regarding the position (subject or object) of the <a>quoted triples</a>. The group did consider a finer-grained alternative, where selective transparency could also be enabled only for the subjects (resp. objects) of the TEP. This was however ruled out as overly complex for a limited added value.</p>
       </section>
 
       <section>
-        <h2>Alternatives to referential opacity</h2>
+        <h2>Other alternatives to referential opacity</h2>
 
-        <p>Given the potential drawbacks of the referential opacity provided by the current semantics, as described in the previous section, the group has considered alternative semantics. No clear consensus was reached, however, to decide whether these alternatives should be used as a replacement, or as a <a data-cite="RDF11-MT#dfn-semantic-extension">semantic extension</a>, of the current semantics.</p>
+        <p>Given the potential drawbacks of the referential opacity provided by the current semantics, as described in the beginning of Section <a href="#selective-ref-transparency"></a> above, the group has considered other alternative semantics. No clear consensus was reached, however, to decide whether these alternatives should be used as a replacement, or as a <a data-cite="RDF11-MT#dfn-semantic-extension">semantic extension</a>, of the current semantics.</p>
 
         <p>A fully referentially transparent semantics can be achieved by changing the <a href="#unstar-add-triples">step 2.4</a> of the <a>unstar mapping</a> algorithm as follows:</p>
 
@@ -3089,7 +3215,7 @@ style="color:black;font-weight:bold">sameTerm</code></dfn></b>
           </li>
         </ul>
 
-        <p>In the examples above (<a href="#ref-opacity-d-entailment"></a>, <a href="#ref-opacity-owl-entailment"></a>, <a href="#ref-opacity-annotation"></a>), all the entailments would now hold automatically. This could be a problem in some use-cases, as such inferences could then not be cancelled, given the <a data-cite="RDF11-MT#dfn-monotonic">monotonic semantics</a> of RDF.</p>
+        <p>In the examples above (<a href="#ref-opacity-d-entailment"></a>, <a href="#ref-opacity-owl-entailment"></a>, <a href="#ref-opacity-annotation"></a>, <a href="#selective-ref-opacity"></a>), all the entailments would now hold automatically. This could be a problem in some use-cases, as such inferences could then not be cancelled, given the <a data-cite="RDF11-MT#dfn-monotonic">monotonic semantics</a> of RDF.</p>
 
         <p>An intermediate alternative would be to make <a>quoted triples</a> referentially opaque for IRIs only, keeping it transparent for literals (and for blank nodes, as is already the case). This can be achieved by changing the <a href="#unstar-add-triples">step 2.4</a> of the <a>unstar mapping</a> algorithm as follows:</p>
 
@@ -3110,97 +3236,6 @@ style="color:black;font-weight:bold">sameTerm</code></dfn></b>
 
       </section>
 
-      <section id="selective-ref-transparency">
-        <h2>Selective referential transparency</h2>
-
-        <p>Since the needs for referential opacity and transparency are use-case dependent (as discussed <a href="#ref-opacity">above</a>), it may make sense for different predicates to have different behaviors. Consider the following example.</p>
-
-        <pre id="selective-ref-opacity"
-        data-transform="updateExample"
-        data-content-type="text/turtle"
-        class="nohighlight example"
-        >
-        <!--
-        << dbr:Linköping dbo:populationTotal "104232"^^xsd::nonNegativeInteger >>
-          :on "2010-12-31"^^xsd:date ;
-          :source <https://dbpedia.org/data/Linköping.ttl> .
-
-        ### Candidate entailment #1
-
-        << dbr:Linköping dbo:populationTotal "0104232"^^xsd::nonNegativeInteger >>
-          :on "2010-12-31"^^xsd:date .
-
-        ### Candidate entailment #2
-
-        << dbr:Linköping dbo:populationTotal "0104232"^^xsd::nonNegativeInteger >>
-          :source <https://dbpedia.org/data/Linköping.ttl> .
-        -->
-        </pre>
-
-        <p>One could argue that the candidate entailment #1 is desirable because the property `:on` is understood to be about the <em>statement</em> made by the subject triple (that statement was true on the given date, regardless of its RDF expression). On the other hand, the candidate entailment #2 may be considered not desirable because the predicate `:source` is about the triple itself (that specific triple was parsed from the given Turtle file).</p>
-
-        <p>Subclasses of `rdf:Property` could therefore be defined to identify properties that imply referential transparency on their subject triple, on their object triple, or on both. Note, however, that the group has not reached consensus on the definition or usefulness of such a vocabulary.</p>
-
-        <p>Here is a sketch of how to extend the semantics in a way that it can work with such a property, which we call a <dfn data-lt="TEP">transparency-enabling property (TEP)</dfn>. The basis of the idea is that each such property&nbsp;|p| is identified by adding to the RDF-star graph a triple of the form (|p|, `rdf:type`, `rdf-star:TransparencyEnablingProperty`); i.e., for the previous example, this triple would be (`:on`, `rdf:type`, `rdf-star:TransparencyEnablingProperty`). Notice that enabling referential transparency based on such TEPs is only local to the RDF-star graph(s) in which the TEP is stated to be a TEP (or where this statement can be inferred as per the entailment regime considered); in other words, for every graph&nbsp;|G| in which a property is <em>not</em> stated to be transparency enabling, all quoted triples within triples in |G| that have the property as predicate are considered as referentially opaque, even if there may exist some other graph in which the property is stated to be transparency enabling.
-        The semantics of such TEPs can be captured for the different <a data-cite="RDF11-MT#dfn-entailment-regime">entailment regimes</a> by extending the corresponding notion of <a data-cite="RDF11-MT#dfn-interpretation">interpretation</a> as exemplified in the following for the <a data-cite="RDF11-MT#simple-interpretations">simple interpretation</a> of the <a data-cite="RDF11-MT#simpleentailment">simple entailment regime</a>.</p>
-
-        <p>A <dfn>simple TEP-interpretation</dfn> is a <a data-cite="RDF11-MT#simple-interpretations">simple interpretation</a> |I| that satisfies the following two additional conditions:</p>
-          
-        <ol>
-          <li><em>Ensure that, for all quoted triples in this interpretation, all "equivalent" triples also exist in the interpretation.</em>
-          <ul>
-            <li>For all |t|, |s|, |p|, |o| in the domain IR such that<ul>
-              <li>(|t|, |s|) ∈ IEXT(`unstar:subject`),
-              <li>(|t|, |p|) ∈ IEXT(`unstar:predicate`),
-              <li>(|t|, |o|) ∈ IEXT(`unstar:object`),
-            </ul>
-            <li>and for all terms |s|', |p|', and |o|' such that <ul>
-              <li>|I|(|s|') = |s|,
-              <li>|I|(|p|') = |p|,
-              <li>|I|(|o|') = |o|,
-            </ul>
-            <li>there must exist |t|' in IR such that<ul>
-              <li>(|t|', |s|) ∈ IEXT(`unstar:subject`),
-              <li>(|t|', |p|) ∈ IEXT(`unstar:predicate`),
-              <li>(|t|', |o|) ∈ IEXT(`unstar:object`),
-              <li>(|t|', |I|(L(|s|'))) ∈ IEXT(`unstar:subjectLexical`),
-              <li>(|t|', |I|(L(|p|'))) ∈ IEXT(`unstar:predicateLexical`), and
-              <li>(|t|', |I|(L(|o|'))) ∈ IEXT(`unstar:objectLexical`).
-            </ul>
-          </ul>
-          
-          <li><em>Ensure that TEPs that hold for a triple also hold for all "equivalent" triples.</em>
-          <div>For every |p| such that (|p|,IS(`rdf-star:TransparencyEnablingProperty`)) ∈ IEXT(IS(`rdf:type`))</div><ul>
-            <li>|p| must be an element of IP
-            <li>For all |t|, |u|, |s|', |p|', |o|', |t|' in IR such that<ul>
-              <li>(|t|, |u|) ∈ IEXT(`p`)
-              <li>(|t|, |s|') ∈ IEXT(`unstar:subject`),
-              <li>(|t|, |p|') ∈ IEXT(`unstar:predicate`),
-              <li>(|t|, |o|') ∈ IEXT(`unstar:object`),
-              <li>(|t|', |s|') ∈ IEXT(`unstar:subject`),
-              <li>(|t|', |p|') ∈ IEXT(`unstar:predicate`),
-              <li>(|t|', |o|') ∈ IEXT(`unstar:object`)
-            </ul>
-            then (|t|', |u|) must also be an element of IEXT(|p|).
-            <li>For all |t|, |u|, |s|', |p|', |o|', |t|' in IR such that<ul>
-              <li>(|u|, |t|) ∈ IEXT(`p`)
-              <li>(|t|, |s|') ∈ IEXT(`unstar:subject`),
-              <li>(|t|, |p|') ∈ IEXT(`unstar:predicate`),
-              <li>(|t|, |o|') ∈ IEXT(`unstar:object`),
-              <li>(|t|', |s|') ∈ IEXT(`unstar:subject`),
-              <li>(|t|', |p|') ∈ IEXT(`unstar:predicate`),
-              <li>(|t|', |o|') ∈ IEXT(`unstar:object`)
-            </ul>
-            then (|u|, |t|') must also be an element of IEXT(|p|).
-          </ul>
-          </ol>          
-          
-        <p>Given two <a>RDF-star graphs</a> |G| and |H|, and following standard terminology, we say that a simple TEP-interpretation |I| satisfies |G| if |I|(|G|) = true, and that |G| is (simply) TEP-satisfiable if a simple TEP-interpretation exists that satisfies |G|; otherwise, |G| is (simply) TEP-unsatisfiable. We say that |G| simply TEP-entails |H| if every simple TEP-interpretation that satisfies |G| also satisfies |H|. If |G| and |H| each TEP-entail the other, they are TEP-equivalent.</p>
-
-        <p>TEP-entailment is defined here as an extension of <a data-cite="RDF11-MT#simpleentailment">simple entailment</a>, but other entailment regimes (such as <a data-cite="RDF11-MT#rdf-entailment">RDF entailment</a> or <a data-cite="RDF11-MT#rdfs-entailment">RDFS entailment</a>) can be extended in the exact same way (i.e., by extending their respective notion of interpretation with the aforementioned two conditions).</p>  
-    
-      </section>
-
     </section>
 
   </section>
@@ -3208,48 +3243,177 @@ style="color:black;font-weight:bold">sameTerm</code></dfn></b>
   <section class="informative">
     <h2>RDF-star vocabulary</h2>
 
-    <p>This section will eventually describe a number of IRIs that may be useful when using RDF-star. At the moment, it contains links to the Github issues where such terms have been discussed.</p>
+    <p>In this section, we propose a minimal vocabulary that can be useful when working with RDF-star, especially when describing other vocabularies meant to be used with RDF-star triples and graphs.</p>
 
-    <div class="issue" data-number="102">
-    </div>
+    <section>
+      <h2>Core vocabulary</h2>
 
-    <div class="issue" data-number="169">
-      This issue discusses the relevance of introducing a standard property to link a <a>quoted triple</a> to its occurrences (as illustrated in <a href="#occurrences-example"></a>), as well as other related properties and classes.
-    </div>
+      <p>In this section we define IRIs for the concepts defined in other normative parts of this document.</p>
 
-    <div class="issue" data-number="164">
-      This issue was raised to introduce IRIs to be used with [[SPARQL11-SERVICE-DESCRIPTION]], in order for a SPARQL-star endpoint to advertise its support for RDF-star.
-    </div>
+      <dl>
+        <dt>`rdf-star:Triple`</dt>
+        <dd>This term identifies the class of all <a>RDF-star triples</a>. It is expected to serve, among other things, as the `rdfs:domain` or `rdfs:range` of properties meant to apply to <a>quoted triples</a>.</dd>
 
-    <div class="issue" data-number="170">
-      This issue proposes to introduce a vocabulary for locally overriding the <a href="#ref-opacity">opaque</a> semantics of <a>quoted triples</a>, making them transparent in some contexts.
-    </div>
+        <dt>`rdf-star:Graph`</dt>
+        <dd>This term identifies the class of all <a>RDF-star graphs</a>.</dd>
 
-    <div class="defn">
-      <pre>## Vocabulary for concepts used by or introduced by RDF-star.
+        <dt>`rdf-star:Source`</dt>
+        <dd>This term identifies the class of all RDF-star sources, an extension of the notion of <dfn data-cite="RDF11-CONCEPTS#dfn-rdf-source">RDF source</dfn>: a persistent yet mutable source or container of <a>RDF-star graphs</a>.</dd>
+
+        <dt>`rdf-star:SPARQLStarQuery`</dt>
+        <dd>This term identifies the extension of the SPARQL query language defined in Section <a href="#sparql-star"></a>. It is expected to serve as the value of `sd:supportedLanguage` in SPARQL service descriptions [[SPARQL11-SERVICE-DESCRIPTION]].</dd>
+
+        <dt>`rdf-star:SPARQLStarUpdate`</dt>
+        <dd>This term identifies the extension of the SPARQL update language defined in Section <a href="#sparql-star-update"></a>. It is expected to value as the domain of `sd:supportedLanguage` in SPARQL service descriptions [[SPARQL11-SERVICE-DESCRIPTION]].</dd>
+      </dl>
+
+      <p>Below is a Turtle description of that vocabulary.</p>
+
+      <div class="defn">
+        <pre>## RDF-star core vocabulary
 PREFIX rdf:       &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
 PREFIX rdfs:      &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
 PREFIX rdf-star:  &lt;http://www.w3.org/ns/rdf-star#&gt;
+PREFIX sd:        &lt;http://www.w3.org/ns/sparql-service-description#&gt;
 
 rdf-star:Triple      a rdfs:Class ;
-    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
     rdfs:label         "RDF-star Triple" ;
     rdfs:comment       "The class of RDF-star triples." ;
     rdfs:subClassOf    rdfs:Resource .
 
 rdf-star:Graph       a rdfs:Class ;
-    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
     rdfs:label         "RDF-star Graph" ;
     rdfs:comment       "The class of RDF-star graphs." ;
     rdfs:subClassOf    rdfs:Resource .
 
 rdf-star:Source      a rdfs:Class ;
-    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
     rdfs:label         "RDF-star Source" ;
     rdfs:seeAlso       &lt;https://www.w3.org/TR/rdf11-concepts/#h3_change-over-time&gt; ;
     rdfs:comment       "The class of RDF-star sources." ;
     rdfs:subClassOf    rdfs:Resource .
-      </pre>
+
+rdf-star:SPARQLStarQuery a sd:Language ;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
+    rdfs:label         "SPARQL-star" ;
+    rdfs:comment       "The SPARQL-star query language" .
+
+rdf-star:SPARQLStarUpdate a sd:Language ;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
+    rdfs:label         "SPARQL-star Update" ;
+    rdfs:comment       "The SPARQL-star update language" .
+        </pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Extended vocabulary</h2>
+
+      <p>In this section we define IRIs for the concepts defined in other non-normative parts of this document.</p>
+
+      <dl>
+        <dt>`rdf-star:TransparencyEnablingProperty`</dt>
+        <dd>A special kind of property that, when applied to a <a>quoted triple</a>, also holds for any semantically equivalent triple, as discussed in <a href="#selective-ref-transparency"></a>.</dd>
+      </dl>
+
+      <p>Below is a Turtle description of that vocabulary.</p>
+
+      <div class="defn">
+        <pre>## RDF-star extended vocabulary
+PREFIX rdf:       &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs:      &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX rdf-star:  &lt;http://www.w3.org/ns/rdf-star#&gt;
+
+rdf-star:TransparencyEnablingProperty a rdfs:Class ;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
+    rdfs:label         "RDF-star Source" ;
+    rdfs:comment       "The class of transparency-enabling properties." ;
+    rdfs:subClassOf    rdf:Property .
+        </pre>
+      </div>
+    </section>
+
+    <section id="vocabulary-semantics">
+      <h2>Vocabulary semantics</h2>
+
+      <p>We now describe a <a data-cite="RDF11-MT#dfn-semantic-extension">semantic extension</a> of RDF-star, embedding the inherent semantics of the RDF-star vocabulary (RSV) described above (core and extended). A <dfn data-lt="RSV-interpretation">simple RSV-interpretation</dfn> is a <a data-cite="RDF11-MT#simple-interpretations">simple interpretation</a> |I| that satisfies the following additional conditions:</p>
+
+      <ol>
+        <li><em>Ensure that all quoted triples in this interpretations are instances of `rdf-star:Triple`.</em><ul>
+          <li>For all |t|, |x| in the domain IR such that either<ul>
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:subject`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:predicate`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:object`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:subjectLexical`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:predicateLexical`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:objectLexical`)),
+          </ul>
+          <li>then (|t|, IS(`rdf-star:Triple`)) must be an element of IEXT(IS(`rdf:type`)).
+        </ul>
+
+          
+        <li><em>Ensure that, for all quoted triples in this interpretation, all "equivalent" triples also exist in the interpretation.</em><ul>
+          <li>For all |t|, |s|, |p|, |o| in the domain IR such that<ul>
+            <li>(|t|, |s|) ∈ IEXT(IS(`unstar:subject`)),
+            <li>(|t|, |p|) ∈ IEXT(IS(`unstar:predicate`)),
+            <li>(|t|, |o|) ∈ IEXT(IS(`unstar:object`)),
+          </ul>
+          <li>and for all terms |s|', |p|', and |o|' such that <ul>
+            <li>|I|(|s|') = |s|,
+            <li>|I|(|p|') = |p|,
+            <li>|I|(|o|') = |o|,
+          </ul>
+          <li>there must exist |t|' in IR such that<ul>
+            <li>(|t|', |s|) ∈ IEXT(IS(`unstar:subject`)),
+            <li>(|t|', |p|) ∈ IEXT(IS(`unstar:predicate`)),
+            <li>(|t|', |o|) ∈ IEXT(IS(`unstar:object`)),
+            <li>(|t|', |I|(L(|s|'))) ∈ IEXT(IS(`unstar:subjectLexical`)),
+            <li>(|t|', |I|(L(|p|'))) ∈ IEXT(IS(`unstar:predicateLexical`)), and
+            <li>(|t|', |I|(L(|o|'))) ∈ IEXT(IS(`unstar:objectLexical`)).
+          </ul>
+        </ul>
+
+        <li><em>Ensure that TEPs that hold for a triple also hold for all "equivalent" triples.</em>
+        <ul><li>For all |p| such that (|p|,IS(`rdf-star:TransparencyEnablingProperty`)) ∈ IEXT(IS(`rdf:type`))
+          <li>then |p| must be an element of IP, and<ul>
+
+            <li>For all |t|, |u|, |s|', |p|', |o|', |t|' in IR such that<ul>
+              <li>(|t|, |u|) ∈ IEXT(`p`)
+              <li>(|t|, |s|') ∈ IEXT(IS(`unstar:subject`)),
+              <li>(|t|, |p|') ∈ IEXT(IS(`unstar:predicate`)),
+              <li>(|t|, |o|') ∈ IEXT(IS(`unstar:object`)),
+              <li>(|t|', |s|') ∈ IEXT(IS(`unstar:subject`)),
+              <li>(|t|', |p|') ∈ IEXT(IS(`unstar:predicate`)),
+              <li>(|t|', |o|') ∈ IEXT(IS(`unstar:object`))
+            </ul>
+            then (|t|', |u|) must also be an element of IEXT(|p|).
+
+            <li>For all |t|, |u|, |s|', |p|', |o|', |t|' in IR such that<ul>
+              <li>(|u|, |t|) ∈ IEXT(`p`)
+              <li>(|t|, |s|') ∈ IEXT(IS(`unstar:subject`)),
+              <li>(|t|, |p|') ∈ IEXT(IS(`unstar:predicate`)),
+              <li>(|t|, |o|') ∈ IEXT(IS(`unstar:object`)),
+              <li>(|t|', |s|') ∈ IEXT(IS(`unstar:subject`)),
+              <li>(|t|', |p|') ∈ IEXT(IS(`unstar:predicate`)),
+              <li>(|t|', |o|') ∈ IEXT(IS(`unstar:object`))
+            </ul>
+            then (|u|, |t|') must also be an element of IEXT(|p|).
+          </ul>
+        </ul>
+      </ol>
+
+      <p>Given two <a>RDF-star graphs</a> |G| and |H|, and following standard terminology, we say that a simple RSV-interpretation |I| satisfies |G| if |I|(|G|) = true, and that |G| is (simply) RSV-satisfiable if a simple RSV-interpretation exists that satisfies |G|; otherwise, |G| is (simply) RSV-unsatisfiable. We say that |G| simply RSV-entails |H| if every simple RSV-interpretation that satisfies |G| also satisfies |H|. If |G| and |H| each RSV-entail the other, they are RSV-equivalent.</p>
+
+      <p>RSV-entailment is defined here as an extension of <a data-cite="RDF11-MT#simpleentailment">simple entailment</a>, but other entailment regimes (such as <a data-cite="RDF11-MT#rdf-entailment">RDF entailment</a> or <a data-cite="RDF11-MT#rdfs-entailment">RDFS entailment</a>) can be extended in the exact same way (i.e., by extending their respective notion of interpretation with the aforementioned conditions).</p>
+
+      <p class=note>Some terms of the RDF-star vocabulary have no associated constraint in <a>RSV-interpretations</a> (for instance, `rdf-star:Graph`). The reason is that the intended meaning of these terms leads to no particular inference <em>with this vocabulary</em>.</p>
+
+    </section>
+
+    <div class="issue" data-number="169">
+      This issue discusses the relevance of introducing a standard property to link a <a>quoted triple</a> to its occurrences (as illustrated in <a href="#occurrences-example"></a>), as well as other related properties and classes.
     </div>
   </section>
 
@@ -3288,7 +3452,7 @@ rdf-star:Source      a rdfs:Class ;
       approaches.
     </p>
 
-    <p class="issue" data-number="43">Although the examples in this document, and the tests in <a href="../tests/">the test suite</a>, adopt the optimistic approach, it should be noted that no clear consensus emerged from the group on which approach is the best.</p>
+    <p class="issue" data-number="43">Although the examples in this document, and the tests in <a href="https://w3c.github.io/rdf-star/tests/">the test suite</a>, adopt the optimistic approach, it should be noted that no clear consensus emerged from the group on which approach is the best.</p>
 
   </section>
 
@@ -3331,6 +3495,50 @@ rdf-star:Source      a rdfs:Class ;
 
     </section>
 
+  </section>
+
+  <section class="appendix">
+    <h2>Complete EBNF Grammars</h2>
+
+  <section class="appendix informative" id="turtle-star-ebnf">
+    <h2>Turtle-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for Turtle-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/turtle.html"></div>
+  </section>
+
+  <section class="appendix informative" id="trig-star-ebnf">
+    <h2>TriG-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for TriG-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/trig.html"></div>
+  </section>
+
+  <section class="appendix informative" id="n-triples-star-ebnf">
+    <h2>N-Triples-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for N-Triples-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/n-triples.html"></div>
+  </section>
+
+  <section class="appendix informative" id="n-quads-star-ebnf">
+    <h2>N-Quads-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for N-Quads-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/n-quads.html"></div>
+  </section>
+
+  <section class="appendix informative" id="sparql-star-ebnf">
+    <h2>SPARQL-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for SPARQL-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/sparql.html"></div>
+  </section>
   </section>
 
   <section class="appendix informative" id="issue-summary">
