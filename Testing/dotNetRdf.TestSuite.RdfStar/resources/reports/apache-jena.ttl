@@ -1,0 +1,2139 @@
+# Apache Jena EARL Report
+PREFIX dawg: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
+PREFIX dc:   <http://purl.org/dc/elements/1.1/>
+PREFIX dct:  <http://purl.org/dc/terms/>
+PREFIX doap: <http://usefulinc.com/ns/doap#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdft: <http://www.w3.org/ns/rdftest#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bnode-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-8>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-nested-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bad-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-6>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-quoted-annotation-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-ann-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-6>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-bnode-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bnode-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-inside-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bnode-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bnode-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-bnode-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-nested-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-7>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bnode-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-nested-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-inside-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bnode-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-8>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-graphs-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-ann-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-graphs-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-9>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-nested-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-7>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bad-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-ann-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bnode-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-7>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bnode-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-9>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-nested-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-bnode-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-8>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-order-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bad-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-order-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-7>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-08>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-quoted-annotation-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-6>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-results-1j>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-bnode-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-6>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bad-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-nested-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-12>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-ann-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-ann-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bad-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-inside-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bnode-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-compound-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bnode-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bad-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-inside-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-09>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-nested-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bnode-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-7>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-02>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-nested-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-inside-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-inside-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-07>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-6>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-6>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-01>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bnode-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-6>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-7>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-8>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bad-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-10>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-ann-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bnode-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-6>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-ann-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-05>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-compound-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-03>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-7>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-ann-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-quoted-annotation-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-8>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-results-1x>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-06>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-6>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-nested-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-04>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-quoted-annotation-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-compound-1>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-quoted-annotation-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bad-4>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-5>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-11>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-3>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-nested-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-quoted-annotation-2>
+] .
+
+[ rdf:type         earl:Assertion ;
+  earl:assertedBy  <http://jena.apache.org/#jena> ;
+  earl:mode        earl:automatic ;
+  earl:result      [ rdf:type      earl:TestResult ;
+                     dc:date       "2021-12-18+00:00"^^xsd:date ;
+                     earl:outcome  earl:passed
+                   ] ;
+  earl:subject     <http://jena.apache.org/#jena> ;
+  earl:test        <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-2>
+] .
+
+PREFIX dc:   <http://purl.org/dc/elements/1.1/>
+PREFIX doap: <http://usefulinc.com/ns/doap#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdft: <http://www.w3.org/ns/rdftest#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+
+<http://jena.apache.org/#jena>
+        rdf:type          doap:Project ;
+        dc:creator        _:b0 ;
+        dc:title          "Apache Jena" ;
+        doap:description  "Apache Jena : RDF system and SPARQL triple store"@en ;
+        doap:developer    _:b0 ;
+        doap:homepage     <https://jena.apache.org/> ;
+        doap:maintainer   _:b0 ;
+        doap:name         "Apache Jena" ;
+        doap:release      [ rdf:type       doap:Version ;
+                            doap:created   "2021-12-18+00:00"^^xsd:date ;
+                            doap:homepage  <https://jena.apache.org/> ;
+                            doap:revision  "4.3.2"
+                          ] ;
+        doap:shortdesc    "RDF and SPARQL triple store"@en .
+
+_:b0    rdf:type       foaf:Agent ;
+        foaf:homepage  <https://jena.apache.org/> ;
+        foaf:name      "Apache Jena Community" .

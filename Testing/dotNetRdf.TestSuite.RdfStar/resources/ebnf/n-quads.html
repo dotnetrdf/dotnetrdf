@@ -1,0 +1,190 @@
+
+<table class="grammar">
+  <tbody id="nq-grammar-productions" class="ebnf">
+    <tr id="nq-grammar-production-nquadsDoc">
+      <td>[1]</td>
+      <td><code>nquadsDoc</code></td>
+      <td>::=</td>
+      <td><a href="#nq-grammar-production-statement">statement</a><code>?</code>  <code>(</code> <a href="#nq-grammar-production-EOL">EOL</a> <a href="#nq-grammar-production-statement">statement</a><code>)</code> <code>*</code>  <a href="#nq-grammar-production-EOL">EOL</a><code>?</code> </td>
+    </tr>
+    <tr id="nq-grammar-production-statement">
+      <td>[2]</td>
+      <td><code>statement</code></td>
+      <td>::=</td>
+      <td><a href="#nq-grammar-production-subject">subject</a> <a href="#nq-grammar-production-predicate">predicate</a> <a href="#nq-grammar-production-object">object</a> <a href="#nq-grammar-production-graphLabel">graphLabel</a> "<code class="grammar-literal">.</code>"</td>
+    </tr>
+    <tr id="nq-grammar-production-subject">
+      <td>[3]</td>
+      <td><code>subject</code></td>
+      <td>::=</td>
+      <td><a href="#nq-grammar-production-IRIREF">IRIREF</a> <code>|</code> <a href="#nq-grammar-production-BLANK_NODE_LABEL">BLANK_NODE_LABEL</a> <code>|</code> <a href="#nq-grammar-production-quotedTriple">quotedTriple</a></td>
+    </tr>
+    <tr id="nq-grammar-production-predicate">
+      <td>[4]</td>
+      <td><code>predicate</code></td>
+      <td>::=</td>
+      <td><a href="#nq-grammar-production-IRIREF">IRIREF</a></td>
+    </tr>
+    <tr id="nq-grammar-production-object">
+      <td>[5]</td>
+      <td><code>object</code></td>
+      <td>::=</td>
+      <td><a href="#nq-grammar-production-IRIREF">IRIREF</a> <code>|</code> <a href="#nq-grammar-production-BLANK_NODE_LABEL">BLANK_NODE_LABEL</a> <code>|</code> <a href="#nq-grammar-production-literal">literal</a> <code>|</code> <a href="#nq-grammar-production-quotedTriple">quotedTriple</a></td>
+    </tr>
+    <tr id="nq-grammar-production-graphLabel">
+      <td>[6]</td>
+      <td><code>graphLabel</code></td>
+      <td>::=</td>
+      <td><a href="#nq-grammar-production-IRIREF">IRIREF</a> <code>|</code> <a href="#nq-grammar-production-BLANK_NODE_LABEL">BLANK_NODE_LABEL</a></td>
+    </tr>
+    <tr id="nq-grammar-production-literal">
+      <td>[7]</td>
+      <td><code>literal</code></td>
+      <td>::=</td>
+      <td><a href="#nq-grammar-production-STRING_LITERAL_QUOTE">STRING_LITERAL_QUOTE</a> <code>(</code> <code>(</code> &quot;^^&quot; <a href="#nq-grammar-production-IRIREF">IRIREF</a><code>)</code>  <code>|</code> <a href="#nq-grammar-production-LANGTAG">LANGTAG</a><code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="nq-grammar-production-quotedTriple">
+      <td>[7t]</td>
+      <td><code>quotedTriple</code></td>
+      <td>::=</td>
+      <td>&quot;&lt;&lt;&quot; <a href="#nq-grammar-production-subject">subject</a> <a href="#nq-grammar-production-predicate">predicate</a> <a href="#nq-grammar-production-object">object</a> &quot;&gt;&gt;&quot;</td>
+    </tr>
+    <tr>
+      <td colspan=2>@terminals</td>
+      <td></td>
+      <td><strong># Productions for terminals</strong></td>
+    </tr>
+    <tr id="nq-grammar-production-LANGTAG">
+      <td>[144s]</td>
+      <td><code>LANGTAG</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">@</code>" <code>[</code> <code class="grammar-literal">a-zA-Z</code><code>]</code> <code>+</code>  <code>(</code> "<code class="grammar-literal">-</code>" <code>[</code> <code class="grammar-literal">a-zA-Z0-9</code><code>]</code> <code>+</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="nq-grammar-production-EOL">
+      <td>[8]</td>
+      <td><code>EOL</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="carriage return">#x0D</abbr></code><code class="grammar-char-escape"><abbr title="new line">#x0A</abbr></code><code>]</code> <code>+</code> </td>
+    </tr>
+    <tr id="nq-grammar-production-IRIREF">
+      <td>[10]</td>
+      <td><code>IRIREF</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">&lt;</code>" <code>(</code> <code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape"><abbr title="null">#x00</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="space">#x20</abbr></code><code class="grammar-literal">&lt;&gt;&quot;{}|^`\</code><code>]</code>  <code>|</code> <a href="#nq-grammar-production-UCHAR">UCHAR</a><code>)</code> <code>*</code>  "<code class="grammar-literal">&gt;</code>"</td>
+    </tr>
+    <tr id="nq-grammar-production-STRING_LITERAL_QUOTE">
+      <td>[11]</td>
+      <td><code>STRING_LITERAL_QUOTE</code></td>
+      <td>::=</td>
+      <td>'<code class="grammar-literal">&quot;</code>' <code>(</code> <code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape"><abbr title="quot">>&quot;</abbr></code><code class="grammar-char-escape"><abbr title="ascii '\'">#x5C</abbr></code><code class="grammar-char-escape"><abbr title="new line">#x0A</abbr></code><code class="grammar-char-escape"><abbr title="carriage return">#x0D</abbr></code><code>]</code>  <code>|</code> <a href="#nq-grammar-production-ECHAR">ECHAR</a> <code>|</code> <a href="#nq-grammar-production-UCHAR">UCHAR</a><code>)</code> <code>*</code>  '<code class="grammar-literal">&quot;</code>'</td>
+    </tr>
+    <tr id="nq-grammar-production-BLANK_NODE_LABEL">
+      <td>[141s]</td>
+      <td><code>BLANK_NODE_LABEL</code></td>
+      <td>::=</td>
+      <td>&quot;_:&quot; <code>(</code> <a href="#nq-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>)</code>  <code>(</code> <code>(</code> <a href="#nq-grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>"<code>)</code> <code>*</code>  <a href="#nq-grammar-production-PN_CHARS">PN_CHARS</a><code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="nq-grammar-production-UCHAR">
+      <td>[12]</td>
+      <td><code>UCHAR</code></td>
+      <td>::=</td>
+      <td><code>(</code> &quot;\u&quot; <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a><code>)</code>  <code>|</code> <code>(</code> &quot;\U&quot; <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a> <a href="#nq-grammar-production-HEX">HEX</a><code>)</code> </td>
+    </tr>
+    <tr id="nq-grammar-production-ECHAR">
+      <td>[153s]</td>
+      <td><code>ECHAR</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">\</code>" <code>[</code> <code class="grammar-literal">tbnrf&quot;&apos;\</code><code>]</code> </td>
+    </tr>
+    <tr id="nq-grammar-production-PN_CHARS_BASE">
+      <td>[157s]</td>
+      <td><code>PN_CHARS_BASE</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">A-Z</code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-literal">a-z</code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xC0'">#xC0</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="extended ascii '#xD6'">#xD6</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xD8'">#xD8</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="extended ascii '#xF6'">#xF6</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xF8'">#xF8</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x02FF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x0370</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x037D</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x037F</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#x1FFF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Format'">#x200C</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Format'">#x200D</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2070</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#x218F</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2C00</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#x2FEF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x3001</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#xD7FF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xF900</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xFDCF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xFDF0</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xFFFD</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x00010000</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Noncharacter'">#x000EFFFF</abbr></code><code>]</code> </td>
+    </tr>
+    <tr id="nq-grammar-production-PN_CHARS_U">
+      <td>[158s]</td>
+      <td><code>PN_CHARS_U</code></td>
+      <td>::=</td>
+      <td><a href="#nq-grammar-production-PN_CHARS_BASE">PN_CHARS_BASE</a> <code>|</code> "<code class="grammar-literal">_</code>" <code>|</code> "<code class="grammar-literal">:</code>"</td>
+    </tr>
+    <tr id="nq-grammar-production-PN_CHARS">
+      <td>[160s]</td>
+      <td><code>PN_CHARS</code></td>
+      <td>::=</td>
+      <td><a href="#nq-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> "<code class="grammar-literal">-</code>" <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xB7'">#xB7</abbr></code> <code>|</code> <code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x0300</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x036F</abbr></code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x203F</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2040</abbr></code><code>]</code> </td>
+    </tr>
+    <tr id="nq-grammar-production-HEX">
+      <td>[162s]</td>
+      <td><code>HEX</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-literal">A-F</code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-literal">a-f</code><code>]</code> </td>
+    </tr>
+  </tbody>
+</table>
+    

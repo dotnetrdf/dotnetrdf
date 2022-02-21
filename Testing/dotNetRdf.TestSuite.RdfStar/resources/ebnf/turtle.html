@@ -1,0 +1,400 @@
+
+<table class="grammar">
+  <tbody id="tu-grammar-productions" class="ebnf">
+    <tr id="tu-grammar-production-turtleDoc">
+      <td>[1]</td>
+      <td><code>turtleDoc</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-statement">statement</a><code>*</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-statement">
+      <td>[2]</td>
+      <td><code>statement</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-directive">directive</a> <code>|</code> <code>(</code> <a href="#tu-grammar-production-triples">triples</a> "<code class="grammar-literal">.</code>"<code>)</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-directive">
+      <td>[3]</td>
+      <td><code>directive</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-prefixID">prefixID</a> <code>|</code> <a href="#tu-grammar-production-base">base</a> <code>|</code> <a href="#tu-grammar-production-sparqlPrefix">sparqlPrefix</a> <code>|</code> <a href="#tu-grammar-production-sparqlBase">sparqlBase</a></td>
+    </tr>
+    <tr id="tu-grammar-production-prefixID">
+      <td>[4]</td>
+      <td><code>prefixID</code></td>
+      <td>::=</td>
+      <td>&quot;@prefix&quot; <a href="#tu-grammar-production-PNAME_NS">PNAME_NS</a> <a href="#tu-grammar-production-IRIREF">IRIREF</a> "<code class="grammar-literal">.</code>"<code>?</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-base">
+      <td>[5]</td>
+      <td><code>base</code></td>
+      <td>::=</td>
+      <td>&quot;@base&quot; <a href="#tu-grammar-production-IRIREF">IRIREF</a> "<code class="grammar-literal">.</code>"<code>?</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-sparqlPrefix">
+      <td>[5s]</td>
+      <td><code>sparqlPrefix</code></td>
+      <td>::=</td>
+      <td>&quot;PREFIX&quot; <a href="#tu-grammar-production-PNAME_NS">PNAME_NS</a> <a href="#tu-grammar-production-IRIREF">IRIREF</a></td>
+    </tr>
+    <tr id="tu-grammar-production-sparqlBase">
+      <td>[6s]</td>
+      <td><code>sparqlBase</code></td>
+      <td>::=</td>
+      <td>&quot;BASE&quot; <a href="#tu-grammar-production-IRIREF">IRIREF</a></td>
+    </tr>
+    <tr id="tu-grammar-production-triples">
+      <td>[6]</td>
+      <td><code>triples</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#tu-grammar-production-subject">subject</a> <a href="#tu-grammar-production-predicateObjectList">predicateObjectList</a><code>)</code>  <code>|</code> <code>(</code> <a href="#tu-grammar-production-blankNodePropertyList">blankNodePropertyList</a> <a href="#tu-grammar-production-predicateObjectList">predicateObjectList</a><code>?</code> <code>)</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-predicateObjectList">
+      <td>[7]</td>
+      <td><code>predicateObjectList</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-verb">verb</a> <a href="#tu-grammar-production-objectList">objectList</a> <code>(</code> "<code class="grammar-literal">;</code>" <code>(</code> <a href="#tu-grammar-production-verb">verb</a> <a href="#tu-grammar-production-objectList">objectList</a><code>)</code> <code>?</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-objectList">
+      <td>[8]</td>
+      <td><code>objectList</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-object">object</a> <a href="#tu-grammar-production-annotation">annotation</a><code>?</code>  <code>(</code> "<code class="grammar-literal">,</code>" <a href="#tu-grammar-production-object">object</a> <a href="#tu-grammar-production-annotation">annotation</a><code>?</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-verb">
+      <td>[9]</td>
+      <td><code>verb</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-predicate">predicate</a> <code>|</code> "<code class="grammar-literal">a</code>"</td>
+    </tr>
+    <tr id="tu-grammar-production-subject">
+      <td>[10]</td>
+      <td><code>subject</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-iri">iri</a> <code>|</code> <a href="#tu-grammar-production-BlankNode">BlankNode</a> <code>|</code> <a href="#tu-grammar-production-collection">collection</a> <code>|</code> <a href="#tu-grammar-production-quotedTriple">quotedTriple</a></td>
+    </tr>
+    <tr id="tu-grammar-production-predicate">
+      <td>[11]</td>
+      <td><code>predicate</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-iri">iri</a></td>
+    </tr>
+    <tr id="tu-grammar-production-object">
+      <td>[12]</td>
+      <td><code>object</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-iri">iri</a> <code>|</code> <a href="#tu-grammar-production-BlankNode">BlankNode</a> <code>|</code> <a href="#tu-grammar-production-collection">collection</a> <code>|</code> <a href="#tu-grammar-production-blankNodePropertyList">blankNodePropertyList</a> <code>|</code> <a href="#tu-grammar-production-literal">literal</a> <code>|</code> <a href="#tu-grammar-production-quotedTriple">quotedTriple</a></td>
+    </tr>
+    <tr id="tu-grammar-production-literal">
+      <td>[13]</td>
+      <td><code>literal</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-RDFLiteral">RDFLiteral</a> <code>|</code> <a href="#tu-grammar-production-NumericLiteral">NumericLiteral</a> <code>|</code> <a href="#tu-grammar-production-BooleanLiteral">BooleanLiteral</a></td>
+    </tr>
+    <tr id="tu-grammar-production-blankNodePropertyList">
+      <td>[14]</td>
+      <td><code>blankNodePropertyList</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">[</code>" <a href="#tu-grammar-production-predicateObjectList">predicateObjectList</a> "<code class="grammar-literal">]</code>"</td>
+    </tr>
+    <tr id="tu-grammar-production-collection">
+      <td>[15]</td>
+      <td><code>collection</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">(</code>" <a href="#tu-grammar-production-object">object</a><code>*</code>  "<code class="grammar-literal">)</code>"</td>
+    </tr>
+    <tr id="tu-grammar-production-NumericLiteral">
+      <td>[16]</td>
+      <td><code>NumericLiteral</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-INTEGER">INTEGER</a> <code>|</code> <a href="#tu-grammar-production-DECIMAL">DECIMAL</a> <code>|</code> <a href="#tu-grammar-production-DOUBLE">DOUBLE</a></td>
+    </tr>
+    <tr id="tu-grammar-production-RDFLiteral">
+      <td>[128s]</td>
+      <td><code>RDFLiteral</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-String">String</a> <code>(</code> <a href="#tu-grammar-production-LANGTAG">LANGTAG</a> <code>|</code> <code>(</code> &quot;^^&quot; <a href="#tu-grammar-production-iri">iri</a><code>)</code> <code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-BooleanLiteral">
+      <td>[133s]</td>
+      <td><code>BooleanLiteral</code></td>
+      <td>::=</td>
+      <td>&quot;true&quot; <code>|</code> &quot;false&quot;</td>
+    </tr>
+    <tr id="tu-grammar-production-String">
+      <td>[17]</td>
+      <td><code>String</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-STRING_LITERAL_QUOTE">STRING_LITERAL_QUOTE</a> <code>|</code> <a href="#tu-grammar-production-STRING_LITERAL_SINGLE_QUOTE">STRING_LITERAL_SINGLE_QUOTE</a> <code>|</code> <a href="#tu-grammar-production-STRING_LITERAL_LONG_SINGLE_QUOTE">STRING_LITERAL_LONG_SINGLE_QUOTE</a> <code>|</code> <a href="#tu-grammar-production-STRING_LITERAL_LONG_QUOTE">STRING_LITERAL_LONG_QUOTE</a></td>
+    </tr>
+    <tr id="tu-grammar-production-iri">
+      <td>[135s]</td>
+      <td><code>iri</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-IRIREF">IRIREF</a> <code>|</code> <a href="#tu-grammar-production-PrefixedName">PrefixedName</a></td>
+    </tr>
+    <tr id="tu-grammar-production-PrefixedName">
+      <td>[136s]</td>
+      <td><code>PrefixedName</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-PNAME_LN">PNAME_LN</a> <code>|</code> <a href="#tu-grammar-production-PNAME_NS">PNAME_NS</a></td>
+    </tr>
+    <tr id="tu-grammar-production-BlankNode">
+      <td>[137s]</td>
+      <td><code>BlankNode</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-BLANK_NODE_LABEL">BLANK_NODE_LABEL</a> <code>|</code> <a href="#tu-grammar-production-ANON">ANON</a></td>
+    </tr>
+    <tr id="tu-grammar-production-quotedTriple">
+      <td>[27]</td>
+      <td><code>quotedTriple</code></td>
+      <td>::=</td>
+      <td>&quot;&lt;&lt;&quot; <a href="#tu-grammar-production-qtSubject">qtSubject</a> <a href="#tu-grammar-production-predicate">predicate</a> <a href="#tu-grammar-production-qtObject">qtObject</a> &quot;&gt;&gt;&quot;</td>
+    </tr>
+    <tr id="tu-grammar-production-qtSubject">
+      <td>[28]</td>
+      <td><code>qtSubject</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-iri">iri</a> <code>|</code> <a href="#tu-grammar-production-BlankNode">BlankNode</a> <code>|</code> <a href="#tu-grammar-production-quotedTriple">quotedTriple</a></td>
+    </tr>
+    <tr id="tu-grammar-production-qtObject">
+      <td>[29]</td>
+      <td><code>qtObject</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-iri">iri</a> <code>|</code> <a href="#tu-grammar-production-BlankNode">BlankNode</a> <code>|</code> <a href="#tu-grammar-production-literal">literal</a> <code>|</code> <a href="#tu-grammar-production-quotedTriple">quotedTriple</a></td>
+    </tr>
+    <tr id="tu-grammar-production-annotation">
+      <td>[30]</td>
+      <td><code>annotation</code></td>
+      <td>::=</td>
+      <td>&quot;{|&quot; <a href="#tu-grammar-production-predicateObjectList">predicateObjectList</a> &quot;|}&quot;</td>
+    </tr>
+    <tr>
+      <td colspan=2>@terminals</td>
+      <td></td>
+      <td><strong># Productions for terminals</strong></td>
+    </tr>
+    <tr id="tu-grammar-production-IRIREF">
+      <td>[18]</td>
+      <td><code>IRIREF</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">&lt;</code>" <code>(</code> <code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape"><abbr title="null">#x00</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="space">#x20</abbr></code><code class="grammar-literal">&lt;&gt;&quot;{}|^`\</code><code>]</code>  <code>|</code> <a href="#tu-grammar-production-UCHAR">UCHAR</a><code>)</code> <code>*</code>  "<code class="grammar-literal">&gt;</code>"</td>
+    </tr>
+    <tr id="tu-grammar-production-PNAME_NS">
+      <td>[139s]</td>
+      <td><code>PNAME_NS</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-PN_PREFIX">PN_PREFIX</a><code>?</code>  "<code class="grammar-literal">:</code>"</td>
+    </tr>
+    <tr id="tu-grammar-production-PNAME_LN">
+      <td>[140s]</td>
+      <td><code>PNAME_LN</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-PNAME_NS">PNAME_NS</a> <a href="#tu-grammar-production-PN_LOCAL">PN_LOCAL</a></td>
+    </tr>
+    <tr id="tu-grammar-production-BLANK_NODE_LABEL">
+      <td>[141s]</td>
+      <td><code>BLANK_NODE_LABEL</code></td>
+      <td>::=</td>
+      <td>&quot;_:&quot; <code>(</code> <a href="#tu-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>)</code>  <code>(</code> <code>(</code> <a href="#tu-grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>"<code>)</code> <code>*</code>  <a href="#tu-grammar-production-PN_CHARS">PN_CHARS</a><code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-LANGTAG">
+      <td>[144s]</td>
+      <td><code>LANGTAG</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">@</code>" <code>[</code> <code class="grammar-literal">a-zA-Z</code><code>]</code> <code>+</code>  <code>(</code> "<code class="grammar-literal">-</code>" <code>[</code> <code class="grammar-literal">a-zA-Z0-9</code><code>]</code> <code>+</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-INTEGER">
+      <td>[19]</td>
+      <td><code>INTEGER</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">+-</code><code>]</code> <code>?</code>  <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-DECIMAL">
+      <td>[20]</td>
+      <td><code>DECIMAL</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">+-</code><code>]</code> <code>?</code>  <code>(</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>*</code>  "<code class="grammar-literal">.</code>" <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code> <code>)</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-DOUBLE">
+      <td>[21]</td>
+      <td><code>DOUBLE</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">+-</code><code>]</code> <code>?</code>  <code>(</code> <code>(</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code>  "<code class="grammar-literal">.</code>" <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>*</code>  <a href="#tu-grammar-production-EXPONENT">EXPONENT</a><code>)</code>  <code>|</code> <code>(</code> "<code class="grammar-literal">.</code>" <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code>  <a href="#tu-grammar-production-EXPONENT">EXPONENT</a><code>)</code>  <code>|</code> <code>(</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code>  <a href="#tu-grammar-production-EXPONENT">EXPONENT</a><code>)</code> <code>)</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-EXPONENT">
+      <td>[154s]</td>
+      <td><code>EXPONENT</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">eE</code><code>]</code>  <code>[</code> <code class="grammar-literal">+-</code><code>]</code> <code>?</code>  <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-STRING_LITERAL_QUOTE">
+      <td>[22]</td>
+      <td><code>STRING_LITERAL_QUOTE</code></td>
+      <td>::=</td>
+      <td>'<code class="grammar-literal">&quot;</code>' <code>(</code> <code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape"><abbr title="quot">>&quot;</abbr></code><code class="grammar-char-escape"><abbr title="ascii '\'">#x5C</abbr></code><code class="grammar-char-escape"><abbr title="new line">#x0A</abbr></code><code class="grammar-char-escape"><abbr title="carriage return">#x0D</abbr></code><code>]</code>  <code>|</code> <a href="#tu-grammar-production-ECHAR">ECHAR</a> <code>|</code> <a href="#tu-grammar-production-UCHAR">UCHAR</a><code>)</code> <code>*</code>  '<code class="grammar-literal">&quot;</code>'</td>
+    </tr>
+    <tr id="tu-grammar-production-STRING_LITERAL_SINGLE_QUOTE">
+      <td>[23]</td>
+      <td><code>STRING_LITERAL_SINGLE_QUOTE</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">&apos;</code>" <code>(</code> <code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape"><abbr title="ascii '&apos;'">#x27</abbr></code><code class="grammar-char-escape"><abbr title="ascii '\'">#x5C</abbr></code><code class="grammar-char-escape"><abbr title="new line">#x0A</abbr></code><code class="grammar-char-escape"><abbr title="carriage return">#x0D</abbr></code><code>]</code>  <code>|</code> <a href="#tu-grammar-production-ECHAR">ECHAR</a> <code>|</code> <a href="#tu-grammar-production-UCHAR">UCHAR</a><code>)</code> <code>*</code>  "<code class="grammar-literal">&apos;</code>"</td>
+    </tr>
+    <tr id="tu-grammar-production-STRING_LITERAL_LONG_SINGLE_QUOTE">
+      <td>[24]</td>
+      <td><code>STRING_LITERAL_LONG_SINGLE_QUOTE</code></td>
+      <td>::=</td>
+      <td>&quot;&apos;&apos;&apos;&quot; <code>(</code> <code>(</code> "<code class="grammar-literal">&apos;</code>" <code>|</code> &quot;&apos;&apos;&quot;<code>)</code> <code>?</code>  <code>(</code> <code>[</code> <code class="grammar-literal">^&apos;\</code><code>]</code>  <code>|</code> <a href="#tu-grammar-production-ECHAR">ECHAR</a> <code>|</code> <a href="#tu-grammar-production-UCHAR">UCHAR</a><code>)</code> <code>)</code> <code>*</code>  &quot;&apos;&apos;&apos;&quot;</td>
+    </tr>
+    <tr id="tu-grammar-production-STRING_LITERAL_LONG_QUOTE">
+      <td>[25]</td>
+      <td><code>STRING_LITERAL_LONG_QUOTE</code></td>
+      <td>::=</td>
+      <td>&apos;&quot;&quot;&quot;&apos; <code>(</code> <code>(</code> '<code class="grammar-literal">&quot;</code>' <code>|</code> &apos;&quot;&quot;&apos;<code>)</code> <code>?</code>  <code>(</code> <code>[</code> <code class="grammar-literal">^&quot;\</code><code>]</code>  <code>|</code> <a href="#tu-grammar-production-ECHAR">ECHAR</a> <code>|</code> <a href="#tu-grammar-production-UCHAR">UCHAR</a><code>)</code> <code>)</code> <code>*</code>  &apos;&quot;&quot;&quot;&apos;</td>
+    </tr>
+    <tr id="tu-grammar-production-UCHAR">
+      <td>[26]</td>
+      <td><code>UCHAR</code></td>
+      <td>::=</td>
+      <td><code>(</code> &quot;\u&quot; <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a><code>)</code>  <code>|</code> <code>(</code> &quot;\U&quot; <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a><code>)</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-ECHAR">
+      <td>[159s]</td>
+      <td><code>ECHAR</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">\</code>" <code>[</code> <code class="grammar-literal">tbnrf\&quot;&apos;</code><code>]</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-WS">
+      <td>[161s]</td>
+      <td><code>WS</code></td>
+      <td>::=</td>
+      <td><code class="grammar-char-escape"><abbr title="space">#x20</abbr></code> <code>|</code> <code class="grammar-char-escape"><abbr title="horizontal tab">#x09</abbr></code> <code>|</code> <code class="grammar-char-escape"><abbr title="carriage return">#x0D</abbr></code> <code>|</code> <code class="grammar-char-escape"><abbr title="new line">#x0A</abbr></code></td>
+    </tr>
+    <tr id="tu-grammar-production-ANON">
+      <td>[162s]</td>
+      <td><code>ANON</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">[</code>" <a href="#tu-grammar-production-WS">WS</a><code>*</code>  "<code class="grammar-literal">]</code>"</td>
+    </tr>
+    <tr id="tu-grammar-production-PN_CHARS_BASE">
+      <td>[163s]</td>
+      <td><code>PN_CHARS_BASE</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">A-Z</code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-literal">a-z</code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xC0'">#xC0</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="extended ascii '#xD6'">#xD6</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xD8'">#xD8</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="extended ascii '#xF6'">#xF6</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xF8'">#xF8</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x02FF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x0370</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x037D</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x037F</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#x1FFF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Format'">#x200C</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Format'">#x200D</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2070</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#x218F</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2C00</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#x2FEF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x3001</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#xD7FF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xF900</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xFDCF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xFDF0</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xFFFD</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x00010000</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Noncharacter'">#x000EFFFF</abbr></code><code>]</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-PN_CHARS_U">
+      <td>[164s]</td>
+      <td><code>PN_CHARS_U</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-PN_CHARS_BASE">PN_CHARS_BASE</a> <code>|</code> "<code class="grammar-literal">_</code>"</td>
+    </tr>
+    <tr id="tu-grammar-production-PN_CHARS">
+      <td>[166s]</td>
+      <td><code>PN_CHARS</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> "<code class="grammar-literal">-</code>" <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xB7'">#xB7</abbr></code> <code>|</code> <code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x0300</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x036F</abbr></code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x203F</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2040</abbr></code><code>]</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-PN_PREFIX">
+      <td>[167s]</td>
+      <td><code>PN_PREFIX</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-PN_CHARS_BASE">PN_CHARS_BASE</a> <code>(</code> <code>(</code> <a href="#tu-grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>"<code>)</code> <code>*</code>  <a href="#tu-grammar-production-PN_CHARS">PN_CHARS</a><code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-PN_LOCAL">
+      <td>[168s]</td>
+      <td><code>PN_LOCAL</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#tu-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> "<code class="grammar-literal">:</code>" <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <a href="#tu-grammar-production-PLX">PLX</a><code>)</code>  <code>(</code> <code>(</code> <a href="#tu-grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>" <code>|</code> "<code class="grammar-literal">:</code>" <code>|</code> <a href="#tu-grammar-production-PLX">PLX</a><code>)</code> <code>*</code>  <code>(</code> <a href="#tu-grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">:</code>" <code>|</code> <a href="#tu-grammar-production-PLX">PLX</a><code>)</code> <code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-PLX">
+      <td>[169s]</td>
+      <td><code>PLX</code></td>
+      <td>::=</td>
+      <td><a href="#tu-grammar-production-PERCENT">PERCENT</a> <code>|</code> <a href="#tu-grammar-production-PN_LOCAL_ESC">PN_LOCAL_ESC</a></td>
+    </tr>
+    <tr id="tu-grammar-production-PERCENT">
+      <td>[170s]</td>
+      <td><code>PERCENT</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">%</code>" <a href="#tu-grammar-production-HEX">HEX</a> <a href="#tu-grammar-production-HEX">HEX</a></td>
+    </tr>
+    <tr id="tu-grammar-production-HEX">
+      <td>[171s]</td>
+      <td><code>HEX</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-literal">A-F</code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-literal">a-f</code><code>]</code> </td>
+    </tr>
+    <tr id="tu-grammar-production-PN_LOCAL_ESC">
+      <td>[172s]</td>
+      <td><code>PN_LOCAL_ESC</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">\</code>" <code>(</code> "<code class="grammar-literal">_</code>" <code>|</code> "<code class="grammar-literal">~</code>" <code>|</code> "<code class="grammar-literal">.</code>" <code>|</code> "<code class="grammar-literal">-</code>" <code>|</code> "<code class="grammar-literal">!</code>" <code>|</code> "<code class="grammar-literal">$</code>" <code>|</code> "<code class="grammar-literal">&amp;</code>" <code>|</code> "<code class="grammar-literal">&apos;</code>" <code>|</code> "<code class="grammar-literal">(</code>" <code>|</code> "<code class="grammar-literal">)</code>" <code>|</code> "<code class="grammar-literal">*</code>" <code>|</code> "<code class="grammar-literal">+</code>" <code>|</code> "<code class="grammar-literal">,</code>" <code>|</code> "<code class="grammar-literal">;</code>" <code>|</code> "<code class="grammar-literal">=</code>" <code>|</code> "<code class="grammar-literal">/</code>" <code>|</code> "<code class="grammar-literal">?</code>" <code>|</code> "<code class="grammar-literal">#</code>" <code>|</code> "<code class="grammar-literal">@</code>" <code>|</code> "<code class="grammar-literal">%</code>"<code>)</code> </td>
+    </tr>
+  </tbody>
+</table>
+    

@@ -8,9 +8,20 @@ PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
 PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
 PREFIX trs:    <https://w3c.github.io/rdf-star/tests/sparql/syntax#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
 
 trs:manifest  rdf:type mf:Manifest ;
-    rdfs:label "SPARQL-star Syntax Tests" ;
+    rdfs:label "SPARQL-star Syntax Tests"@en ;
+    skos:prefLabel "La suite des tests pour SPARQL-star"@fr ;
+    skos:prefLabel "Conjunto de pruebas para SPARQL-star"@es ;
+    dct:issued "2021-06-21"^^xsd:date ;
+    rdfs:seeAlso <https://w3c.github.io/rdf-tests/> ;
+    dct:modified "2021-07-18"^^xsd:date ;
+    dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+    dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star/> ; foaf:name " RDF-star Interest Group within the W3C RDF-DEV Community Group" ] ;
     mf:entries
     (
         trs:sparql-star-1
@@ -82,7 +93,7 @@ trs:manifest  rdf:type mf:Manifest ;
         trs:sparql-star-update-6
         trs:sparql-star-update-7
         trs:sparql-star-update-8
-        
+
         trs:sparql-star-bad-update-1
         trs:sparql-star-bad-update-2
         trs:sparql-star-bad-update-3
@@ -405,7 +416,7 @@ trs:sparql-star-bad-update-1  rdf:type mf:NegativeUpdateSyntaxTest11 ;
     mf:name      "SPARQL-star - update - bad syntax";
     mf:action    <sparql-star-syntax-bad-update-1.ru> ;
     .
-    
+
 trs:sparql-star-bad-update-2  rdf:type mf:NegativeUpdateSyntaxTest11 ;
     mf:name      "SPARQL-star - update - bad syntax";
     mf:action    <sparql-star-syntax-bad-update-2.ru> ;
@@ -415,7 +426,7 @@ trs:sparql-star-bad-update-3  rdf:type mf:NegativeUpdateSyntaxTest11 ;
     mf:name      "SPARQL-star - update - bad syntax";
     mf:action    <sparql-star-syntax-bad-update-3.ru> ;
     .
-    
+
 trs:sparql-star-bad-update-4  rdf:type mf:NegativeUpdateSyntaxTest11 ;
     mf:name      "SPARQL-star - update - bad syntax";
     mf:action    <sparql-star-syntax-bad-update-4.ru> ;
