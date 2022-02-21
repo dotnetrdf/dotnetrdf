@@ -2568,6 +2568,7 @@ namespace VDS.RDF.Query
                                 ISet x = s.Copy();
                                 if (path.PathStart.Accepts(context, subj, x))
                                 {
+                                    objVars.ForEach(objVar => x.Add(objVar, subj));
                                     context.OutputMultiset.Add(x);
                                 }
                             }
@@ -2603,6 +2604,7 @@ namespace VDS.RDF.Query
                                 ISet x = s.Copy();
                                 if (path.PathEnd.Accepts(context, obj, x))
                                 {
+                                    subjVars.ForEach(subjVar => x.Add(subjVar, obj));
                                     context.OutputMultiset.Add(x);
                                 }
                             }
@@ -2680,11 +2682,10 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath zeroOrMorePath, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             var paths = new List<List<INode>>();
             BaseMultiset initialInput = context.InputMultiset;
             int step = 0, prevCount = 0, skipCount = 0;
-
             var subjVars = zeroOrMorePath.PathStart.Variables.ToList();
             var objVars = zeroOrMorePath.PathEnd.Variables.ToList();
             var bothTerms = zeroOrMorePath.PathStart.IsFixed && zeroOrMorePath.PathEnd.IsFixed;
@@ -2819,41 +2820,6 @@ namespace VDS.RDF.Query
                     }
                 }
 
-                /*
-                // Now add the zero length paths into
-                IEnumerable<INode> nodes;
-                if (!zeroOrMorePath.PathStart.IsFixed)
-                {
-                    if (!zeroOrMorePath.PathEnd.IsFixed)
-                    {
-                        nodes = (from s in context.OutputMultiset.Sets
-                                where s.BindsAll(subjVars)
-                                select zeroOrMorePath.PathStart.Bind(s))
-                            .Concat(from s in context.OutputMultiset.Sets
-                                where s.BindsAll(objVars)
-                                select zeroOrMorePath.PathEnd.Bind(s))
-                            .Distinct();
-                    }
-                    else
-                    {
-                        nodes = (from s in context.OutputMultiset.Sets
-                                where s.BindsAll(subjVars)
-                                select zeroOrMorePath.PathStart.Bind(s))
-                            .Distinct();
-                    }
-                }
-                else if (!zeroOrMorePath.PathEnd.IsFixed)
-                {
-                    nodes = (from s in context.OutputMultiset.Sets
-                             where s.BindsAll(objVars)
-                             select zeroOrMorePath.PathEnd.Bind(s))
-                        .Distinct();
-                }
-                else
-                {
-                    nodes = Enumerable.Empty<INode>();
-                }
-                */
                 if (bothTerms)
                 {
                     // If both were terms transform to an Identity/Null Multiset as appropriate
@@ -2872,7 +2838,7 @@ namespace VDS.RDF.Query
                 var zeroPath = new ZeroLengthPath(zeroOrMorePath.PathStart, zeroOrMorePath.PathEnd, zeroOrMorePath.Path);
                 BaseMultiset currResults = context.OutputMultiset;
                 context.OutputMultiset = new Multiset();
-                BaseMultiset results = context.Evaluate(zeroPath);//zeroPath.Evaluate(context);
+                BaseMultiset results = context.Evaluate(zeroPath);
                 context.OutputMultiset = currResults;
                 context.OutputMultiset.Merge(results);
             }
