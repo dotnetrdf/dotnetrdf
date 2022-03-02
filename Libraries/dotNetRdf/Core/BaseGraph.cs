@@ -585,14 +585,26 @@ namespace VDS.RDF
 
         private INode MapBlankNode(INode node, IDictionary<INode, IBlankNode> mapping)
         {
-            if (node.NodeType != NodeType.Blank)
+            switch (node.NodeType)
             {
-                return node;
+                case NodeType.Triple:
+                    var tn = node as ITripleNode;
+                    return tn == null || tn.Triple.IsGroundTriple
+                        ? tn
+                        : new TripleNode(new Triple(
+                            MapBlankNode(tn.Triple.Subject, mapping),
+                            MapBlankNode(tn.Triple.Predicate, mapping),
+                            MapBlankNode(tn.Triple.Object, mapping)));
+
+                case NodeType.Blank:
+                    if (mapping.TryGetValue(node, out IBlankNode mapped)) return mapped;
+                    IBlankNode tmp = CreateBlankNode();
+                    mapping.Add(node, tmp);
+                    return tmp;
+             
+                default:
+                    return node;
             }
-            if (mapping.TryGetValue(node, out IBlankNode mapped)) return mapped;
-            IBlankNode tmp = CreateBlankNode();
-            mapping.Add(node, tmp);
-            return tmp;
         }
 
         #endregion
