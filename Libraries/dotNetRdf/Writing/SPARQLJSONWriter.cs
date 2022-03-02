@@ -143,63 +143,7 @@ namespace VDS.RDF.Writing
 
                         // Create an Object for the Variable
                         writer.WritePropertyName(var);
-                        writer.WriteStartObject();
-                        writer.WritePropertyName("type");
-
-                        switch (value.NodeType)
-                        {
-                            case NodeType.Blank:
-                                // Blank Node
-                                writer.WriteValue("bnode");
-                                writer.WritePropertyName("value");
-                                var id = ((IBlankNode)value).InternalID;
-                                id = id.Substring(id.IndexOf(':') + 1);
-                                writer.WriteValue(id);
-                                break;
-
-                            case NodeType.GraphLiteral:
-                                // Error
-                                throw new RdfOutputException("Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results JSON Format");
-
-                            case NodeType.Literal:
-                                // Literal
-                                var lit = (ILiteralNode)value;
-                                if (lit.DataType != null)
-                                {
-                                    writer.WriteValue("typed-literal");
-                                }
-                                else
-                                {
-                                    writer.WriteValue("literal");
-                                }
-                                writer.WritePropertyName("value");
-
-                                writer.WriteValue(lit.Value);
-                                if (!lit.Language.Equals(string.Empty))
-                                {
-                                    writer.WritePropertyName("xml:lang");
-                                    writer.WriteValue(lit.Language);
-                                }
-                                else if (lit.DataType != null)
-                                {
-                                    writer.WritePropertyName("datatype");
-                                    writer.WriteValue(lit.DataType.AbsoluteUri);
-                                }
-                                break;
-
-                            case NodeType.Uri:
-                                // Uri
-                                writer.WriteValue("uri");
-                                writer.WritePropertyName("value");
-                                writer.WriteValue(value.ToString());
-                                break;
-
-                            default:
-                                throw new RdfOutputException("Result Sets which contain Nodes of unknown Type cannot be serialized in the SPARQL Query Results JSON Format");
-                        }
-
-                        // End the Variable Object
-                        writer.WriteEndObject();
+                        WriteValue(value, writer);
                     }
                     // End the Binding Object
                     writer.WriteEndObject();
@@ -224,6 +168,86 @@ namespace VDS.RDF.Writing
             // End the Json Object for the Result Set
             writer.WriteEndObject();
 
+        }
+
+        private static void WriteValue(INode value, JsonTextWriter writer)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("type");
+
+            switch (value.NodeType)
+            {
+                case NodeType.Blank:
+                    // Blank Node
+                    writer.WriteValue("bnode");
+                    writer.WritePropertyName("value");
+                    var id = ((IBlankNode)value).InternalID;
+                    id = id.Substring(id.IndexOf(':') + 1);
+                    writer.WriteValue(id);
+                    break;
+
+                case NodeType.GraphLiteral:
+                    // Error
+                    throw new RdfOutputException(
+                        "Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results JSON Format");
+
+                case NodeType.Literal:
+                    // Literal
+                    var lit = (ILiteralNode)value;
+                    if (lit.DataType != null)
+                    {
+                        writer.WriteValue("typed-literal");
+                    }
+                    else
+                    {
+                        writer.WriteValue("literal");
+                    }
+
+                    writer.WritePropertyName("value");
+
+                    writer.WriteValue(lit.Value);
+                    if (!lit.Language.Equals(string.Empty))
+                    {
+                        writer.WritePropertyName("xml:lang");
+                        writer.WriteValue(lit.Language);
+                    }
+                    else if (lit.DataType != null)
+                    {
+                        writer.WritePropertyName("datatype");
+                        writer.WriteValue(lit.DataType.AbsoluteUri);
+                    }
+
+                    break;
+
+                case NodeType.Uri:
+                    // Uri
+                    writer.WriteValue("uri");
+                    writer.WritePropertyName("value");
+                    writer.WriteValue(value.ToString());
+                    break;
+
+                case NodeType.Triple:
+                    var tn = (ITripleNode)value;
+                    // Triple Node
+                    writer.WriteValue("triple");
+                    writer.WritePropertyName("value");
+                    writer.WriteStartObject();
+                    writer.WritePropertyName("subject");
+                    WriteValue(tn.Triple.Subject, writer);
+                    writer.WritePropertyName("predicate");
+                    WriteValue(tn.Triple.Predicate, writer);
+                    writer.WritePropertyName("object");
+                    WriteValue(tn.Triple.Object, writer);
+                    writer.WriteEndObject();
+                    break;
+
+                default:
+                    throw new RdfOutputException(
+                        "Result Sets which contain Nodes of unknown Type cannot be serialized in the SPARQL Query Results JSON Format");
+            }
+
+            // End the Variable Object
+            writer.WriteEndObject();
         }
 
         /// <summary>
