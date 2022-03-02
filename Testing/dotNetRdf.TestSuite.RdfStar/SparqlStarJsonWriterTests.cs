@@ -7,7 +7,7 @@ using Xunit;
 
 namespace VDS.RDF.TestSuite.RdfStar
 {
-    public class SparqlStarJsonFormatterTests
+    public class SparqlStarJsonWriterTests
     {
         [Fact]
         public void ItHandlesFormattingATripleNode()
