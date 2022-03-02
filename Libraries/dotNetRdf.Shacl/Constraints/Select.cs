@@ -131,7 +131,7 @@ namespace VDS.RDF.Shacl.Constraints
         {
             for (var i = 0; i < pattern.TriplePatterns.Count(); i++)
             {
-                if (pattern.TriplePatterns[i] is TriplePattern triplePattern && triplePattern.Predicate.VariableName == "PATH")
+                if (pattern.TriplePatterns[i] is TriplePattern triplePattern && triplePattern.Predicate.Variables.All(x=>x.Equals("PATH")))
                 {
                     pattern.TriplePatterns.RemoveAt(i);
                     pattern.TriplePatterns.Insert(i, new PropertyPathPattern(triplePattern.Subject, path, triplePattern.Object));

@@ -119,15 +119,16 @@ namespace VDS.RDF.Query.Ordering
             var comparer = new SparqlOrderingComparer(nodeComparer);
             IComparer<Triple> child = Child?.GetComparer(pattern, nodeComparer);
             Func<Triple, Triple, int> compareFunc = null;
-            if (Variable.Equals(pattern.Subject.VariableName))
+            
+            if (Variable.Equals(pattern.Subject.Variables.FirstOrDefault()))
             {
                 compareFunc = (x, y) => comparer.Compare(x.Subject, y.Subject);
             }
-            else if (Variable.Equals(pattern.Predicate.VariableName))
+            else if (Variable.Equals(pattern.Predicate.Variables.FirstOrDefault()))
             {
                 compareFunc = (x, y) => comparer.Compare(x.Predicate, y.Predicate);
             }
-            else if (Variable.Equals(pattern.Object.VariableName))
+            else if (Variable.Equals(pattern.Object.Variables.FirstOrDefault()))
             {
                 compareFunc = (x, y) => comparer.Compare(x.Object, y.Object);
             }
@@ -227,15 +228,15 @@ namespace VDS.RDF.Query.Ordering
                 Func<Triple, Triple, int> compareFunc = null;
                 var var = _expr.Variables.First();
                 var comparer = new SparqlOrderingComparer(nodeComparer);
-                if (var.Equals(pattern.Subject.VariableName))
+                if (var.Equals(pattern.Subject.Variables.FirstOrDefault()))
                 {
                     compareFunc = (x, y) => comparer.Compare(x.Subject, y.Subject);
                 }
-                else if (var.Equals(pattern.Predicate.VariableName))
+                else if (var.Equals(pattern.Predicate.Variables.FirstOrDefault()))
                 {
                     compareFunc = (x, y) => comparer.Compare(x.Predicate, y.Predicate);
                 }
-                else if (var.Equals(pattern.Object.VariableName))
+                else if (var.Equals(pattern.Object.Variables.FirstOrDefault()))
                 {
                     compareFunc = (x, y) => comparer.Compare(x.Object, y.Object);
                 }

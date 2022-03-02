@@ -1,0 +1,1249 @@
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<> foaf:primaryTopic <https://crates.io/crates/rio_turtle> ;
+	dc:issued "2021-12-15T19:07:39.195199634Z"^^xsd:dateTime ;
+	foaf:maker <https://thomas.pellissier-tanon.fr/#me> .
+
+<https://crates.io/crates/rio_turtle> a doap:Project, earl:TestSubject, earl:Software ;
+	doap:name "Oxigraph Rio Turtle" ;
+	doap:release [
+		doap:name "Oxigraph Rio Turtle 0.6.1";
+		doap:revision "0.6.1-dev" ;
+	] ;
+	doap:developer <https://thomas.pellissier-tanon.fr/#me> ;
+	doap:developer <http://champin.net/#pa> ;
+	doap:homepage <https://crates.io/crates/rio_turtle> ;
+	doap:description "Rio Turtle is a Turtle, TriG, NTriples and NQuads parser library written in Rust."@en ;
+	doap:programming-language "Rust" .
+
+<https://thomas.pellissier-tanon.fr/#me> a foaf:Person, earl:Assertor ;
+	foaf:name "Thomas Tanon"; 
+	foaf:homepage <https://thomas.pellissier-tanon.fr/> .
+
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.11908059Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.119478403Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.119875421Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.120234576Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.120707735Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bnode-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.121131271Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bnode-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.12157075Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-nested-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.122078503Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-nested-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.122629137Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bad-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.122961131Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bad-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.123178417Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bad-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.123411973Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/nt/syntax#ntriples-star-bad-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.123678648Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.134796638Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.135195219Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-inside-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.135674143Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-inside-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.136288524Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-nested-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.136740535Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-nested-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.137174078Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-compound-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.137777471Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bnode-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.138166436Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bnode-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.138534152Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bnode-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.138855123Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.139158999Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.139530052Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.139902968Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.140195721Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.140420928Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-6> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.140642654Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-7> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.140882666Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-8> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.141126312Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-ann-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.141474221Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-ann-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.142072721Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-ann-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.142309596Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#turtle-star-bad-ann-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.142583902Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.142995708Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.143310671Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.143646777Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.143967793Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.144395872Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bnode-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.144801531Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bnode-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.145176606Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-nested-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.145670302Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-nested-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.146449722Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bad-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.146688396Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bad-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.146886384Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bad-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.147103693Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/syntax#nt-ttl-star-bad-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.147306898Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.152345419Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.15311386Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-bnode-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.154054133Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-bnode-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.155154794Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.155956232Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.157617077Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.158818211Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.159853908Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-annotation-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.160693483Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-quoted-annotation-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.161506234Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-quoted-annotation-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.16246747Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/turtle/eval#turtle-star-quoted-annotation-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.163370699Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.170809121Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.171487379Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-inside-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.171962019Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-inside-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.172449136Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-nested-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.172866736Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-nested-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.173253387Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-compound-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.173798331Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bnode-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.174148346Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bnode-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.174523874Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bnode-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.174854801Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.175101951Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.175342116Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.175622045Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.175855885Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.176154763Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-6> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.176400272Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-7> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.17664789Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-8> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.176883843Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-ann-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.177196357Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-ann-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.177739955Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-ann-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.177984435Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/syntax#trig-star-bad-ann-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.17822837Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.183501015Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.18418556Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-bnode-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.185155775Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-bnode-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.186274442Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.18718839Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.189141535Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.190443171Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.191450615Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-annotation-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.192341465Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-quoted-annotation-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.1932567Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-quoted-annotation-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.194166298Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <https://crates.io/crates/rio_turtle> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/trig/eval#trig-star-quoted-annotation-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:07:39.195099521Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .

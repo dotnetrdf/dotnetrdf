@@ -1,0 +1,1287 @@
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<> foaf:primaryTopic <http://oxigraph.org/> ;
+	dc:issued "2021-12-15T19:04:15.306942623Z"^^xsd:dateTime ;
+	foaf:maker <https://thomas.pellissier-tanon.fr/#me> .
+
+<http://oxigraph.org/> a doap:Project, earl:TestSubject, earl:Software ;
+	doap:name "Oxigraph" ;
+	doap:release [
+		doap:name "Oxigraph 0.3.0-dev";
+		doap:revision "0.3.0-dev" ;
+	] ;
+	doap:developer <https://thomas.pellissier-tanon.fr/#me> ;
+	doap:homepage <https://oxigraph.org/> ;
+	doap:description "Oxigraph is an embedded triple store."@en ;
+	doap:programming-language "Rust" .
+
+<https://thomas.pellissier-tanon.fr/#me> a foaf:Person, earl:Assertor ;
+	foaf:name "Thomas Tanon"; 
+	foaf:homepage <https://thomas.pellissier-tanon.fr/> .
+
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.709802679Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.710230755Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.710561586Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.71088205Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.711629053Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-6> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.712058559Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-7> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.71248238Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-inside-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.713068728Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-inside-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.714033241Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-nested-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.714659977Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-nested-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.715271998Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-compound-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.716218435Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bnode-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.716650552Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bnode-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.717080968Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bnode-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.717539481Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-01> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.717952799Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-02> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.719226092Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-03> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.719913596Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-04> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.720489055Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-05> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.721059231Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-06> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.721600455Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-07> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.722493282Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-08> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.723040076Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-ann-09> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.72356239Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.724103848Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.724807491Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.725415086Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.726190066Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.728110569Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-expr-6> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.729555544Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.730043212Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.73039754Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.730806488Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.731180193Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.731550651Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-6> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.731855265Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-7> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.732158981Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-8> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.732452055Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-9> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.73278262Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-10> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.733092917Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-11> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.733669624Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-12> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.734673297Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.735099013Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.73559643Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.736141953Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.736963414Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.737249957Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.737545595Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.737806475Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-6> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.738054883Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-ann-path-7> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.738327165Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.738754166Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.739209043Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.740074112Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.741056694Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.741816906Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-6> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.742645071Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-7> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.743467606Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-update-8> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.744171545Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.744313813Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.744451338Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.744587277Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/syntax#sparql-star-bad-update-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:50.744721352Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-results-1j> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:51.480994064Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-results-1x> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:52.199344223Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:52.897888318Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:53.591379931Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:54.599325294Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:55.458386246Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-basic-6> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:56.168322046Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:56.847603623Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:57.547789672Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:58.27203275Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:58.961644913Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:03:59.670646238Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-6> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:00.367931733Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-7> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:01.082307426Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-8> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:01.783180747Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-pattern-9> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:02.493424952Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:03.195755142Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:03.904629344Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:04.676872468Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:05.646107162Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-construct-5> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:06.423187699Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-graphs-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:07.150009777Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-graphs-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:07.889548378Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:08.580979667Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:09.258269968Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:09.945893513Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:10.634497863Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:11.319383394Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-op-4> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:12.015870939Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-order-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:12.834116993Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-order-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:13.667381291Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-1> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:14.22233585Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-2> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:14.75106763Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .
+
+[
+	a earl:Assertion ;
+	earl:assertedBy <https://thomas.pellissier-tanon.fr/#me> ;
+	earl:subject <http://oxigraph.org/> ;
+	earl:test <https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-3> ;
+	earl:result [
+		a earl:TestResult ;
+		earl:outcome earl:passed ;
+		dc:date "2021-12-15T19:04:15.306473587Z"^^xsd:dateTime
+	] ;
+	earl:mode earl:automatic
+] .

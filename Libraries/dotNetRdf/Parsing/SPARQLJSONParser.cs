@@ -607,127 +607,28 @@ namespace VDS.RDF.Parsing
             {
                 if (context.Input.TokenType == JsonToken.StartObject)
                 {
-                    context.Input.Read();
-
-                    while (context.Input.TokenType != JsonToken.EndObject)
+                    try
                     {
-                        var token = context.Input.Value.ToString().ToLower();
+                        INode n = ParseNode(context);
 
-                        // Check that we get a Property Value as a String
-                        context.Input.Read();
-                        if (!IsValidValue(context))
+                        // Check that the Variable was defined in the Header
+                        if (!context.Variables.Contains(var))
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected a Property Value describing one of the properties of an Variable Binding");
-                        }
-
-                        // Extract the Information from the Object
-                        if (token.Equals("value"))
-                        {
-                            nodeValue = context.Input.Value.ToString();
-                        }
-                        else if (token.Equals("type"))
-                        {
-                            nodeType = context.Input.Value.ToString().ToLower();
-                        }
-                        else if (token.Equals("lang") || token.Equals("xml:lang"))
-                        {
-                            if (nodeLang == null && nodeDatatype == null)
-                            {
-                                nodeLang = context.Input.Value.ToString();
-                            }
-                            else
-                            {
-                                throw Error(context, "Unexpected Language Property specified for an Object Node where a Language or Datatype has already been specified");
-                            }
-                        }
-                        else if (token.Equals("datatype"))
-                        {
-                            if (nodeDatatype == null && nodeLang == null)
-                            {
-                                nodeDatatype = context.Input.Value.ToString();
-                            }
-                            else
-                            {
-                                throw Error(context, "Unexpected Datatype Property specified for an Object Node where a Language or Datatype has already been specified");
-                            }
-                        }
-                        else
-                        {
-                            throw Error(context, "Unexpected Property '" + token + "' specified for an Object Node, only 'value', 'type', 'lang' and 'datatype' are valid properties");
+                            if (headSeen)
+                                throw new RdfParseException(
+                                    "Unable to Parse a SPARQL Result Set since a Binding Object attempts to bind a value to the variable '" +
+                                    var +
+                                    "' which is not defined in the Header Object in the value for the 'vars' property!");
+                            context.Variables.Add(var);
                         }
 
-                        // Get Next Token
-                        if (!context.Input.Read())
-                        {
-                            throw new RdfParseException("Unexpected End of Input while trying to parse a Bound Variable Object");
-                        }
+                        // Add to the result
+                        r.SetValue(var, n);
                     }
-
-                    // Validate the Information
-                    if (nodeType == null)
+                    catch (RdfParseException ex)
                     {
-                        throw new RdfParseException("Cannot parse a Node from the JSON where no 'type' property was specified in the JSON Object representing the Node");
+                        throw Error(context, $"Error parsing binding for {var}: ${ex}");
                     }
-                    if (nodeValue == null)
-                    {
-                        throw new RdfParseException("Cannot parse a Node from the JSON where no 'value' property was specified in the JSON Object representing the Node");
-                    }
-
-                    // Turn this information into a Node
-                    INode n;
-                    if (nodeType.Equals("uri"))
-                    {
-                        n = ParserHelper.TryResolveUri(context, nodeValue);
-                    }
-                    else if (nodeType.Equals("bnode"))
-                    {
-                        if (nodeValue.StartsWith("_:"))
-                        {
-                            n = context.Handler.CreateBlankNode(nodeValue.Substring(2));
-                        }
-                        else if (nodeValue.Contains("://"))
-                        {
-                            n = context.Handler.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf("://", StringComparison.Ordinal) + 3));
-                        }
-                        else if (nodeValue.Contains(":"))
-                        {
-                            n = context.Handler.CreateBlankNode(nodeValue.Substring(nodeValue.LastIndexOf(':') + 1));
-                        }
-                        else
-                        {
-                            n = context.Handler.CreateBlankNode(nodeValue);
-                        }
-                    }
-                    else if (nodeType.Equals("literal") || nodeType.Equals("typed-literal"))
-                    {
-                        if (nodeLang != null)
-                        {
-                            n = context.Handler.CreateLiteralNode(nodeValue, nodeLang);
-                        }
-                        else if (nodeDatatype != null)
-                        {
-                            Uri dtUri = ((IUriNode) ParserHelper.TryResolveUri(context, nodeDatatype)).Uri;
-                            n = context.Handler.CreateLiteralNode(nodeValue, dtUri);
-                        }
-                        else
-                        {
-                            n = context.Handler.CreateLiteralNode(nodeValue);
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfParseException("Cannot parse a Node from the JSON where the 'type' property has a value of '" + nodeType + "' which is not one of the permitted values 'uri', 'bnode', 'literal' or 'typed-literal' in the JSON Object representing the Node");
-                    }
-
-                    // Check that the Variable was defined in the Header
-                    if (!context.Variables.Contains(var))
-                    {
-                        if (headSeen) throw new RdfParseException("Unable to Parse a SPARQL Result Set since a Binding Object attempts to bind a value to the variable '" + var + "' which is not defined in the Header Object in the value for the 'vars' property!");
-                        context.Variables.Add(var);
-                    }
-
-                    // Add to the result
-                    r.SetValue(var, n);
                 }
                 else
                 {
@@ -738,6 +639,193 @@ namespace VDS.RDF.Parsing
             {
                 throw Error(context, "Unexpected End of Input while trying to parse a Bound Variable Object");
             }
+        }
+
+        private INode ParseNode(SparqlJsonParserContext context)
+        {
+            string nodeType, nodeLang, nodeDatatype;
+            var nodeValue = nodeType = nodeLang = nodeDatatype = null;
+            INode tripleNodeValue = null;
+            if (context.Input.TokenType == JsonToken.StartObject)
+            {
+                context.Input.Read();
+
+                while (context.Input.TokenType != JsonToken.EndObject)
+                {
+                    var token = context.Input.Value.ToString().ToLower();
+
+                    // Check that we get a Property Value as a String
+                    context.Input.Read();
+                    if (!IsValidValue(context))
+                    {
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected a Property Value describing one of the properties of an Variable Binding");
+                    }
+
+                    switch (token)
+                    {
+                        // Extract the Information from the Object
+                        case "value":
+                            {
+                                if (context.Input.TokenType == JsonToken.StartObject)
+                                {
+                                    tripleNodeValue = ParseTripleNode(context);
+                                }
+                                else
+                                {
+                                    nodeValue = context.Input.Value.ToString();
+                                }
+
+                                break;
+                            }
+                        case "type":
+                            nodeType = context.Input.Value.ToString().ToLower();
+                            break;
+                        case "lang":
+                        case "xml:lang":
+                            {
+                                if (nodeLang == null && nodeDatatype == null)
+                                {
+                                    nodeLang = context.Input.Value.ToString();
+                                }
+                                else
+                                {
+                                    throw Error(context, "Unexpected Language Property specified for an Object Node where a Language or Datatype has already been specified");
+                                }
+
+                                break;
+                            }
+                        case "datatype" when nodeDatatype == null && nodeLang == null:
+                            nodeDatatype = context.Input.Value.ToString();
+                            break;
+                        case "datatype":
+                            throw Error(context, "Unexpected Datatype Property specified for an Object Node where a Language or Datatype has already been specified");
+                        default:
+                            throw Error(context, "Unexpected Property '" + token + "' specified for an Object Node, only 'value', 'type', 'lang' and 'datatype' are valid properties");
+                    }
+
+                    // Get Next Token
+                    if (!context.Input.Read())
+                    {
+                        throw new RdfParseException("Unexpected End of Input while trying to parse a Bound Variable Object");
+                    }
+                }
+
+                // Validate the Information
+                if (nodeType == null)
+                {
+                    throw new RdfParseException("Cannot parse a Node from the JSON where no 'type' property was specified in the JSON Object representing the Node");
+                }
+
+                if (nodeType == "triple")
+                {
+                    if (tripleNodeValue == null)
+                    {
+                        throw new RdfParseException(
+                            $"Cannot parse a node from the JSON where the 'type' property has a value of '{nodeType}'. Expected the 'value' property to be an object, but found '{nodeValue}'.");
+                    }
+                } else if (nodeValue == null)
+                {
+                    throw new RdfParseException(
+                        "Cannot parse a Node from the JSON where no 'value' property was specified in the JSON Object representing the Node");
+                }
+
+                // Turn this information into a Node
+                switch (nodeType)
+                {
+                    case "uri":
+                        return ParserHelper.TryResolveUri(context, nodeValue);
+
+                    case "bnode" when nodeValue.StartsWith("_:"):
+                        return context.Handler.CreateBlankNode(nodeValue.Substring(2));
+                    case "bnode" when nodeValue.Contains("://"):
+                        return context.Handler.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf("://", StringComparison.Ordinal) + 3));
+                    case "bnode" when nodeValue.Contains(":"):
+                        return context.Handler.CreateBlankNode(nodeValue.Substring(nodeValue.LastIndexOf(':') + 1));
+                    case "bnode":
+                        return context.Handler.CreateBlankNode(nodeValue);
+
+                    case "literal":
+                    case "typed-literal":
+                        {
+                            if (nodeLang != null)
+                            {
+                                return context.Handler.CreateLiteralNode(nodeValue, nodeLang);
+                            }
+
+                            if (nodeDatatype != null)
+                            {
+                                Uri dtUri = ((IUriNode)ParserHelper.TryResolveUri(context, nodeDatatype)).Uri;
+                                return  context.Handler.CreateLiteralNode(nodeValue, dtUri);
+                            }
+
+                            return context.Handler.CreateLiteralNode(nodeValue);
+                        }
+
+                    case "triple":
+                        return tripleNodeValue;
+                       
+                    default:
+                        throw new RdfParseException("Cannot parse a Node from the JSON where the 'type' property has a value of '" + nodeType + "' which is not one of the permitted values 'uri', 'bnode', 'literal' or 'typed-literal' in the JSON Object representing the Node");
+                }
+
+            }
+
+            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected the start of a Bound Variable Object");
+        }
+
+        private ITripleNode ParseTripleNode(SparqlJsonParserContext context)
+        {
+            INode subj = null, pred = null, obj = null;
+            if (context.Input.TokenType != JsonToken.StartObject)
+            {
+                throw Error(context,
+                    $"Error parsing triple node value. Expected an object value, but found a {context.Input.TokenType} token.");
+            }
+
+            context.Input.Read();
+            while (context.Input.TokenType != JsonToken.EndObject)
+            {
+                var token = context.Input.Value.ToString().ToLower();
+                context.Input.Read();
+                if (context.Input.TokenType != JsonToken.StartObject)
+                {
+                    throw Error(context, $"Error parsing '{token}' property of triple node. Expected property value to be an object, but found a {context.Input.TokenType} token.");
+                }
+
+                switch (token)
+                {
+                    case "subject":
+                        subj = ParseNode(context);
+                        break;
+                    case "predicate":
+                        pred = ParseNode(context);
+                        break;
+                    case "object":
+                        obj = ParseNode(context);
+                        break;
+                    default:
+                        throw Error(context,
+                            $"Error parsing '{token}' property of triple node. Invalid property name. Expected one of 'subject', 'predicate' or 'object'.");
+                }
+                context.Input.Read();
+            }
+
+            if (subj == null)
+            {
+                throw Error(context, "Error parsing triple node. Did not find required property 'subject'.");
+            }
+
+            if (pred == null)
+            {
+                throw Error(context, "Error parsing triple node. Did not find required property 'predicate'.");
+            }
+
+            if (obj == null)
+            {
+                throw Error(context, "Error parsing triple node. Did not find required property 'object'.");
+            }
+
+            return new TripleNode(new Triple(subj, pred, obj));
         }
 
         /// <summary>
@@ -775,6 +863,7 @@ namespace VDS.RDF.Parsing
             {
                 case JsonToken.String:
                 case JsonToken.Date:
+                case JsonToken.StartObject:
                     return true;
                 default:
                     return false;

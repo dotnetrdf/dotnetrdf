@@ -10,6 +10,9 @@
     "test": "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
     "trs": "https://w3c.github.io/rdf-star/tests/turtle/syntax#",
     "@vocab": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "dct": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
     "@base": "https://w3c.github.io/rdf-star/tests/turtle/syntax/",
     "include": {
       "@type": "@id",
@@ -45,8 +48,32 @@
     "result": {
       "@type": "@id"
     },
-    "label": "rdfs:label",
+    "label": {
+      "@id": "rdfs:label",
+      "@container": "@language"
+    },
+    "prefLabel": {
+      "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
+      "@container": "@language"
+    },
     "comment": "rdfs:comment",
+    "issued": {
+      "@id": "dct:issued",
+      "@type": "xsd:date"
+    },
+    "modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:date"
+    },
+    "license": {
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+    "creator": {
+      "@id": "dct:creator",
+      "@type": "@id",
+      "@container": "@set"
+    },
     "seeAlso": {
       "@id": "rdfs:seeAlso",
       "@type": "@vocab"
@@ -71,7 +98,22 @@
   },
   "@id": "trs:manifest",
   "@type": "Manifest",
-  "label": "Turtle-star Syntax Tests",
+  "creator": [
+    {
+      "foaf:homepage": {
+        "@id": "../../../"
+      },
+      "foaf:name": " RDF-star Interest Group within the W3C RDF-DEV Community Group"
+    }
+  ],
+  "issued": "2021-06-21",
+  "dct:licence": {
+    "@id": "https://www.w3.org/Consortium/Legal/2008/03-bsd-license"
+  },
+  "modified": "2021-07-18",
+  "label": {
+    "en": "Turtle-star Syntax Tests"
+  },
   "entries": [
     {
       "@id": "trs:turtle-star-1",
@@ -225,13 +267,13 @@
     },
     {
       "@id": "trs:nt-ttl-star-4",
-      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "@type": "TestTurtlePositiveSyntax",
       "action": "nt-ttl-star-syntax-4.ttl",
       "name": "N-Triples-star as Turtle-star - whitespace and terms"
     },
     {
       "@id": "trs:nt-ttl-star-5",
-      "@type": "rdft:TestNTriplesPositiveSyntax",
+      "@type": "TestTurtlePositiveSyntax",
       "action": "nt-ttl-star-syntax-5.ttl",
       "name": "N-Triples-star as Turtle-star - Nested, no whitespace"
     },
@@ -283,5 +325,9 @@
       "action": "nt-ttl-star-bad-syntax-4.ttl",
       "name": "N-Triples-star as Turtle-star - Bad - quoted triple, blank node predicate"
     }
-  ]
+  ],
+  "prefLabel": {
+    "es": "Conjunto de pruebas para la sintaxis Turtle-star",
+    "fr": "La suite des tests pour la syntaxe Turtle-star"
+  }
 }

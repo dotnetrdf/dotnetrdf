@@ -91,6 +91,13 @@ namespace VDS.RDF.Writing.Formatting
             return v.ToString();
         }
 
+        /// <inheritdoc />
+        protected override string FormatTripleNode(ITripleNode t, TripleSegment? segment)
+        {
+            return "<< " + Format(t.Triple.Subject) + " " + Format(t.Triple.Predicate) + " " + Format(t.Triple.Object) +
+                   " >>";
+        }
+
         /// <summary>
         /// Formats a Namespace Declaration.
         /// </summary>

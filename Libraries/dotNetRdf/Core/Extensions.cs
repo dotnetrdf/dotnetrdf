@@ -642,14 +642,7 @@ namespace VDS.RDF
                 s = t.Subject;
             }
 
-            if (mapping.ContainsKey(t.Predicate))
-            {
-                p = mapping[t.Predicate];
-            }
-            else
-            {
-                p = t.Predicate;
-            }
+            p = mapping.ContainsKey(t.Predicate) ? mapping[t.Predicate] : t.Predicate;
 
             if (mapping.ContainsKey(t.Object))
             {

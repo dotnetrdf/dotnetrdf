@@ -6,12 +6,22 @@
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
-PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
 PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
 PREFIX trs:    <https://w3c.github.io/rdf-star/tests/trig/syntax#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
 
 trs:manifest  rdf:type mf:Manifest ;
-    rdfs:label "TriG-star Syntax Tests" ;
+    rdfs:label "TriG-star Syntax Tests"@en ;
+    skos:prefLabel "La suite des tests pour la syntaxe de TriG-star"@fr ;
+    skos:prefLabel "Conjunto de pruebas para la sintaxis de Trig-star"@es ;
+    dct:issued "2021-06-21"^^xsd:date ;
+    rdfs:seeAlso <https://w3c.github.io/rdf-tests/> ;
+    dct:modified "2021-07-18"^^xsd:date ;
+    dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
+    dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star/> ; foaf:name " RDF-star Interest Group within the W3C RDF-DEV Community Group" ] ;
     mf:entries
     (
         trs:trig-star-1
@@ -40,7 +50,7 @@ trs:manifest  rdf:type mf:Manifest ;
 
         trs:trig-star-ann-1
         trs:trig-star-ann-2
-        
+
         trs:trig-star-bad-ann-1
         trs:trig-star-bad-ann-2
     ) .

@@ -1225,12 +1225,14 @@ namespace VDS.RDF.Query
                 // Nulls can't be equal to each other
                 throw new RdfQueryException("Cannot evaluate equality when one/both arguments are null");
             }
-            else if (x.NodeType != y.NodeType)
+
+            if (x.NodeType != y.NodeType)
             {
                 // Different Type Nodes are never equal to each other
                 return false;
             }
-            else if (x.NodeType == NodeType.Literal)
+
+            if (x.NodeType == NodeType.Literal)
             {
                 // Do they have supported Data Types?
                 string xtype, ytype;
@@ -1318,11 +1320,21 @@ namespace VDS.RDF.Query
                     }
                 }
             }
-            else
+
+            if (x.NodeType == NodeType.Triple)
             {
-                // For any other Node types equality is RDF Term equality
-                return x.Equals(y);
+                // Use the equality helper recursively on subject, predicate and object
+                Triple xt = (x as ITripleNode)?.Triple;
+                Triple yt = (y as ITripleNode)?.Triple;
+                if (xt == null || yt == null) return false;
+
+                return Equality(xt.Subject, yt.Subject) &&
+                       Equality(xt.Predicate, yt.Predicate) &&
+                       Equality(xt.Object, yt.Object);
             }
+
+            // For any other Node types equality is RDF Term equality
+            return x.Equals(y);
         }
 
         /// <summary>

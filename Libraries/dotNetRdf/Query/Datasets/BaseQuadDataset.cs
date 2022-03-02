@@ -554,6 +554,11 @@ namespace VDS.RDF.Query.Datasets
             return ActiveGraphNames.Any(u => ContainsQuad(u, t));
         }
 
+        public bool ContainsQuotedTriple(Triple t)
+        {
+            return ActiveGraphNames.Any(u => ContainsQuoted(u, t));
+        }
+
         /// <summary>
         /// Gets whether a triple is asserted in a specific graph of the dataset.
         /// </summary>
@@ -580,6 +585,17 @@ namespace VDS.RDF.Query.Datasets
                 return from u in ActiveGraphNames
                     from t in GetQuads(u)
                     select t;
+            }
+        }
+
+        /// <summary>
+        /// Gets all the quoted triples in teh dataset.
+        /// </summary>
+        public IEnumerable<Triple> QuotedTriples
+        {
+            get
+            {
+                return ActiveGraphNames.SelectMany(GetQuoted);
             }
         }
 

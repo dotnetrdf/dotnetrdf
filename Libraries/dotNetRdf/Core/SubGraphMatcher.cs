@@ -58,6 +58,8 @@ namespace VDS.RDF
 
             // If sub-graph has more Triples can't be a sub-graph
             if (subgraph.Triples.Count > parent.Triples.Count) return false;
+            // If sub-graph has more Quoted Triples can't be a sub-graph
+            if (subgraph.Triples.QuotedCount > parent.Triples.QuotedCount) return false;
 
             var gtCount = 0;
             var subNodes = new Dictionary<INode, int>();
@@ -76,39 +78,7 @@ namespace VDS.RDF
                 else
                 {
                     // If not a Ground Triple remember which Blank Nodes we need to map
-                    if (t.Subject.NodeType == NodeType.Blank)
-                    {
-                        if (!subNodes.ContainsKey(t.Subject))
-                        {
-                            subNodes.Add(t.Subject, 1);
-                        }
-                        else
-                        {
-                            subNodes[t.Subject]++;
-                        }
-                    }
-                    if (t.Predicate.NodeType == NodeType.Blank)
-                    {
-                        if (!subNodes.ContainsKey(t.Predicate))
-                        {
-                            subNodes.Add(t.Predicate, 1);
-                        }
-                        else
-                        {
-                            subNodes[t.Predicate]++;
-                        }
-                    }
-                    if (t.Object.NodeType == NodeType.Blank)
-                    {
-                        if (!subNodes.ContainsKey(t.Object))
-                        {
-                            subNodes.Add(t.Object, 1);
-                        }
-                        else
-                        {
-                            subNodes[t.Object]++;
-                        }
-                    }
+                    CountBlankNodes(t, subNodes);
                 }
             }
 
@@ -121,39 +91,7 @@ namespace VDS.RDF
             // Now classify the remaining Triples from the parent Graph
             foreach (Triple t in _parentTriples)
             {
-                if (t.Subject.NodeType == NodeType.Blank)
-                {
-                    if (!parentNodes.ContainsKey(t.Subject))
-                    {
-                        parentNodes.Add(t.Subject, 1);
-                    }
-                    else
-                    {
-                        parentNodes[t.Subject]++;
-                    }
-                }
-                if (t.Predicate.NodeType == NodeType.Blank)
-                {
-                    if (!parentNodes.ContainsKey(t.Predicate))
-                    {
-                        parentNodes.Add(t.Predicate, 1);
-                    }
-                    else
-                    {
-                        parentNodes[t.Predicate]++;
-                    }
-                }
-                if (t.Object.NodeType == NodeType.Blank)
-                {
-                    if (!parentNodes.ContainsKey(t.Object))
-                    {
-                        parentNodes.Add(t.Object, 1);
-                    }
-                    else
-                    {
-                        parentNodes[t.Object]++;
-                    }
-                }
+                CountBlankNodes(t, parentNodes);
             }
 
             // First off we must have the no more Blank Nodes in the sub-graph than in the parent graph
@@ -198,6 +136,58 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Update the provided node-to-count mapping with the blank nodes referenced by the provided triple.
+        /// </summary>
+        /// <param name="triple">The triple to process.</param>
+        /// <param name="nodeMap">The node-to-count mapping to update.</param>
+        private static void CountBlankNodes(Triple triple, IDictionary<INode, int> nodeMap)
+        {
+            if (triple.Subject.NodeType == NodeType.Blank)
+            {
+                if (!nodeMap.ContainsKey(triple.Subject))
+                {
+                    nodeMap.Add(triple.Subject, 1);
+                }
+                else
+                {
+                    nodeMap[triple.Subject]++;
+                }
+            }
+            else if (triple.Subject is ITripleNode stn)
+            {
+                CountBlankNodes(stn.Triple, nodeMap);
+            }
+
+            if (triple.Predicate.NodeType == NodeType.Blank)
+            {
+                if (!nodeMap.ContainsKey(triple.Predicate))
+                {
+                    nodeMap.Add(triple.Predicate, 1);
+                }
+                else
+                {
+                    nodeMap[triple.Predicate]++;
+                }
+            }
+
+            if (triple.Object.NodeType == NodeType.Blank)
+            {
+                if (!nodeMap.ContainsKey(triple.Object))
+                {
+                    nodeMap.Add(triple.Object, 1);
+                }
+                else
+                {
+                    nodeMap[triple.Object]++;
+                }
+            }
+            else if (triple.Object is ITripleNode otn)
+            {
+                CountBlankNodes(otn.Triple, nodeMap);
+            }
+        }
+
+        /// <summary>
         /// Uses a series of Rules to attempt to generate a mapping without the need for brute force guessing.
         /// </summary>
         /// <param name="subgraph">1st Graph.</param>
@@ -213,19 +203,10 @@ namespace VDS.RDF
             _unbound = new List<INode>();
             _bound = new List<INode>();
             _mapping = new Dictionary<INode, INode>();
-            _subTriples = new List<Triple>();
-
-            // Initialise the Source Triples list
-            _subTriples.AddRange(from t in subgraph.Triples
-                                         where !t.IsGroundTriple
-                                         select t);
+            _subTriples = subgraph.Triples.Where(t => !t.IsGroundTriple).ToList();
 
             // First thing consider the trivial mapping
-            var trivialMapping = new Dictionary<INode, INode>();
-            foreach (INode n in subNodes.Keys)
-            {
-                trivialMapping.Add(n, n);
-            }
+            var trivialMapping = subNodes.Keys.ToDictionary(n => n);
             var targets = new List<Triple>(_parentTriples);
             if (_subTriples.All(t => targets.Remove(t.MapTriple(parent, trivialMapping))))
             {

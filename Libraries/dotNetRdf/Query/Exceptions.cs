@@ -55,4 +55,10 @@ namespace VDS.RDF.Query
         public RdfQueryPathFoundException()
             : base("Terminated Path Evaluation since the required path has been found") { }
     }
+
+    class RdfQueryComparisonException : RdfQueryException
+    {
+        public RdfQueryComparisonException(INode left, INode right) : base(
+            $"There is no valid comparison operation defined that will compare the node `{left}` and the node `{right}`.") { }
+    }
 }

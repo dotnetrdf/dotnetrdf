@@ -306,6 +306,22 @@ namespace VDS.RDF.Query.Datasets
             get;
         }
 
+        /// <summary>
+        /// Gets all the quoted triples in teh dataset.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> The Triples returned from the method should be limited to those in the current Active Graph if present, otherwise those in the current Default Graph if present and finally the entire Dataset.
+        /// </para>
+        /// </remarks>
+        IEnumerable<Triple> QuotedTriples { get; }
+
+        /// <summary>
+        /// Gets whether the dataset contains a specific quoted triple.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <returns>True if the dataset contains <paramref name="t"/> as a quoted triple, false otherwise.</returns>
+        bool ContainsQuotedTriple(Triple t);
         #endregion
 
         /// <summary>

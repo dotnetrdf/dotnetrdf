@@ -65,7 +65,10 @@ namespace VDS.RDF.Query.Patterns
 
             foreach (PatternItem item in _lhsArgs.Concat(_rhsArgs))
             {
-                if (item.VariableName != null && !_vars.Contains(item.VariableName)) _vars.Add(item.VariableName);
+                foreach (var variableName in item.Variables)
+                {
+                    if (!_vars.Contains(variableName)) _vars.Add(variableName);
+                }
             }
         }
 

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 03 December 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>03 December 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-11-12.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Dec/0000.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/12/03-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-12-17.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, fabio_vitali, gkellogg, olaf, ora, pchampin, rivettp</dd>
+<dt>Regrets</dt><dd>Doerthe</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>gkellogg</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Pending PRs</a></li>
+<li><a href="#t04">Publishing a final report</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x032 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://european-big-data-value-forum.eu/">https://<wbr>european-big-data-value-forum.eu/</a></p>
+<p id=x034 class="phone s01"><cite>pchampin:</cite> I gave a presentation on Wednesday at the European data event forum.<br>
+<span id=x035>… Not too much time for questions. Slides on the website.</span></p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x040 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x041 class="phone s01"><cite>pchampin:</cite> Ora's example was to mach a change to the arXiv paper on the seminal example.</p>
+<p id=x042 class="phone s02"><cite>olaf:</cite> Ora hadn't mentioned it.</p>
+<p id=x044 class="phone s01"><cite>pchampin:</cite> We discussed the common misconceptions of RDF-star should be avoided as much as possible as soon as possible in publications.<br>
+<span id=x045>… Since people may come from reading that paper, they could come with poor expectations.</span></p>
+<p id=x049 class="phone s02"><cite>olaf:</cite> Something I can do is to put a statement into the PDF that refers to the output of this group.<br>
+<span id=x050>… And that the arXiv document isn't up to date right now.</span><br>
+<span id=x051>… Regarding the example, it might be tricky in that document to describe the problems.</span></p>
+<p id=x053 class="phone s01"><cite>pchampin:</cite> We have a section in the spec which describes the problem, so a paragraph that would reference people to our report would help.<br>
+<span id=x054>… I'll assign #222 to Olaf.</span></p>
+<p id=x056 class="phone s01"><cite>pchampin:</cite> #64 and #3 were addressed by recent pull requests, so they could be closed.</p>
+</section>
+
+<section>
+<h3 id=t03>Pending PRs</h3>
+<p id=x061 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/224">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>224</a>  Conformance text</p>
+<p id=x066 class="phone s03"><cite>AndyS:</cite> There are some minor editorial issues to get to.<br>
+<span id=x067>… What I'm trying to do is not to be too prescriptive. People shouldn't be able to claim that a base RDF 1.1 system is RDF-star.</span><br>
+<span id=x068>… It talks about systems that may read or write RDF-star in at least one form.</span><br>
+<span id=x069>… SPARQL-star is easier, as there's a test suite.</span></p>
+<p id=x073 class="phone s02"><cite>olaf:</cite> I agree that it's easier for SPARQL-star than RDF-star.<br>
+<span id=x074>… Regarding the syntaxes, maybe we can talk about reporting RDF-star as input or output.</span><br>
+<span id=x075>… To say &quot;supports RDF-star&quot; may be over-broad.</span></p>
+<p id=x078 class="phone s03"><cite>AndyS:</cite> This was a heavyweight day of allowing things that only input to conform (or output only).<br>
+<span id=x079>… For the rest, I'm not sure what else we can say other than observing input and output.</span></p>
+<p id=x081 class="phone s02"><cite>olaf:</cite> The question was not to talk about systems supporting RDF-star, but those that support it as input and separately as output.</p>
+<p id=x084 class="phone s01"><cite>pchampin:</cite> For me, olaf's proposal doesn't change the conformance classes, but renames them to something less &quot;promising&quot;.<br>
+<span id=x085>… What the independent classes don't cover is the ability to output one format given another.</span></p>
+<p id=x088 class="phone s03"><cite>AndyS:</cite> It doesn't say anything about preserving data in the system, and base RDF does not either.</p>
+<p id=x090 class="phone s03"><cite>AndyS:</cite> I didn't put anything in about semantics, as it isn't observable.<br>
+<span id=x091>… I don't know of a semantics test of an RDF system.</span></p>
+<p id=x094 class="phone s01"><cite>pchampin:</cite> Somehow, the semantics suite captures a missing part between input and output.<br>
+<span id=x095>… But, not all RDF systems have a way to check for simple entailment.</span><br>
+<span id=x096>… I think adding the semantics test suite to the conformance section would be a problem.</span></p>
+<p id=x097 class="phone s01"><cite>pchampin:</cite> The 1.1 specs also just list it in the header, but the conformance section is quite general.</p>
+<p id=x098 class="phone s04"><cite>gkellogg:</cite> maybe some group would consider entailment regime tests for SPARQL.</p>
+<p id=x099 class="phone s01"><cite>pchampin:</cite> I agree, that might not help us finish out work.</p>
+<p id=x100 class="phone s02"><cite>olaf:</cite> This is now about the syntax tests, but explicitly requiring a system to pass at least one would rule out a system support JSON-LD-star only.</p>
+<p id=x101 class="phone s04"><cite>gkellogg:</cite> we should implicitly include other systems.</p>
+<p id=x102 class=irc><cite>&lt;pchampin&gt;</cite> RDF 1.1 Concepts: &quot;Implementations cannot directly conform to RDF 1.1 Concepts and Abstract Syntax, but can conform to such other specifications that normatively reference terms defined here.&quot;</p>
+<p id=x103 class="phone s01"><cite>pchampin:</cite> That's their way of not restricting to different serializations.</p>
+<p id=x104 class="phone s03"><cite>AndyS:</cite> RDF 1.1 concepts has no observable concrete syntaxes.</p>
+<p id=x106 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/225">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>225</a></p>
+<p id=x111 class="phone s01"><cite>pchampin:</cite> The idea was to put something into the introduction to reference important concepts elsewhere in the document.<br>
+<span id=x112>… We noted people coming with some expectations which were wrong, and wanted to signal these early.</span><br>
+<span id=x113>… I kept it short and just add pointers to in-depth discussions.</span><br>
+<span id=x114>… But, it seemed important to add more about occurrences and added a new example.</span><br>
+<span id=x115>… I think it is complementary to other examples and highlights different use cases.</span></p>
+<p id=x116 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/225.html#occurrences-example">https://<wbr>pr-preview.s3.amazonaws.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>225.html#occurrences-example</a></p>
+<p id=x118 class="phone s01"><cite>pchampin:</cite> This example is about a triple being added by different people, so it is a provenance use case.<br>
+<span id=x119>… It's about the triple itself, but not about a statement itself.</span></p>
+<p id=x120 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/225.html#married-example">https://<wbr>pr-preview.s3.amazonaws.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>225.html#married-example</a></p>
+<p id=x122 class="phone s01"><cite>pchampin:</cite> The added example is about Liz Taylor marrying Richard Burton twice.<br>
+<span id=x123>… I think the second example nicely complements the first one; it's not strictly provenance related, but can happen in other situations.</span></p>
+<p id=x128 class="phone s05"><cite>rivettp:</cite> My concern is that we're representing marriage as a resource, and a triple is rather fragile.<br>
+<span id=x129>… How would it be describe with Richard Burton as the subject?</span></p>
+<p id=x130 class=irc><cite>&lt;fabio_vitali&gt;</cite> I said that</p>
+<p id=x133 class="phone s01"><cite>pchampin:</cite> We need to be precise on if we're describing the wedding or the marriage.<br>
+<span id=x134>… About representing either as resources, I agree. But this answers and expectation by people coming from the PG world about why it's interesting to have properties on edges and to have multiple edges.</span></p>
+<p id=x135 class="phone s05"><cite>rivettp:</cite> My concern is the reverse, normal RDF would a relationship and I'm not sure ...</p>
+<p id=x140 class="phone s01"><cite>pchampin:</cite> This doesn't describe the problem of inverting the subject.<br>
+<span id=x141>… We're defining resources to describe the weddings, but the added value is that we still have an arc between the two.</span><br>
+<span id=x142>… That arc could be inferred by OWL, for example.</span><br>
+<span id=x143>… But somehow we have the best of both worlds.</span></p>
+<p id=x144 class="phone s05"><cite>rivettp:</cite> Independent of property direction, we don't describe inverse relationships.</p>
+<p id=x148 class="phone s03"><cite>AndyS:</cite> The graph database for Neo4J has a section an anti-patterns about annotating arcs.<br>
+<span id=x149>… Even in the PG world, there is recognition that using the graph as a network graph doesn't always get you the patterns you want.</span><br>
+<span id=x150>… The marriage example is different, as I think legally, these are separate marriages. In natural language we don't refine those details.</span></p>
+<p id=x152 class="phone s01"><cite>pchampin:</cite> I'm interested in the anti-pattern page.<br>
+<span id=x153>… We should be carful to not try to support examples which are anti-patterns.</span></p>
+<p id=x154 class="phone s03"><cite>AndyS:</cite> If you're annotating a first-class thing in the graph ...</p>
+<p id=x160 class="phone s06"><cite>fabio_vitali:</cite> I would like to identify the conceptual item that makes my graph true.<br>
+<span id=x161>… In this case that RDF-star identifies something about a triple that makes the graph true. It's about the triple and not the face.</span><br>
+<span id=x162>… What makes me dubious is that the statement is about the marriage and not the statement. It should be about contextual information.</span><br>
+<span id=x163>… Is it appropriate to use the &quot;occurrence&quot; keyword rather than trying to identify the truth of a statement based on the information around it.</span></p>
+<p id=x166 class="phone s01"><cite>pchampin:</cite> I think the two examples are at opposite ends of the spectrum of facts vs statements.<br>
+<span id=x167>… I've felt that people using RDF-star needed all of these use cases.</span><br>
+<span id=x168>… It goes in Andy's point about anti-patterns.</span></p>
+<p id=x173 class="phone s02"><cite>olaf:</cite> I don't have a problem with having the example. But, having it in this section may be misleading and cause more harm than good.<br>
+<span id=x174>… As you notice, this example has some additional assumptions, namely that the occurrence property is transparent.</span></p>
+<p id=x175 class="phone s01"><cite>pchampin:</cite> It should be renamed to remove that false impression.</p>
+<p id=x177 class="phone s02"><cite>olaf:</cite> I see the section about the possibility of talking about occurrences of triples and not of the things the triple describe.<br>
+<span id=x178>… There's a difference with the two examples in this regard.</span></p>
+<p id=x179 class="phone s01"><cite>pchampin:</cite> This discussion shows that it may bring more confusion than clarity, so I would be willing to remove the example.</p>
+<p id=x180 class=irc><cite>&lt;fabio_vitali&gt;</cite> We could invent a different example dealing with triples rather than relationships</p>
+<p id=x182 class="phone s01"><cite>pchampin:</cite> My conclusion is that the new example probably does more harm than good.<br>
+<span id=x183>… It is orthogonal to other things in the introduction.</span></p>
+<p id=x186 class="phone s02"><cite>olaf:</cite> Do we have any other example that speaks to PG peoples use cases?<br>
+<span id=x187>… This question will keep coming up, so it would be good to have such an example.</span><br>
+<span id=x188>… Even if it's not perfect, but to show that it is possible.</span></p>
+<p id=x191 class="phone s01"><cite>pchampin:</cite> Could this be done elsewhere, perhaps in a blog post? The example in the report may create too much confusion.<br>
+<span id=x192>… We could agree to work on a series of blog posts that describes the relationship between PGs and RDF-star.</span></p>
+<p id=x196 class="phone s07"><cite>ora:</cite> I like the proposal too and would participate.<br>
+<span id=x197>… For this report, I don't think we should rock the boat too much.</span><br>
+<span id=x198>… Having a separate post might help prevent that.</span></p>
+<p id=x199 class="phone s01"><cite>pchampin:</cite> I'll remove the example from the PR.</p>
+<p id=a01 class=action><strong>Action:</strong> pchampin to remove the &quot;Taylor-Burton&quot; example from the PR</p>
+</section>
+
+<section>
+<h3 id=t04>Publishing a final report</h3>
+<p id=x204 class="phone s01"><cite>pchampin:</cite> We have a couple of other minor PRs. That's all we have left for PRs, and it would be nice to be able to publish at least another public draft if not a final report.<br>
+<span id=x205>… I was expecting to have another call in two weeks unless people it's too close to Christmas.</span></p>
+<p id=x206 class=irc><cite>&lt;rivettp&gt;</cite> 17th is fine for me</p>
+<p id=x207 class=irc><cite>&lt;ora&gt;</cite> I can do 17th</p>
+<p id=x208 class=irc><cite>&lt;fabio_vitali&gt;</cite> Just wondering if it makes sense to use the occurrence pattern as a way not only to count occurrences of the same triple in different datasets, but to evaluate different levels of confidence different people may have about the same statement</p>
+<p id=x209 class="phone s03"><cite>AndyS:</cite> How do we declare ourselves finished? (by publishing the report)</p>
+<p id=x210 class="phone s01"><cite>pchampin:</cite> We might still meet to discuss the charter or blog post, but after the final report we can claim success.</p>
+<p id=x211 class="phone s03"><cite>AndyS:</cite> Further issues can then point to the WG.</p>
+<p id=x212 class="phone s01"><cite>pchampin:</cite> So, we have two more weeks to iron up the pending PRs. Other than the example, it's mostly editorial.</p>
+<p id=x213 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSED: handle the remaining PRs until the next call (2021-12-17) and publish a final report then</p>
+<p id=x214 class=irc><cite>&lt;gkellogg&gt;</cite> +</p>
+<p id=x215 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x216 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x217 class=irc><cite>&lt;fabio_vitali&gt;</cite> +1</p>
+<p id=x218 class=irc><cite>&lt;ora&gt;</cite> +1</p>
+<p id=x219 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x220 class="phone s07"><cite>ora:</cite> what do we do about remaining issues?</p>
+<p id=x221 class=irc><cite>&lt;fabio_vitali&gt;</cite> I got to go. See you on the 17th</p>
+<p id=x222 class="phone s01"><cite>pchampin:</cite> These issues are explicitly things that are open discussions.</p>
+<p id=x223 class=irc><cite>&lt;pchampin&gt;</cite> is:issue is:open -label:discussion -label:use-case -label:later</p>
+<p id=x224 class=irc><cite>&lt;AndyS&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aissue+is%3Aopen+-label%3Adiscussion+-label%3Ause-case+-label%3Alater">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aissue+is%3Aopen+-label%3Adiscussion+-label%3Ause-case+-label%3Alater</a></p>
+<p id=x225 class="phone s01"><cite>pchampin:</cite> I'll ping Peter on #220, but it could be labeled &quot;discussion&quot; as we're not likely to change anything now.</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">pchampin to remove the &quot;Taylor-Burton&quot; example from the PR</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

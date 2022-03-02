@@ -287,6 +287,11 @@ namespace VDS.RDF.Parsing
                             TryParseTriplesOrGraph(context);
                             break;
 
+                        case Token.STARTQUOTE when context.Syntax is TriGSyntax.Rdf11Star:
+                            // Must be the start of a triple in the default graph.
+                            TryParseTriples(context, null, true);
+                            break;
+
                         case Token.QNAME or Token.URI or Token.LEFTSQBRACKET:
                         case Token.LEFTCURLYBRACKET:
                         case Token.GRAPH:
@@ -643,7 +648,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseTriples(TriGParserContext context, IRefNode graphNode)
+        private void TryParseTriples(TriGParserContext context, IRefNode graphNode, bool eofAllowed = false)
         {
             do
             {
@@ -732,7 +737,8 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.EOF:
-                        throw ParserHelper.Error("Unexpected End of File while trying to parse Triples", subj);
+                        if (!eofAllowed) throw ParserHelper.Error("Unexpected End of File while trying to parse Triples", subj);
+                        return;
 
                     default:
                         // Unexpected Token

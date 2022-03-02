@@ -123,43 +123,7 @@ namespace VDS.RDF.Query.Optimisation
                 if (bgp.PatternCount == 0) return bgp;
 
                 // Do variable substitution on the patterns
-                var ps = new List<ITriplePattern>();
-                foreach (ITriplePattern p in bgp.TriplePatterns)
-                {
-                    switch (p.PatternType)
-                    {
-                        case TriplePatternType.Match:
-                            var tp = (IMatchTriplePattern)p;
-                            PatternItem subj = tp.Subject.VariableName != null && tp.Subject.VariableName.Equals(_findVar) ? _replaceItem : tp.Subject;
-                            if (ReferenceEquals(subj, _replaceItem)) canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : true);
-                            PatternItem pred = tp.Predicate.VariableName != null && tp.Predicate.VariableName.Equals(_findVar) ? _replaceItem : tp.Predicate;
-                            if (ReferenceEquals(pred, _replaceItem)) canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : true);
-                            PatternItem obj = tp.Object.VariableName != null && tp.Object.VariableName.Equals(_findVar) ? _replaceItem : tp.Object;
-                            if (ReferenceEquals(obj, _replaceItem) && !canReplaceObjects) throw new Exception("Unable to substitute a variable into the object position in this scope");
-                            ps.Add(new TriplePattern(subj, pred, obj));
-                            break;
-                        case TriplePatternType.Filter:
-                            var fp = (IFilterPattern)p;
-                            ps.Add(new FilterPattern(new UnaryExpressionFilter(Transform(fp.Filter.Expression))));
-                            break;
-                        case TriplePatternType.BindAssignment:
-                            var bp = (IAssignmentPattern)p;
-                            ps.Add(new BindPattern(bp.VariableName, Transform(bp.AssignExpression)));
-                            break;
-                        case TriplePatternType.LetAssignment:
-                            var lp = (IAssignmentPattern)p;
-                            ps.Add(new LetPattern(lp.VariableName, Transform(lp.AssignExpression)));
-                            break;
-                        case TriplePatternType.SubQuery:
-                            throw new RdfQueryException("Cannot do variable substitution when a sub-query is present");
-                        case TriplePatternType.Path:
-                            throw new RdfQueryException("Cannot do variable substitution when a property path is present");
-                        case TriplePatternType.PropertyFunction:
-                            throw new RdfQueryException("Cannot do variable substituion when a property function is present");
-                        default:
-                            throw new RdfQueryException("Cannot do variable substitution on unknown triple patterns");
-                    }
-                }
+                var ps = bgp.TriplePatterns.Select(p => ApplySubstitution(p, canReplaceObjects)).ToList();
                 return new Bgp(ps);
             }
             else if (algebra is Service)
@@ -211,6 +175,58 @@ namespace VDS.RDF.Query.Optimisation
             }               
         }
 
+        private ITriplePattern ApplySubstitution(ITriplePattern p, bool canReplaceObjects)
+        {
+            switch (p.PatternType)
+            {
+                case TriplePatternType.Match:
+                    var tp = (IMatchTriplePattern)p;
+                    PatternItem subj = ApplySubstitution(tp.Subject);
+                    if (ReferenceEquals(subj, _replaceItem)) canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : true);
+                    PatternItem pred = ApplySubstitution(tp.Predicate);
+                    if (ReferenceEquals(pred, _replaceItem)) canReplaceObjects = (_canReplaceCustom ? _canReplaceObjects : true);
+                    PatternItem obj = ApplySubstitution(tp.Object);
+                    if (ReferenceEquals(obj, _replaceItem) && !canReplaceObjects) throw new Exception("Unable to substitute a variable into the object position in this scope");
+                    return new TriplePattern(subj, pred, obj);
+                    
+                case TriplePatternType.Filter:
+                    var fp = (IFilterPattern)p;
+                    return new FilterPattern(new UnaryExpressionFilter(Transform(fp.Filter.Expression)));
+
+                case TriplePatternType.BindAssignment:
+                    var bp = (IAssignmentPattern)p;
+                    return new BindPattern(bp.VariableName, Transform(bp.AssignExpression));
+
+                case TriplePatternType.LetAssignment:
+                    var lp = (IAssignmentPattern)p;
+                    return(new LetPattern(lp.VariableName, Transform(lp.AssignExpression)));
+
+                case TriplePatternType.SubQuery:
+                    throw new RdfQueryException("Cannot do variable substitution when a sub-query is present");
+                case TriplePatternType.Path:
+                    throw new RdfQueryException("Cannot do variable substitution when a property path is present");
+                case TriplePatternType.PropertyFunction:
+                    throw new RdfQueryException("Cannot do variable substitution when a property function is present");
+                default:
+                    throw new RdfQueryException("Cannot do variable substitution on unknown triple patterns");
+            }
+        }
+
+        private PatternItem ApplySubstitution(PatternItem patternItem)
+        {
+            if (!patternItem.Variables.Contains(_findVar))
+            {
+                return patternItem;
+            }
+
+            return patternItem switch
+            {
+                QuotedTriplePattern qtp =>
+                    new QuotedTriplePattern(ApplySubstitution(qtp.QuotedTriple, _canReplaceCustom ? _canReplaceObjects : _replaceItem is NodeMatchPattern) as TriplePattern),
+                VariablePattern or BlankNodePattern => _replaceItem,
+                _ => patternItem
+            };
+        }
         /// <summary>
         /// Returns false because this optimiser is never globally applicable.
         /// </summary>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>RDF-star &ndash; 15 October 2021</title>
+<meta name=viewport content="width=device-width">
+<link rel="stylesheet" type="text/css" title="2018" href="https://www.w3.org/StyleSheets/scribe2/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/base.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/StyleSheets/public.css">
+<link rel="alternate stylesheet" type="text/css" title="2004" href="https://www.w3.org/2004/02/minutes-style.css">
+<link rel="alternate stylesheet" type="text/css" title="Fancy" href="https://www.w3.org/StyleSheets/scribe2/fancy.css">
+<link rel="alternate stylesheet" type="text/css" title="Typewriter" href="https://www.w3.org/StyleSheets/scribe2/tt-member.css">
+</head>
+
+<body>
+<header>
+<p><a href="https://www.w3.org/"><img src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" alt=W3C border=0 height=48 width=72></a></p>
+
+<h1>RDF-star</h1>
+<h2>15 October 2021</h2>
+
+<nav id=links>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-10-01.html"><img alt="Previous meeting." title="Previous meeting" src="https://www.w3.org/StyleSheets/scribe2/go-previous.png"></a>
+<a href="https://lists.w3.org/Archives/Public/public-rdf-star/2021Oct/0000.html"><img alt="Agenda." title="Agenda" src="https://www.w3.org/StyleSheets/scribe2/chronometer.png"></a>
+<a href="https://www.w3.org/2021/10/15-rdf-star-irc"><img alt="IRC log." title="IRC log" src="https://www.w3.org/StyleSheets/scribe2/text-plain.png"></a>
+<a href="https://w3c.github.io/rdf-star/Minutes/2021-10-29.html"><img alt="Next meeting." title="Next meeting" src="https://www.w3.org/StyleSheets/scribe2/go-next.png"></a>
+</nav>
+</header>
+
+<div id=prelims>
+<div id=attendees>
+<h2>Attendees</h2>
+<dl class=intro>
+<dt>Present</dt><dd>AndyS, Doerthe, Fabio_Vitali, gkellogg, olaf, pchampin, rivettp, TallTed</dd>
+<dt>Regrets</dt><dd>-</dd>
+<dt>Chair</dt><dd>pchampin</dd>
+<dt>Scribe</dt><dd>olaf, pchampin</dd>
+</dl>
+</div>
+
+<nav id=toc>
+<h2>Contents</h2>
+<ol>
+<li><a href="#t01">Announcements and newcomers</a></li>
+<li><a href="#t02">Open actions</a></li>
+<li><a href="#t03">Pending Pull-Requests</a>
+<ol>
+<li><a href="#t04">figure in §1.3</a></li>
+<li><a href="#t05">RDF vocabulary</a></li>
+</ol>
+</li>
+<li><a href="#t06">Issues we may defer to the future WG</a></li>
+<li class=app><a href="#ActionSummary">Summary of action items</a></li>
+<li class=app><a href="#ResolutionSummary">Summary of resolutions</a></li>
+</ol>
+</nav>
+</div>
+
+<main id=meeting class=meeting>
+<h2>Meeting minutes</h2>
+<section></section>
+
+<section>
+<h3 id=t01>Announcements and newcomers</h3>
+<p id=x029 class="phone s01"><cite>pchampin:</cite> no newcomers<br>
+<span id=x030>… no announcements?</span></p>
+</section>
+
+<section>
+<h3 id=t02>Open actions</h3>
+<p id=x042 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aaction">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aaction</a></p>
+<p id=x043 class="phone s01"><cite>pchampin:</cite> </p>
+<p id=x044 class=summary>the open actions are in PRs to be discussed later in this meeting</p>
+<p id=x046 class="phone s01"><cite>pchampin:</cite> hence, skip to the next point</p>
+</section>
+
+<section>
+<h3 id=t03>Pending Pull-Requests</h3>
+<p id=x053 class="phone s01"><cite>pchampin:</cite> four PRs grouped in one points</p>
+<p id=x054 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/205">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>205</a></p>
+<p id=x056 class="phone s01"><cite>pchampin:</cite> Ghislain not here<br>
+<span id=x057>… any updates on PR 205?</span></p>
+<p id=x063 class="phone s02"><cite>AndyS:</cite> That PR was raised against the wrong branch<br>
+<span id=x064>… one massively squashed commit</span><br>
+<span id=x065>… at least one comment on the other version of the PR</span><br>
+<span id=x066>… closed that version</span><br>
+<span id=x067>… something in the checking was not working</span></p>
+<p id=x069 class="phone s03"><cite>gkellogg:</cite> no the check is okay<br>
+<span id=x070>… might have been something in the JSON manifest</span></p>
+<p id=x071 class="phone s02"><cite>AndyS:</cite> something was not committed</p>
+<p id=x072 class="phone s03"><cite>gkellogg:</cite> some issue in terms of equality of the manifests in the different formats</p>
+<p id=x074 class="phone s01"><cite>pchampin:</cite> will ping Ghislain<br>
+<span id=x075>… the manifests should be isomorphic</span></p>
+<p id=x077 class="phone s02"><cite>AndyS:</cite> two checks now, haven't there been three earlier?<br>
+<span id=x078>… let's take this offline</span></p>
+<p id=x080 class="phone s01"><cite>pchampin:</cite> That PR has been lingering a while</p>
+<h4 id=t04>figure in §1.3</h4>
+<p id=x084 class="phone s01"><cite>pchampin:</cite> next subtopic: figure in Sec.1.3<br>
+<span id=x085>… two proposals made</span><br>
+<span id=x086>… unfortunately, the second one is not rendered properly in the preview</span></p>
+<p id=x087 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/213.html#structure">https://<wbr>pr-preview.s3.amazonaws.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>213.html#structure</a></p>
+<p id=x090 class="phone s01"><cite>pchampin:</cite> which might explain why everyone favored the other one<br>
+<span id=x091>… PR 213 tried to capture the links between the bubbles by means of words</span><br>
+<span id=x092>… with eclipses</span></p>
+<p id=x093 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://pr-preview.s3.amazonaws.com/w3c/rdf-star/pull/214.html#structure">https://<wbr>pr-preview.s3.amazonaws.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>214.html#structure</a></p>
+<p id=x097 class="phone s01"><cite>pchampin:</cite> simply uses HTML tables<br>
+<span id=x098>… PR 214 has an SVG in the background</span><br>
+<span id=x099>… which is not visible in the preview</span><br>
+<span id=x100>… but in a local clone</span></p>
+<p id=x101 class=irc><cite>&lt;rivettp&gt;</cite> are you able to show the diagrams via Zoom?</p>
+<p id=x102 class="phone s01"><cite>pchampin:</cite> i.e., HTML table with SVG in the background</p>
+<p id=x103 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> I see no star</p>
+<p id=x104 class="phone s01"><cite>pchampin:</cite> somewhat hacky</p>
+<p id=x105 class=irc><cite>&lt;TallTed&gt;</cite> I prefer the first (213), even knowing about the background lines (on 214).  I would like it even better if 5 could be a bit lower than 4 &amp; 6, to naturally sketch more of an arc from 3 to 7.</p>
+<p id=x106 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> Ah I see</p>
+<p id=x108 class="phone s01"><cite>pchampin:</cite> a similar figure may also be added as background in the first proposal</p>
+<p id=x109 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> I think that in 213 the top bubble (the subject) is too close to the second layer, and seems part of it. Raising it just a little bit could help, I think</p>
+<p id=x112 class="phone s01"><cite>pchampin:</cite> perhaps we use 213 if everyone is okay with it - there are more important topics</p>
+<p id=x116 class="phone s02"><cite>AndyS:</cite> the one with SVG look good<br>
+<span id=x117>… (just checked it locally)</span><br>
+<span id=x118>… screensharing now</span></p>
+<p id=x119 class="phone s04"><cite>TallTed:</cite> still prefer 213</p>
+<p id=x122 class="phone s01"><cite>pchampin:</cite> agreed, the grouping in 214 is subjective<br>
+<span id=x123>… any strong preference anyone?</span></p>
+<p id=x125 class=irc><cite>&lt;TallTed&gt;</cite> strong 213, lines could help, moving box 5 to the next lower tr would improve things</p>
+<p id=x129 class="phone s01"><cite>pchampin:</cite> otherwise will try to merge the results<br>
+<span id=x130>… no objection</span></p>
+<h4 id=t05>RDF vocabulary</h4>
+<p id=x132 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/pull/215">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>pull/<wbr>215</a> (RDF vocabulary)</p>
+<p id=x138 class="phone s01"><cite>pchampin:</cite> next PR is about the RDF vocab section<br>
+<span id=x139>… posted recently</span><br>
+<span id=x140>… let's not talk about it too much now, because few people may have had the time to look at it in detail</span><br>
+<span id=x141>… idea of that PR: moving things around (no new content) but making some things normative</span><br>
+<span id=x142>… substantive changes is the semantics of TEPs to also cover rdf-star:Triple</span></p>
+<p id=x145 class="phone s03"><cite>gkellogg:</cite> use of TEPs refers to the range of such a TEP, right?</p>
+<p id=x148 class="phone s01"><cite>pchampin:</cite> no, it can be used for both, subject and object<br>
+<span id=x149>… there might be corner case in which one would want a TEP that applies only to either the subjects or the objects but not both</span><br>
+<span id=x150>… we could add something for that but that would make everything more complex (more vocab needed)</span></p>
+<p id=x152 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> TEP?</p>
+<p id=x153 class=irc><cite>&lt;pchampin&gt;</cite> Transparency-Enabling Property</p>
+<p id=x154 class="phone s03"><cite>gkellogg:</cite> okay, but the design trade-off should be captured as a note</p>
+<p id=x155 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> thanks</p>
+<p id=x165 class="phone s05"><cite>olaf:</cite> I wouldn't go for seperating domain-wise TEPS and range-wise TEPs<br>
+<span id=x166>… this is too much added complexity.</span><br>
+<span id=x167>… I discussed the use-case for TEPs with somebody,</span><br>
+<span id=x168>… and it was not obvious what happened in the examples</span><br>
+<span id=x169>… (the added leading zero in the literals).</span><br>
+<span id=x170>… Using different IRIs instead would make the difference more visible.</span></p>
+<p id=x175 class="phone s02"><cite>AndyS:</cite> agree that D-entailment is not so suitable for this example<br>
+<span id=x176>… would have prefered the text to be non-normative</span></p>
+<p id=x177 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> from the outside, I can tell that the LinkÃ¶ping is clear in what it entails, but less so on the rationale (why is this needed?) Superman's example is clearer on the rationale</p>
+<p id=x180 class="phone s02"><cite>AndyS:</cite> mixing the discussion of TEPs with the other vocabulary parts is not a good idea<br>
+<span id=x181>… because TEPs is something that people may disagree with, which is not so much the case for the other vocab terms</span><br>
+<span id=x182>… put the TEP part into a separate (sub)section</span></p>
+<p id=x184 class="phone s01"><cite>pchampin:</cite> yes we could do that<br>
+<span id=x185>… last time we kinda agreed to move the semantics of the TEP vocab into a normative section</span></p>
+<p id=x186 class="phone s02"><cite>AndyS:</cite> Triple, Graph, and Source are minimal; TEP does not fit into a minimal subset of such a vocab</p>
+<p id=x190 class="phone s01"><cite>pchampin:</cite> we have many issues related to the vocabulary<br>
+<span id=x191>… some should be considered as: no agreement</span><br>
+<span id=x192>… the one for the service descriptions are still needed and should be added</span></p>
+<p id=x193 class=irc><cite>&lt;gkellogg&gt;</cite> Perhaps &quot;Conceptual Vocabulary&quot; and &quot;Entailment-enabling Vocabulary&quot;</p>
+<p id=x194 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x201 class="phone s01"><cite>pchampin:</cite> regarding the TEP, agreed that it is more controversial than the aforementioned minimal set and, thus, should be presented somewhat separate from the minimal set<br>
+<span id=x202>… rdf-star:Triple is also entailment-enabling</span><br>
+<span id=x203>… Graph and Source are not</span><br>
+<span id=x204>… prefer to keep the vocab semantics in one part</span><br>
+<span id=x205>… hence, split the vocab section</span></p>
+</section>
+
+<section>
+<h3 id=t06>Issues we may defer to the future WG</h3>
+<p id=x208 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues?q=is%3Aopen+is%3Aissue+label%3Aproposed-later">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues?q=is%3Aopen+is%3Aissue+label%3Aproposed-later</a></p>
+<p id=x210 class="phone s01"><cite>pchampin:</cite> have marked some issues as &quot;for later&quot;<br>
+<span id=x211>… should we discuss these issues?</span></p>
+<p id=x212 class="phone s02"><cite>AndyS:</cite> 199 is out of scope - Vladimir agreed</p>
+<p id=x213 class="phone s01"><cite>pchampin:</cite> so, we can close it? ...or mark as &quot;discussion&quot;</p>
+<p id=x214 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/170">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>170</a></p>
+<p id=x218 class="phone s01"><cite>pchampin:</cite> 170 could be closed<br>
+<span id=x219>… because the problem has been addressed by means of the TEPs</span><br>
+<span id=x220>… we shouldn't try to do more here but, instead, leave that to the WG</span></p>
+<p id=x221 class=irc><cite>&lt;pchampin&gt;</cite> PROPOSAL: close #170 as addressed by the section on TEPs</p>
+<p id=x222 class=irc><cite>&lt;gkellogg&gt;</cite> +1</p>
+<p id=x223 class=irc><cite>&lt;pchampin&gt;</cite> +1</p>
+<p id=x224 class=irc><cite>&lt;olaf&gt;</cite> +1</p>
+<p id=x225 class=irc><cite>&lt;AndyS&gt;</cite> +1</p>
+<p id=x226 class=irc><cite>&lt;TallTed&gt;</cite> +0.9</p>
+<p id=x227 class=irc><cite>&lt;Doerthe&gt;</cite> +1</p>
+<p id=x228 class=irc><cite>&lt;rivettp&gt;</cite> +1</p>
+<p id=x229 class=irc><cite>&lt;Fabio_Vitali&gt;</cite> +1</p>
+<p id=x230 class="phone s04"><cite>TallTed:</cite> reason for +0.9 is lack of consideration</p>
+<p id=r01 class=resolution><strong>Resolution:</strong> close #170 as addressed by the section on TEPs</p>
+<p id=x235 class="phone s01"><cite>pchampin:</cite> issue about RDF/XML interpretation as RDF-star ...<br>
+<span id=x236>… proposal was to reinterpret the ID in RDF/XML for RDF-star</span><br>
+<span id=x237>… don't think it should be added to the report</span></p>
+<p id=x238 class=summary>+1</p>
+<p id=x240 class="phone s02"><cite>AndyS:</cite> if we were going there (rather not!), it should actually be more general -- RDF reification to RDF-star</p>
+<p id=x241 class=irc><cite>&lt;pchampin&gt;</cite> <a href="https://github.com/w3c/rdf-star/issues/104">https://<wbr>github.com/<wbr>w3c/<wbr>rdf-star/<wbr>issues/<wbr>104</a></p>
+<p id=x246 class="phone s01"><cite>pchampin:</cite> there was also an issue from James<br>
+<span id=x247>… wants complete grammars for all media types touched by the report</span><br>
+<span id=x248>… I would rather not do that</span></p>
+<p id=x249 class=irc><cite>&lt;AndyS&gt;</cite> +1 to pchampin.</p>
+<p id=x251 class="phone s03"><cite>gkellogg:</cite> yes agree, including it in the report would be burdensome<br>
+<span id=x252>… however, we may include extra EBNF grammar files and link to them from the report</span></p>
+<p id=x254 class="phone s01"><cite>pchampin:</cite> good idea, and that should address James' concern<br>
+<span id=x255>… Gregg, do you have such files already?</span></p>
+<p id=x257 class=irc><cite>&lt;fabio&gt;</cite> yes</p>
+<p id=x258 class="phone s03"><cite>gkellogg:</cite> give me an action</p>
+<p id=x260 class="phone s02"><cite>AndyS:</cite> at such late stage, make these EBNF files non-normative<br>
+<span id=x261>… EBNF does not include parser actions</span></p>
+<p id=a01 class=action><strong>Action:</strong> gkellogg to create a PR with text version of the EBNF grammars</p>
+<p id=x273 class="phone s01"><cite>pchampin:</cite> will fix the minutes ;-)<br>
+<span id=x274>… What should be done for the future WG?</span><br>
+<span id=x275>… thanks everyone for today</span></p>
+<p id=x276 class=irc><cite>&lt;fabio&gt;</cite> Thank you</p>
+<p id=x277 class=irc><cite>&lt;AndyS&gt;</cite> Thanks!</p>
+<p id=x278 class=irc><cite>&lt;fabio&gt;</cite> bye</p>
+<p id=x279 class="phone s01"><cite>pchampin:</cite> talk again in two weeks</p>
+<p id=x280 class=irc><cite>&lt;Doerthe&gt;</cite> bye</p>
+<p id=x281 class=summary>Bye</p>
+<p id=x282 class=irc><cite>&lt;TallTed&gt;</cite> s/ACTION: gkellog to create a PR with text version of the EBNF grammars//</p>
+<p id=x285 class=irc><cite>&lt;TallTed&gt;</cite> s/ACTION: gkellog to create a PR with text version of the EBNF grammars/ /</p>
+</section>
+</main>
+
+<div id=ActionSummary>
+<h2>Summary of action items</h2>
+<ol>
+<li><a href="#a01">gkellogg to create a PR with text version of the EBNF grammars</a></li>
+</ol>
+</div>
+
+<div id=ResolutionSummary>
+<h2>Summary of resolutions</h2>
+<ol>
+<li><a href="#r01">close #170 as addressed by the section on TEPs</a></li>
+</ol>
+</div>
+
+
+<address>Minutes manually created (not a transcript), formatted by <a
+href="https://w3c.github.io/scribe2/scribedoc.html"
+>scribe.perl</a> version 142 (Tue Jun  1 16:59:13 2021 UTC).</address>
+
+</body>
+</html>

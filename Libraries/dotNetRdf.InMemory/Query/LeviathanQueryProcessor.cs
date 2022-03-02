@@ -253,19 +253,17 @@ namespace VDS.RDF.Query
 
                                 // Construct the Triples for each Solution
                                 if (context.OutputMultiset is IdentityMultiset) context.OutputMultiset = new SingletonMultiset();
+                                var constructContext = new ConstructContext(rdfHandler, false);
                                 foreach (ISet s in context.OutputMultiset.Sets)
                                 {
-                                    // List<Triple> constructedTriples = new List<Triple>();
                                     try
                                     {
-                                        var constructContext = new ConstructContext(rdfHandler, s, false);
+                                        constructContext.Set = s;
                                         foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns.OfType<IConstructTriplePattern>())
                                         {
                                             try
-
                                             {
                                                 if (!rdfHandler.HandleTriple(p.Construct(constructContext))) ParserHelper.Stop();
-                                                // constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                                             }
                                             catch (RdfQueryException)
                                             {
@@ -280,7 +278,6 @@ namespace VDS.RDF.Query
                                         // entire solution is discarded
                                         continue;
                                     }
-                                    // h.Assert(constructedTriples);
                                 }
                                 rdfHandler.EndRdf(true);
                             }
@@ -550,7 +547,7 @@ namespace VDS.RDF.Query
                                 if (context.InputMultiset.ContainsVariable(
                                     ((IAssignmentPattern) triplePatterns[i]).VariableName))
                                     throw new RdfQueryException(
-                                        "Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+                                        "Cannot use a BIND assignment to BIND to a variable that has previously been declared");
                             }
                             else
                             {
@@ -1388,31 +1385,33 @@ namespace VDS.RDF.Query
         {
             if (context == null) context = GetContext();
             IEnumerable<Triple> ts;
-            var subjVar = negPropSet.PathStart.VariableName;
-            var objVar = negPropSet.PathEnd.VariableName;
-            if (subjVar != null && context.InputMultiset.ContainsVariable(subjVar))
+            var subjVars = negPropSet.PathStart.Variables.ToList();
+            var objVars = negPropSet.PathEnd.Variables.ToList();
+            if (subjVars.Any() && context.InputMultiset.ContainsVariables(subjVars))
             {
-                if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
+                if (objVars.Any() && context.InputMultiset.ContainsVariables(objVars))
                 {
-                    ts = (from s in context.InputMultiset.Sets
-                          where s[subjVar] != null && s[objVar] != null
-                          from t in context.Data.GetTriplesWithSubjectObject(s[subjVar], s[objVar])
-                          select t);
+                    ts = from s in context.InputMultiset.Sets
+                        where s.BindsAll(subjVars) && s.BindsAll(objVars)
+                        from triple in context.Data.GetTriplesWithSubjectObject(negPropSet.PathStart.Bind(s),
+                            negPropSet.PathStart.Bind(s))
+                        select triple;
                 }
                 else
                 {
-                    ts = (from s in context.InputMultiset.Sets
-                          where s[subjVar] != null
-                          from t in context.Data.GetTriplesWithSubject(s[subjVar])
-                          select t);
+                    ts = from s in context.InputMultiset.Sets
+                        let subj = negPropSet.PathStart.Bind(s)
+                        where subj != null
+                        from t in context.Data.GetTriplesWithSubject(subj)
+                        select t;
                 }
             }
-            else if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
+            else if (objVars.Any() && context.InputMultiset.ContainsVariables(objVars))
             {
-                ts = (from s in context.InputMultiset.Sets
-                      where s[objVar] != null
-                      from t in context.Data.GetTriplesWithObject(s[objVar])
-                      select t);
+                ts = from s in context.InputMultiset.Sets
+                    where s.BindsAll(objVars)
+                    from t in context.Data.GetTriplesWithObject(negPropSet.PathEnd.Bind(s))
+                    select t;
             }
             else
             {
@@ -1425,22 +1424,22 @@ namespace VDS.RDF.Query
             // Q: Should this not go at the start of evaluation?
             if (negPropSet.Inverse)
             {
-                var temp = objVar;
-                objVar = subjVar;
-                subjVar = temp;
+                var temp = objVars;
+                objVars = subjVars;
+                subjVars = temp;
             }
             foreach (Triple t in ts)
             {
                 if (!properties.Contains(t.Predicate))
                 {
                     var s = new Set();
-                    if (subjVar != null) s.Add(subjVar, t.Subject);
-                    if (objVar != null) s.Add(objVar, t.Object);
+                    negPropSet.PathStart.AddBindings(t.Subject, s);
+                    negPropSet.PathEnd.AddBindings(t.Object, s);
                     context.OutputMultiset.Add(s);
                 }
             }
 
-            if (subjVar == null && objVar == null)
+            if (!subjVars.Any() && !objVars.Any())
             {
                 if (context.OutputMultiset.Count == 0)
                 {
@@ -1479,38 +1478,42 @@ namespace VDS.RDF.Query
             BaseMultiset initialInput = context.InputMultiset;
             int step = 0, prevCount = 0, skipCount = 0;
 
-            var subjVar = oneOrMorePath.PathStart.VariableName;
-            var objVar = oneOrMorePath.PathEnd.VariableName;
-            var bothTerms = (subjVar == null && objVar == null);
+            var subjVars = oneOrMorePath.PathStart.Variables.ToList();
+            var objVars = oneOrMorePath.PathEnd.Variables.ToList();
+            var bothTerms = !subjVars.Any() && !objVars.Any();
             var reverse = false;
 
-            if (subjVar == null || context.InputMultiset.ContainsVariable(subjVar) || (objVar != null && !context.InputMultiset.ContainsVariable(objVar)))
+            if (context.InputMultiset.ContainsVariables(subjVars) || !context.InputMultiset.ContainsVariables(objVars))
             {
                 // Work Forwards from the Starting Term or Bound Variable
                 // OR if there is no Ending Term or Bound Variable work forwards regardless
-                if (subjVar == null)
+                if (!subjVars.Any())
                 {
                     paths.Add(((NodeMatchPattern)oneOrMorePath.PathStart).Node.AsEnumerable().ToList());
                 }
-                else if (context.InputMultiset.ContainsVariable(subjVar))
+                else
                 {
-                    paths.AddRange((from s in context.InputMultiset.Sets
-                                    where s[subjVar] != null
-                                    select s[subjVar]).Distinct().Select(n => n.AsEnumerable().ToList()));
+                    paths.AddRange(context.InputMultiset.Sets
+                        .Where(s=>s.BindsAll(subjVars))
+                        .Select(s => oneOrMorePath.PathStart.Bind(s))
+                        .Distinct()
+                        .Select(n => n.AsEnumerable().ToList()));
                 }
             }
-            else if (objVar == null || context.InputMultiset.ContainsVariable(objVar))
+            else if (context.InputMultiset.ContainsVariables(objVars))
             {
                 // Work Backwards from Ending Term or Bound Variable
-                if (objVar == null)
+                if (!objVars.Any())
                 {
                     paths.Add(((NodeMatchPattern)oneOrMorePath.PathEnd).Node.AsEnumerable().ToList());
                 }
                 else
                 {
-                    paths.AddRange((from s in context.InputMultiset.Sets
-                                    where s[objVar] != null
-                                    select s[objVar]).Distinct().Select(n => n.AsEnumerable().ToList()));
+                    paths.AddRange(context.InputMultiset.Sets
+                        .Where(s => s.BindsAll(objVars))
+                        .Select(s => oneOrMorePath.PathEnd.Bind(s))
+                        .Distinct()
+                        .Select(n => n.AsEnumerable().ToList()));
                 }
                 reverse = true;
             }
@@ -1556,9 +1559,10 @@ namespace VDS.RDF.Query
                     var exit = false;
                     foreach (List<INode> path in paths)
                     {
+                        var s = new Set();
                         if (reverse)
                         {
-                            if (oneOrMorePath.PathEnd.Accepts(context, path[0]) && oneOrMorePath.PathStart.Accepts(context, path[path.Count - 1]))
+                            if (oneOrMorePath.PathEnd.Accepts(context, path[0], s) && oneOrMorePath.PathStart.Accepts(context, path[path.Count - 1], s)) // - should these be using different sets?
                             {
                                 exit = true;
                                 break;
@@ -1566,7 +1570,7 @@ namespace VDS.RDF.Query
                         }
                         else
                         {
-                            if (oneOrMorePath.PathStart.Accepts(context, path[0]) && oneOrMorePath.PathEnd.Accepts(context, path[path.Count - 1]))
+                            if (oneOrMorePath.PathStart.Accepts(context, path[0], s) && oneOrMorePath.PathEnd.Accepts(context, path[path.Count - 1], s))
                             {
                                 exit = true;
                                 break;
@@ -1592,14 +1596,9 @@ namespace VDS.RDF.Query
                 {
                     if (reverse)
                     {
-                        if (oneOrMorePath.PathEnd.Accepts(context, path[0]) && oneOrMorePath.PathStart.Accepts(context, path[path.Count - 1]))
+                        var s = new Set();
+                        if (oneOrMorePath.PathEnd.Accepts(context, path[0], s) && oneOrMorePath.PathStart.Accepts(context, path[path.Count - 1], s))
                         {
-                            var s = new Set();
-                            if (!bothTerms)
-                            {
-                                if (subjVar != null) s.Add(subjVar, path[path.Count - 1]);
-                                if (objVar != null) s.Add(objVar, path[0]);
-                            }
                             // Make sure to check for uniqueness
                             if (returnedPaths.Contains(s)) continue;
                             context.OutputMultiset.Add(s);
@@ -1612,14 +1611,9 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        if (oneOrMorePath.PathStart.Accepts(context, path[0]) && oneOrMorePath.PathEnd.Accepts(context, path[path.Count - 1]))
+                        var s = new Set();
+                        if (oneOrMorePath.PathStart.Accepts(context, path[0], s) && oneOrMorePath.PathEnd.Accepts(context, path[path.Count - 1], s))
                         {
-                            var s = new Set();
-                            if (!bothTerms)
-                            {
-                                if (subjVar != null) s.Add(subjVar, path[0]);
-                                if (objVar != null) s.Add(objVar, path[path.Count - 1]);
-                            }
                             // Make sure to check for uniqueness
                             if (returnedPaths.Contains(s)) continue;
                             context.OutputMultiset.Add(s);
@@ -1649,6 +1643,7 @@ namespace VDS.RDF.Query
             context.InputMultiset = initialInput;
             return context.OutputMultiset;
         }
+
 
 
         /// <summary>
@@ -2530,52 +2525,63 @@ namespace VDS.RDF.Query
                 return new NullMultiset();
             }
 
-            var subjVar = path.PathStart.VariableName;
-            var objVar = path.PathEnd.VariableName;
+            var subjVars = path.PathStart.Variables.ToList();
+            var objVars = path.PathEnd.Variables.ToList();
             context.OutputMultiset = new Multiset();
 
             // Determine the Triples to which this applies
-            if (subjVar != null)
+            if (!path.PathStart.IsFixed)
             {
                 // Subject is a Variable
-                if (context.InputMultiset.ContainsVariable(subjVar))
+                if (context.InputMultiset.ContainsVariables(subjVars))
                 {
                     // Subject is Bound
-                    if (objVar != null)
+                    if (!path.PathEnd.IsFixed)
                     {
                         // Object is a Variable
-                        if (context.InputMultiset.ContainsVariable(objVar))
+                        if (context.InputMultiset.ContainsVariables(objVars))
                         {
                             // Both Subject and Object are Bound
-                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && x[objVar] != null && path.PathStart.Accepts(context, x[subjVar]) && path.PathEnd.Accepts(context, x[objVar])))
+                            foreach (ISet s in context.InputMultiset.Sets.Where(set =>
+                                         set.BindsAll(subjVars) && set.BindsAll(objVars)))
                             {
+                                INode subj = path.PathStart.Bind(s);
+                                INode obj = path.PathEnd.Bind(s);
                                 ISet x = new Set();
-                                x.Add(subjVar, x[subjVar]);
-                                context.OutputMultiset.Add(x);
-                                x = new Set();
-                                x.Add(objVar, x[objVar]);
-                                context.OutputMultiset.Add(x);
+                                if (path.PathStart.Accepts(context, subj, x))
+                                {
+                                    ISet y = new Set();
+                                    if (path.PathEnd.Accepts(context, obj, y))
+                                    {
+                                        context.OutputMultiset.Add(x);
+                                        context.OutputMultiset.Add(y);
+                                    }
+                                }
                             }
                         }
                         else
                         {
                             // Subject is bound but Object is Unbound
-                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[subjVar] != null && path.PathStart.Accepts(context, x[subjVar])))
+                            foreach (ISet s in context.InputMultiset.Sets.Where(set => set.BindsAll(subjVars)))
                             {
+                                INode subj = path.PathStart.Bind(s);
                                 ISet x = s.Copy();
-                                x.Add(objVar, x[subjVar]);
-                                context.OutputMultiset.Add(x);
+                                if (path.PathStart.Accepts(context, subj, x))
+                                {
+                                    objVars.ForEach(objVar => x.Add(objVar, subj));
+                                    context.OutputMultiset.Add(x);
+                                }
                             }
                         }
                     }
                     else
                     {
                         // Object is a Term
-                        // Preseve sets where the Object Term is equal to the currently bound Subject
-                        INode objTerm = ((NodeMatchPattern)path.PathEnd).Node;
+                        // Preserve sets where the Object Term is equal to the currently bound Subject
+                        INode objTerm = path.PathEnd.Bind(new Set());
                         foreach (ISet s in context.InputMultiset.Sets)
                         {
-                            INode temp = s[subjVar];
+                            INode temp = path.PathStart.Bind(s);
                             if (temp != null && temp.Equals(objTerm))
                             {
                                 context.OutputMultiset.Add(s.Copy());
@@ -2586,17 +2592,21 @@ namespace VDS.RDF.Query
                 else
                 {
                     // Subject is Unbound
-                    if (objVar != null)
+                    if (!path.PathEnd.IsFixed)
                     {
                         // Object is a Variable
-                        if (context.InputMultiset.ContainsVariable(objVar))
+                        if (context.InputMultiset.ContainsVariables(objVars))
                         {
                             // Object is Bound but Subject is unbound
-                            foreach (ISet s in context.InputMultiset.Sets.Where(x => x[objVar] != null && path.PathEnd.Accepts(context, x[objVar])))
+                            foreach (ISet s in context.InputMultiset.Sets.Where(set => set.BindsAll(objVars)))
                             {
+                                INode obj = path.PathEnd.Bind(s);
                                 ISet x = s.Copy();
-                                x.Add(subjVar, x[objVar]);
-                                context.OutputMultiset.Add(x);
+                                if (path.PathEnd.Accepts(context, obj, x))
+                                {
+                                    subjVars.ForEach(subjVar => x.Add(subjVar, obj));
+                                    context.OutputMultiset.Add(x);
+                                }
                             }
                         }
                         else
@@ -2610,9 +2620,10 @@ namespace VDS.RDF.Query
                             }
                             foreach (INode n in nodes)
                             {
+                                if ((path.PathStart is QuotedTriplePattern || path.PathEnd is QuotedTriplePattern) && n is not ITripleNode) continue;
                                 var s = new Set();
-                                s.Add(subjVar, n);
-                                s.Add(objVar, n);
+                                path.PathStart.AddBindings(n, s);
+                                path.PathEnd.AddBindings(n, s);
                                 context.OutputMultiset.Add(s);
                             }
                         }
@@ -2622,22 +2633,23 @@ namespace VDS.RDF.Query
                         // Object is a Term
                         // Create a single set with the Variable bound to the Object Term
                         var s = new Set();
-                        s.Add(subjVar, ((NodeMatchPattern)path.PathEnd).Node);
+                        INode objNode = path.PathEnd.Bind(new Set());
+                        path.PathStart.AddBindings(objNode, s);
                         context.OutputMultiset.Add(s);
                     }
                 }
             }
-            else if (objVar != null)
+            else if (!path.PathEnd.IsFixed)
             {
                 // Subject is a Term but Object is a Variable
-                if (context.InputMultiset.ContainsVariable(objVar))
+                INode subjTerm = path.PathStart.Bind(new Set());
+                if (context.InputMultiset.ContainsVariables(objVars))
                 {
                     // Object is Bound
-                    // Preseve sets where the Subject Term is equal to the currently bound Object
-                    INode subjTerm = ((NodeMatchPattern)path.PathStart).Node;
+                    // Preserve sets where the Subject Term is equal to the currently bound Object
                     foreach (ISet s in context.InputMultiset.Sets)
                     {
-                        INode temp = s[objVar];
+                        INode temp = path.PathEnd.Bind(s);
                         if (temp != null && temp.Equals(subjTerm))
                         {
                             context.OutputMultiset.Add(s.Copy());
@@ -2647,9 +2659,9 @@ namespace VDS.RDF.Query
                 else
                 {
                     // Object is Unbound
-                    // Create a single set with the Variable bound to the Suject Term
+                    // Create a single set with the Variable bound to the Subject Term
                     var s = new Set();
-                    s.Add(objVar, ((NodeMatchPattern)path.PathStart).Node);
+                    path.PathEnd.AddBindings(subjTerm, s);
                     context.OutputMultiset.Add(s);
                 }
             }
@@ -2665,48 +2677,47 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Processes a Zero or More Path.
         /// </summary>
-        /// <param name="path">Path.</param>
+        /// <param name="zeroOrMorePath">Path.</param>
         /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath zeroOrMorePath, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             var paths = new List<List<INode>>();
             BaseMultiset initialInput = context.InputMultiset;
             int step = 0, prevCount = 0, skipCount = 0;
-
-            var subjVar = zeroOrMorePath.PathStart.VariableName;
-            var objVar = zeroOrMorePath.PathEnd.VariableName;
-            var bothTerms = (subjVar == null && objVar == null);
+            var subjVars = zeroOrMorePath.PathStart.Variables.ToList();
+            var objVars = zeroOrMorePath.PathEnd.Variables.ToList();
+            var bothTerms = zeroOrMorePath.PathStart.IsFixed && zeroOrMorePath.PathEnd.IsFixed;
             var reverse = false;
 
-            if (subjVar == null || (context.InputMultiset.ContainsVariable(subjVar)))
+            if (zeroOrMorePath.PathStart.IsFixed || context.InputMultiset.ContainsVariables(subjVars))
             {
                 // Work Forwards from the Starting Term or Bound Variable
                 // OR if there is no Ending Term or Bound Variable work forwards regardless
-                if (subjVar == null)
+                if (zeroOrMorePath.PathStart.IsFixed)
                 {
-                    paths.Add(((NodeMatchPattern)zeroOrMorePath.PathStart).Node.AsEnumerable().ToList());
-                }
-                else if (context.InputMultiset.ContainsVariable(subjVar))
-                {
-                    paths.AddRange((from s in context.InputMultiset.Sets
-                                    where s[subjVar] != null
-                                    select s[subjVar]).Distinct().Select(n => n.AsEnumerable().ToList()));
-                }
-            }
-            else if (objVar == null || (context.InputMultiset.ContainsVariable(objVar)))
-            {
-                // Work Backwards from Ending Term or Bound Variable
-                if (objVar == null)
-                {
-                    paths.Add(((NodeMatchPattern)zeroOrMorePath.PathEnd).Node.AsEnumerable().ToList());
+                    paths.Add(zeroOrMorePath.PathStart.Bind(new Set()).AsEnumerable().ToList());
                 }
                 else
                 {
                     paths.AddRange((from s in context.InputMultiset.Sets
-                                    where s[objVar] != null
-                                    select s[objVar]).Distinct().Select(n => n.AsEnumerable().ToList()));
+                                    where s.BindsAll(subjVars)
+                                    select zeroOrMorePath.PathStart.Bind(s)).Distinct().Select(n => n.AsEnumerable().ToList()));
+                }
+            }
+            else if (zeroOrMorePath.PathEnd.IsFixed || (context.InputMultiset.ContainsVariables(objVars)))
+            {
+                // Work Backwards from Ending Term or Bound Variable
+                if (zeroOrMorePath.PathEnd.IsFixed)
+                {
+                    paths.Add(zeroOrMorePath.PathEnd.Bind(new Set()).AsEnumerable().ToList());
+                }
+                else
+                {
+                    paths.AddRange((from s in context.InputMultiset.Sets
+                                    where s.BindsAll(objVars)
+                                    select zeroOrMorePath.PathEnd.Bind(s)).Distinct().Select(n => n.AsEnumerable().ToList()));
                 }
                 reverse = true;
             }
@@ -2724,8 +2735,7 @@ namespace VDS.RDF.Query
                 {
                     foreach (INode nextStep in EvaluateStep(zeroOrMorePath, context, path, reverse))
                     {
-                        var newPath = new List<INode>(path);
-                        newPath.Add(nextStep);
+                        var newPath = new List<INode>(path) { nextStep };
                         paths.Add(newPath);
                     }
                 }
@@ -2743,9 +2753,10 @@ namespace VDS.RDF.Query
                     var exit = false;
                     foreach (List<INode> path in paths)
                     {
+                        var s = new Set();
                         if (reverse)
                         {
-                            if (zeroOrMorePath.PathEnd.Accepts(context, path[0]) && zeroOrMorePath.PathStart.Accepts(context, path[path.Count - 1]))
+                            if (zeroOrMorePath.PathEnd.Accepts(context, path[0], s) && zeroOrMorePath.PathStart.Accepts(context, path[path.Count - 1], s)) // - Should these be separate sets?
                             {
                                 exit = true;
                                 break;
@@ -2753,7 +2764,7 @@ namespace VDS.RDF.Query
                         }
                         else
                         {
-                            if (zeroOrMorePath.PathStart.Accepts(context, path[0]) && zeroOrMorePath.PathEnd.Accepts(context, path[path.Count - 1]))
+                            if (zeroOrMorePath.PathStart.Accepts(context, path[0], s) && zeroOrMorePath.PathEnd.Accepts(context, path[path.Count - 1], s))
                             {
                                 exit = true;
                                 break;
@@ -2779,14 +2790,9 @@ namespace VDS.RDF.Query
                 {
                     if (reverse)
                     {
-                        if (zeroOrMorePath.PathEnd.Accepts(context, path[0]) && zeroOrMorePath.PathStart.Accepts(context, path[path.Count - 1]))
+                        var s = new Set();
+                        if (zeroOrMorePath.PathEnd.Accepts(context, path[0], s) && zeroOrMorePath.PathStart.Accepts(context, path[path.Count - 1], s))
                         {
-                            var s = new Set();
-                            if (!bothTerms)
-                            {
-                                if (subjVar != null) s.Add(subjVar, path[path.Count - 1]);
-                                if (objVar != null) s.Add(objVar, path[0]);
-                            }
                             // Make sure to check for uniqueness
                             if (returnedPaths.Contains(s)) continue;
                             context.OutputMultiset.Add(s);
@@ -2799,14 +2805,9 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        if (zeroOrMorePath.PathStart.Accepts(context, path[0]) && zeroOrMorePath.PathEnd.Accepts(context, path[path.Count - 1]))
+                        var s = new Set();
+                        if (zeroOrMorePath.PathStart.Accepts(context, path[0], s) && zeroOrMorePath.PathEnd.Accepts(context, path[path.Count - 1], s))
                         {
-                            var s = new Set();
-                            if (!bothTerms)
-                            {
-                                if (subjVar != null) s.Add(subjVar, path[0]);
-                                if (objVar != null) s.Add(objVar, path[path.Count - 1]);
-                            }
                             // Make sure to check for uniqueness
                             if (returnedPaths.Contains(s)) continue;
                             context.OutputMultiset.Add(s);
@@ -2817,36 +2818,6 @@ namespace VDS.RDF.Query
                             if (bothTerms) break;
                         }
                     }
-                }
-
-                // Now add the zero length paths into
-                IEnumerable<INode> nodes;
-                if (subjVar != null)
-                {
-                    if (objVar != null)
-                    {
-                        nodes = (from s in context.OutputMultiset.Sets
-                                 where s[subjVar] != null
-                                 select s[subjVar]).Concat(from s in context.OutputMultiset.Sets
-                                                           where s[objVar] != null
-                                                           select s[objVar]).Distinct();
-                    }
-                    else
-                    {
-                        nodes = (from s in context.OutputMultiset.Sets
-                                 where s[subjVar] != null
-                                 select s[subjVar]).Distinct();
-                    }
-                }
-                else if (objVar != null)
-                {
-                    nodes = (from s in context.OutputMultiset.Sets
-                             where s[objVar] != null
-                             select s[objVar]).Distinct();
-                }
-                else
-                {
-                    nodes = Enumerable.Empty<INode>();
                 }
 
                 if (bothTerms)
@@ -2867,7 +2838,7 @@ namespace VDS.RDF.Query
                 var zeroPath = new ZeroLengthPath(zeroOrMorePath.PathStart, zeroOrMorePath.PathEnd, zeroOrMorePath.Path);
                 BaseMultiset currResults = context.OutputMultiset;
                 context.OutputMultiset = new Multiset();
-                BaseMultiset results = context.Evaluate(zeroPath);//zeroPath.Evaluate(context);
+                BaseMultiset results = context.Evaluate(zeroPath);
                 context.OutputMultiset = currResults;
                 context.OutputMultiset.Merge(results);
             }
@@ -3441,10 +3412,11 @@ namespace VDS.RDF.Query
                     // Remember to check for Timeout during lazy evaluation
                     context.CheckTimeout();
 
-                    if (tp.Accepts(context, t))
+                    ISet result = tp.Evaluate(context, t);
+                    if (result != null)
                     {
                         resultsFound++;
-                        context.OutputMultiset.Add(tp.CreateResult(t));
+                        context.OutputMultiset.Add(result);
 
                         // Recurse unless we're the last pattern
                         if (pattern < triplePatterns.Count - 1)
@@ -3632,10 +3604,11 @@ namespace VDS.RDF.Query
                     // Remember to check for Timeout during lazy evaluation
                     context.CheckTimeout();
 
-                    if (tp.Accepts(context, t))
+                    ISet result = tp.Evaluate(context, t);
+                    if (result != null)
                     {
                         resultsFound++;
-                        context.OutputMultiset.Add(tp.CreateResult(t));
+                        context.OutputMultiset.Add(result);
 
                         // Recurse unless we're the last pattern
                         if (pattern < triplePatterns.Count - 1)
@@ -3945,7 +3918,8 @@ namespace VDS.RDF.Query
 
                 foreach (Triple t in ts)
                 {
-                    if (tp.Accepts(context, t))
+                    ISet result = tp.Evaluate(context, t);
+                    if (result != null)
                     {
                         resultsFound++;
                         if (tp.IndexType == TripleIndexType.NoVariables)
@@ -3955,7 +3929,7 @@ namespace VDS.RDF.Query
                         }
                         else
                         {
-                            context.OutputMultiset.Add(tp.CreateResult(t));
+                            context.OutputMultiset.Add(result);
                         }
                     }
                 }

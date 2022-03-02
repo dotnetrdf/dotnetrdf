@@ -39,8 +39,6 @@ namespace VDS.RDF.Query.Algebra
     public class NegatedPropertySet : ISparqlAlgebra
     {
         private readonly List<INode> _properties = new List<INode>();
-        private readonly PatternItem _start, _end;
-        private readonly bool _inverse;
 
         /// <summary>
         /// Creates a new Negated Property Set.
@@ -51,10 +49,10 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="inverse">Whether this is a set of Inverse Negated Properties.</param>
         public NegatedPropertySet(PatternItem start, PatternItem end, IEnumerable<Property> properties, bool inverse)
         {
-            _start = start;
-            _end = end;
+            PathStart = start;
+            PathEnd = end;
             _properties.AddRange(properties.Select(p => p.Predicate));
-            _inverse = inverse;
+            Inverse = inverse;
         }
 
         /// <summary>
@@ -69,24 +67,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Path Start.
         /// </summary>
-        public PatternItem PathStart
-        {
-            get
-            {
-                return _start;
-            }
-        }
+        public PatternItem PathStart { get; }
 
         /// <summary>
         /// Gets the Path End.
         /// </summary>
-        public PatternItem PathEnd
-        {
-            get
-            {
-                return _end;
-            }
-        }
+        public PatternItem PathEnd { get; }
 
         /// <summary>
         /// Gets the Negated Properties.
@@ -102,42 +88,13 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets whether this is a set of Inverse Negated Properties.
         /// </summary>
-        public bool Inverse
-        {
-            get
-            {
-                return _inverse;
-            }
-        }
+        public bool Inverse { get; }
 
         /// <summary>
         /// Gets the Variables used in the Algebra.
         /// </summary>
-        public IEnumerable<string> Variables
-        {
-            get
-            {
-                if (_start.VariableName != null)
-                {
-                    if (_end.VariableName != null)
-                    {
-                        return _start.VariableName.AsEnumerable().Concat(_end.VariableName.AsEnumerable());
-                    }
-                    else
-                    {
-                        return _start.VariableName.AsEnumerable();
-                    }
-                }
-                else if (_end.VariableName != null)
-                {
-                    return _end.VariableName.AsEnumerable();
-                }
-                else
-                {
-                    return Enumerable.Empty<string>();
-                }
-            }
-        }
+        public IEnumerable<string> Variables => PathStart.Variables.Concat(PathEnd.Variables);
+        
 
         /// <summary>
         /// Gets the enumeration of fixed variables in the algebra i.e. variables that are guaranteed to have a bound value.
@@ -161,9 +118,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
-            return q;
+            return new SparqlQuery { RootGraphPattern = ToGraphPattern() };
         }
 
         /// <summary>
@@ -174,7 +129,7 @@ namespace VDS.RDF.Query.Algebra
         {
             var gp = new GraphPattern();
             PropertyPathPattern pp;
-            if (_inverse)
+            if (Inverse)
             {
                 pp = new PropertyPathPattern(PathStart, new NegatedSet(Enumerable.Empty<Property>(), _properties.Select(p => new Property(p))), PathEnd);
             }
@@ -194,7 +149,7 @@ namespace VDS.RDF.Query.Algebra
         {
             var output = new StringBuilder();
             output.Append("NegatedPropertySet(");
-            output.Append(_start);
+            output.Append(PathStart);
             output.Append(", {");
             for (var i = 0; i < _properties.Count; i++)
             {
@@ -205,7 +160,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
             output.Append("}, ");
-            output.Append(_end);
+            output.Append(PathEnd);
             output.Append(')');
 
             return output.ToString();

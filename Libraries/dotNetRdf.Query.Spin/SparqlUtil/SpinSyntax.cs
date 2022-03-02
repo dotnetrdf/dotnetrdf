@@ -550,8 +550,8 @@ namespace VDS.RDF.Query.Spin
             else if (item is VariablePattern)
             {
                 //i = g.CreateUriNode(new Uri(SPIN.NS_URI + "_" + item.VariableName));
-                i = varTable[item.VariableName];
-                g.Assert(i, SP.PropertyVarName, g.CreateLiteralNode(item.VariableName, XSD.string_.Uri));
+                i = varTable[item.Variables.First()];
+                g.Assert(i, SP.PropertyVarName, g.CreateLiteralNode(item.Variables.First(), XSD.string_.Uri));
             }
             else if (item is BlankNodePattern)
             {

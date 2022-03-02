@@ -23,7 +23,9 @@ namespace dotNetRdf.TestSupport
             Graph = new Graph { BaseUri = baseUri };
             Graph.NamespaceMap.AddNamespace("mf", UriFactory.Root.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
             Graph.NamespaceMap.AddNamespace("qt", UriFactory.Root.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-query#"));
+            Graph.NamespaceMap.AddNamespace("ut", UriFactory.Root.Create("http://www.w3.org/2009/sparql/tests/test-update#"));
             Graph.NamespaceMap.AddNamespace("rdft", UriFactory.Root.Create("http://www.w3.org/ns/rdftest#"));
+            Graph.NamespaceMap.AddNamespace("test", UriFactory.Root.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#"));
             _mfInclude = Graph.CreateUriNode("mf:include");
             LocalDirectory = Path.GetDirectoryName(localFilePath);
             LocalManifestUri = new Uri(new Uri("file://"), Path.GetFullPath(localFilePath));
@@ -67,6 +69,8 @@ namespace dotNetRdf.TestSupport
 
         public IEnumerable<ManifestTestData> GetTestData()
         {
+            INode testApproval = Graph.CreateUriNode("test:approval");
+            INode testWithdrawn = Graph.CreateUriNode("test:withdrawn");
             IEnumerable<INode> manifests = Graph.GetTriplesWithPredicateObject(Graph.CreateUriNode("rdf:type"), Graph.CreateUriNode("mf:Manifest")).Select(t => t.Subject);
             foreach (INode manifest in manifests)
             {
@@ -75,7 +79,10 @@ namespace dotNetRdf.TestSupport
                 {
                     foreach (IUriNode testNode in Graph.GetListItems(testList).OfType<IUriNode>())
                     {
-                        yield return new ManifestTestData(this, testNode);
+                        if (!Graph.ContainsTriple(new Triple(testNode, testApproval, testWithdrawn)))
+                        {
+                            yield return new ManifestTestData(this, testNode);
+                        }
                     }
                 }
             }

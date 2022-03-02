@@ -39,6 +39,7 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode;
 using VDS.RDF.Query.Expressions.Functions.XPath;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
@@ -70,6 +71,7 @@ namespace VDS.RDF.Query
         TResult ProcessDistinctModifier(DistinctModifier distinct, TContext context, TBinding binding);
         TResult ProcessGraphPatternTerm(GraphPatternTerm graphPattern, TContext context, TBinding binding);
         TResult ProcessVariableTerm(VariableTerm variable, TContext context, TBinding binding);
+        TResult ProcessTripleNodeTerm(TripleNodeTerm tripleNodeTerm, TContext context, TBinding binding);
         TResult ProcessAdditionExpression(AdditionExpression addition, TContext context, TBinding binding);
 
         TResult ProcessDivisionExpression(DivisionExpression division, TContext context, TBinding binding);
@@ -145,6 +147,7 @@ namespace VDS.RDF.Query
         TResult ProcessIsIriFunction(IsIriFunction isIri, TContext context, TBinding binding);
         TResult ProcessIsLiteralFunction(IsLiteralFunction isLiteral, TContext context, TBinding binding);
         TResult ProcessIsNumericFunction(IsNumericFunction isNumeric, TContext context, TBinding binding);
+        TResult ProcessIsTripleFunction(IsTripleFunction isTripleFunction, TContext context, TBinding binding);
         TResult ProcessLangMatchesFunction(LangMatchesFunction langMatches, TContext context, TBinding binding);
         TResult ProcessRegexFunction(RegexFunction regex, TContext context, TBinding binding);
         TResult ProcessSameTermFunction(SameTermFunction sameTerm, TContext context, TBinding binding);
@@ -194,6 +197,12 @@ namespace VDS.RDF.Query
         TResult ProcessCallFunction(CallFunction call, TContext context, TBinding binding);
         TResult ProcessCoalesceFunction(CoalesceFunction coalesce, TContext context, TBinding binding);
         TResult ProcessIfElseFunction(IfElseFunction ifElse, TContext context, TBinding binding);
+
+        // Triple Node Functions
+        TResult ProcessSubjectFunction(SubjectFunction subjectFunction, TContext context, TBinding binding);
+        TResult ProcessPredicateFunction(PredicateFunction predicateFunction, TContext context, TBinding binding);
+        TResult ProcessObjectFunction(ObjectFunction objectFunction, TContext context, TBinding binding);
+
 
         // XPath Functions
         TResult ProcessBooleanCast(BooleanCast cast, TContext context, TBinding binding);

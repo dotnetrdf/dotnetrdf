@@ -1,0 +1,1513 @@
+
+<table class="grammar">
+  <tbody id="sp-grammar-productions" class="ebnf">
+    <tr id="sp-grammar-production-QueryUnit">
+      <td>[1]</td>
+      <td><code>QueryUnit</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Query">Query</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Query">
+      <td>[2]</td>
+      <td><code>Query</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Prologue">Prologue</a> <code>(</code> <a href="#sp-grammar-production-SelectQuery">SelectQuery</a> <code>|</code> <a href="#sp-grammar-production-ConstructQuery">ConstructQuery</a> <code>|</code> <a href="#sp-grammar-production-DescribeQuery">DescribeQuery</a> <code>|</code> <a href="#sp-grammar-production-AskQuery">AskQuery</a><code>)</code>  <a href="#sp-grammar-production-ValuesClause">ValuesClause</a></td>
+    </tr>
+    <tr id="sp-grammar-production-UpdateUnit">
+      <td>[3]</td>
+      <td><code>UpdateUnit</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Update">Update</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Prologue">
+      <td>[4]</td>
+      <td><code>Prologue</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#sp-grammar-production-BaseDecl">BaseDecl</a> <code>|</code> <a href="#sp-grammar-production-PrefixDecl">PrefixDecl</a><code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-BaseDecl">
+      <td>[5]</td>
+      <td><code>BaseDecl</code></td>
+      <td>::=</td>
+      <td>&quot;BASE&quot; <a href="#sp-grammar-production-IRIREF">IRIREF</a></td>
+    </tr>
+    <tr id="sp-grammar-production-PrefixDecl">
+      <td>[6]</td>
+      <td><code>PrefixDecl</code></td>
+      <td>::=</td>
+      <td>&quot;PREFIX&quot; <a href="#sp-grammar-production-PNAME_NS">PNAME_NS</a> <a href="#sp-grammar-production-IRIREF">IRIREF</a></td>
+    </tr>
+    <tr id="sp-grammar-production-SelectQuery">
+      <td>[7]</td>
+      <td><code>SelectQuery</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-SelectClause">SelectClause</a> <a href="#sp-grammar-production-DatasetClause">DatasetClause</a><code>*</code>  <a href="#sp-grammar-production-WhereClause">WhereClause</a> <a href="#sp-grammar-production-SolutionModifier">SolutionModifier</a></td>
+    </tr>
+    <tr id="sp-grammar-production-SubSelect">
+      <td>[8]</td>
+      <td><code>SubSelect</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-SelectClause">SelectClause</a> <a href="#sp-grammar-production-WhereClause">WhereClause</a> <a href="#sp-grammar-production-SolutionModifier">SolutionModifier</a> <a href="#sp-grammar-production-ValuesClause">ValuesClause</a></td>
+    </tr>
+    <tr id="sp-grammar-production-SelectClause">
+      <td>[9]</td>
+      <td><code>SelectClause</code></td>
+      <td>::=</td>
+      <td>&quot;SELECT&quot; <code>(</code> &quot;DISTINCT&quot; <code>|</code> &quot;REDUCED&quot;<code>)</code> <code>?</code>  <code>(</code> <code>(</code> <a href="#sp-grammar-production-Var">Var</a> <code>|</code> <code>(</code> "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> &quot;AS&quot; <a href="#sp-grammar-production-Var">Var</a> "<code class="grammar-literal">)</code>"<code>)</code> <code>)</code> <code>+</code>  <code>|</code> "<code class="grammar-literal">*</code>"<code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-ConstructQuery">
+      <td>[10]</td>
+      <td><code>ConstructQuery</code></td>
+      <td>::=</td>
+      <td>&quot;CONSTRUCT&quot;</td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td></td>
+      <td><code>(</code> <code>(</code> <a href="#sp-grammar-production-ConstructTemplate">ConstructTemplate</a> <a href="#sp-grammar-production-DatasetClause">DatasetClause</a><code>*</code>  <a href="#sp-grammar-production-WhereClause">WhereClause</a> <a href="#sp-grammar-production-SolutionModifier">SolutionModifier</a><code>)</code><code>(</code> <a href="#sp-grammar-production-DatasetClause">DatasetClause</a><code>*</code>  &quot;WHERE&quot; "<code class="grammar-literal">{</code>" <a href="#sp-grammar-production-TriplesTemplate">TriplesTemplate</a><code>?</code>  "<code class="grammar-literal">}</code>" <a href="#sp-grammar-production-SolutionModifier">SolutionModifier</a><code>)</code> <code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-DescribeQuery">
+      <td>[11]</td>
+      <td><code>DescribeQuery</code></td>
+      <td>::=</td>
+      <td>&quot;DESCRIBE&quot; <code>(</code> <a href="#sp-grammar-production-VarOrIri">VarOrIri</a><code>+</code>  <code>|</code> "<code class="grammar-literal">*</code>"<code>)</code>  <a href="#sp-grammar-production-DatasetClause">DatasetClause</a><code>*</code>  <a href="#sp-grammar-production-WhereClause">WhereClause</a><code>?</code>  <a href="#sp-grammar-production-SolutionModifier">SolutionModifier</a></td>
+    </tr>
+    <tr id="sp-grammar-production-AskQuery">
+      <td>[12]</td>
+      <td><code>AskQuery</code></td>
+      <td>::=</td>
+      <td>&quot;ASK&quot; <a href="#sp-grammar-production-DatasetClause">DatasetClause</a><code>*</code>  <a href="#sp-grammar-production-WhereClause">WhereClause</a> <a href="#sp-grammar-production-ValuesClause">ValuesClause</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DatasetClause">
+      <td>[13]</td>
+      <td><code>DatasetClause</code></td>
+      <td>::=</td>
+      <td>&quot;FROM&quot; <code>(</code> <a href="#sp-grammar-production-DefaultGraphClause">DefaultGraphClause</a> <code>|</code> <a href="#sp-grammar-production-NamedGraphClause">NamedGraphClause</a><code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-DefaultGraphClause">
+      <td>[14]</td>
+      <td><code>DefaultGraphClause</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-SourceSelector">SourceSelector</a></td>
+    </tr>
+    <tr id="sp-grammar-production-NamedGraphClause">
+      <td>[15]</td>
+      <td><code>NamedGraphClause</code></td>
+      <td>::=</td>
+      <td>&quot;NAMED&quot; <a href="#sp-grammar-production-SourceSelector">SourceSelector</a></td>
+    </tr>
+    <tr id="sp-grammar-production-SourceSelector">
+      <td>[16]</td>
+      <td><code>SourceSelector</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-iri">iri</a></td>
+    </tr>
+    <tr id="sp-grammar-production-WhereClause">
+      <td>[17]</td>
+      <td><code>WhereClause</code></td>
+      <td>::=</td>
+      <td>&quot;WHERE&quot;<code>?</code>  <a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-SolutionModifier">
+      <td>[18]</td>
+      <td><code>SolutionModifier</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-GroupClause">GroupClause</a><code>?</code>  <a href="#sp-grammar-production-HavingClause">HavingClause</a><code>?</code>  <a href="#sp-grammar-production-OrderClause">OrderClause</a><code>?</code>  <a href="#sp-grammar-production-LimitOffsetClauses">LimitOffsetClauses</a><code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-GroupClause">
+      <td>[19]</td>
+      <td><code>GroupClause</code></td>
+      <td>::=</td>
+      <td>&quot;GROUP&quot; &quot;BY&quot; <a href="#sp-grammar-production-GroupCondition">GroupCondition</a><code>+</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-GroupCondition">
+      <td>[20]</td>
+      <td><code>GroupCondition</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-BuiltInCall">BuiltInCall</a> <code>|</code> <a href="#sp-grammar-production-FunctionCall">FunctionCall</a> <code>|</code> <code>(</code> "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> <code>(</code> &quot;AS&quot; <a href="#sp-grammar-production-Var">Var</a><code>)</code> <code>?</code>  "<code class="grammar-literal">)</code>"<code>)</code>  <code>|</code> <a href="#sp-grammar-production-Var">Var</a></td>
+    </tr>
+    <tr id="sp-grammar-production-HavingClause">
+      <td>[21]</td>
+      <td><code>HavingClause</code></td>
+      <td>::=</td>
+      <td>&quot;HAVING&quot; <a href="#sp-grammar-production-HavingCondition">HavingCondition</a><code>+</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-HavingCondition">
+      <td>[22]</td>
+      <td><code>HavingCondition</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Constraint">Constraint</a></td>
+    </tr>
+    <tr id="sp-grammar-production-OrderClause">
+      <td>[23]</td>
+      <td><code>OrderClause</code></td>
+      <td>::=</td>
+      <td>&quot;ORDER&quot; &quot;BY&quot; <a href="#sp-grammar-production-OrderCondition">OrderCondition</a><code>+</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-OrderCondition">
+      <td>[24]</td>
+      <td><code>OrderCondition</code></td>
+      <td>::=</td>
+      <td><code>(</code> <code>(</code> &quot;ASC&quot; <code>|</code> &quot;DESC&quot;<code>)</code>  <a href="#sp-grammar-production-BrackettedExpression">BrackettedExpression</a><code>)</code>  <code>|</code> <code>(</code> <a href="#sp-grammar-production-Constraint">Constraint</a> <code>|</code> <a href="#sp-grammar-production-Var">Var</a><code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-LimitOffsetClauses">
+      <td>[25]</td>
+      <td><code>LimitOffsetClauses</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#sp-grammar-production-LimitClause">LimitClause</a> <a href="#sp-grammar-production-OffsetClause">OffsetClause</a><code>?</code> <code>)</code>  <code>|</code> <code>(</code> <a href="#sp-grammar-production-OffsetClause">OffsetClause</a> <a href="#sp-grammar-production-LimitClause">LimitClause</a><code>?</code> <code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-LimitClause">
+      <td>[26]</td>
+      <td><code>LimitClause</code></td>
+      <td>::=</td>
+      <td>&quot;LIMIT&quot; <a href="#sp-grammar-production-INTEGER">INTEGER</a></td>
+    </tr>
+    <tr id="sp-grammar-production-OffsetClause">
+      <td>[27]</td>
+      <td><code>OffsetClause</code></td>
+      <td>::=</td>
+      <td>&quot;OFFSET&quot; <a href="#sp-grammar-production-INTEGER">INTEGER</a></td>
+    </tr>
+    <tr id="sp-grammar-production-ValuesClause">
+      <td>[28]</td>
+      <td><code>ValuesClause</code></td>
+      <td>::=</td>
+      <td><code>(</code> &quot;VALUES&quot; <a href="#sp-grammar-production-DataBlock">DataBlock</a><code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-Update">
+      <td>[29]</td>
+      <td><code>Update</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Prologue">Prologue</a> <code>(</code> <a href="#sp-grammar-production-Update1">Update1</a> <code>(</code> "<code class="grammar-literal">;</code>" <a href="#sp-grammar-production-Update">Update</a><code>)</code> <code>?</code> <code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-Update1">
+      <td>[30]</td>
+      <td><code>Update1</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Load">Load</a> <code>|</code> <a href="#sp-grammar-production-Clear">Clear</a> <code>|</code> <a href="#sp-grammar-production-Drop">Drop</a> <code>|</code> <a href="#sp-grammar-production-Add">Add</a> <code>|</code> <a href="#sp-grammar-production-Move">Move</a> <code>|</code> <a href="#sp-grammar-production-Copy">Copy</a> <code>|</code> <a href="#sp-grammar-production-Create">Create</a> <code>|</code> <a href="#sp-grammar-production-InsertData">InsertData</a> <code>|</code> <a href="#sp-grammar-production-DeleteData">DeleteData</a> <code>|</code> <a href="#sp-grammar-production-DeleteWhere">DeleteWhere</a> <code>|</code> <a href="#sp-grammar-production-Modify">Modify</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Load">
+      <td>[31]</td>
+      <td><code>Load</code></td>
+      <td>::=</td>
+      <td>&quot;LOAD&quot; &quot;SILENT&quot;<code>?</code>  <a href="#sp-grammar-production-iri">iri</a> <code>(</code> &quot;INTO&quot; <a href="#sp-grammar-production-GraphRef">GraphRef</a><code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-Clear">
+      <td>[32]</td>
+      <td><code>Clear</code></td>
+      <td>::=</td>
+      <td>&quot;CLEAR&quot; &quot;SILENT&quot;<code>?</code>  <a href="#sp-grammar-production-GraphRefAll">GraphRefAll</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Drop">
+      <td>[33]</td>
+      <td><code>Drop</code></td>
+      <td>::=</td>
+      <td>&quot;DROP&quot; &quot;SILENT&quot;<code>?</code>  <a href="#sp-grammar-production-GraphRefAll">GraphRefAll</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Create">
+      <td>[34]</td>
+      <td><code>Create</code></td>
+      <td>::=</td>
+      <td>&quot;CREATE&quot; &quot;SILENT&quot;<code>?</code>  <a href="#sp-grammar-production-GraphRef">GraphRef</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Add">
+      <td>[35]</td>
+      <td><code>Add</code></td>
+      <td>::=</td>
+      <td>&quot;ADD&quot; &quot;SILENT&quot;<code>?</code>  <a href="#sp-grammar-production-GraphOrDefault">GraphOrDefault</a> &quot;TO&quot; <a href="#sp-grammar-production-GraphOrDefault">GraphOrDefault</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Move">
+      <td>[36]</td>
+      <td><code>Move</code></td>
+      <td>::=</td>
+      <td>&quot;MOVE&quot; &quot;SILENT&quot;<code>?</code>  <a href="#sp-grammar-production-GraphOrDefault">GraphOrDefault</a> &quot;TO&quot; <a href="#sp-grammar-production-GraphOrDefault">GraphOrDefault</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Copy">
+      <td>[37]</td>
+      <td><code>Copy</code></td>
+      <td>::=</td>
+      <td>&quot;COPY&quot; &quot;SILENT&quot;<code>?</code>  <a href="#sp-grammar-production-GraphOrDefault">GraphOrDefault</a> &quot;TO&quot; <a href="#sp-grammar-production-GraphOrDefault">GraphOrDefault</a></td>
+    </tr>
+    <tr id="sp-grammar-production-InsertData">
+      <td>[38]</td>
+      <td><code>InsertData</code></td>
+      <td>::=</td>
+      <td>&quot;INSERT DATA&quot; <a href="#sp-grammar-production-QuadData">QuadData</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DeleteData">
+      <td>[39]</td>
+      <td><code>DeleteData</code></td>
+      <td>::=</td>
+      <td>&quot;DELETE DATA&quot; <a href="#sp-grammar-production-QuadData">QuadData</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DeleteWhere">
+      <td>[40]</td>
+      <td><code>DeleteWhere</code></td>
+      <td>::=</td>
+      <td>&quot;DELETE WHERE&quot; <a href="#sp-grammar-production-QuadPattern">QuadPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Modify">
+      <td>[41]</td>
+      <td><code>Modify</code></td>
+      <td>::=</td>
+      <td><code>(</code> &quot;WITH&quot; <a href="#sp-grammar-production-iri">iri</a><code>)</code> <code>?</code>  <code>(</code> <code>(</code> <a href="#sp-grammar-production-DeleteClause">DeleteClause</a> <a href="#sp-grammar-production-InsertClause">InsertClause</a><code>?</code> <code>)</code>  <code>|</code> <a href="#sp-grammar-production-InsertClause">InsertClause</a><code>)</code>  <a href="#sp-grammar-production-UsingClause">UsingClause</a><code>*</code>  &quot;WHERE&quot; <a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DeleteClause">
+      <td>[42]</td>
+      <td><code>DeleteClause</code></td>
+      <td>::=</td>
+      <td>&quot;DELETE&quot; <a href="#sp-grammar-production-QuadPattern">QuadPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-InsertClause">
+      <td>[43]</td>
+      <td><code>InsertClause</code></td>
+      <td>::=</td>
+      <td>&quot;INSERT&quot; <a href="#sp-grammar-production-QuadPattern">QuadPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-UsingClause">
+      <td>[44]</td>
+      <td><code>UsingClause</code></td>
+      <td>::=</td>
+      <td>&quot;USING&quot; <code>(</code> <a href="#sp-grammar-production-iri">iri</a> <code>|</code> <code>(</code> &quot;NAMED&quot; <a href="#sp-grammar-production-iri">iri</a><code>)</code> <code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-GraphOrDefault">
+      <td>[45]</td>
+      <td><code>GraphOrDefault</code></td>
+      <td>::=</td>
+      <td>&quot;DEFAULT&quot; <code>|</code> <code>(</code> &quot;GRAPH&quot;<code>?</code>  <a href="#sp-grammar-production-iri">iri</a><code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-GraphRef">
+      <td>[46]</td>
+      <td><code>GraphRef</code></td>
+      <td>::=</td>
+      <td>&quot;GRAPH&quot; <a href="#sp-grammar-production-iri">iri</a></td>
+    </tr>
+    <tr id="sp-grammar-production-GraphRefAll">
+      <td>[47]</td>
+      <td><code>GraphRefAll</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-GraphRef">GraphRef</a> <code>|</code> &quot;DEFAULT&quot; <code>|</code> &quot;NAMED&quot; <code>|</code> &quot;ALL&quot;</td>
+    </tr>
+    <tr id="sp-grammar-production-QuadPattern">
+      <td>[48]</td>
+      <td><code>QuadPattern</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">{</code>" <a href="#sp-grammar-production-Quads">Quads</a> "<code class="grammar-literal">}</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-QuadData">
+      <td>[49]</td>
+      <td><code>QuadData</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">{</code>" <a href="#sp-grammar-production-Quads">Quads</a> "<code class="grammar-literal">}</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-Quads">
+      <td>[50]</td>
+      <td><code>Quads</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-TriplesTemplate">TriplesTemplate</a><code>?</code>  <code>(</code> <a href="#sp-grammar-production-QuadsNotTriples">QuadsNotTriples</a> "<code class="grammar-literal">.</code>"<code>?</code>  <a href="#sp-grammar-production-TriplesTemplate">TriplesTemplate</a><code>?</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-QuadsNotTriples">
+      <td>[51]</td>
+      <td><code>QuadsNotTriples</code></td>
+      <td>::=</td>
+      <td>&quot;GRAPH&quot; <a href="#sp-grammar-production-VarOrIri">VarOrIri</a> "<code class="grammar-literal">{</code>" <a href="#sp-grammar-production-TriplesTemplate">TriplesTemplate</a><code>?</code>  "<code class="grammar-literal">}</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-TriplesTemplate">
+      <td>[52]</td>
+      <td><code>TriplesTemplate</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-TriplesSameSubject">TriplesSameSubject</a> <code>(</code> "<code class="grammar-literal">.</code>" <a href="#sp-grammar-production-TriplesTemplate">TriplesTemplate</a><code>?</code> <code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-GroupGraphPattern">
+      <td>[53]</td>
+      <td><code>GroupGraphPattern</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">{</code>" <code>(</code> <a href="#sp-grammar-production-SubSelect">SubSelect</a> <code>|</code> <a href="#sp-grammar-production-GroupGraphPatternSub">GroupGraphPatternSub</a><code>)</code>  "<code class="grammar-literal">}</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-GroupGraphPatternSub">
+      <td>[54]</td>
+      <td><code>GroupGraphPatternSub</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-TriplesBlock">TriplesBlock</a><code>?</code>  <code>(</code> <a href="#sp-grammar-production-GraphPatternNotTriples">GraphPatternNotTriples</a> "<code class="grammar-literal">.</code>"<code>?</code>  <a href="#sp-grammar-production-TriplesBlock">TriplesBlock</a><code>?</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-TriplesBlock">
+      <td>[55]</td>
+      <td><code>TriplesBlock</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-TriplesSameSubjectPath">TriplesSameSubjectPath</a> <code>(</code> "<code class="grammar-literal">.</code>" <a href="#sp-grammar-production-TriplesBlock">TriplesBlock</a><code>?</code> <code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-GraphPatternNotTriples">
+      <td>[56]</td>
+      <td><code>GraphPatternNotTriples</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-GroupOrUnionGraphPattern">GroupOrUnionGraphPattern</a> <code>|</code> <a href="#sp-grammar-production-OptionalGraphPattern">OptionalGraphPattern</a> <code>|</code> <a href="#sp-grammar-production-MinusGraphPattern">MinusGraphPattern</a> <code>|</code> <a href="#sp-grammar-production-GraphGraphPattern">GraphGraphPattern</a> <code>|</code> <a href="#sp-grammar-production-ServiceGraphPattern">ServiceGraphPattern</a> <code>|</code> <a href="#sp-grammar-production-Filter">Filter</a> <code>|</code> <a href="#sp-grammar-production-Bind">Bind</a> <code>|</code> <a href="#sp-grammar-production-InlineData">InlineData</a></td>
+    </tr>
+    <tr id="sp-grammar-production-OptionalGraphPattern">
+      <td>[57]</td>
+      <td><code>OptionalGraphPattern</code></td>
+      <td>::=</td>
+      <td>&quot;OPTIONAL&quot; <a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-GraphGraphPattern">
+      <td>[58]</td>
+      <td><code>GraphGraphPattern</code></td>
+      <td>::=</td>
+      <td>&quot;GRAPH&quot; <a href="#sp-grammar-production-VarOrIri">VarOrIri</a> <a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-ServiceGraphPattern">
+      <td>[59]</td>
+      <td><code>ServiceGraphPattern</code></td>
+      <td>::=</td>
+      <td>&quot;SERVICE&quot; &quot;SILENT&quot;<code>?</code>  <a href="#sp-grammar-production-VarOrIri">VarOrIri</a> <a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Bind">
+      <td>[60]</td>
+      <td><code>Bind</code></td>
+      <td>::=</td>
+      <td>&quot;BIND&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> &quot;AS&quot; <a href="#sp-grammar-production-Var">Var</a> "<code class="grammar-literal">)</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-InlineData">
+      <td>[61]</td>
+      <td><code>InlineData</code></td>
+      <td>::=</td>
+      <td>&quot;VALUES&quot; <a href="#sp-grammar-production-DataBlock">DataBlock</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DataBlock">
+      <td>[62]</td>
+      <td><code>DataBlock</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-InlineDataOneVar">InlineDataOneVar</a> <code>|</code> <a href="#sp-grammar-production-InlineDataFull">InlineDataFull</a></td>
+    </tr>
+    <tr id="sp-grammar-production-InlineDataOneVar">
+      <td>[63]</td>
+      <td><code>InlineDataOneVar</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Var">Var</a> "<code class="grammar-literal">{</code>" <a href="#sp-grammar-production-DataBlockValue">DataBlockValue</a><code>*</code>  "<code class="grammar-literal">}</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-InlineDataFull">
+      <td>[64]</td>
+      <td><code>InlineDataFull</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#sp-grammar-production-NIL">NIL</a> <code>|</code> <code>(</code> "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Var">Var</a><code>*</code>  "<code class="grammar-literal">)</code>"<code>)</code> <code>)</code>  "<code class="grammar-literal">{</code>" <code>(</code> <code>(</code> "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-DataBlockValue">DataBlockValue</a><code>*</code>  "<code class="grammar-literal">)</code>"<code>)</code>  <code>|</code> <a href="#sp-grammar-production-NIL">NIL</a><code>)</code> <code>*</code>  "<code class="grammar-literal">}</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-DataBlockValue">
+      <td>[65]</td>
+      <td><code>DataBlockValue</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-QuotedTriple">QuotedTriple</a> <code>|</code> <a href="#sp-grammar-production-iri">iri</a> <code>|</code> <a href="#sp-grammar-production-RDFLiteral">RDFLiteral</a> <code>|</code> <a href="#sp-grammar-production-NumericLiteral">NumericLiteral</a> <code>|</code> <a href="#sp-grammar-production-BooleanLiteral">BooleanLiteral</a> <code>|</code> &quot;UNDEF&quot;</td>
+    </tr>
+    <tr id="sp-grammar-production-MinusGraphPattern">
+      <td>[66]</td>
+      <td><code>MinusGraphPattern</code></td>
+      <td>::=</td>
+      <td>&quot;MINUS&quot; <a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-GroupOrUnionGraphPattern">
+      <td>[67]</td>
+      <td><code>GroupOrUnionGraphPattern</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a> <code>(</code> &quot;UNION&quot; <a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a><code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-Filter">
+      <td>[68]</td>
+      <td><code>Filter</code></td>
+      <td>::=</td>
+      <td>&quot;FILTER&quot; <a href="#sp-grammar-production-Constraint">Constraint</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Constraint">
+      <td>[69]</td>
+      <td><code>Constraint</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-BrackettedExpression">BrackettedExpression</a> <code>|</code> <a href="#sp-grammar-production-BuiltInCall">BuiltInCall</a> <code>|</code> <a href="#sp-grammar-production-FunctionCall">FunctionCall</a></td>
+    </tr>
+    <tr id="sp-grammar-production-FunctionCall">
+      <td>[70]</td>
+      <td><code>FunctionCall</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-iri">iri</a> <a href="#sp-grammar-production-ArgList">ArgList</a></td>
+    </tr>
+    <tr id="sp-grammar-production-ArgList">
+      <td>[71]</td>
+      <td><code>ArgList</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-NIL">NIL</a> <code>|</code> <code>(</code> "<code class="grammar-literal">(</code>" &quot;DISTINCT&quot;<code>?</code>  <a href="#sp-grammar-production-Expression">Expression</a> <code>(</code> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a><code>)</code> <code>*</code>  "<code class="grammar-literal">)</code>"<code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-ExpressionList">
+      <td>[72]</td>
+      <td><code>ExpressionList</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-NIL">NIL</a> <code>|</code> <code>(</code> "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> <code>(</code> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a><code>)</code> <code>*</code>  "<code class="grammar-literal">)</code>"<code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-ConstructTemplate">
+      <td>[73]</td>
+      <td><code>ConstructTemplate</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">{</code>" <a href="#sp-grammar-production-ConstructTriples">ConstructTriples</a><code>?</code>  "<code class="grammar-literal">}</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-ConstructTriples">
+      <td>[74]</td>
+      <td><code>ConstructTriples</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-TriplesSameSubject">TriplesSameSubject</a> <code>(</code> "<code class="grammar-literal">.</code>" <a href="#sp-grammar-production-ConstructTriples">ConstructTriples</a><code>?</code> <code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-TriplesSameSubject">
+      <td>[75]</td>
+      <td><code>TriplesSameSubject</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#sp-grammar-production-VarOrTermOrQuotedTP">VarOrTermOrQuotedTP</a> <a href="#sp-grammar-production-PropertyListNotEmpty">PropertyListNotEmpty</a><code>)</code>  <code>|</code> <code>(</code> <a href="#sp-grammar-production-TriplesNode">TriplesNode</a> <a href="#sp-grammar-production-PropertyList">PropertyList</a><code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PropertyList">
+      <td>[76]</td>
+      <td><code>PropertyList</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PropertyListNotEmpty">PropertyListNotEmpty</a><code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PropertyListNotEmpty">
+      <td>[77]</td>
+      <td><code>PropertyListNotEmpty</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Verb">Verb</a> <a href="#sp-grammar-production-ObjectList">ObjectList</a> <code>(</code> "<code class="grammar-literal">;</code>" <code>(</code> <a href="#sp-grammar-production-Verb">Verb</a> <a href="#sp-grammar-production-ObjectList">ObjectList</a><code>)</code> <code>?</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-Verb">
+      <td>[78]</td>
+      <td><code>Verb</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-VarOrIri">VarOrIri</a> <code>|</code> "<code class="grammar-literal">a</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-ObjectList">
+      <td>[79]</td>
+      <td><code>ObjectList</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Object">Object</a> <code>(</code> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Object">Object</a><code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-Object">
+      <td>[80]</td>
+      <td><code>Object</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-GraphNode">GraphNode</a> <a href="#sp-grammar-production-AnnotationPattern">AnnotationPattern</a><code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-TriplesSameSubjectPath">
+      <td>[81]</td>
+      <td><code>TriplesSameSubjectPath</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#sp-grammar-production-VarOrTermOrQuotedTP">VarOrTermOrQuotedTP</a> <a href="#sp-grammar-production-PropertyListPathNotEmpty">PropertyListPathNotEmpty</a><code>)</code>  <code>|</code> <code>(</code> <a href="#sp-grammar-production-TriplesNodePath">TriplesNodePath</a> <a href="#sp-grammar-production-PropertyListPath">PropertyListPath</a><code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PropertyListPath">
+      <td>[82]</td>
+      <td><code>PropertyListPath</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PropertyListPathNotEmpty">PropertyListPathNotEmpty</a><code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PropertyListPathNotEmpty">
+      <td>[83]</td>
+      <td><code>PropertyListPathNotEmpty</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#sp-grammar-production-VerbPath">VerbPath</a> <code>|</code> <a href="#sp-grammar-production-VerbSimple">VerbSimple</a><code>)</code>  <a href="#sp-grammar-production-ObjectListPath">ObjectListPath</a> <code>(</code> "<code class="grammar-literal">;</code>" <code>(</code> <code>(</code> <a href="#sp-grammar-production-VerbPath">VerbPath</a> <code>|</code> <a href="#sp-grammar-production-VerbSimple">VerbSimple</a><code>)</code>  <a href="#sp-grammar-production-ObjectList">ObjectList</a><code>)</code> <code>?</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-VerbPath">
+      <td>[84]</td>
+      <td><code>VerbPath</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Path">Path</a></td>
+    </tr>
+    <tr id="sp-grammar-production-VerbSimple">
+      <td>[85]</td>
+      <td><code>VerbSimple</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Var">Var</a></td>
+    </tr>
+    <tr id="sp-grammar-production-ObjectListPath">
+      <td>[86]</td>
+      <td><code>ObjectListPath</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-ObjectPath">ObjectPath</a> <code>(</code> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-ObjectPath">ObjectPath</a><code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-ObjectPath">
+      <td>[87]</td>
+      <td><code>ObjectPath</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-GraphNodePath">GraphNodePath</a> <a href="#sp-grammar-production-AnnotationPatternPath">AnnotationPatternPath</a><code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-Path">
+      <td>[88]</td>
+      <td><code>Path</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PathAlternative">PathAlternative</a></td>
+    </tr>
+    <tr id="sp-grammar-production-PathAlternative">
+      <td>[89]</td>
+      <td><code>PathAlternative</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PathSequence">PathSequence</a> <code>(</code> "<code class="grammar-literal">|</code>" <a href="#sp-grammar-production-PathSequence">PathSequence</a><code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PathSequence">
+      <td>[90]</td>
+      <td><code>PathSequence</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PathEltOrInverse">PathEltOrInverse</a> <code>(</code> "<code class="grammar-literal">/</code>" <a href="#sp-grammar-production-PathEltOrInverse">PathEltOrInverse</a><code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PathElt">
+      <td>[91]</td>
+      <td><code>PathElt</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PathPrimary">PathPrimary</a> <a href="#sp-grammar-production-PathMod">PathMod</a><code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PathEltOrInverse">
+      <td>[92]</td>
+      <td><code>PathEltOrInverse</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PathElt">PathElt</a> <code>|</code> <code>(</code> "<code class="grammar-literal">^</code>" <a href="#sp-grammar-production-PathElt">PathElt</a><code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PathMod">
+      <td>[93]</td>
+      <td><code>PathMod</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">*</code>" <code>|</code> "<code class="grammar-literal">?</code>" <code>|</code> "<code class="grammar-literal">+</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-PathPrimary">
+      <td>[94]</td>
+      <td><code>PathPrimary</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-iri">iri</a> <code>|</code> "<code class="grammar-literal">a</code>" <code>|</code> <code>(</code> "<code class="grammar-literal">!</code>" <a href="#sp-grammar-production-PathNegatedPropertySet">PathNegatedPropertySet</a><code>)</code>  <code>|</code> <code>(</code> "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Path">Path</a> "<code class="grammar-literal">)</code>"<code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PathNegatedPropertySet">
+      <td>[95]</td>
+      <td><code>PathNegatedPropertySet</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PathOneInPropertySet">PathOneInPropertySet</a> <code>|</code> <code>(</code> "<code class="grammar-literal">(</code>" <code>(</code> <a href="#sp-grammar-production-PathOneInPropertySet">PathOneInPropertySet</a> <code>(</code> "<code class="grammar-literal">|</code>" <a href="#sp-grammar-production-PathOneInPropertySet">PathOneInPropertySet</a><code>)</code> <code>*</code> <code>)</code> <code>?</code>  "<code class="grammar-literal">)</code>"<code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PathOneInPropertySet">
+      <td>[96]</td>
+      <td><code>PathOneInPropertySet</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-iri">iri</a> <code>|</code> "<code class="grammar-literal">a</code>" <code>|</code> <code>(</code> "<code class="grammar-literal">^</code>" <code>(</code> <a href="#sp-grammar-production-iri">iri</a> <code>|</code> "<code class="grammar-literal">a</code>"<code>)</code> <code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-Integer">
+      <td>[97]</td>
+      <td><code>Integer</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-INTEGER">INTEGER</a></td>
+    </tr>
+    <tr id="sp-grammar-production-TriplesNode">
+      <td>[98]</td>
+      <td><code>TriplesNode</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Collection">Collection</a> <code>|</code> <a href="#sp-grammar-production-BlankNodePropertyList">BlankNodePropertyList</a></td>
+    </tr>
+    <tr id="sp-grammar-production-BlankNodePropertyList">
+      <td>[99]</td>
+      <td><code>BlankNodePropertyList</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">[</code>" <a href="#sp-grammar-production-PropertyListNotEmpty">PropertyListNotEmpty</a> "<code class="grammar-literal">]</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-TriplesNodePath">
+      <td>[100]</td>
+      <td><code>TriplesNodePath</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-CollectionPath">CollectionPath</a> <code>|</code> <a href="#sp-grammar-production-BlankNodePropertyListPath">BlankNodePropertyListPath</a></td>
+    </tr>
+    <tr id="sp-grammar-production-BlankNodePropertyListPath">
+      <td>[101]</td>
+      <td><code>BlankNodePropertyListPath</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">[</code>" <a href="#sp-grammar-production-PropertyListPathNotEmpty">PropertyListPathNotEmpty</a> "<code class="grammar-literal">]</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-Collection">
+      <td>[102]</td>
+      <td><code>Collection</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-GraphNode">GraphNode</a><code>+</code>  "<code class="grammar-literal">)</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-CollectionPath">
+      <td>[103]</td>
+      <td><code>CollectionPath</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-GraphNodePath">GraphNodePath</a><code>+</code>  "<code class="grammar-literal">)</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-GraphNode">
+      <td>[104]</td>
+      <td><code>GraphNode</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-VarOrTermOrQuotedTP">VarOrTermOrQuotedTP</a> <code>|</code> <a href="#sp-grammar-production-TriplesNode">TriplesNode</a></td>
+    </tr>
+    <tr id="sp-grammar-production-GraphNodePath">
+      <td>[105]</td>
+      <td><code>GraphNodePath</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-VarOrTermOrQuotedTP">VarOrTermOrQuotedTP</a> <code>|</code> <a href="#sp-grammar-production-TriplesNodePath">TriplesNodePath</a></td>
+    </tr>
+    <tr id="sp-grammar-production-VarOrTerm">
+      <td>[106]</td>
+      <td><code>VarOrTerm</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Var">Var</a> <code>|</code> <a href="#sp-grammar-production-GraphTerm">GraphTerm</a></td>
+    </tr>
+    <tr id="sp-grammar-production-VarOrIri">
+      <td>[107]</td>
+      <td><code>VarOrIri</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Var">Var</a> <code>|</code> <a href="#sp-grammar-production-iri">iri</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Var">
+      <td>[108]</td>
+      <td><code>Var</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-VAR1">VAR1</a> <code>|</code> <a href="#sp-grammar-production-VAR2">VAR2</a></td>
+    </tr>
+    <tr id="sp-grammar-production-GraphTerm">
+      <td>[109]</td>
+      <td><code>GraphTerm</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-iri">iri</a> <code>|</code> <a href="#sp-grammar-production-RDFLiteral">RDFLiteral</a> <code>|</code> <a href="#sp-grammar-production-NumericLiteral">NumericLiteral</a> <code>|</code> <a href="#sp-grammar-production-BooleanLiteral">BooleanLiteral</a> <code>|</code> <a href="#sp-grammar-production-BlankNode">BlankNode</a> <code>|</code> <a href="#sp-grammar-production-NIL">NIL</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Expression">
+      <td>[110]</td>
+      <td><code>Expression</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-ConditionalOrExpression">ConditionalOrExpression</a></td>
+    </tr>
+    <tr id="sp-grammar-production-ConditionalOrExpression">
+      <td>[111]</td>
+      <td><code>ConditionalOrExpression</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-ConditionalAndExpression">ConditionalAndExpression</a> <code>(</code> &quot;||&quot; <a href="#sp-grammar-production-ConditionalAndExpression">ConditionalAndExpression</a><code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-ConditionalAndExpression">
+      <td>[112]</td>
+      <td><code>ConditionalAndExpression</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-ValueLogical">ValueLogical</a> <code>(</code> &quot;&amp;&amp;&quot; <a href="#sp-grammar-production-ValueLogical">ValueLogical</a><code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-ValueLogical">
+      <td>[113]</td>
+      <td><code>ValueLogical</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-RelationalExpression">RelationalExpression</a></td>
+    </tr>
+    <tr id="sp-grammar-production-RelationalExpression">
+      <td>[114]</td>
+      <td><code>RelationalExpression</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-NumericExpression">NumericExpression</a></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td></td>
+      <td><code>(</code> <code>(</code> "<code class="grammar-literal">=</code>" <a href="#sp-grammar-production-NumericExpression">NumericExpression</a><code>)</code><code>(</code> &quot;!=&quot; <a href="#sp-grammar-production-NumericExpression">NumericExpression</a><code>)</code>  <code>|</code> <code>(</code> "<code class="grammar-literal">&lt;</code>" <a href="#sp-grammar-production-NumericExpression">NumericExpression</a><code>)</code>  <code>|</code> <code>(</code> "<code class="grammar-literal">&gt;</code>" <a href="#sp-grammar-production-NumericExpression">NumericExpression</a><code>)</code>  <code>|</code> <code>(</code> &quot;&lt;=&quot; <a href="#sp-grammar-production-NumericExpression">NumericExpression</a><code>)</code>  <code>|</code> <code>(</code> &quot;&gt;=&quot; <a href="#sp-grammar-production-NumericExpression">NumericExpression</a><code>)</code>  <code>|</code> <code>(</code> &quot;IN&quot; <a href="#sp-grammar-production-ExpressionList">ExpressionList</a><code>)</code>  <code>|</code> <code>(</code> &quot;NOT&quot; &quot;IN&quot; <a href="#sp-grammar-production-ExpressionList">ExpressionList</a><code>)</code> <code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-NumericExpression">
+      <td>[115]</td>
+      <td><code>NumericExpression</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-AdditiveExpression">AdditiveExpression</a></td>
+    </tr>
+    <tr id="sp-grammar-production-AdditiveExpression">
+      <td>[116]</td>
+      <td><code>AdditiveExpression</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-MultiplicativeExpression">MultiplicativeExpression</a></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td></td>
+      <td><code>(</code> <code>(</code> "<code class="grammar-literal">+</code>" <a href="#sp-grammar-production-MultiplicativeExpression">MultiplicativeExpression</a><code>)</code><code>(</code> "<code class="grammar-literal">-</code>" <a href="#sp-grammar-production-MultiplicativeExpression">MultiplicativeExpression</a><code>)</code>  <code>|</code> <code>(</code> <code>(</code> <a href="#sp-grammar-production-NumericLiteralPositive">NumericLiteralPositive</a> <code>|</code> <a href="#sp-grammar-production-NumericLiteralNegative">NumericLiteralNegative</a><code>)</code>  <code>(</code> <code>(</code> "<code class="grammar-literal">*</code>" <a href="#sp-grammar-production-UnaryExpression">UnaryExpression</a><code>)</code>  <code>|</code> <code>(</code> "<code class="grammar-literal">/</code>" <a href="#sp-grammar-production-UnaryExpression">UnaryExpression</a><code>)</code> <code>)</code> <code>?</code> <code>)</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-MultiplicativeExpression">
+      <td>[117]</td>
+      <td><code>MultiplicativeExpression</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-UnaryExpression">UnaryExpression</a> <code>(</code> <code>(</code> "<code class="grammar-literal">*</code>" <a href="#sp-grammar-production-UnaryExpression">UnaryExpression</a><code>)</code>  <code>|</code> <code>(</code> "<code class="grammar-literal">/</code>" <a href="#sp-grammar-production-UnaryExpression">UnaryExpression</a><code>)</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-UnaryExpression">
+      <td>[118]</td>
+      <td><code>UnaryExpression</code></td>
+      <td>::=</td>
+      <td><code>(</code> "<code class="grammar-literal">!</code>" <a href="#sp-grammar-production-PrimaryExpression">PrimaryExpression</a><code>)</code>  <code>|</code> <code>(</code> "<code class="grammar-literal">+</code>" <a href="#sp-grammar-production-PrimaryExpression">PrimaryExpression</a><code>)</code>  <code>|</code> <code>(</code> "<code class="grammar-literal">-</code>" <a href="#sp-grammar-production-PrimaryExpression">PrimaryExpression</a><code>)</code>  <code>|</code> <a href="#sp-grammar-production-PrimaryExpression">PrimaryExpression</a></td>
+    </tr>
+    <tr id="sp-grammar-production-PrimaryExpression">
+      <td>[119]</td>
+      <td><code>PrimaryExpression</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-BrackettedExpression">BrackettedExpression</a> <code>|</code> <a href="#sp-grammar-production-BuiltInCall">BuiltInCall</a> <code>|</code> <a href="#sp-grammar-production-iriOrFunction">iriOrFunction</a> <code>|</code> <a href="#sp-grammar-production-RDFLiteral">RDFLiteral</a> <code>|</code> <a href="#sp-grammar-production-NumericLiteral">NumericLiteral</a> <code>|</code> <a href="#sp-grammar-production-BooleanLiteral">BooleanLiteral</a> <code>|</code> <a href="#sp-grammar-production-Var">Var</a> <code>|</code> <a href="#sp-grammar-production-ExprQuotedTP">ExprQuotedTP</a></td>
+    </tr>
+    <tr id="sp-grammar-production-BrackettedExpression">
+      <td>[120]</td>
+      <td><code>BrackettedExpression</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-BuiltInCall">
+      <td>[121]</td>
+      <td><code>BuiltInCall</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Aggregate">Aggregate</a></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;STR&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;LANG&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;LANGMATCHES&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;DATATYPE&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;BOUND&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Var">Var</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;IRI&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;URI&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;BNODE&quot; <code>(</code> <code>(</code> "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code>  <code>|</code> <a href="#sp-grammar-production-NIL">NIL</a><code>)</code> <code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;RAND&quot; <a href="#sp-grammar-production-NIL">NIL</a><code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;ABS&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;CEIL&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;FLOOR&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;ROUND&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;CONCAT&quot; <a href="#sp-grammar-production-ExpressionList">ExpressionList</a><code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><a href="#sp-grammar-production-SubstringExpression">SubstringExpression</a></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;STRLEN&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><a href="#sp-grammar-production-StrReplaceExpression">StrReplaceExpression</a></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;UCASE&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;LCASE&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;ENCODE_FOR_URI&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;CONTAINS&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;STRSTARTS&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;STRENDS&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;STRBEFORE&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;STRAFTER&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;YEAR&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;MONTH&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;DAY&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;HOURS&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;MINUTES&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;SECONDS&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;TIMEZONE&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;TZ&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;NOW&quot; <a href="#sp-grammar-production-NIL">NIL</a><code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;UUID&quot; <a href="#sp-grammar-production-NIL">NIL</a><code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;STRUUID&quot; <a href="#sp-grammar-production-NIL">NIL</a><code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;MD5&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;SHA1&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;SHA224&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;SHA256&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;SHA384&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;SHA512&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;COALESCE&quot; <a href="#sp-grammar-production-ExpressionList">ExpressionList</a><code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;IF&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;STRLANG&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;STRDT&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;sameTerm&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;isIRI&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;isURI&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;isBLANK&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;isLITERAL&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;isNUMERIC&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;TRIPLE&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;SUBJECT&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;PREDICATE&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;OBJECT&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;isTRIPLE&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><a href="#sp-grammar-production-RegexExpression">RegexExpression</a></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><a href="#sp-grammar-production-ExistsFunc">ExistsFunc</a></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><a href="#sp-grammar-production-NotExistsFunc">NotExistsFunc</a></td>
+    </tr>
+    <tr id="sp-grammar-production-RegexExpression">
+      <td>[122]</td>
+      <td><code>RegexExpression</code></td>
+      <td>::=</td>
+      <td>&quot;REGEX&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> <code>(</code> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a><code>)</code> <code>?</code>  "<code class="grammar-literal">)</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-SubstringExpression">
+      <td>[123]</td>
+      <td><code>SubstringExpression</code></td>
+      <td>::=</td>
+      <td>&quot;SUBSTR&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> <code>(</code> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a><code>)</code> <code>?</code>  "<code class="grammar-literal">)</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-StrReplaceExpression">
+      <td>[124]</td>
+      <td><code>StrReplaceExpression</code></td>
+      <td>::=</td>
+      <td>&quot;REPLACE&quot; "<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a> <code>(</code> "<code class="grammar-literal">,</code>" <a href="#sp-grammar-production-Expression">Expression</a><code>)</code> <code>?</code>  "<code class="grammar-literal">)</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-ExistsFunc">
+      <td>[125]</td>
+      <td><code>ExistsFunc</code></td>
+      <td>::=</td>
+      <td>&quot;EXISTS&quot; <a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-NotExistsFunc">
+      <td>[126]</td>
+      <td><code>NotExistsFunc</code></td>
+      <td>::=</td>
+      <td>&quot;NOT&quot; &quot;EXISTS&quot; <a href="#sp-grammar-production-GroupGraphPattern">GroupGraphPattern</a></td>
+    </tr>
+    <tr id="sp-grammar-production-Aggregate">
+      <td>[127]</td>
+      <td><code>Aggregate</code></td>
+      <td>::=</td>
+      <td><code>(</code> &quot;COUNT&quot; "<code class="grammar-literal">(</code>" &quot;DISTINCT&quot;<code>?</code>  <code>(</code> "<code class="grammar-literal">*</code>"<a href="#sp-grammar-production-Expression">Expression</a><code>)</code>  "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;SUM&quot; "<code class="grammar-literal">(</code>" &quot;DISTINCT&quot;<code>?</code>  <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;MIN&quot; "<code class="grammar-literal">(</code>" &quot;DISTINCT&quot;<code>?</code>  <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;MAX&quot; "<code class="grammar-literal">(</code>" &quot;DISTINCT&quot;<code>?</code>  <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;AVG&quot; "<code class="grammar-literal">(</code>" &quot;DISTINCT&quot;<code>?</code>  <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;SAMPLE&quot; "<code class="grammar-literal">(</code>" &quot;DISTINCT&quot;<code>?</code>  <a href="#sp-grammar-production-Expression">Expression</a> "<code class="grammar-literal">)</code>"<code>)</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>(</code> &quot;GROUP_CONCAT&quot; "<code class="grammar-literal">(</code>" &quot;DISTINCT&quot;<code>?</code>  <a href="#sp-grammar-production-Expression">Expression</a> <code>(</code> "<code class="grammar-literal">;</code>" &quot;SEPARATOR&quot; "<code class="grammar-literal">=</code>" <a href="#sp-grammar-production-String">String</a><code>)</code> <code>?</code>  "<code class="grammar-literal">)</code>"<code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-iriOrFunction">
+      <td>[128]</td>
+      <td><code>iriOrFunction</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-iri">iri</a> <a href="#sp-grammar-production-ArgList">ArgList</a><code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-RDFLiteral">
+      <td>[129]</td>
+      <td><code>RDFLiteral</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-String">String</a> <code>(</code> <a href="#sp-grammar-production-LANGTAG">LANGTAG</a> <code>|</code> <code>(</code> &quot;^^&quot; <a href="#sp-grammar-production-iri">iri</a><code>)</code> <code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-NumericLiteral">
+      <td>[130]</td>
+      <td><code>NumericLiteral</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-NumericLiteralUnsigned">NumericLiteralUnsigned</a> <code>|</code> <a href="#sp-grammar-production-NumericLiteralPositive">NumericLiteralPositive</a> <code>|</code> <a href="#sp-grammar-production-NumericLiteralNegative">NumericLiteralNegative</a></td>
+    </tr>
+    <tr id="sp-grammar-production-NumericLiteralUnsigned">
+      <td>[131]</td>
+      <td><code>NumericLiteralUnsigned</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-INTEGER">INTEGER</a> <code>|</code> <a href="#sp-grammar-production-DECIMAL">DECIMAL</a> <code>|</code> <a href="#sp-grammar-production-DOUBLE">DOUBLE</a></td>
+    </tr>
+    <tr id="sp-grammar-production-NumericLiteralPositive">
+      <td>[132]</td>
+      <td><code>NumericLiteralPositive</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-INTEGER_POSITIVE">INTEGER_POSITIVE</a> <code>|</code> <a href="#sp-grammar-production-DECIMAL_POSITIVE">DECIMAL_POSITIVE</a> <code>|</code> <a href="#sp-grammar-production-DOUBLE_POSITIVE">DOUBLE_POSITIVE</a></td>
+    </tr>
+    <tr id="sp-grammar-production-NumericLiteralNegative">
+      <td>[133]</td>
+      <td><code>NumericLiteralNegative</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-INTEGER_NEGATIVE">INTEGER_NEGATIVE</a> <code>|</code> <a href="#sp-grammar-production-DECIMAL_NEGATIVE">DECIMAL_NEGATIVE</a> <code>|</code> <a href="#sp-grammar-production-DOUBLE_NEGATIVE">DOUBLE_NEGATIVE</a></td>
+    </tr>
+    <tr id="sp-grammar-production-BooleanLiteral">
+      <td>[134]</td>
+      <td><code>BooleanLiteral</code></td>
+      <td>::=</td>
+      <td>&quot;true&quot; <code>|</code> &quot;false&quot;</td>
+    </tr>
+    <tr id="sp-grammar-production-String">
+      <td>[135]</td>
+      <td><code>String</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-STRING_LITERAL1">STRING_LITERAL1</a> <code>|</code> <a href="#sp-grammar-production-STRING_LITERAL2">STRING_LITERAL2</a> <code>|</code> <a href="#sp-grammar-production-STRING_LITERAL_LONG1">STRING_LITERAL_LONG1</a> <code>|</code> <a href="#sp-grammar-production-STRING_LITERAL_LONG2">STRING_LITERAL_LONG2</a></td>
+    </tr>
+    <tr id="sp-grammar-production-iri">
+      <td>[136]</td>
+      <td><code>iri</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-IRIREF">IRIREF</a> <code>|</code> <a href="#sp-grammar-production-PrefixedName">PrefixedName</a></td>
+    </tr>
+    <tr id="sp-grammar-production-PrefixedName">
+      <td>[137]</td>
+      <td><code>PrefixedName</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PNAME_LN">PNAME_LN</a> <code>|</code> <a href="#sp-grammar-production-PNAME_NS">PNAME_NS</a></td>
+    </tr>
+    <tr id="sp-grammar-production-BlankNode">
+      <td>[138]</td>
+      <td><code>BlankNode</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-BLANK_NODE_LABEL">BLANK_NODE_LABEL</a> <code>|</code> <a href="#sp-grammar-production-ANON">ANON</a></td>
+    </tr>
+    <tr id="sp-grammar-production-QuotedTP">
+      <td>[174]</td>
+      <td><code>QuotedTP</code></td>
+      <td>::=</td>
+      <td>&quot;&lt;&lt;&quot; <a href="#sp-grammar-production-qtSubjectOrObject">qtSubjectOrObject</a> <a href="#sp-grammar-production-Verb">Verb</a> <a href="#sp-grammar-production-qtSubjectOrObject">qtSubjectOrObject</a> &quot;&gt;&gt;&quot;</td>
+    </tr>
+    <tr id="sp-grammar-production-QuotedTriple">
+      <td>[175]</td>
+      <td><code>QuotedTriple</code></td>
+      <td>::=</td>
+      <td>&quot;&lt;&lt;&quot; <a href="#sp-grammar-production-DataValueTerm">DataValueTerm</a> <code>(</code> <a href="#sp-grammar-production-iri">iri</a> <code>|</code> "<code class="grammar-literal">a</code>"<code>)</code>  <a href="#sp-grammar-production-DataValueTerm">DataValueTerm</a> &quot;&gt;&gt;&quot;</td>
+    </tr>
+    <tr id="sp-grammar-production-qtSubjectOrObject">
+      <td>[176]</td>
+      <td><code>qtSubjectOrObject</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Var">Var</a> <code>|</code> <a href="#sp-grammar-production-BlankNode">BlankNode</a> <code>|</code> <a href="#sp-grammar-production-iri">iri</a> <code>|</code> <a href="#sp-grammar-production-RDFLiteral">RDFLiteral</a> <code>|</code> <a href="#sp-grammar-production-NumericLiteral">NumericLiteral</a> <code>|</code> <a href="#sp-grammar-production-BooleanLiteral">BooleanLiteral</a> <code>|</code> <a href="#sp-grammar-production-QuotedTP">QuotedTP</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DataValueTerm">
+      <td>[177]</td>
+      <td><code>DataValueTerm</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-iri">iri</a> <code>|</code> <a href="#sp-grammar-production-RDFLiteral">RDFLiteral</a> <code>|</code> <a href="#sp-grammar-production-NumericLiteral">NumericLiteral</a> <code>|</code> <a href="#sp-grammar-production-BooleanLiteral">BooleanLiteral</a> <code>|</code> <a href="#sp-grammar-production-QuotedTriple">QuotedTriple</a></td>
+    </tr>
+    <tr id="sp-grammar-production-VarOrTermOrQuotedTP">
+      <td>[178]</td>
+      <td><code>VarOrTermOrQuotedTP</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-Var">Var</a> <code>|</code> <a href="#sp-grammar-production-GraphTerm">GraphTerm</a> <code>|</code> <a href="#sp-grammar-production-QuotedTP">QuotedTP</a></td>
+    </tr>
+    <tr id="sp-grammar-production-AnnotationPattern">
+      <td>[179]</td>
+      <td><code>AnnotationPattern</code></td>
+      <td>::=</td>
+      <td>&quot;{|&quot; <a href="#sp-grammar-production-PropertyListNotEmpty">PropertyListNotEmpty</a> &quot;|}&quot;</td>
+    </tr>
+    <tr id="sp-grammar-production-AnnotationPatternPath">
+      <td>[180]</td>
+      <td><code>AnnotationPatternPath</code></td>
+      <td>::=</td>
+      <td>&quot;{|&quot; <a href="#sp-grammar-production-PropertyListPathNotEmpty">PropertyListPathNotEmpty</a> &quot;|}&quot;</td>
+    </tr>
+    <tr id="sp-grammar-production-ExprQuotedTP">
+      <td>[181]</td>
+      <td><code>ExprQuotedTP</code></td>
+      <td>::=</td>
+      <td>&quot;&lt;&lt;&quot; <a href="#sp-grammar-production-ExprVarOrTerm">ExprVarOrTerm</a> <a href="#sp-grammar-production-Verb">Verb</a> <a href="#sp-grammar-production-ExprVarOrTerm">ExprVarOrTerm</a> &quot;&gt;&gt;&quot;</td>
+    </tr>
+    <tr id="sp-grammar-production-ExprVarOrTerm">
+      <td>[182]</td>
+      <td><code>ExprVarOrTerm</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-iri">iri</a> <code>|</code> <a href="#sp-grammar-production-RDFLiteral">RDFLiteral</a> <code>|</code> <a href="#sp-grammar-production-NumericLiteral">NumericLiteral</a> <code>|</code> <a href="#sp-grammar-production-BooleanLiteral">BooleanLiteral</a> <code>|</code> <a href="#sp-grammar-production-Var">Var</a> <code>|</code> <a href="#sp-grammar-production-ExprQuotedTP">ExprQuotedTP</a></td>
+    </tr>
+    <tr>
+      <td colspan=2>@terminals</td>
+      <td></td>
+      <td><strong># Productions for terminals</strong></td>
+    </tr>
+    <tr id="sp-grammar-production-IRIREF">
+      <td>[139]</td>
+      <td><code>IRIREF</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">&lt;</code>" <code>(</code> <code>[</code> <code class="grammar-literal">^&lt;&gt;&quot;{}|^`\</code><code>]</code>  <code>-</code> <code>[</code> <code class="grammar-char-escape"><abbr title="null">#x00</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="space">#x20</abbr></code><code>]</code> <code>)</code> <code>*</code>  "<code class="grammar-literal">&gt;</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-PNAME_NS">
+      <td>[140]</td>
+      <td><code>PNAME_NS</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PN_PREFIX">PN_PREFIX</a><code>?</code>  "<code class="grammar-literal">:</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-PNAME_LN">
+      <td>[141]</td>
+      <td><code>PNAME_LN</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PNAME_NS">PNAME_NS</a> <a href="#sp-grammar-production-PN_LOCAL">PN_LOCAL</a></td>
+    </tr>
+    <tr id="sp-grammar-production-BLANK_NODE_LABEL">
+      <td>[142]</td>
+      <td><code>BLANK_NODE_LABEL</code></td>
+      <td>::=</td>
+      <td>&quot;_:&quot; <code>(</code> <a href="#sp-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>)</code>  <code>(</code> <code>(</code> <a href="#sp-grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>"<code>)</code> <code>*</code>  <a href="#sp-grammar-production-PN_CHARS">PN_CHARS</a><code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-VAR1">
+      <td>[143]</td>
+      <td><code>VAR1</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">?</code>" <a href="#sp-grammar-production-VARNAME">VARNAME</a></td>
+    </tr>
+    <tr id="sp-grammar-production-VAR2">
+      <td>[144]</td>
+      <td><code>VAR2</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">$</code>" <a href="#sp-grammar-production-VARNAME">VARNAME</a></td>
+    </tr>
+    <tr id="sp-grammar-production-LANGTAG">
+      <td>[145]</td>
+      <td><code>LANGTAG</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">@</code>" <code>[</code> <code class="grammar-literal">a-zA-Z</code><code>]</code> <code>+</code>  <code>(</code> "<code class="grammar-literal">-</code>" <code>[</code> <code class="grammar-literal">a-zA-Z0-9</code><code>]</code> <code>+</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-INTEGER">
+      <td>[146]</td>
+      <td><code>INTEGER</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-DECIMAL">
+      <td>[147]</td>
+      <td><code>DECIMAL</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>*</code>  "<code class="grammar-literal">.</code>" <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-DOUBLE">
+      <td>[148]</td>
+      <td><code>DOUBLE</code></td>
+      <td>::=</td>
+      <td><code>(</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code>  "<code class="grammar-literal">.</code>" <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>*</code>  <a href="#sp-grammar-production-EXPONENT">EXPONENT</a><code>)</code>  <code>|</code> <code>(</code> "<code class="grammar-literal">.</code>" <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code>  <a href="#sp-grammar-production-EXPONENT">EXPONENT</a><code>)</code>  <code>|</code> <code>(</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code>  <a href="#sp-grammar-production-EXPONENT">EXPONENT</a><code>)</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-INTEGER_POSITIVE">
+      <td>[149]</td>
+      <td><code>INTEGER_POSITIVE</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">+</code>" <a href="#sp-grammar-production-INTEGER">INTEGER</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DECIMAL_POSITIVE">
+      <td>[150]</td>
+      <td><code>DECIMAL_POSITIVE</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">+</code>" <a href="#sp-grammar-production-DECIMAL">DECIMAL</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DOUBLE_POSITIVE">
+      <td>[151]</td>
+      <td><code>DOUBLE_POSITIVE</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">+</code>" <a href="#sp-grammar-production-DOUBLE">DOUBLE</a></td>
+    </tr>
+    <tr id="sp-grammar-production-INTEGER_NEGATIVE">
+      <td>[152]</td>
+      <td><code>INTEGER_NEGATIVE</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">-</code>" <a href="#sp-grammar-production-INTEGER">INTEGER</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DECIMAL_NEGATIVE">
+      <td>[153]</td>
+      <td><code>DECIMAL_NEGATIVE</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">-</code>" <a href="#sp-grammar-production-DECIMAL">DECIMAL</a></td>
+    </tr>
+    <tr id="sp-grammar-production-DOUBLE_NEGATIVE">
+      <td>[154]</td>
+      <td><code>DOUBLE_NEGATIVE</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">-</code>" <a href="#sp-grammar-production-DOUBLE">DOUBLE</a></td>
+    </tr>
+    <tr id="sp-grammar-production-EXPONENT">
+      <td>[155]</td>
+      <td><code>EXPONENT</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">eE</code><code>]</code>  <code>[</code> <code class="grammar-literal">+-</code><code>]</code> <code>?</code>  <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>+</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-STRING_LITERAL1">
+      <td>[156]</td>
+      <td><code>STRING_LITERAL1</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">&apos;</code>" <code>(</code> <code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape"><abbr title="ascii '&apos;'">#x27</abbr></code><code class="grammar-char-escape"><abbr title="ascii '\'">#x5C</abbr></code><code class="grammar-char-escape"><abbr title="new line">#x0A</abbr></code><code class="grammar-char-escape"><abbr title="carriage return">#x0D</abbr></code><code>]</code>  <code>|</code> <a href="#sp-grammar-production-ECHAR">ECHAR</a><code>)</code> <code>*</code>  "<code class="grammar-literal">&apos;</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-STRING_LITERAL2">
+      <td>[157]</td>
+      <td><code>STRING_LITERAL2</code></td>
+      <td>::=</td>
+      <td>'<code class="grammar-literal">&quot;</code>' <code>(</code> <code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape"><abbr title="quot">>&quot;</abbr></code><code class="grammar-char-escape"><abbr title="ascii '\'">#x5C</abbr></code><code class="grammar-char-escape"><abbr title="new line">#x0A</abbr></code><code class="grammar-char-escape"><abbr title="carriage return">#x0D</abbr></code><code>]</code>  <code>|</code> <a href="#sp-grammar-production-ECHAR">ECHAR</a><code>)</code> <code>*</code>  '<code class="grammar-literal">&quot;</code>'</td>
+    </tr>
+    <tr id="sp-grammar-production-STRING_LITERAL_LONG1">
+      <td>[158]</td>
+      <td><code>STRING_LITERAL_LONG1</code></td>
+      <td>::=</td>
+      <td>&quot;&apos;&apos;&apos;&quot; <code>(</code> <code>(</code> "<code class="grammar-literal">&apos;</code>" <code>|</code> &quot;&apos;&apos;&quot;<code>)</code> <code>?</code>  <code>(</code> <code>[</code> <code class="grammar-literal">^&apos;\</code><code>]</code>  <code>|</code> <a href="#sp-grammar-production-ECHAR">ECHAR</a><code>)</code> <code>)</code> <code>*</code>  &quot;&apos;&apos;&apos;&quot;</td>
+    </tr>
+    <tr id="sp-grammar-production-STRING_LITERAL_LONG2">
+      <td>[159]</td>
+      <td><code>STRING_LITERAL_LONG2</code></td>
+      <td>::=</td>
+      <td>&apos;&quot;&quot;&quot;&apos; <code>(</code> <code>(</code> '<code class="grammar-literal">&quot;</code>' <code>|</code> &apos;&quot;&quot;&apos;<code>)</code> <code>?</code>  <code>(</code> <code>[</code> <code class="grammar-literal">^&quot;\</code><code>]</code>  <code>|</code> <a href="#sp-grammar-production-ECHAR">ECHAR</a><code>)</code> <code>)</code> <code>*</code>  &apos;&quot;&quot;&quot;&apos;</td>
+    </tr>
+    <tr id="sp-grammar-production-ECHAR">
+      <td>[160]</td>
+      <td><code>ECHAR</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">\</code>" <code>[</code> <code class="grammar-literal">tbnrf\&quot;&apos;</code><code>]</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-NIL">
+      <td>[161]</td>
+      <td><code>NIL</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">(</code>" <a href="#sp-grammar-production-WS">WS</a><code>*</code>  "<code class="grammar-literal">)</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-WS">
+      <td>[162]</td>
+      <td><code>WS</code></td>
+      <td>::=</td>
+      <td><code class="grammar-char-escape"><abbr title="space">#x20</abbr></code> <code>|</code> <code class="grammar-char-escape"><abbr title="horizontal tab">#x09</abbr></code> <code>|</code> <code class="grammar-char-escape"><abbr title="carriage return">#x0D</abbr></code> <code>|</code> <code class="grammar-char-escape"><abbr title="new line">#x0A</abbr></code></td>
+    </tr>
+    <tr id="sp-grammar-production-ANON">
+      <td>[163]</td>
+      <td><code>ANON</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">[</code>" <a href="#sp-grammar-production-WS">WS</a><code>*</code>  "<code class="grammar-literal">]</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-PN_CHARS_BASE">
+      <td>[164]</td>
+      <td><code>PN_CHARS_BASE</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">A-Z</code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-literal">a-z</code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xC0'">#xC0</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="extended ascii '#xD6'">#xD6</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xD8'">#xD8</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="extended ascii '#xF6'">#xF6</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xF8'">#xF8</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x02FF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x0370</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x037D</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x037F</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#x1FFF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Format'">#x200C</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Format'">#x200D</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2070</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#x218F</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2C00</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#x2FEF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x3001</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Reserved'">#xD7FF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xF900</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xFDCF</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xFDF0</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#xFFFD</abbr></code><code>]</code></td>
+    </tr>
+    <tr>
+      <td colspan=2></td>
+      <td>|</td>
+      <td><code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x00010000</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Noncharacter'">#x000EFFFF</abbr></code><code>]</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PN_CHARS_U">
+      <td>[165]</td>
+      <td><code>PN_CHARS_U</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PN_CHARS_BASE">PN_CHARS_BASE</a> <code>|</code> "<code class="grammar-literal">_</code>"</td>
+    </tr>
+    <tr id="sp-grammar-production-VARNAME">
+      <td>[166]</td>
+      <td><code>VARNAME</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#sp-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>)</code>  <code>(</code> <a href="#sp-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xB7'">#xB7</abbr></code> <code>|</code> <code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x0300</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x036F</abbr></code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x203F</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2040</abbr></code><code>]</code> <code>)</code> <code>*</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PN_CHARS">
+      <td>[167]</td>
+      <td><code>PN_CHARS</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> "<code class="grammar-literal">-</code>" <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <code class="grammar-char-escape"><abbr title="extended ascii '#xB7'">#xB7</abbr></code> <code>|</code> <code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x0300</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x036F</abbr></code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x203F</abbr></code><code class="grammar-literal">-</code><code class="grammar-char-escape"><abbr title="unicode 'Graphic'">#x2040</abbr></code><code>]</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PN_PREFIX">
+      <td>[168]</td>
+      <td><code>PN_PREFIX</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PN_CHARS_BASE">PN_CHARS_BASE</a> <code>(</code> <code>(</code> <a href="#sp-grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>"<code>)</code> <code>*</code>  <a href="#sp-grammar-production-PN_CHARS">PN_CHARS</a><code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PN_LOCAL">
+      <td>[169]</td>
+      <td><code>PN_LOCAL</code></td>
+      <td>::=</td>
+      <td><code>(</code> <a href="#sp-grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>)</code>  <code>(</code> <code>(</code> <a href="#sp-grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>"<code>)</code> <code>*</code>  <a href="#sp-grammar-production-PN_CHARS">PN_CHARS</a><code>)</code> <code>?</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PLX">
+      <td>[170]</td>
+      <td><code>PLX</code></td>
+      <td>::=</td>
+      <td><a href="#sp-grammar-production-PERCENT">PERCENT</a> <code>|</code> <a href="#sp-grammar-production-PN_LOCAL_ESC">PN_LOCAL_ESC</a></td>
+    </tr>
+    <tr id="sp-grammar-production-PERCENT">
+      <td>[171]</td>
+      <td><code>PERCENT</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">%</code>" <a href="#sp-grammar-production-HEX">HEX</a> <a href="#sp-grammar-production-HEX">HEX</a></td>
+    </tr>
+    <tr id="sp-grammar-production-HEX">
+      <td>[172]</td>
+      <td><code>HEX</code></td>
+      <td>::=</td>
+      <td><code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-literal">A-F</code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-literal">a-f</code><code>]</code> </td>
+    </tr>
+    <tr id="sp-grammar-production-PN_LOCAL_ESC">
+      <td>[173]</td>
+      <td><code>PN_LOCAL_ESC</code></td>
+      <td>::=</td>
+      <td>"<code class="grammar-literal">\</code>" <code>(</code> "<code class="grammar-literal">_</code>" <code>|</code> "<code class="grammar-literal">~</code>" <code>|</code> "<code class="grammar-literal">.</code>" <code>|</code> "<code class="grammar-literal">-</code>" <code>|</code> "<code class="grammar-literal">!</code>" <code>|</code> "<code class="grammar-literal">$</code>" <code>|</code> "<code class="grammar-literal">&amp;</code>" <code>|</code> "<code class="grammar-literal">&apos;</code>" <code>|</code> "<code class="grammar-literal">(</code>" <code>|</code> "<code class="grammar-literal">)</code>" <code>|</code> "<code class="grammar-literal">*</code>" <code>|</code> "<code class="grammar-literal">+</code>" <code>|</code> "<code class="grammar-literal">,</code>" <code>|</code> "<code class="grammar-literal">;</code>" <code>|</code> "<code class="grammar-literal">=</code>" <code>|</code> "<code class="grammar-literal">/</code>" <code>|</code> "<code class="grammar-literal">?</code>" <code>|</code> "<code class="grammar-literal">#</code>" <code>|</code> "<code class="grammar-literal">@</code>" <code>|</code> "<code class="grammar-literal">%</code>"<code>)</code> </td>
+    </tr>
+  </tbody>
+</table>
+    

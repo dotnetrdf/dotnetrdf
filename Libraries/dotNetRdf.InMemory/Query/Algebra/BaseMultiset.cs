@@ -805,14 +805,21 @@ namespace VDS.RDF.Query.Algebra
         public abstract bool ContainsVariable(string var);
 
         /// <summary>
-        /// Determines whether the Mutliset is disjoint with the given Multiset.
+        /// Determines whether the Multiset contains all of the given variables.
+        /// </summary>
+        /// <param name="vars">Variables</param>
+        /// <returns>True if all of the variables in <paramref name="vars"/> are contained in the multiset, or if <paramref name="vars"/> is the empty set.</returns>
+        public abstract bool ContainsVariables(IEnumerable<string> vars);
+
+        /// <summary>
+        /// Determines whether the Multiset is disjoint with the given Multiset.
         /// </summary>
         /// <param name="other">Multiset.</param>
         /// <returns></returns>
         public abstract bool IsDisjointWith(BaseMultiset other);
 
         /// <summary>
-        /// Adds a Set to the Mutliset.
+        /// Adds a Set to the Multiset.
         /// </summary>
         /// <param name="s">Set to add.</param>
         public abstract void Add(ISet s);

@@ -24,6 +24,9 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+using System.Linq;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
@@ -43,8 +46,9 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
+        /// <param name="set"></param>
         /// <returns></returns>
-        public abstract bool Accepts(IPatternEvaluationContext context, INode obj);
+        public abstract bool Accepts(IPatternEvaluationContext context, INode obj, ISet set);
 
         /// <summary>
         /// Constructs a Node based on this Pattern for the given Set.
@@ -52,6 +56,20 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Construct Context.</param>
         /// <returns></returns>
         public abstract INode Construct(ConstructContext context);
+
+        /// <summary>
+        /// Returns a node created by applying the variable bindings in the input set to this pattern item.
+        /// </summary>
+        /// <param name="variableBindings"></param>
+        /// <returns>A node binding for the pattern item or null if no binding is possible with the provide set.</returns>
+        public abstract INode Bind(ISet variableBindings);
+
+        /// <summary>
+        /// Returns the variable bindings created when this pattern item accepts the given node to the specified set.
+        /// </summary>
+        /// <param name="forNode"></param>
+        /// <param name="toSet"></param>
+        public abstract void AddBindings(INode forNode, ISet toSet);
 
         /// <summary>
         /// Sets the Binding Context for the Pattern Item.
@@ -74,9 +92,19 @@ namespace VDS.RDF.Query.Patterns
         public abstract override string ToString();
 
         /// <summary>
-        /// Gets the Variable Name if this is a Variable Pattern or null otherwise.
+        /// Gets an enumeration of the names of the variables of this pattern.
         /// </summary>
-        public virtual string VariableName => null;
+        /// <remarks>
+        /// If this item is a Variable Pattern, the enumeration will contain a single item.
+        /// If this item is a QuotedTriplePattern, the enumeration may contain zero or more items.
+        /// For other pattern items the enumeration will be empty.
+        /// </remarks>
+        public virtual IEnumerable<string> Variables => Enumerable.Empty<string>();
+
+        /// <summary>
+        /// Return true if this pattern item contains no variables, false otherwise.
+        /// </summary>
+        public abstract bool IsFixed { get; }
 
         /// <summary>
         /// Gets/Sets whether the Variable is repeated in the Pattern.

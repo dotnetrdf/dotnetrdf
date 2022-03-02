@@ -10,6 +10,9 @@
     "test": "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
     "trs": "https://w3c.github.io/rdf-star/tests/trig/eval#",
     "@vocab": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
+    "dct": "http://purl.org/dc/terms/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
     "@base": "https://w3c.github.io/rdf-star/tests/trig/eval/",
     "include": {
       "@type": "@id",
@@ -45,11 +48,35 @@
     "result": {
       "@type": "@id"
     },
-    "label": "rdfs:label",
+    "label": {
+      "@id": "rdfs:label",
+      "@container": "@language"
+    },
+    "prefLabel": {
+      "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
+      "@container": "@language"
+    },
     "comment": "rdfs:comment",
+    "issued": {
+      "@id": "dct:issued",
+      "@type": "xsd:date"
+    },
+    "modified": {
+      "@id": "dct:modified",
+      "@type": "xsd:date"
+    },
+    "license": {
+      "@id": "dct:license",
+      "@type": "@id"
+    },
+    "creator": {
+      "@id": "dct:creator",
+      "@type": "@id",
+      "@container": "@set"
+    },
     "seeAlso": {
       "@id": "rdfs:seeAlso",
-      "@type": "@id"
+      "@type": "@vocab"
     },
     "approval": {
       "@id": "test:approval",
@@ -71,20 +98,36 @@
   },
   "@id": "trs:manifest",
   "@type": "Manifest",
-  "label": "TriG-star Evaluation Tests",
+  "creator": [
+    {
+      "foaf:homepage": {
+        "@id": "../../../"
+      },
+      "foaf:name": " RDF-star Interest Group within the W3C RDF-DEV Community Group"
+    }
+  ],
+  "issued": "2021-06-21",
+  "dct:licence": {
+    "@id": "https://www.w3.org/Consortium/Legal/2008/03-bsd-license"
+  },
+  "modified": "2021-07-18",
+  "label": {
+    "en": "TriG-star Evaluation Tests"
+  },
+  "seeAlso": "https://w3c.github.io/rdf-tests/",
   "entries": [
     {
       "@id": "trs:trig-star-1",
       "@type": "rdft:TestTrigEval",
       "action": "trig-star-eval-01.trig",
-      "name": "TriG-star - subject embedded triple",
+      "name": "TriG-star - subject quoted triple",
       "result": "trig-star-eval-01.nq"
     },
     {
       "@id": "trs:trig-star-2",
       "@type": "rdft:TestTrigEval",
       "action": "trig-star-eval-02.trig",
-      "name": "TriG-star - object embedded triple",
+      "name": "TriG-star - object quoted triple",
       "result": "trig-star-eval-02.nq"
     },
     {
@@ -137,25 +180,29 @@
       "result": "trig-star-eval-annotation-5.nq"
     },
     {
-      "@id": "trs:trig-star-embed-annotation-1",
+      "@id": "trs:trig-star-quoted-annotation-1",
       "@type": "rdft:TestTrigEval",
-      "action": "trig-star-eval-embed-annotation-1.trig",
-      "name": "TriG-star - Annotation with embedding",
-      "result": "trig-star-eval-embed-annotation-1.nq"
+      "action": "trig-star-eval-quoted-annotation-1.trig",
+      "name": "TriG-star - Annotation with quoting",
+      "result": "trig-star-eval-quoted-annotation-1.nq"
     },
     {
-      "@id": "trs:trig-star-embed-annotation-2",
+      "@id": "trs:trig-star-quoted-annotation-2",
       "@type": "rdft:TestTrigEval",
-      "action": "trig-star-eval-embed-annotation-2.trig",
-      "name": "TriG-star - Annotation on triple with embedded subject",
-      "result": "trig-star-eval-embed-annotation-2.nq"
+      "action": "trig-star-eval-quoted-annotation-2.trig",
+      "name": "TriG-star - Annotation on triple with quoted subject",
+      "result": "trig-star-eval-quoted-annotation-2.nq"
     },
     {
-      "@id": "trs:trig-star-embed-annotation-3",
+      "@id": "trs:trig-star-quoted-annotation-3",
       "@type": "rdft:TestTrigEval",
-      "action": "trig-star-eval-embed-annotation-3.trig",
-      "name": "TriG-star - Annotation on triple with embedded object",
-      "result": "trig-star-eval-embed-annotation-3.nq"
+      "action": "trig-star-eval-quoted-annotation-3.trig",
+      "name": "TriG-star - Annotation on triple with quoted object",
+      "result": "trig-star-eval-quoted-annotation-3.nq"
     }
-  ]
+  ],
+  "prefLabel": {
+    "fr": "La suite des tests pour évaluation de TriG-star",
+    "es": "Conjunto de pruebas para evaluar Trig-star"
+  }
 }

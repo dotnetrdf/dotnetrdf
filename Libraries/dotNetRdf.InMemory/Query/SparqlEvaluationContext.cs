@@ -326,13 +326,38 @@ namespace VDS.RDF.Query
             // Stuff for more precise indexing
             IEnumerable<INode> values = null;
             IEnumerable<ISet> valuePairs = null;
-            var subjVar = triplePattern.Subject.VariableName;
-            var predVar = triplePattern.Predicate.VariableName;
-            var objVar = triplePattern.Object.VariableName;
-            var boundSubj = (subjVar != null && InputMultiset.ContainsVariable(subjVar));
-            var boundPred = (predVar != null && InputMultiset.ContainsVariable(predVar));
-            var boundObj = (objVar != null && InputMultiset.ContainsVariable(objVar));
+            var subjVars = triplePattern.Subject.Variables.ToList();
+            var predVars = triplePattern.Predicate.Variables.ToList();
+            var objVars = triplePattern.Object.Variables.ToList();
+            var boundSubj = !triplePattern.Subject.IsFixed && InputMultiset.ContainsVariables(subjVars);
+            var boundPred = !triplePattern.Predicate.IsFixed && InputMultiset.ContainsVariables(predVars);
+            var boundObj = !triplePattern.Object.IsFixed && InputMultiset.ContainsVariables(objVars);
 
+            // Expand quoted triple patterns in subject or object position of the triple pattern
+            if (triplePattern.Subject is QuotedTriplePattern subjectTriplePattern)
+            {
+                return GetQuotedTriples(subjectTriplePattern).SelectMany(tn =>
+                    GetTriples(new TriplePattern(new NodeMatchPattern(tn), triplePattern.Predicate,
+                        triplePattern.Object)));
+            }
+
+            if (triplePattern.Object is QuotedTriplePattern objectTriplePattern)
+            {
+                return GetQuotedTriples(objectTriplePattern).SelectMany(tn =>
+                    GetTriples(new TriplePattern(triplePattern.Subject, triplePattern.Predicate,
+                        new NodeMatchPattern(tn))));
+            }
+
+            // Here each of the variable lists should contain either 1 or 0 items
+            if (subjVars.Count > 1 || predVars.Count > 1 || objVars.Count > 1)
+            {
+                throw new RdfQueryException(
+                    "Internal error evaluating triple pattern. Found a pattern item with multiple variables when a maximum of one is expected.");
+            }
+
+            var subjVar = subjVars.FirstOrDefault();
+            var predVar = predVars.FirstOrDefault();
+            var objVar = objVars.FirstOrDefault();
             switch (triplePattern.IndexType)
             {
                 case TripleIndexType.Subject:
@@ -583,6 +608,59 @@ namespace VDS.RDF.Query
             }
         }
 
+        public IEnumerable<ITripleNode> GetQuotedTriples(QuotedTriplePattern qtp)
+        {
+            TriplePattern triplePattern = qtp.QuotedTriple;
+            INode s, p, o;
+            switch (triplePattern.IndexType)
+            {
+                case TripleIndexType.Subject:
+                    s = ((NodeMatchPattern)triplePattern.Subject).Node;
+                    return Data.GetQuotedWithSubject(s).Select(t => new TripleNode(t));
+
+                case TripleIndexType.Predicate:
+                    p = ((NodeMatchPattern)triplePattern.Predicate).Node;
+                    return Data.GetQuotedWithPredicate(p).Select(t => new TripleNode(t));
+
+                case TripleIndexType.Object:
+                    o = ((NodeMatchPattern)triplePattern.Object).Node;
+                    return Data.GetQuotedWithObject(o).Select(t => new TripleNode(t));
+
+                case TripleIndexType.SubjectPredicate:
+                    s = ((NodeMatchPattern)triplePattern.Subject).Node;
+                    p = ((NodeMatchPattern)triplePattern.Predicate).Node;
+                    return Data.GetQuotedWithSubjectPredicate(s, p).Select(t => new TripleNode(t));
+
+                case TripleIndexType.SubjectObject:
+                    s = ((NodeMatchPattern)triplePattern.Subject).Node;
+                    o = ((NodeMatchPattern)triplePattern.Object).Node;
+                    return Data.GetQuotedWithSubjectObject(s, o).Select(t=>new TripleNode(t));
+
+                case TripleIndexType.PredicateObject:
+                    p = ((NodeMatchPattern)triplePattern.Predicate).Node;
+                    o = ((NodeMatchPattern)triplePattern.Object).Node;
+                    return Data.GetQuotedWithPredicateObject(p, o).Select(t => new TripleNode(t));
+
+                case TripleIndexType.NoVariables:
+                    s = ((NodeMatchPattern)triplePattern.Subject).Node;
+                    p = ((NodeMatchPattern)triplePattern.Predicate).Node;
+                    o = ((NodeMatchPattern)triplePattern.Object).Node;
+                    var t = new Triple(s, p, o);
+                    if (Data.ContainsQuotedTriple(t))
+                    {
+                        return new[] { new TripleNode(t) };
+                    }
+                    else
+                    {
+                        return Enumerable.Empty<ITripleNode>();
+                    }
+                case TripleIndexType.None:
+                    return Data.QuotedTriples.Select(t => new TripleNode(t));
+
+            }
+            return Enumerable.Empty<ITripleNode>();
+        }
+
         public void Evaluate(TriplePattern triplePattern)
         {
             if ( triplePattern.IndexType == TripleIndexType.NoVariables)
@@ -604,10 +682,8 @@ namespace VDS.RDF.Query
             {
                 foreach (Triple t in GetTriples(triplePattern))
                 {
-                    if (triplePattern.Accepts(this, t))
-                    {
-                        OutputMultiset.Add(triplePattern.CreateResult(t));
-                    }
+                    ISet result = triplePattern.Evaluate(this, t);
+                    if (result != null) OutputMultiset.Add(result);
                 }
             }
         }

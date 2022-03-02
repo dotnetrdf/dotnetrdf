@@ -25,6 +25,7 @@
 */
 
 using System;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
@@ -34,8 +35,6 @@ namespace VDS.RDF.Query.Patterns
     /// </summary>
     public class FixedBlankNodePattern : PatternItem
     {
-        private string _id;
-
         /// <summary>
         /// Creates a new Fixed Blank Node Pattern.
         /// </summary>
@@ -44,24 +43,21 @@ namespace VDS.RDF.Query.Patterns
         {
             if (id.StartsWith("_:"))
             {
-                _id = id.Substring(2);
+                InternalID = id.Substring(2);
             }
             else
             {
-                _id = id;
+                InternalID = id;
             }
         }
 
         /// <summary>
         /// Gets the Blank Node ID.
         /// </summary>
-        public string InternalID
-        {
-            get
-            {
-                return _id;
-            }
-        }
+        public string InternalID { get; }
+
+        /// <inheritdoc />
+        public override bool IsFixed => true;
 
         /// <summary>
         /// Checks whether the pattern accepts the given Node.
@@ -69,16 +65,9 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">SPARQL Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
         /// <returns></returns>
-        public override bool Accepts(IPatternEvaluationContext context, INode obj)
+        public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
         {
-            if (obj.NodeType == NodeType.Blank)
-            {
-                return ((IBlankNode)obj).InternalID.Equals(_id);
-            }
-            else
-            {
-                return false;
-            }
+            return obj.NodeType == NodeType.Blank && ((IBlankNode)obj).InternalID.Equals(InternalID);
         }
 
         /// <summary>
@@ -89,20 +78,30 @@ namespace VDS.RDF.Query.Patterns
         {
             if (context.Graph != null)
             {
-                IBlankNode b = context.Graph.GetBlankNode(_id);
+                IBlankNode b = context.Graph.GetBlankNode(InternalID);
                 if (b != null)
                 {
                     return b;
                 }
                 else
                 {
-                    return context.Graph.CreateBlankNode(_id);
+                    return context.Graph.CreateBlankNode(InternalID);
                 }
             }
             else
             {
-                return new BlankNode(_id);
+                return new BlankNode(InternalID);
             }
+        }
+
+        public override INode Bind(ISet variableBindings)
+        {
+            return new BlankNode(InternalID);
+        }
+
+        public override void AddBindings(INode forNode, ISet toSet)
+        {
+            // No-op for fixed patterns
         }
 
         /// <summary>
@@ -111,7 +110,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return "<_:" + _id + ">";
+            return "<_:" + InternalID + ">";
         }
     }
 }

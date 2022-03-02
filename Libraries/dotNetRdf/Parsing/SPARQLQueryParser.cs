@@ -2034,9 +2034,12 @@ namespace VDS.RDF.Parsing
 
                             pred = TryCreatePatternItem(context, predToken);
 
+                            // Annotated triple is itself part of the pattern.
                             var tp = new TriplePattern(subj, pred, obj);
                             p.AddTriplePattern(tp);
-                            TryParsePredicateObjectList(context, p, 2, new QuotedTriplePattern(tp));
+                            // And the same pattern as a quoted triple is the subject of one or more statements.
+                            TryParsePredicateObjectList(context, p, 2, tp.AsQuotedPatternItem());
+                            
                             break;
                         }
 
@@ -2315,7 +2318,7 @@ namespace VDS.RDF.Parsing
 
                         case Token.STARTQUOTE:
                             context.Tokens.Dequeue();
-                            var qt = new QuotedTriplePattern(TryParseQuotedTriplePattern(context));
+                            PatternItem qt = TryParseQuotedTriplePattern(context).AsQuotedPatternItem();
                             if (first)
                             {
                                 p.AddTriplePattern(new TriplePattern(TryCreatePatternItem(context, blank), new NodeMatchPattern(rdfFirst), qt));
@@ -3727,7 +3730,7 @@ namespace VDS.RDF.Parsing
                                         $"Encountered a Quoted Triple in a VALUES clause containing one or more variables.",
                                         next);
                                 }
-                                values.Add(new QuotedTriplePattern(qt));
+                                values.Add(qt.AsQuotedPatternItem());
                                 break;
 
                             default:
@@ -3855,12 +3858,13 @@ namespace VDS.RDF.Parsing
                     return new NodeMatchPattern(new UriNode(UriFactory.Create(NamespaceMapper.RDF + "type")));
 
                 case Token.STARTQUOTE:
-                    return new QuotedTriplePattern(TryParseQuotedTriplePattern(context));
+                    return TryParseQuotedTriplePattern(context).AsQuotedPatternItem();
 
                 case Token.QUOTEDTRIPLE:
                     var qt = (QuotedTripleToken)t;
-                    return new QuotedTriplePattern(new TriplePattern(TryCreatePatternItem(context, qt.Subject),
-                        TryCreatePatternItem(context, qt.Predicate), TryCreatePatternItem(context, qt.Object)));
+                    var tp = new TriplePattern(TryCreatePatternItem(context, qt.Subject),
+                        TryCreatePatternItem(context, qt.Predicate), TryCreatePatternItem(context, qt.Object));
+                    return tp.AsQuotedPatternItem();
 
                 default:
                     throw ParserHelper.Error("Unable to Convert a '" + t.GetType() + "' to a Pattern Item in a Triple Pattern", t);

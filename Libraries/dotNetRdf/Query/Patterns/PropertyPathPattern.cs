@@ -53,13 +53,9 @@ namespace VDS.RDF.Query.Patterns
             Object.RigorousEvaluation = true;
 
             // Build our list of Variables
-            if (Subject.VariableName != null)
+            foreach (var variableName in Subject.Variables.Concat(Object.Variables))
             {
-                _vars.Add(Subject.VariableName);
-            }
-            if (Object.VariableName != null)
-            {
-                if (!_vars.Contains(Object.VariableName)) _vars.Add(Object.VariableName);
+                if (!_vars.Contains(variableName)) _vars.Add(variableName);
             }
             _vars.Sort();
         }

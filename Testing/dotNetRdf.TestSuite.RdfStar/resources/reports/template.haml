@@ -8,7 +8,7 @@
 !!! 5
 %html
   - subjects = tests['testSubjects']
-  - tests['entries'].each {|m| m['title'] ||= m['rdfs:label'] || m['rdfs:comment']}
+  - tests['entries'].each {|m| m['title'] ||= m.fetch('rdfs:label', {})['@value'] || m['rdfs:comment']}
   %head
     %meta{"http-equiv" => "Content-Type", :content => "text/html;charset=utf-8"}
     %link{rel: "alternate", type: "text/turtle", href: "earl.ttl"}

@@ -1,0 +1,3548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>RDF-star and SPARQL-star</title>
+  <script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove" defer></script>
+  <script class="remove">
+   // All config options at https://respec.org/docs/
+   var respecConfig = {
+      specStatus: "CG-FINAL",
+      edDraftURI: "https://w3c.github.io/rdf-star/cg-spec/editors_draft.html",
+      editors: [
+        {
+          "name": "Olaf Hartig",
+          "url": "http://olafhartig.de/",
+          "company": "Linköping University",
+          "companyURL": "https://liu.se/",
+          "orcid": "0000-0002-1741-2090",
+          "w3cid": 112469,
+        },{
+          "name": "Pierre-Antoine Champin",
+          "url": "http://champin.net/",
+          "company": "ERCIM",
+          "companyURL": "https://www.ercim.eu/",
+          "orcid": "0000-0001-7046-4474",
+          "w3cid": 42931,
+        },
+        {
+          "name": "Gregg Kellogg",
+          "url": "https://greggkellogg.net/",
+          "company": "no affiliation",
+          "w3cid": 44770,        },
+        {
+          "name": "Andy Seaborne",
+          "url": "https://afs.github.io/",
+          "company": "Apache Software Foundation",
+          "companyURL": "http://apache.org/",
+          "w3cid": 29909,
+        },
+      ],
+      authors: [
+        {
+          "name": "Dörthe Arndt",
+          "company": "TU Dresden",
+        },
+        {
+          "name": "Jeen Broekstra",
+          "company": "metaphacts",
+        },
+        {
+          "name": "Bob DuCharme",
+          "company": "CCRi",
+        },
+        {
+          "name": "Ora Lassila",
+          "company": "Amazon",
+        },
+        {
+          "name": "Peter F. Patel-Schneider",
+          "company": "PARC",
+        },
+        {
+          "name": "Eric Prud'hommeaux",
+          "company": "Janeiro Digital, W3C/MIT",
+        },
+        {
+          "name": "Ted Thibodeau, Jr.",
+          "company": "OpenLink Software, Inc.",
+        },
+        {
+          "name": "Bryan Thompson",
+          "company": "Amazon",
+        }
+      ],
+      otherLinks: [
+        {
+          key: "Acknowledgements:",
+          data: [
+            { value: "James Anderson (datagraph gmbh)" },
+            { value: "Ghislain Atemezing (Mondeca)" },
+            { value: "Pavel Klinov (Stardog Union)" },
+            { value: "Bruno P. Kinoshita (Apache Software Foundation)"},
+            { value: "Holger Knublauch (TopQuadrant, Inc.)" },
+            { value: "Andreas Kuckartz" },
+            { value: "Pete Rivett (agnos.ai)" },
+            { value: "William Van Woensel (Dalhousie University)"},
+            { value: "Miel Vander Sande (meemoo)" },
+            { value: "Fabio Vitali (University of Bologna)" },
+          ]
+        },
+      ],
+      github: {
+        repoURL: "w3c/rdf-star",
+        branch: "main",
+      },
+      localBiblio: {
+        "EBNF-NOTATION": {
+          title: "EBNF NOTATION",
+          href: "http://www.w3.org/TR/REC-xml/#sec-notation",
+          publisher: "W3C",
+          date: "26 November 2008",
+          status: "W3C Recommendation",
+          authors: [
+            "Tim Bray",
+            "Jean Paoli",
+            "C. M. Sperberg-McQueen",
+            "Eve Maler",
+            "François Yergeau"
+          ]
+        }
+      },
+      wgPublicList: "public-rdf-star",
+      shortName: "rdf-star",
+      group: "rdf-dev",
+      testSuiteURI: "https://w3c.github.io/rdf-star/tests/",
+      implementationReportURI:"https://w3c.github.io/rdf-star/reports/",
+      xref: ["RDF11-CONCEPTS", "SPARQL11-QUERY", "RDF11-MT"],
+      maxTocLevel: 3,
+      latestVersion: "https://w3c.github.io/rdf-star/cg-spec",
+    };
+    // set publishDate and previousDate in order to make a published draft
+    var publishDate = "2021-12-17";
+    var previousDate = "2021-07-01";
+    if (publishDate !== null && previousDate !== null) {
+      var thisVersion = "https://w3c.github.io/rdf-star/cg-spec/" + publishDate + ".html";
+      var previousVersion = "https://w3c.github.io/rdf-star/cg-spec/" + previousDate + ".html";
+      respecConfig.otherLinks.push({
+        key: "This version:",
+          data: [
+            {
+              value: thisVersion,
+              href: thisVersion,
+            }
+          ]
+      });
+      respecConfig.otherLinks.push({
+        key: "Previous version:",
+          data: [
+            {
+              value: previousVersion,
+              href: previousVersion,
+            }
+          ]
+      });
+      respecConfig.publishDate = publishDate;
+      respecConfig.doJsonLd = true;
+      respecConfig.canonicalURI = thisVersion;
+      window.addEventListener('load', () => {
+        document.body.classList.add('no-watermark');
+      })
+    }
+  </script>
+  <style>
+    /* copied from TR/turtle, and adapted for SPARQL rules */
+    .grammar td { font-family: monospace; vertical-align: top; }
+    .grammar-literal, .token { color: gray;}
+    .grammar_comment { color: #A52A2A; font-style: italic; }
+
+    /* better looking quoted examples */
+    .example .example {
+      border-left-width: .15em;
+    }
+
+    /* better numbering of algorithm steps */
+    .algorithm ol {
+      counter-reset: numsection;
+      list-style-type: none;
+    }
+    .algorithm ol>li {
+      margin: 0.5em 0;
+    }
+    .algorithm ol>li:before {
+      font-weight: bold;
+      counter-increment: numsection;
+      content: counters(numsection, ".") ") ";
+    }
+
+    /* SPARQL modification section */
+
+    .defn	{ 
+        margin-left:5% ; margin-right: 7%; 
+        margin-top: 0.1ex ; margin-bottom: 0.1ex ;
+        border: thin solid #888888;
+        padding: 1ex 2ex 0.5ex 2ex ;
+        page-break-inside: avoid ;
+        background-color: #F0F8F8 ;
+    }
+    
+    div.defn p	{ margin-top: 1ex ; margin-bottom: 1.5ex ;}
+    div.defn ul	{ margin-top: 1ex ; margin-bottom: 1.5ex ; }
+
+    .operator {
+        border: solid;
+        border-width: 1px;
+        border-color: #888;
+        width: 100%;
+        margin: 0px;
+    }
+
+    .operator tr {
+        border: solid;
+        border-color: #888;
+        border-width: 1px;
+    }
+    
+    .operator th {
+        border: solid;
+        border-color: #888;
+        border-width: 1px;
+    }
+
+    .operator td {
+        border: solid;
+        border-color: #888;
+        border-width: 1px;
+    }
+    
+    .heavy { color:black; font-weight:bold }
+    .small { font-size: smaller; }
+
+    #structure-map table {
+      background-image: url("visual-map-bg.svg");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+
+    #structure-map table td {
+      width: 33.34%;
+    }
+
+    #structure-map .box {
+      display: block;
+      border: thin solid gray;
+      border-radius: 0.5em;
+      background-color: white;
+      margin: 0.7em 1em;
+      padding: 0.35em 0.5em;
+      box-shadow: 0.25em 0.25em 0.5em darkgray;
+      text-align: center;
+    }
+
+    /* remove "unofficial draft" watermark */
+    body.no-watermark {
+      background: url('https://www.w3.org/StyleSheets/TR/2016/logos/back-cg-draft') no-repeat !important
+    }
+  </style>
+  <script>
+    /* copied from JSON-LD specs */
+    function updateExample(doc, content) {
+      // perform transformations to make it render and prettier
+      return _esc(reindent(unComment(doc, content)));
+    }
+
+    function _esc(s) {
+      return s.replace(/&/g,'&amp;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/</g,'&lt;');
+    }
+
+    function reindent(text) {
+      // TODO: use trimEnd when Edge supports it
+      const lines = text.trimRight().split("\n");
+      while (lines.length && !lines[0].trim()) {
+        lines.shift();
+      }
+      const indents = lines.filter(s => s.trim()).map(s => s.search(/[^\s]/));
+      const leastIndent = Math.min(...indents);
+      return lines.map(s => s.slice(leastIndent)).join("\n");
+    }
+
+    function unComment(doc, content) {
+      // perform transformations to make it render and prettier
+      return content
+        .replace(/<!--/, '')
+        .replace(/-->/, '')
+        .replace(/< !\s*-\s*-/g, '<!--')
+        .replace(/-\s*- >/g, '-->')
+        .replace(/-\s*-\s*&gt;/g, '--&gt;');
+    }
+  </script>
+</head>
+<body>
+  <section id="abstract">
+    <p>The Resource Description Framework (RDF) is a general-purpose framework for representing information on the Web. RDF-star extends RDF with a convenient way to make statements about other statements. This specification defines the abstract syntax of RDF-star as an extension of RDF's. It extends a number of RDF concrete syntaxes to support the new abstract syntax. It also extends RDF's formal semantics. Finally, this specification extends the SPARQL language to allow querying and updating of RDF-star data.</p>
+  </section>
+  <section id="sotd">
+  </section>
+
+  <section id="introduction">
+    <h1>Introduction</h1>
+
+    <section class="informative">
+      <h2>Background and Motivation</h2>
+
+      <p>The RDF data model lets you state facts in three-part subject-predicate-object statements known as triples. For example, with a single RDF triple, you can say that employee38 has a familyName of "Smith". A triple's predicate is a property specified with an IRI (an Internationalized version of a URI), identifying that property in a globally unambiguous way. A triple's subject and object can each be an IRI referencing any entity, and the object can also be a literal value such as "Smith" or data of other types such as dates, numbers, or Boolean values.</p>
+
+      <p>Sometimes, we want the subject or object of a triple to refer to another triple. For example, the statement "according to employee22, employee38 has a jobTitle of 'Assistant Designer'" can be modeled as a triple with "according to" as its predicate, employee22 as its object, and another triple as its subject, namely the triple "employee38 has a jobTitle of 'Assistant Designer'". This use of a triple as the subject or object resource of another triple so that we can say things about that triple is known as <a href='https://www.w3.org/TR/rdf11-mt/#reification'>reification</a>.
+      The concept of reification has always been part of RDF, but expressing it in most RDF concrete syntaxes such as Turtle and N-Triples, as well as processing or querying it with SPARQL, has been verbose and cumbersome [[RDF-STAR-FOUNDATION]].</p>
+
+    </section>
+
+    <section class="informative">
+      <h2>Overview</h2>
+
+<p>This specification describes RDF-star, an extension of RDF's conceptual data model and concrete syntaxes, which provides a compact alternative to <a href="https://www.w3.org/TR/rdf11-mt/#reification">standard RDF reification</a>. This model and its syntaxes enable the creation of concise triples that reference other triples as subject and object resources.
+Triples that include a triple as a subject or an object are known as <a>RDF-star triples</a>. The following dataset shows the example RDF-star triples from above using the <a href="#turtle-star">Turtle-star</a> syntax, which uses double angle brackets to enclose a triple serving as a subject or object resource:</p>
+
+      <pre data-transform="updateExample"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+      >
+        <!--
+PREFIX :    <http://www.example.org/>
+
+:employee38 :familyName "Smith" .
+<< :employee38 :jobTitle "Assistant Designer" >> :accordingTo :employee22 .
+        -->
+      </pre>
+
+<p>After declaring a prefix so that IRIs can be abbreviated, the first triple in this example asserts that employee38 has a familyName of "Smith". Note that this dataset does not assert that employee38 has a jobTitle of "Assistant Designer"; it says that employee22 has made that claim. In other words, the triple "employee38 has a jobTitle of 'Assistant Designer'" is not what we call an <a>asserted triple</a>, like "employee38 has a familyName of 'Smith'" above; rather, it is known as a <a>quoted triple</a>.</p>
+
+<p>If we added the triple `:employee38 :jobTitle "Assistant Designer"` to the example above, then this triple about employee38's jobTitle would be both a <a>quoted</a> and an <a>asserted</a> triple.
+This pattern is quite common, so Turtle-star offers a dedicated syntax for it, called the <a>annotation syntax</a>, illustrated in <a href="#example-annotation"></a> below. Note that this construct is purely syntactic sugar, as it can be expanded using only the double angle brackets.</p>
+
+<pre data-transform="updateExample"
+     data-content-type="text/turtle"
+     class="nohighlight example"
+     id="example-annotation"
+>
+  <!--
+  PREFIX :    <http://www.example.org/>
+
+  :employee38
+      :familyName "Smith" ;
+      :jobTitle "Assistant Designer" {| :accordingTo :employee22 |} .
+
+  # this is equivalent to:
+  #
+  # :employee38 :familyName "Smith" .
+  # :employee38 :jobTitle "Assistant Designer" .
+  # << :employee38 :jobTitle "Assistant Designer" >> :accordingTo :employee22 .
+  -->
+</pre>
+
+
+<p>This specification also describes an extension to the SPARQL Protocol and Query Language known as <a href="#sparql-star">SPARQL-star</a> for the querying of RDF-star triples. For example, the following SPARQL-star query asks "who has made any claims about employee38?"</p>
+
+<pre data-transform="updateExample"
+     data-content-type="application/sparql-query"
+     class="nohighlight example"
+>
+                <!--
+PREFIX : <http://www.example.org/> 
+
+SELECT ?claimer WHERE {
+   << :employee38 ?property ?value >> :accordingTo ?claimer
+}
+-->
+</pre>
+
+
+<p>SPARQL can also be used to update RDF data, and SPARQL-star also extends that part. For example, the following SPARQL-star adds all the statements made by employee22 about employee38 as <a>asserted triples</a>, annotating them as "confirmed".</p>
+
+<pre data-transform="updateExample"
+     data-content-type="application/sparql-update"
+     class="nohighlight example"
+>
+                <!--
+PREFIX : <http://www.example.org/>
+
+INSERT {
+  :employee38 ?p ?o {| :status "confirmed" |}
+} WHERE {
+   << :employee38 ?p ?o >> :accordingTo :employee22
+}
+-->
+</pre>
+
+    </section>
+    <section>
+      <h2>Common misconceptions</h2>
+
+      <p>People coming to RDF-star may have wrong ideas about what it is or how to use it. The purpose of this section is to dispel the most common misconceptions.
+
+      <p>RDF-star is <em>not</em> syntactic sugar for <a href="https://www.w3.org/TR/rdf11-mt/#reification">standard reification</a>. While the latter is a vocabulary that fits into the standard RDF model (abstract syntax), RDF-star extends that model (see <a href="#concepts"></a>) with a new construct, namely <a>quoted triples</a>. Note also that the two are not mutually exclusive: standard reification can be used in conjunction with RDF-star.
+
+      <p>Unlike reified statements, RDF-star <a>quoted triples</a> are unique: wherever `&lt;&lt; :employee38 :jobTitle "Assistant Designer" &gt;&gt;` appears, it always denotes one and the same thing. This impacts the modeling choices one has to make when using RDF-star; this is further discussed in <a href="#occurrences"></a>.
+
+      <p>Finally, <a>quoted triples</a> are referentially opaque. This means that two <a>quoted triples</a> containing distinct but equivalent terms (i.e., coreferences, known to denote the same thing) are nonetheless considered to be different triples. <a href="#ref-opacity"></a> and the following sections discuss the rationale for this design, and how some form of referential transparency can still be added to RDF-star if and when needed.
+    </section>
+
+    <section>
+      <h2>Conventions</h2>
+<p>For the remainder of this document, examples will assume that the following prefixes have been declared to represent the IRIs shown with them here: </p>
+
+<table>
+<tr><td>`:`</td><td>`&lt;http://www.example.org/&gt;`</td></tr>
+<tr><td>`rdf:`</td><td>`&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;`</td></tr>
+<tr><td>`rdfs:`</td><td>`&lt;http://www.w3.org/2000/01/rdf-schema#&gt;`</td></tr>
+<tr><td>`owl:`</td><td>`&lt;http://www.w3.org/2002/07/owl#&gt;`</td></tr>
+<tr><td>`prov:`</td><td>`&lt;http://www.w3.org/ns/prov#&gt;`</td></tr>
+<tr><td>`dbo:`</td><td>`&lt;http://dbpedia.org/ontology/&gt;`</td></tr>
+<tr><td>`dbr:`</td><td>`&lt;http://dbpedia.org/resource/&gt;`</td></tr>
+<tr><td>`dc:`</td><td>`&lt;http://purl.org/dc/elements/1.1/&gt;`</td></tr>
+<tr><td>`dct:`</td><td>`&lt;http://purl.org/dc/terms/&gt;`</td></tr>
+<tr><td>`rdf-star:`</td><td>`&lt;http://www.w3.org/ns/rdf-star#&gt;`</td></tr>
+</table>
+
+    </section>
+
+    <section id="structure">
+      <h2>Structure of this document</h2>
+      <p>This specification covers many aspects of RDF-star, and not all sections will be of interest to all readers.</p>
+      <p><a href="#concepts">Section 2</a> first defines the concepts and the abstract syntax of RDF-star, to which all following sections refer.
+      The next three sections focus on how users will interact with the abstract syntax, defining the <a href="#concrete-syntaxes">concrete syntaxes</a>, the <a href="#sparql-star">query language SPARQL-star</a> and its <a href="#sparql-star-update">counterpart for updates</a>. <a href="#rdf-star-semantics">Section 6</a> then defines RDF-star's formal semantics, which lays the foundation for reasoning with RDF-star data. Finally, <a href="#rdf-star-vocabulary">Section 7</a> defines an RDF vocabulary capturing the main concepts of RDF-star.</p>
+
+      <figure id="structure-map">
+        <table>
+          <tr>
+            <td>
+            <td rowspan=2>
+              <div class="box" style="margin-bottom: 5em;">
+                <a href="#concepts"></a><br>
+                <strong>can be...</strong>
+              </div>
+            <td>
+          <tr>
+            <td>
+              <div class="box">
+                <em>... serialized with</em><br>
+                <a href="#concrete-syntaxes"></a>
+              </div>
+            <td>
+              <div class="box">
+                <em>... represented by</em><br>
+                <a href="#rdf-star-vocabulary"></a>
+              </div>
+          <tr>
+            <td>
+              <div class="box">
+                <em>... queried with</em><br>
+                <a href="#sparql-star"></a><br>
+              </div>
+            <td>
+              <div class="box">
+                <em>... updated with</em><br>
+                <a href="#sparql-star-update"></a>
+              </div>
+            <td>
+              <div class="box">
+                <em>... interpreted through</em><br>
+                <a href="#rdf-star-semantics"></a>
+              </div>
+        </table>
+        <figcaption>A visual map of the sections of this document</figcaption>
+      </figure>
+    </section>
+
+    <section id="conformance">
+      <p>A system supports RDF-star for input if it supports an input syntax for 
+        an RDF 1.1 standard syntax that has additional syntax for  
+        <a>quoted triples</a>.
+        Such input syntaxes include those in the 
+        <a href="https://w3c.github.io/rdf-star/tests/">RDF-star test suite</a>
+        (<a href="https://w3c.github.io/rdf-star/tests/nt/syntax/">N-Triples-star syntax tests</a>,
+        <a href="https://w3c.github.io/rdf-star/tests/turtle/syntax/">Turtle-star syntax tests</a>,
+        or <a href="https://w3c.github.io/rdf-star/tests/trig/syntax/">TriG-star syntax tests</a>).
+      </p>
+
+      <p>A system supports RDF-star for output if it supports an output syntax for
+        an RDF 1.1 standard syntax that has additional syntax for  
+        <a>quoted triples</a>.
+        Such output syntaxes include those in the
+        <a href="https://w3c.github.io/rdf-star/tests/">RDF-star test suite</a>
+        (<a href="https://w3c.github.io/rdf-star/tests/nt/syntax/">N-Triples-star syntax tests</a>,
+        <a href="https://w3c.github.io/rdf-star/tests/turtle/syntax/">Turtle-star syntax tests</a>,
+        or <a href="https://w3c.github.io/rdf-star/tests/trig/syntax/">TriG-star syntax tests</a>).
+      </p>
+      <p> 
+        A system supports SPARQL-star if it passes
+        the <a href="https://w3c.github.io/rdf-star/tests/sparql/syntax/"
+           >SPARQL-star syntax</a> test suite
+        and the <a href="https://w3c.github.io/rdf-star/tests/sparql/eval/"
+           >SPARQL-star evaluation</a> test suites.
+      </p>
+    </section>
+
+  </section>
+
+  <section id="concepts">
+    <h2>Concepts and Abstract Syntax</h2>
+
+    <p>In the following, we introduce a number of definitions specific to SPARQL-star, which rely on the following notions (extending some of them) defined in [[[RDF11-CONCEPTS]]] [[RDF11-CONCEPTS]]:
+    <dfn data-cite="RDF11-CONCEPTS#dfn-blank-node">blank node</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-default-graph">default graph</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-graph-name">graph name</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-iri">IRI</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-literal">literal</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-named-graph">named graphs</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-subject">subject</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-predicate">predicate</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-object">object</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-rdf-dataset">RDF dataset</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-rdf-graph">RDF graph</dfn>,
+    <dfn data-cite="RDF11-CONCEPTS#dfn-rdf-triple">RDF triple</dfn>,
+    and <dfn data-cite="RDF11-CONCEPTS#dfn-rdf-term">RDF term</dfn>.
+    </p>
+
+    <p>An <dfn data-lt="graph">RDF-star graph</dfn> is a set of <a>RDF-star triples</a>.</p>
+
+    <p>An <dfn data-lt="triple">RDF-star triple</dfn> is a 3-tuple defined recursively as follows:</p>
+    <ul>
+      <li>any <a>RDF triple</a> is an <a>RDF-star triple</a>;</li>
+      <li>if |t| and <var>t'</var> are <a>RDF-star triples</a>, |s| is an <a>IRI</a> or a <a>blank node</a>, |p| is an <a>IRI</a>, |o| is an <a>IRI</a>, a <a>blank node</a> or a <a>literal</a>, then (|t|, |p|, |o|), (|s|, |p|, |t|) and (|t|, |p|, <var>t'</var>) are <a>RDF-star triples</a>.</li>
+    </ul>
+
+    <p>As for <a>RDF triples</a>, we call the 3 components of an <a>RDF-star triple</a> its <a>subject</a>, <a>predicate</a> and <a>object</a>, respectively. From the definitions above, it follows that any <a>RDF graph</a> is also an <a>RDF-star graph</a>. Note also that, by definition, an RDF-star triple cannot contain itself and cannot be nested infinitely.</p>
+
+    <p><a>IRIs</a>, <a>literals</a>, <a>blank nodes</a> and <a>RDF-star triples</a> are collectively known as <dfn>RDF-star terms</dfn>.</p>
+
+    <p>For every <a>RDF-star triple</a> <var>t</var>, we define its <dfn data-lt="constituent">constituent terms</dfn> (or simply constituents) as the set containing its <a>subject</a>, its <a>predicate</a>, its <a>object</a>, plus all the <a>constituent terms</a> of its <a>subject</a> and/or its <a>object</a> if they are themselves <a>RDF-star triples</a>. By extension, we define the <a>constituent terms</a> of an <a>RDF-star graph</a> to be the union set of the <a>constituent terms</a> of all its triples.</p>
+
+    <div class="example">
+      Consider the following <a>RDF-star triple</a> (represented in Turtle-star):
+      <pre data-transform="updateExample"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+      >
+        <!--
+        << _:a :name "Alice" >> :statedBy :bob.
+        -->
+      </pre>
+      Its set of <a>constituent terms</a> comprises the <a>IRIs</a> `:name`, `:statedBy`, `:bob`, the <a>blank node</a> `_:a`, the <a>literal</a> `"Alice"`, and the <a>triple</a> `&lt;&lt; _:a :name "Alice" >>`.
+    </div>
+
+    <p>An <a>RDF-star triple</a> used as the <a>subject</a> or <a>object</a> of another <a>RDF-star triple</a> is called a <dfn data-lt="quoted">quoted triple</dfn>. An <a>RDF-star triple</a> that is an element of an <a>RDF-star graph</a> is called an <dfn data-lt="asserted">asserted triple</dfn>. Note that, in a given <a>RDF-star graph</a>, the same <a>triple</a> MAY be both <a>quoted</a> and <a>asserted</a>.</p>
+
+    <p>An <dfn data-lt="dataset">RDF-star dataset</dfn> is a collection of <a>RDF-star graphs</a>, and comprises:</p>
+
+    <ul>
+      <li>Exactly one <a>default graph</a>, being an <a>RDF-star graph</a>. The <a>default graph</a> does not have a name and MAY be empty.</li>
+      <li>Zero or more <a>named graphs</a>. Each <a>named graph</a> is a pair consisting of either an <a>IRI</a> or a <a>blank node</a> (called the <a>graph name</a>), and an <a>RDF-star graph</a>. <a>Graph names</a> are unique within an <a>RDF-star dataset</a>.</li>
+    </ul>
+
+    <p>Again, this definition is an extension of the notion of <a>RDF dataset</a>, hence it follows that any <a>RDF dataset</a> is also an <a>RDF-star dataset</a>.</p>
+
+    <section class="informative" id="quoted-triples">
+      <h2>Quoted and Asserted Triples</h2>
+
+      <p>
+        A triple in RDF is a tuple of three components: subject, predicate, and object. These are
+        collectively known as <a>RDF Terms</a> as defined in [[RDF11-CONCEPTS]].
+      </p>
+      <p>
+        RDF-star introduces <a>quoted triple</a>, which is a new kind of RDF term.
+        A <em>quoted triple</em> is a triple used as the subject or object of another triple. Quoted
+        triples can also be called "embedded triples".
+      </p>
+
+      <p>
+        in RDF 1.1, an <a>asserted triple</a> is an element of the set of triples that
+        make up an <a>RDF graph</a>. RDF-star does not change this except that an RDF-star
+        triple can contain quoted triples. A triple can be used as an <em>asserted
+        triple</em>, a <em>quoted triple</em>, or both, in a given graph.
+      </p>
+
+      <p>
+        A quoted triple is written in Turtle-star and related syntaxes using delimiters `&lt;&lt;` and `&gt;&gt;`.
+      </p>
+      <p style="margin-left: 2em;">
+        <code>
+          &lt;&lt; :a :name "Alice" &gt;&gt;
+        </code>
+      </p>
+      <p>
+        The definition of <a>quoted triple</a> is recursive. That is, a quoted triple can itself have a
+        subject or object component which is another quoted triple. Cycles of quoted
+        triples can not be created.  In the next example, there is a quoted triple with
+        property `:reportedBy`, whose subject is another quoted triple, `:a :name
+        "Alice"`.
+      </p>
+      <p style="margin-left: 2em;">
+        <code>
+          &lt;&lt; &lt;&lt; :a :name "Alice" &gt;&gt;  :reportedBy :charlie &gt;&gt;
+        </code>
+      </p>
+      <div class="note">
+      <p>
+        It may be apt to draw a parallel between &quot;quoted&quot; triples and
+        quoted expressions in the <em>programming language Lisp</em>.
+        Expressions in Lisp (called &quot;s-expressions&quot;) are interpreted
+        through a process called &quot;evaluation&quot;, and as a result they
+        have a value. A quoted expression evaluates to the expression itself -
+        you can imagine that quoting prevents the expression from being
+        evaluated. In RDF (as well as in RDF-star), <em>asserting</em> a triple
+        (i.e., considering it to be &quot;true&quot;) serves as the analogue of
+        evaluation. Triples are asserted, unless (in RDF-star) they are quoted
+        which, effectively, prevents the triple from being asserted - thus a
+        quoted triple stands by itself and we assign no truth value to it.
+      </p>
+      <p>
+        Obviously this way of thinking is helpful only if you understand how Lisp works.
+      </p>
+      </div>
+    </section>
+
+    <section id="rdf-star-graph-examples">
+      <h2>RDF-star Graph Examples</h2>
+        
+      <p>
+        In the example below, there is a quoted triple, `:a :name "Alice"`, which is used
+        as the subject for an asserted triple:
+      </p>
+      <pre data-transform="updateExample" data-content-type="text/turtle" class="nohighlight example">
+        <!--
+            PREFIX : <http://www.example.org/> 
+
+            :bob :name "Bob" .
+            << :a :name "Alice" >> :statedBy :bob .
+              -->
+      </pre> 
+      <p>
+        The graph of this example has two asserted triples:
+      </p>
+      <ol>
+        <li>`:bob :name "Bob" .`</li>
+        <li>`&lt;&lt; :a :name "Alice" &gt;&gt; :statedBy :bob .`</li>
+      </ol>
+      <p>
+        This graph does not have an asserted triple, `:a :name "Alice"`, because
+        that triple is not an element of the set of triples.
+      </p>
+      <p>
+        On the other hand, the graph in the example below contains three asserted triples:
+        the same two as the previous example, and `:a :name "Alice"`. The latter is used
+        both as an <a>asserted triple</a> and a <a>quoted triple</a> in this graph.
+      </p>
+      <pre data-transform="updateExample" data-content-type="text/turtle" class="nohighlight example">
+        <!--
+            PREFIX : <http://www.example.org/> 
+
+            :bob :name "Bob" .
+            :a :name "Alice" .
+            << :a :name "Alice" >> :statedBy :bob .
+              -->
+      </pre>  
+    </section>
+    
+    <section class="informative" id="occurrences">
+      <h2>Triples and occurrences</h2>
+
+      <p>According to the definitions above, an <a>RDF-star triple</a> is an abstract entity whose identity is entirely defined by its subject, predicate, and object. Conversely, given three <a>RDF-star terms</a> |s|, |p|, and |o|, there is exactly and only one <a>RDF-star triple</a> with subject |s|, predicate |p|, and object |o|. This unique triple (|s|, |p|, |o|) can be <a>quoted</a> as the subject or object of multiple other triples, but must be assumed to represent the <em>same thing</em> everywhere it occurs, just like the same <a>IRI</a> |p| is assumed to represent the same thing everywhere it occurs.</p>
+
+      <p>In some situations, however, it might be necessary to distinguish the <em>occurrences</em> of a triple in different graphs. Consider the following sentence: "The triple `&lt;http://example.org/s&gt; &lt;http://example.org/p&gt; &lt;http://example.org/o&gt;` in (the graph represented by) file1.ttl was added by Alice, and the same triple in file2.ttl was added by Bob." Note that the words "same triple" in this sentence may be confusing, because although the triple (as an abstract entity) is the same, its respective occurrences are different things, each within a different file and with a different author (this is known, in philosophy and linguistics, as the <a href="https://en.wikipedia.org/wiki/Type%E2%80%93token_distinction">type-token distinction</a>). As the <a>quoted triple</a> represents a unique thing, adequately conveying the meaning of the sentence above requires additional nodes for representing the two distinct occurrences. One possible solution is illustrated in the following example (using the Turtle-star concrete syntax described in <a href="#turtle-star">the next section</a>).</p>
+
+      <pre data-transform="updateExample" id="occurrences-example"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+      >
+        <!--
+        _:a :occurrenceOf << :s :p :o >> ;
+            :in <file1.ttl> ;
+            dct:creator :alice.
+        _:b :occurrenceOf << :s :p :o >> ;
+            :in <file2.ttl> ;
+            dct:creator :bob.
+        -->
+      </pre>
+    </section>
+
+  </section>
+
+  <section>
+  <h2>Concrete Syntaxes</h2>
+
+  <p>This section defines the following concrete syntaxes:</p>
+  <ul>
+    <li><a href="#turtle-star" class="sectionRef"></a></li>
+    <li><a href="#trig-star" class="sectionRef"></a></li>
+    <li><a href="#n-triples-star" class="sectionRef"></a></li>
+    <li><a href="#n-quads-star" class="sectionRef"></a></li>
+    <li><a href="#other-concrete-syntaxes" class="sectionRef"></a></li>
+  </ul>
+
+  <p>
+    Changes for SPARQL-star are given in
+    <a href="#sparql-star-grammar" class="sectionRef"></a>
+    and the changes for the result set formats in
+    <a href="#query-result-formats" class="sectionRef"></a>.</p>
+
+    <section id="annotation-syntax">
+      <h2>Annotation Syntax</h2>
+      <p>There are syntax additions for <a>quoted triples</a> and also for
+        <dfn data-lt="annotation-syntax">annotation syntax</dfn>
+        which provides a convenient shortcut in Turtle-star and
+        TriG-star syntaxes. It is used to both assert a triple and have that triple be the
+        subject of further triples. It uses delimiters `{|` and `|}` following an asserted
+        triple to make that triple, as a <a>quoted triple</a>, the subject of the
+        RDF-star triples formed by combining it with the enclosed RDF predicate(s) and object(s).
+      </p>
+      <p>
+        Annotation syntax does not appear in the RDF-star abstract data model. It is
+        only a syntactic short cut and the RDF-star abstract data model does not
+        distinguished how the triples were written.
+      </p>
+      <pre data-transform="updateExample" 
+           data-content-type="text/turtle" 
+           class="nohighlight example">
+        <!--
+            :a :name "Alice" {| :statedBy :bob ; :recorded "2021-07-07"^^xsd:date |} .
+          -->
+      </pre>
+      <p>is the same set of triples as:</p>
+      <pre data-transform="updateExample"
+           data-content-type="text/turtle"
+           class="nohighlight example">
+        <!--
+            << :a :name "Alice" >> :statedBy :bob .
+            << :a :name "Alice" >> :recorded "2021-07-07"^^xsd:date .
+            :a :name "Alice"
+         -->
+      </pre>
+      <p>and <a>RDF-star graph</a> contains three asserted triples.</p>
+    </section>
+
+  <section id="turtle-star">
+    <h2>Turtle-star</h2>
+    <p>In this section, we present Turtle-star,
+      an extension of the Turtle format [[TURTLE]]
+      allowing the representation of <a>RDF-star graphs</a>.
+      For the sake of conciseness,
+      we only describe here the differences between Turtle-star and Turtle.</p>
+
+    <section id="turtle-star-grammar">
+      <h2>Grammar</h2>
+      <p>Turtle-star is defined to follow the <a data-cite="TURTLE#h3_sec-grammar-grammar">same grammar</a> as Turtle,
+        <em>except</em> for the <a data-cite="XML#sec-notation"><abbr title="Extended Backus-Naur Form">EBNF</abbr> productions</a> specified below,
+        which replace the productions having the same number (if any) in the original grammar.</p>
+
+      <table class="grammar">
+        <tr id="grammar-production-objectList">
+          <td>[8]</td>
+          <td>`objectList`</td>
+          <td>::=</td>
+          <td>
+            <a href="#grammar-production-object">object</a>
+            <a style="font-weight: bold" href="#grammar-production-annotation">annotation</a>`?`
+            `(`
+            <code class="grammar-literal">','</code>
+            <a href="#grammar-production-object">object</a>
+            <a style="font-weight: bold" href="#grammar-production-annotation">annotation</a>`?`
+            `)*`
+          </td>
+        </tr>
+        <tr id="grammar-production-subject">
+          <td>[10]</td>
+          <td>`subject`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="TURTLE#grammar-production-iri">iri</a> `|`
+            <a data-cite="TURTLE#grammar-production-BlankNode">BlankNode</a> `|`
+            <a data-cite="TURTLE#grammar-production-collection">collection</a> `|`
+            <a style="font-weight: bold" href="#grammar-production-quotedTriple">quotedTriple</a>
+          </td>
+        </tr>
+        <tr id="grammar-production-object">
+          <td>[12]</td>
+          <td>`object`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="TURTLE#grammar-production-iri">iri</a> `|`
+            <a  data-cite="TURTLE#grammar-production-BlankNode">BlankNode</a> `|`
+            <a  data-cite="TURTLE#grammar-production-collection">collection</a> `|`
+            <a data-cite="TURTLE#grammar-production-blankNodePropertyList">blankNodePropertyList</a> `|`
+            <a data-cite="TURTLE#grammar-production-literal">literal</a> `|`
+            <a style="font-weight: bold" href="#grammar-production-quotedTriple">quotedTriple</a>
+          </td>
+        </tr>
+        <tr style="font-weight: bold" id="grammar-production-quotedTriple">
+          <td>[27t]</td>
+          <td>`quotedTriple`</td>
+          <td>::=</td>
+          <td>
+            <code class="grammar-literal">'&lt;&lt;'</code>
+            <a href="#grammar-production-qtSubject">qtSubject</a>
+            <a data-cite="TURTLE#grammar-production-verb">verb</a>
+            <a href="#grammar-production-qtObject">qtObject</a>
+            <code class="grammar-literal">'&gt;&gt;'</code>
+          </td>
+        </tr>
+        <tr style="font-weight: bold" id="grammar-production-qtSubject">
+          <td>[28t]</td>
+          <td>`qtSubject`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="TURTLE#grammar-production-iri">iri</a> `|`
+            <a  data-cite="TURTLE#grammar-production-BlankNode">BlankNode</a> `|`
+            <a href="#grammar-production-quotedTriple">quotedTriple</a>
+          </td>
+        </tr>
+        <tr style="font-weight: bold" id="grammar-production-qtObject">
+          <td>[29t]</td>
+          <td>`qtObject`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="TURTLE#grammar-production-iri">iri</a> `|`
+            <a  data-cite="TURTLE#grammar-production-BlankNode">BlankNode</a> `|`
+            <a data-cite="TURTLE#grammar-production-literal">literal</a> `|`
+            <a href="#grammar-production-quotedTriple">quotedTriple</a>
+          </td>
+        </tr>
+        <tr style="font-weight: bold" id="grammar-production-annotation">
+          <td>[30t]</td>
+          <td>`annotation`</td>
+          <td>::=</td>
+          <td>
+            <code class="grammar-literal">'{|'</code>
+            <a  data-cite="TURTLE#grammar-production-predicateObjectList">predicateObjectList</a>
+            <code class="grammar-literal">'|}'</code>
+          </td>
+        </tr>
+      </table>
+
+      <p class="note">The complete grammar may be found in <a href="#turtle-star-ebnf"></a>.</p>
+
+      <p class="note">
+        The changes are that <a href="#grammar-production-subject">`subject`</a>
+        and <a href="#grammar-production-object">`object`</a> productions
+        have been extended to accept <a>quoted triples</a>,
+        which are described by the new productions <a href="#grammar-production-quotedTriple">27t</a>
+        to <a href="#grammar-production-qtObject">30t</a>.
+        Note that <a>quoted triples</a> accept a more restricted range of
+        <a>subject</a> and <a>object</a> expressions
+        than <a>asserted triples</a>.
+        Additionally, the <a href="#grammar-production-objectList">`objectList`</a> production
+        now accepts an optional <a href="#grammar-production-annotation">annotation</a> after each <a>object</a>.</p>
+    </section>
+
+    <section id="turtle-star-parsing">
+      <h2>Parsing</h2>
+      <p>A Turtle-star parser is similar to a Turtle parser
+        as defined in <a data-cite="TURTLE#h2_sec-parsing">Section 7 of the Turtle specification</a> [[TURTLE]],
+        with an additional item in its state :</p>
+      <ul>
+        <li id="curObject">
+          <a>RDF-star Term</a> |curObject| —
+          The |curObject| is bound to the <a href="#grammar-production-qtObject">`qtObject`</a> production.</li>
+      </ul>
+      <p>Additionally, the <a data-cite="TURTLE#curSubject">|curSubject|</a>
+        can be bound to any <a>RDF-star term</a>
+        (including a <a>quoted triple</a>).</p>
+
+      <p>A <dfn>Turtle-star document</dfn> defines an <a>RDF-star graph</a>
+        composed of a set of <a>RDF-star triples</a>.
+        The <a href="#grammar-production-subject">`subject`</a>
+        and <a href="#grammar-production-qtSubject">`qtSubject`</a> productions set the |curSubject|.
+        The <a data-cite="TURTLE#grammar-production-verb">`verb`</a> production
+        sets the <a data-cite="TURTLE#curPredicate">|curPredicate|</a>.
+        The <a href="#grammar-production-object">`object`</a>
+        and <a href="#grammar-production-qtObject">`qtObject`</a> productions
+        set the |curObject|.
+        Finishing the <a href="#grammar-production-object">`object`</a> production,
+        an <a>RDF-star triple</a> |curSubject| |curPredicate| |curObject| is produced
+        (added to the <a>RDF-star graph</a>).</p>
+
+      <p>Beginning the <a href="#grammar-production-quotedTriple">`quotedTriple`</a> production
+        records the |curSubject| and |curPredicate|.
+        Finishing the <a href="#grammar-production-quotedTriple">`quotedTriple`</a> production
+        yields the <a>RDF-star triple</a> |curSubject| |curPredicate| |curObject|
+        and restores the recorded values of |curSubject| and |curPredicate|.</p>
+
+      <p>Beginning the <a href="#grammar-production-annotation">`annotation`</a> production
+        records the |curSubject| and |curPredicate|,
+        and sets the |curSubject| to the <a>RDF-star triple</a> |curSubject| |curPredicate| |curObject|.
+        Finishing the <a href="#grammar-production-annotation">`annotation`</a> production
+        restores the recorded values of |curSubject| and |curPredicate|.</p>
+
+      <p>All other productions MUST be handled as specified
+        by <a data-cite="TURTLE#h2_sec-parsing">Section 7 of the Turtle specification</a> [[TURTLE]],
+        while still applying the changes above recursively.</p>
+
+      <section id="turtle-star-parsing-discussion" class="informative">
+      <h2>Discussion</h2>
+
+      <p>This section describes parser behavior when parsing
+        a <a>Turtle-star document</a> that contains <a>quoted triples</a>
+        and <a href="#grammar-production-annotation">annotations</a>.</p>
+
+      <p>Consider a Turtle-star document that describes an RDF triple,
+        and also uses that triple as a <a>quoted triple</a>
+        as the subject of another RDF-star triple:</p>
+
+      <pre class="example" title="Turtle-star quoted triples"
+           data-transform="updateExample"
+           data-content-type="text/turtle">
+      <!--
+        BASE <http://example.org/>
+        PREFIX : <#> 
+        _:a :name "Alice" .
+        << _:a :name "Alice" >> :statedBy :bob .
+      -->
+      </pre>
+
+      <p>The usual process of parsing a Turtle document
+        applies with the addition of matching the <a>quoted triple</a>
+        `&lt;&lt; _:a :name "Alice" >>`
+        as part of the <a href="#grammar-production-subject">`subject`</a> production.
+        The resulting RDF-star graph consists of two RDF-star triples:</p>
+
+      <ol>
+        <li>(|b|, `http://example.org/#name`, `"Alice"`),
+          where |b| is a blank node</li>
+        <li>((|b|, `http://example.org/#name`, `"Alice"`), `http://example.org/#statedBy`, `http://example.org/#bob/`),
+          where |b| is the same blank node</li>
+      </ol>
+
+      <p>Because the above example includes the triple (|b|, `http://example.org/#name`, `"Alice"`)
+        as an <a>asserted triple</a>,
+        the same RDF-star graph may also be represented
+        by using the Turtle-star <a>annotation syntax</a> as follows:</p>
+
+      <pre class="example"
+           data-transform="updateExample"
+           data-content-type="text/turtle"
+           title="Turtle-star annotated triples">
+      <!--
+        BASE <http://example.org/>
+        PREFIX : <#>
+        _:a :name "Alice" {| :statedBy :bob |} .
+      -->
+      </pre>
+
+      <p>In this case, the <a href="#grammar-production-objectList">`objectList`</a> production
+        matches the <a href="#grammar-production-annotation">`annotation`</a> production on `{| :source :bob |}`
+        after parsing the <a href="#grammar-production-object">`object`</a> production on `"Alice"`.
+        At this point, the |curSubject|, |curPredicate|, and |curObject| are saved,
+        and a new RDF-star triple `_:a :name "Alice"` is created
+        and used as |curSubject| while processing
+        the <a href="#grammar-production-annotation">`annotation`</a> production.</p>
+      </section>
+    </section>
+  </section>
+
+  <section id="trig-star">
+    <h2>TriG-star</h2>
+
+    <p>This section describes TriG-star,
+      a minimal extension of the TriG format [[TRIG]]
+      using the same production updates described in <a href="#turtle-star" class="sectionRef"></a>.</p>
+
+    <p class="note">RDF-star describes <a>quoted triples</a>,
+      which are not necessarily present in any <a>named graph</a>,
+      or within the <a>default graph</a>.</p>
+
+    <p>A <dfn>TriG-star document</dfn> defines an <a>RDF-star dataset</a>, composed of
+      a single <a>default graph</a> and zero or more <a>named graphs</a>,
+      all of which are <a>RDF-star graphs</a>.</p>
+
+    <section id="trig-star-grammar">
+      <h2>Grammar</h2>
+      <p>TriG-star is defined to follow the <a data-cite="TRIG#grammar-ebnf">same grammar</a> as TriG,
+        <em>except</em> for the <a data-cite="XML#sec-notation"><abbr title="Extended Backus-Naur Form">EBNF</abbr> productions</a> specified below,
+        which replace the productions having the same number (if any) in the original grammar.</p>
+
+      <p>The TriG-star grammar contains exactly the same production updates
+        described in <a href="#turtle-star-grammar" class="sectionRef"></a>
+        with an additional change to the <a href="#trig-grammar-production-triplesOrGraph">triplesOrGraph</a> production.</p>
+
+      <table class="grammar">
+        <tr id="trig-grammar-production-triplesOrGraph">
+          <td>[3g]</td>
+          <td>`triplesOrGraph`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="TRIG#grammar-production-labelOrSubject">labelOrSubject</a>
+            `(`
+            <a data-cite="TRIG#grammar-production-wrappedGraph">wrappedGraph</a>
+            `|`
+            <a data-cite="TRIG#grammar-production-predicateObjectList">predicateObjectList</a>
+            `'.' )`
+            <div style="font-weight: bold">
+              `|`
+              <a href="#trig-grammar-production-quotedTriple">quotedTriple</a>
+              <a data-cite="TRIG#grammar-production-predicateObjectList">predicateObjectList</a>
+              `'.'`
+            </div>
+          </td>
+        </tr>
+        <tr id="trig-grammar-production-objectList">
+          <td>[8]</td>
+          <td>`objectList`</td>
+          <td>::=</td>
+          <td>
+            <a href="#trig-grammar-production-object">object</a>
+            <a style="font-weight: bold" href="#trig-grammar-production-annotation">annotation</a>`?`
+            `(`
+            <code class="grammar-literal">','</code>
+            <a href="#trig-grammar-production-object">object</a>
+            <a style="font-weight: bold" href="#trig-grammar-production-annotation">annotation</a>`?`
+            `)*`
+          </td>
+        </tr>
+        <tr id="trig-grammar-production-subject">
+          <td>[10]</td>
+          <td>`subject`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="TRIG#grammar-production-iri">iri</a> `|`
+            <a data-cite="TRIG#grammar-production-BlankNode">BlankNode</a> `|`
+            <a data-cite="TRIG#grammar-production-collection">collection</a> `|`
+            <a style="font-weight: bold" href="#trig-grammar-production-quotedTriple">quotedTriple</a>
+          </td>
+        </tr>
+        <tr id="trig-grammar-production-object">
+          <td>[12]</td>
+          <td>`object`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="TRIG#grammar-production-iri">iri</a> `|`
+            <a  data-cite="TRIG#grammar-production-BlankNode">BlankNode</a> `|`
+            <a  data-cite="TRIG#grammar-production-collection">collection</a> `|`
+            <a data-cite="TRIG#grammar-production-blankNodePropertyList">blankNodePropertyList</a> `|`
+            <a data-cite="TRIG#grammar-production-literal">literal</a> `|`
+            <a style="font-weight: bold" href="#trig-grammar-production-quotedTriple">quotedTriple</a>
+          </td>
+        </tr>
+        <tr style="font-weight: bold" id="trig-grammar-production-quotedTriple">
+          <td>[27t]</td>
+          <td>`quotedTriple`</td>
+          <td>::=</td>
+          <td>
+            <code class="grammar-literal">'&lt;&lt;'</code>
+            <a href="#trig-grammar-production-qtSubject">qtSubject</a>
+            <a data-cite="TURTLE#grammar-production-verb">verb</a>
+            <a href="#trig-grammar-production-qtObject">qtObject</a>
+            <code class="grammar-literal">'&gt;&gt;'</code>
+          </td>
+        </tr>
+        <tr style="font-weight: bold" id="trig-grammar-production-qtSubject">
+          <td>[28t]</td>
+          <td>`qtSubject`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="TRIG#grammar-production-iri">iri</a> `|`
+            <a  data-cite="TRIG#grammar-production-BlankNode">BlankNode</a> `|`
+            <a href="#trig-grammar-production-quotedTriple">quotedTriple</a>
+          </td>
+        </tr>
+        <tr style="font-weight: bold" id="trig-grammar-production-qtObject">
+          <td>[29t]</td>
+          <td>`qtObject`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="TRIG#grammar-production-iri">iri</a> `|`
+            <a  data-cite="TRIG#grammar-production-BlankNode">BlankNode</a> `|`
+            <a data-cite="TRIG#grammar-production-literal">literal</a> `|`
+            <a href="#trig-grammar-production-quotedTriple">quotedTriple</a>
+          </td>
+        </tr>
+        <tr style="font-weight: bold" id="trig-grammar-production-annotation">
+          <td>[30t]</td>
+          <td>`annotation`</td>
+          <td>::=</td>
+          <td>
+            <code class="grammar-literal">'{|'</code>
+            <a  data-cite="TRIG#grammar-production-predicateObjectList">predicateObjectList</a>
+            <code class="grammar-literal">'|}'</code>
+          </td>
+        </tr>
+      </table>
+
+      <p class="note">The complete grammar may be found in <a href="#trig-star-ebnf"></a>.</p>
+    </section>
+
+    <section id="trig-star-parsing">
+      <h3>Parsing</h3>
+      <p>TriG-star parsing uses the same updates described
+        in <a href="#turtle-star-parsing" class="sectionRef"></a>
+        as applied to <a data-cite="TRIG#sec-parsing">Section 5 of the TriG specification</a> [[TRIG]].</p>
+
+      <p class="note">As with Turtle-star,
+        the <a href="#grammar-production-quotedTriple">`quotedTriple`</a>
+        and <a href="#grammar-production-annotation">`annotation`</a>
+        are used to set either the |curSubject| or |curObject|,
+        and do not directly add the associated <a>quoted triple</a> to |curGraph|.
+        Subsequent productions which use either |curSubject| or |curObject|
+        may result in adding triples to |curGraph|.</p>
+
+      <p>A conforming TriG-star parser MUST parse any
+        valid <strong>TriG document</strong> and any
+        valid <a>Turtle-star document</a> in addition
+        to the <a href="#turtle-star-grammar">Turtle-star grammar</a> productions contained within a <a>named graph</a>.</p>
+    </section>
+
+    <section id="trig-star-discussion" class="informative">
+      <h3>Discussion</h3>
+
+      <p>TriG-star allows the same expressivity as Turtle-star
+        with the addition of allowing <a>quoted triples</a>
+        and <a href="#grammar-production-annotation">annotations</a>
+        within named graphs.</p>
+
+      <pre class="example"
+           data-transform="updateExample"
+           data-content-type="text/turtle"
+           title="TriG-star annotated triples">
+      <!--
+        BASE <http://example.org/>
+        PREFIX : <#>
+        :G {
+          _:a :name "Alice" {| :statedBy :bob |} .
+        }
+      -->
+      </pre>
+
+      <p>The resulting RDF-star dataset consists of
+      an empty default graph, and a graph named `http://example.org/#G`
+      with two RDF-star triples:</p>
+
+      <ol>
+        <li>(|b|, `http://example.org/#name`, `"Alice"`),
+          where |b| is a blank node</li>
+        <li>((|b|, `http://example.org/#name`, `"Alice"`), `http://example.org/#statedBy`, `http://example.org/#bob/`),
+          where |b| is the same blank node</li>
+      </ol>
+    </section>
+  </section>
+
+  <section id="n-triples-star">
+    <h2>N-Triples-star</h2>
+
+    <p>This section describes N-Triples-star,
+      a minimal extension of the N-Triples format [[N-TRIPLES]]
+      allowing a <a>subject</a> or an <a>object</a>
+      of an <a>RDF-star triple</a> to be a <a>quoted triple</a>.</p>
+
+    <section id="n-triples-star-grammar">
+      <h2>Grammar</h2>
+      <p>N-Triples-star is defined to follow the same grammar as
+        the <a data-cite="N-TRIPLES#n-triples-grammar">N-Triples Grammar</a>,
+        except for the <a data-cite="XML#sec-notation"><abbr title="Extended Backus-Naur Form">EBNF</abbr> productions</a> specified below,
+        which replace the productions having the same number
+        (if any) in the original grammar.</p>
+
+      <table class="grammar">
+        <tbody id="grammar-productions" class="ebnf">
+          <tr id="grammar-production-nt-subject">
+            <td>[3]</td>
+            <td>`subject`</td>
+            <td>::=</td>
+            <td><a data-cite="N-TRIPLES#grammar-production-IRIREF">IRIREF</a> <code>|</code> <a data-cite="N-TRIPLES#grammar-production-BLANK_NODE_LABEL">BLANK_NODE_LABEL</a> <code>|</code> <a style="font-weight: bold" href="#grammar-production-nt-quotedTriple">quotedTriple</a></td>
+          </tr>
+          <tr id="grammar-production-nt-object">
+            <td>[5]</td>
+            <td>`object`</td>
+            <td>::=</td>
+            <td><a data-cite="N-TRIPLES#grammar-production-IRIREF">IRIREF</a> <code>|</code> <a data-cite="N-TRIPLES#grammar-production-BLANK_NODE_LABEL">BLANK_NODE_LABEL</a> <code>|</code> <a data-cite="N-TRIPLES#grammar-production-literal">literal</a> <code>|</code> <a style="font-weight: bold" href="#grammar-production-nt-quotedTriple">quotedTriple</a></td>
+          </tr>
+          <tr style="font-weight: bold" id="grammar-production-nt-quotedTriple">
+            <td>[7t]</td>
+            <td>`quotedTriple`</td>
+            <td>::=</td>
+            <td>&quot;&lt;&lt;&quot; <a href="#grammar-production-nt-subject">subject</a> <a data-cite="N-TRIPLES#grammar-production-predicate">predicate</a> <a href="#grammar-production-nt-object">object</a> &quot;&gt;&gt;&quot;</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="note">The complete grammar may be found in <a href="#n-triples-star-ebnf"></a>.</p>
+
+      <p class="note">The changes are that
+        <a href="#grammar-production-nt-subject">`subject`</a>
+        and <a href="#grammar-production-nt-object">`object`</a> productions
+        have been extended to accept <a>quoted triples</a>,
+        which are described by the new production
+        <a href="#grammar-production-nt-quotedTriple">7</a>.</p>
+    </section>
+
+    <section id="n-triples-star-parsing">
+      <h2>Parsing</h2>
+      <p>In contrast to [[N-TRIPLES]],
+        N-Triples-star allows recursion on the
+        <a href="#grammar-production-nt-subject">`subject`</a>
+        and <a href="#grammar-production-nt-object">`object`</a> productions.</p>
+
+      <p>An <dfn>N-Triples-star document</dfn> defines an <a>RDF-star graph</a>
+        composed of a set of <a>RDF-star triples</a>.
+        The <a data-cite="N-TRIPLES#grammar-production-triple">`triple`</a> production
+        produces an <a>RDF-star triple</a>
+        composed of a <a href="#grammar-production-nt-subject">`subject`</a>,
+        <a data-cite="N-TRIPLES#grammar-production-predicate">`predicate`</a>,
+        and <a href="#grammar-production-nt-object">`object`</a>.</p>
+
+      <p>In addition to the <a data-cite="N-TRIPLES#sec-parsing-terms">Term Constructors</a> defined in [[N-TRIPLES]],
+        an additional constructor is defined for <a href="#grammar-production-nt-quotedTriple">`quotedTriple`</a>
+        of type <a>RDF-star triple</a>
+        defined by the terms constructed
+        for <a href="#grammar-production-nt-subject">`subject`</a>,
+        <a data-cite="N-TRIPLES#grammar-production-predicate">`predicate`</a>,
+        and <a href="#grammar-production-nt-object">`object`</a>.</p>
+
+    <p>All other productions MUST be handled as specified by
+      <a data-cite="N-TRIPLES#sec-parsing-terms">Section 8.1 of the N-Triples specification</a> [[N-TRIPLES]],
+      while still applying the changes above recursively.</p>
+    </section>
+  </section>
+
+  <section id="n-quads-star">
+    <h2>N-Quads-star</h2>
+
+    <p>The [[N-QUADS]] format is extended to describe the
+      N-Quads-star format using the same production updates described in the <a href="#n-triples-star-grammar">N-Triples-star Grammar</a>.</p>
+
+    <p class="note">The complete grammar may be found in <a href="#n-quads-star-ebnf"></a>.</p>
+
+    <p class="note">As RDF-star describes <a>quoted triples</a> and not quoted quads,
+      the <a data-cite="N-QUADS#grammar-production-graphLabel">`graphLabel`</a>
+      component of an N-Quads <a data-cite="N-QUADS#grammar-production-statement">`statement`</a>
+      does not apply to the <a href="#grammar-production-nt-quotedTriple">`quotedTriple`</a> component.</p>
+
+    <p>An <dfn>N-Quads-star document</dfn> defines an <a>RDF-star dataset</a>,
+      composed of a single <a>default graph</a>
+      and zero or more <a>named graphs</a>,
+      all of which are <a>RDF-star graphs</a>.</p>
+
+    <p>A conforming N-Quads-star parser MUST parse any valid
+      <strong>N-Quads document</strong> and additionally parse the 
+      <a href="#grammar-production-nt-subject"><code>subject</code></a> and 
+      <a href="#grammar-production-nt-object"><code>object</code></a> productions
+      from N-Triples-star to generate <a>RDF-star triples</a> which are
+      added to either the <a>default graph</a> or associated
+      <a>named graph</a>, as appropriate.</p>
+  </section>
+
+  <section id="other-concrete-syntaxes" class="informative">
+    <h2>Other Concrete Syntaxes</h2>
+
+    <p>While this document specifies a small number of concrete syntaxes,
+      nothing prevents other concrete syntaxes of RDF-star from being proposed.       In particular, syntaxes such as
+      RDF/XML [[RDF-SYNTAX-GRAMMAR]],
+      and JSON-LD [[JSON-LD]],
+      could be extended to support RDF-star.</p>
+  </section>
+
+  </section>
+
+  <section id="sparql-star">
+    <h2>SPARQL-star Query Language</h2>
+
+    <p>This Section introduces SPARQL-star, which is an RDF-star-aware extension of the RDF query language SPARQL [[SPARQL11-QUERY]]; i.e., SPARQL-star can be used to query RDF-star graphs.</p>
+
+    <section>
+      <h2>Initial Definitions</h2>
+
+      <p>In the following, we introduce a number of SPARQL-star-specific definitions, which rely on the following notions, defined in [[[SPARQL11-QUERY]]] [[SPARQL11-QUERY]]: 
+        <dfn data-cite="SPARQL11-QUERY#defn_QueryVariable" data-lt="variable">query variable</dfn>,
+        <dfn data-cite="SPARQL11-QUERY#defn_TriplePattern">triple pattern</dfn>,
+        <dfn data-cite="SPARQL11-QUERY#defn_PropertyPathPattern">property path pattern</dfn>,
+        <dfn data-cite="SPARQL11-QUERY#defn_PropertyPathExpr">property path expression</dfn>,
+        and <dfn data-cite="SPARQL11-QUERY#defn_sparqlSolutionMapping">solution mapping</dfn>.</p>
+
+      <p>A <dfn data-lt="triple-star-pattern">SPARQL-star triple pattern</dfn> is a 3-tuple that is defined recursively as follows:</p>
+      <ol>
+        <li>Every SPARQL <a>triple pattern</a> is a SPARQL-star triple pattern;
+        <li>If |t| and <var>t'</var> are SPARQL-star triple patterns, |x| is an <a>RDF term</a> or a <a>query variable</a>, and |p| is an <a>IRI</a> or a <a>query variable</a>, then (|t|,&nbsp;|p|,&nbsp;|x|), (|x|,&nbsp;|p|,&nbsp;|t|), and (|t|,&nbsp;|p|,&nbsp;<var>t'</var>) are SPARQL-star triple patterns.
+      </ol>
+
+      <p>As for <a>RDF-star triples</a>, a <a>SPARQL-star triple pattern</a> MUST NOT contain itself.</p>
+
+      <p>A <dfn data-lt="bgp-star|BGP-star">SPARQL-star basic graph pattern</dfn> (<abbr title="Basic Graph Pattern">BGP</abbr>-star) is a set of <a>SPARQL-star triple patterns</a>.</p>
+
+      <p>A <dfn data-lt="ppp-star">SPARQL-star property path pattern</dfn> is a 3-tuple (|s|,|p|,|o|) where</p>
+      <ul>
+        <li>|s| is either an <a>RDF term</a>, a <a>query variable</a>, or a <a>SPARQL-star triple pattern</a>,
+        <li>|p| is a <a>property path expression</a>, and
+        <li>|o| is either an <a>RDF term</a>, a <a>query variable</a>, or a <a>SPARQL-star triple pattern</a>.
+      </ul>
+
+      <p>A <dfn data-lt="solution-star-mapping">SPARQL-star solution mapping</dfn> μ is a partial function from the set of all <a>query variables</a> to the set of all <a>RDF-star terms</a>.
+      The domain of μ, denoted by dom(μ), is the set of <a>query variables</a> for which μ is defined.</p>
+
+      <p class="note">The notion of a <a>SPARQL-star solution mapping</a> extends the notion of a standard SPARQL <a>solution mapping</a>; that is, every SPARQL <a>solution mapping</a> is a <a>SPARQL-star solution mapping</a>. However, in contrast to SPARQL <a>solution mappings</a>, <a>SPARQL-star solution mappings</a> may map <a>variables</a> also to <a>RDF-star triples</a>.</p>
+
+      <p>All notions related to SPARQL solution mappings carry over naturally to SPARQL-star solution mappings. In particular, the definition of <dfn data-cite="SPARQL11-QUERY#defn_algCompatibleMapping">compatibility</dfn> extends naturally to SPARQL-star solution mappings: two <a>SPARQL-star solution mappings</a> μ<sub>1</sub> and μ<sub>2</sub> are compatible if, for every variable v that is both in dom(μ<sub>1</sub>) and in dom(μ<sub>2</sub>), μ<sub>1</sub>(v) and μ<sub>2</sub>(v) are the same <a>RDF-star term</a>.
+      In this case, μ<sub>1</sub> ∪ μ<sub>2</sub> is also a SPARQL-star solution mapping.
+      Moreover, for any SPARQL-star solution mapping&nbsp;μ we write card[Ω](μ) to denote the cardinality of μ in a multiset Ω of such mappings.
+      Finally, given a <a>BGP-star</a>&nbsp;|B| and a SPARQL-star solution mapping&nbsp;μ, we write μ(|B|) to denote the result of replacing every variable&nbsp;|v| in |B| for which μ is defined with μ(v).
+      </p>
+
+      <p>Next, we aim to carry over the notion of <a data-cite="SPARQL11-QUERY#BGPsparql">solutions for BGPs</a> to <a>BGP-star</a>. To this end, we first define an auxiliary concept that carries over the notion of an
+      <a data-cite="RDF11-MT#dfn-instance">RDF instance mapping</a> [[RDF11-MT]] to RDF-star.</p>
+
+      <p>An <dfn data-lt="rdf-star-instance-mapping">RDF-star instance mapping</dfn>&nbsp;σ is a partial function from the set of all <a>blank nodes</a> to the set of all <a>RDF-star terms</a>.
+      The domain of&nbsp;σ, denoted by dom(σ), is the set of <a>blank nodes</a> for which σ is defined.</p>
+
+      <p>Similar to the corresponding notation for solution mappings, for an RDF-star instance mapping&nbsp;σ and a BGP-star&nbsp;|B| we write σ(|B|) to denote the result of replacing every blank node&nbsp;|b| in |B| for which σ is defined with σ(b).</p>
+
+      <p>Now we are ready to define the notion of solution for BGP-star.</p>
+
+      <p>Given a <a>BGP-star</a>&nbsp;|B| and an <a>RDF-star graph</a>&nbsp;|G|, a <a>SPARQL-star solution mapping</a>&nbsp;μ is a <dfn data-lt="bgp-star-solution">solution for the BGP-star</dfn>&nbsp;|B| <b>over</b>&nbsp;|G| if it has the following two properties</p>
+      <ul>
+        <li>dom(μ) is equivalent to the set of query variables in&nbsp;|B|, and
+        <li>there exists an <a>RDF-star instance mapping</a>&nbsp;σ such that dom(σ) is equivalent to the set of blank nodes in&nbsp;|B| and μ(σ(|B|)) is a subgraph of |G|.
+      </ul>
+
+    </section>
+
+    <section id="sparql-star-grammar">
+      <h2>Grammar</h2>
+
+      <p>SPARQL-star is defined to follow the <a data-cite="SPARQL11-QUERY#sparqlGrammar">same grammar</a> as SPARQL&nbsp;1.1, <em>except</em> for the <a data-cite="XML#sec-notation"><abbr title="Extended Backus-Naur Form">EBNF</abbr> productions</a> specified below, which replace the productions having the same number (if any) in the original grammar. The parts in which these productions differ from the corresponding productions in the original grammar are marked in bold font. Productions <a href="#rQuotedTP">[174]</a> and following have been added and have no counterpart in the original grammar.</p>
+
+      <table class="grammar">
+        <tr id="rDataBlockValue">
+          <td>[65]</td>
+          <td>`DataBlockValue`</td>
+          <td>::=</td>
+          <td>
+            <span style="font-weight: bold"><a href="#rQuotedTriple">QuotedTriple</a> `|`</span>
+            <a data-cite="SPARQL11-QUERY#riri">iri</a> `|`
+            <a data-cite="SPARQL11-QUERY#rRDFLiteral">RDFLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rNumericLiteral">NumericLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rBooleanLiteral">BooleanLiteral</a> `|`
+            <code class="token">'UNDEF'</code>
+          </td>
+        </tr>
+          <tr id="rTriplesSameSubject">
+          <td>[75]</td>
+          <td>`TriplesSameSubject`</td>
+          <td>::=</td>
+          <td>
+            <a href="#rVarOrTermOrQuotedTP" style="font-weight: bold">VarOrTermOrQuotedTP</a>
+            <a data-cite="SPARQL11-QUERY#rPropertyListNotEmpty">PropertyListNotEmpty</a>
+            `|`
+            <a data-cite="SPARQL11-QUERY#rTriplesNode">TriplesNode</a>
+            <a data-cite="SPARQL11-QUERY#rPropertyList">PropertyList</a>
+        </td>
+        <tr id="rObject">
+          <td>[80]</td>
+          <td>`Object`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="SPARQL11-QUERY#rGraphNode">GraphNode</a>
+            <span style="font-weight: bold"><a href="#rAnnotationPattern">AnnotationPattern</a>`?`</span>
+          </td>
+        </tr>
+        <tr id="rTriplesSameSubjectPath">
+          <td>[81]</td>
+          <td>`TriplesSameSubjectPath`</td>
+          <td>::=</td>
+          <td>
+            <a href="#rVarOrTermOrQuotedTP" style="font-weight: bold">VarOrTermOrQuotedTP</a>
+            <a data-cite="SPARQL11-QUERY#rPropertyListPathNotEmpty">PropertyListPathNotEmpty</a>
+            `|`
+            <a data-cite="SPARQL11-QUERY#rTriplesNode">TriplesNode</a>
+            <a data-cite="SPARQL11-QUERY#rPropertyListPath">PropertyListPath</a>
+          </td>
+        </tr>
+        <tr id="rObjectPath">
+          <td>[87]</td>
+          <td>`ObjectPath`</td>
+          <td>::=</td>
+          <td>
+            <a href="#rGraphNodePath">GraphNodePath</a>
+            <span style="font-weight: bold"><a href="#rAnnotationPatternPath">AnnotationPatternPath</a>`?`</span>
+          </td>
+        </tr>
+        <tr id="rGraphNode">
+          <td>[104]</td>
+          <td>`GraphNode`</td>
+          <td>::=</td>
+          <td>
+            <a href="#rVarOrTermOrQuotedTP" style="font-weight: bold">VarOrTermOrQuotedTP</a> `|`
+            <a data-cite="SPARQL11-QUERY#rTriplesNodePath">TriplesNode</a>
+          </td>
+        </tr>
+        <tr id="rGraphNodePath">
+          <td>[105]</td>
+          <td>`GraphNodePath`</td>
+          <td>::=</td>
+          <td>
+            <a href="#rVarOrTermOrQuotedTP" style="font-weight: bold">VarOrTermOrQuotedTP</a> `|`
+            <a data-cite="SPARQL11-QUERY#rTriplesNodePath">TriplesNodePath</a>
+          </td>
+        </tr>
+        <tr id="rPrimaryExpression">
+          <td>[119]</td>
+          <td>`PrimaryExpression`</td>
+          <td>::=</td>
+          <td>
+            <a data-cite="SPARQL11-QUERY#rBrackettedExpression">BrackettedExpression</a> `|` 
+            <a data-cite="SPARQL11-QUERY#rBuiltInCall">BuiltInCall</a> `|` 
+            <a data-cite="SPARQL11-QUERY#ririOrFunction">iriOrFunction</a> `|` 
+            <a data-cite="SPARQL11-QUERY#rRDFLiteral">RDFLiteral</a> `|` 
+            <a data-cite="SPARQL11-QUERY#rNumericLiteral">NumericLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rBooleanLiteral">BooleanLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rVar">Var</a>
+            <div style="font-weight: bold">
+            `|` <a href="#rExprQuotedTP" style="font-weight: bold">ExprQuotedTP</a>
+            </div>
+          </td>
+        </tr>
+        <tr id="rBuiltInCall">
+          <td>[121]</td>
+          <td>`BuiltInCall`</td>
+          <td>::=</td>
+          <td>
+            <div>&nbsp;&nbsp;&nbsp;<a data-cite="SPARQL11-QUERY#rAggregate">Aggregate</a></div>
+            <div>
+              `|`
+              <code class="token">'STR'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'LANG'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'LANGMATCHES'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'DATATYPE'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'BOUND'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rVar">Var</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'IRI'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'URI'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'BNODE'</code>
+              `(`
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+              `|`
+              <a data-cite="SPARQL11-QUERY#rNIL">NIL</a>
+              `)`
+            </div>
+            <div>
+              `|`
+              <code class="token">'RAND'</code>
+              <a data-cite="SPARQL11-QUERY#rNIL">NIL</a>
+            </div>
+            <div>
+              `|`
+              <code class="token">'ABS'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'CEIL'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'FLOOR'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'ROUND'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'CONCAT'</code>
+              <a data-cite="SPARQL11-QUERY#rExpressionList">ExpressionList</a>
+            </div>
+            <div>
+              `|`
+              <a data-cite="SPARQL11-QUERY#rSubstringExpression">SubstringExpression</a>
+            </div>
+            <div>
+              `|`
+              <code class="token">'STRLEN'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <a data-cite="SPARQL11-QUERY#rStrReplaceExpression">StrReplaceExpression</a>
+            </div>
+            <div>
+              `|`
+              <code class="token">'UCASE'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'LCASE'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'ENCODE_FOR_URI'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'CONTAINS'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'STRSTARTS'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'STRENDS'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'STRBEFORE'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'STRAFTER'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'YEAR'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'MONTH'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'DAY'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'HOURS'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'MINUTES'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'SECONDS'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'TIMEZONE'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'TZ'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'NOW'</code>
+              <a data-cite="SPARQL11-QUERY#rNIL">NIL</a>
+            </div>
+            <div>
+              `|`
+              <code class="token">'UUID'</code>
+              <a data-cite="SPARQL11-QUERY#rNIL">NIL</a>
+            </div>
+            <div>
+              `|`
+              <code class="token">'STRUUID'</code>
+              <a data-cite="SPARQL11-QUERY#rNIL">NIL</a>
+            </div>
+            <div>
+              `|`
+              <code class="token">'MD5'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'SHA1'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'SHA256'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'SHA384'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'SHA512'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'COALESCE'</code>
+              <a data-cite="SPARQL11-QUERY#rExpressionList">ExpressionList</a>
+            </div>
+            <div>
+              `|`
+              <code class="token">'IF'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'STRLANG'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'STRDT'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'sameTerm'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'isIRI'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'isURI'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'isBLANK'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'isLITERAL'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <code class="token">'isNUMERIC'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div>
+              `|`
+              <a data-cite="SPARQL11-QUERY#rRegexExpression">RegexExpression</a>
+            </div>
+            <div>
+              `|`
+              <a data-cite="SPARQL11-QUERY#rExistsFunc">ExistsFunc</a>
+            </div>
+            <div>
+              `|`
+              <a data-cite="SPARQL11-QUERY#rNotExistsFunc">NotExistsFunc</a>
+            </div>
+            <div style="font-weight: bold">
+              `|`
+              <code class="token">'TRIPLE'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">','</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div style="font-weight: bold">
+              `|`
+              <code class="token">'SUBJECT'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div style="font-weight: bold">
+              `|`
+              <code class="token">'PREDICATE'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div style="font-weight: bold">
+              `|`
+              <code class="token">'OBJECT'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+            <div style="font-weight: bold">
+              `|`
+              <code class="token">'isTRIPLE'</code>
+              <code class="token">'('</code>
+              <a data-cite="SPARQL11-QUERY#rExpression">Expression</a>
+              <code class="token">')'</code>
+            </div>
+          </td>
+        </tr>
+        <tr id="rQuotedTP">
+          <td>[174]</td>
+          <td style="font-weight: bold">`QuotedTP`</td>
+          <td style="font-weight: bold">::=</td>
+          <td style="font-weight: bold">
+            <code class="token">'&lt;&lt;'</code>
+            <a href="#rqtSubjectOrObject">qtSubjectOrObject</a>
+            <a data-cite="SPARQL11-QUERY#rVerb">Verb</a>
+            <a href="#rqtSubjectOrObject">qtSubjectOrObject</a>
+            <code class="token">'&gt;&gt;'</code>
+          </td>
+        </tr>
+        <tr id="rQuotedTriple">
+          <td>[175]</td>
+          <td style="font-weight: bold">`QuotedTriple`</td>
+          <td style="font-weight: bold">::=</td>
+          <td style="font-weight: bold">
+            <code class="token">'&lt;&lt;'</code>
+            <a href="#rDataValueTerm">DataValueTerm</a>
+            `(`
+              <a data-cite="SPARQL11-QUERY#riri">iri</a>
+            `|`
+              <code class="token">'a'</code>
+            `)`
+            <a href="#rDataValueTerm">DataValueTerm</a>
+            <code class="token">'&gt;&gt;'</code>
+          </td>
+        </tr>
+        <tr id="rqtSubjectOrObject">
+          <td>[176]</td>
+          <td style="font-weight: bold">`qtSubjectOrObject`</td>
+          <td style="font-weight: bold">::=</td>
+          <td style="font-weight: bold">
+            <a data-cite="SPARQL11-QUERY#rVar">Var</a> `|`
+            <a data-cite="SPARQL11-QUERY#rBlankNode">BlankNode</a> `|`
+            <a data-cite="SPARQL11-QUERY#riri">iri</a> `|`
+            <a data-cite="SPARQL11-QUERY#rRDFLiteral">RDFLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rNumericLiteral">NumericLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rBooleanLiteral">BooleanLiteral</a> `|`
+            <a href="#rQuotedTP">QuotedTP</a>
+          </td>
+        </tr>
+        <tr id="rDataValueTerm">
+          <td>[177]</td>
+          <td style="font-weight: bold">`DataValueTerm`</td>
+          <td style="font-weight: bold">::=</td>
+          <td style="font-weight: bold">
+            <a data-cite="SPARQL11-QUERY#riri">iri</a> `|`
+            <a data-cite="SPARQL11-QUERY#rRDFLiteral">RDFLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rNumericLiteral">NumericLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rBooleanLiteral">BooleanLiteral</a> `|`
+            <a href="#rQuotedTriple">QuotedTriple</a>
+          </td>
+        </tr>
+        <tr id="rVarOrTermOrQuotedTP">
+          <td>[178]</td>
+          <td style="font-weight: bold">`VarOrTermOrQuotedTP`</td>
+          <td style="font-weight: bold">::=</td>
+          <td style="font-weight: bold">
+            <a data-cite="SPARQL11-QUERY#rVar">Var</a> `|`
+            <a data-cite="SPARQL11-QUERY#rGraphTerm">GraphTerm</a> `|`
+            <a href="#rQuotedTP">QuotedTP</a>
+          </td>
+        </tr>
+        <tr id="rAnnotationPattern">
+          <td>[179]</td>
+          <td style="font-weight: bold">`AnnotationPattern`</td>
+          <td style="font-weight: bold">::=</td>
+          <td style="font-weight: bold">
+            <code class="token">'{|'</code>
+            <a data-cite="SPARQL11-QUERY#rPropertyListNotEmpty">PropertyListNotEmpty</a>
+            <code class="token">'|}'</code>
+          </td>
+        </tr>
+        <tr id="rAnnotationPatternPath">
+          <td>[180]</td>
+          <td style="font-weight: bold">`AnnotationPatternPath`</td>
+          <td style="font-weight: bold">::=</td>
+          <td style="font-weight: bold">
+            <code class="token">'{|'</code>
+            <a data-cite="SPARQL11-QUERY#rPropertyListPathNotEmpty">PropertyListPathNotEmpty</a>
+            <code class="token">'|}'</code>
+          </td>
+        </tr>
+        <tr id="rExprQuotedTP">
+          <td>[181]</td>
+          <td style="font-weight: bold">`ExprQuotedTP`</td>
+          <td style="font-weight: bold">::=</td>
+          <td style="font-weight: bold">
+            <code class="token">'&lt;&lt;'</code>
+            <a href="#rExprVarOrTerm">ExprVarOrTerm</a>
+            <a data-cite="SPARQL11-QUERY#rVerb">Verb</a>
+            <a href="#rExprVarOrTerm">ExprVarOrTerm</a>
+            <code class="token">'&gt;&gt;'</code>
+          </td>
+        </tr>
+        <tr id="rExprVarOrTerm">
+          <td>[182]</td>
+          <td style="font-weight: bold">`ExprVarOrTerm`</td>
+          <td style="font-weight: bold">::=</td>
+          <td style="font-weight: bold">
+            <a data-cite="SPARQL11-QUERY#riri">iri</a> `|` 
+            <a data-cite="SPARQL11-QUERY#rRDFLiteral">RDFLiteral</a> `|` 
+            <a data-cite="SPARQL11-QUERY#rNumericLiteral">NumericLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rBooleanLiteral">BooleanLiteral</a> `|`
+            <a data-cite="SPARQL11-QUERY#rVar">Var</a> `|`
+	          <a href="#rExprQuotedTP">ExprQuotedTP</a>
+          </td>
+        </tr>
+      </table>
+
+      <p class="note">The complete grammar may be found in <a href="#sparql-star-ebnf"></a>.</p>
+
+      <p>
+        This introduces a notation for <dfn>quoted triple patterns</dfn>
+        (production <a href="#rQuotedTP">[174]</a>),
+        which is similar to the one defined for <a>quoted triples</a> in <a href="#turtle-star"></a>,
+        but accepting also <a>variables</a>.
+        These quoted triple patterns are allowed in both the subject position (<a href="#rTriplesSameSubject">[75]</a>, <a href="#rTriplesSameSubjectPath">[81]</a>) and the object position (<a href="#rObject">[80]</a>, <a href="#rObjectPath">[87]</a>)
+        of <a>SPARQL-star triple patterns</a>, as well as in <a data-cite="SPARQL11-QUERY#collections">the short-hand notation for querying collections</a> (<a data-cite="SPARQL11-QUERY#rCollection">[102]</a>, <a data-cite="SPARQL11-QUERY#rCollectionPath">[103]</a>).
+      </p>
+
+      <p>
+        Additionally, production <a href="#rDataBlockValue">[65]</a> for values that can be used in the <a data-cite="SPARQL11-QUERY#inline-data">VALUES clause</a> is extended to permit <a>RDF-star triples</a> as possible values, and the set of available built-in functions is extended with the five functions TRIPLE, SUBJECT, PREDICATE, OBJECT, and isTRIPLE (<a href="#rBuiltInCall">[121]</a>) that are defined in <a href="#builtin-functions"></a>.
+      </p>
+
+      <p class="note"><a data-cite="SPARQL11-QUERY#sparqlGrammar">As defined for all keywords in SPARQL</a>, the names of the five new built-in functions added by SPARQL-star are matched in a case-insensitive manner.</p>
+
+      <p>
+        Yet another extension is that both the <a href="#rObject">Object</a> and the <a href="#rObjectPath">ObjectPath</a> productions now accept an optional <dfn>annotation pattern</dfn> after each object. The purpose of this feature is to enable users to use the same kind of annotation syntax that is supported in Turtle-star. As in the case of Turtle-star, the annotation syntax in SPARQL-star is purely syntactic sugar that has to be processed in accordance to the first expansion rule in <a href="#expand-syntax-forms"></a>.
+      </p>
+
+      <p>
+        A <strong>restriction</strong> to the use of the annotation syntax in SPARQL-star exists that is not captured by the grammar as defined above: An <a href="#rAnnotationPatternPath">AnnotationPatternPath</a> may be added only to <a>SPARQL-star property path patterns</a> in which the <a>property path expression</a> is a <a data-cite="SPARQL11-QUERY#pp-language">PredicatePath</a> (i.e., a single IRI) or the keyword <code>a</code> (as a <a data-cite="SPARQL11-QUERY#abbrevRdfType">short form for the IRI <code>rdf:type</code></a>). Hence, a query such as the following violates this restriction and, thus, is <em>invalid</em>.
+      </p>
+
+      <pre data-transform="updateExample"
+           data-content-type="application/sparql-query"
+           class="nohighlight illegal-example"
+      >
+        <!--
+        SELECT * WHERE {
+            ?s :p/:q ?o {| ?pp ?oo |}.
+        }
+        -->
+      </pre>
+
+      <p>
+        While annotation patterns must not be added to property path patterns other than the ones permitted by the restriction above, it is possible to use property path expressions within annotation patterns (but without violating the restriction in the case of nested annotation patterns). For instance, the following query is valid.
+      </p>
+
+      <pre data-transform="updateExample"
+           data-content-type="application/sparql-query"
+           class="nohighlight example"
+      >
+        <!--
+        SELECT * WHERE {
+            ?s ?p ?o {| :p/:q ?oo |}.
+        }
+        -->
+      </pre>
+
+    </section>
+
+    <section>
+      <h2>Translation to the Algebra</h2>
+
+      <p>Based on the SPARQL grammar, the SPARQL specification <q>defines the process of converting graph patterns and solution modifiers in a SPARQL query string into a SPARQL algebra expression</q> [<a data-cite="SPARQL11-QUERY#sparqlQuery">SPARQL11-QUERY, Section 18.2</a>].  This process must be adjusted to consider the extended grammar introduced <a href="#sparql-star-grammar">above</a>. In the following, any step of the conversion process that requires adjustment is discussed.</p>
+
+      <section>
+        <h2>Variable Scope</h2>
+
+        <p>As a basis of the translation, the SPARQL specification introduces a notion of <a data-cite="SPARQL11-QUERY#variableScope">in-scope variables</a>. To cover the new syntax elements introduced in <a href="#sparql-star-grammar"></a> this notion MUST be extended as follows.</p>
+
+        <ul>
+          <li>A <a>variable</a> is in-scope of a <a>BGP-star</a> |B| if the <a>variable</a> occurs in |B|, which includes an occurrence in any <a>quoted triple pattern</a> in |B| (independent of the level of nesting).</li>
+          <li>A <a>variable</a> is in-scope of a <a>property path pattern</a> if the variable occurs in that pattern, which includes an occurrence in any quoted triple pattern in the pattern (independent of the level of nesting).</li>
+        </ul>
+      </section>
+
+      <section id="expand-syntax-forms">
+        <h2>Expand Syntax Forms</h2>
+
+        <p>The translation process starts with expanding <q>abbreviations for IRIs and triple patterns</q> [<a data-cite="SPARQL11-QUERY#sparqlExpandForms">SPARQL11-QUERY, Section 18.2.2.1</a>]. This step MUST be extended in three ways:</p>
+
+        <ol>
+          <li><div>
+            <p><a>Annotation patterns</a> MUST be replaced by additional <a>SPARQL-star triple patterns</a> that have the annotated triple pattern as a <a>quoted triple pattern</a> in their subject position.</p>
+
+            <aside class="example" title="Expanding annotations to quoted triple patterns">
+              For instance, the following syntax expression:
+              <pre data-transform="updateExample"
+                data-content-type="application/sparql-query"
+                class="nohighlight"
+              >
+                <!--
+                ?x :p :o1 {| :ap1 ?y;
+                             :ap2 ?z |} ,
+                      :o2 {| :ap3 ?z |} .
+
+                ?x :p :o3 {| :ap4/:ap5 ?w } .
+                -->
+              </pre>
+              must be replaced by
+              <pre data-transform="updateExample"
+                data-content-type="application/sparql-query"
+                class="nohighlight"
+              >
+                <!--
+                ?x :p :o1, o2 .
+                <<?x :p :o1>> :ap1 ?y ;
+                              :ap2 ?z .
+                <<?x :p :o2>> :ap3 ?z .
+
+                ?x :p :o3 .
+                <<?x :p :o3>> :ap4/:ap5 ?w .
+                -->
+              </pre>
+            </aside>
+
+          </div></li>
+          <li><div>
+            <p>Abbreviations for <a>triple patterns</a> with <a>quoted triple patterns</a> MUST be expanded as if each <a>quoted triple pattern</a> was a <a>variable</a> (or an <a>RDF term</a>).</p>
+
+            <aside class="example" title="Expanding abbreviations for triple patterns with quoted triple patterns">
+              For instance, the following syntax expression:
+              <pre data-transform="updateExample"
+                data-content-type="application/sparql-query"
+                class="nohighlight"
+              >
+                <!--
+                <<?c a owl:Class>> dct:source ?src ;
+                    :entailing <<?c a rdfs:Class>> .
+                -->
+              </pre>
+              must be expanded to
+              <pre data-transform="updateExample"
+                data-content-type="application/sparql-query"
+                class="nohighlight"
+              >
+                <!--
+                <<?c a owl:Class>> dct:source ?src .
+                <<?c a owl:Class>> :entailing <<?c a rdfs:Class>> .
+                -->
+              </pre>
+            </aside>
+          </div></li>
+          <li><div>
+            <p>Abbreviations for IRIs in all <a>quoted triple patterns</a> MUST be expanded.</p>
+
+            <aside class="example" title="Expanding IRI abbreviations">
+              For instance, the quoted triple pattern
+              <pre data-transform="updateExample"
+                data-content-type="application/sparql-query"
+                class="nohighlight"
+              >
+                <!--
+                <<?c a rdfs:Class>>
+                -->
+              </pre>
+              must be expanded to
+              <pre data-transform="updateExample"
+                data-content-type="application/sparql-query"
+                class="nohighlight"
+              >
+                <!--
+                << ?c <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2000/01/rdf-schema#Class>>>
+                -->
+              </pre>
+            </aside>
+          </div></li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Translate Property Path Patterns</h2>
+
+        <p>The <a data-cite="SPARQL11-QUERY#sparqlTranslatePathPatterns">translation of property path patterns</a> has to be adjusted because the extended grammar allows for <a>SPARQL-star property path patterns</a> whose subject or object is a <a>SPARQL-star triple pattern</a>.</p>
+
+        <p>The translation as specified in the W3C specification distinguishes four cases. The first three of these cases do not require adjustment because they are taken care of either by recursion or by the adjusted translation of basic graph patterns (as defined in <a href="#translate-bgp"></a> below). However, the fourth case MUST be adjusted as follows.</p>
+
+        <p>Let |X| |P| |Y| be a string that corresponds to the fourth case in [<a data-cite="SPARQL11-QUERY#sparqlTranslatePathPatterns">SPARQL11-QUERY, Section 18.2.2.4</a>]. Given the grammar introduced in <a href="#sparql-star-grammar"></a>, |X| and |Y| may be an <a>RDF term</a>, a <a>variable</a>, or a <a>quoted triple pattern</a>, respectively (and |P| is a <a>property path expression</a>). The string |X| |P| |Y| is translated to the algebra expression `Path`(<var>X’</var>,|P|,<var>Y’</var>) where <var>X’</var> and <var>Y’</var> are the result of calling a function named `Lift` for |X| and |Y|, respectively. For some input string |Z| (such as |X| or |Y|) that can be an <a>RDF term</a>, a <a>variable</a>, or a <a>quoted triple pattern</a>, the function `Lift` is defined recursively as follows:</p>
+
+        <ol id="lift">
+          <li>If |Z| is a <a>quoted triple pattern</a> &lt;&lt;|S|,|P|,|O|&gt;&gt; then return the <a>SPARQL-star triple pattern</a> (`Lift`(|S|), |P|, `Lift`(|O|));</li>
+          <li>Otherwise, return |Z|.</li>
+        </ol>
+
+        <div class="note">
+          The purpose of this translation step is to convert any property path pattern as can be written based on the extended grammar for SPARQL-star (cf. <a href="#sparql-star-grammar"></a>) into a <a>SPARQL-star property path pattern</a> as considered in the algebra. To this end, the function `Lift` translates every <a>quoted triple pattern</a> as can be written in the SPARQL-star syntax into a <a>SPARQL-star triple pattern</a>.
+        </div>
+      </section>
+
+      <section id="translate-bgp">
+        <h2>Translate Basic Graph Patterns</h2>
+
+        <p>After translating <a>property path patterns</a>, the translation process collects <q>any adjacent triple patterns [...] to form a basic graph pattern</q> [<a data-cite="SPARQL11-QUERY#sparqlTranslateBasicGraphPatterns">SPARQL11-QUERY, Section 18.2.2.5</a>]. This step has to be adjusted because <a>triple patterns</a> in the extended syntax may have a <a>quoted triple pattern</a> in their subject position or in their object position (or in both). To ensure that every result of this step is a <a>BGP-star</a>, before adding a <a>triple pattern</a> to its corresponding collection, its subject and object MUST be replaced by the result of calling <a href="#lift">function `Lift`</a> for the subject and the object, respectively.</p>
+      </section>
+
+    </section>
+
+    <section id="builtin-functions">
+      <h2>Function and Operator Definitions</h2>
+
+      <p>SPARQL introduces operators and functions that can be used in an expression of a FILTER clause, a BIND clause, or a SELECT clause (see <a data-cite="SPARQL11-QUERY#OperatorMapping">Section&nbsp;17.3</a> and <a data-cite="SPARQL11-QUERY#SparqlOps">Section&nbsp;17.4</a> in [[SPARQL11-QUERY]]). While these operators and functions are defined to operate on <a>RDF terms</a> and <a>query variables</a>, for SPARQL-star they have to be defined to operate on <a>RDF-star terms</a> and <a>query variables</a>. To this end, when using these operators and functions in the context of SPARQL-star, their definitions as given in <a data-cite="SPARQL11-QUERY#SparqlOps">Section&nbsp;17.4</a> of [[SPARQL11-QUERY]] are extended by assuming that any mention of <code>RDF term</code> as a data type for operands is understood to be the type of all <a>RDF-star terms</a>.</p>
+
+      <p>SPARQL-star introduces five new functions that are defined as follows (where the data types <code>RDF-star term</code> and <code>RDF-star triple</code> capture all <a>RDF-star terms</a> and all <a>RDF-star triples</a>,
+respectively).</p>
+
+      <p>The modifications to functions and operators for triple terms are:</p>
+      <ul>
+        <li><a href="#rdf-star-func-sameTerm">Modified <code>sameTerm</code> function</a>
+          (SPARQL 1.1 <a data-cite="SPARQL11-QUERY#func-sameTerm">Section 17.4.1.8</a>)</li>
+        <li><a href="#sparql-compare">New function <code>sparql-compare</code></a> for the 
+          <code>=</code> operator and other comparison mappings</li>
+        <li><a href="#rdf-star-termEqual">Modified <code>RDFterm-equal</code></a>
+          (SPARQL 1.1 <a data-cite="SPARQL11-QUERY#func-RDFterm-equal">Section 17.4.1.7</a>)</li>
+        <li><a href="#rdf-star-operator-mapping">Operator mapping for <code>=</code> 
+            and other operators</a>
+          (SPARQL 1.1 <a data-cite="SPARQL11-QUERY#OperatorMapping">Section 17.3</a>)</li>
+        <li><a href="#triple-term-comparison">Modified <code>ORDER BY</code></a>
+          (SPARQL 1.1 <a data-cite="SPARQL11-QUERY#modOrderBy">Section 15.1</a>)</li>
+      </ul>
+
+      <section id="triple-function">
+        <h2>TRIPLE</h2>
+
+        <p>
+          <code>RDF-star triple</code> &nbsp;
+          <code style="color:black;font-weight:bold">TRIPLE</code>
+          (
+            <code>RDF-star term </code>
+            <code style="color:black">term1</code>,
+            <code>RDF-star term </code>
+            <code style="color:black">term2</code>,
+            <code>RDF-star term </code>
+            <code style="color:black">term3</code>
+          )
+        </p>
+
+        <p>If the 3-tuple (<code style="color:black">term1</code>, <code style="color:black">term2</code>, <code style="color:black">term3</code>) is an <a>RDF-star triple</a>, the function returns this triple. If the 3-tuple is not an RDF-star triple, then the function raises an error.</p>
+
+      </section>
+
+      <section>
+        <h3>SUBJECT</h3>
+
+        <p>
+          <code>RDF-star term</code> &nbsp;
+          <code style="color:black;font-weight:bold">SUBJECT</code>
+          (
+            <code>RDF-star triple </code>
+            <code style="color:black">triple</code>
+          )
+        </p>
+
+        <p>If <code style="color:black">triple</code> is an <a>RDF-star triple</a>, the function returns the subject of this triple. Passing anything other than an RDF-star triple is an error.</p>
+
+      </section>
+
+      <section>
+        <h3>PREDICATE</h3>
+
+        <p>
+          <code>RDF-star term</code> &nbsp;
+          <code style="color:black;font-weight:bold">PREDICATE</code>
+          (
+            <code>RDF-star triple </code>
+            <code style="color:black">triple</code>
+          )
+        </p>
+
+        <p>If <code style="color:black">triple</code> is an <a>RDF-star triple</a>, the function returns the predicate of this triple. Passing anything other than an RDF-star triple is an error.</p>
+
+      </section>
+
+      <section>
+        <h3>OBJECT</h3>
+
+        <p>
+          <code>RDF-star term</code> &nbsp;
+          <code style="color:black;font-weight:bold">OBJECT</code>
+          (
+            <code>RDF-star triple </code>
+            <code style="color:black">triple</code>
+          )
+        </p>
+
+        <p>If <code style="color:black">triple</code> is an <a>RDF-star triple</a>, the function returns the object of this triple. Passing anything other than an RDF-star triple is an error.</p>
+
+      </section>
+
+      <section>
+        <h3>isTRIPLE</h3>
+
+        <p>
+          <code>xsd:boolean</code> &nbsp;
+          <code style="color:black;font-weight:bold">isTRIPLE</code>
+          (
+            <code>RDF-star term </code>
+            <code style="color:black">term</code>
+          )
+        </p>
+
+        <p>Returns <code>true</code> if <code style="color:black">term</code> is an <a>RDF-star triple</a>. Returns <code>false</code> otherwise.</p>
+
+      </section>
+
+      <section>
+        <h3>Quoted Triple Expression</h3>
+        <p>
+          <code>RDF-star triple</code> &nbsp;
+          <code style="color:black;font-weight:bold">&lt;&lt;</code>
+          <code>RDF-star term</code> <code style="color:black">term1</code>,
+          <code>RDF-star term</code> <code style="color:black">term2</code>,
+          <code>RDF-star term</code> <code style="color:black">term3</code>
+          <code style="color:black;font-weight:bold">&gt;&gt;</code>
+        </p>
+        <p>
+          A <a href="#rExprQuotedTP">Quoted Triple Expression</a>
+          <code>&lt;&lt;S P O&gt;&gt;</code>, where <code>S</code>, 
+          <code>P</code> and <code>O</code> conform to
+          <a href="#rExprVarOrTerm">ExprVarOrTerm</a>,
+          is evaluated as <code>TRIPLE(S, P, O)</code>.
+        </p>
+      </section>
+
+      <section id="rdf-star-func-sameTerm">
+        <h3>sameTerm</h3>
+        <p>
+          <code>xsd:boolean</code>
+          <code style="color:black;font-weight:bold">sameTerm</code>
+          (<code style="color:black">term</code>, <code style="color:black">term</code>)
+        </p>
+        
+        <p>The function <code>sameTerm</code> is extended to support term comparison for
+          RDF-star triple terms by defining:
+        </p>
+        <div class="defn">
+          <p>
+            <b>Extended Definition: <dfn id="defn-rdfStarSameTerm"><code
+style="color:black;font-weight:bold">sameTerm</code></dfn></b>
+          </p>
+          <p>
+            If both arguments are RDF-star triple terms:
+          <p style="margin-left:20px">
+            <code style="color:black;font-weight:bold">sameTerm</code><code>(&lt;&lt;S1 P1 O1&gt;&gt;,
+              &lt;&lt;S2 P2 O2&gt;&gt;)</code>
+          </p>
+          <p>
+            is evaluated as
+          </p>
+          <p style="margin-left:20px">
+            <code>sameTerm(S1, S2) && sameTerm(P1, P2) && sameTerm(O1, O2)</code>
+          </p>
+          <p>This is applied recursively.</p>
+          <p>If one argument is an RDF-star triple term and the other argument is not, 
+            the result is <code>false</code>.
+          </p>
+        </div>
+      </section>
+      
+      <section id="sparql-compare">
+        <h3>sparql-compare</h3>
+        
+        <p>The function <code>sparql-compare</code> is defined to support value-comparison
+          operators such as <code>=</code> and <code>ORDER BY</code>.
+        </p>
+        <p>
+          <code>xsd:boolean</code> &nbsp;
+          <code style="color:black;font-weight:bold">sparql-compare</code>
+          (<code style="color:black">RDF-star term</code>,
+          <code style="color:black">RDF-star term</code>)
+        </p>
+        <p>
+          The function <code>sparql-compare</code> returns `-1`, `0`, `1`, or throws an
+          error, based on the comparison of two
+          <a href="#dfn-rdf-star-terms">RDF-star terms</a>.
+          When comparing two RDF-star triple terms, comparison is 
+          by pairwise comparison of subject, then predicate, then object.
+        </p>
+        <div class="defn">
+          <p>
+            <b>Definition: 
+              <dfn id="defn-sparql-compare">
+                <code style="color:black;font-weight:bold">sparql-compare</code></dfn>
+            </b>
+          </p>
+          <ul>
+            <li>If neither A nor B is an RDF-star triple term,
+              compare by SPARQL 1.1 operators
+              <code>&lt;</code>, <code>=</code>, <code>&gt;</code>)
+              and return the comparison value (`-1`, `0`, `+1`) or throw an error
+              as defined by SPARQL 1.1.<br/>
+            </li>
+            <li>If either A or B is an RDF-star triple term, and the other is not 
+              an RDF-star triple term, then error.</li>
+            <li>If <code>sparql-compare(SUBJECT(A), SUBJECT(B)) != 0</code>,
+              then return this value.</li>
+            <li>If <code>sparql-compare(PREDICATE(A), PREDICATE(B)) != 0</code>,
+              then return this value.</li>
+            <li>Return <code>sparql-compare(OBJECT(A), OBJECT(B))</code></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="rdf-star-termEqual">
+        <h3>RDFterm-equal</h3>
+        <p>
+          The function <code>RDFterm-equal</code> is the default dispatch for the
+          <code>=</code> operator.
+        </p>
+        <p>
+          This is extended to cover RDF-star terms so that it returns <code>true</code> 
+          if term1 and term2 are both RDF-star triple
+          terms and <code>RDFterm-equal</code> is <code>true</code> 
+          for pairwise comparison of the component RDF terms.
+        </p>
+        <div class="defn">
+          <p>
+            <b>Extended Definition: <dfn id="defn-rdfStarTermEqual">
+                <code style="color:black;font-weight:bold">RDFTerm-equal</code></dfn></b>
+          </p>
+          <p>
+            If exactly one of the arguments is an RDF-star triple term,
+            return <code>false</code>.
+          </p>
+          <p>
+            If both arguments are RDF-star triple terms:
+          <p style="margin-left:20px">
+            <code style="color:black;font-weight:bold">RDFterm-equal</code><code>(&lt;&lt;S1 P1 O1&gt;&gt;,
+              &lt;&lt;S2 P2 O2&gt;&gt;)</code>
+          </p>
+          <p>
+            is evaluated as
+          </p>
+          <p style="margin-left:20px">
+            <code>RDFterm-equal(S1, S2) && RDFterm-equal(P1, P2) && RDFterm-equal(O1, O2)</code>
+          </p>
+        </div>
+        <p>
+          It produces an error if matching RDF terms in nested RDF triple terms when 
+          both are literals but not the same RDF term. This is the same as the existing
+          <code>RDFterm-equal</code>. Operator mapping overrides this behavior.
+        </p>
+        <p>
+          The case of two RDF-star triple terms is covered by the operator dispatch mappings
+          and covers cases involving literals.
+        </p>
+      </section>
+
+      <section id="rdf-star-operator-mapping">
+        <h3>Operator Mappings</h3>
+
+        <p>New operator mappings are added for RDF-star triple terms for section 
+          SPARQL 1.1 Query <a data-cite="SPARQL11-QUERY#OperatorMapping">17.3 Operator Mapping</a>
+        </p>
+        <table class="operator">
+          <caption>SPARQL Binary Operators (SPARQL-star)</caption>
+          <tbody class="small">
+            <tr>
+              <th class="major" scope="col">Operator</th>
+              <th class="major" scope="col">Type(A)</th>
+              <th class="major" scope="col">Type(B)</th>
+              <th class="major" scope="col">Evaluation</th>
+              <th class="major" scope="col">Result type</th>
+            </tr>
+
+            <tr>
+              <th colspan="5" class="subHeading" scope="col">SPARQL-star Tests</th>
+            </tr>
+            <tr>
+              <th>A = B</th>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td>
+                <a data-cite="XPATH-FUNCTIONS#func-numeric-equal"
+                   >op:numeric-equal</a>(<a href="#defn-sparql-compare" 
+                                            class="SPARQLoperator"
+                                            >sparql-compare</a>(A, B), 0)
+              </td>
+              <td>xsd:boolean</td>
+            </tr>
+            <tr>
+              <th>A != B</th>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+
+              <td>
+                <a href="http://www.w3.org/TR/xpath-functions/#func-not"
+                   >fn:not</a>(<a data-cite="XPATH-FUNCTIONS#func-numeric-equal"
+                                  >op:numeric-equal</a>(<a href="#defn-sparql-compare" 
+                                                           class="SPARQLoperator"
+                                                           >sparql-compare</a>(A, B), 0))
+              </td>
+              <td>xsd:boolean</td>
+            </tr>
+            <tr>
+              <th>A &lt; B</th>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td>
+                <a data-cite="XPATH-FUNCTIONS#func-numeric-equal"
+                   >op:numeric-equal</a>(<a href="#defn-sparql-compare" 
+                                            class="SPARQLoperator"
+                                            >sparql-compare</a>(A, B), -1)
+              </td>
+              <td>xsd:boolean</td>
+            </tr>
+            <tr>
+              <th>A &lt;= B</th>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td>
+                <a href="http://www.w3.org/TR/xpath-functions/#func-not"
+                   >fn:not</a>(<a data-cite="XPATH-FUNCTIONS#func-numeric-equal"
+                                  >op:numeric-equal</a>(<a href="#defn-sparql-compare" 
+                                                           class="SPARQLoperator"
+                                                           >sparql-compare</a>(A, B), 1))
+              </td>
+              <td>xsd:boolean</td>
+            </tr>
+            <tr>
+              <th>A &gt; B</th>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td>
+                <a data-cite="XPATH-FUNCTIONS#func-numeric-equal"
+                   >op:numeric-equal</a>(<a href="#defn-sparql-compare" 
+                                            class="SPARQLoperator"
+                                            >sparql-compare</a>(A, B), 1)
+              </td>
+
+              <td>xsd:boolean</td>
+            </tr>
+            <tr>
+              <th>A &gt;= B
+              </th>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td><span class="type RDFterm">RDF triple term</span></td>
+              <td>
+                <a href="http://www.w3.org/TR/xpath-functions/#func-not"
+                   >fn:not</a>(<a data-cite="XPATH-FUNCTIONS#func-numeric-equal"
+                                  >op:numeric-equal</a>(<a href="#defn-sparql-compare" 
+                                                           class="SPARQLoperator"
+                                                           >sparql-compare</a>(A, B), -1))
+              </td>
+              <td>xsd:boolean</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="triple-term-comparison">
+        <h3>Triple terms with ORDER BY</h3>
+
+        <p>There is an added item to the ordering of terms when they would not 
+          otherwise be ordered. RDF-star triple terms are placed last (highest).</p>
+        <ol>
+          <li>(Lowest) no value assigned to the variable 
+            or expression in this solution.</li>
+          <li>Blank nodes</li>
+          <li>IRIs</li>
+          <li>RDF literals</li>
+          <li><i>RDF-star triple terms</i></li>
+        </ol>
+        <p>
+          RDF-star triple terms are compared using the <code>&lt;</code> operator.
+        </p>
+        <p>
+          While SPARQL-star does not define a total ordering of all possible RDF-star terms,
+          implementations should provide some ordering for <code>ORDER BY</code>
+          that does not change between queries if the data has not changed.
+        </p>
+      </section>
+    </section>
+
+    <section class="informative">
+      <h2>Examples and Discussion</h2>
+
+      <p>By the evaluation semantics of SPARQL-star as defined in <a href="#evaluation-semantics"></a>, the five new built-in functions defined above can be used in exactly the same manner as <a data-cite="SPARQL11-QUERY#SparqlOps">the functions defined in the SPARQL 1.1 spec</a><!--, which includes using them within GRAPH clauses that focus on querying named graphs with a queried dataset-->. For instance, the following SPARQL-star query retrieves every <a>asserted triple</a> that is both contained in the <a>default graph</a> of the queried <a>RDF-star dataset</a> and has a <a>quoted triple</a> as its <a>subject</a>.</p>
+
+      <pre data-transform="updateExample"
+           data-content-type="application/sparql-query"
+           class="nohighlight example"
+      >
+        <!--
+        SELECT ?t WHERE {
+          ?s ?p ?o .
+          BIND( TRIPLE(?s,?p,?o) AS ?t )
+          FILTER( isTRIPLE(SUBJECT(?t)) )
+        }
+        -->
+      </pre>
+
+      <p>Instead of accessing the subject of the triples in the FILTER after the BIND clause, as was done in the previous query, a semantically equivalent query may apply the FILTER directly on the variable&nbsp;<code>?s</code>, as follows:</p>
+
+      <pre data-transform="updateExample"
+           data-content-type="application/sparql-query"
+           class="nohighlight example"
+      >
+        <!--
+        SELECT ?t WHERE {
+          ?s ?p ?o .
+          BIND( TRIPLE(?s,?p,?o) AS ?t )
+          FILTER( isTRIPLE(?s) )
+        }
+        -->
+      </pre>
+
+      <p>While the triples that the previous example queries bind to variable&nbsp;<code>?t</code> occur in the queried data, the <a href="#triple-function">TRIPLE function</a> can be used to construct triples that may not be in the data. For instance, the following query uses the subject of each <a>asserted triple</a> in the <a>default graph</a> of the queried <a>RDF-star dataset</a> to construct another triple, and bind it to the variable&nbsp;<code>?t</code>. Notice that the result of this query contains as many <a>SPARQL-star solution mappings</a> as there are <a>asserted triples</a> in the queried graph, and there may be duplicates in the result if multiple <a>asserted triples</a> have the same subject.</p>
+
+      <pre data-transform="updateExample"
+           data-content-type="application/sparql-query"
+           class="nohighlight example"
+      >
+        <!--
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+        SELECT ?t WHERE {
+          ?s ?p ?o .
+          BIND( TRIPLE(?s,rdf:type,rdfs:Resource) AS ?t )
+        }
+        -->
+      </pre>
+
+      <p>There are cases where the effects of using the new TRIPLE function are not immediately obvious just from its definition, particularly when considering the interplay of this function with the <a data-cite="SPARQL11-QUERY#func-bnode">BNODE function</a> when used within <a data-cite="SPARQL11-QUERY#queryDataset">GRAPH clauses</a>. Some of these cases are discussed below.</p>
+
+      <p>Consider the following SPARQL-star query.</p>
+
+      <pre data-transform="updateExample"
+           data-content-type="application/sparql-query"
+           class="nohighlight example"
+      >
+        <!--
+        SELECT ( COUNT(?t1) AS ?t1Count )
+               ( COUNT(?t2) AS ?t2Count )
+               ( COUNT(?t3) AS ?t3Count )
+               ( COUNT(DISTINCT ?t1) AS ?t1DistCount )
+               ( COUNT(DISTINCT ?t2) AS ?t2DistCount )
+               ( COUNT(DISTINCT ?t3) AS ?t3DistCount )
+        WHERE {
+          GRAPH ?g {
+            BIND( TRIPLE(BNODE(), :p, :o) AS ?t1 )
+            BIND( TRIPLE(BNODE("id"), :p, :o) AS ?t2 )
+            BIND( TRIPLE(:s, :p, :o) AS ?t3 )
+          }
+        }
+        -->
+      </pre>
+
+      <p>When evaluated over an <a>RDF-star dataset</a> that contains |n| <a>named graphs</a>, where |n|>0, the GRAPH clause results in one <a>SPARQL-star solution mapping</a> per named graph. The SELECT clause collapses these |n| mappings into a single mapping that is defined for the six variables introduced in the SELECT clause. (If |n|=0, the query result is the empty set.) Each of these six variables is mapped to an integer-typed literal with values as follows. For each of <code>?t1Count</code>, <code>?t2Count</code>, and <code>?t3Count</code>, the value is&nbsp;|n|, because the variables <code>?t1</code>, <code>?t2</code>, and <code>?t3</code> are bound in each of the |n| solution mappings produced for the GRAPH clause. For the variable&nbsp;<code>?t1DistCount</code>, the value is also |n|, because the BIND clauses are evaluated |n| times (once for each named graph) and the subexpression BNODE() always creates a different new blank node; thus, the triples created for variable <code>?t1</code> are all different from one another. This is also the case if the BNODE function is used with an argument; i.e., the value of <code>?t2DistCount</code> is |n| too. In contrast, the variable&nbsp;<code>?t3</code> is mapped to the same triple within each evaluation of the third BIND clause; thus, the value for <code>?t3DistCount</code> is&nbsp;1.</p>
+
+      <p>Notice that the BNODE function has to be used to create a blank node; simply writing a blank node directly in an expression <a data-cite="SPARQL11-QUERY#rExpression">is not permitted</a>.</p>
+
+      <p>Notice as well that the preceding query is special in two ways: its GRAPH clause does not actually consider the content of the named graphs; and the expressions in the BIND clauses do not contain variables. In contrast, the GRAPH clause and the BIND clauses in the following query do.</p>
+
+      <pre data-transform="updateExample"
+           data-content-type="application/sparql-query"
+           class="nohighlight example"
+      >
+        <!--
+        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX rdfg: <http://www.w3.org/2004/03/trix/rdfg-1/>
+
+        SELECT ( COUNT(?t1) AS ?t1Count )
+               ( COUNT(?t2) AS ?t2Count )
+        WHERE {
+          GRAPH ?g {
+            ?g rdf:type rdfg:Graph .
+            BIND( TRIPLE(?g, rdf:type, rdfs:Resource) AS ?t1 )
+            BIND( TRIPLE(?x, rdf:type, rdfs:Resource) AS ?t2 )
+          }
+        }
+        -->
+      </pre>
+
+      <p>For every RDF-star dataset with |n|>0 named graphs, the result of this query consists of a single SPARQL-star solution mapping that is defined for the three variables introduced in the SELECT clause. The value of <code>?t1Count</code> is the number of named graphs in the queried dataset that contain a triple of the form (|u|, <code>rdf:type</code>, <code>rdfg:Graph</code>) such that |u| is the name of the named graph in the dataset. The value of <code>?t2Count</code> is always&nbsp;0&nbsp;(zero), because evaluating the expression of the second BIND clause results in an error, because the variable&nbsp;<code>?x</code> is not bound in the scope of this evaluation. As a side note, evaluating the expression of the first BIND clause would also result in an error, if the variable&nbsp;<code>?g</code> was not mentioned inside the GRAPH clause (e.g., if the given triple pattern was not there).</p>
+
+    </section>
+
+    <section id="evaluation-semantics">
+      <h2>Evaluation Semantics</h2>
+
+      <p>The SPARQL specification defines a function <q>eval(|D|(|G|), algebra expression) as the evaluation of an algebra expression with respect to a dataset |D| having active graph |G|</q> [<a data-cite="SPARQL11-QUERY#sparqlAlgebraEval">SPARQL11-QUERY, Section 18.6</a>]. Recall that the dataset |D| in the context of SPARQL-star is an <a>RDF-star dataset</a> and, thus, the active graph |G| is an <a>RDF-star graph</a>, and so is any other graph in dataset |D|. The definition of the <a data-cite="SPARQL11-QUERY#sparqlAlgebraEval">eval</a> function is recursive; the base case of this definition for SPARQL-star are given as follows:</p>
+
+      <ul>
+        <li>For every <a>BGP-star</a> |B|, eval(|D|(|G|), |B|) is a multiset Ω that consists of all <a>SPARQL-star solution mappings</a> that are a <a>solution for the BGP-star</a>&nbsp;|B| over&nbsp;|G|. For every such mapping&nbsp;μ, card[Ω](μ) is the number of distinct <a>RDF-star instance mappings</a>&nbsp;σ such that dom(σ) is equivalent to the set of blank nodes in&nbsp;|B| and μ(σ(|B|)) is a subgraph of |G|. (For any SPARQL-star solution mapping&nbsp;μ' that is <em>not</em> a solution for&nbsp;|B| over&nbsp;|G|, we have that card[Ω](μ')=0; i.e., μ' is not in Ω.)</li>
+      </ul>
+
+      <p>For any other algebra expression, the SPARQL specification defines algebra operators [[SPARQL11-QUERY]]. These definitions can be extended naturally to operate over multisets of <a>SPARQL-star solution mappings</a> (instead of ordinary <a>solution mappings</a>). Given this extension, the recursive steps of the definition of the <a data-cite="SPARQL11-QUERY#sparqlAlgebraEval">eval</a> function for SPARQL-star are the same as in the SPARQL specification.</p>
+    </section>
+
+    <section>
+      <h2>Query Result Formats</h2>
+
+      <p>In SPARQL, queries can take four forms: <em>SELECT</em>, <em>CONSTRUCT</em>, <em>DESCRIBE</em>, and <em>ASK</em> - see <a data-cite="SPARQL11-QUERY#QueryForms">SPARQL1.1 Query, Section 16</a> [[SPARQL11-QUERY]]. The first of these returns a <a data-cite="SPARQL11-QUERY#defn_sparqlSolutionSequence">sequence of solution mappings</a> that contain variable bindings. The second and third both return an RDF graph, and the last returns a boolean value.
+      </p>
+      <p>The result of the <em>ASK</em> query form is not changed by the introduction of RDF-star, and the result of the <em>CONSTRUCT</em> and <em>DESCRIBE</em> forms can be represented by <a href="#turtle-star">Turtle-star</a>. However, since the <em>SELECT</em> form deals with returning individual RDF terms, the specific serialization formats for representing such query results need to be extended so that the new <a>quoted triple</a> RDF term can be represented. In this section, we propose extensions for the two most common formats for this purpose: [[[SPARQL11-RESULTS-JSON]]], and [[[RDF-SPARQL-XMLRES]]].</p>
+
+      <section>
+        <h2>SPARQL-star Query Results JSON Format</h2>
+        <p>
+        The result of a SPARQL SELECT query is serialized in JSON as defined in [[[SPARQL11-RESULTS-JSON]]], which specifies a JSON representation of variable bindings to RDF terms (see [<a data-cite="sparql11-results-json#select-results">sparql11-results-json, Section 3.2</a>]). To accommodate the new RDF term for <a>quoted triples</a> that RDF-star introduces, the table of RDF term JSON representations in  <a data-cite="sparql11-results-json#select-encode-terms">sparql11-results-json, Section 3.2.2</a> is extended with the following entry:
+        </p>
+        <dl>
+            <dt>A <a>quoted triple</a> with subject RDF term `S`, predicate RDF term `P` and object RDF term `O`</dt>
+            <dd>
+              <pre>
+                {
+                  "type": "triple",
+                  "value": {
+                     "subject": S,
+                     "predicate": P,
+                     "object": O
+                  }
+                }
+              </pre>
+              where `S`, `P` and `O` are encoded using the same format, recursively.
+            </dd>
+          </dl>
+        <aside class="example">
+            Consider the following RDF term, a <a>quoted triple</a> in Turtle-star syntax:
+          <pre data-transform="updateExample"
+            data-content-type="text/turtle"
+            class="nohighlight"
+          >
+            <!--
+            << <http://example.org/alice> <http://example.org/name> "Alice" >>
+            -->
+          </pre>
+          This term is represented in JSON as follows:
+          <pre>
+                {
+                  "type": "triple",
+                  "value": {
+                     "subject": {
+                        "type": "uri",
+                        "value" "http://example.org/alice"
+                     },
+                     "predicate": {
+                        "type": "uri",
+                        "value" "http://example.org/name"
+                     },
+                     "object": {
+                        "type": "literal",
+                        "value" "Alice",
+                        "datatype": "http://www.w3.org/2001/XMLSchema#string"
+                     },
+                  }
+                }
+          </pre>
+        </aside>
+      <!-- <div class="issue" data-number="13"></div> -->
+      </section>
+
+      <section>
+        <h2>SPARQL-star Query Results XML Format</h2>
+       <p>
+        The result of a SPARQL SELECT query is serialized in XML as defined in [[[RDF-SPARQL-XMLRES]]]. This format proposes an XML representation of variable bindings to RDF terms.
+       </p>
+       <p>To accommodate the new RDF term for <a>quoted triples</a> that RDF-star introduces, the list of RDF terms and their XML representations in [<a data-cite="RDF-SPARQL-XMLRES#results">RDF-SPARQL-XMLRES Section 2.3.1</a>] is extended as follows:
+        </p>
+        <p>
+        <dl>
+            <dt>A <a>quoted triple</a> with subject term `S`, predicate term `P`, and object term `O`</dt>
+          <dd>
+            <pre data-transform="updateExample" class="xml">
+              <!--
+              <binding>
+                <triple>
+                  <subject>S</subject>
+                  <predicate>P</predicate>
+                  <object>O</object>
+                </triple>
+              </binding>
+              -->
+            </pre>
+            where `S`, `P` and `O` are encoded recursively, using the same format, without the enclosing `&lt;binding&gt;` tag.
+          </dd>
+        </dl>
+        <aside class="example">
+            Consider the following RDF term, a <a>quoted triple</a> in Turtle-star syntax:
+          <pre data-transform="updateExample"
+            data-content-type="text/turtle"
+            class="nohighlight"
+          >
+            <!--
+            << <http://example.org/alice> <http://example.org/name> "Alice" >>
+            -->
+          </pre>
+          This term is represented in XML as follows:
+          <pre data-transform="updateExample" class="xml">
+            <!--
+            <triple>
+                <subject>
+                    <uri>http://example.org/alice</uri>
+                </subject>
+                <predicate>
+                    <uri>http://example.org/name</uri>
+                </predicate>
+                <object>
+                    <literal datatype='http://www.w3.org/2001/XMLSchema#string'>Alice</literal>
+                </object>
+            </triple>
+            -->
+          </pre>
+        </aside>
+
+        <!-- <div class="issue" data-number="12"></div> -->
+
+      </section>
+
+    </section>
+
+  </section>
+
+  <section>
+    <h2>SPARQL-star Update</h2>
+
+    <p>This section specifies SPARQL-star Update, an update language for RDF-star. This language extends SPARQL Update [[SPARQL11-UPDATE]], the update language for RDF, by adding RDF-star-specific features and semantics.</p>
+
+    <section class="informative">
+      <h2>Informal Description</h2>
+
+      <p>While SPARQL Update operates over a <a data-cite="SPARQL11-UPDATE#graphStore">graph store</a> that consists of RDF graphs, SPARQL-star Update extends the notion of graph store to contain RDF-star graphs instead of RDF graphs. That is, a <a data-cite="SPARQL11-UPDATE#defn_graphStore">graph store</a> in the context of SPARQL-star Update contains one (unnamed) slot holding an RDF-star graph, referred to as the default graph, and zero or more named slots holding other RDF-star graphs, referred to as named graphs. Then, all <a data-cite="SPARQL11-UPDATE#graphManagement">graph management operations</a> in SPARQL Update (<a data-cite="SPARQL11-UPDATE#create">CREATE</a>, <a data-cite="SPARQL11-UPDATE#drop">DROP</a>, <a data-cite="SPARQL11-UPDATE#copy">COPY</a>, <a data-cite="SPARQL11-UPDATE#move">MOVE</a>, <a data-cite="SPARQL11-UPDATE#add">ADD</a>) carry over directly to SPARQL-star Update with the only difference being that in SPARQL-star Update these operations manage RDF-star graphs. For instance, the <a data-cite="SPARQL11-UPDATE#create">CREATE</a> operation in SPARQL-star Update creates an RDF-star graph rather than a pure RDF graph. Similarly, the <a data-cite="SPARQL11-UPDATE#graphUpdate">graph update operations</a> <a data-cite="SPARQL11-UPDATE#load">LOAD</a> and <a data-cite="SPARQL11-UPDATE#clear">CLEAR</a> in SPARQL-star Update operate with RDF-star graphs in the same way as their SPARQL Update counterparts operate with RDF graphs.</p>
+
+      <p>The only operations that SPARQL-star Update actually extends are the graph update operations <a data-cite="SPARQL11-UPDATE#insertData">INSERT DATA</a>, <a data-cite="SPARQL11-UPDATE#deleteData">DELETE DATA</a>, and <a data-cite="SPARQL11-UPDATE#deleteInsert">DELETE/INSERT</a>. This section describes these extensions informally. While this description focuses mainly on updates to the default graph, the operations can also be applied to the named graphs.</p>
+
+      <section>
+        <h2>INSERT DATA</h2>
+
+        <p>The <a data-cite="SPARQL11-UPDATE#insertData">INSERT DATA</a> operation can be used to add a given set of triples into the graph store. In the context of SPARQL-star Update, these triples may be <a>RDF-star triples</a>. As an example, consider the following INSERT DATA operation.</p>
+
+        <pre data-transform="updateExample"
+             data-content-type="application/sparql-query"
+             class="nohighlight example"
+        >
+          <!--
+          PREFIX : <http://www.example.org/>
+
+          INSERT DATA {
+            :alice :claims << :bob :age 23 >> .
+          }
+          -->
+        </pre>
+
+        <p>Suppose this INSERT DATA operation is executed over a graph store with an empty default graph. After executing this operation, the default graph contains the given (nested) RDF-star triple. Now, it is possible to query for this triple. For instance, the following SPARQL-star query returns a single solution mapping in which the variables ?p and ?a are mapped to the IRI <code>:alice</code> and the literal <code>23</code>, respectively.</p>
+
+        <pre data-transform="updateExample"
+             data-content-type="application/sparql-query"
+             class="nohighlight example"
+        >
+          <!--
+          PREFIX : <http://www.example.org/>
+
+          SELECT ?p ?a WHERE {
+            ?p :claims << :bob :age ?a >> .
+          }
+          -->
+        </pre>
+
+        <p>Notice that inserting a nested triple does not automatically also insert its <a>quoted</a> triple(s) as <a>asserted</a> triple(s) into the graph. Hence, in the previous example, after executing the given INSERT DATA operation, the default graph does <em>not</em> contain the triple <code>:bob :age 23</code>. In other words, a query such as the following would have an empty result.</p>
+
+        <pre data-transform="updateExample"
+             data-content-type="application/sparql-query"
+             class="nohighlight example"
+        >
+          <!--
+          PREFIX : <http://www.example.org/>
+
+          SELECT ?a WHERE {
+            :bob :age ?a .
+          }
+          -->
+        </pre>
+
+        <p>For a <a>quoted triple</a> to be present in the graph as an <a>asserted triple</a>, it needs to be inserted as such. For instance, the INSERT DATA operation in the example above may be modified as follows in order to insert not only the nested triple but also the triple <code>:bob :age 23</code>.</p>
+
+        <pre data-transform="updateExample"
+             data-content-type="application/sparql-query"
+             class="nohighlight example"
+        >
+          <!--
+          PREFIX : <http://www.example.org/>
+
+          INSERT DATA {
+            :bob :age 23 .
+            :alice :claims << :bob :age 23 >> .
+          }
+          -->
+        </pre>
+
+      </section>
+
+      <section>
+        <h2>DELETE DATA</h2>
+
+        <p>The <a data-cite="SPARQL11-UPDATE#deleteData">DELETE DATA</a> operation can be used to remove a given set of triples from the graph store. In the context of SPARQL-star Update, this may include removing nested RDF-star triples as demonstrated in the following example.</p>
+
+        <pre data-transform="updateExample"
+             data-content-type="application/sparql-query"
+             class="nohighlight example"
+        >
+          <!--
+          PREFIX : <http://www.example.org/>
+
+          DELETE DATA {
+            :alice :claims << :bob :age 23 >> .
+          }
+          -->
+        </pre>
+
+        <p>After executing this DELETE DATA operation over a graph store with a default graph that contains the given nested triple, the graph will not contain this triple any longer. If the graph did not contain that nested triple in the first place, the graph will remain unchanged by the given DELETE DATA operation.</p>
+
+        <p>Notice that deleting triples by using the DELETE DATA operation does not affect any other triples in the corresponding graphs. For instance, for a default graph that contains the triple <code>:bob :age 23</code> as an <a>asserted triple</a>, the DELETE DATA operation given above does <em>not</em> delete this <a>asserted triple</a>. In contrast, the following operation would delete this <a>asserted triple</a> but it would <em>not</em> delete any nested triple that contains the given triple as a <a>quoted triple</a>.</p>
+
+        <pre data-transform="updateExample"
+             data-content-type="application/sparql-query"
+             class="nohighlight example"
+        >
+          <!--
+          PREFIX : <http://www.example.org/>
+
+          DELETE DATA {
+            :bob :age 23 .
+          }
+          -->
+        </pre>
+
+      </section>
+
+      <section>
+        <h2>DELETE/INSERT</h2>
+
+        <p>The <a data-cite="SPARQL11-UPDATE#deleteInsert">DELETE/INSERT</a> operation can be used to remove or add triples based on variable bindings obtained by evaluating a given WHERE clause. As an example, the following DELETE/INSERT operation replaces all nested triples in which <code>:alice</code> is the subject by nested triples in which <code>:carol</code> is the subject.</p>
+
+        <pre data-transform="updateExample"
+             data-content-type="application/sparql-query"
+             class="nohighlight example"
+        >
+          <!--
+          PREFIX : <http://www.example.org/>
+
+          DELETE { :alice ?pp <<?s ?p ?o>> . }
+          INSERT { :carol ?pp <<?s ?p ?o>> . }
+          WHERE {  :alice ?pp <<?s ?p ?o>> . }
+          -->
+        </pre>
+
+        <p>As in SPARQL Update, in SPARQL-star Update it is possible to use variations of the DELETE/INSERT operations in which either the DELETE clause or the INSERT clause are omitted.</p>
+
+        <p>When removing triples via the DELETE clause (irrespective of whether the INSERT clause is omitted or not), the effects with respect to nested triples must be the same as described above for the DELETE DATA operation; i.e., only the triples that are explicitly identified to be deleted are deleted. Similarly, inserting triples via the INSERT clause has the same effects as described above for the INSERT DATA operation; i.e., inserting nested triples does not automatically also insert their <a>quoted triples</a> as <a>asserted triples</a> into the graph. Of course, it is possible to request such inserts explicitly as demonstrated in the following example.</p>
+
+        <pre data-transform="updateExample"
+             data-content-type="application/sparql-query"
+             class="nohighlight example"
+        >
+          <!--
+          PREFIX : <http://www.example.org/>
+
+          DELETE { :alice ?pp <<?s ?p ?o>> . }
+          INSERT { :carol ?pp <<?s ?p ?o>> .  ?s ?p ?o .}
+          WHERE {  :alice ?pp <<?s ?p ?o>> . }
+          -->
+        </pre>
+
+        <p>While all SPARQL-star Update examples above focus only on the default graph of a graph store, SPARQL-star Update can also be used to update the named graphs of a graph store, which works in exactly the same way as in SPARQL Update. As a possible example consider the following INSERT operation which retrieves all <a>quoted triples</a> found in nested triples in the default graph and inserts them as <a>asserted triples</a> into the named graph with IRI&nbsp;<code>:graph2</code>.</p>
+
+        <pre data-transform="updateExample"
+             data-content-type="application/sparql-query"
+             class="nohighlight example"
+        >
+          <!--
+          PREFIX : <http://www.example.org/>
+
+          INSERT {
+            GRAPH :graph2 { ?s ?p ?o }
+          }
+          WHERE {
+            { <<?s ?p ?o>> ?pp ?oo }
+            UNION
+            { ?ss ?pp <<?s ?p ?o>> }
+          }
+          -->
+        </pre>
+
+      </section>
+
+    </section>
+
+<!--
+    <section>
+      <h2>Initial Definitions</h2>
+
+      <p>We begin by introducing an RDF-star-aware notion of a <a data-cite="SPARQL11-UPDATE#defn_graphStore">graph store</a> [[SPARQL11-UPDATE]].</p>
+
+      <p>A <dfn data-lt="graphStore-star">RDF-star graph store</dfn> |GS|&nbsp;=&nbsp;{ |DG|, (|iri|<sub>1</sub>, |G|<sub>1</sub>),  ... , (|iri|<sub>|n|</sub>, |G|<sub>|n|</sub>) } is a mutable container of <a>RDF-star graphs</a>. It has one unnamed (default) slot and zero or more named slots. The unnamed slot holds an RDF-star graph&nbsp;|DG|, which is called the <em>default graph</em>; each named slot is a pair (|iri|<sub>|i|</sub>, |G|<sub>|i|</sub>) of an RDF-star graph&nbsp;|G|<sub>|i|</sub> and an associated <a>IRI</a>&nbsp;|iri|<sub>i</sub> where</p>
+      <ul>
+        <li>|n| ≥ 0,</li>
+        <li>for each 1 ≤ |i| ≤ |n|, |G|<sub>|i|</sub> is an RDF-star graph associated with the named slot identified by IRI&nbsp;|iri|<sub>|i|</sub>,</li>
+        <li>all these IRIs are distinct, i.e., |i| ≠ |j| implies that |iri|<sub>|i|</sub> ≠ |iri|<sub>|j|</sub>.</li>
+      </ul>
+
+    </section>
+-->
+
+    <section>
+      <h2>Grammar</h2>
+
+      <p>SPARQL-star Update is an extension of the SPARQL Update language [[SPARQL11-UPDATE]]. As mentioned in <a data-cite="SPARQL11-UPDATE#grammar">SPARQL&nbsp;1.1 Update, Appendix&nbsp;C</a>&nbsp;[[SPARQL11-UPDATE]], the grammar of the latter is provided as part of the <a data-cite="SPARQL11-QUERY#sparqlGrammar">SPARQL&nbsp;1.1 Query grammar</a>. Similarly, the grammar of SPARQL-star Update is provided as part of the grammar of the SPARQL-star query language, which is defined by the SPARQL&nbsp;1.1 Query grammar with the extensions specified in <a href="#sparql-star-grammar"></a>. As a result of these extensions, the production rules <a data-cite="SPARQL11-QUERY#rQuadData">QuadData</a> and <a data-cite="SPARQL11-QUERY#rQuadPattern">QuadPattern</a>, which are used in the definition of SPARQL Update [[SPARQL11-UPDATE]], are extended to capture nested triples and nested triple patterns as demonstrated in the examples above.</p>
+
+    </section>
+
+    <section>
+      <h2>Semantics</h2>
+
+      <p>The semantics of SPARQL-star Update operations can also be defined by a simple extension of <a data-cite="SPARQL11-UPDATE#formalModel">the formalization of SPARQL Update</a>&nbsp;[[SPARQL11-UPDATE]]. This extension assumes that any mention of "RDF triple" or "triple" in the formalization of SPARQL Update is understood as an <a>RDF-star triple</a>. Similarly, "RDF graph" and "solution mapping" are understood as <a>RDF-star graph</a> and <a>SPARQL-star solution mapping</a>, respectively. Any mention of the "evaluation function eval()" is understood as the eval function for SPARQL-star as defined in <a href="#evaluation-semantics"></a>.</p>
+
+    </section>
+
+  </section>
+
+  <section>
+    <h2>RDF-star Semantics</h2>
+
+    <p>In this section, we provide a model-theoretic semantics for RDF-star, based on the one defined in [[[RDF11-MT]]] [[RDF11-MT]]. More precisely, we define a mapping from RDF-star's abstract syntax into standard RDF's abstract syntax, and define the semantics of <a>RDF-star graphs</a> in terms of the semantics of the mapped <a>RDF graphs</a>.</p>
+
+    <p>In the following, we will use abbreviated <a>IRIs</a> using the prefix `unstar:` which is an alias for the namespace `https://w3c.github.io/rdf-star/unstar#`.</p>
+
+    <p>We also introduce a number of definitions specific to RDF-star, which rely on the following notions, defined in [[[RDF11-CONCEPTS]]] [[RDF11-CONCEPTS]] and [[[RDF11-MT]]] [[RDF11-MT]]:
+      <dfn data-cite="RDF11-CONCEPTS#dfn-datatype">datatype</dfn>,
+      <dfn data-cite="RDF11-CONCEPTS#dfn-lexical-form">lexical form</dfn>,
+      <dfn data-cite="RDF11-MT#dfn-ill-typed">ill-typed</dfn>,
+      <dfn data-cite="RDF11-MT#dfn-merging" data-lt="merge">merging</dfn>,
+      <dfn data-cite="RDF11-MT#dfn-satisfiable" data-lt="satisfiable">satisfiability</dfn>,
+      <dfn data-cite="RDF11-MT#dfn-unsatisfiable" data-lt="unsatisfiable">unsatisfiability</dfn>,
+      <dfn data-cite="RDF11-MT#dfn-entail" data-lt="entail|entailed">entailment</dfn>,
+      and <dfn data-cite="RDF11-MT#dfn-equivalent" data-lt="equivalent">equivalence</dfn>.
+    </p>
+
+    <section id="mapping">
+      <h2>Mapping RDF-star abstract syntax to RDF</h2>
+
+      <p>We define a mapping |L| that maps any <a>IRI</a> or <a>literal</a> |t| to a literal with:</p>
+      <ul>
+        <li>`xsd:string` as its <a>datatype</a>, and</li>
+        <li>the <a data-cite="N-TRIPLES#canonical-ntriples">canonical N-Triples</a> representation of |t| as its <a>lexical form</a> [[N-TRIPLES]]. If |t| is itself a literal with the `xsd:string` <a>datatype</a>, the representation MUST simply match the <a href="https://www.w3.org/TR/n-triples/#grammar-production-STRING_LITERAL_QUOTE">`STRING_LITERAL_QUOTE`</a> production (i.e., without an explicit <a>datatype</a> <a>IRI</a>).</li>
+      </ul>
+
+      <p>Given an <a>RDF-star graph</a> |G|, the following steps define the <dfn data-lt="unstar">unstar mapping</dfn>, which transform |G| into an <a>RDF graph</a> that we call <a>unstar</a>(|G|).</p>
+
+      <div class="algorithm">
+      <ol>
+        <li id="unstar-replace-unstar-IRIs">For each <a>IRI</a> |i| in the <a>constituents</a> of |G| starting with `https://w3c.github.io/rdf-star/unstar#`: <ol>
+          <li>Mint a new <a>IRI</a> |j| by appending an underscore (`_`) to |i|.</li>
+          <li>Replace with |j| all occurrences of |i| in the <a>subject</a>, <a>predicate</a>, or <a>object</a> position of an <a>asserted</a> or <a>quoted</a> triple of |G|.</li>
+        </ol></li>
+        <li id="unstar-loop">While |G| contains <a>quoted triples</a>:<ol>
+          <li>Pick an <a>RDF-star triple</a> (|s|, |p|, |o|) in the <a>constituents</a> of |G| such that neither |s| nor |o| is a <a>quoted triple</a>.</li>
+          <li>Mint a fresh blank node |b| (i.e., such that |b| is not in the <a>constituents</a> of |G|).</li>
+          <li>Replace with |b| all occurrences of (|s|, |p|, |o|) in the <a>subject</a> or <a>object</a> position of an <a>asserted</a> or <a>quoted</a> triple of |G|.</li>
+          <li id="unstar-add-triples">Add the following <a>asserted triples</a> to |G|:<ul>
+            <li>(|b|, `unstar:subject`,`   `|s|)</li>
+            <li>(|b|, `unstar:predicate`,` `|p|)</li>
+            <li>(|b|, `unstar:object`,`    `|o|) unless |o| is an <a>ill-typed</a> literal</li>
+            <li>(|b|, `unstar:subjectLexical`,`   `|L|(|s|)) unless |s| is a <a>blank node</a></li>
+            <li>(|b|, `unstar:predicateLexical`,` `|L|(|p|))</li>
+            <li>(|b|, `unstar:objectLexical`,`    `|L|(|o|)) unless |o| is a <a>blank node</a></li>
+          </ul></li>
+        </ol></li>
+      </ol>
+      </div>
+      <p>After these steps, <a>unstar</a>(|G|) is an <a>RDF graph</a>, as it contains no <a>quoted triples</a>. Note that if |G| contains no <a>quoted triple</a> and no <a>IRI</a> in the `unstar:` namespace, then <a>unstar</a>(|G|) = |G|.</p>
+
+    </section>
+
+    <section>
+      <h2>Entailment of <a>RDF-star graphs</a></h2>
+
+      <p>Following [[[RDF11-MT]]], we define the notions of <a>satisfiability</a> and <a>entailment</a> for <a>RDF-star graphs</a>. Given two <a>RDF-star graphs</a> |G| and |H|:<p>
+      <ul>
+        <li>We say that |G| is star-<a>satisfiable</a> (resp. star-<a>unsatisfiable</a>) if and only if <a>unstar</a>(|G|) is simply <a>satisfiable</a> (resp. simply <a>unsatisfiable</a>).</li>
+        <li>We say that |H| is star-<a>entailed</a> by (resp. star-<a>equivalent</a> to) |G| if and only if <a>unstar</a>(|H|) is simply <a>entailed</a> by (resp. simply <a>equivalent</a> to) <a>unstar</a>(|G|).</li>
+      </ul>
+
+      <p>It is easy to see that, in the special case of <a>RDF graphs</a> |G| and |H| (i.e. <a>RDF-star graphs</a> containing no <a>quoted triple</a>), |G| is star-<a>satisfiable</a> if and only if |G| is simply <a>satisfiable</a>, and |G| star-<a>entails</a> |H| if and only if |G| simply <a>entails</a> |H|. This is trivially true if |G| and |H| do not contain any `unstar:` <a>IRI</a> (in which case they are left unchanged by the <a>unstar mapping</a>). But this is also true if they do contain such <a>IRIs</a> (as the renaming performed by the <a>unstar mapping</a> has no significant impact on the semantic relationships between the two graphs). Star-<a>entailment</a> can therefore be considered as a natural <em>extension</em> of simple <a>entailment</a> to <a>RDF-star graphs</a>.</p>
+
+      <p class="note">Other notions of <a>satisfiability</a> and <a>entailment</a>, such as <a data-cite="RDF11-MT#rdf-entailment">RDF entailment</a> or <a data-cite="RDF11-MT#rdfs-entailment">RDFS entailment</a>, can be extended in the same way for <a>RDF-star graphs</a>.</p>    
+    </section>
+
+    <section id="merging">
+      <h2>Merging RDF-star graphs</h2>
+
+      <p>[[[RDF11-MT]]] [[RDF11-MT]] defines the <a>merging</a> of two or more <a>RDF graphs</a> as "[taking their] union after forcing any shared blank nodes, which occur in more than one graph, to be distinct in each graph." Note that, in the case of <a>RDF-star graphs</a>, any <a>blank node</a> in the <a>constituent terms</a> of that graph is governed by the definition above, <em>not</em> only those in the subject or object position of some <a>asserted triple</a>.</p>
+
+      <pre id="merging-example"
+        data-transform="updateExample"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+      >
+        <!--
+        #### graph #1
+        :alice :says
+          << _:x :name "bob" >>,
+          << _:x :likes :alice >>.
+
+        #### graph #2
+        :bob :says
+          << :alice :hates _:x >>.
+
+        #### Merge of graphs #1 and #2 →
+        :alice :says
+          << _:y :name "bob" >>,
+          << _:y :likes :alice >>.
+        :bob :says
+          << :alice :hates _:z >>.
+
+        -->
+      </pre>
+
+      </section>
+
+
+    <section class="informative">
+      <h2>Remarks</h2>
+
+      <section>
+        <h2>Implementing the RDF-star semantics</h2>
+
+        <p>It is important to notice that the definitions given <a href="#entailment-of-rdf-star-graphs">above</a> for <a>satisfiability</a> and <a>entailment</a> of <a>RDF-star graphs</a> do not mandate that implementations actually transform <a>RDF-star graphs</a> using the <a>unstar mapping</a> defined above. It should be possible to implement the semantics by directly handling RDF-star's <a href="#concepts">abstract syntax</a>.</p>
+
+      </section>
+
+      <section>
+        <h2>Combining RDF-star graphs</h2>
+
+        <p>Care must be taken when implementations that rely on the <a>unstar mapping</a> combine the resulting <a>RDF graphs</a> through union or <a>merge</a>. Given two <a>RDF-star graphs</a> |G| and |H|, it may be the case that <a>unstar</a>(|G| ∪ |H|) ≠ <a>unstar</a>(|G|) ∪ <a>unstar</a>(|H|).</p>
+
+        <p>In particular, if |G| and |H| contain the same <a>quoted triple</a>, this triple will be mapped to a single blank node in <a>unstar</a>(|G| ∪ |H|), but in two potentially different blank nodes in <a>unstar</a>(|G|) ∪ <a>unstar</a>(|H|). These blank nodes will need to be unified in order to reconstruct <a>unstar</a>(|G| ∪ |H|).</p>
+
+        <p>Conversely, nothing in the definition of the <a>unstar mapping</a> prevents it from generating the same blank node |b| for a <a>quoted triple</a> of |G|, and for a <em>different</em> <a>quoted triple</a> of |H| (provided that |b| is not present in either |G| nor |H|). In that case, not only would <a>unstar</a>(|G|) ∪ <a>unstar</a>(|H|) be different from <a>unstar</a>(|G| ∪ |H|), but it would lose some information by mixing the descriptions of the two <a>quoted triples</a>.</p>
+
+      </section>
+
+      <section>
+        <h2>Other uses of the <a>unstar mapping</a></h2>
+
+        <p>Since the <a>unstar mapping</a> transforms any <a>RDF-star graph</a> into a standard ("non-star") <a>RDF graph</a>, it might be tempting to use this mapping for conveying <a>RDF-star graphs</a> to legacy RDF systems. However, this has a number of caveats.</p>
+
+        <p>First, the <a>unstar mapping</a> alters the semantics of the graph: in general, a graph |G| is <em>not</em> <a>equivalent</a> to its "unstarred" version <a>unstar</a>(|G|), even if |G| is a standard <a>RDF graph</a> containing no <a>quoted triples</a>. (More precisely, they are equivalent only if |G| contains no <a>quoted triples</a> and no IRIs from the `unstar:` namespace.)</p>
+
+        <p>Second, when a legacy RDF system communicates an <a>RDF graph</a> to an RDF-star-aware system, there is no means by which the latter can determine with certainty whether the graph is the result of applying the <a>unstar mapping</a>, and thus needs to be transformed back. (The presence of `unstar:` IRIs in the graph can be used as a hint, but such IRIs can also be used independently of the mapping.) Additional metadata should therefore be attached to unstarred graphs, so that RDF-star systems know whether or not they need to apply the inverse transformation of <a>unstar</a>.</p>
+
+        <p>Finally, legacy RDF systems may alter unstarred graphs in ways that prevent their transformation back to the original <a>RDF-star graph</a>. For example, it has been <a href="#combining-rdf-star-graphs">pointed out above</a> how combining several unstarred graphs may not yield the expected result. Another example is the removal of some arcs, such that a <a>quoted triple</a> is not completely described anymore, and can not be reconstructed.</p>
+
+      </section>
+
+      <section id="ref-opacity">
+        <h2>Referential opacity</h2>
+
+        <p>The way the <a>unstar mapping</a> is defined, the denotation of a <a>quoted triple</a> does not only depend on the denotation of its component terms, but also on their syntactical form (for IRIs and literals). This behavior is referred to as <a href="https://en.wikipedia.org/wiki/Opaque_context">referential opacity</a>. A consequence is that two different triples, that would be semantically equivalent if asserted, are not automatically considered to denote the same thing when <a>quoted</a>. In the example below, assuming <a data-cite="RDF11-MT#datatype-entailment">D-entailment</a>: while `"104232"^^xsd:nonNegativeInteger` and `"000104232"^^xsd:nonNegativeInteger` denote the same thing (namely, the number 104232), the two <a>quoted triples</a> are allowed to have different denotations, and so the entailment does not hold.</p>
+
+        <pre id="ref-opacity-d-entailment"
+        data-transform="updateExample"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+        >
+        <!--
+        #### under D-entailment
+
+        << dbr:Linköping dbo:populationTotal "104232"^^xsd::nonNegativeInteger >>
+            :source <https://dbpedia.org/data/Linköping>.
+
+        #### does NOT entail
+
+        << dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger >>
+            :source <https://dbpedia.org/data/Linköping>.
+        
+        # (notice the leading zeros in the literal)
+        -->
+        </pre>
+
+        <p>Similarly, in the example below and under <a href="https://www.w3.org/TR/owl2-overview/">OWL entailment</a> [[OWL2-Overview]], while `:superman` and `:clark` are inferred to denote one and the same person (because of the `owl:sameAs` relationship between them), the two <a>quoted triples</a> are not automatically considered to denote the same thing.</p>
+
+        <pre id="ref-opacity-owl-entailment"
+        data-transform="updateExample"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+        >
+        <!--
+        #### under OWL-entailment
+
+        :superman owl:sameAs :clark.
+        << :superman :can :fly >> :reportedBy :clark.
+
+        #### does NOT entail
+
+        << :clark :can :fly >> :reportedBy :clark.
+        -->
+        </pre>
+
+        <p>Note that this may lead to counter-intuitive results when the <a href="#annotation-syntax">annotation syntax</a> is used, as illustrated in the example below.</p>
+
+        <pre id="ref-opacity-annotation"
+        data-transform="updateExample"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+        >
+        <!--
+        #### under D-entailment
+
+        dbr:Linköping dbo:populationTotal "104232"^^xsd::nonNegativeInteger
+            {| :source <https://dbpedia.org/data/Linköping> |}.
+
+        #### does NOT entail
+
+        dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger
+            {| :source <https://dbpedia.org/data/Linköping> |}.
+        
+        # (notice the leading zeros in the literal)
+
+        #### more precisely, it DOES entail
+
+        dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger.
+
+        #### but it does NOT entail
+
+        << dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger >>
+            :source <https://dbpedia.org/data/Linköping>.
+        -->
+        </pre>
+
+      </section>
+
+      <section id="selective-ref-transparency">
+        <h2>Selective referential transparency</h2>
+
+        <p>Referencial opacity is well suited for use-cases where the syntactical form of the annotated statements may be significant (like <a href="../UCR/rdf-star-ucr.html#annotate-statements-from-other-named-graphs-and-datasets">annotating statements from other graphs</a> or <a href="../UCR/rdf-star-ucr.html#annotate-commit-deltas">annotating commit deltas</a>). On the other hand, other use-cases would expect some degree of referential transparency. Consider the case of <a href="../UCR/rdf-star-ucr.html#meta-properties-over-properties">attributed/evidenced triples</a>. The annotation is understood to be about the fact asserted by the triple rather than the triple itself. In this use case, one might then expect more inferences than provided by the base semantics. Consider the following example.</p>
+
+        <pre id="selective-ref-opacity"
+        data-transform="updateExample"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+        >
+        <!--
+        << dbr:Linköping dbo:populationTotal "104232"^^xsd::nonNegativeInteger >>
+          :measuredOn "2010-12-31"^^xsd:date ;
+          :source <https://dbpedia.org/data/Linköping.ttl> .
+
+        ### Candidate entailment #1
+
+        << dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger >>
+          :measuredOn "2010-12-31"^^xsd:date .
+
+        ### Candidate entailment #2
+
+        << dbr:Linköping dbo:populationTotal "000104232"^^xsd::nonNegativeInteger >>
+          :source <https://dbpedia.org/data/Linköping.ttl> .
+
+        # (notice the leading zeros in the literal in both candidate entailments)
+        -->
+        </pre>
+
+        <p>One could argue that the candidate entailment #1 is desirable because the property `:measuredOn` is understood to be about the <em>statement</em> made by the subject triple (that statement was true on the given date, regardless of its RDF expression, in this case using an object value equivalent to `104232`). On the other hand, the candidate entailment #2 may be considered not desirable because the predicate `:source` is about the triple itself (that specific triple was parsed from the given Turtle file).</p>
+
+        <p>In Section <a href="#rdf-star-vocabulary"></a>, we introduce the notion of <dfn data-lt="TEP">transparency-enabling property (TEP)</dfn>, for selectively enabling this kind of entailment on specific properties. The basis of the idea is that each such property&nbsp;|p| is identified by adding to the RDF-star graph a triple of the form (|p|, `rdf:type`, `rdf-star:TransparencyEnablingProperty`); i.e., for the previous example, this triple would be (`:measuredOn`, `rdf:type`, `rdf-star:TransparencyEnablingProperty`).
+        This would make candidate entailment #1 above valid. The semantics of such TEPs is formally defined in Section <a href="#vocabulary-semantics"></a>.</p>
+
+        <p>Notice that enabling referential transparency based on such TEPs is only local to the RDF-star graph(s) in which the property is stated to be a TEP (or where this statement can be inferred as per the entailment regime considered). In other words, for every graph&nbsp;|G| in which a property is <em>not</em> stated to be transparency enabling, all quoted triples appearing in |G| as subject or object of that property are stilled considered as referentially opaque, even if there may exist some other graph in which the property is stated to be transparency enabling.</p>
+
+        <p class=note>This proposal for TEPs makes no distinction regarding the position (subject or object) of the <a>quoted triples</a>. The group did consider a finer-grained alternative, where selective transparency could also be enabled only for the subjects (resp. objects) of the TEP. This was however ruled out as overly complex for a limited added value.</p>
+      </section>
+
+      <section>
+        <h2>Other alternatives to referential opacity</h2>
+
+        <p>Given the potential drawbacks of the referential opacity provided by the current semantics, as described in the beginning of Section <a href="#selective-ref-transparency"></a> above, the group has considered other alternative semantics. No clear consensus was reached, however, to decide whether these alternatives should be used as a replacement, or as a <a data-cite="RDF11-MT#dfn-semantic-extension">semantic extension</a>, of the current semantics.</p>
+
+        <p>A fully referentially transparent semantics can be achieved by changing the <a href="#unstar-add-triples">step 2.4</a> of the <a>unstar mapping</a> algorithm as follows:</p>
+
+        <ul>
+          <li> Add the following <a>asserted triples</a> to |G|:
+            <ul>
+              <li>(|b|, `unstar:subject`,`   `|s|)</li>
+              <li>(|b|, `unstar:predicate`,` `|p|)</li>
+              <li>(|b|, `unstar:object`,`    `|o|)</li>
+            </ul>
+          </li>
+        </ul>
+
+        <p>In the examples above (<a href="#ref-opacity-d-entailment"></a>, <a href="#ref-opacity-owl-entailment"></a>, <a href="#ref-opacity-annotation"></a>, <a href="#selective-ref-opacity"></a>), all the entailments would now hold automatically. This could be a problem in some use-cases, as such inferences could then not be cancelled, given the <a data-cite="RDF11-MT#dfn-monotonic">monotonic semantics</a> of RDF.</p>
+
+        <p>An intermediate alternative would be to make <a>quoted triples</a> referentially opaque for IRIs only, keeping it transparent for literals (and for blank nodes, as is already the case). This can be achieved by changing the <a href="#unstar-add-triples">step 2.4</a> of the <a>unstar mapping</a> algorithm as follows:</p>
+
+        <ul>
+          <li> Add the following <a>asserted triples</a> to |G|:
+            <ul>
+              <li>(|b|, `unstar:subject`,`   `|s|)</li>
+              <li>(|b|, `unstar:predicate`,` `|p|)</li>
+              <li>(|b|, `unstar:object`,`    `|o|)</li>
+              <li>(|b|, `unstar:subjectLexical`,`   `|L|(|s|)) if |s| is an <a>IRI</a></li>
+              <li>(|b|, `unstar:predicateLexical`,` `|L|(|p|))</li>
+              <li>(|b|, `unstar:objectLexical`,`    `|L|(|o|)) if |o| is an <a>IRI</a></li>
+              </ul>
+          </li>
+        </ul>
+
+        <div class=note>Other design choices for the semantics have also been discussed by the community group; these have been <a href="https://github.com/w3c/rdf-star/issues/95">summarized in a Github issue</a>.</div>
+
+      </section>
+
+    </section>
+
+  </section>
+
+  <section class="informative">
+    <h2>RDF-star vocabulary</h2>
+
+    <p>In this section, we propose a minimal vocabulary that can be useful when working with RDF-star, especially when describing other vocabularies meant to be used with RDF-star triples and graphs.</p>
+
+    <section>
+      <h2>Core vocabulary</h2>
+
+      <p>In this section we define IRIs for the concepts defined in other normative parts of this document.</p>
+
+      <dl>
+        <dt>`rdf-star:Triple`</dt>
+        <dd>This term identifies the class of all <a>RDF-star triples</a>. It is expected to serve, among other things, as the `rdfs:domain` or `rdfs:range` of properties meant to apply to <a>quoted triples</a>.</dd>
+
+        <dt>`rdf-star:Graph`</dt>
+        <dd>This term identifies the class of all <a>RDF-star graphs</a>.</dd>
+
+        <dt>`rdf-star:Source`</dt>
+        <dd>This term identifies the class of all RDF-star sources, an extension of the notion of <dfn data-cite="RDF11-CONCEPTS#dfn-rdf-source">RDF source</dfn>: a persistent yet mutable source or container of <a>RDF-star graphs</a>.</dd>
+
+        <dt>`rdf-star:SPARQLStarQuery`</dt>
+        <dd>This term identifies the extension of the SPARQL query language defined in Section <a href="#sparql-star"></a>. It is expected to serve as the value of `sd:supportedLanguage` in SPARQL service descriptions [[SPARQL11-SERVICE-DESCRIPTION]].</dd>
+
+        <dt>`rdf-star:SPARQLStarUpdate`</dt>
+        <dd>This term identifies the extension of the SPARQL update language defined in Section <a href="#sparql-star-update"></a>. It is expected to value as the domain of `sd:supportedLanguage` in SPARQL service descriptions [[SPARQL11-SERVICE-DESCRIPTION]].</dd>
+      </dl>
+
+      <p>Below is a Turtle description of that vocabulary.</p>
+
+      <div class="defn">
+        <pre>## RDF-star core vocabulary
+PREFIX rdf:       &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs:      &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX rdf-star:  &lt;http://www.w3.org/ns/rdf-star#&gt;
+PREFIX sd:        &lt;http://www.w3.org/ns/sparql-service-description#&gt;
+
+rdf-star:Triple      a rdfs:Class ;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
+    rdfs:label         "RDF-star Triple" ;
+    rdfs:comment       "The class of RDF-star triples." ;
+    rdfs:subClassOf    rdfs:Resource .
+
+rdf-star:Graph       a rdfs:Class ;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
+    rdfs:label         "RDF-star Graph" ;
+    rdfs:comment       "The class of RDF-star graphs." ;
+    rdfs:subClassOf    rdfs:Resource .
+
+rdf-star:Source      a rdfs:Class ;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
+    rdfs:label         "RDF-star Source" ;
+    rdfs:seeAlso       &lt;https://www.w3.org/TR/rdf11-concepts/#h3_change-over-time&gt; ;
+    rdfs:comment       "The class of RDF-star sources." ;
+    rdfs:subClassOf    rdfs:Resource .
+
+rdf-star:SPARQLStarQuery a sd:Language ;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
+    rdfs:label         "SPARQL-star" ;
+    rdfs:comment       "The SPARQL-star query language" .
+
+rdf-star:SPARQLStarUpdate a sd:Language ;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
+    rdfs:label         "SPARQL-star Update" ;
+    rdfs:comment       "The SPARQL-star update language" .
+        </pre>
+      </div>
+    </section>
+
+    <section>
+      <h2>Extended vocabulary</h2>
+
+      <p>In this section we define IRIs for the concepts defined in other non-normative parts of this document.</p>
+
+      <dl>
+        <dt>`rdf-star:TransparencyEnablingProperty`</dt>
+        <dd>A special kind of property that, when applied to a <a>quoted triple</a>, also holds for any semantically equivalent triple, as discussed in <a href="#selective-ref-transparency"></a>.</dd>
+      </dl>
+
+      <p>Below is a Turtle description of that vocabulary.</p>
+
+      <div class="defn">
+        <pre>## RDF-star extended vocabulary
+PREFIX rdf:       &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs:      &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX rdf-star:  &lt;http://www.w3.org/ns/rdf-star#&gt;
+
+rdf-star:TransparencyEnablingProperty a rdfs:Class ;
+    rdfs:isDefinedBy   &lt;http://www.w3.org/ns/rdf-star#&gt; ;
+    rdfs:label         "RDF-star Source" ;
+    rdfs:comment       "The class of transparency-enabling properties." ;
+    rdfs:subClassOf    rdf:Property .
+        </pre>
+      </div>
+    </section>
+
+    <section id="vocabulary-semantics">
+      <h2>Vocabulary semantics</h2>
+
+      <p>We now describe a <a data-cite="RDF11-MT#dfn-semantic-extension">semantic extension</a> of RDF-star, embedding the inherent semantics of the RDF-star vocabulary (RSV) described above (core and extended). A <dfn data-lt="RSV-interpretation">simple RSV-interpretation</dfn> is a <a data-cite="RDF11-MT#simple-interpretations">simple interpretation</a> |I| that satisfies the following additional conditions:</p>
+
+      <ol>
+        <li><em>Ensure that all quoted triples in this interpretations are instances of `rdf-star:Triple`.</em><ul>
+          <li>For all |t|, |x| in the domain IR such that either<ul>
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:subject`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:predicate`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:object`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:subjectLexical`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:predicateLexical`)),
+            <li>(|t|, |x|) ∈ IEXT(IS(`unstar:objectLexical`)),
+          </ul>
+          <li>then (|t|, IS(`rdf-star:Triple`)) must be an element of IEXT(IS(`rdf:type`)).
+        </ul>
+
+          
+        <li><em>Ensure that, for all quoted triples in this interpretation, all "equivalent" triples also exist in the interpretation.</em><ul>
+          <li>For all |t|, |s|, |p|, |o| in the domain IR such that<ul>
+            <li>(|t|, |s|) ∈ IEXT(IS(`unstar:subject`)),
+            <li>(|t|, |p|) ∈ IEXT(IS(`unstar:predicate`)),
+            <li>(|t|, |o|) ∈ IEXT(IS(`unstar:object`)),
+          </ul>
+          <li>and for all terms |s|', |p|', and |o|' such that <ul>
+            <li>|I|(|s|') = |s|,
+            <li>|I|(|p|') = |p|,
+            <li>|I|(|o|') = |o|,
+          </ul>
+          <li>there must exist |t|' in IR such that<ul>
+            <li>(|t|', |s|) ∈ IEXT(IS(`unstar:subject`)),
+            <li>(|t|', |p|) ∈ IEXT(IS(`unstar:predicate`)),
+            <li>(|t|', |o|) ∈ IEXT(IS(`unstar:object`)),
+            <li>(|t|', |I|(L(|s|'))) ∈ IEXT(IS(`unstar:subjectLexical`)),
+            <li>(|t|', |I|(L(|p|'))) ∈ IEXT(IS(`unstar:predicateLexical`)), and
+            <li>(|t|', |I|(L(|o|'))) ∈ IEXT(IS(`unstar:objectLexical`)).
+          </ul>
+        </ul>
+
+        <li><em>Ensure that TEPs that hold for a triple also hold for all "equivalent" triples.</em>
+        <ul><li>For all |p| such that (|p|,IS(`rdf-star:TransparencyEnablingProperty`)) ∈ IEXT(IS(`rdf:type`))
+          <li>then |p| must be an element of IP, and<ul>
+
+            <li>For all |t|, |u|, |s|', |p|', |o|', |t|' in IR such that<ul>
+              <li>(|t|, |u|) ∈ IEXT(`p`)
+              <li>(|t|, |s|') ∈ IEXT(IS(`unstar:subject`)),
+              <li>(|t|, |p|') ∈ IEXT(IS(`unstar:predicate`)),
+              <li>(|t|, |o|') ∈ IEXT(IS(`unstar:object`)),
+              <li>(|t|', |s|') ∈ IEXT(IS(`unstar:subject`)),
+              <li>(|t|', |p|') ∈ IEXT(IS(`unstar:predicate`)),
+              <li>(|t|', |o|') ∈ IEXT(IS(`unstar:object`))
+            </ul>
+            then (|t|', |u|) must also be an element of IEXT(|p|).
+
+            <li>For all |t|, |u|, |s|', |p|', |o|', |t|' in IR such that<ul>
+              <li>(|u|, |t|) ∈ IEXT(`p`)
+              <li>(|t|, |s|') ∈ IEXT(IS(`unstar:subject`)),
+              <li>(|t|, |p|') ∈ IEXT(IS(`unstar:predicate`)),
+              <li>(|t|, |o|') ∈ IEXT(IS(`unstar:object`)),
+              <li>(|t|', |s|') ∈ IEXT(IS(`unstar:subject`)),
+              <li>(|t|', |p|') ∈ IEXT(IS(`unstar:predicate`)),
+              <li>(|t|', |o|') ∈ IEXT(IS(`unstar:object`))
+            </ul>
+            then (|u|, |t|') must also be an element of IEXT(|p|).
+          </ul>
+        </ul>
+      </ol>
+
+      <p>Given two <a>RDF-star graphs</a> |G| and |H|, and following standard terminology, we say that a simple RSV-interpretation |I| satisfies |G| if |I|(|G|) = true, and that |G| is (simply) RSV-satisfiable if a simple RSV-interpretation exists that satisfies |G|; otherwise, |G| is (simply) RSV-unsatisfiable. We say that |G| simply RSV-entails |H| if every simple RSV-interpretation that satisfies |G| also satisfies |H|. If |G| and |H| each RSV-entail the other, they are RSV-equivalent.</p>
+
+      <p>RSV-entailment is defined here as an extension of <a data-cite="RDF11-MT#simpleentailment">simple entailment</a>, but other entailment regimes (such as <a data-cite="RDF11-MT#rdf-entailment">RDF entailment</a> or <a data-cite="RDF11-MT#rdfs-entailment">RDFS entailment</a>) can be extended in the exact same way (i.e., by extending their respective notion of interpretation with the aforementioned conditions).</p>
+
+      <p class=note>Some terms of the RDF-star vocabulary have no associated constraint in <a>RSV-interpretations</a> (for instance, `rdf-star:Graph`). The reason is that the intended meaning of these terms leads to no particular inference <em>with this vocabulary</em>.</p>
+
+    </section>
+
+    <div class="issue" data-number="169">
+      This issue discusses the relevance of introducing a standard property to link a <a>quoted triple</a> to its occurrences (as illustrated in <a href="#occurrences-example"></a>), as well as other related properties and classes.
+    </div>
+  </section>
+
+  <section class="appendix informative">
+    <h2>IANA Considerations</h2>
+
+    <p>In <a href="#concrete-syntaxes"></a>, we have proposed extensions to four existing media types, namely `text/turtle` [[TURTLE]], `application/trig` [[TRIG]], `application/n-triples` [[N-TRIPLES]] and `application/n-quads` [[N-QUADS]]. In <a href="#sparql-star"></a>, we have proposed extensions to three more existing media types, namely `application/sparql-query` [[SPARQL11-QUERY]], `application/sparql-results+json` [[SPARQL11-RESULTS-JSON]], and `application/sparql-result+xml` [[RDF-SPARQL-XMLRES]]. While the <a href="https://www.w3.org/community/rdf-dev/">RDF-DEV Community Group</a> has no authority to officially update these media-types, we hope that a future working group with such authority will consider doing so, and include extensions proposed in this report.</p>
+
+    <p>In the meantime, implementers of RDF-star are faced with a dilemma: use the standard media-type identifiers as if their definition had been already updated (optimistic approach); or make it explicit that they are prone to produce or consume <a>quoted triples</a> (pessimistic approach), perhaps by using a different temporary media-type, or custom HTTP headers.</p>
+
+    <p>The optimistic approach raises the risk of breaking the expectations of other applications that are not RDF-star-aware. For example, if a SPARQL-star endpoint responds to a CONSTRUCT query with the `text/turtle` media-type, and includes a <a>quoted triple</a> in the response, a legacy client will fail to parse that response. On the other hand, if the same server applies the pessimistic approach, it may simply reject any query requiring `text/turtle`, <em>just in case</em> the result contain <a>quoted triples</a>. Note that it is not always feasible for the server to decide beforehand whether the result is plain Turtle or Turtle-star, because the result is often produced in a streamed manner, after the headers containing the media-type have been sent to the client.</p>
+
+    <p>Another problem with the pessimistic approach is that "temporary" media-types are known to actually become permanent. Old applications keep using them long after their intended expiration date. This a burden on all other implementations, which must handle the "temporary" media-types along the permanent one, as aliases, in order to maintain backward compatibility.</p>
+
+    <p>The W3C Recommendation 
+      <a data-cite="DX-PROF-CONNEG#introduction">Content Negotiation by Profile</a>
+      [[DX-PROF-CONNEG]] describes a mechanism that separates content-type
+      negotiation from requesting a response conforming to a specific information model,
+      whether that model is a specific standard, specification or profile.
+      The <a data-cite="DX-PROF-CONNEG#requestsandresonses"
+             >operations of the abstract model</a> 
+      are "list profiles" and "get resource by profile".
+      The "get resource" operation can provide the profile requests with HTTP
+      header <code>Accept-Profile</code> and responses use <code>Content-Profile</code>, or
+      alternatively the request can use HTTP Query String parameters.
+    </p>
+
+    <p>
+      This may be useful when the information is available in RDF-star or in non-RDF-star
+      RDF 1.1 form, whether using reification, or by omitting information expressed with
+      the RDF-star data model and responding with a restricted response. By lifting the
+      issue up to the information model, away from being purely about syntax, restricted
+      responses can be requested and returned which do not use RDF-star features.
+      However, it assumes both requestor and receiver adhere to the defined profile
+      negotiation and therefore does not address the dilemma of optimistic or pessimistic
+      approaches.
+    </p>
+
+    <p class="issue" data-number="43">Although the examples in this document, and the tests in <a href="../tests/">the test suite</a>, adopt the optimistic approach, it should be noted that no clear consensus emerged from the group on which approach is the best.</p>
+
+  </section>
+
+  <section class="appendix informative">
+    <h2>Historical remarks</h2>
+
+    <section>
+      <h2>SA-mode and PG-mode</h2>
+
+      <p>A lot of discussions on the <a href="https://lists.w3.org/Archives/Public/public-rdf-star/">RDF-star mailing list</a> and <a href="https://github.com/w3c/rdf-star">GitHub repository</a> refer to SA-mode and PG-mode. Those abbreviations stand for "Separate Assertion mode" and "Property Graph mode". They originate in the fact that different versions of RDF-star have been published over the years, with different designs. In PG-mode, any <a>quoted triple</a> was also considered <a>asserted</a>. SA-mode, on the other hand, allowed the use of <a>quoted triples</a> without those triples being automatically <a>asserted</a>, requiring that they be <a>asserted</a> separately when that was intended. SA-mode was more flexible, but induced redundancy in the use-cases that PG-mode was designed to address.</p>
+
+      <p>The notion of <a href="#grammar-production-annotation">annotations</a> in the <a href="#turtle-star">Turtle-star</a> syntax was introduced to remove the need for different modes. Rather than interpret the same syntax differently in each mode, which would have caused interoperability problems and required a switch for those modes, it was decided to provide a different syntax for each use case.</p>
+
+      <ul>
+        <li>The <code>&lt;&lt; ... &gt;&gt;</code> syntax represents a triple that is <a>quoted</a> without being <a>asserted</a>, satisfying the need formerly filled by SA-mode.</li>
+        <li>The <code>:a :b :c {| :p :o ... |}</code> annotation syntax creates triples where the subject is a <a>quoted</a> version of the triple <a>asserted</a> just before the annotation (here, <code>:a :b :c</code>), without the need to repeat it, satisfying the need formerly filled by PG-mode.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>The seminal example</h2>
+
+      <p>The motivating example in the original RDF-star paper [[RDF-STAR-FOUNDATION]] was on a provenance use-case, and is repeated below.</p>
+
+      <pre data-transform="updateExample"
+        data-content-type="text/turtle"
+        class="nohighlight example"
+      >
+        <!--
+        # the controversial seminal example
+        :bob foaf:name "Bob".
+        <<:bob foaf:age 23>> dct:creator <http://example.com/crawlers#c1> ;
+                             dct:source <http://example.net/listing.html> .
+        -->
+      </pre>
+
+      <p>This example was further debated on the <a href="https://lists.w3.org/Archives/Public/public-rdf-star/">RDF-star mailing list</a>, as it appears to have set wrong expectations about what <a>quoted triples</a> represent. More precisely, from this example, one may wrongly assume that `&lt;&lt;:bob foaf:age 23>>` represents the <em>occurrence</em> of the given triple at the address `http://example.net/listing.html` (see <a href="#occurrences"></a>). This impression may be reinforced by the use of `dct:creator`: arguably, a triple (as a unique abstract entity) is not "created" by anyone, while an occurrence thereof can be said to be created or authored.</p>
+
+      <p>The problem with this interpretation is that it will break as soon as other creators and sources are added for the triple: one could not tell which source corresponds to which creator. Correctly capturing this information would require additional nodes to explicitly represent triple occurrences, as in <a href="#occurrences-example"></a>. In summary, although RDF-star can be used for provenance, the seminal example does not work as stated and can lead to the fundamentally incorrect interpretation that RDF-star can represent multiple distinct <a>quoted triples</a> with the same subject, predicate, and object.</p>
+
+    </section>
+
+  </section>
+
+  <section class="appendix">
+    <h2>Complete EBNF Grammars</h2>
+
+  <section class="appendix informative" id="turtle-star-ebnf">
+    <h2>Turtle-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for Turtle-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/turtle.html"></div>
+  </section>
+
+  <section class="appendix informative" id="trig-star-ebnf">
+    <h2>TriG-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for TriG-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/trig.html"></div>
+  </section>
+
+  <section class="appendix informative" id="n-triples-star-ebnf">
+    <h2>N-Triples-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for N-Triples-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/n-triples.html"></div>
+  </section>
+
+  <section class="appendix informative" id="n-quads-star-ebnf">
+    <h2>N-Quads-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for N-Quads-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/n-quads.html"></div>
+  </section>
+
+  <section class="appendix informative" id="sparql-star-ebnf">
+    <h2>SPARQL-Star EBNF Grammar</h2>
+    <p>The following is a complete grammar for SPARQL-Star.
+      The EBNF used here is defined in XML 1.0 [[EBNF-NOTATION]].</p>
+
+    <div data-include="../ebnf/sparql.html"></div>
+  </section>
+  </section>
+
+  <section class="appendix informative" id="issue-summary">
+    <!-- A list of issues will magically appear here -->
+  </section>
+</body>
+</html>

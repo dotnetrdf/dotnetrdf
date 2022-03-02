@@ -49,6 +49,7 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode;
 using VDS.RDF.Query.Expressions.Functions.XPath;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
@@ -157,6 +158,20 @@ namespace VDS.RDF.Query
             return GetBoundValue(variable.Name, context, binding);
         }
 
+        public IValuedNode ProcessTripleNodeTerm(TripleNodeTerm tnTerm, TContext context, TBinding binding)
+        {
+            INode s = BindNode(tnTerm.Node.Triple.Subject, context, binding);
+            INode p = BindNode(tnTerm.Node.Triple.Predicate, context, binding);
+            INode o = BindNode(tnTerm.Node.Triple.Object, context, binding);
+            return new TripleNode(new Triple(s, p, o)).AsValuedNode();
+        }
+
+        private INode BindNode(INode n, TContext context, TBinding binding)
+        {
+            if (n is IVariableNode vn) return GetBoundValue(vn.VariableName, context, binding);
+            return n;
+        }
+
         public virtual IValuedNode ProcessAdditionExpression(AdditionExpression addition, TContext context, TBinding binding)
         {
             return ApplyBinaryOperator(addition, SparqlOperatorType.Add, context, binding);
@@ -255,8 +270,12 @@ namespace VDS.RDF.Query
 
             if (a == null) throw new RdfQueryException("Cannot evaluate a > when one argument is Null");
 
-            var compare = NodeComparer.Compare(a, b);//a.CompareTo(b);
-            return new BooleanNode(compare > 0);
+            if (NodeComparer.TryCompare(a, b, out var compare))
+            {
+                return new BooleanNode(compare > 0);
+            }
+
+            return null;
         }
 
         public virtual IValuedNode ProcessGreaterThanOrEqualToExpression(GreaterThanOrEqualToExpression gte, TContext context,
@@ -275,8 +294,12 @@ namespace VDS.RDF.Query
                 throw new RdfQueryException("Cannot evaluate a >= when one argument is null");
             }
 
-            var compare = NodeComparer.Compare(a, b);// a.CompareTo(b);
-            return new BooleanNode(compare >= 0);
+            if (NodeComparer.TryCompare(a, b, out var compare))
+            {
+                return new BooleanNode(compare >= 0);
+            }
+
+            return null;
         }
 
         public virtual IValuedNode ProcessLessThanExpression(LessThanExpression lt, TContext context, TBinding binding)
@@ -286,9 +309,12 @@ namespace VDS.RDF.Query
             b = lt.RightExpression.Accept(this, context, binding);
 
             if (a == null) throw new RdfQueryException("Cannot evaluate a < when one argument is Null");
-            var compare = NodeComparer.Compare(a, b);
-            return new BooleanNode(compare < 0);
+            if (NodeComparer.TryCompare(a, b, out int compare))
+            {
+                return new BooleanNode(compare < 0);
+            }
 
+            return null;
         }
 
         public virtual IValuedNode ProcessLessThanOrEqualToExpression(LessThanOrEqualToExpression lte, TContext context, TBinding binding)
@@ -305,8 +331,7 @@ namespace VDS.RDF.Query
                 throw new RdfQueryException("Cannot evaluate a <= when one argument is a Null");
             }
 
-            var compare = NodeComparer.Compare(a, b);
-            return new BooleanNode(compare <= 0);
+            return NodeComparer.TryCompare(a, b, out var compare) ? new BooleanNode(compare <= 0) : null;
         }
 
         public virtual IValuedNode ProcessNotEqualsExpression(NotEqualsExpression ne, TContext context, TBinding binding)
@@ -1013,6 +1038,13 @@ namespace VDS.RDF.Query
             INode result = isLiteral.InnerExpression.Accept(this, context, binding);
             return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Literal);
 
+        }
+
+        public virtual IValuedNode ProcessIsTripleFunction(IsTripleFunction isTriple, TContext context,
+            TBinding binding)
+        {
+            INode result = isTriple.InnerExpression.Accept(this, context, binding);
+            return result == null ? new BooleanNode(false) : new BooleanNode(result.NodeType == NodeType.Triple);
         }
 
         public virtual IValuedNode ProcessIsNumericFunction(IsNumericFunction isNumeric, TContext context, TBinding binding)
@@ -2229,6 +2261,30 @@ namespace VDS.RDF.Query
             return result.AsSafeBoolean()
                 ? ifElse.TrueBranchExpression.Accept(this, context, binding)
                 : ifElse.FalseBranchExpression.Accept(this, context, binding);
+        }
+
+        public IValuedNode ProcessSubjectFunction(SubjectFunction subjectFunction, TContext context, TBinding binding)
+        {
+            IValuedNode innerValue = subjectFunction.InnerExpression.Accept(this, context, binding);
+            if (innerValue is ITripleNode tn) return tn.Triple.Subject.AsValuedNode();
+            throw new RdfQueryException("Value passed to SUBJECT function is not a Triple Node. Received a " +
+                                        innerValue.NodeType);
+        }
+
+        public IValuedNode ProcessPredicateFunction(PredicateFunction predicateFunction, TContext context, TBinding binding)
+        {
+            IValuedNode innerValue = predicateFunction.InnerExpression.Accept(this, context, binding);
+            if (innerValue is ITripleNode tn) return tn.Triple.Predicate.AsValuedNode();
+            throw new RdfQueryException("Value passed to PREDICATE function is not a Triple Node. Received a " +
+                                        innerValue.NodeType);
+        }
+
+        public IValuedNode ProcessObjectFunction(ObjectFunction objectFunction, TContext context, TBinding binding)
+        {
+            IValuedNode innerValue = objectFunction.InnerExpression.Accept(this, context, binding);
+            if (innerValue is ITripleNode tn) return tn.Triple.Object.AsValuedNode();
+            throw new RdfQueryException("Value passed to OBJECT function is not a Triple Node. Received a " +
+                                        innerValue.NodeType);
         }
 
         public virtual IValuedNode ProcessBooleanCast(BooleanCast cast, TContext context, TBinding binding)

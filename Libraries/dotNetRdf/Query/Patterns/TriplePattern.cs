@@ -30,6 +30,7 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Patterns
 {
@@ -53,6 +54,9 @@ namespace VDS.RDF.Query.Patterns
             {
                 case BlankNodePattern:
                     throw new RdfParseException("Cannot use a Triple Pattern with a Blank Node Predicate in a SPARQL Query");
+                case NodeMatchPattern { Node: ITripleNode }:
+                    throw new RdfParseException(
+                        "Cannot use a triple pattern with a quoted triple predicate in a SPARQL query.");
                 case QuotedTriplePattern:
                     throw new RdfParseException(
                         "Cannot use a Triple Pattern with a Triple Node predicate in a SPARQL Query");
@@ -62,13 +66,13 @@ namespace VDS.RDF.Query.Patterns
             Object = obj;
 
             // Decide on the Index Type
-            if (Subject is NodeMatchPattern or QuotedTriplePattern)
+            if (Subject.IsFixed)
             {
-                if (Predicate is NodeMatchPattern or QuotedTriplePattern)
+                if (Predicate.IsFixed)
                 {
                     IndexType = TripleIndexType.SubjectPredicate;
                 }
-                else if (Object is NodeMatchPattern or QuotedTriplePattern)
+                else if (Object.IsFixed)
                 {
                     IndexType = TripleIndexType.SubjectObject;
                 }
@@ -77,74 +81,55 @@ namespace VDS.RDF.Query.Patterns
                     IndexType = TripleIndexType.Subject;
                 }
             }
-            else if (Predicate is NodeMatchPattern or QuotedTriplePattern)
+            else if (Predicate.IsFixed)
             {
-                if (Object is NodeMatchPattern or QuotedTriplePattern)
-                {
-                    IndexType = TripleIndexType.PredicateObject;
-                }
-                else
-                {
-                    IndexType = TripleIndexType.Predicate;
-                }
+                IndexType = Object.IsFixed ? TripleIndexType.PredicateObject : TripleIndexType.Predicate;
             }
-            else if (Object is NodeMatchPattern or QuotedTriplePattern)
+            else if (Object.IsFixed)
             {
                 IndexType = TripleIndexType.Object;
             }
 
             // Determine variables used
-            if (Subject.VariableName != null) _vars.Add(Subject.VariableName);
-            if (Predicate.VariableName != null)
+            if (!Subject.IsFixed)
             {
-                if (!_vars.Contains(Predicate.VariableName))
-                {
-                    _vars.Add(Predicate.VariableName);
-                }
-                else
-                {
-                    Predicate.Repeated = true;
-                }
+                _vars.AddRange(Subject.Variables);
             }
-            if (Object.VariableName != null)
+            if (!Predicate.IsFixed)
             {
-                if (!_vars.Contains(Object.VariableName))
+                foreach (var pv in Predicate.Variables)
                 {
-                    _vars.Add(Object.VariableName);
+                    if (!_vars.Contains(pv)) _vars.Add(pv);
                 }
-                else
+                Predicate.Repeated = Subject.Equals(Predicate);
+            }
+            if (!Object.IsFixed)
+            {
+                foreach (var ov in Object.Variables)
                 {
-                    Object.Repeated = true;
+                    if (!_vars.Contains(ov)) _vars.Add(ov);
                 }
+
+                Object.Repeated = Object.Equals(Subject) || Object.Equals(Predicate);
             }
             _vars.Sort();
             if (_vars.Count == 0) IndexType = TripleIndexType.NoVariables;
         }
 
         /// <summary>
-        /// Gets whether a given Triple is accepted by this Pattern in the given Context.
+        /// Evaluates a triple match pattern against the given triple.
         /// </summary>
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Triple to test.</param>
-        /// <returns></returns>
-        public bool Accepts(IPatternEvaluationContext context, Triple obj)
+        /// <returns>A set of variable bindings if the <paramref name="obj"/> matches, null otherwise.</returns>
+        public ISet Evaluate(IPatternEvaluationContext context, Triple obj)
         {
-            if (!Predicate.Repeated && !Object.Repeated)
-            {
-                return (Subject.Accepts(context, obj.Subject) && Predicate.Accepts(context, obj.Predicate) && Object.Accepts(context, obj.Object));
-            }
-            else if (Predicate.Repeated && !Object.Repeated)
-            {
-                return (Subject.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && Object.Accepts(context, obj.Object));
-            }
-            else if (!Predicate.Repeated && Object.Repeated)
-            {
-                return (Subject.Accepts(context, obj.Subject) && Predicate.Accepts(context, obj.Predicate) && obj.Subject.Equals(obj.Object));
-            }
-            else
-            {
-                return (Subject.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && obj.Subject.Equals(obj.Object));
-            }
+            ISet set = new Set();
+            return Subject.Accepts(context, obj.Subject, set) &&
+                   Predicate.Accepts(context, obj.Predicate, set) &&
+                   Object.Accepts(context, obj.Object, set)
+                ? set
+                : null;
         }
 
         /// <summary>
@@ -191,11 +176,13 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get { return Enumerable.Empty<string>(); } }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessTriplePattern(this, context);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitTriplePattern(this);
@@ -211,8 +198,10 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (Subject is VariablePattern && Predicate is VariablePattern && Object is VariablePattern)  &&
-                    (Subject.VariableName != Predicate.VariableName && Predicate.VariableName != Object.VariableName && Subject.VariableName != Object.VariableName);
+                return Subject is VariablePattern svp  && Predicate is VariablePattern pvp && Object is VariablePattern ovp &&
+                       svp.VariableName != pvp.VariableName &&
+                       pvp.VariableName != ovp.VariableName &&
+                       svp.VariableName != ovp.VariableName;
             }
 
         }
@@ -224,18 +213,20 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public ISet CreateResult(Triple t)
         {
-            var s = new Set();
-            if (Subject.VariableName != null)
+            ISet s = new Set();
+            if (!Subject.IsFixed)
             {
-                s.Add(Subject.VariableName, t.Subject);
+                Subject.AddBindings(t.Subject, s);
             }
-            if (Predicate.VariableName != null && !Predicate.Repeated)
+
+            if (!Predicate.IsFixed && !Predicate.Repeated)
             {
-                s.Add(Predicate.VariableName, t.Predicate);
+                Predicate.AddBindings(t.Predicate, s);
             }
-            if (Object.VariableName != null && !Object.Repeated)
+
+            if (!Object.IsFixed && !Object.Repeated)
             {
-                s.Add(Object.VariableName, t.Object);
+                Object.AddBindings(t.Object, s);
             }
             return s;
         }
@@ -314,6 +305,24 @@ namespace VDS.RDF.Query.Patterns
         public override string ToString()
         {
             return Subject.ToString() + " " + Predicate.ToString() + " " + Object.ToString();
+        }
+
+        /// <summary>
+        /// Wrap this triple pattern as a quoted triple match pattern.
+        /// </summary>
+        /// <returns>A <see cref="NodeMatchPattern"/> if the subject, predicate and object of this pattern are not variables,
+        /// A <see cref="QuotedTriplePattern"/> that wraps this pattern otherwise.</returns>
+        public PatternItem AsQuotedPatternItem()
+        {
+            if (Subject is NodeMatchPattern subjectNodeMatchPattern &&
+                Predicate is NodeMatchPattern predicateNodeMatchPattern &&
+                Object is NodeMatchPattern objectNodeMatchPattern)
+            {
+                return new NodeMatchPattern(new TripleNode(new Triple(subjectNodeMatchPattern.Node,
+                    predicateNodeMatchPattern.Node, objectNodeMatchPattern.Node)));
+            }
+
+            return new QuotedTriplePattern(this);
         }
     }
 }

@@ -75,8 +75,8 @@ namespace VDS.RDF.Query.Algebra
             _end = end;
             _path = path;
 
-            if (_start.VariableName != null) _vars.Add(_start.VariableName);
-            if (_end.VariableName != null) _vars.Add(_end.VariableName);
+            foreach (var v in _start.Variables) _vars.Add(v);
+            foreach (var v in _end.Variables) _vars.Add(v);
         }
 
         /// <summary>

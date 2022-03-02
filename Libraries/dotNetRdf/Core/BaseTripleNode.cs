@@ -26,6 +26,9 @@
 
 using System;
 using System.Text;
+using VDS.RDF.Nodes;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF
 {
@@ -33,7 +36,7 @@ namespace VDS.RDF
     /// Base class for triple nodes
     /// </summary>
     public abstract class BaseTripleNode 
-        : BaseNode, ITripleNode, IEquatable<BaseTripleNode>, IComparable<BaseTripleNode>
+        : BaseNode, ITripleNode, IEquatable<BaseTripleNode>, IComparable<BaseTripleNode>, IValuedNode
     {
         /// <inheritdoc />
         public Triple Triple { get; }
@@ -264,5 +267,65 @@ namespace VDS.RDF
             stringOut.Append(">>");
             return stringOut.ToString();
         }
+
+        /// <inheritdoc />
+        public string AsString()
+        {
+            throw new RdfQueryException("Unable to cast a Triple Node to a type");
+        }
+
+        /// <inheritdoc />
+        public long AsInteger()
+        {
+            throw new RdfQueryException("Unable to cast a Triple Node to a type");
+        }
+
+        /// <inheritdoc />
+        public decimal AsDecimal()
+        {
+            throw new RdfQueryException("Unable to cast a Triple Node to a type");
+        }
+
+        /// <inheritdoc />
+        public float AsFloat()
+        {
+            throw new RdfQueryException("Unable to cast a Triple Node to a type");
+        }
+
+        /// <inheritdoc />
+        public double AsDouble()
+        {
+            throw new RdfQueryException("Unable to cast a Triple Node to a type");
+        }
+
+        /// <inheritdoc />
+        public bool AsBoolean()
+        {
+            throw new RdfQueryException("Unable to cast a Triple Node to a type");
+        }
+
+        /// <inheritdoc />
+        public DateTime AsDateTime()
+        {
+            throw new RdfQueryException("Unable to cast a Triple Node to a type");
+        }
+
+        /// <inheritdoc />
+        public DateTimeOffset AsDateTimeOffset()
+        {
+            throw new RdfQueryException("Unable to cast a Triple Node to a type");
+        }
+
+        /// <inheritdoc />
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Unable to cast a Triple Node to a type");
+        }
+
+        /// <inheritdoc />
+        public string EffectiveType => string.Empty;
+
+        /// <inheritdoc />
+        public SparqlNumericType NumericType => SparqlNumericType.NaN;
     }
 }
