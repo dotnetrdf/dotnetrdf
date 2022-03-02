@@ -59,6 +59,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
+        [Trait("Category", "explicit")]
         public void SparqlServiceUsingBindings()
         {
             _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { <http://dbpedia.org/resource/Southampton> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ? type . }");
