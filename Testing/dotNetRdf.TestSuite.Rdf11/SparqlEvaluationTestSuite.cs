@@ -7,7 +7,7 @@ using VDS.RDF.Query;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace VDS.RDF.TestSuite.RdfStar
+namespace VDS.RDF.TestSuite.Rdf11
 {
     public class SparqlEvaluationTestSuite: RdfTestSuite
     {
@@ -22,7 +22,8 @@ namespace VDS.RDF.TestSuite.RdfStar
             _output = output;
         }
 
-        [Theory(Skip = "To be completed")]
+        //[Theory(Skip = "To be completed")]
+        [Theory]
         [MemberData(nameof(SparqlQueryEvalTests))]
         public void RunQueryEvaluationTest(ManifestTestData t)
         {
@@ -79,10 +80,26 @@ namespace VDS.RDF.TestSuite.RdfStar
             }
         }
 
-        [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#QueryEvaluationTest")]
-        public void UpdateEvaluationTest(ManifestTestData t)
-        {
+        //[ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#QueryEvaluationTest")]
+        //public void UpdateEvaluationTest(ManifestTestData t)
+        //{
 
+        //}
+
+        [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveSyntaxTest11")]
+        public void PositiveSyntaxTest(ManifestTestData t)
+        {
+            var queryInputPath = t.Manifest.ResolveResourcePath(t.Action);
+            var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1) { DefaultBaseUri = t.Action };
+            queryParser.ParseFromFile(queryInputPath);
+        }
+
+        [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeSyntaxTest11")]
+        public void NegativeSyntaxTest(ManifestTestData t)
+        {
+            var queryInputPath = t.Manifest.ResolveResourcePath(t.Action);
+            var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1) { DefaultBaseUri = t.Action };
+            Assert.ThrowsAny<RdfParseException>(() => { queryParser.ParseFromFile(queryInputPath); });
         }
     }
 }

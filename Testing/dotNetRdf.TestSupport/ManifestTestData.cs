@@ -50,6 +50,10 @@ namespace dotNetRdf.TestSupport
             .SelectMany(t => Graph.GetTriplesWithSubjectPredicate(t.Object, Graph.CreateUriNode("ut:data")))
             .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
 
+        public string EntailmentRegime => Graph
+            .GetTriplesWithSubjectPredicate(TestNode, Graph.CreateUriNode("mf:entailmentRegime"))
+            .Select(t => t.Object).OfType<ILiteralNode>().Select(t => t.Value).FirstOrDefault();
+
         public override string ToString()
         {
             return Id;
