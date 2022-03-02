@@ -403,6 +403,50 @@ namespace VDS.RDF
             Assert.Equal(node, literalNode);
         }
 
+        [Fact]
+        public void Merge_ShouldRemapBlankNodes()
+        {
+            IGraph graph1 = GetInstance();
+            IGraph graph2 = GetInstance();
+            graph1.Assert(graph1.CreateBlankNode("a"),
+                graph1.CreateUriNode(new Uri("http://example.org/p")),
+                graph1.CreateUriNode(new Uri("http://example.org/o1")));
+            graph2.Assert(graph2.CreateBlankNode("a"),
+                graph2.CreateUriNode(new Uri("http://example.org/p")),
+                graph2.CreateUriNode(new Uri("http://example.org/o2")));
+            graph1.Merge(graph2);
+            Assert.Single(graph1.GetTriplesWithSubject(graph1.CreateBlankNode("a")));
+            IBlankNode mergedBlankNode = graph1.GetTriplesWithObject(new UriNode(new Uri("http://example.org/o2")))
+                .Select(t => t.Subject).OfType<IBlankNode>().FirstOrDefault();
+            Assert.NotNull(mergedBlankNode);
+            Assert.NotEqual("a", mergedBlankNode.InternalID);
+        }
+
+        [Fact]
+        public void Merge_ShouldRemapQuotedBlankNodes()
+        {
+            IGraph graph1 = GetInstance();
+            IGraph graph2 = GetInstance();
+            INode bn = new BlankNode("a");
+            INode p = new UriNode(new Uri("http://example.org/p"));
+            INode o1 = new UriNode(new Uri("http://example.org/o1"));
+            INode o2 = new UriNode(new Uri("http://example.org/o2"));
+
+            graph1.Assert(graph1.CreateTripleNode(new Triple(bn, p, o1)), p, o1);
+            graph2.Assert(graph2.CreateTripleNode(new Triple(bn, p, o2)), p, o2);
+            graph2.Assert(bn, p, o2);
+            graph1.Merge(graph2);
+            Assert.Equal(2, graph1.Triples.QuotedCount);
+            Assert.Single(graph1.GetQuotedWithSubject(bn));
+            IBlankNode mergedQuotedBlankNode = graph1.GetQuotedWithObject(new UriNode(new Uri("http://example.org/o2")))
+                .Select(t => t.Subject).OfType<IBlankNode>().FirstOrDefault();
+            IBlankNode mergedAssertedBlankNode = graph1.GetTriplesWithObject(o2).Select(t=>t.Subject).OfType<IBlankNode>().FirstOrDefault();
+            Assert.NotNull(mergedQuotedBlankNode);
+            Assert.NotNull(mergedAssertedBlankNode);
+            Assert.NotEqual("a", mergedQuotedBlankNode.InternalID);
+            Assert.Equal(mergedQuotedBlankNode, mergedAssertedBlankNode);
+        }
+
         private class DifferentUriNode : BaseUriNode
         {
             internal DifferentUriNode(Uri uri)
