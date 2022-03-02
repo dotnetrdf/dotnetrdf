@@ -155,53 +155,8 @@ namespace VDS.RDF.Writing
                             // <binding> Element
                             writer.WriteStartElement("binding");
                             writer.WriteAttributeString("name", var);
-
-                            switch (n.NodeType)
-                            {
-                                case NodeType.Blank:
-                                    // <bnode> element
-                                    writer.WriteStartElement("bnode");
-                                    writer.WriteRaw(((IBlankNode)n).InternalID);
-                                    writer.WriteEndElement();
-                                    break;
-
-                                case NodeType.GraphLiteral:
-                                    // Error!
-                                    throw new RdfOutputException("Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results XML Format");
-
-                                case NodeType.Literal:
-                                    // <literal> element
-                                    writer.WriteStartElement("literal");
-                                    var l = (ILiteralNode)n;
-
-                                    if (!l.Language.Equals(string.Empty))
-                                    {
-                                        writer.WriteStartAttribute("xml", "lang", XmlSpecsHelper.NamespaceXml);
-                                        writer.WriteRaw(l.Language);
-                                        writer.WriteEndAttribute();
-                                    }
-                                    else if (l.DataType != null)
-                                    {
-                                        writer.WriteStartAttribute("datatype");
-                                        writer.WriteRaw(WriterHelper.EncodeForXml(l.DataType.AbsoluteUri));
-                                        writer.WriteEndAttribute();
-                                    }
-
-                                    // Write the Value and the </literal>
-                                    writer.WriteRaw(WriterHelper.EncodeForXml(l.Value));
-                                    writer.WriteEndElement();
-                                    break;
-
-                                case NodeType.Uri:
-                                    // <uri> element
-                                    writer.WriteStartElement("uri");
-                                    writer.WriteRaw(WriterHelper.EncodeForXml(((IUriNode)n).Uri.AbsoluteUri));
-                                    writer.WriteEndElement();
-                                    break;
-
-                                default:
-                                    throw new RdfOutputException("Result Sets which contain Nodes of unknown Type cannot be serialized in the SPARQL Query Results XML Format");
-                            }
+                            
+                            WriteValue(n, writer);
 
                             // </binding> element
                             writer.WriteEndElement();
@@ -233,6 +188,73 @@ namespace VDS.RDF.Writing
             writer.WriteEndDocument();
             writer.Flush();
             writer.Close();
+        }
+
+        private static void WriteValue(INode node, XmlWriter writer)
+        {
+            switch (node.NodeType)
+            {
+                case NodeType.Blank:
+                    // <bnode> element
+                    writer.WriteStartElement("bnode");
+                    writer.WriteRaw(((IBlankNode)node).InternalID);
+                    writer.WriteEndElement();
+                    break;
+
+                case NodeType.GraphLiteral:
+                    // Error!
+                    throw new RdfOutputException(
+                        "Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results XML Format");
+
+                case NodeType.Literal:
+                    // <literal> element
+                    writer.WriteStartElement("literal");
+                    var l = (ILiteralNode)node;
+
+                    if (!l.Language.Equals(string.Empty))
+                    {
+                        writer.WriteStartAttribute("xml", "lang", XmlSpecsHelper.NamespaceXml);
+                        writer.WriteRaw(l.Language);
+                        writer.WriteEndAttribute();
+                    }
+                    else if (l.DataType != null)
+                    {
+                        writer.WriteStartAttribute("datatype");
+                        writer.WriteRaw(WriterHelper.EncodeForXml(l.DataType.AbsoluteUri));
+                        writer.WriteEndAttribute();
+                    }
+
+                    // Write the Value and the </literal>
+                    writer.WriteRaw(WriterHelper.EncodeForXml(l.Value));
+                    writer.WriteEndElement();
+                    break;
+
+                case NodeType.Uri:
+                    // <uri> element
+                    writer.WriteStartElement("uri");
+                    writer.WriteRaw(WriterHelper.EncodeForXml(((IUriNode)node).Uri.AbsoluteUri));
+                    writer.WriteEndElement();
+                    break;
+
+                case NodeType.Triple:
+                    var tn = (ITripleNode)node;
+                    writer.WriteStartElement("triple");
+                    writer.WriteStartElement("subject");
+                    WriteValue(tn.Triple.Subject, writer);
+                    writer.WriteEndElement();
+                    writer.WriteStartElement("predicate");
+                    WriteValue(tn.Triple.Predicate, writer);
+                    writer.WriteEndElement();
+                    writer.WriteStartElement("object");
+                    WriteValue(tn.Triple.Object, writer);
+                    writer.WriteEndElement();
+                    writer.WriteEndElement(); // triple
+                    break;
+
+                default:
+                    throw new RdfOutputException(
+                        "Result Sets which contain Nodes of unknown Type cannot be serialized in the SPARQL Query Results XML Format");
+            }
         }
 
         /// <summary>
