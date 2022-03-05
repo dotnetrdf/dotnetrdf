@@ -74,6 +74,16 @@ namespace VDS.RDF
         /// </summary>
         IEnumerable<Triple> QuotedTriples { get; }
 
+        /// <summary>
+        /// Gets the unique subject and object nodes of the quoted triples in the graph.
+        /// </summary>
+        IEnumerable<INode> QuotedNodes { get; }
+
+        /// <summary>
+        /// Gets the unique subject, predicate and object nodes of the quoted triples in the graph.
+        /// </summary>
+        IEnumerable<INode> AllQuotedNodes { get; }
+
         #endregion
 
         #region Assertion & Retraction
@@ -257,6 +267,13 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         GraphDiffReport Difference(IGraph g);
+
+        /// <summary>
+        /// Converts an graph containing quoted triples into to a graph with no quoted triples by
+        /// applying the unstar operation described in https://w3c.github.io/rdf-star/cg-spec/2021-12-17.html#mapping.
+        /// </summary>
+        /// <remarks>The unstar operation modifies the graph in-place by calls to <see cref="Assert(VDS.RDF.Triple)"/> an <see cref="Retract(VDS.RDF.Triple)"/>.</remarks>
+        void Unstar();
 
         #endregion
 

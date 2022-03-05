@@ -128,6 +128,12 @@ namespace VDS.RDF
         /// <inheritdoc />
         public virtual IEnumerable<Triple> QuotedTriples => _g.QuotedTriples;
 
+        /// <inheritdoc />
+        public IEnumerable<INode> QuotedNodes => _g.QuotedNodes;
+
+        /// <inheritdoc />
+        public IEnumerable<INode> AllQuotedNodes => _g.AllQuotedNodes;
+
         /// <summary>
         /// Asserts a Triple in the Graph.
         /// </summary>
@@ -731,6 +737,12 @@ namespace VDS.RDF
             return _g.Difference(g);
         }
 
+        /// <inheritdoc />
+        public void Unstar()
+        {
+            _g.Unstar();
+        }
+
         /// <summary>
         /// Helper function for Resolving QNames to URIs.
         /// </summary>
@@ -740,6 +752,7 @@ namespace VDS.RDF
         {
             return _g.ResolveQName(qname);
         }
+
 
         #endregion
 

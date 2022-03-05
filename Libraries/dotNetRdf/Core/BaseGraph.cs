@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
@@ -126,6 +127,13 @@ namespace VDS.RDF
         {
             get { return _triples.Asserted.SelectMany(t => t.Nodes).Distinct(); }
         }
+
+        /// <inheritdoc />
+        public virtual IEnumerable<INode> QuotedNodes => _triples.QuotedSubjectNodes.Union(_triples.QuotedObjectNodes);
+
+        /// <inheritdoc />
+        public virtual IEnumerable<INode> AllQuotedNodes => _triples.QuotedSubjectNodes
+            .Union(_triples.QuotedPredicateNodes).Union(_triples.QuotedObjectNodes);
 
         /// <summary>
         /// Gets the Namespace Mapper for this Graph which contains all in use Namespace Prefixes and their URIs.
@@ -606,6 +614,15 @@ namespace VDS.RDF
                     return node;
             }
         }
+
+
+        /// <inheritdoc />
+        public void Unstar()
+        {
+            RdfStarHelper.Unstar(this);
+        }
+
+        
 
         #endregion
 

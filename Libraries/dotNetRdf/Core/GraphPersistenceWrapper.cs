@@ -158,6 +158,12 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public IEnumerable<INode> AllNodes => _g.AllNodes;
 
+        /// <inheritdoc />
+        public IEnumerable<INode> QuotedNodes => _g.QuotedNodes;
+
+        /// <inheritdoc />
+        public IEnumerable<INode> AllQuotedNodes => _g.AllQuotedNodes;
+
         /// <summary>
         /// Gets the Triple Collection for the Graph.
         /// </summary>
@@ -821,6 +827,12 @@ namespace VDS.RDF
         public GraphDiffReport Difference(IGraph g)
         {
             return _g.Difference(g);
+        }
+
+        /// <inheritdoc />
+        public void Unstar()
+        {
+            RdfStarHelper.Unstar(this);
         }
 
         /// <summary>
