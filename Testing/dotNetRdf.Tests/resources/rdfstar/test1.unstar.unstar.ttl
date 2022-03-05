@@ -1,0 +1,11 @@
+﻿@prefix : <http://example.org/> .
+@prefix u: <https://w3c.github.io/rdf-star/unstar#> .
+
+_:x u:subject_ :s;
+    u:predicate_ :p;
+    u:object_ :o;
+    u:subjectLexical_ "<http://example.org/s>";
+    u:predicateLexical_ "<http://example.org/p>";
+    u:objectLexical_ "<http://example.org/o>" .
+
+_:x :p :o .

@@ -43,7 +43,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <summary>
         /// Set of characters which must be escaped in Literals.
         /// </summary>
-        private readonly List<string[]> _litEscapes = new List<string[]>
+        protected readonly List<string[]> _litEscapes = new List<string[]>
         {
             new [] { @"\", @"\\" },
             new [] { "\"", "\\\"" },
@@ -148,12 +148,20 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (l.DataType != null)
             {
-                output.Append("^^<");
-                output.Append(FormatUri(l.DataType));
-                output.Append('>');
+                output.Append(FormatDatatype(l.DataType));
             }
 
             return output.ToString();
+        }
+
+        /// <summary>
+        /// Format the datatype specification for a literal value.
+        /// </summary>
+        /// <param name="datatypeUri">The datatype URI.</param>
+        /// <returns></returns>
+        protected virtual string FormatDatatype(Uri datatypeUri)
+        {
+            return $"^^<{FormatUri(datatypeUri)}>";
         }
 
         /// <summary>
@@ -270,13 +278,25 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for formatting as NTriples according to the RDF 1.1 specification.
     /// </summary>
+    /// <remarks>The primary difference between this formatter and <see cref="NTriplesFormatter"/> is that this formatter will drop the xsd:string datatype IRI from literals as this is
+    /// the default datatype assigned to string literals by the RDF 1.1 specification.</remarks>
     public class NTriples11Formatter
         : NTriplesFormatter
     {
         /// <summary>
-        /// Creaates a new formatter.
+        /// Creates a new formatter.
         /// </summary>
         public NTriples11Formatter()
             : base(NTriplesSyntax.Rdf11) { }
+
+        /// <summary>
+        /// Return the datatype specification for a literal value.
+        /// </summary>
+        /// <param name="datatypeUri">The datatype URI</param>
+        /// <returns>The formatted datatype specification unless <paramref name="datatypeUri"/> matches the XML Schema String datatype URI, in which case an empty string is returned.</returns>
+        protected override string FormatDatatype(Uri datatypeUri)
+        {
+            return datatypeUri.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString) ? string.Empty : base.FormatDatatype(datatypeUri);
+        }
     }
 }

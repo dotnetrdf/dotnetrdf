@@ -74,6 +74,16 @@ namespace VDS.RDF
         /// </summary>
         IEnumerable<Triple> QuotedTriples { get; }
 
+        /// <summary>
+        /// Gets the unique subject and object nodes of the quoted triples in the graph.
+        /// </summary>
+        IEnumerable<INode> QuotedNodes { get; }
+
+        /// <summary>
+        /// Gets the unique subject, predicate and object nodes of the quoted triples in the graph.
+        /// </summary>
+        IEnumerable<INode> AllQuotedNodes { get; }
+
         #endregion
 
         #region Assertion & Retraction

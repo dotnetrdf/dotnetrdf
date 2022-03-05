@@ -93,6 +93,9 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public IEnumerable<INode> AllQuotedNodes => throw new NotImplementedException();
+
+        /// <inheritdoc />
         public bool Assert(Triple t) {
             if (Readonly) {
                 throw new Exception("This graph is marked as read only");
@@ -182,6 +185,9 @@ namespace VDS.RDF.Query.Spin
 
         /// <inheritdoc />
         public IEnumerable<Triple> QuotedTriples => throw new NotImplementedException();
+
+        /// <inheritdoc />
+        public IEnumerable<INode> QuotedNodes => throw new NotImplementedException();
 
         /// <inheritdoc />
         public IUriFactory UriFactory { 
@@ -444,6 +450,12 @@ namespace VDS.RDF.Query.Spin
 
         /// <inheritdoc />
         public GraphDiffReport Difference(IGraph g)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
+        public void Unstar()
         {
             throw new NotImplementedException();
         }
