@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
@@ -604,6 +605,129 @@ namespace VDS.RDF
              
                 default:
                     return node;
+            }
+        }
+
+        /// <summary>
+        /// Converts an graph containing quoted triples into to a graph with no quoted triples by
+        /// applying the unstar operation described in https://w3c.github.io/rdf-star/cg-spec/2021-12-17.html#mapping.
+        /// </summary>
+        /// <remarks>The unstar operation modifies the graph in-place by calls to <see cref="IGraph.Assert(VDS.RDF.Triple)"/> an <see cref="IGraph.Retract(VDS.RDF.Triple)"/>.</remarks>
+        public void Unstar()
+        {
+            UpdateUnstarNodes();
+            ReplaceQuotedTriples();
+        }
+
+        /// <summary>
+        /// Replace any existing IRIs in the namespace `https://w3c.github.io/rdf-star/unstar#` with the IRI with an underscore appended.
+        /// </summary>
+        private void UpdateUnstarNodes()
+        {
+            foreach (Triple t in Triples.Asserted.Union(Triples.Quoted).Where(t => t.Nodes.Any(IsUnstarNode)).ToList())
+            {
+                Retract(t);
+                Assert(new Triple(UpdateUnstarNodes(t.Subject), UpdateUnstarNodes(t.Predicate), UpdateUnstarNodes(t.Object), t.Context));
+            }
+        }
+
+        /// <summary>
+        /// Determine if a node is a URI node in the `https://w3c.github.io/rdf-star/unstar#` namespace.
+        /// </summary>
+        /// <param name="n">The node to be tested.</param>
+        /// <returns></returns>
+        private static bool IsUnstarNode(INode n)
+        {
+            return n is IUriNode un && un.Uri.AbsoluteUri.StartsWith("https://w3c.github.io/rdf-star/unstar#");
+        }
+
+        private INode UpdateUnstarNodes(INode n)
+        {
+            if (IsUnstarNode(n))
+            {
+                return CreateUriNode(UriFactory.Create((n as IUriNode)?.Uri.AbsoluteUri + "_")) ?? n;
+            }
+
+            return n;
+        }
+
+        /// <summary>
+        /// Replace each triple node in the graph with a blank node with properties in the `https://w3c.github.io/rdf-star/unstar#` namespace.
+        /// </summary>
+        private void ReplaceQuotedTriples()
+        {
+            var mappings = new Dictionary<ITripleNode, IBlankNode>(new FastNodeComparer());
+            IUriNode unstarSubject = CreateUriNode("https://w3c.github.io/rdf-star/unstar#subject");
+            IUriNode unstarPredicate = CreateUriNode("https://w3c.github.io/rdf-star/unstar#predicate");
+            IUriNode unstarObject = CreateUriNode("https://w3c.github.io/rdf-star/unstar#object");
+            IUriNode unstarSubjectLexical = CreateUriNode("https://w3c.github.io/rdf-star/unstar#subjectLexical");
+            IUriNode unstarPredicateLexical = CreateUriNode("https://w3c.github.io/rdf-star/unstar#predicateLexical");
+            IUriNode unstarObjectLexical = CreateUriNode("https://w3c.github.io/rdf-star/unstar#objectLexical");
+            var lexicalFormatter = new NTriples11Formatter();
+            
+            // First assign a new blank node to each distinct triple node in the graph.
+            var tripleNodes = AllNodes.OfType<ITripleNode>().ToList();
+            foreach (ITripleNode tn in tripleNodes)
+            {
+                if (!mappings.ContainsKey(tn))
+                {
+                    IBlankNode b = CreateBlankNode();
+                    mappings[tn] = b;
+                }
+            }
+
+            // Now record the unstar triples for each triple node, taking into account that
+            // the subject or object of a triple node may itself be a triple node that is mapped to a blank node.
+            foreach (ITripleNode tn in tripleNodes)
+            {
+                IBlankNode b = mappings[tn];
+                IBlankNode mappedSubject = null, mappedObject = null;
+                if (tn.Triple.Subject is ITripleNode stn)
+                {
+                    mappings.TryGetValue(stn, out mappedSubject);
+                }
+
+                if (tn.Triple.Object is ITripleNode otn)
+                {
+                    mappings.TryGetValue(otn, out mappedObject);
+                }
+
+                Assert(new[]
+                {
+                    new Triple(b, unstarSubject, mappedSubject ?? tn.Triple.Subject),
+                    new Triple(b, unstarPredicate, tn.Triple.Predicate),
+                    new Triple(b, unstarObject, mappedObject ?? tn.Triple.Object),
+                });
+
+                if (mappedSubject == null && tn.Triple.Subject.NodeType != NodeType.Blank)
+                {
+                    Assert(new Triple(b, unstarSubjectLexical,
+                        new LiteralNode(lexicalFormatter.Format(tn.Triple.Subject), false)));
+                }
+
+                Assert(new Triple(b, unstarPredicateLexical,
+                    new LiteralNode(lexicalFormatter.Format(tn.Triple.Predicate), false)));
+
+                if (mappedObject == null && tn.Triple.Object.NodeType != NodeType.Blank)
+                {
+                    Assert(new Triple(b, unstarObjectLexical,
+                        new LiteralNode(lexicalFormatter.Format(tn.Triple.Object), false)));
+                }
+
+            }
+
+            // Now replace triple nodes with their mapped blank nodes in all asserted triples where they occur.
+            foreach (Triple t in Triples)
+            {
+                IBlankNode subjectReplacement = null, objectReplacement = null;
+                var replaceSubject = t.Subject is ITripleNode stn && mappings.TryGetValue(stn, out subjectReplacement);
+                var replaceObject = t.Object is ITripleNode otn && mappings.TryGetValue(otn, out objectReplacement);
+                if (replaceSubject || replaceObject)
+                {
+                    Retract(t);
+                    Assert(new Triple(subjectReplacement ?? t.Subject, t.Predicate, objectReplacement ?? t.Object,
+                        t.Context));
+                }
             }
         }
 

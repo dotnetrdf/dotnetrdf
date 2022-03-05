@@ -258,6 +258,13 @@ namespace VDS.RDF
         /// </remarks>
         GraphDiffReport Difference(IGraph g);
 
+        /// <summary>
+        /// Converts an graph containing quoted triples into to a graph with no quoted triples by
+        /// applying the unstar operation described in https://w3c.github.io/rdf-star/cg-spec/2021-12-17.html#mapping.
+        /// </summary>
+        /// <remarks>The unstar operation modifies the graph in-place by calls to <see cref="Assert(VDS.RDF.Triple)"/> an <see cref="Retract(VDS.RDF.Triple)"/>.</remarks>
+        void Unstar();
+
         #endregion
 
         #region Events
