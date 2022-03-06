@@ -9,10 +9,7 @@ namespace VDS.RDF.Query.Builder.Assertions
 {
     public class BindingsPatternAssertions : ReferenceTypeAssertions<BindingsPattern, BindingsPatternAssertions>
     {
-        public BindingsPatternAssertions(BindingsPattern pattern)
-        {
-            Subject = pattern;
-        }
+        public BindingsPatternAssertions(BindingsPattern pattern) : base(pattern) { }
 
         public AndConstraint<BindingsPatternAssertions> BeEquivalentTo(BindingsPattern expected)
         {
@@ -31,9 +28,9 @@ namespace VDS.RDF.Query.Builder.Assertions
 
         public AndConstraint<BindingsPatternAssertions> ContainTuples(IEnumerable<BindingTuple> tuples)
         {
-            var variables = Subject.Variables;
+            IEnumerable<string> variables = Subject.Variables;
 
-            foreach (var tuple in tuples)
+            foreach (BindingTuple tuple in tuples)
             {
                 Execute.Assertion
                     .Given(() => Subject.Tuples)
