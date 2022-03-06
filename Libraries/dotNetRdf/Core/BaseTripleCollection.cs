@@ -261,7 +261,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the triples that are asserted in the collection.
         /// </summary>
-        /// <remarks>This returns the same set of triples as the enumerator on this class, but as an IEnumerable<Triple> instance.</Triple></remarks>
+        /// <remarks>This returns the same set of triples as the enumerator on this class, but as an <see cref="IEnumerable{Triple}"/> instance.</remarks>
         public abstract IEnumerable<Triple> Asserted { get; }
 
         /// <summary>

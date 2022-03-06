@@ -47,8 +47,10 @@ namespace VDS.RDF.Configuration
             ReadOnlyQueryable = "VDS.RDF.Storage.QueryableReadOnlyConnector",
             ReadWriteSparql = "VDS.RDF.Storage.ReadWriteSparqlConnector",
             Sparql = "VDS.RDF.Storage.SparqlConnector",
-            SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector";
-                             
+            SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
+            DatasetFile = "VDS.RDF.Storage.DatasetFileManager",
+            InMemory = "VDS.RDF.Storage.InMemoryManager";
+
 
         /// <summary>
         /// Tries to load a Generic IO Manager based on information from the Configuration Graph.
@@ -71,7 +73,8 @@ namespace VDS.RDF.Configuration
 
             // Create the URI Nodes we're going to use to search for things
             INode propServer = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyServer)),
-                  propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
+                  propStorageProvider = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
+                  propAsync = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAsync));
 
             switch (targetType.FullName)
             {
@@ -304,6 +307,53 @@ namespace VDS.RDF.Configuration
                     storageProvider = new SparqlHttpProtocolConnector(g.UriFactory.Create(server));
                     break;
 
+                case DatasetFile:
+                    // Get the Filename and whether the loading should be done asynchronously
+                    var file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
+                    if (file == null) return false;
+                    file = ConfigurationLoader.ResolvePath(file);
+                    var isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
+                    storageProvider = new DatasetFileManager(file, isAsync);
+                    break;
+
+                case InMemory:
+                    // Get the Dataset/Store
+                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                    if (datasetObj != null)
+                    {
+                        temp = ConfigurationLoader.LoadObject(g, datasetObj);
+                        if (temp is ISparqlDataset)
+                        {
+                            storageProvider = new InMemoryManager((ISparqlDataset)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the In-Memory Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
+                        }
+                    }
+                    else
+                    {
+                        // If no dnr:usingDataset try dnr:usingStore instead
+                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
+                        if (storeObj != null)
+                        {
+                            temp = ConfigurationLoader.LoadObject(g, storeObj);
+                            if (temp is IInMemoryQueryableStore store)
+                            {
+                                storageProvider = new InMemoryManager(store);
+                            }
+                            else
+                            {
+                                throw new DotNetRdfConfigurationException("Unable to load the In-Memory Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                            }
+                        }
+                        else
+                        {
+                            // If no dnr:usingStore either then create a new empty store
+                            storageProvider = new InMemoryManager();
+                        }
+                    }
+                    break;
             }
 
             // Set the return object if one has been loaded
@@ -352,6 +402,8 @@ namespace VDS.RDF.Configuration
                 case Sparql:
                 case ReadWriteSparql:
                 case SparqlHttpProtocol:
+                case DatasetFile:
+                case InMemory:
                     return true;
                 default:
                     return false;

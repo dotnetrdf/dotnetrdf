@@ -30,7 +30,6 @@ using System.Linq;
 using System.Reflection;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
-using VDS.RDF.Query.Inference;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Configuration
