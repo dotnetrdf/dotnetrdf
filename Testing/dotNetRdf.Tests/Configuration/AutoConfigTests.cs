@@ -33,12 +33,6 @@ namespace VDS.RDF.Configuration
 
     public class AutoConfigTests
     {
-        public AutoConfigTests()
-        {
-            ConfigurationLoader.RegisterExtension<SparqlConfigurationLoaderExtension>();
-            ConfigurationLoader.RegisterExtension<InMemoryConfigurationLoaderExtension>();
-        }
-
         [Fact]
         public void ConfigurationStaticOptionUri1()
         {

@@ -25,6 +25,8 @@
 */
 
 using System;
+using VDS.RDF.Query.Datasets;
+using VDS.RDF.Storage;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Configuration
@@ -35,7 +37,9 @@ namespace VDS.RDF.Configuration
     public class UpdateProcessorFactory
         : IObjectFactory
     {
-        private const string SimpleUpdateProcessor = "VDS.RDF.Update.SimpleUpdateProcessor";
+        private const string SimpleUpdateProcessor = "VDS.RDF.Update.SimpleUpdateProcessor",
+            LeviathanUpdateProcessor = "VDS.RDF.Update.LeviathanUpdateProcessor",
+            GenericUpdateProcessor = "VDS.RDF.Update.GenericUpdateProcessor";
 
         /// <summary>
         /// Tries to load a SPARQL Update based on information from the Configuration Graph.
@@ -60,19 +64,63 @@ namespace VDS.RDF.Configuration
                     storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                     if (storeObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
-                    if (temp is IUpdateableTripleStore)
+                    if (temp is IUpdateableTripleStore tripleStore)
                     {
-                        processor = new SimpleUpdateProcessor((IUpdateableTripleStore)temp);
+                        processor = new SimpleUpdateProcessor(tripleStore);
                     }
                     else
                     {
                         throw new DotNetRdfConfigurationException("Unable to load the Simple Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IUpdateableTripleStore interface");
                     }
                     break;
+
+                case LeviathanUpdateProcessor:
+                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                    if (datasetObj != null)
+                    {
+                        temp = ConfigurationLoader.LoadObject(g, datasetObj);
+                        if (temp is ISparqlDataset dataset)
+                        {
+                            processor = new LeviathanUpdateProcessor(dataset);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
+                        }
+                    }
+                    else
+                    {
+                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
+                        if (storeObj == null) return false;
+                        temp = ConfigurationLoader.LoadObject(g, storeObj);
+                        if (temp is IInMemoryQueryableStore store)
+                        {
+                            processor = new LeviathanUpdateProcessor(store);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                        }
+                    }
+                    break;
+                case GenericUpdateProcessor:
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
+                    if (managerObj == null) return false;
+                    temp = ConfigurationLoader.LoadObject(g, managerObj);
+                    if (temp is IStorageProvider storageProvider)
+                    {
+                        processor = new GenericUpdateProcessor(storageProvider);
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load the Generic Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IStorageProvider interface");
+                    }
+
+                    break;
             }
 
             obj = processor;
-            return (processor != null);
+            return processor != null;
         }
 
         /// <summary>
@@ -85,6 +133,8 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case SimpleUpdateProcessor:
+                case LeviathanUpdateProcessor:
+                case GenericUpdateProcessor:
                     return true;
                 default:
                     return false;

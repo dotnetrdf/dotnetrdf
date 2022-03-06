@@ -12,11 +12,11 @@
     <Folder Include="Writing\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
-  </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <Reference Include="System.Web" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
   </ItemGroup>
 </Project>

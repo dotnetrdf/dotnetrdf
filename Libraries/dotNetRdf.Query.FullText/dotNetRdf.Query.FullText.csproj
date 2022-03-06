@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
     <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
     <InternalsVisibleTo Include="dotNetRdf.Query.FullText.Tests" />
   </ItemGroup>

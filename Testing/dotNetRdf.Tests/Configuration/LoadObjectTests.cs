@@ -32,12 +32,6 @@ namespace VDS.RDF.Configuration
 
     public class LoadObjectTests
     {
-        public LoadObjectTests()
-        {
-            ConfigurationLoader.RegisterExtension<SparqlConfigurationLoaderExtension>();
-            ConfigurationLoader.RegisterExtension<InMemoryConfigurationLoaderExtension>();
-        }
-
         [Fact]
         public void ConfigurationLoadObjectPropertyFunctionFactory()
         {

@@ -25,11 +25,8 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Configuration
@@ -41,7 +38,8 @@ namespace VDS.RDF.Configuration
     {
         private const string SimpleQueryProcessor = "VDS.RDF.Query.SimpleQueryProcessor",
                              GenericQueryProcessor = "VDS.RDF.Query.GenericQueryProcessor",
-                             RemoteQueryProcessor = "VDS.RDF.Query.RemoteQueryProcessor";
+                             RemoteQueryProcessor = "VDS.RDF.Query.RemoteQueryProcessor",
+                             LeviathanQueryProcessor = "VDS.RDF.Query.LeviathanQueryProcessor";
 
         /// <summary>
         /// Tries to load a SPARQL Query Processor based on information from the Configuration Graph.
@@ -109,6 +107,37 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Unable to load the Remote Query Processor identified by the Node '" + objNode.ToSafeString() + "' as the value given for the dnr:endpoint property points to an Object that cannot be loaded as an object which is a SparqlRemoteEndpoint");
                     }
                     break;
+
+                case LeviathanQueryProcessor:
+                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                    if (datasetObj != null)
+                    {
+                        temp = ConfigurationLoader.LoadObject(g, datasetObj);
+                        if (temp is ISparqlDataset dataset)
+                        {
+                            processor = new LeviathanQueryProcessor(dataset);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
+                        }
+                    }
+                    else
+                    {
+                        // If no dnr:usingDataset try dnr:usingStore instead
+                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
+                        if (storeObj == null) return false;
+                        temp = ConfigurationLoader.LoadObject(g, storeObj);
+                        if (temp is IInMemoryQueryableStore store)
+                        {
+                            processor = new LeviathanQueryProcessor(store);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                        }
+                    }
+                    break;
             }
 
             obj = processor;
@@ -127,6 +156,7 @@ namespace VDS.RDF.Configuration
                 case SimpleQueryProcessor:
                 case GenericQueryProcessor:
                 case RemoteQueryProcessor:
+                case LeviathanQueryProcessor:
                     return true;
                 default:
                     return false;

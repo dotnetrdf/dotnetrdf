@@ -63,7 +63,7 @@ namespace VDS.RDF.Configuration
         public const string PropertyType = ConfigurationNamespace + "type",
                             PropertyImports = ConfigurationNamespace + "imports",
                             PropertyConfigure = ConfigurationNamespace  + "configure",
-                            
+                            PropertyEnabled = ConfigurationLoader.ConfigurationNamespace + "enabled",
                             PropertyUser = ConfigurationNamespace + "user",
                             PropertyPassword = ConfigurationNamespace + "password",
                             PropertyCredentials = ConfigurationNamespace + "credentials",
@@ -235,15 +235,13 @@ namespace VDS.RDF.Configuration
         {
             // Default Data Factories
             new GraphFactory(),
-            // TODO: Extension to register this factory
-            // new StoreFactory(),
+            new StoreFactory(),
 
             new CollectionFactory(),
 
             // Default Manager Factories
-            // TODO: Extension to register these factories
-            // new StorageFactory(),
-            // new DatasetFactory(),
+            new StorageFactory(),
+            new DatasetFactory(),
             // Endpoint Factories
             new SparqlClientFactory(),
 
@@ -253,9 +251,8 @@ namespace VDS.RDF.Configuration
 #pragma warning restore 618
 
             // Processor Factories
-            // TODO: Extension to register these factories
-            //new QueryProcessorFactory(),
-            //new UpdateProcessorFactory(),
+            new QueryProcessorFactory(),
+            new UpdateProcessorFactory(),
 
             //new ProtocolProcessorFactory(),
             // User and Permission related Factories
@@ -266,11 +263,11 @@ namespace VDS.RDF.Configuration
 
             // SPARQL Extension related Factories
             // TODO: Extension to register these factories
-            // new OptimiserFactory(),
-            //new ReasonerFactory(),
-            //new ExpressionFactoryFactory(),
-            // new PropertyFunctionFactoryFactory(),
-            // new OperatorFactory(),
+            new OptimiserFactory(),
+            // new ReasonerFactory(),
+            new ExpressionFactoryFactory(),
+            new PropertyFunctionFactoryFactory(),
+            new OperatorFactory(),
 
             // ObjectFactory Factory
             new ObjectFactoryFactory(),
@@ -307,7 +304,6 @@ namespace VDS.RDF.Configuration
 #if NET40
             SettingsProvider = new ConfigurationManagerSettingsProvider();
 #endif
-            ConfigurationLoader.RegisterExtension<SparqlConfigurationLoaderExtension>();
         }
 
         #region Graph Loading and Auto-Configuration
@@ -469,6 +465,7 @@ namespace VDS.RDF.Configuration
             AutoConfigureObjectFactories(g);
             AutoConfigureReadersAndWriters(g);
             AutoConfigureStaticOptions(g);
+            AutoConfigureSparqlOperators(g);
             foreach (Action<IGraph> autoConfigure in _extensions.SelectMany(ext=>ext.GetAutoConfigureActions()))
             {
                 autoConfigure(g);
@@ -737,6 +734,37 @@ namespace VDS.RDF.Configuration
             }
         }
 
+        /// <summary>
+        /// Given a Configuration Graph will detect and configure SPARQL Operators.
+        /// </summary>
+        /// <param name="g">Configuration Graph.</param>
+        public static void AutoConfigureSparqlOperators(IGraph g)
+        {
+            INode rdfType = g.CreateUriNode(g.UriFactory.Create(RdfSpecsHelper.RdfType)),
+                operatorClass = g.CreateUriNode(g.UriFactory.Create(ClassSparqlOperator)),
+                enabled = g.CreateUriNode(g.UriFactory.Create(PropertyEnabled));
+
+            foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
+            {
+                var temp = ConfigurationLoader.LoadObject(g, t.Subject);
+                if (temp is ISparqlOperator)
+                {
+                    var enable = ConfigurationLoader.GetConfigurationBoolean(g, t.Subject, enabled, true);
+                    if (enable)
+                    {
+                        SparqlOperators.AddOperator((ISparqlOperator)temp);
+                    }
+                    else
+                    {
+                        SparqlOperators.RemoveOperatorByType((ISparqlOperator)temp);
+                    }
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Auto-configuration of SPARQL Operators failed as the Operator specified by the Node '" + t.Subject.ToString() + "' does not implement the required ISparqlOperator interface");
+                }
+            }
+        }
 
         #endregion
 
@@ -1550,6 +1578,10 @@ namespace VDS.RDF.Configuration
             }
         }
 
+        /// <summary>
+        /// Register an extension to the configuration loader which provides additional object factories.
+        /// </summary>
+        /// <typeparam name="T">The type of the configuration loader extension class.</typeparam>
         public static void RegisterExtension<T>() where T : IConfigurationExtension
         {
             if (_extensions.Select(ext => ext.GetType()).Any(t => t == typeof(T)))
