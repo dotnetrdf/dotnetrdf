@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRdf\dotNetRdf.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>

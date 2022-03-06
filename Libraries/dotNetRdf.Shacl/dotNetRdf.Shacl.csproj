@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotNetRdf.InMemory\dotNetRdf.InMemory.csproj" />
     <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
   </ItemGroup>
 
