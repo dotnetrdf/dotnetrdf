@@ -404,64 +404,7 @@ namespace VDS.RDF.Writing
             ex.Message.Should().Be(WriterErrorMessages.TripleNodesUnserializable("NTriples (RDF 1.1)"));
         }
 
-        [Fact]
-        public void WritingNTriplesVsTurtleNonAsciiCharsSpeed()
-        {
-            var builder = new StringBuilder();
-            for (var i = 128; i <= 255; i++)
-            {
-                builder.Append((char)i);
-            }
-            INode n = new NodeFactory().CreateLiteralNode(builder.ToString());
-
-            const int repeatCount = 10000;
-            // Write 10,000 times with NTriplesFormatter
-            var timer = new Stopwatch();
-            INodeFormatter formatter = new NTriplesFormatter();
-            var strWriter = new System.IO.StringWriter();
-            timer.Start();
-            for (var i = 0; i < repeatCount; i++)
-            {
-                strWriter.WriteLine(formatter.Format(n));
-            }
-            timer.Stop();
-
-            Console.WriteLine("NTriples Formatter Time Elapsed: " + timer.Elapsed);
-            TimeSpan ntriplesTime = timer.Elapsed;
-            timer.Reset();
-
-            // Write 10,000 times with NTriplesFormatter in RDF 1.1 mode
-            formatter = new NTriplesFormatter(NTriplesSyntax.Rdf11);
-            strWriter = new System.IO.StringWriter();
-            timer.Start();
-            for (var i = 0; i < repeatCount; i++)
-            {
-                strWriter.WriteLine(formatter.Format(n));
-            }
-            timer.Stop();
-
-            Console.WriteLine("NTriples Formatter (RDF 1.1) Time Elapsed: " + timer.Elapsed);
-            //TimeSpan ntriples11Time = timer.Elapsed;
-            timer.Reset();
-
-            // Write and check round trip with Turtle and compare speed
-            strWriter = new System.IO.StringWriter();
-            formatter = new UncompressedTurtleFormatter();
-            timer.Start();
-            for (var i = 0; i < repeatCount; i++)
-            {
-                strWriter.WriteLine(formatter.Format(n));
-            }
-            timer.Stop();
-
-            Console.WriteLine("Turtle Write Time Elapsed: " + timer.Elapsed);
-            TimeSpan turtleTime = timer.Elapsed;
-
-            // Compare Speed
-            Assert.True(turtleTime.CompareTo(ntriplesTime) == -1);
-        }
-
-        private void TestBNodeFormatting(IBlankNode b, INodeFormatter formatter, String expected)
+        private static void TestBNodeFormatting(IBlankNode b, INodeFormatter formatter, String expected)
         {
             var actual = formatter.Format(b);
             Assert.Equal(expected, actual);
