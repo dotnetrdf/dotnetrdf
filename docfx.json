@@ -1,0 +1,18 @@
+{
+  "metadata": [
+      {
+        "src": [
+            {
+                "files": ["**/*.csproj"],
+                "exclude": [ "**/bin/**", "**/obj/**" ],
+                "src": "Libraries"
+            }
+        ],
+        "dest": "obj/docfx/api",
+        "shouldSkipMarkup": true,
+        "properties": {
+            "TargetFramework": "netstandard2.0"
+        }
+      }
+  ]
+}
