@@ -1,5 +1,9 @@
 name: Unit Tests
 on: [push, pull_request]
+
+env:
+  VSTEST_CONNECTION_TIMEOUT: 180
+
 jobs:
   test:
     runs-on: windows-latest

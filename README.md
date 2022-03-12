@@ -1,6 +1,6 @@
 # Welcome
 
-[![Build status](https://github.com/dotnetrdf/dotnetrdf/actions/workflows/build.yaml/badge.svg)
+![Build status](https://github.com/dotnetrdf/dotnetrdf/actions/workflows/build.yaml/badge.svg)
 
 
 dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .NET environments.
