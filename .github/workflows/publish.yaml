@@ -1,0 +1,37 @@
+name: Publish packages
+on:
+  release:
+    types: [created]
+    
+jobs:
+  deploy:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.10
+      with:
+        versionSpec: '5.x'
+
+    - name: GitVersion
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.10
+      with:
+        useConfigFile: true
+      
+    - name: Show GitVersion Value
+      run: |
+        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.NuGetVersionV2 }}"
+        echo "NuGetVersion: ${{ steps.gitversion.outputs.NuGetVersion }}"
+        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
+        echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.NuGetPreReleaseTag }}"
+        
+    - name: Build solution
+      run: dotnet pack -o nugets --configuration=Release -p:Version=${{ steps.gitversion.outputs.NuGetVersionV2 }}
+      
+    - name: Publish NuGet Packages
+      run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}

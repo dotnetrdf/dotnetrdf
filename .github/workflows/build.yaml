@@ -1,0 +1,49 @@
+name: Unit Tests
+on: [push, pull_request]
+
+env:
+  VSTEST_CONNECTION_TIMEOUT: 180
+
+jobs:
+  test:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        framework: ["net452", "netcoreapp3.1"]
+        suite: ["unittest", "dotNetRDF.MockServerTests"]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Run Tests
+      run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} --collect:"XPlat Code Coverage" Testing\${{matrix.suite}}
+    - name: Upload Code Coverage
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage ${{matrix.suite}} ${{matrix.framework}}
+        path: Testing\${{matrix.suite}}\TestResults\**\coverage.cobertura.xml
+    
+  report:
+    needs: [ "test" ]
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Download coverage artifacts
+      uses: actions/download-artifact@v2
+    - name: Generate coverage report
+      uses: danielpalme/ReportGenerator-GitHub-Action@4.5.8
+      with:
+        reports: '*\*\*.xml'
+        targetdir: 'coveragereport'
+        reporttypes: 'HtmlInline;Cobertura;Badges'
+        tag: '${{ github.run_number }}_${{ github.run_id }}'
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: coveragereport\*
+
