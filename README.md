@@ -28,8 +28,43 @@ We currently provide support for the following .NET frameworks:
 
 To get started with using dotNetRDF you may want to check out the following resources:
 
- - [User Guide](https://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide) - Series of articles detailing how to use various features of the library
- - [Developer Guide](https://github.com/dotnetrdf/dotnetrdf/wiki/DeveloperGuide) - Some advanced documentation
+ - [User Guide](https://dotnetrdf.org/docs/stable/user_guide/index.html) - Series of articles detailing how to use various features of the library
+ - [Developer Guide](https://dotnetrdf.org/docs/stable/developer_guide/index.html) - Some advanced documentation
+ - [API Documentation](https://dotnetrdf.org/docs/stable/api/) - Class-by-Class API documentation
+
+## dotNetRdf 3.0
+
+The `main` branch of this repository is now used for development of dotNetRdf 3.0. This major update introduces a number of breaking API changes,
+new features including support for [RDF-Star and SPARQL-Star](https://w3c.github.io/rdf-star/cg-spec), and it also restructures the packaging
+of the code to minimize dependencies and better separate out core functionality from higher-level APIs.
+
+The restructured NuGet packages for dotNetRdf 3.0 are:
+
+- **dotNetRdf** - contains the core libraries. This includes support for reading and writing RDF; and for managing and querying RDF data in-memory.
+- **dotNetRdf.AspNet** - provides a framework for hosting RDF data in an IIS web application. This includes implementations of the SPARQL Protocol and SPARQL Graph Store Protocol.
+- **dotNetRdf.Client** - provides support for working with a range of triple stores. 
+- **dotNetRDF.Data.DataTables** - a package which integrates RDF data with System.Data.DataTable
+- **dotNetRDF.Data.Virtuoso** - provides support for using OpenLink Virtuoso as a backend store with dotNetRDF.
+- **dotNetRdf.Dynamic** - provides an API for accessing and updating RDF graphs using .NET's dynamic objects.
+- **dotNetRdf.HtmlSchema** - provides an RDF writer that generates HTML documentation for an ontology that uses the RDF Schema vocabulary.
+- **dotNetRdf.Inferencing** - provides some basic inferencing support including RDF-Schema, SKOS and a small subset of OWL reasoning.
+- **dotNetRdf.Ontology** - provides an API for manipulating an OWL ontology.
+- **dotNetRdf.Query.FullText** - provides a full-text query plugin for dotNetRDF's Leviathan SPARQL query engine. The text indexing is provided by Lucene.
+- **dotNetRdf.Query.Spin** - provides an implementation of [SPIN](http://spinrdf.org/) using dotNetRDF's Leviathan SPARQL query engine.
+- **dotNetRdf.Shacl** - provides an API for validating a graph using [SHACL](https://www.w3.org/TR/shacl/).
+- **dotNetRdf.Skos** - provides an API for working with a [SKOS](https://www.w3.org/TR/skos-reference/) taxonomy.
+
+As of release 3.0 of dotNetRdf, we provide support for the following .NET frameworks:
+
+- .NET 4.7.2+
+- .NET Standard 2.0
+
+The documentation and examples will be gradually updated and published on the "latest" branch of the documentation repository:
+
+ - [User Guide](https://dotnetrdf.org/docs/latest/user_guide/index.html) - Series of articles detailing how to use various features of the library
+ - [Developer Guide](https://dotnetrdf.org/docs/latest/developer_guide/index.html) - Some advanced documentation
+ - [API Documentation](https://dotnetrdf.org/docs/latest/api/) - Class-by-Class API documentation
+
 
 ## Asking Questions and Reporting Bugs
 
