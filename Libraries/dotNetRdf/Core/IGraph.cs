@@ -37,7 +37,7 @@ namespace VDS.RDF
     /// Most implementations will probably want to inherit from the abstract class <see cref="BaseGraph">BaseGraph</see> since it contains reference implementations of various algorithms (Graph Equality/Graph Difference/Sub-Graph testing etc) which will save considerable work in implementation and ensure consistent behaviour of some methods across implementations.
     /// </para>
     /// </remarks>
-    public interface IGraph : INodeFactory, IDisposable, ITripleIndex
+    public interface IGraph : INodeFactory, IDisposable, ITripleIndex, IEquatable<IGraph>
     {
         #region Properties
 

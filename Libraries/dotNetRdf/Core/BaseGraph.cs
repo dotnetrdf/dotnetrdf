@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
@@ -631,28 +630,16 @@ namespace VDS.RDF
         /// <summary>
         /// Determines whether a Graph is equal to another Object.
         /// </summary>
-        /// <param name="obj">Object to test.</param>
+        /// <param name="other">Other graph to compare to.</param>
         /// <returns></returns>
         /// <remarks>
-        /// <para>
-        /// A Graph can only be equal to another Object which is an <see cref="IGraph">IGraph</see>.
-        /// </para>
         /// <para>
         /// Graph Equality is determined by a somewhat complex algorithm which is explained in the remarks of the other overload for Equals.
         /// </para>
         /// </remarks>
-        [Obsolete("This override is potentially misleading as BaseGraph objects are mutable. Callers should instead use the GraphMatcher class to check for graph isomorphism. This override will be removed in a future release.")]
-        public override bool Equals(object obj)
+        public bool Equals(IGraph other)
         {
-            return obj switch
-            {
-                // Graphs can't be equal to null
-                null => false,
-                IGraph g => Equals(g, out _),
-                _ => false
-            };
-
-            // Graphs can only be equal to other Graphs
+            return Equals(other, out _);
         }
 
         /// <summary>

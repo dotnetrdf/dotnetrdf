@@ -35,7 +35,7 @@ namespace VDS.RDF
     /// </summary>
     /// <threadsafety instance="false">Safe for multi-threaded read-only access but unsafe if one/more threads may modify the Graph by using the <see cref="Graph.Assert(Triple)">Assert</see>, <see cref="Graph.Retract(Triple)">Retract</see> or <see cref="BaseGraph.Merge(IGraph)">Merge</see> methods.</threadsafety>
     public class Graph
-        : BaseGraph
+        : BaseGraph, IEquatable<Graph>
     {
         #region Constructor
 
@@ -164,6 +164,16 @@ namespace VDS.RDF
         }
 
         #endregion
+
+        /// <summary>
+        /// Implements equality testing between <see cref="Graph"/> instances.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(Graph other)
+        {
+            return Equals((IGraph)other);
+        }
 
         #region Triple Assertion & Retraction
 

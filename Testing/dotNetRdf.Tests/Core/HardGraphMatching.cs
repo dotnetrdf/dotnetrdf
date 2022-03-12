@@ -243,7 +243,7 @@ namespace VDS.RDF
             var h = new Graph();
             h.LoadFromFile("resources/turtle11/first.ttl");
 
-            Assert.Equal(g, h);
+            Assert.Equal<IGraph>(g, h);
         }
 
         [Fact]
@@ -519,7 +519,7 @@ namespace VDS.RDF
 ].
 ");
 
-            Assert.Equal(g1, g2);
+            Assert.Equal<IGraph>(g1, g2);
         }
     }
 }
