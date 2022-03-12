@@ -1,6 +1,6 @@
 # Welcome
 
-[![Build status](https://ci.appveyor.com/api/projects/status/f8wtq0qh4k6620sl/branch/master?svg=true)](https://ci.appveyor.com/project/dotNetRDFadmin/dotnetrdf/branch/master)
+[![Build status](https://github.com/dotnetrdf/dotnetrdf/actions/workflows/build.yaml/badge.svg)
 
 
 dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .NET environments.
