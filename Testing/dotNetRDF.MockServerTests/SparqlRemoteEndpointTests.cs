@@ -225,8 +225,7 @@ namespace dotNetRDF.MockServerTests
                 signal.Close();
             }, null);
 
-            signal.WaitOne(10000);
-            signal.SafeWaitHandle.IsClosed.Should().BeTrue();
+            signal.WaitOne(10000).Should().BeTrue();
         }
 
 
@@ -242,8 +241,7 @@ namespace dotNetRDF.MockServerTests
                 signal.Close();
             }, null);
 
-            signal.WaitOne(10000);
-            signal.SafeWaitHandle.IsClosed.Should().BeTrue();
+            signal.WaitOne(10000).Should().BeTrue();
         }
 
 
