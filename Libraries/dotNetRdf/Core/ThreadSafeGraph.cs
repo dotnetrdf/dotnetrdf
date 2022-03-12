@@ -37,7 +37,7 @@ namespace VDS.RDF
     /// <threadsafety instance="true">Should be safe for almost any concurrent read and write access scenario, internally managed using a <see cref="ReaderWriterLockSlim">ReaderWriterLockSlim</see>.  If you encounter any sort of Threading/Concurrency issue please report to the. <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">dotNetRDF Bugs Mailing List</a></threadsafety>
     /// <remarks>Performance will be marginally worse than a normal <see cref="Graph">Graph</see> but in multi-threaded scenarios this will likely be offset by the benefits of multi-threading.</remarks>
     public class ThreadSafeGraph
-        : Graph
+        : Graph, IEquatable<ThreadSafeGraph>
     {
         /// <summary>
         /// Locking Manager for the Graph.
@@ -69,7 +69,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="name">The graph name.</param>
         public ThreadSafeGraph(IRefNode name):
-            this(new ThreadSafeTripleCollection(new TreeIndexedTripleCollection(true))) { }
+            this(name, new ThreadSafeTripleCollection(new TreeIndexedTripleCollection(true))) { }
 
         /// <summary>
         /// Creates a new named thread-safe graph using the given triple collection.
@@ -88,6 +88,15 @@ namespace VDS.RDF
         public ThreadSafeGraph(IRefNode name, ThreadSafeTripleCollection tripleCollection)
             :base(name, tripleCollection){ }
 
+        /// <summary>
+        /// Implements equality testing between <see cref="ThreadSafeGraph"/> instances.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(ThreadSafeGraph other)
+        {
+            return Equals((IGraph)other);
+        }
 
         #region Triple Assertion and Retraction
 
@@ -203,7 +212,7 @@ namespace VDS.RDF
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists.</returns>
         public override IBlankNode GetBlankNode(string nodeId)
         {
-            IBlankNode b = null;
+            IBlankNode b;
             try
             {
                 _lockManager.EnterReadLock();
@@ -224,7 +233,7 @@ namespace VDS.RDF
         /// <remarks>The LiteralNode in the Graph must have no Language or DataType set.</remarks>
         public override ILiteralNode GetLiteralNode(string literal)
         {
-            ILiteralNode l = null;
+            ILiteralNode l;
             try
             {
                 _lockManager.EnterReadLock();
@@ -245,7 +254,7 @@ namespace VDS.RDF
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists.</returns>
         public override ILiteralNode GetLiteralNode(string literal, string langspec)
         {
-            ILiteralNode l = null;
+            ILiteralNode l;
             try
             {
                 _lockManager.EnterReadLock();
@@ -266,7 +275,7 @@ namespace VDS.RDF
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists.</returns>
         public override ILiteralNode GetLiteralNode(string literal, Uri datatype)
         {
-            ILiteralNode l = null;
+            ILiteralNode l;
             try
             {
                 _lockManager.EnterReadLock();
@@ -286,7 +295,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IUriNode GetUriNode(string qname)
         {
-            IUriNode u = null;
+            IUriNode u;
             try
             {
                 _lockManager.EnterReadLock();
@@ -306,7 +315,7 @@ namespace VDS.RDF
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists.</returns>
         public override IUriNode GetUriNode(Uri uri)
         {
-            IUriNode u = null;
+            IUriNode u;
             try
             {
                 _lockManager.EnterReadLock();
@@ -330,7 +339,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriples(INode n)
         {
-            var triples = new List<Triple>();
+            List<Triple> triples;
             try
             {
                 _lockManager.EnterReadLock();
@@ -350,7 +359,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriples(Uri uri)
         {
-            var triples = new List<Triple>();
+            List<Triple> triples;
             try
             {
                 _lockManager.EnterReadLock();
@@ -370,7 +379,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithObject(INode n)
         {
-            var triples = new List<Triple>();
+            List<Triple> triples;
             try
             {
                 _lockManager.EnterReadLock();
@@ -390,7 +399,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
-            var triples = new List<Triple>();
+            List<Triple> triples;
             try
             {
                 _lockManager.EnterReadLock();
@@ -410,7 +419,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicate(INode n)
         {
-            var triples = new List<Triple>();
+            List<Triple> triples;
             try
             {
                 _lockManager.EnterReadLock();
@@ -430,7 +439,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
-            var triples = new List<Triple>();
+            List<Triple> triples;
             try
             {
                 _lockManager.EnterReadLock();
@@ -450,7 +459,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriplesWithSubject(INode n)
         {
-            var triples = new List<Triple>();
+            List<Triple> triples;
             try
             {
                 _lockManager.EnterReadLock();
@@ -470,7 +479,7 @@ namespace VDS.RDF
         /// <returns>Zero/More Triples.</returns>
         public override IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
-            var triples = new List<Triple>();
+            List<Triple> triples;
             try
             {
                 _lockManager.EnterReadLock();
@@ -484,27 +493,5 @@ namespace VDS.RDF
         }
 
         #endregion
-    }
-
-    /// <summary>
-    /// A Thread Safe version of the <see cref="Graph">Graph</see> class.
-    /// </summary>
-    /// <threadsafety instance="true">Should be safe for almost any concurrent read and write access scenario, internally managed using a <see cref="ReaderWriterLockSlim">ReaderWriterLockSlim</see>.  If you encounter any sort of Threading/Concurrency issue please report to the. <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">dotNetRDF Bugs Mailing List</a></threadsafety>
-    /// <remarks>
-    /// <para>
-    /// Performance will be marginally worse than a normal <see cref="Graph">Graph</see> but in multi-threaded scenarios this will likely be offset by the benefits of multi-threading.
-    /// </para>
-    /// <para>
-    /// Since this is a non-indexed version load performance will be better but query performance better.
-    /// </para>
-    /// </remarks>
-    public class NonIndexedThreadSafeGraph
-        : ThreadSafeGraph
-    {
-        /// <summary>
-        /// Creates a new non-indexed Thread Safe Graph.
-        /// </summary>
-        public NonIndexedThreadSafeGraph()
-            : base(new ThreadSafeTripleCollection()) { }
     }
 }

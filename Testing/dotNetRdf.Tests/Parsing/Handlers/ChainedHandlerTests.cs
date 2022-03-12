@@ -83,7 +83,7 @@ namespace VDS.RDF.Parsing.Handlers
             parser.Load(handler, "chained_handler_tests_temp.ttl");
 
             Assert.Equal(g.Triples.Count, h.Triples.Count);
-            Assert.Equal(g, h);
+            Assert.Equal<IGraph>(g, h);
         }
 
         [Fact]
@@ -127,7 +127,7 @@ namespace VDS.RDF.Parsing.Handlers
             Assert.Equal(100, g.Triples.Count);
             Assert.Equal(100, h.Triples.Count);
             Assert.Equal(g.Triples.Count, h.Triples.Count);
-            Assert.Equal(g, h);
+            Assert.Equal<IGraph>(g, h);
         }
         
         [Fact]

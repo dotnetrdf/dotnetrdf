@@ -701,24 +701,14 @@ namespace VDS.RDF
             return tmp;
         }
 
-
-
         /// <summary>
-        /// Determines whether a Graph is equal to another Object.
+        /// Determines whether this graph is equal to another graph.
         /// </summary>
-        /// <param name="obj">Object to test.</param>
+        /// <param name="other">Object to test.</param>
         /// <returns></returns>
-        /// <remarks>
-        /// This override is deprecated as this class is not an immutable class. To compare two graphs for isomorphism (also known as graph equality) please use the <see cref="GraphMatcher"/> utility class instead.
-        /// </remarks>
-        [Obsolete("The use of the Equals method for determining graph equality is deprecated and this override will be removed in a future release. To compare two graphs, please use the GraphMatcher class instead.")]
-        public override bool Equals(object obj)
+        public bool Equals(IGraph other)
         {
-            if (obj is IGraph graph)
-            {
-                return Equals(graph, out _);
-            }
-            return false;
+            return Equals(other, out _);
         }
 
         /// <summary>
