@@ -781,28 +781,21 @@ namespace VDS.RDF.Query
             }
             else if (context.InputMultiset is IdentityMultiset)
             {
-                if (filter.SparqlFilter.Variables.Any())
+
+                try
                 {
-                    // If we get an IdentityMultiset then the FILTER only has an effect if there are no
-                    // variables - otherwise it is not in scope and causes the Output to become Null
-                    context.InputMultiset = new NullMultiset();
-                }
-                else
-                {
-                    try
-                    {
-                        if (!filter.SparqlFilter.Expression.Accept(_expressionProcessor, context, 0).AsSafeBoolean())
-                        {
-                            context.OutputMultiset = new NullMultiset();
-                            return context.OutputMultiset;
-                        }
-                    }
-                    catch
+                    if (!filter.SparqlFilter.Expression.Accept(_expressionProcessor, context, 0).AsSafeBoolean())
                     {
                         context.OutputMultiset = new NullMultiset();
                         return context.OutputMultiset;
                     }
                 }
+                catch
+                {
+                    context.OutputMultiset = new NullMultiset();
+                    return context.OutputMultiset;
+                }
+
             }
             else
             {

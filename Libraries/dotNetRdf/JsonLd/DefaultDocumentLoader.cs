@@ -126,6 +126,7 @@ namespace VDS.RDF.JsonLd
 
         private static IEnumerable<WebLink> ParseLinkHeaders(IEnumerable<string> linkHeaderValues)
         {
+            if (linkHeaderValues == null) yield break;
             foreach (var linkHeaderValue in linkHeaderValues)
             {
                 if (WebLink.TryParse(linkHeaderValue, out WebLink link)) yield return link;

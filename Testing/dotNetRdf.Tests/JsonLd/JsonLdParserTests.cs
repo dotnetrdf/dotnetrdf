@@ -8,20 +8,26 @@ using System.Net;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Server;
 using Xunit;
 using Xunit.Abstractions;
 using StringWriter = VDS.RDF.Writing.StringWriter;
 
 namespace VDS.RDF.JsonLd
 {
-    public class JsonLdParserTests
+    public class JsonLdParserTests : IDisposable
     {
         private readonly ITestOutputHelper _output;
+        private WireMockServer _server;
 
         public JsonLdParserTests(ITestOutputHelper output)
         {
             _output = output;
+            _server = WireMockServer.Start();
         }
+
 
         /// <summary>
         /// Test to replicate the StackOverflowException condition reported in GitHub issue #122
@@ -176,15 +182,20 @@ namespace VDS.RDF.JsonLd
         [Fact]
         public void ItRetainsLocalContextWhenProcessingARemoteContext()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            _server.Given(Request.Create().WithPath("/context.jsonld"))
+                .RespondWith(Response.Create()
+                    .WithStatusCode(200)
+                    .WithHeader("Content-Type", "application/ld+json")
+                    .WithBody("{'@context': { 'foo': 'http://example.org/foo'} }"));
+            var contextPath = _server.Urls[0] + "/context.jsonld";
             var jsonLd = @"
 {
   '@context': [
     { '@base': 'http://example.com/' },
-    'https://www.w3.org/ns/hydra/core'
+    '" + contextPath + @"'
   ],
   '@id': 'foo',
-  'rdf:type': 'hydra:Class'
+  'rdf:type': 'foo:Item'
 }";
             var jsonLdParser = new JsonLdParser();
             ITripleStore tStore = new TripleStore();
@@ -224,6 +235,12 @@ namespace VDS.RDF.JsonLd
             Assert.Contains(tStore.Triples, t => t.Subject is IUriNode node &&  node.Uri.ToString().Equals("urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6"));
             Assert.Contains(tStore.Triples,
                 t => t.Object is ILiteralNode node && node.DataType.ToString().Equals("urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6"));
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _server.Stop();
         }
     }
 }
