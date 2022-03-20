@@ -24,13 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
@@ -79,8 +76,13 @@ WHERE
             Assert.True(expected < results.Count, "Should be more triples found that just those matched by the EXISTS clause");
         }
 
-        [Fact]
-        public void SparqlNotExistsEmptyBgp()
+        [Theory]
+        [InlineData("FILTER NOT EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o> }", 0)]
+        [InlineData("FILTER NOT EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o2> }", 1)]
+        [InlineData("FILTER EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o> }", 1)]
+        [InlineData("FILTER EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o2> }", 0)]
+        [InlineData("FILTER NOT EXISTS { <http://example.org/s> <http://example.org/p> ?o }", 0)]
+        public void SparqlNotExistsEmptyBgp(string filter, int expectCount)
         {
             var g = new Graph();
             g.Assert(g.CreateUriNode(new Uri("http://example.org/s")),
@@ -89,37 +91,28 @@ WHERE
 
             // If FILTER NOT EXISTS returns false, no results expected
             var query =
-                @"SELECT (<http://example.org/foo> as ?subject) WHERE { FILTER NOT EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }";
-            var q = new SparqlQueryParser().ParseFromString(query);
+                $"SELECT (<http://example.org/foo> as ?subject) WHERE {{ {filter} }}";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
             var results = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
-            Assert.True(results.IsEmpty);
-            
-            // If FILTER NOT EXISTS returns true, one result expected
-            query =
-                @"SELECT (<http://example.org/foo> as ?subject) WHERE { FILTER NOT EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o2> } }";
-            q = new SparqlQueryParser().ParseFromString(query);
-            results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.False(results.IsEmpty);
-            Assert.Equal(1, results.Count);
+            Assert.Equal(expectCount, results.Count);
+        }
 
-            // If FILTER EXISTS returns true, one result expected
-            query =
-                @"SELECT (<http://example.org/foo> as ?subject) WHERE { FILTER EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }";
-            q = new SparqlQueryParser().ParseFromString(query);
-            results = g.ExecuteQuery(q) as SparqlResultSet;
+        [Theory]
+        [InlineData("FILTER NOT EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o> }", 1)]
+        [InlineData("FILTER NOT EXISTS { <http://example.org/s> <http://example.org/p> ?o }", 1)]
+        [InlineData("FILTER EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o> }", 0)]
+        [InlineData("FILTER EXISTS { <http://example.org/s> <http://example.org/p> ?o }", 0)]
+        public void SparqlNotExistsEmptyBgpEmptyGraph(string filter, int expectCount)
+        {
+            var g = new Graph();
+            // If FILTER NOT EXISTS returns false, no results expected
+            var query =
+                $"SELECT (<http://example.org/foo> as ?subject) WHERE {{ {filter} }}";
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+            var results = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
-            Assert.False(results.IsEmpty);
-            Assert.Equal(1, results.Count);
-
-            // If FILTER EXISTS returns false, no results expected
-            query =
-                @"SELECT (<http://example.org/foo> as ?subject) WHERE { FILTER EXISTS { <http://example.org/s> <http://example.org/p> <http://example.org/o2> } }";
-            q = new SparqlQueryParser().ParseFromString(query);
-            results = g.ExecuteQuery(q) as SparqlResultSet;
-            Assert.NotNull(results);
-            Assert.True(results.IsEmpty);
+            Assert.Equal(expectCount, results.Count);
         }
     }
 }
