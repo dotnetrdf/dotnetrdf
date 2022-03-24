@@ -112,7 +112,7 @@ namespace VDS.RDF.Storage
         public void StorageFourStoreRemoveTriples()
         {
             //StorageFourStoreAddTriples();
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             var g = new Graph(nodeFactory.CreateUriNode(new Uri("http://example.org/4storeRemoveTriples")));
 
             FourStoreConnector fourstore = GetConnection();

@@ -44,7 +44,7 @@ namespace VDS.RDF.Query
 {
     static class FullTextExtensions
     {
-        private static NodeFactory _factory = new NodeFactory();
+        private static NodeFactory _factory = new NodeFactory(new NodeFactoryOptions());
         private static SHA256Managed _sha256;
 
         internal static ISet ToSet(this IFullTextSearchResult result, String matchVar, String scoreVar)

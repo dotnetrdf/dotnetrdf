@@ -25,11 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Globalization;
-using System.Linq;
 using System.Threading;
 using Xunit;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
@@ -44,7 +42,7 @@ namespace VDS.RDF
             try
             {
                 // given
-                INodeFactory nodeFactory = new NodeFactory();
+                INodeFactory nodeFactory = new NodeFactory(new NodeFactoryOptions());
 
                 // when
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("pl");
@@ -78,7 +76,7 @@ namespace VDS.RDF
             CultureInfo sysCulture = CultureInfo.CurrentCulture;
             try
             {
-                INodeFactory factory = new NodeFactory();
+                INodeFactory factory = new NodeFactory(new NodeFactoryOptions());
 
                 CultureInfo culture = CultureInfo.CurrentCulture;
                 culture = (CultureInfo)culture.Clone();
@@ -101,20 +99,13 @@ namespace VDS.RDF
         public void NodeToLiteralDateTimePrecision1()
         {
             DateTimeOffset now = DateTimeOffset.Now;
-            var factory = new NodeFactory();
+            var factory = new NodeFactory(new NodeFactoryOptions());
             ILiteralNode litNow = now.ToLiteral(factory);
-
-            //Print out
-            Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
-            var formatter = new NTriplesFormatter();
-            Console.WriteLine("Node Form: " + formatter.Format(litNow));
 
             //Extract and check it round tripped
             DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
-            Console.WriteLine("Extracted: " + now2.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
 
             TimeSpan diff = now - now2;
-            Console.WriteLine("Difference: " + diff.ToString());
             Assert.True(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
         }
 
@@ -122,20 +113,13 @@ namespace VDS.RDF
         public void NodeToLiteralDateTimePrecision2()
         {
             DateTime now = DateTime.Now;
-            var factory = new NodeFactory();
+            var factory = new NodeFactory(new NodeFactoryOptions());
             ILiteralNode litNow = now.ToLiteral(factory);
-
-            //Print out
-            Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
-            var formatter = new NTriplesFormatter();
-            Console.WriteLine("Node Form: " + formatter.Format(litNow));
 
             //Extract and check it round tripped
             DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
-            Console.WriteLine("Extracted: " + now2.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
 
             TimeSpan diff = now - now2;
-            Console.WriteLine("Difference: " + diff.ToString());
             Assert.True(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
         }
 
@@ -143,20 +127,13 @@ namespace VDS.RDF
         public void NodeToLiteralDateTimePrecision3()
         {
             DateTimeOffset now = DateTimeOffset.Now;
-            var factory = new NodeFactory();
+            var factory = new NodeFactory(new NodeFactoryOptions());
             ILiteralNode litNow = now.ToLiteral(factory, false);
-
-            //Print out
-            Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
-            var formatter = new NTriplesFormatter();
-            Console.WriteLine("Node Form: " + formatter.Format(litNow));
 
             //Extract and check it round tripped
             DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
-            Console.WriteLine("Extracted: " + now2.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
 
             TimeSpan diff = now - now2;
-            Console.WriteLine("Difference: " + diff.ToString());
             Assert.True(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
         }
 
@@ -164,27 +141,20 @@ namespace VDS.RDF
         public void NodeToLiteralDateTimePrecision4()
         {
             DateTime now = DateTime.Now;
-            var factory = new NodeFactory();
+            var factory = new NodeFactory(new NodeFactoryOptions());
             ILiteralNode litNow = now.ToLiteral(factory, false);
-
-            //Print out
-            Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
-            var formatter = new NTriplesFormatter();
-            Console.WriteLine("Node Form: " + formatter.Format(litNow));
 
             //Extract and check it round tripped
             DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
-            Console.WriteLine("Extracted: " + now2.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
 
             TimeSpan diff = now - now2;
-            Console.WriteLine("Difference: " + diff.ToString());
             Assert.True(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
         }
 
         [Fact]
         public void NodeLiteralLanguageSpecifierCase1()
         {
-            var factory = new NodeFactory();
+            var factory = new NodeFactory(new NodeFactoryOptions());
             ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
             ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
 
@@ -194,7 +164,7 @@ namespace VDS.RDF
         [Fact]
         public void NodeLiteralLanguageSpecifierCase2()
         {
-            var factory = new NodeFactory();
+            var factory = new NodeFactory(new NodeFactoryOptions());
             ILiteralNode lcase = factory.CreateLiteralNode("example", "en-gb");
             ILiteralNode ucase = factory.CreateLiteralNode("example", "en-GB");
 
@@ -216,6 +186,22 @@ namespace VDS.RDF
             Assert.Equal(1, g.Triples.Count);
             Assert.Single(g.GetTriplesWithObject(lcase));
             Assert.Single(g.GetTriplesWithObject(ucase));
+        }
+
+        const string InvalidLanguageSpecifier = "ab-12";
+
+        [Fact]
+        public void LanguageTagsAreValidated()
+        {
+            IGraph g = new Graph();
+            Assert.Throws<ArgumentException>(() => g.CreateLiteralNode("example", InvalidLanguageSpecifier));
+        }
+
+        [Fact]
+        public void LanguageTagValidationCanBeDisabled()
+        {
+            IGraph g = new Graph(null, new NodeFactory(new NodeFactoryOptions() { ValidateLanguageSpecifiers = false }));
+            g.CreateLiteralNode("example", InvalidLanguageSpecifier);
         }
     }
 }

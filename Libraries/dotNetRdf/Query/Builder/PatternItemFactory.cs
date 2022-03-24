@@ -35,7 +35,7 @@ namespace VDS.RDF.Query.Builder
     /// </summary>
     internal class PatternItemFactory : IPatternItemFactory
     {
-        private readonly NodeFactory _nodeFactory = new NodeFactory();
+        private readonly NodeFactory _nodeFactory = new(new NodeFactoryOptions());
 
         public PatternItem CreateVariablePattern(string variableName)
         {

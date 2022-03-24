@@ -123,7 +123,7 @@ namespace VDS.RDF
         {
             var store = new TripleStore(new WebDemandGraphCollection());
             var u = new Uri("http://www.dotnetrdf.org/configuration#");
-            var nodeFactory = new NodeFactory(u);
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions {BaseUri = u});
             var g = new Graph(nodeFactory.CreateUriNode(u));
             g.LoadFromUri(u);
 
@@ -136,7 +136,7 @@ namespace VDS.RDF
         {
             //Test that on-demand loading does not kick in for pre-existing graphs
             var store = new TripleStore(new WebDemandGraphCollection());
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             var u = new Uri("http://www.dotnetrdf.org/configuration#");
             var n = nodeFactory.CreateUriNode(u);
             var g = new Graph(n);

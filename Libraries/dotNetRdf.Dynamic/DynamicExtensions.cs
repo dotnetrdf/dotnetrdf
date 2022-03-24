@@ -181,7 +181,7 @@ namespace VDS.RDF.Dynamic
                     return nodeValue;
 
                 case Uri uriValue:
-                    return ((INodeFactory)graph ?? new NodeFactory()).CreateUriNode(uriValue);
+                    return ((INodeFactory)graph ?? new NodeFactory(new NodeFactoryOptions())).CreateUriNode(uriValue);
 
                 case bool boolValue:
                     return new BooleanNode(boolValue);

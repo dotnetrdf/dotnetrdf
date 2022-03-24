@@ -25,6 +25,7 @@
 */
 
 using System;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF
 {
@@ -34,7 +35,7 @@ namespace VDS.RDF
     public class NodeFactory 
         : INodeFactory
     {
-        private readonly BlankNodeMapper _bnodeMap = new BlankNodeMapper();
+        private readonly BlankNodeMapper _bnodeMap = new();
         private IUriFactory _uriFactory;
 
         /// <summary>
@@ -68,6 +69,7 @@ namespace VDS.RDF
         /// <param name="namespaceMap">The namespace map to use for the resolution of QNames. If not specified, a default <see cref="NamespaceMapper"/> instance will be created.</param>
         /// <param name="normalizeLiteralValues">Whether or not to normalize the value strings of literal nodes.</param>
         /// <param name="uriFactory">The factory to use to create URIs. Defaults to <see cref="VDS.RDF.UriFactory.Root">the root UriFactory instance</see>.</param>
+        [Obsolete("Replaced by NodeFactory(NodeFactoryOptions, INamespaceMapper, IUriFactory)")]
         public NodeFactory(Uri baseUri = null, INamespaceMapper namespaceMap = null, bool normalizeLiteralValues = false, IUriFactory uriFactory = null)
         {
             BaseUri = baseUri;
@@ -76,11 +78,32 @@ namespace VDS.RDF
             UriFactory = uriFactory ?? VDS.RDF.UriFactory.Root;
         }
 
+        /// <summary>
+        /// Creates a new Node Factory.
+        /// </summary>
+        /// <param name="options">Configuration options for this node factory.</param>
+        /// <param name="namespaceMap">The namespace map to use for the resolution of QNames. If not specified, a default <see cref="NamespaceMapper"/> instance will be created.</param>
+        /// <param name="uriFactory">The factory to use to create URIs. Defaults to <see cref="VDS.RDF.UriFactory.Root">the root UriFactory instance</see>.</param>
+        public NodeFactory(NodeFactoryOptions options, INamespaceMapper namespaceMap = null,
+            IUriFactory uriFactory = null)
+        {
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            BaseUri = options.BaseUri;
+            NormalizeLiteralValues = options.NormalizeLiteralValues;
+            ValidateLanguageSpecifiers = options.ValidateLanguageSpecifiers;
+            NamespaceMap = namespaceMap ?? new NamespaceMapper();
+            UriFactory = uriFactory ?? RDF.UriFactory.Root;
+        }
+
         #region INodeFactory Members
 
         /// <inheritdoc />
-#pragma warning disable CS0618 // Type or member is obsolete
-        public bool NormalizeLiteralValues { get; set; } = Options.LiteralValueNormalization;
+        public bool NormalizeLiteralValues { get; set; } 
+
+        /// <summary>
+        /// Get or set the flag that controls whether or not language tags are validated when creating language-tagged literal nodes.
+        /// </summary>
+        public bool ValidateLanguageSpecifiers { get; set; } = true;
 
         /// <summary>
         /// Resolve a QName to a URI using this factory's <see cref="INodeFactory.NamespaceMap"/> and <see cref="INodeFactory.BaseUri"/>.
@@ -91,7 +114,6 @@ namespace VDS.RDF
         {
             return UriFactory.Create(Tools.ResolveQName(qName, NamespaceMap, BaseUri));
         }
-#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Creates a Blank Node with a new automatically generated ID.
@@ -161,6 +183,11 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, string langSpec)
         {
+            if (ValidateLanguageSpecifiers && !LanguageTag.IsWellFormed(langSpec))
+            {
+                throw new ArgumentException(
+                    $"The language specifier {langSpec} is not a well-formed BCP-47 language tag.");
+            }
             return new LiteralNode(literal, langSpec, NormalizeLiteralValues);
         }
 
@@ -172,16 +199,18 @@ namespace VDS.RDF
         public IUriNode CreateUriNode(Uri uri)
         {
             if (uri == null) throw new ArgumentNullException(nameof(uri), "URI must not be null.");
-            if (!uri.IsAbsoluteUri)
+            if (uri.IsAbsoluteUri)
             {
-                if (BaseUri == null)
-                {
-                    throw new ArgumentException(
-                        "Cannot create a URI node from a relative URI as there is no base URI currently defined.");
-                }
-
-                uri = new Uri(BaseUri, uri);
+                return new UriNode(uri);
             }
+
+            if (BaseUri == null)
+            {
+                throw new ArgumentException(
+                    "Cannot create a URI node from a relative URI as there is no base URI currently defined.");
+            }
+
+            uri = new Uri(BaseUri, uri);
             return new UriNode(uri);
         }
 
@@ -253,13 +282,13 @@ namespace VDS.RDF
     class MockNodeFactory
         : INodeFactory
     {
-        private IBlankNode _bnode = new BlankNode("mock");
-        private IGraphLiteralNode _glit = new GraphLiteralNode();
-        private ILiteralNode _lit = new LiteralNode("mock", false);
-        private IUriNode _uri = new UriNode(RDF.UriFactory.Root.Create("dotnetrdf:mock"));
-        private IVariableNode _var = new VariableNode("mock");
+        private readonly IBlankNode _bnode = new BlankNode("mock");
+        private readonly IGraphLiteralNode _glit = new GraphLiteralNode();
+        private readonly ILiteralNode _lit = new LiteralNode("mock", false);
+        private readonly IUriNode _uri = new UriNode(RDF.UriFactory.Root.Create("dotnetrdf:mock"));
+        private readonly IVariableNode _var = new VariableNode("mock");
 
-        private TripleNode _triple = new TripleNode(new Triple(
+        private readonly TripleNode _triple = new(new Triple(
             new UriNode(RDF.UriFactory.Root.Create("urn:s")),
             new UriNode(RDF.UriFactory.Root.Create("urn:p")),
             new UriNode(RDF.UriFactory.Root.Create("urn:o"))));
@@ -302,7 +331,7 @@ namespace VDS.RDF
             return _lit;
         }
 
-        public ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public ILiteralNode CreateLiteralNode(string literal, string langSpec)
         {
             return _lit;
         }
@@ -322,7 +351,7 @@ namespace VDS.RDF
             throw new NotImplementedException();
         }
 
-        public IVariableNode CreateVariableNode(string varname)
+        public IVariableNode CreateVariableNode(string varName)
         {
             return _var;
         }

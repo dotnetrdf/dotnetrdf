@@ -26,10 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Model;
 
 namespace VDS.RDF.Query.Spin.Util
@@ -41,7 +37,7 @@ namespace VDS.RDF.Query.Spin.Util
 
         public readonly static IEqualityComparer<Triple> tripleEqualityComparer = new TripleEqualityComparer();
 
-        public readonly static NodeFactory nodeFactory = new NodeFactory();
+        public readonly static NodeFactory nodeFactory = new(new NodeFactoryOptions());
 
         #region UriComparison shortcuts
         internal static bool sameTerm(Uri uri1, Uri uri2)

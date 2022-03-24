@@ -48,30 +48,26 @@ namespace VDS.RDF
         /// Creates a new instance of a Graph.
         /// </summary>
         /// <param name="name">The name to assign to the graph. If null, the graph is unnamed.</param>
-        /// <param name="emptyNamespaceMap">Whether to initialise the graph with an empty namespace map. If false, the namespace map will contain default declarations for the RDF, RDFS and XSD namespaces.</param>
         /// <param name="nodeFactory">The factory to use when constructing nodes in this graph. If null, defaults to a new <see cref="NodeFactory"/> instance using the same UriFactory instance as this graph.</param>
         /// <param name="uriFactory">The factory to use when constructing URIs in this graph. If null, defaults to the <see cref="VDS.RDF.UriFactory.Root">root UriFactory</see>.</param>
         /// <param name="tripleCollection">The initial content of the graph. If null, the graph will initially be empty.</param>
-        public Graph(IRefNode name, INodeFactory nodeFactory,
-            IUriFactory uriFactory, BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
+        /// <param name="emptyNamespaceMap">Whether to initialise the graph with an empty namespace map. If false, the namespace map will contain default declarations for the RDF, RDFS and XSD namespaces.</param>
+        public Graph(
+            IRefNode name, 
+            INodeFactory nodeFactory = null,
+            IUriFactory uriFactory = null, 
+            BaseTripleCollection tripleCollection = null, 
+            bool emptyNamespaceMap = false)
         :base(tripleCollection, name, nodeFactory, uriFactory)
         {
             if (emptyNamespaceMap) NamespaceMap.Clear();
         }
 
         /// <summary>
-        /// Create a new instance of a graph with the specified name.
-        /// </summary>
-        /// <param name="name">The graph name, may be either a URI or a blank node.</param>
-        public Graph(IRefNode name) : base(name)
-        {
-        }
-
-        /// <summary>
         /// Creates a new instance of a graph with the specified URI as the graph name.
         /// </summary>
         /// <param name="name">The graph name as a URI.</param>
-        public Graph(Uri name) : base(new UriNode(name))
+        public Graph(Uri name) : this(new UriNode(name))
         {
         }
 
@@ -80,9 +76,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty.</param>
         public Graph(bool emptyNamespaceMap)
-            : this()
+            : this((IRefNode)null, null, emptyNamespaceMap)
         {
-            if (emptyNamespaceMap) NamespaceMap.Clear();
         }
 
         /// <summary>
@@ -90,9 +85,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="name">The graph name.</param>
         /// <param name="emptyNamespaceMap">Whether the namespace map should be empty.</param>
-        public Graph(IRefNode name, bool emptyNamespaceMap) : base(name)
+        public Graph(IRefNode name, bool emptyNamespaceMap) 
+            : this(name,  null, null, null, emptyNamespaceMap)
         {
-            if (emptyNamespaceMap) NamespaceMap.Clear();
         }
 
         /// <summary>
@@ -100,9 +95,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="name">The graph name.</param>
         /// <param name="emptyNamespaceMap">Whether the namespace map should be empty.</param>
-        public Graph(Uri name, bool emptyNamespaceMap) : this(new UriNode(name), emptyNamespaceMap)
+        public Graph(Uri name, bool emptyNamespaceMap)
+            : this(new UriNode(name), null, null, null, emptyNamespaceMap)
         {
-
         }
 
         /// <summary>
@@ -110,7 +105,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="tripleCollection">Triple Collection.</param>
         public Graph(BaseTripleCollection tripleCollection)
-            : base(tripleCollection) { }
+            : this((IRefNode)null, tripleCollection) { }
 
 
         /// <summary>
@@ -118,8 +113,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="name">The graph name.</param>
         /// <param name="tripleCollection">The triple collection that will be the content of the new graph.</param>
-        public Graph(IRefNode name, BaseTripleCollection tripleCollection) 
-            : base(tripleCollection, name) { }
+        public Graph(IRefNode name, BaseTripleCollection tripleCollection)
+            : this(name, null, null, tripleCollection)
+        {
+        }
 
 
         /// <summary>
@@ -127,7 +124,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="name">The graph name.</param>
         /// <param name="tripleCollection">The triple collection that will be the content of the new graph.</param>
-        public Graph(Uri name, BaseTripleCollection tripleCollection) : this(new UriNode(name), tripleCollection) { }
+        public Graph(Uri name, BaseTripleCollection tripleCollection) 
+            : this(new UriNode(name), tripleCollection) { }
 
         /// <summary>
         /// Creates a new instance of a Graph using the given Triple Collection and an optionally empty Namespace Map.
@@ -135,9 +133,8 @@ namespace VDS.RDF
         /// <param name="tripleCollection">Triple Collection.</param>
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty.</param>
         public Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
-            : base(tripleCollection)
+            : this(null, null, null, tripleCollection, emptyNamespaceMap)
         {
-            if (emptyNamespaceMap) NamespaceMap.Clear();
         }
 
         /// <summary>
@@ -146,11 +143,8 @@ namespace VDS.RDF
         /// <param name="name">The graph name.</param>
         /// <param name="tripleCollection">The triple collection that will be the content of the new graph.</param>
         /// <param name="emptyNamespaceMap">Whether the namespace map should be empty.</param>
-        public Graph(IRefNode name, BaseTripleCollection tripleCollection, bool emptyNamespaceMap) : base(
-            tripleCollection, name)
-        {
-            if (emptyNamespaceMap) NamespaceMap.Clear();
-        }
+        public Graph(IRefNode name, BaseTripleCollection tripleCollection, bool emptyNamespaceMap) 
+            : this(name, null, null, tripleCollection, emptyNamespaceMap) {}
 
         /// <summary>
         /// Creates a new named graph  using the given triple collection and an optionally empty namespace map.
@@ -158,8 +152,8 @@ namespace VDS.RDF
         /// <param name="name">The graph name.</param>
         /// <param name="tripleCollection">The triple collection that will be the content of the new graph.</param>
         /// <param name="emptyNamespaceMap">Whether the namespace map should be empty.</param>
-        public Graph(Uri name, BaseTripleCollection tripleCollection, bool emptyNamespaceMap) : this(new UriNode(name),
-            tripleCollection, emptyNamespaceMap)
+        public Graph(Uri name, BaseTripleCollection tripleCollection, bool emptyNamespaceMap) 
+            : this(new UriNode(name), null, null, tripleCollection, emptyNamespaceMap)
         {
         }
 
@@ -181,6 +175,7 @@ namespace VDS.RDF
         /// Asserts a Triple in the Graph.
         /// </summary>
         /// <param name="t">The Triple to add to the Graph.</param>
+        /// <returns>True if the triple was added to the graph, false if it was not (because it already exists in the graph).</returns>
         public override bool Assert(Triple t)
         {
             // Add to Triples Collection
@@ -196,14 +191,10 @@ namespace VDS.RDF
         /// Asserts a List of Triples in the graph.
         /// </summary>
         /// <param name="ts">List of Triples in the form of an IEnumerable.</param>
+        /// <returns>True if at least one Triple in <paramref name="ts"/> was a new assertion in the graph, false otherwise.</returns>
         public override bool Assert(IEnumerable<Triple> ts)
         {
-            var asserted = false;
-            foreach (Triple t in ts)
-            {
-                asserted = Assert(t) || asserted;
-            }
-            return asserted;
+            return ts.Aggregate(false, (current, t) => Assert(t) || current);
         }
 
         /// <summary>

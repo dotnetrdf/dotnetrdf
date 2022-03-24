@@ -36,7 +36,7 @@ namespace VDS.RDF.Shacl
         private static readonly Uri baseUri = UriFactory.Root.Create(IO.Path.GetFullPath("resources\\shacl\\test-suite\\manifest.ttl"));
         private static readonly TripleStore store;
 
-        private static readonly NodeFactory factory = new NodeFactory();
+        private static readonly NodeFactory factory = new NodeFactory(new NodeFactoryOptions());
         private static readonly INode mf_include = Node("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#include");
         private static readonly INode mf_entries = Node("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#entries");
         private static readonly INode mf_action = Node("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#action");

@@ -419,6 +419,12 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public bool Equals(IGraph g)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc />
         public bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
         {
             throw new NotImplementedException();
@@ -524,7 +530,7 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
-        public ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public ILiteralNode CreateLiteralNode(string literal, string langSpec)
         {
             throw new NotImplementedException();
         }
@@ -536,7 +542,7 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
-        public IVariableNode CreateVariableNode(string varname)
+        public IVariableNode CreateVariableNode(string varName)
         {
             throw new NotImplementedException();
         }

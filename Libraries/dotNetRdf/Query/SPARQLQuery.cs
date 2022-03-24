@@ -80,7 +80,7 @@ namespace VDS.RDF.Query
         /// Creates a new SPARQL Query.
         /// </summary>
         internal SparqlQuery(Uri baseUri = null, INamespaceMapper namespaceMapper = null, bool subquery = false) : 
-            base(baseUri, namespaceMapper ?? new NamespaceMapper(true))
+            base(new NodeFactoryOptions(){BaseUri = baseUri}, namespaceMapper ?? new NamespaceMapper(true))
         {
             _vars = new List<SparqlVariable>();
             _defaultGraphs = new List<IRefNode>();

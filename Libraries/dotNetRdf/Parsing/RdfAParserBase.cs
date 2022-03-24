@@ -889,12 +889,17 @@ namespace VDS.RDF.Parsing
                     if (content)
                     {
                         // Content attribute is used as the value
-                        currLiteral = context.Handler.CreateLiteralNode(GetAttribute(currElement, "content"), lang);
+                        currLiteral = String.IsNullOrEmpty(lang)
+                            ? context.Handler.CreateLiteralNode(GetAttribute(currElement, "content"))
+                            : context.Handler.CreateLiteralNode(GetAttribute(currElement, "content"), lang);
                     }
                     else if (!HasChildren(currElement))
                     {
                         // Value is content of the element (if any)
-                        currLiteral = context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(GetInnerText(currElement)), lang);
+                        currLiteral = string.IsNullOrEmpty(lang)
+                            ? context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(GetInnerText(currElement)))
+                            : context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(GetInnerText(currElement)),
+                                lang);
                     }
                     else if (GetChildren(currElement).All(IsTextNode))
                     {
@@ -904,7 +909,10 @@ namespace VDS.RDF.Parsing
                         {
                             lit.Append(GetInnerText(n));
                         }
-                        currLiteral = context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()), lang);
+
+                        currLiteral = string.IsNullOrEmpty(lang)
+                            ? context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()))
+                            : context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()), lang);
                     }
                     else if (!datatype || (datatype && GetAttribute(currElement, "datatype").Equals(string.Empty)))
                     {

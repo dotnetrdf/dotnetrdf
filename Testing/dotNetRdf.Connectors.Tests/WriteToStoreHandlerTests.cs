@@ -95,7 +95,7 @@ namespace VDS.RDF.Storage
 
         protected void TestWriteToStoreDatasetsHandler(IStorageProvider manager)
         {
-            var factory = new NodeFactory();
+            var factory = new NodeFactory(new NodeFactoryOptions());
             INode a = factory.CreateUriNode(new Uri("http://example.org/a"));
             INode b = factory.CreateUriNode(new Uri("http://example.org/b"));
             INode c = factory.CreateUriNode(new Uri("http://example.org/c"));

@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Query
@@ -80,42 +79,6 @@ namespace VDS.RDF.Query
                 _variables = Results.First().Variables.ToList();
             }
         }
- 
-        /// <summary>
-        /// Creates a SPARQL Result Set for the Results of a Query with the Leviathan Engine.
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context.</param>
-        // TODO: This method should move into the leviathan engine or the SparqlEvaluationContext
-        /*
-        public SparqlResultSet(SparqlEvaluationContext context)
-        {
-            ResultsType = context.Query.QueryType == SparqlQueryType.Ask ? SparqlResultsType.Boolean : SparqlResultsType.VariableBindings;
-            if (context.OutputMultiset is NullMultiset)
-            {
-                _result = false;
-            }
-            else if (context.OutputMultiset is IdentityMultiset)
-            {
-                _result = true;
-                foreach (var var in context.OutputMultiset.Variables)
-                {
-                    _variables.Add(var);
-                }
-            }
-            else
-            {
-                _result = true;
-                foreach (var var in context.OutputMultiset.Variables)
-                {
-                    _variables.Add(var);
-                }
-                foreach (ISet s in context.OutputMultiset.Sets)
-                {
-                    AddResult(new SparqlResult(s, context.OutputMultiset.Variables));
-                }
-            }
-        }
-        */
 
         #region Properties
 

@@ -349,7 +349,7 @@ namespace VDS.RDF.Web
                 }
 
                 // Set the Default Graph URIs (if any)
-                var nodeFactory = new NodeFactory();
+                var nodeFactory = new NodeFactory(new NodeFactoryOptions());
                 if (isProtocolDataset)
                 {
                     foreach (var userDefaultGraph in userDefaultGraphs)

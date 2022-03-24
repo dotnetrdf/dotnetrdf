@@ -93,9 +93,9 @@ namespace VDS.RDF
         /// Creates a Literal Node with the given Value and Language.
         /// </summary>
         /// <param name="literal">Value of the Literal.</param>
-        /// <param name="langspec">Language Specifier for the Literal.</param>
+        /// <param name="langSpec">Language Specifier for the Literal.</param>
         /// <returns></returns>
-        ILiteralNode CreateLiteralNode(string literal, string langspec);
+        ILiteralNode CreateLiteralNode(string literal, string langSpec);
 
         /// <summary>
         /// Creates a URI Node for the given URI.
@@ -121,9 +121,9 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a Variable Node for the given Variable Name.
         /// </summary>
-        /// <param name="varname"></param>
+        /// <param name="varName"></param>
         /// <returns></returns>
-        IVariableNode CreateVariableNode(string varname);
+        IVariableNode CreateVariableNode(string varName);
 
         /// <summary>
         /// Creates a node that quotes the given triple.

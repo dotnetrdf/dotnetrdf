@@ -53,8 +53,8 @@ namespace VDS.RDF.Parsing
             {
                 var g = new Graph();
                 g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-123"));
-                g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-gb-us"));
-                g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-123-abc"));
+                g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-gb-variant"));
+                g.Assert(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Root.Create("http://example.org/predicate")), g.CreateLiteralNode("literal", "en-123-variant"));
                 _original = g;
 
                 _store = new TripleStore();

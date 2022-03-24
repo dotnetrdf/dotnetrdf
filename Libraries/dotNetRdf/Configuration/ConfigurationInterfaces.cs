@@ -70,7 +70,7 @@ namespace VDS.RDF.Configuration
     }
 
     /// <summary>
-    /// Inteface for Objects which can resolve paths specified for Configuration properties.
+    /// Interface for Objects which can resolve paths specified for Configuration properties.
     /// </summary>
     public interface IPathResolver
     {
@@ -82,6 +82,9 @@ namespace VDS.RDF.Configuration
         string ResolvePath(string path);
     }
 
+    /// <summary>
+    /// Interface for objects which provide additional factories and auto-configuration strategies for the <see cref="ConfigurationLoader"/>.
+    /// </summary>
     public interface IConfigurationExtension
     {
         /// <summary>

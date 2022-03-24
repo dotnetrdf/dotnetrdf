@@ -291,7 +291,7 @@ namespace VDS.RDF.Web
                     isProtocolDataset = true;
                 }
 
-                var nodeFactory = new NodeFactory();
+                var nodeFactory = new NodeFactory(new NodeFactoryOptions());
                 // Set the Default Graph URIs (if any)
                 if (isProtocolDataset)
                 {

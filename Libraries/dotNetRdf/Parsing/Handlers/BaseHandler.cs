@@ -38,13 +38,6 @@ namespace VDS.RDF.Parsing.Handlers
         private INodeFactory _factory;
 
         /// <summary>
-        /// Creates a new Handler.
-        /// </summary>
-        /// <param name="normalizeLiteralValues">Whether the string values of literal nodes should be normalized on creation.</param>
-        protected BaseHandler(bool normalizeLiteralValues = false)
-            : this(new NodeFactory(normalizeLiteralValues:normalizeLiteralValues)) { }
-
-        /// <summary>
         /// Creates a new Handler using the given Node Factory.
         /// </summary>
         /// <param name="factory">Node Factory.</param>
@@ -169,11 +162,11 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a Literal Node with the given Language.
         /// </summary>
         /// <param name="literal">Value.</param>
-        /// <param name="langspec">Language.</param>
+        /// <param name="langSpec">Language.</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public virtual ILiteralNode CreateLiteralNode(string literal, string langSpec)
         {
-            return _factory.CreateLiteralNode(literal, langspec);
+            return _factory.CreateLiteralNode(literal, langSpec);
         }
 
         /// <summary>
@@ -208,11 +201,11 @@ namespace VDS.RDF.Parsing.Handlers
         /// <summary>
         /// Creates a Variable Node.
         /// </summary>
-        /// <param name="varname">Variable Name.</param>
+        /// <param name="varName">Variable Name.</param>
         /// <returns></returns>
-        public virtual IVariableNode CreateVariableNode(string varname)
+        public virtual IVariableNode CreateVariableNode(string varName)
         {
-            return _factory.CreateVariableNode(varname);
+            return _factory.CreateVariableNode(varName);
         }
 
         /// <summary>
@@ -243,19 +236,19 @@ namespace VDS.RDF.Parsing.Handlers
     public abstract class BaseRdfHandler 
         : BaseHandler, IRdfHandler
     {
-        private bool _inUse = false;
+        private bool _inUse;
 
         /// <summary>
         /// Creates a new RDF Handler.
         /// </summary>
-        public BaseRdfHandler()
-            : this(new NodeFactory()) { }
+        protected BaseRdfHandler()
+            : this(new NodeFactory(new NodeFactoryOptions())) { }
 
         /// <summary>
         /// Creates a new RDF Handler using the given Node Factory.
         /// </summary>
         /// <param name="factory">Node Factory.</param>
-        public BaseRdfHandler(INodeFactory factory)
+        protected BaseRdfHandler(INodeFactory factory)
             : base(factory) { }
 
         #region IRdfHandler Members
@@ -376,20 +369,20 @@ namespace VDS.RDF.Parsing.Handlers
     public abstract class BaseResultsHandler
         : BaseHandler, ISparqlResultsHandler
     {
-        private bool _inUse = false;
+        private bool _inUse;
 
         /// <summary>
         /// Creates a new SPARQL Results Handler.
         /// </summary>
         /// <param name="factory">Node Factory.</param>
-        public BaseResultsHandler(INodeFactory factory)
+        protected BaseResultsHandler(INodeFactory factory)
             : base(factory) { }
 
         /// <summary>
         /// Creates a new SPARQL Results Handler.
         /// </summary>
-        public BaseResultsHandler()
-            : this(new NodeFactory()) { }
+        protected BaseResultsHandler()
+            : this(new NodeFactory(new NodeFactoryOptions())) { }
 
         #region ISparqlResultsHandler Members
 

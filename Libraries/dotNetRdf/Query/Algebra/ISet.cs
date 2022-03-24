@@ -124,7 +124,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Return true if this set contains a non-null value for all of the specified variables.
         /// </summary>
-        /// <param name="vars">Variable names</param>
+        /// <param name="vars">Variable names.</param>
         /// <returns></returns>
         bool BindsAll(IEnumerable<string> vars);
     }
