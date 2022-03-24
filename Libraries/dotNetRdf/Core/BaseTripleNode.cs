@@ -33,7 +33,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Base class for triple nodes
+    /// Base class for triple nodes.
     /// </summary>
     public abstract class BaseTripleNode 
         : BaseNode, ITripleNode, IEquatable<BaseTripleNode>, IComparable<BaseTripleNode>, IValuedNode

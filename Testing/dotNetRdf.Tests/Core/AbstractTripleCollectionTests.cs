@@ -37,7 +37,7 @@ namespace VDS.RDF
 
         protected AbstractTripleCollectionTests()
         {
-            NodeFactory = new NodeFactory(uriFactory: new CachingUriFactory());
+            NodeFactory = new NodeFactory(new NodeFactoryOptions(), uriFactory: new CachingUriFactory());
             NodeFactory.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
         }
 

@@ -41,10 +41,10 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a new Store Count Handler.
         /// </summary>
         public StoreCountHandler()
-            : base(new NodeFactory()) { }
+            : base(new NodeFactory(new NodeFactoryOptions())) { }
 
         /// <summary>
-        /// Starts RDF Handling by reseting the counters.
+        /// Starts RDF Handling by resetting the counters.
         /// </summary>
         protected override void StartRdfInternal()
         {

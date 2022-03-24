@@ -37,7 +37,7 @@ namespace VDS.RDF
     /// </summary>
     public static class GraphDiffReportExtensions
     {
-        private static NodeFactory Factory { get; } = new NodeFactory();
+        private static NodeFactory Factory { get; } = new(new NodeFactoryOptions());
 
         /// <summary>
         /// Converts a <see cref="GraphDiffReport">diff</see> to an equivalent <see cref="ModifyCommand">SPARQL Update INSERT/DELETE command</see>.

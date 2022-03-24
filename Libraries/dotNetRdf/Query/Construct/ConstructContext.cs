@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using VDS.Common.Collections;
 using VDS.Common.References;
@@ -37,7 +36,7 @@ namespace VDS.RDF.Query.Construct
     /// </summary>
     public class ConstructContext
     {
-        private static readonly ThreadIsolatedReference<NodeFactory> _globalFactory = new(() => new NodeFactory());
+        private static readonly ThreadIsolatedReference<NodeFactory> GlobalFactory = new(() => new NodeFactory(new NodeFactoryOptions()));
         private Dictionary<string, INode> _bnodeMap;
         private MultiDictionary<INode, INode> _nodeMap;
 
@@ -55,7 +54,7 @@ namespace VDS.RDF.Query.Construct
         public ConstructContext(IGraph g, bool preserveBNodes)
         {
             Graph = g;
-            NodeFactory = Graph as INodeFactory ?? _globalFactory.Value;
+            NodeFactory = Graph as INodeFactory ?? GlobalFactory.Value;
             PreserveBlankNodes = preserveBNodes;
         }
 
@@ -72,20 +71,20 @@ namespace VDS.RDF.Query.Construct
         /// </remarks>
         public ConstructContext(INodeFactory factory, bool preserveBNodes)
         {
-            NodeFactory = factory ?? _globalFactory.Value;
+            NodeFactory = factory ?? GlobalFactory.Value;
             PreserveBlankNodes = preserveBNodes;
         }
 
         internal ConstructContext(ISet s, bool preserveBNodes)
         {
-            NodeFactory = _globalFactory.Value;
+            NodeFactory = GlobalFactory.Value;
             Set = s;
             PreserveBlankNodes = preserveBNodes;
         }
 
         internal ConstructContext(bool preserveBNodes)
         {
-            NodeFactory = _globalFactory.Value;
+            NodeFactory = GlobalFactory.Value;
             PreserveBlankNodes = preserveBNodes;
         }
 

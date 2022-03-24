@@ -323,11 +323,11 @@ namespace VDS.RDF
         /// Creates a new Literal Node with the given Language.
         /// </summary>
         /// <param name="literal">Value.</param>
-        /// <param name="langspec">Language.</param>
+        /// <param name="langSpec">Language.</param>
         /// <returns></returns>
-        public ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public ILiteralNode CreateLiteralNode(string literal, string langSpec)
         {
-            return _g.CreateLiteralNode(literal, langspec);
+            return _g.CreateLiteralNode(literal, langSpec);
         }
 
         /// <summary>
@@ -362,11 +362,11 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Variable Node.
         /// </summary>
-        /// <param name="varname">Variable Name.</param>
+        /// <param name="varName">Variable Name.</param>
         /// <returns></returns>
-        public IVariableNode CreateVariableNode(string varname)
+        public IVariableNode CreateVariableNode(string varName)
         {
-            return _g.CreateVariableNode(varname);
+            return _g.CreateVariableNode(varName);
         }
 
         /// <summary>

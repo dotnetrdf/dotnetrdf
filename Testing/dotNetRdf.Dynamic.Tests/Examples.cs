@@ -711,7 +711,7 @@ namespace VDS.RDF.Dynamic
             ISparqlResult result = results.Single();
             dynamic dynamicResults = results.AsDynamic();
             dynamic dynamicResult = dynamicResults.Single();
-            ILiteralNode expected = new NodeFactory().CreateLiteralNode("o1");
+            ILiteralNode expected = new NodeFactory(new NodeFactoryOptions()).CreateLiteralNode("o1");
 
             // See 4. for other value options
             dynamicResult["o"] = "o1";
@@ -728,7 +728,7 @@ namespace VDS.RDF.Dynamic
             ISparqlResult result = results.Single();
             dynamic dynamicResults = results.AsDynamic();
             dynamic dynamicResult = dynamicResults.Single();
-            ILiteralNode expected = new NodeFactory().CreateLiteralNode("o1");
+            ILiteralNode expected = new NodeFactory(new NodeFactoryOptions()).CreateLiteralNode("o1");
 
             // See 2. for other value options
             dynamicResult.o = "o1";
@@ -745,7 +745,7 @@ namespace VDS.RDF.Dynamic
             ISparqlResult result = results.Single();
             dynamic dynamicResults = results.AsDynamic();
             dynamic dynamicResult = dynamicResults.Single();
-            ILiteralNode expected = new NodeFactory().CreateLiteralNode("y");
+            ILiteralNode expected = new NodeFactory(new NodeFactoryOptions()).CreateLiteralNode("y");
 
             // See 2. for other value options
             dynamicResult.Add("x", "y");

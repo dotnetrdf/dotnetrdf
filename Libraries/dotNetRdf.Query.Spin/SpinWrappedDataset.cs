@@ -65,13 +65,13 @@ namespace VDS.RDF.Query.Spin
 
         internal IUpdateableStorage Storage;
 
-        private SpinProcessor _spinProcessor = new SpinProcessor();
+        private SpinProcessor _spinProcessor = new();
 
         private QueryMode _queryExecutionMode = QueryMode.UserQuerying;
 
-        private readonly HashSet<IGraph> _synchronizedGraphs = new HashSet<IGraph>();
+        private readonly HashSet<IGraph> _synchronizedGraphs = new();
 
-        private readonly HashSet<INode> _changedResources = new HashSet<INode>();
+        private readonly HashSet<INode> _changedResources = new();
 
         #region Initialisation
 
@@ -371,9 +371,9 @@ namespace VDS.RDF.Query.Spin
 
         #region ISparqlDataset implementation
 
-        private readonly NodeFactory _graphNameNodeFactory = new NodeFactory();
-        private readonly HashSet<IRefNode> _activeGraphs = new HashSet<IRefNode>();
-        private readonly HashSet<IRefNode> _defaultGraphs = new HashSet<IRefNode>(); // do we really need this one ?
+        private readonly NodeFactory _graphNameNodeFactory = new(new NodeFactoryOptions());
+        private readonly HashSet<IRefNode> _activeGraphs = new();
+        private readonly HashSet<IRefNode> _defaultGraphs = new(); // do we really need this one ?
 
         /// <inheritdoc />
         public void SetActiveGraph(IEnumerable<Uri> graphUris)

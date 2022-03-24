@@ -74,10 +74,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
-            var graph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
-            var graph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
-            var graph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri3));
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
+            IUriNode graph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            IUriNode graph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
+            IUriNode graph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri3));
             try
             {
                 Assert.True(store.HasGraph(graph1), "URI 1 should return true for HasGraph()");
@@ -90,7 +90,7 @@ namespace VDS.RDF.Storage
                 Assert.True(store.Graphs.Contains(graph3),
                     "URI 3 should return true for Graphs.Contains()");
 
-                var noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
+                IUriNode noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
                 Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
                 Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
 
@@ -162,7 +162,7 @@ namespace VDS.RDF.Storage
 
         private void TestAddTriplesFlushed(IStorageProvider manager)
         {
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             EnsureGraphDeleted(manager, nodeFactory.CreateUriNode(new Uri(TestGraphUri1)));
             EnsureTestDataset(manager);
 
@@ -205,7 +205,7 @@ namespace VDS.RDF.Storage
 
         private void TestAddTriplesDiscarded(IStorageProvider manager)
         {
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             EnsureGraphDeleted(manager, nodeFactory.CreateUriNode(new Uri(TestGraphUri1)));
             EnsureTestDataset(manager);
 
@@ -257,7 +257,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
@@ -300,7 +300,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
@@ -431,10 +431,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
-                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+                IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);
@@ -475,10 +475,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
-                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+                IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);
@@ -605,10 +605,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
-                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+                IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 IGraph g = store[toRemove];
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
@@ -646,10 +646,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
-                var toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+                IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
                 IGraph g = store[toRemove];
                 Assert.True(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
@@ -691,7 +691,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 store.Remove(nodeFactory.CreateUriNode(new Uri(TestGraphUri1)));
@@ -814,8 +814,8 @@ namespace VDS.RDF.Storage
         private void TestUpdate(IStorageProvider manager)
         {
             EnsureTestDataset(manager);
-            var nodeFactory = new NodeFactory();
-            var updateUri = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/update/temp"));
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
+            IUriNode updateUri = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/update/temp"));
             EnsureGraphDeleted(manager, updateUri);
 
             var store = new PersistentTripleStore(manager);
@@ -879,10 +879,10 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
-            var graph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
-            var graph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
-            var graph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri3));
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
+            IUriNode graph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
+            IUriNode graph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
+            IUriNode graph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri3));
             try
             {
                 // First prime the persistent store by loading a bunch of stuff
@@ -896,7 +896,7 @@ namespace VDS.RDF.Storage
                 Assert.True(store.Graphs.Contains(graph3),
                     "URI 3 should return true for Graphs.Contains()");
 
-                var noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
+                IUriNode noSuchThing = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/noSuchGraph"));
                 Assert.False(store.HasGraph(noSuchThing), "Bad URI should return false for HasGraph()");
                 Assert.False(store.Graphs.Contains(noSuchThing), "Bad URI should return false for Graphs.Contains()");
 

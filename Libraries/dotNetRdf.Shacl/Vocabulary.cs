@@ -25,8 +25,6 @@
 */
 
 using System.Collections.Generic;
-using VDS.RDF;
-using VDS.RDF.Ontology;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Shacl
@@ -41,7 +39,7 @@ namespace VDS.RDF.Shacl
         /// </summary>
         public const string BaseUri = "http://www.w3.org/ns/shacl#";
 
-        private static readonly NodeFactory Factory = new NodeFactory();
+        private static readonly NodeFactory Factory = new NodeFactory(new NodeFactoryOptions());
 
         /// <summary>
         /// Gets a node representing alternativePath.

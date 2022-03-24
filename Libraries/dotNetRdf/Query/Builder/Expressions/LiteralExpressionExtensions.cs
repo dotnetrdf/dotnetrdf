@@ -31,7 +31,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 {
     internal static class LiteralExpressionExtensions
     {
-        private static readonly NodeFactory NodeFactory = new NodeFactory();
+        private static readonly NodeFactory NodeFactory = new(new NodeFactoryOptions());
 
         internal static ILiteralNode ToLiteral(object value)
         {

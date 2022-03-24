@@ -352,7 +352,7 @@ u:s u:p u:o .
             {
                 p = new object[]
                 {
-                    new NodeFactory().CreateBlankNode("o"),
+                    new NodeFactory(new NodeFactoryOptions()).CreateBlankNode("o"),
                     UriFactory.Root.Create("urn:o"),
                     true,
                     byte.MaxValue,

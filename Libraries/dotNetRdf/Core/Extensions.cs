@@ -1158,9 +1158,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Computes the ETag for a Graph
+        /// Computes the ETag for a Graph.
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="g">Graph.</param>
         /// <returns></returns>
         public static string GetETag(this IGraph g)
         {
@@ -1657,7 +1657,7 @@ namespace VDS.RDF
         /// <summary>
         /// Creates <see cref="BaseTripleCollection"/> from an enumeration of triples.
         /// </summary>
-        /// <param name="triples">The triples to add to the collection</param>
+        /// <param name="triples">The triples to add to the collection.</param>
         /// <param name="indexed">True to create an indexed collection, false to create an un-indexed collection.</param>
         /// <returns></returns>
         public static BaseTripleCollection ToTripleCollection(this IEnumerable<Triple> triples, bool indexed=true)

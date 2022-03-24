@@ -46,7 +46,7 @@ namespace VDS.RDF
         private const int CycleDropNodes = 25;
         private const int StarNodes = 50;
 
-        private NodeFactory _factory = new NodeFactory();
+        private NodeFactory _factory = new(new NodeFactoryOptions());
         private INodeFormatter _formatter = new NTriplesFormatter();
 
         [Fact]

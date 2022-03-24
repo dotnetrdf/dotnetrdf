@@ -80,13 +80,13 @@ namespace VDS.RDF
         /// <param name="tripleCollection">Triple Collection to use. If null, a new <see cref="TreeIndexedTripleCollection"/> will be used.</param>
         /// <param name="graphName">The name to assign to the graph.</param>
         /// <param name="nodeFactory">The factory to use when creating nodes in this graph.</param>
-        /// <param name="uriFactory">The factory to use when creating URIs in this graph. If not specified or null, defaults to the <see cref="VDS.RDF.UriFactory.Root">root UriFactory</see>.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs in this graph. If not specified or null, defaults to the <see cref="INodeFactory.UriFactory"/> property of <paramref name="nodeFactory"/> or else <see cref="VDS.RDF.UriFactory.Root">root UriFactory</see> if <paramref name="nodeFactory"/> is null.</param>
         protected BaseGraph(BaseTripleCollection tripleCollection, IRefNode graphName = null, INodeFactory nodeFactory = null, IUriFactory uriFactory = null)
         {
             _triples = tripleCollection ?? new TreeIndexedTripleCollection();
             _bnodemapper = new BlankNodeMapper();
-            NodeFactory = nodeFactory ?? new NodeFactory(uriFactory:uriFactory);
-            UriFactory = uriFactory ?? VDS.RDF.UriFactory.Root;
+            NodeFactory = nodeFactory ?? new NodeFactory(new NodeFactoryOptions(), uriFactory:uriFactory);
+            UriFactory = uriFactory ?? NodeFactory.UriFactory;
             _name = graphName;
 
             // Create Event Handlers and attach to the Triple Collection
@@ -164,7 +164,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets whether a Graph is Empty ie. Contains No Triples or Nodes.
         /// </summary>
-        public virtual bool IsEmpty => (_triples.Count == 0);
+        public virtual bool IsEmpty => _triples.Count == 0;
 
         /// <summary>
         /// Get or set whether to normalize the value strings of literal nodes on creation.
@@ -286,11 +286,11 @@ namespace VDS.RDF
         /// Creates a Literal Node with the given Value and Language.
         /// </summary>
         /// <param name="literal">Value of the Literal.</param>
-        /// <param name="langspec">Language Specifier for the Literal.</param>
+        /// <param name="langSpec">Language Specifier for the Literal.</param>
         /// <returns></returns>
-        public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public virtual ILiteralNode CreateLiteralNode(string literal, string langSpec)
         {
-            return NodeFactory.CreateLiteralNode(literal, langspec);
+            return NodeFactory.CreateLiteralNode(literal, langSpec);
         }
 
         /// <summary>
@@ -325,11 +325,11 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a Variable Node for the given Variable Name.
         /// </summary>
-        /// <param name="varname"></param>
+        /// <param name="varName"></param>
         /// <returns></returns>
-        public virtual IVariableNode CreateVariableNode(string varname)
+        public virtual IVariableNode CreateVariableNode(string varName)
         {
-            return NodeFactory.CreateVariableNode(varname);
+            return NodeFactory.CreateVariableNode(varName);
         }
 
         /// <summary>

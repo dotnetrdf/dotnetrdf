@@ -807,7 +807,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Determines whether the Multiset contains all of the given variables.
         /// </summary>
-        /// <param name="vars">Variables</param>
+        /// <param name="vars">Variables.</param>
         /// <returns>True if all of the variables in <paramref name="vars"/> are contained in the multiset, or if <paramref name="vars"/> is the empty set.</returns>
         public abstract bool ContainsVariables(IEnumerable<string> vars);
 

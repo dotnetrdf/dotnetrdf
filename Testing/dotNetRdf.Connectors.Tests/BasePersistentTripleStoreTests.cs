@@ -89,7 +89,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             IUriNode testGraph1 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
             IUriNode testGraph2 = nodeFactory.CreateUriNode(new Uri(TestGraphUri2));
             IUriNode testGraph3 = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
@@ -122,7 +122,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 var aExpected = new Graph(nodeFactory.CreateUriNode(new Uri(TestGraphUri1)));
@@ -162,7 +162,7 @@ namespace VDS.RDF.Storage
 
         private void TestAddTriplesFlushed(IStorageProvider manager)
         {
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             IUriNode testGraphName = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
             EnsureGraphDeleted(manager, testGraphName);
             EnsureTestDataset(manager);
@@ -195,7 +195,7 @@ namespace VDS.RDF.Storage
 
         private void TestAddTriplesDiscarded(IStorageProvider manager)
         {
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             IUriNode testGraphName = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
             EnsureGraphDeleted(manager, testGraphName);
             EnsureTestDataset(manager);
@@ -235,7 +235,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
@@ -267,7 +267,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory =new NodeFactory();
+            var nodeFactory =new NodeFactory(new NodeFactoryOptions());
             try
             {
                 IGraph g = store[nodeFactory.CreateUriNode(new Uri(TestGraphUri1))];
@@ -303,7 +303,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 var g = new Graph(
@@ -330,7 +330,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 var g = new Graph(nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/graphs/added/discarded")));
@@ -369,7 +369,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
@@ -402,7 +402,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
@@ -432,7 +432,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 var g = new Graph(
@@ -464,7 +464,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 var g = new Graph(
@@ -500,7 +500,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
@@ -531,7 +531,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 IUriNode toRemove = nodeFactory.CreateUriNode(new Uri(TestGraphUri1));
@@ -566,7 +566,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 store.Remove(nodeFactory.CreateUriNode(new Uri(TestGraphUri1)));
@@ -664,7 +664,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 store.Remove(nodeFactory.CreateUriNode(new Uri(TestGraphUri1)));
@@ -680,7 +680,7 @@ namespace VDS.RDF.Storage
         private void TestUpdate(IStorageProvider manager)
         {
             EnsureTestDataset(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             IUriNode updateUri = nodeFactory.CreateUriNode(new Uri("http://example.org/persistence/update/temp"));
             EnsureGraphDeleted(manager, updateUri);
 
@@ -739,7 +739,7 @@ namespace VDS.RDF.Storage
             EnsureTestDataset(manager);
 
             var store = new PersistentTripleStore(manager);
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             try
             {
                 // First prime the persistent store by loading a bunch of stuff

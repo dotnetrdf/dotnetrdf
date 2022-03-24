@@ -464,9 +464,6 @@ namespace VDS.RDF.Update
         /// Processes a command set.
         /// </summary>
         /// <param name="commands">Command Set.</param>
-        /// <remarks>
-        /// Invokes <see cref="LeviathanUpdateProcessor.ProcessCommand">ProcessCommand()</see> on each command in turn.
-        /// </remarks>
         public void ProcessCommandSet(SparqlUpdateCommandSet commands)
         {
             commands.UpdateExecutionTime = null;
