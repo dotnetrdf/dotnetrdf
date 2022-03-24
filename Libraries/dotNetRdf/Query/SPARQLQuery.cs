@@ -33,8 +33,6 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Builder;
-using VDS.RDF.Query.Datasets;
-using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
@@ -59,18 +57,17 @@ namespace VDS.RDF.Query
     /// </para>
     /// </remarks>
     public sealed class SparqlQuery
-        : NodeFactory
     {
         private List<IRefNode> _defaultGraphs;
         private List<IRefNode> _namedGraphs;
         private SparqlSpecialQueryType _specialType = SparqlSpecialQueryType.Unknown;
         private List<SparqlVariable> _vars;
-        private List<IToken> _describeVars = new List<IToken>();
-        private ISparqlOrderBy _orderBy = null;
+        private List<IToken> _describeVars = new();
+        private ISparqlOrderBy _orderBy;
         private int _limit = -1;
-        private int _offset = 0;
-        private long _timeout = 0;
-        private TimeSpan? _executionTime = null;
+        private int _offset;
+        private long _timeout;
+        private TimeSpan? _executionTime;
         private bool? _optimisableOrdering;
         private IEnumerable<IAlgebraOptimiser> _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
         private IEnumerable<ISparqlCustomExpressionFactory> _exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
@@ -79,15 +76,20 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new SPARQL Query.
         /// </summary>
-        internal SparqlQuery(Uri baseUri = null, INamespaceMapper namespaceMapper = null, bool subquery = false) : 
-            base(new NodeFactoryOptions(){BaseUri = baseUri}, namespaceMapper ?? new NamespaceMapper(true))
+        internal SparqlQuery(Uri baseUri = null, INamespaceMapper namespaceMapper = null, bool subquery = false)
         {
+            BaseUri = baseUri;
+            NamespaceMap = namespaceMapper ?? new NamespaceMapper(true);
             _vars = new List<SparqlVariable>();
             _defaultGraphs = new List<IRefNode>();
             _namedGraphs = new List<IRefNode>();
             IsSubQuery = subquery;
         }
 
+        /// <summary>
+        /// Creates a new SPARQL Query.
+        /// </summary>
+        /// <param name="subQuery">Whether this query is a sub-query</param>
         public SparqlQuery(bool subQuery):this(null, null, subQuery) { }
 
         /// <summary>
@@ -122,6 +124,16 @@ namespace VDS.RDF.Query
         }
 
         #region Properties
+
+        /// <summary>
+        /// Get or set the base URI used to resolve relative URI references.
+        /// </summary>
+        public Uri BaseUri { get; set; }
+
+        /// <summary>
+        /// Gets the map of namespace prefixes to URIs
+        /// </summary>
+        public INamespaceMapper NamespaceMap { get; }
 
         /// <summary>
         /// Gets the Default Graph URIs for the Query.
@@ -219,7 +231,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets the top level Graph Pattern of the Query.
         /// </summary>
-        public GraphPattern RootGraphPattern { get; internal set; } = null;
+        public GraphPattern RootGraphPattern { get; internal set; }
 
         /// <summary>
         /// Gets/Sets the Construct Template for a Construct Query.
@@ -242,17 +254,17 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets/Sets the Grouping for the Query.
         /// </summary>
-        public ISparqlGroupBy GroupBy { get; internal set; } = null;
+        public ISparqlGroupBy GroupBy { get; internal set; }
 
         /// <summary>
         /// Gets/Sets the Having Clause for the Query.
         /// </summary>
-        public ISparqlFilter Having { get; internal set; } = null;
+        public ISparqlFilter Having { get; internal set; }
 
         /// <summary>
         /// Gets/Sets the VALUES Clause for the Query which are bindings that should be applied.
         /// </summary>
-        public BindingsPattern Bindings { get; internal set; } = null;
+        public BindingsPattern Bindings { get; internal set; }
 
         /// <summary>
         /// Gets/Sets the locally scoped Algebra Optimisers that are used to optimise the Query Algebra in addition to (but before) any external (e.g. processor-provided) optimisers.
@@ -352,7 +364,7 @@ namespace VDS.RDF.Query
         /// Partial Results (typically) only applies when executing the Query in memory.  If you have an instance of this class and pass its string representation (using <see cref="SparqlQuery.ToString">ToString()</see>) you will lose the partial results information as this is not serialisable in SPARQL syntax.
         /// </para>
         /// </remarks>
-        public bool PartialResultsOnTimeout { get; set; } = false;
+        public bool PartialResultsOnTimeout { get; set; }
 
         /// <summary>
         /// Gets the Time taken to execute a Query.
@@ -388,12 +400,12 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// This only indicates that an Optimiser has been applied.  You can always reoptimise the query using a different optimiser by using the relevant overload of the <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
         /// </remarks>
-        public bool IsOptimised { get; private set; } = false;
+        public bool IsOptimised { get; private set; }
 
         /// <summary>
         /// Gets whether this Query is a Sub-Query in another Query.
         /// </summary>
-        public bool IsSubQuery { get; } = false;
+        public bool IsSubQuery { get; }
 
         /// <summary>
         /// Gets whether a Query has a DISTINCT modifier.
@@ -646,8 +658,6 @@ namespace VDS.RDF.Query
                             case Token.URI:
                                 output.Append("<" + dvar.Value + "> ");
                                 break;
-                            case Token.QNAME:
-                            case Token.VARIABLE:
                             default:
                                 output.Append(dvar.Value + " ");
                                 break;
