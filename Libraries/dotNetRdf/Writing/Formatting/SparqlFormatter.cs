@@ -56,19 +56,35 @@ namespace VDS.RDF.Writing.Formatting
         public SparqlFormatter()
             : base("SPARQL", new QNameOutputMapper()) { }
 
+
+        /// <summary>
+        /// Creates a new SPARQL Formatter.
+        /// </summary>
+        /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
+        public SparqlFormatter(IUriFactory uriFactory)
+            : base("SPARQL", new QNameOutputMapper(uriFactory)) { }
+
         /// <summary>
         /// Creates a new SPARQL Formatter using the given Graph.
         /// </summary>
         /// <param name="g">Graph.</param>
         public SparqlFormatter(IGraph g)
-            : base("SPARQL", new QNameOutputMapper(g.NamespaceMap)) { }
+            : base("SPARQL", new QNameOutputMapper(g.NamespaceMap, g.UriFactory)) { }
 
         /// <summary>
         /// Creates a new SPARQL Formatter using the given Namespace Map.
         /// </summary>
         /// <param name="nsmap">Namespace Map.</param>
         public SparqlFormatter(INamespaceMapper nsmap)
-            : base("SPARQL", new QNameOutputMapper(nsmap)) { }
+            : this(nsmap, UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new SPARQL Formatter using the given Namespace Map.
+        /// </summary>
+        /// <param name="nsmap">Namespace Map.</param>
+        /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
+        public SparqlFormatter(INamespaceMapper nsmap, IUriFactory uriFactory)
+            : base("SPARQL", new QNameOutputMapper(nsmap, uriFactory)) { }
 
         /// <summary>
         /// Determines whether a QName is valid.

@@ -124,11 +124,11 @@ namespace VDS.RDF.Parsing.Handlers
                     {
                         if (ps.Length == 1)
                         {
-                            if (ps[0].ParameterType.Equals(qnameMapperType))
+                            if (ps[0].ParameterType == qnameMapperType)
                             {
                                 _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as ITripleFormatter;
                             }
-                            else if (ps[0].ParameterType.Equals(nsMapperType))
+                            else if (ps[0].ParameterType == nsMapperType)
                             {
                                 _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as ITripleFormatter;
                             }

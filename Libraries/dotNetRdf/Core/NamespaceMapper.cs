@@ -97,7 +97,7 @@ namespace VDS.RDF
         /// <param name="empty">Whether the namespace map should be empty. If set to false, the prefixes rdf, rdfs and xsd are automatically defined.</param>
         public NamespaceMapper(IUriFactory uriFactory, bool empty = false)
         {
-            _uriFactory = uriFactory;
+            _uriFactory = uriFactory ?? UriFactory.Root;
             _uris = new Dictionary<string, Uri>();
             _prefixes = new Dictionary<int, List<string>>();
 
@@ -113,8 +113,9 @@ namespace VDS.RDF
         /// Constructs a new Namespace Map which is based on an existing map.
         /// </summary>
         /// <param name="nsmapper"></param>
-        protected internal NamespaceMapper(INamespaceMapper nsmapper)
-            : this(true)
+        /// <param name="uriFactory">The factory to use internally when creating new Uri intances. If not specified, defaults to <see cref="UriFactory.Root"/>.</param>
+        protected internal NamespaceMapper(INamespaceMapper nsmapper, IUriFactory uriFactory = null)
+            : this(uriFactory, true)
         {
             Import(nsmapper);
         }
@@ -447,24 +448,27 @@ namespace VDS.RDF
         /// <summary>
         /// Mapping of URIs to QNames.
         /// </summary>
-        protected MultiDictionary<string, QNameMapping> _mapping = new MultiDictionary<string, QNameMapping>();
+        protected readonly MultiDictionary<string, QNameMapping> Mapping = new();
+
         /// <summary>
         /// Next available Temporary Namespace ID.
         /// </summary>
-        protected int _nextNamespaceID = 0;
+        private int _nextNamespaceId;
 
         /// <summary>
         /// Creates a new QName Output Mapper using the given Namespace Map.
         /// </summary>
         /// <param name="nsmapper">Namespace Map.</param>
-        public QNameOutputMapper(INamespaceMapper nsmapper)
-            : base(nsmapper) { }
+        /// <param name="uriFactory">The factory to use when creating new Uri instances. If not specified, defaults to <see cref="UriFactory.Root"/>.</param>
+        public QNameOutputMapper(INamespaceMapper nsmapper, IUriFactory uriFactory=null)
+            : base(nsmapper, uriFactory ?? UriFactory.Root) { }
 
         /// <summary>
         /// Creates a new QName Output Mapper which has an empty Namespace Map.
         /// </summary>
-        public QNameOutputMapper()
-            : base(true) { }
+        /// <param name="uriFactory">The factory to use when creating new Uri instances. If not specified, defaults to <see cref="UriFactory.Root"/>.</param>
+        public QNameOutputMapper(IUriFactory uriFactory = null)
+            : base(uriFactory ?? UriFactory.Root, true) { }
 
         /// <summary>
         /// A Function which attempts to reduce a Uri to a QName.
@@ -476,8 +480,7 @@ namespace VDS.RDF
         public override bool ReduceToQName(string uri, out string qname)
         {
             // See if we've cached this mapping
-            QNameMapping mapping;
-            if (_mapping.TryGetValue(uri, out mapping))
+            if (Mapping.TryGetValue(uri, out QNameMapping mapping))
             {
                 qname = mapping.QName;
                 return true;
@@ -486,13 +489,13 @@ namespace VDS.RDF
 
             foreach (Uri u in _uris.Values)
             {
-                string baseuri = u.AbsoluteUri;
+                var baseUri = u.AbsoluteUri;
 
                 // Does the Uri start with the Base Uri
-                if (uri.StartsWith(baseuri))
+                if (uri.StartsWith(baseUri))
                 {
                     // Remove the Base Uri from the front of the Uri
-                    qname = uri.Substring(baseuri.Length);
+                    qname = uri.Substring(baseUri.Length);
                     // Add the Prefix back onto the front plus the colon to give a QName
                     if (_prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
@@ -532,8 +535,7 @@ namespace VDS.RDF
             tempNamespace = string.Empty;
 
             // See if we've cached this mapping
-            QNameMapping mapping;
-            if (_mapping.TryGetValue(uri, out mapping))
+            if (Mapping.TryGetValue(uri, out QNameMapping mapping))
             {
                 qname = mapping.QName;
                 return true;
@@ -543,13 +545,13 @@ namespace VDS.RDF
             // Try and find a Namespace URI that is the prefix of the URI
             foreach (Uri u in _uris.Values)
             {
-                string baseuri = u.AbsoluteUri;
+                var baseUri = u.AbsoluteUri;
 
                 // Does the Uri start with the Base Uri
-                if (uri.StartsWith(baseuri))
+                if (uri.StartsWith(baseUri))
                 {
                     // Remove the Base Uri from the front of the Uri
-                    qname = uri.Substring(baseuri.Length);
+                    qname = uri.Substring(baseUri.Length);
                     // Add the Prefix back onto the front plus the colon to give a QName
                     if (_prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
@@ -601,7 +603,7 @@ namespace VDS.RDF
         /// <param name="mapping">Mapping.</param>
         protected virtual void AddToCache(string uri, QNameMapping mapping)
         {
-            _mapping.Add(uri, mapping);
+            Mapping.Add(uri, mapping);
         }
 
         /// <summary>
@@ -610,12 +612,12 @@ namespace VDS.RDF
         /// <returns></returns>
         private string GetNextTemporaryNamespacePrefix()
         {
-            string nextPrefixBase = "ns";
-            while (_uris.ContainsKey(nextPrefixBase + _nextNamespaceID))
+            const string nextPrefixBase = "ns";
+            while (_uris.ContainsKey(nextPrefixBase + _nextNamespaceId))
             {
-                _nextNamespaceID++;
+                _nextNamespaceId++;
             }
-            return nextPrefixBase + _nextNamespaceID;
+            return nextPrefixBase + _nextNamespaceId;
         }
     }
 
@@ -629,8 +631,9 @@ namespace VDS.RDF
         /// Creates a new Thread Safe QName Output Mapper.
         /// </summary>
         /// <param name="nsmapper">Namespace Mapper.</param>
-        public ThreadSafeQNameOutputMapper(INamespaceMapper nsmapper)
-            : base(nsmapper) { }
+        /// <param name="uriFactory">The factory to use when creating new Uri instances. If not specified, defaults to <see cref="UriFactory.Root"/>.</param>
+        public ThreadSafeQNameOutputMapper(INamespaceMapper nsmapper, IUriFactory uriFactory = null)
+            : base(nsmapper, uriFactory ?? UriFactory.Root) { }
 
         /// <summary>
         /// Adds a QName Mapping to the Cache in a Thread Safe way.
@@ -641,12 +644,12 @@ namespace VDS.RDF
         {
             try
             {
-                Monitor.Enter(_mapping);
+                Monitor.Enter(Mapping);
                 base.AddToCache(key, value);
             }
             finally
             {
-                Monitor.Exit(_mapping);
+                Monitor.Exit(Mapping);
             }
         }
 

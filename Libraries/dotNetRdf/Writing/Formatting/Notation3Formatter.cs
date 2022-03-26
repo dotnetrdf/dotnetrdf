@@ -81,22 +81,36 @@ namespace VDS.RDF.Writing.Formatting
         /// <summary>
         /// Creates a new Notation 3 Formatter.
         /// </summary>
-        public Notation3Formatter()
-            : base("Notation 3", new QNameOutputMapper()) { }
+        public Notation3Formatter():this(UriFactory.Root){}
+
+        /// <summary>
+        /// Creates a new Notation 3 Formatter.
+        /// </summary>
+        /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
+        public Notation3Formatter(IUriFactory uriFactory)
+            : base("Notation 3", new QNameOutputMapper(uriFactory)) { }
 
         /// <summary>
         /// Creates a new Notation 3 Formatter using the given Graph.
         /// </summary>
         /// <param name="g">Graph.</param>
         public Notation3Formatter(IGraph g)
-            : base("Notation 3", new QNameOutputMapper(g.NamespaceMap)) { }
+            : base("Notation 3", new QNameOutputMapper(g.NamespaceMap, g.UriFactory)) { }
 
         /// <summary>
         /// Creates a new Notation 3 Formatter using the given Namespace Map.
         /// </summary>
         /// <param name="nsmap">Namespace Map.</param>
         public Notation3Formatter(INamespaceMapper nsmap)
-            : base("Notation 3", new QNameOutputMapper(nsmap)) { }
+            : base("Notation 3", new QNameOutputMapper(nsmap, UriFactory.Root)) { }
+
+        /// <summary>
+        /// Creates a new Notation 3 Formatter using the given Namespace Map.
+        /// </summary>
+        /// <param name="nsmap">Namespace Map.</param>
+        /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
+        public Notation3Formatter(INamespaceMapper nsmap, IUriFactory uriFactory = null)
+            : base("Notation 3", new QNameOutputMapper(nsmap, uriFactory)) { }
 
         /// <summary>
         /// Formats a Variable Node for Notation 3.
