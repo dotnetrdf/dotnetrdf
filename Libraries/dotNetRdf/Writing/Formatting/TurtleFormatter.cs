@@ -312,8 +312,14 @@ namespace VDS.RDF.Writing.Formatting
         /// <summary>
         /// Creates a new Turtle Formatter.
         /// </summary>
+        public TurtleW3CFormatter()
+            : this(UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter.
+        /// </summary>
         /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
-        public TurtleW3CFormatter(IUriFactory uriFactory = null) 
+        public TurtleW3CFormatter(IUriFactory uriFactory) 
             : base("Turtle (W3C)", new QNameOutputMapper(uriFactory)) { }
 
         /// <summary>
@@ -334,16 +340,30 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Turtle Formatter for the given Namespace Map.
         /// </summary>
         /// <param name="nsmap">Namespace Map.</param>
+        public TurtleW3CFormatter(INamespaceMapper nsmap)
+            : this(nsmap, UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter for the given Namespace Map.
+        /// </summary>
+        /// <param name="nsmap">Namespace Map.</param>
         /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
-        public TurtleW3CFormatter(INamespaceMapper nsmap, IUriFactory uriFactory = null)
+        public TurtleW3CFormatter(INamespaceMapper nsmap, IUriFactory uriFactory)
             : base("Turtle (W3C)", new QNameOutputMapper(nsmap, uriFactory)) { }
 
         /// <summary>
         /// Creates a new Turtle Formatter.
         /// </summary>
         /// <param name="formatName">Format Name.</param>
-        /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
-        protected TurtleW3CFormatter(string formatName, IUriFactory uriFactory = null)
+        protected TurtleW3CFormatter(string formatName)
+            : this(formatName, UriFactory.Root) { }
+        
+        /// <summary>
+         /// Creates a new Turtle Formatter.
+         /// </summary>
+         /// <param name="formatName">Format Name.</param>
+         /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
+        protected TurtleW3CFormatter(string formatName, IUriFactory uriFactory)
             : base(formatName, new QNameOutputMapper(uriFactory)) { }
 
         /// <summary>
@@ -359,8 +379,16 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="formatName">Format Name.</param>
         /// <param name="nsmap">Namespace Map.</param>
+        protected TurtleW3CFormatter(string formatName, INamespaceMapper nsmap)
+            : this(formatName, nsmap, UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter.
+        /// </summary>
+        /// <param name="formatName">Format Name.</param>
+        /// <param name="nsmap">Namespace Map.</param>
         /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
-        protected TurtleW3CFormatter(string formatName, INamespaceMapper nsmap, IUriFactory uriFactory = null)
+        protected TurtleW3CFormatter(string formatName, INamespaceMapper nsmap, IUriFactory uriFactory)
             : base(formatName, new QNameOutputMapper(nsmap, uriFactory)) { }
 
         /// <summary>

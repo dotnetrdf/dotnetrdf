@@ -53,8 +53,15 @@ namespace VDS.RDF.Writing.Formatting
         /// <summary>
         /// Creates a new SPARQL Formatter.
         /// </summary>
+        public SparqlFormatter()
+            : base("SPARQL", new QNameOutputMapper()) { }
+
+
+        /// <summary>
+        /// Creates a new SPARQL Formatter.
+        /// </summary>
         /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
-        public SparqlFormatter(IUriFactory uriFactory = null)
+        public SparqlFormatter(IUriFactory uriFactory)
             : base("SPARQL", new QNameOutputMapper(uriFactory)) { }
 
         /// <summary>
@@ -68,8 +75,15 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new SPARQL Formatter using the given Namespace Map.
         /// </summary>
         /// <param name="nsmap">Namespace Map.</param>
+        public SparqlFormatter(INamespaceMapper nsmap)
+            : this(nsmap, UriFactory.Root) { }
+
+        /// <summary>
+        /// Creates a new SPARQL Formatter using the given Namespace Map.
+        /// </summary>
+        /// <param name="nsmap">Namespace Map.</param>
         /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
-        public SparqlFormatter(INamespaceMapper nsmap, IUriFactory uriFactory = null)
+        public SparqlFormatter(INamespaceMapper nsmap, IUriFactory uriFactory)
             : base("SPARQL", new QNameOutputMapper(nsmap, uriFactory)) { }
 
         /// <summary>
