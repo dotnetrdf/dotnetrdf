@@ -44,8 +44,9 @@ namespace VDS.RDF.Writing.Formatting
         /// Generates the header section for the Graph.
         /// </summary>
         /// <param name="namespaces">Namespaces.</param>
+        /// <param name="uriFactory">UriFactory to use when creating new Uri instances.</param>
         /// <returns></returns>
-        string FormatGraphHeader(INamespaceMapper namespaces);
+        string FormatGraphHeader(INamespaceMapper namespaces, IUriFactory uriFactory=null);
 
         /// <summary>
         /// Generates a generic header section.
