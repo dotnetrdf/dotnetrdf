@@ -58,7 +58,7 @@ namespace VDS.RDF.Writing.Contexts
         {
             Graph = g;
             Output = output;
-            QNameMapper = new QNameOutputMapper(Graph.NamespaceMap);
+            QNameMapper = new QNameOutputMapper(Graph.NamespaceMap, Graph.UriFactory);
             UriFactory = g.UriFactory;
         }
 

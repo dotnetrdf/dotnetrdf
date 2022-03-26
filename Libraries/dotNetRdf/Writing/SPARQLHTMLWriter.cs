@@ -92,10 +92,11 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="results"></param>
         /// <param name="output"></param>
-        private void GenerateOutput(SparqlResultSet results, TextWriter output)
+        /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
+        private void GenerateOutput(SparqlResultSet results, TextWriter output, IUriFactory uriFactory = null)
         {
             var writer = new HtmlTextWriter(output);
-            var qnameMapper = new QNameOutputMapper(DefaultNamespaces != null ? DefaultNamespaces : new NamespaceMapper(true));
+            var qnameMapper = new QNameOutputMapper(DefaultNamespaces ?? new NamespaceMapper(true), uriFactory);
 
             // Page Header
             writer.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");

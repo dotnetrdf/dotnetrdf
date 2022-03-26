@@ -52,7 +52,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string FormatGraphHeader(IGraph g)
         {
-            _mapper = new QNameOutputMapper(g.NamespaceMap);
+            _mapper = new QNameOutputMapper(g.NamespaceMap, g.UriFactory);
             var output = new StringBuilder();
             output.Append(GetGraphHeaderBase());
             foreach (var prefix in g.NamespaceMap.Prefixes)
@@ -81,10 +81,11 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a Graph Header by creating an <strong>&lt;rdf:RDF&gt;</strong> element and adding namespace definitions.
         /// </summary>
         /// <param name="namespaces">Namespaces.</param>
+        /// <param name="uriFactory">The factory to use when creating new Uri instances.</param>
         /// <returns></returns>
-        public string FormatGraphHeader(INamespaceMapper namespaces)
+        public string FormatGraphHeader(INamespaceMapper namespaces, IUriFactory uriFactory = null)
         {
-            _mapper = new QNameOutputMapper(namespaces);
+            _mapper = new QNameOutputMapper(namespaces, uriFactory);
             var output = new StringBuilder();
             output.Append(GetGraphHeaderBase());
             foreach (var prefix in namespaces.Prefixes)
