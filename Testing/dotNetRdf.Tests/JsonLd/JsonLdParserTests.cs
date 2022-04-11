@@ -237,6 +237,36 @@ namespace VDS.RDF.JsonLd
                 t => t.Object is ILiteralNode node && node.DataType.ToString().Equals("urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6"));
         }
 
+        [Fact]
+        public void Issue465Repro()
+        {
+            var jsonLd = @"{
+              '@graph': [
+            {
+                '@id': 'Row1',
+                '@type': 'MelRow',
+                'rdfs:label': 'An empty MEL Row'
+            }
+            ],
+            '@context': {
+                'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
+                '@vocab': 'http://example.com/ontology/mel#',
+                'sor': 'http://example.com/ontology/sor#',
+                '@version': '1.1'
+            }
+        }";
+            var warnings = new List<string>();
+            var jsonLdParser = new JsonLdParser(new JsonLdProcessorOptions{Base = new Uri("http://example.org/foo.json")});
+            jsonLdParser.Warning += message => warnings.Add(message);
+            ITripleStore tStore = new TripleStore();
+            using (var reader = new StringReader(jsonLd))
+            {
+                jsonLdParser.Load(tStore, reader);
+            }
+
+            //warnings.Should().NotBeEmpty();
+            tStore.Triples.Should().NotBeEmpty();
+        }
         /// <inheritdoc />
         public void Dispose()
         {
