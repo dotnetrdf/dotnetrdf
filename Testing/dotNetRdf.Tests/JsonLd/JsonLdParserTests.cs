@@ -238,7 +238,7 @@ namespace VDS.RDF.JsonLd
         }
 
         [Fact]
-        public void Issue465Repro()
+        public void ItShouldRaiseAWarningIfAnIdCannotBeResolveToAnIri()
         {
             var jsonLd = @"{
               '@graph': [
@@ -256,7 +256,7 @@ namespace VDS.RDF.JsonLd
             }
         }";
             var warnings = new List<string>();
-            var jsonLdParser = new JsonLdParser(new JsonLdProcessorOptions{Base = new Uri("http://example.org/foo.json")});
+            var jsonLdParser = new JsonLdParser();
             jsonLdParser.Warning += message => warnings.Add(message);
             ITripleStore tStore = new TripleStore();
             using (var reader = new StringReader(jsonLd))
@@ -264,8 +264,7 @@ namespace VDS.RDF.JsonLd
                 jsonLdParser.Load(tStore, reader);
             }
 
-            //warnings.Should().NotBeEmpty();
-            tStore.Triples.Should().NotBeEmpty();
+            warnings.Should().NotBeEmpty();
         }
         /// <inheritdoc />
         public void Dispose()
