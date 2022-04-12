@@ -171,7 +171,13 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            if (!(Uri.TryCreate(subject, UriKind.Absolute, out Uri subjectIri) && subjectIri.IsWellFormedOriginalString())) continue;
+                            if (!(Uri.TryCreate(subject, UriKind.Absolute, out Uri subjectIri) &&
+                                  subjectIri.IsWellFormedOriginalString()))
+                            {
+                                RaiseWarning(
+                                    $"Unable to generate a well-formed absolute IRI for subject `{subjectIri}`. This subject will be ignored.");
+                                continue;
+                            }
                             subjectNode = handler.CreateUriNode(subjectIri);
                         }
                         foreach (JProperty np in node.Properties())
@@ -373,6 +379,11 @@ namespace VDS.RDF.Parsing
         private static bool IsBlankNodeIdentifier(string id)
         {
             return id.StartsWith("_:");
+        }
+
+        private void RaiseWarning(string message)
+        {
+            Warning?.Invoke(message);
         }
     }
 }
