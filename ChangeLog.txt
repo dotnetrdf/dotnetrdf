@@ -1,6 +1,13 @@
 ﻿Change Log
 ==========
 
+2.7.3
+-----
+
+Fixes a bug with processing triple patterns when full triple indexing is disabled.
+
+FIX: Fix the implementation of the TriplePattern processor to select the correct triple collection entry points to use when Options.FullTripleIndexing is set to `false`. Thanks to @bent-rasmussen for the report (#466)
+
 2.7.2
 -----
 
