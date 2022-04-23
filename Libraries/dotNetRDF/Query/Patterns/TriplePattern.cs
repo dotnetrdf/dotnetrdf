@@ -62,20 +62,13 @@ namespace VDS.RDF.Query.Patterns
             // Decide on the Index Type
             if (_subj is NodeMatchPattern)
             {
-                if (Options.FullTripleIndexing)
+                if (_pred is NodeMatchPattern)
                 {
-                    if (_pred is NodeMatchPattern)
-                    {
-                        _indexType = TripleIndexType.SubjectPredicate;
-                    }
-                    else if (_obj is NodeMatchPattern)
-                    {
-                        _indexType = TripleIndexType.SubjectObject;
-                    }
-                    else
-                    {
-                        _indexType = TripleIndexType.Subject;
-                    }
+                    _indexType = TripleIndexType.SubjectPredicate;
+                }
+                else if (_obj is NodeMatchPattern)
+                {
+                    _indexType = TripleIndexType.SubjectObject;
                 }
                 else
                 {
@@ -84,8 +77,6 @@ namespace VDS.RDF.Query.Patterns
             }
             else if (_pred is NodeMatchPattern)
             {
-                if (Options.FullTripleIndexing)
-                {
                     if (_obj is NodeMatchPattern)
                     {
                         _indexType = TripleIndexType.PredicateObject;
@@ -94,11 +85,6 @@ namespace VDS.RDF.Query.Patterns
                     {
                         _indexType = TripleIndexType.Predicate;
                     }
-                }
-                else
-                {
-                    _indexType = TripleIndexType.Predicate;
-                }                
             }
             else if (_obj is NodeMatchPattern)
             {
