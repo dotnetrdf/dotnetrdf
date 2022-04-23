@@ -77,14 +77,14 @@ namespace VDS.RDF.Query.Patterns
             }
             else if (_pred is NodeMatchPattern)
             {
-                    if (_obj is NodeMatchPattern)
-                    {
-                        _indexType = TripleIndexType.PredicateObject;
-                    }
-                    else
-                    {
-                        _indexType = TripleIndexType.Predicate;
-                    }
+                if (_obj is NodeMatchPattern)
+                {
+                    _indexType = TripleIndexType.PredicateObject;
+                }
+                else
+                {
+                    _indexType = TripleIndexType.Predicate;
+                }
             }
             else if (_obj is NodeMatchPattern)
             {
