@@ -22,7 +22,7 @@ RUN rm -rf /virtuoso-opensource/database
 RUN ln -s /virtuoso /virtuoso-opensource/database
 
 # /staging for loading data
-RUN mkdir /staging ; sed -i '/DirsAllowed/ s:$:,/staging:' /virtuoso/virtuoso.ini
+RUN mkdir /staging ; sed -i '/DirsAllowed/ s:$:,/staging:' /virtuoso-opensource/database/virtuoso.ini
 VOLUME /staging
 
 COPY staging.sh /usr/local/bin/
