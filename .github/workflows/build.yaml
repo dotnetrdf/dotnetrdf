@@ -51,9 +51,39 @@ jobs:
       with:
         name: code-coverage dotNetRdf.Connectors.Fuseki.Tests netcoreapp5.0
         path: Testing/dotNetRdf.Connectors.Fuseki.Tests/TestResults/*/coverage.cobertura.xml
+        
+  virtuosoTests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
+    - name: Install .NET Core 3.1 Framework
+      run: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Channel 3.1
+    - name: Validate Installation
+      run: dotnet --list-runtimes
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Build Virtuoso Image
+      run: docker build -t virtuoso:latest .
+      working-directory: Testing/test_images/virtuoso
+    - name: Start Virtuoso
+      run: docker run --rm -d -p 8890:8890 -p 1111:111 --name virtuoso virtuoso:latest
+    - name: Test Virtuoso Connector
+      run: dotnet test -c Release --framework netcoreapp3.1 --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Virtuoso.Tests/dotNetRdf.Connectors.Virtuoso.Tests.csproj
+    - name: Stop Virtuoso
+      run: docker stop virtuoso
+    - name: Upload Code Coverage
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage dotNetRdf.Connectors.Virtuoso.Tests netcoreapp5.0
+        path: Testing/dotNetRdf.Connectors.Virtuoso.Tests/TestResults/*/coverage.cobertura.xml
       
   report:
-    needs: [ "test", "fusekiTests" ]
+    needs: [ "test", "fusekiTests", "virtuosoTests" ]
     runs-on: windows-latest
     steps:
     - name: Checkout

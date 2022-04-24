@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using HandlebarsDotNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -100,9 +101,8 @@ namespace VDS.RDF.Storage
                 Assert.NotNull(manager);
 
                 //Add the Test Date to Virtuoso
-                var testData = new Graph();
+                var testData = new Graph(new UriNode(new Uri("http://example.org/virtuoso/tests/null")));
                 FileLoader.Load(testData, "resources\\Turtle.ttl");
-                testData.BaseUri = new Uri("http://example.org/virtuoso/tests/null");
                 manager.SaveGraph(testData);
 
                 var handler = new NullHandler();
@@ -190,7 +190,7 @@ namespace VDS.RDF.Storage
         public void StorageVirtuosoBlankNodePersistence()
         {
             //Create our Test Graph
-            var g = new Graph
+            var g = new Graph(new UriNode(new Uri("http://example.org/bnodes/")))
             {
                 BaseUri = new Uri("http://example.org/bnodes/")
             };
@@ -213,8 +213,8 @@ namespace VDS.RDF.Storage
                 manager.SaveGraph(g);
 
                 //Retrieve
-                var h = new Graph();
-                var i = new Graph();
+                var h = new Graph(new UriNode(g.BaseUri));
+                var i = new Graph(new UriNode(g.BaseUri));
                 manager.LoadGraph(h, g.BaseUri);
                 manager.LoadGraph(i, g.BaseUri);
 
@@ -226,7 +226,7 @@ namespace VDS.RDF.Storage
                 manager.SaveGraph(h);
 
                 //Retrieve again
-                var j = new Graph();
+                var j = new Graph(new UriNode(g.BaseUri));
                 manager.LoadGraph(j, g.BaseUri);
 
                 CompareGraphs(h, j, false);
@@ -236,7 +236,7 @@ namespace VDS.RDF.Storage
                 manager.SaveGraph(j);
 
                 //Retrieve yet again
-                var k = new Graph();
+                var k = new Graph(new UriNode(g.BaseUri));
                 manager.LoadGraph(k, g.BaseUri);
 
                 CompareGraphs(j, k, false);
@@ -464,10 +464,7 @@ namespace VDS.RDF.Storage
             {
 
                 //Make the Test Graph
-                var g = new Graph
-                {
-                    BaseUri = new Uri("http://example.org/VirtuosoEncodingTest")
-                };
+                var g = new Graph(new UriNode(new Uri("http://example.org/VirtuosoEncodingTest"))) { BaseUri = new Uri("http://example.org/VirtuosoEncodingTest") };
                 IUriNode encodedString = g.CreateUriNode(new Uri("http://example.org/encodedString"));
                 ILiteralNode encodedText = g.CreateLiteralNode("William Jørgensen");
                 g.Assert(new Triple(g.CreateUriNode(), encodedString, encodedText));
@@ -500,9 +497,9 @@ namespace VDS.RDF.Storage
                 INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
                 INode dnrType = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.PropertyType));
                 INode objFactory = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.ClassObjectFactory));
-                INode virtFactory = g.CreateLiteralNode("VDS.RDF.Configuration.VirtuosoObjectFactory, dotNetRDF.Data.Virtuoso");
+                INode virtFactory = g.CreateLiteralNode("VDS.RDF.Configuration.VirtuosoObjectFactory, dotNetRdf.Data.Virtuoso");
                 INode genericManager = g.CreateUriNode(UriFactory.Root.Create(ConfigurationLoader.ClassStorageProvider));
-                INode virtManager = g.CreateLiteralNode("VDS.RDF.Storage.VirtuosoManager, dotNetRDF.Data.Virtuoso");
+                INode virtManager = g.CreateLiteralNode("VDS.RDF.Storage.VirtuosoManager, dotNetRdf.Data.Virtuoso");
 
                 //Serialize Configuration
                 var context = new ConfigurationSerializationContext(g);
@@ -549,10 +546,7 @@ namespace VDS.RDF.Storage
             {
 
                 //Create the Test Graph
-                var g = new Graph
-                {
-                    BaseUri = new Uri("http://example.org/VirtuosoRegexTest")
-                };
+                var g = new Graph(new UriNode(new Uri("http://example.org/VirtuosoRegexTest")));
                 INode subj1 = g.CreateUriNode(new Uri("http://example.org/one"));
                 INode subj2 = g.CreateUriNode(new Uri("http://example.org/two"));
                 INode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
@@ -562,11 +556,11 @@ namespace VDS.RDF.Storage
                 g.Assert(subj2, pred, obj2);
                 manager.SaveGraph(g);
 
-                var h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                var h = new Graph(g.Name);
+                manager.LoadGraph(h, (g.Name as UriNode).Uri);
                 Assert.Equal(g, h);
 
-                var query = "SELECT * FROM <" + g.BaseUri.ToString() + "> WHERE { ?s ?p ?o . FILTER(REGEX(STR(?o), 'search', 'i')) }";
+                var query = "SELECT * FROM <" + g.Name.ToString() + "> WHERE { ?s ?p ?o . FILTER(REGEX(STR(?o), 'search', 'i')) }";
                 var results = manager.Query(query) as SparqlResultSet;
                 if (results == null) Assert.True(false, "Did not get a Result Set as expected");
                 Assert.Equal(1, results.Count);
