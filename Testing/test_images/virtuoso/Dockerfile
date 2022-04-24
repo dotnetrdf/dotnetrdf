@@ -12,17 +12,19 @@ WORKDIR virtuoso-opensource
 
 RUN ln -s /virtuoso-opensource/bin/isql /usr/local/bin/isql
 
+# Make a usable copy of the sample ini file
+RUN mkdir /virtuoso-opensource/config
+RUN cp /virtuoso-opensource/database/virtuoso.ini.sample /virtuoso-opensource/config/virtuoso.ini
 
 # Enable mountable /virtuoso for data storage, which
 # we'll symlink the standard db folder to point to
 RUN mkdir /virtuoso
 VOLUME /virtuoso
-RUN cp /virtuoso-opensource/database/virtuoso.ini.sample /virtuoso/virtuoso.ini
 RUN rm -rf /virtuoso-opensource/database
 RUN ln -s /virtuoso /virtuoso-opensource/database
 
 # /staging for loading data
-RUN mkdir /staging ; sed -i '/DirsAllowed/ s:$:,/staging:' /virtuoso-opensource/database/virtuoso.ini
+RUN mkdir /staging ; sed -i '/DirsAllowed/ s:$:,/staging:' /virtuoso-opensource/config/virtuoso.ini
 VOLUME /staging
 
 COPY staging.sh /usr/local/bin/
@@ -37,4 +39,4 @@ WORKDIR /virtuoso-opensource/bin
 # Modify config-file on start-up to reflect memory available
 ENTRYPOINT ["/docker-entrypoint.sh"]
 # Run virtuoso in the foreground
-CMD ["/virtuoso-opensource/bin/virtuoso-t", "+wait", "+foreground", "+configfile", "/virtuoso-opensource/database/virtuoso.ini"]
+CMD ["/virtuoso-opensource/bin/virtuoso-t", "+wait", "+foreground", "+configfile", "/virtuoso-opensource/config/virtuoso.ini"]
