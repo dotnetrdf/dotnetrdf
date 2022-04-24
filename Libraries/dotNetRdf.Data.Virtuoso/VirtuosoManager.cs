@@ -553,7 +553,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Open(true);
+                Open(false);
                 int r;
 
                 //Build the Delete Data Command
@@ -1414,19 +1414,25 @@ namespace VDS.RDF.Storage
                     //Finish the Transaction if exists
                     if (_dbtrans != null)
                     {
-                        if (!rollbackTrans)
+                        try
                         {
-                            //Commit normally
-                            _dbtrans.Commit();
+                            if (!rollbackTrans)
+                            {
+                                //Commit normally
+                                _dbtrans.Commit();
+                            }
+                            else
+                            {
+                                //Want to Rollback
+                                _dbtrans.Rollback();
+                            }
                         }
-                        else
+                        finally
                         {
-                            //Want to Rollback
-                            _dbtrans.Rollback();
+                            _dbtrans.Dispose();
+                            _dbtrans = null;
+                            _db.Close();
                         }
-                        _dbtrans = null;
-
-                        _db.Close();
                     }
 
                     _keepOpen = false;
@@ -1441,16 +1447,18 @@ namespace VDS.RDF.Storage
         private void ExecuteNonQuery(string sqlCmd)
         {
             //Create the SQL Command
-            var cmd = new VirtuosoCommand(sqlCmd, _db);
-            cmd.CommandTimeout = _timeout > 0 ? _timeout : cmd.CommandTimeout;
-            if (_dbtrans != null)
+            using (var cmd = new VirtuosoCommand(sqlCmd, _db))
             {
-                //Add to the Transaction if required
-                cmd.Transaction = _dbtrans;
-            }
+                cmd.CommandTimeout = _timeout > 0 ? _timeout : cmd.CommandTimeout;
+                if (_dbtrans != null)
+                {
+                    //Add to the Transaction if required
+                    cmd.Transaction = _dbtrans;
+                }
 
-            //Execute
-            cmd.ExecuteNonQuery();
+                //Execute
+                cmd.ExecuteNonQuery();
+            }
         }
 
         /// <summary>
@@ -1520,7 +1528,9 @@ namespace VDS.RDF.Storage
 
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(ToString())));
-            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(GetType().FullName + ", dotNetRDF.Data.Virtuoso")));
+            Type managerType = GetType();
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(
+                $"{managerType.FullName}, {managerType.Assembly.FullName.Split(',')[0]}")));
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(_dbserver)));
 
             if (_dbport != DefaultPort)
