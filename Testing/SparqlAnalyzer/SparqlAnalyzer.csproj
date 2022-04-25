@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf\dotNetRdf.csproj" />
   </ItemGroup>
 
 </Project>

@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\dotNetRdf.HtmlSchema\dotNetRdf.HtmlSchema.csproj" />
-    <ProjectReference Include="..\dotNetRDF\dotNetRDF.csproj" />
+    <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web" />
   </ItemGroup>

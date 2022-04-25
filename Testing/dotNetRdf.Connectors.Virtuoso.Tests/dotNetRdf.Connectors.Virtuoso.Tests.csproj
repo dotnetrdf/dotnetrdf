@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyTitle>dotNetRDF.Connectors.Virtuoso.Tests</AssemblyTitle>
+    <AssemblyTitle>dotNetRdf.Connectors.Virtuoso.Tests</AssemblyTitle>
     <TargetFrameworks>net472</TargetFrameworks>
-    <AssemblyName>dotNetRDF.Connectors.Virtuoso.Tests</AssemblyName>
+    <AssemblyName>dotNetRdf.Connectors.Virtuoso.Tests</AssemblyName>
 	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
     <LangVersion>latest</LangVersion>

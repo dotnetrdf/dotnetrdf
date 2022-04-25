@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyTitle>dotNetRdf.Connectors.Fuseki.Tests</AssemblyTitle>
+    <AssemblyTitle>dotNetRDF Fuseki Connector Tests</AssemblyTitle>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-    <AssemblyName>dotNetRDF.Connectors.Fuseki.Tests</AssemblyName>
+    <AssemblyName>dotNetRdf.Connectors.Fuseki.Tests</AssemblyName>
 	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>

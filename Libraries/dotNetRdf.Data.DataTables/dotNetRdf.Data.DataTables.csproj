@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Data.DataTables</AssemblyName>
-    <AssemblyTitle>dotNetRdf DataTables</AssemblyTitle>
+    <AssemblyTitle>dotNetRDF DataTables</AssemblyTitle>
     <Description>Package which allow integrating dotNetRDF with System.Data.DataTable</Description>
     <PackageId>dotNetRdf.Data.DataTables</PackageId>
     <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>

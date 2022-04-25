@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Data.Virtuoso</AssemblyName>
-    <AssemblyTitle>dotNetRdf.Data.Virtuoso</AssemblyTitle>
+    <AssemblyTitle>dotNetRDF Virtuoso connector</AssemblyTitle>
     <Description>Provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</Description>
     <VersionPrefix>$(Version)</VersionPrefix>
     <TargetFrameworks>net472</TargetFrameworks>

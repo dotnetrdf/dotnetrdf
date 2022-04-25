@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyTitle>dotNetRdf.Connectors.Sesame.Tests</AssemblyTitle>
+    <AssemblyTitle>dotNetRDF FourStore Connector Tests</AssemblyTitle>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-    <AssemblyName>dotNetRDF.Connectors.Sesame.Tests</AssemblyName>
+    <AssemblyName>dotNetRdf.Connectors.FourStore.Tests</AssemblyName>
 	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
