@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyTitle>dotNetRdf.Query.FullText</AssemblyTitle>
     <AssemblyName>dotNetRdf.Query.FullText</AssemblyName>
+    <AssemblyTitle>dotNetRDF Full Text Query Support</AssemblyTitle>
     <Description>Provides Full Text SPARQL support as a plugin for the dotNetRDF Leviathan SPARQL Engine using Lucene.Net</Description>
     <VersionPrefix>$(Version)</VersionPrefix>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>

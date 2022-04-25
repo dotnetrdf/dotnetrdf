@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyTitle>dotNetRDF.Connectors.Tests</AssemblyTitle>
+    <AssemblyTitle>dotNetRdf.Connectors.Tests</AssemblyTitle>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <AssemblyName>dotNetRDF.Connectors.Tests</AssemblyName>
+    <AssemblyName>dotNetRdf.Connectors.Tests</AssemblyName>
 	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>

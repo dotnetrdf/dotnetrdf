@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Query.Spin</AssemblyName>
-    <AssemblyTitle>dotNetRDF SPIN</AssemblyTitle>
+    <AssemblyTitle>dotNetRDF SPIN Support</AssemblyTitle>
     <Description>A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine</Description>
     <VersionPrefix>$(Version)</VersionPrefix>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
