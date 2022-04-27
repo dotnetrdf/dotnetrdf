@@ -1,7 +1,8 @@
 name: Publish packages
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+    - 'v*'
     
 jobs:
   deploy:
@@ -22,6 +23,7 @@ jobs:
       uses: gittools/actions/gitversion/execute@v0.9.10
       with:
         useConfigFile: true
+        updateAssemblyInfo: true
       
     - name: Show GitVersion Value
       run: |
@@ -33,5 +35,11 @@ jobs:
     - name: Build solution
       run: dotnet pack -o nugets --configuration=Release -p:Version=${{ steps.gitversion.outputs.NuGetVersionV2 }}
       
+    - name: Upload NuGet Packages
+      uses: actions/upload-artifact@v3
+      with:
+        name: nugets
+        path: nugets\*.nupkg
+        
     - name: Publish NuGet Packages
       run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
