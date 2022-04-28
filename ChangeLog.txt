@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+2.7.4
+-----
+
+This release fixes a packaging error with the 2.7.3 release. Thanks to @giacomociti for the report (#474)
+
 2.7.3
 -----
 
