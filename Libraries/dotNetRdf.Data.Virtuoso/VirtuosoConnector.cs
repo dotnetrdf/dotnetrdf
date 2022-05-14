@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,8 +24,8 @@
 // </copyright>
 */
 
-using System;
 using OpenLink.Data.Virtuoso;
+using System;
 using System.Collections.Generic;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -35,12 +35,17 @@ using VDS.RDF.Update;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// A Manager for accessing the Native Virtuoso Quad Store.
+    /// A connector for accessing the native Virtuoso Quad Store.
     /// </summary>
     /// <remarks>
     /// <para>
     /// This class implements <see cref="IStorageProvider">IStorageProvider</see> allowing it to be used with any of
     /// the general classes that support this interface as well as the Virtuoso specific classes.
+    /// </para>
+    /// <para>
+    /// This class supports user-controlled transactions via to <see cref="ITransactionalStorage"/> interface.
+    /// Calls to methods outside of a user-controlled transaction will take place in their own transaction which will
+    /// be auto-committed on success if required.
     /// </para>
     /// <para>
     /// Although this class takes a Database Name to ensure compatibility with any Virtuoso installation
@@ -54,20 +59,21 @@ namespace VDS.RDF.Storage
     /// then retrieved will have different Blank Node IDs to those input.  In addition there is no guarantee that when
     /// you save a Graph containing Blank Nodes into Virtuoso that retrieving it will give the same Blank Node IDs
     /// even if the Graph being saved was originally retrieved from Virtuoso.  Finally please see the remarks on the
-    /// <see cref="VirtuosoManager.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{T})">UpdateGraph()</see> method
-    /// which deal with how insertion and deletion of triples containing blank nodes into existing graphs operates.
+    /// <see cref="VirtuosoConnectorBase.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see>
+    /// method which deal with how insertion and deletion of triples containing blank nodes into existing graphs operates.
     /// </para>
     /// <para>
-    /// You can use a null Uri or an empty String as a Uri to indicate that operations should affect the Default Graph.
-    /// Where the argument is only a Graph a null <see cref="IGraph.Name"/> property indicates that the Graph affects
-    /// the Default Graph.
+    /// You can use a null Uri or an empty String as a Uri to indicate that operations should affect the Default Graph.  Where the argument is only a Graph a null <see cref="IGraph.Name"/> property indicates that the Graph affects the Default Graph.
+    /// </para>
+    /// <para>
+    /// The bulk update operations on a graph: <see cref="SaveGraph"/>, <see cref="VirtuosoConnectorBase.DeleteGraph(String)"/>
+    /// and <see cref="VirtuosoConnectorBase.DeleteGraph(Uri)"/> will autocommit their updates regardless of the use of
+    /// <see cref="Begin"/>, <see cref="Commit"/> or <see cref="Rollback"/>. This is default Virtuoso behaviour which enables
+    /// these methods to handle updates on large graphs.
     /// </para>
     /// </remarks>
-    [Obsolete("This class is replaced by VirtuosoConnector which adds support for the ITransactionalStorage interface.")]
-    public class VirtuosoManager
-        : VirtuosoConnectorBase, IUpdateableStorage, IConfigurationSerializable
+    public class VirtuosoConnector :VirtuosoConnectorBase, ITransactionalStorage, IUpdateableStorage, IConfigurationSerializable
     {
-        #region Variables & Constructors
 
         /// <summary>
         /// Creates a Manager for a Virtuoso Native Quad Store.
@@ -81,51 +87,25 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Timeouts less than equal to zero are ignored and treated as using the default timeout which is dictated by the underlying Virtuoso ADO.Net provider.
         /// </remarks>
-        public VirtuosoManager(string server, int port, string db, string user, string password, int timeout)
+        public VirtuosoConnector(string server, int port, string db, string user, string password, int timeout = 0)
         :base(server, port, db, user, password, timeout)
         {
-            
         }
 
         /// <summary>
         /// Creates a Manager for a Virtuoso Native Quad Store.
         /// </summary>
-        /// <param name="server">Server.</param>
-        /// <param name="port">Port.</param>
-        /// <param name="db">Database Name.</param>
-        /// <param name="user">Username.</param>
-        /// <param name="password">Password.</param>
-        public VirtuosoManager(string server, int port, string db, string user, string password)
-            : base(server, port, db, user, password)
-        {
-        }
-
-        /// <summary>
-        /// Creates a Manager for a Virtuoso Native Quad Store.
-        /// </summary>
+        /// <remarks></remarks>
         /// <param name="db">Database Name.</param>
         /// <param name="user">Username.</param>
         /// <param name="password">Password.</param>
         /// <param name="timeout">Connection Timeout in Seconds.</param>
         /// <remarks>
-        /// Assumes the Server is on the localhost and the port is the default installation port of 1111.
+        /// <para> Assumes the server is on the localhost and the port is the default installation port of 1111.</para>
+        /// <para>Timeouts less than equal to zero are ignored and treated as using the default timeout which is dictated by the underlying Virtuoso ADO.Net provider.</para>
         /// </remarks>
-        public VirtuosoManager(string db, string user, string password, int timeout)
-            : base("localhost", VirtuosoManager.DefaultPort, db, user, password, timeout)
-        {
-        }
-
-        /// <summary>
-        /// Creates a Manager for a Virtuoso Native Quad Store.
-        /// </summary>
-        /// <param name="db">Database Name.</param>
-        /// <param name="user">Username.</param>
-        /// <param name="password">Password.</param>
-        /// <remarks>
-        /// Assumes the Server is on the localhost and the port is the default installation port of 1111.
-        /// </remarks>
-        public VirtuosoManager(string db, string user, string password)
-            : base("localhost", VirtuosoManager.DefaultPort, db, user, password)
+        public VirtuosoConnector(string db, string user, string password, int timeout = 0)
+            : this("localhost", VirtuosoManager.DefaultPort, db, user, password, timeout)
         {
         }
 
@@ -136,112 +116,57 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Allows the end user to specify a customized connection string.
         /// </remarks>
-        public VirtuosoManager(string connectionString):base(connectionString)
+        public VirtuosoConnector(string connectionString) : base(connectionString)
         {
         }
 
-        #endregion
-
-        #region Triple Loading & Saving
-
-        /// <summary>
-        /// Loads a Graph from the Quad Store.
-        /// </summary>
-        /// <param name="g">Graph to load into.</param>
-        /// <param name="graphUri">URI of the Graph to Load.</param>
+        /// <inheritdoc />
         public override void LoadGraph(IGraph g, Uri graphUri)
         {
-            if (g.IsEmpty && graphUri != null)
-            {
-                g.BaseUri = graphUri;
-            }
             LoadGraph(new GraphHandler(g), graphUri);
         }
 
-        
-        /// <summary>
-        /// Loads a Graph from the Quad Store.
-        /// </summary>
-        /// <param name="g">Graph to load into.</param>
-        /// <param name="graphUri">URI of the Graph to Load.</param>
+        /// <inheritdoc />
         public override void LoadGraph(IGraph g, string graphUri)
         {
-            if (graphUri == null || graphUri.Equals(string.Empty))
-            {
-                LoadGraph(g, (Uri) null);
-            }
-            else
-            {
-                LoadGraph(g, g.UriFactory.Create(graphUri));
-            }
+            LoadGraph(new GraphHandler(g), string.IsNullOrEmpty(graphUri) ? null : g.UriFactory.Create(graphUri));
         }
 
-        /// <summary>
-        /// Loads a Graph from the Quad Store.
-        /// </summary>
-        /// <param name="handler">RDF Handler.</param>
-        /// <param name="graphUri">URI of the Graph to Load.</param>
+        /// <inheritdoc />
         public override void LoadGraph(IRdfHandler handler, string graphUri)
         {
-            if (graphUri == null || graphUri.Equals(string.Empty))
-            {
-                LoadGraph(handler, (Uri) null);
-            }
-            else
-            {
-                LoadGraph(handler, UriFactory.Create(graphUri));
-            }
+            LoadGraph(handler, string.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
         }
 
 
         /// <summary>
-        /// Saves a Graph into the Quad Store (Warning: Completely replaces any existing Graph with the same URI).
+        /// Saves a Graph to the Store.
         /// </summary>
         /// <param name="g">Graph to save.</param>
-        /// <remarks>
-        /// Completely replaces any previously saved Graph with the same Graph URI.
-        /// </remarks>
+        /// <remarks>This implementation of this method uses Virtuoso's row auto-commit feature to allow loading large graphs. This means
+        /// that the graph will be committed to the Virtuoso server, regardless of the use of <see cref="Begin"/> and <see cref="Commit"/> or <see cref="Rollback"/>
+        /// to control the transaction.</remarks>
         public override void SaveGraph(IGraph g)
         {
-            if (g.Name == null) throw new RdfStorageException("Cannot save a Graph without a name to Virtuoso");
-
             try
             {
                 Open();
-
                 SaveGraphInternal(g);
-
                 Close(false);
             }
-            catch
+            catch (Exception)
             {
-                Close(true);
+                Close(true, true);
                 throw;
             }
         }
 
-        #endregion
-
-        #region Native Query & Update
-
-        /// <summary>
-        /// Executes a SPARQL Update on the native Quad Store.
-        /// </summary>
-        /// <param name="sparqlUpdate">SPARQL Update to execute.</param>
-        /// <remarks>
-        /// <para>
-        /// This method will first attempt to parse the update into a <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> object.  If this succeeds then each command in the command set will be issued to Virtuoso.
-        /// </para>
-        /// <para>
-        /// If the parsing fails then the update will be executed anyway using Virtuoso's SPASQL (SPARQL + SQL) syntax.  Parsing can fail because Virtuoso supports various SPARQL extensions which the library does not support and primarily supports SPARUL updates (the precusor to SPARQL 1.1 Update).
-        /// </para>
-        /// </remarks>
-        /// <exception cref="SparqlUpdateException">Thrown if an error occurs in making the update.</exception>
+        /// <inheritdoc />
         public override void Update(string sparqlUpdate)
         {
             try
             {
-                Open(true);
+                var localTxn = Open(true);
 
                 //Try and parse the SPARQL Update String
                 var parser = new SparqlUpdateParser();
@@ -257,7 +182,7 @@ namespace VDS.RDF.Storage
                     cmd.ExecuteNonQuery();
                 }
 
-                Close(true);
+                if (localTxn) Close(true);
             }
             catch (RdfParseException)
             {
@@ -274,13 +199,14 @@ namespace VDS.RDF.Storage
                 catch (Exception ex)
                 {
                     Close(true, true);
-                    throw new SparqlUpdateException("An error occurred while trying to perform the SPARQL Update with Virtuoso.  Note that Virtuoso historically has primarily supported SPARUL (the precursor to SPARQL Update) and many valid SPARQL Update Commands may not be supported by Virtuoso", ex);
+                    throw new SparqlUpdateException(
+                        "An error occurred while trying to perform the SPARQL Update with Virtuoso.  Note that Virtuoso historically has primarily supported SPARUL (the precursor to SPARQL Update) and many valid SPARQL Update Commands may not be supported by Virtuoso",
+                        ex);
                 }
             }
             catch (SparqlUpdateException)
             {
-                Close(true, true);
-                throw;
+                Close(true, rollbackTrans: true);
             }
             catch (Exception ex)
             {
@@ -290,30 +216,42 @@ namespace VDS.RDF.Storage
             }
         }
 
+        #region ITransactionalStorage Implementation
+
+        /// <inheritdoc />
+        public void Begin()
+        {
+            Open(true);
+        }
+
+        /// <inheritdoc />
+        public void Commit()
+        {
+            Close(true);
+        }
+
+        /// <inheritdoc />
+        public void Rollback()
+        {
+            Close(true, rollbackTrans:true);
+        }
+
         #endregion
 
 
-        #region IDisposable Members
 
-        /// <summary>
-        /// Disposes of the Manager.
-        /// </summary>
+        /// <inheritdoc />
         public override void Dispose()
         {
             Close(true);
         }
 
-        #endregion
-
-        /// <summary>
-        /// Gets a String which gives details of the Connection.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc />
         public override string ToString()
         {
             if (_customConnectionString)
             {
-                return "[Virtuoso] Custom Connection String";
+                return "[VirtuosoConnector] Custom Connection String";
             }
             return "[Virtuoso] " + _dbServer + ":" + _dbPort;
         }
