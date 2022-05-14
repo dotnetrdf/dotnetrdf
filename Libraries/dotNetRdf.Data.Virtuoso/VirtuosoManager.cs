@@ -25,8 +25,8 @@
 */
 
 using System;
-using System.Collections.Generic;
 using OpenLink.Data.Virtuoso;
+using System.Collections.Generic;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -39,18 +39,31 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This class implements <see cref="IStorageProvider">IStorageProvider</see> allowing it to be used with any of the general classes that support this interface as well as the Virtuoso specific classes.
+    /// This class implements <see cref="IStorageProvider">IStorageProvider</see> allowing it to be used with any of
+    /// the general classes that support this interface as well as the Virtuoso specific classes.
     /// </para>
     /// <para>
-    /// Although this class takes a Database Name to ensure compatibility with any Virtuoso installation (i.e. this allows for the Native Quad Store to be in a non-standard database) generally you should always specify <strong>DB</strong> as the Database Name parameter.
+    /// Although this class takes a Database Name to ensure compatibility with any Virtuoso installation
+    /// (i.e. this allows for the Native Quad Store to be in a non-standard database) generally you should always
+    /// specify <strong>DB</strong> as the Database Name parameter.
     /// </para>
     /// <para>
-    /// Virtuoso automatically assigns IDs to Blank Nodes input into it, these IDs are <strong>not</strong> based on the actual Blank Node ID so inputting a Blank Node with the same ID multiple times will result in multiple Nodes being created in Virtuoso.  This means that data containing Blank Nodes which is stored to Virtuoso and then retrieved will have different Blank Node IDs to those input.  In addition there is no guarentee that when you save a Graph containing Blank Nodes into Virtuoso that retrieving it will give the same Blank Node IDs even if the Graph being saved was originally retrieved from Virtuoso.  Finally please see the remarks on the <see cref="VirtuosoManager.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> method which deal with how insertion and deletion of triples containing blank nodes into existing graphs operates.
+    /// Virtuoso automatically assigns IDs to Blank Nodes input into it, these IDs are <strong>not</strong> based on
+    /// the actual Blank Node ID so inputting a Blank Node with the same ID multiple times will result in multiple
+    /// Nodes being created in Virtuoso.  This means that data containing Blank Nodes which is stored to Virtuoso and
+    /// then retrieved will have different Blank Node IDs to those input.  In addition there is no guarantee that when
+    /// you save a Graph containing Blank Nodes into Virtuoso that retrieving it will give the same Blank Node IDs
+    /// even if the Graph being saved was originally retrieved from Virtuoso.  Finally please see the remarks on the
+    /// <see cref="VirtuosoManager.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{T})">UpdateGraph()</see> method
+    /// which deal with how insertion and deletion of triples containing blank nodes into existing graphs operates.
     /// </para>
     /// <para>
-    /// You can use a null Uri or an empty String as a Uri to indicate that operations should affect the Default Graph.  Where the argument is only a Graph a null <see cref="IGraph.Name"/> property indicates that the Graph affects the Default Graph.
+    /// You can use a null Uri or an empty String as a Uri to indicate that operations should affect the Default Graph.
+    /// Where the argument is only a Graph a null <see cref="IGraph.Name"/> property indicates that the Graph affects
+    /// the Default Graph.
     /// </para>
     /// </remarks>
+    [Obsolete("This class is replaced by VirtuosoConnector which adds support for the ITransactionalStorage interface.")]
     public class VirtuosoManager
         : VirtuosoConnectorBase, IUpdateableStorage, IConfigurationSerializable
     {
