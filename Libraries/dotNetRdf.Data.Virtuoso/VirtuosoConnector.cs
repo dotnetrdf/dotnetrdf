@@ -65,6 +65,12 @@ namespace VDS.RDF.Storage
     /// <para>
     /// You can use a null Uri or an empty String as a Uri to indicate that operations should affect the Default Graph.  Where the argument is only a Graph a null <see cref="IGraph.Name"/> property indicates that the Graph affects the Default Graph.
     /// </para>
+    /// <para>
+    /// The bulk update operations on a graph: <see cref="SaveGraph"/>, <see cref="VirtuosoConnectorBase.DeleteGraph(String)"/>
+    /// and <see cref="VirtuosoConnectorBase.DeleteGraph(Uri)"/> will autocommit their updates regardless of the use of
+    /// <see cref="Begin"/>, <see cref="Commit"/> or <see cref="Rollback"/>. This is default Virtuoso behaviour which enables
+    /// these methods to handle updates on large graphs.
+    /// </para>
     /// </remarks>
     public class VirtuosoConnector :VirtuosoConnectorBase, ITransactionalStorage, IUpdateableStorage, IConfigurationSerializable
     {
