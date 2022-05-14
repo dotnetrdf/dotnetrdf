@@ -179,7 +179,7 @@ namespace VDS.RDF.Storage
                 Assert.True(g.ContainsTriple(toAdd),
                     "Added triple should be present in in-memory view prior to Flush/Discard");
                 var h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, (g.Name as IUriNode)?.Uri);
                 Assert.False(h.ContainsTriple(toAdd),
                     "Added triple should not be present in underlying store prior to Flush/Discard");
 
@@ -187,7 +187,7 @@ namespace VDS.RDF.Storage
 
                 Assert.True(g.ContainsTriple(toAdd), "Added triple should be present in in-memory view after Flush");
                 h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, (g.Name as IUriNode)?.Uri);
                 Assert.True(h.ContainsTriple(toAdd), "Added triple should be present in underlying store after Flush");
             }
             finally
@@ -222,7 +222,7 @@ namespace VDS.RDF.Storage
                 Assert.True(g.ContainsTriple(toAdd),
                     "Added triple should be present in in-memory view prior to Flush/Discard");
                 var h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, (g.Name as IUriNode)?.Uri);
                 Assert.False(h.ContainsTriple(toAdd),
                     "Added triple should not be present in underlying store prior to Flush/Discard");
 
@@ -231,7 +231,7 @@ namespace VDS.RDF.Storage
                 Assert.False(g.ContainsTriple(toAdd),
                     "Added triple should not be present in in-memory view after Discard");
                 h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, (g.Name as IUriNode)?.Uri);
                 Assert.False(h.ContainsTriple(toAdd),
                     "Added triple should not be present in underlying store after Discard");
             }
@@ -268,7 +268,7 @@ namespace VDS.RDF.Storage
                 Assert.False(g.GetTriplesWithPredicate(rdfType).Any(),
                     "Removed triples should not be present in in-memory view prior to Flush/Discard");
                 var h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, (g.Name as IUriNode)?.Uri);
                 Assert.True(h.GetTriplesWithPredicate(rdfType).Any(),
                     "Removed triples should still be present in underlying store prior to Flush/Discard");
 
@@ -277,7 +277,7 @@ namespace VDS.RDF.Storage
                 Assert.False(g.GetTriplesWithPredicate(rdfType).Any(),
                     "Removed triples should not be present in in-memory view after Flush");
                 h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, (g.Name as IUriNode)?.Uri);
                 Assert.False(h.GetTriplesWithPredicate(rdfType).Any(),
                     "Removed triples should no longer be present in underlying store after Flush");
 
@@ -311,7 +311,7 @@ namespace VDS.RDF.Storage
                 Assert.False(g.GetTriplesWithPredicate(rdfType).Any(),
                     "Removed triples should not be present in in-memory view prior to Flush/Discard");
                 var h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, (g.Name as IUriNode)?.Uri);
                 Assert.True(h.GetTriplesWithPredicate(rdfType).Any(),
                     "Removed triples should still be present in underlying store prior to Flush/Discard");
 
@@ -320,7 +320,7 @@ namespace VDS.RDF.Storage
                 Assert.True(g.GetTriplesWithPredicate(rdfType).Any(),
                     "Removed triples should now be present in in-memory view after Discard");
                 h = new Graph();
-                manager.LoadGraph(h, g.BaseUri);
+                manager.LoadGraph(h, (g.Name as IUriNode)?.Uri);
                 Assert.True(h.GetTriplesWithPredicate(rdfType).Any(),
                     "Removed triples should still be present in underlying store after Discard");
 
