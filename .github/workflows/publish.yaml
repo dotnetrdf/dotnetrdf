@@ -1,10 +1,11 @@
 name: Publish packages
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+    - 'v*'
     
 jobs:
-  deploy:
+  binaries:
     runs-on: windows-latest
     steps:
     - name: Checkout
@@ -32,6 +33,12 @@ jobs:
         
     - name: Build solution
       run: dotnet pack -o nugets --configuration=Release -p:Version=${{ steps.gitversion.outputs.NuGetVersionV2 }}
+      
+    - name: Upload NuGet Packages
+      uses: actions/upload-artifact@v3
+      with:
+        name: nugets
+        path: nugets\*
       
     - name: Publish NuGet Packages
       run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
