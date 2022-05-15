@@ -1,0 +1,20 @@
+name: Build Documentation
+on:
+  push:
+    tags:
+    - 'v*'
+
+jobs:
+  docs:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Install Sandcastle
+      run: choco install sandcastle
+      
+    - name: Build Docs
+      run: dotnet build Build\shfb\dotnetrdf.shfbproj
