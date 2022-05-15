@@ -21,4 +21,4 @@ jobs:
       run: choco install sandcastle --version 2022.2.6.0
       
     - name: Build Docs
-      run: dotnet build Build\shfb\dotnetrdf.shfbproj /p:SHFBROOT="C:\ProgramData\chocolatey\lib\sandcastle\tools\SHFBInstaller_v2022.2.6.0"
+      run: dotnet build Build\shfb\dotnetrdf.shfbproj /p:SHFBROOT="C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder"
