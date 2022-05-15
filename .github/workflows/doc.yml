@@ -18,7 +18,7 @@ jobs:
         fetch-depth: 0
     
     - name: Install Sandcastle
-      run: choco install sandcastle
+      run: choco install sandcastle --version 2022.2.6.0
       
     - name: Build Docs
-      run: dotnet build Build\shfb\dotnetrdf.shfbproj
+      run: dotnet build Build\shfb\dotnetrdf.shfbproj /p:SHFBROOT="C:\ProgramData\chocolatey\lib\sandcastle\tools\SHFBInstaller_v2022.2.6.0"
