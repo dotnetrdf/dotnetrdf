@@ -1,10 +1,11 @@
 name: Publish packages
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - "v*"
     
 jobs:
-  deploy:
+  nuget:
     runs-on: windows-latest
     steps:
     - name: Checkout
@@ -33,5 +34,73 @@ jobs:
     - name: Build solution
       run: dotnet pack -o nugets --configuration=Release -p:Version=${{ steps.gitversion.outputs.NuGetVersionV2 }}
       
-    - name: Publish NuGet Packages
-      run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
+    - name: Upload NuGet Packages
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget
+        path: nugets\*.nupkg
+
+# Temporarily disabled
+#    - name: Publish NuGet Packages
+#      run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
+
+  docs:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Install Sandcastle
+      run: choco install sandcastle --version 2022.2.6.0
+      
+    - name: Build Assemblies
+      run: dotnet build dotNetRdf.sln
+      
+    - name: Build Docs
+      run: dotnet build Build\shfb\dotnetrdf.shfbproj /p:SHFBROOT="C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder"
+   
+    - name: Get version tag
+      id: version_tag
+      run: |
+        [[ ! "$GITHUB_REF" =~ refs/tags ]] && exit
+        echo "::set-output name=value::${GITHUB_REF#refs/tags/}"
+        
+    - name: Create Relase Zip
+      run: 7z a -tzip dotNetRdf_apidocs_${{ steps.version_tag.outputs.value }}.zip Help
+      working-directory: Build\shfb
+      
+    - name: Upload Release zip
+      uses: actions/upload-artifact@v2
+      with:
+        name: help
+        path: Build\shfb\*.zip
+          
+  
+  release:
+    runs-on: windows-latest
+    needs: [nuget docs]
+    
+    steps:
+      - name: Get Binaries
+        id: get_binaries
+        use: actions/download-artifact@v3
+        with:
+          name: nugets
+      - name: Get Help
+        id: get_help
+        use: actions/download-artifact@v3
+        with:
+          name: help
+      - name: List downloads
+        bash: ls -R
+      - name: Create Relase
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          prerelease: true
+        
+          
+      
