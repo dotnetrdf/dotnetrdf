@@ -1,9 +1,9 @@
 name: Build Documentation
 on:
-  push:
+  - push:
     tags:
     - 'v*'
-  workflow_dispatch
+  - workflow_dispatch:
 
 jobs:
   docs:
