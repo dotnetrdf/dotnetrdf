@@ -8,8 +8,7 @@
     <RootNamespace>VDS.RDF.Skos</RootNamespace>
     <PackageId>dotNetRdf.Skos</PackageId>
     <LangVersion>latest</LangVersion>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

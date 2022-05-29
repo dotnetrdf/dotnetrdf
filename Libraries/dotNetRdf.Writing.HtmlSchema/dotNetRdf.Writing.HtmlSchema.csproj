@@ -6,6 +6,7 @@
     <Description>Provides an RDF writer that exports the RDF Schema/Ontology information in a graph as an HTML documentation page</Description>
     <PackageId>dotNetRdf.Writing.HtmlSchema</PackageId>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

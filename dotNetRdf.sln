@@ -71,13 +71,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.AspNet", "Librari
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Client", "Libraries\dotNetRdf.Client\dotNetRdf.Client.csproj", "{03605F1C-3112-47BB-B50C-A5A39BA79064}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.HtmlSchema", "Libraries\dotNetRdf.HtmlSchema\dotNetRdf.HtmlSchema.csproj", "{B5D33B8E-0F35-43D0-B649-2F0822FE5D78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Writing.HtmlSchema", "Libraries\dotNetRdf.Writing.HtmlSchema\dotNetRdf.Writing.HtmlSchema.csproj", "{B5D33B8E-0F35-43D0-B649-2F0822FE5D78}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Data.DataTables.Tests", "Testing\dotNetRdf.Data.DataTables.Tests\dotNetRdf.Data.DataTables.Tests.csproj", "{4387CBC4-EDFD-4D48-AEB4-C340609B8F2D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Query.FullText.Tests", "Testing\dotNetRdf.Query.FullText.Tests\dotNetRdf.Query.FullText.Tests.csproj", "{7467A172-3DA1-44C2-9326-7883D8E550F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.HtmlSchema.Tests", "Testing\dotNetRdf.HtmlSchema.Tests\dotNetRdf.HtmlSchema.Tests.csproj", "{77F45239-2333-490D-BFDA-B7AA289EF83D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Writing.HtmlSchema.Tests", "Testing\dotNetRdf.Writing.HtmlSchema.Tests\dotNetRdf.Writing.HtmlSchema.Tests.csproj", "{77F45239-2333-490D-BFDA-B7AA289EF83D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.TestSuite.RdfStar", "Testing\dotNetRdf.TestSuite.RdfStar\dotNetRdf.TestSuite.RdfStar.csproj", "{34F1672D-1A9C-4BAB-9E28-DA06DE0A90B0}"
 EndProject

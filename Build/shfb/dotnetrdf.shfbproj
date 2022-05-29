@@ -35,20 +35,41 @@
     <NamingMethod>MemberName</NamingMethod>
     <HelpTitle>dotNetRDF API Documentation</HelpTitle>
     <FooterText>Please report any bugs or issues with this documentation at http://github.com/dotnetrdf/dotnetrdf/issues</FooterText>
-    <CopyrightText>Copyright %28c%29 2009 - 2021 dotNetRDF Project</CopyrightText>
+    <CopyrightText>Copyright %28c%29 2009 - 2022 dotNetRDF Project</CopyrightText>
     <CopyrightHref>https://raw.githubusercontent.com/dotnetrdf/dotnetrdf/master/License.txt</CopyrightHref>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf\bin\$(Configuration)\netstandard2.0\dotNetRdf.dll" />
       <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf\bin\$(Configuration)\netstandard2.0\dotNetRdf.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.AspNet\bin\$(Configuration)\net472\dotNetRdf.AspNet.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.AspNet\bin\$(Configuration)\net472\dotNetRdf.AspNet.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Client\bin\$(Configuration)\netstandard2.0\dotNetRdf.Client.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Client\bin\$(Configuration)\netstandard2.0\dotNetRdf.Client.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Data.DataTables\bin\$(Configuration)\netstandard2.0\dotNetRdf.Data.DataTables.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Data.DataTables\bin\$(Configuration)\netstandard2.0\dotNetRdf.Data.DataTables.xml" />
       <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Data.Virtuoso\bin\$(Configuration)\net472\dotNetRDF.Data.Virtuoso.dll" />
       <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Data.Virtuoso\bin\$(Configuration)\net472\dotNetRDF.Data.Virtuoso.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Dynamic\bin\$(Configuration)\netstandard2.0\dotNetRdf.Dynamic.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Dynamic\bin\$(Configuration)\netstandard2.0\dotNetRdf.Dynamic.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Inferencing\bin\$(Configuration)\netstandard2.0\dotNetRdf.Inferencing.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Inferencing\bin\$(Configuration)\netstandard2.0\dotNetRdf.Inferencing.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Ontology\bin\$(Configuration)\netstandard2.0\dotNetRdf.Ontology.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Ontology\bin\$(Configuration)\netstandard2.0\dotNetRdf.Ontology.xml" />
       <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Query.FullText\bin\$(Configuration)\netstandard2.0\dotNetRDF.Query.FullText.dll" />
       <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Query.FullText\bin\$(Configuration)\netstandard2.0\dotNetRDF.Query.FullText.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Query.Spin\bin\$(Configuration)\netstandard2.0\dotNetRdf.Query.Spin.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Query.Spin\bin\$(Configuration)\netstandard2.0\dotNetRdf.Query.Spin.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Shacl\bin\$(Configuration)\netstandard2.0\dotNetRdf.Shacl.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Shacl\bin\$(Configuration)\netstandard2.0\dotNetRdf.Shacl.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Skos\bin\$(Configuration)\netstandard2.0\dotNetRdf.Skos.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Skos\bin\$(Configuration)\netstandard2.0\dotNetRdf.Skos.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Writing.HtmlSchema\bin\$(Configuration)\netstandard2.0\dotNetRdf.Writing.HtmlSchema.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Writing.HtmlSchema\bin\$(Configuration)\netstandard2.0\dotNetRdf.Writing.HtmlSchema.xml" />
     </DocumentationSources>
-    <ProjectSummary>&amp;lt%3bp&amp;gt%3b&amp;lt%3bstrong&amp;gt%3bdotNetRDF&amp;lt%3b/strong&amp;gt%3b is a C#/.Net Library for working with RDF and the Semantic Web which is entirely free and open source.&amp;lt%3b/p&amp;gt%3b
+    <ProjectSummary>
+    &amp;lt%3bp&amp;gt%3b&amp;lt%3bstrong&amp;gt%3bdotNetRDF&amp;lt%3b/strong&amp;gt%3b is a C#/.Net Library for working with RDF and the Semantic Web which is entirely free and open source.&amp;lt%3b/p&amp;gt%3b
 
-&amp;lt%3bp&amp;gt%3bThis is the formal API documentation for the Library whose main namespace is VDS.RDF.  You may alternatively wish to look at the &amp;lt%3ba href=&amp;quot%3bhttp://github.com/dotnetrdf/dotnetrdf/wiki/UserGuide&amp;quot%3b&amp;gt%3bUser Guide&amp;lt%3b/a&amp;gt%3b which contains informal documentation and examples or just visit the main &amp;lt%3ba href=&amp;quot%3bhttps://dotnetrdf.org&amp;quot%3b&amp;gt%3bProject Website&amp;lt%3b/a&amp;gt%3b.&amp;lt%3b/p&amp;gt%3b</ProjectSummary>
+    &amp;lt%3bp&amp;gt%3bThis is the formal API documentation for the Library whose main namespace is VDS.RDF.  You may alternatively wish to look at the &amp;lt%3ba href=&amp;quot%3bhttps://dotnetrdf.org/docs/&amp;quot%3b&amp;gt%3bUser Documentation&amp;lt%3b/a&amp;gt%3b which contains informal documentation and examples or just visit the main &amp;lt%3ba href=&amp;quot%3bhttps://dotnetrdf.org&amp;quot%3b&amp;gt%3bProject Website&amp;lt%3b/a&amp;gt%3b.&amp;lt%3b/p&amp;gt%3b</ProjectSummary>
     <TransformComponentArguments>
       <Argument Key="logoFile" Value="" xmlns="" />
       <Argument Key="logoHeight" Value="" xmlns="" />

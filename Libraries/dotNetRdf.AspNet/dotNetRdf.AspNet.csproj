@@ -8,6 +8,7 @@
     <PackageTags>RDF;Semantic;Web;SPARQL;Web API</PackageTags>
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>VDS.RDF</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotNetRdf.HtmlSchema\dotNetRdf.HtmlSchema.csproj" />
+    <ProjectReference Include="..\dotNetRdf.Writing.HtmlSchema\dotNetRdf.Writing.HtmlSchema.csproj" />
     <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web" />
