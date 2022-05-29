@@ -88,7 +88,7 @@ jobs:
       id: get_binaries
       uses: actions/download-artifact@v3
       with:
-        name: nugets
+        name: nuget
     - name: Get Help
       id: get_help
       uses: actions/download-artifact@v3
