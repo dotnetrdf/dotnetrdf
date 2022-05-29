@@ -80,7 +80,7 @@ jobs:
   
   release:
     runs-on: windows-latest
-    needs: [nuget docs]
+    needs: [nuget, docs]
     
     steps:
     - name: Get Binaries
