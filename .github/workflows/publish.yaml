@@ -66,6 +66,7 @@ jobs:
       run: |
         [[ ! "$GITHUB_REF" =~ refs/tags ]] && exit
         echo "::set-output name=value::${GITHUB_REF#refs/tags/}"
+      shell: bash
         
     - name: Create Relase Zip
       run: 7z a -tzip dotNetRdf_apidocs_${{ steps.version_tag.outputs.value }}.zip Help
