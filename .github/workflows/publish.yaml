@@ -103,6 +103,9 @@ jobs:
       with:
         draft: true
         prerelease: true
+        files:
+        - *.zip
+        - *.nupkg
         
           
       
