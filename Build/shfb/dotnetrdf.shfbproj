@@ -13,7 +13,7 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.5</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.7.2</FrameworkVersion>
     <OutputPath>.\Help\</OutputPath>
     <HtmlHelpName>dotNetRDFApi</HtmlHelpName>
     <Language>en-US</Language>
@@ -39,12 +39,12 @@
     <CopyrightHref>https://raw.githubusercontent.com/dotnetrdf/dotnetrdf/master/License.txt</CopyrightHref>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF\bin\$(Configuration)\net40\dotNetRDF.dll" />
-      <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF\bin\$(Configuration)\net40\dotNetRDF.xml" />
-      <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Data.Virtuoso\bin\$(Configuration)\net40\dotNetRDF.Data.Virtuoso.dll" />
-      <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Data.Virtuoso\bin\$(Configuration)\net40\dotNetRDF.Data.Virtuoso.xml" />
-      <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Query.FullText\bin\$(Configuration)\net40\dotNetRDF.Query.FullText.dll" />
-      <DocumentationSource sourceFile="..\..\Libraries\dotNetRDF.Query.FullText\bin\$(Configuration)\net40\dotNetRDF.Query.FullText.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf\bin\$(Configuration)\netstandard2.0\dotNetRdf.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf\bin\$(Configuration)\netstandard2.0\dotNetRdf.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Data.Virtuoso\bin\$(Configuration)\net472\dotNetRDF.Data.Virtuoso.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Data.Virtuoso\bin\$(Configuration)\net472\dotNetRDF.Data.Virtuoso.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Query.FullText\bin\$(Configuration)\netstandard2.0\dotNetRDF.Query.FullText.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Query.FullText\bin\$(Configuration)\netstandard2.0\dotNetRDF.Query.FullText.xml" />
     </DocumentationSources>
     <ProjectSummary>&amp;lt%3bp&amp;gt%3b&amp;lt%3bstrong&amp;gt%3bdotNetRDF&amp;lt%3b/strong&amp;gt%3b is a C#/.Net Library for working with RDF and the Semantic Web which is entirely free and open source.&amp;lt%3b/p&amp;gt%3b
 
