@@ -40,9 +40,8 @@ jobs:
         name: nuget
         path: nugets\*.nupkg
 
-# Temporarily disabled
-#    - name: Publish NuGet Packages
-#      run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
+    - name: Publish NuGet Packages
+      run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
 
   docs:
     runs-on: windows-latest
