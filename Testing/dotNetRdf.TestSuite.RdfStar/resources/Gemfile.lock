@@ -44,7 +44,7 @@ GEM
     multi_json (1.15.0)
     net-http-persistent (4.0.1)
       connection_pool (~> 2.2)
-    rack (2.2.3)
+    rack (2.2.3.1)
     rake (13.0.6)
     rdf (3.1.15)
       hamster (~> 3.0)
