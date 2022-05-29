@@ -9,6 +9,7 @@
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <RootNamespace>VDS.RDF</RootNamespace>
     <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
