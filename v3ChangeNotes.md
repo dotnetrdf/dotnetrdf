@@ -142,3 +142,11 @@ Because the parsers for SPARQL Query and Update are now in a separate assembly f
 will perform this registration.
 
 This change will break existing code that uses the MimeTypesHelper class to retrieve SPARQL query or update parsers.
+
+## Triple and IRdfHandler changes
+
+The `Triple` class no longer has a `Graph` property. This property was used in dotNetRDF 2.x to reference the `IGraph` instance that the triple was created in and not necessarily the graph that the triple existed in, which could lead to some confusion.
+Because `Triple` has been changed to remove this property, the `IRdfHandler` interface has been extended to add a new `HandleQuad` method which receives a `Triple` and a `IRefNode` as arguments. 
+This method is invoked when handling a triple that is asserted in a graph, with the name of the graph as the `IRefNode` argument.
+When updating your implementations of `IRdfHandler`, please be aware that some parsers (especially those that support graphs as part of their syntax) may report triples in the default graph by invoking `HandleQuad` with a null value for the `IRefNode` argument, rather than by invoking `HandleTriple`.
+You should therefore ensure that you provide an implementation of `HandleQuad` even if your handler does not handle triples in a named graph. In your handler you can then decide whether to treat a non-null `IRefNode` argument as an error or to handle it in some other way (e.g. by ignoring the graph component, or by ignoring the whole quad).
