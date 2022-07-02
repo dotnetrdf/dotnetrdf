@@ -1,0 +1,15 @@
+{
+  "watch": {
+    "serve": {
+      "patterns": ["**", "!build", "!obj"],
+      "extensions": "md,yml"
+    }
+  },
+  "scripts": {
+    "watch": "npm-watch serve",
+    "serve": "docfx build --serve",
+    "metadata": "docfx metadata",
+    "build": "docfx build"
+  }
+  
+}

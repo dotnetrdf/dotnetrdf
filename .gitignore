@@ -47,3 +47,8 @@ Testing/unittest/resources/UnitTestConfig.properties
 
 # Sandcastle Help File Builder Output Directory
 Build/shfb/Help/
+
+# DocFX output directories
+docs/build/
+docs/obj/
+docs/api/*.yml

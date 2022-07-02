@@ -1,0 +1,47 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": ["**/*.csproj"],
+          "exclude": [ "**/bin/**", "**/obj/**"],
+          "src": "../Libraries"
+        }
+      ],
+      "dest": "api",
+      "properties": {
+          "TargetFramework": "netstandard2.0"
+      }
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": ["**/*.yml"],
+        "src": "api",
+        "dest": "api"
+      },
+      {
+        "files": ["**/*.{md,yml}"],
+        "exclude": ["api/**/*.{md,yml}"],
+        "src": ".",
+      },
+      {
+        "files": ["toc.yml", "index.md"],
+        "src": "."
+      }
+    ],
+    "resource": [
+      {
+        "files": ["images/**", "files/design/*.docx", "files/performance/**", ".jekyllignore"],
+        "src": "."
+      }
+    ],
+    "globalMetadata": {
+      "_appTitle": "DotNetRDF Documentation",
+      "_appLogoPath": "images/rdf_flyer.svg"
+    },
+    "dest": "build",
+    "template": ["default", "templates"]
+  }
+}
