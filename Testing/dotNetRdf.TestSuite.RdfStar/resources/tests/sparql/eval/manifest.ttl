@@ -11,25 +11,14 @@ PREFIX ut:     <http://www.w3.org/2009/sparql/tests/test-update#>
 PREFIX dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#>
 PREFIX test:   <http://www.w3.org/2001/sw/DataAccess/tests/>
 PREFIX trs:    <https://w3c.github.io/rdf-star/tests/sparql/eval#>
-PREFIX dct:    <http://purl.org/dc/terms/>
-PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
-PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
-PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
 
 trs:manifest  rdf:type mf:Manifest ;
-    rdfs:label "SPARQL-star Evaluation Tests"@en ;
-    skos:prefLabel "La suite des tests d'évaluation de SPARQL-star"@fr;
-    skos:prefLabel "Conjunto de pruebas para evaluar SPARQL-star"@es;
-    dct:issued "2021-06-21"^^xsd:date ;
-    dct:modified "2021-07-18"^^xsd:date ;
-    dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
-    dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star/> ; foaf:name " RDF-star Interest Group within the W3C RDF-DEV Community Group" ] ;
-    rdfs:seeAlso <README>;
+    rdfs:label "SPARQL-star Evaluation Tests" ;
     mf:entries
     (
         trs:sparql-star-results-1j
         trs:sparql-star-results-1x
-
+        
         trs:sparql-star-basic-2
         trs:sparql-star-basic-3
         trs:sparql-star-basic-4
@@ -340,27 +329,27 @@ trs:sparql-star-order-2  rdf:type mf:QueryEvaluationTest ;
 
 trs:sparql-star-update-1 rdf:type mf:UpdateEvaluationTest ;
     mf:name    "SPARQL-star - Update" ;
-    mf:action [ ut:request <sparql-star-update-1.ru> ;
+    mf:action [ ut:request <sparql-star-update-1.ru> ; 
                 ut:data <data-6.trig>
               ] ;
-    mf:result [ ut:data <update-result-1.trig>
+    mf:result [ ut:data <update-result-1.trig> 
               ] ;
     .
 
 trs:sparql-star-update-2 rdf:type mf:UpdateEvaluationTest ;
     mf:name    "SPARQL-star - Update - annotation" ;
-    mf:action [ ut:request <sparql-star-update-2.ru> ;
+    mf:action [ ut:request <sparql-star-update-2.ru> ; 
                 ut:data <data-6.trig>
               ] ;
-    mf:result [ ut:data <update-result-2.trig>
+    mf:result [ ut:data <update-result-2.trig> 
               ] ;
     .
 
 trs:sparql-star-update-3 rdf:type mf:UpdateEvaluationTest ;
     mf:name    "SPARQL-star - Update - data" ;
-    mf:action [ ut:request <sparql-star-update-3.ru> ;
+    mf:action [ ut:request <sparql-star-update-3.ru> ; 
                 ut:data <empty.nq>
               ] ;
-    mf:result [ ut:data <update-result-3.trig>
+    mf:result [ ut:data <update-result-3.trig> 
               ] ;
     .
