@@ -8,20 +8,9 @@ PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#>
 PREFIX rdft:   <http://www.w3.org/ns/rdftest#>
 PREFIX trs:    <https://w3c.github.io/rdf-star/tests/nt/syntax#>
-PREFIX dct:    <http://purl.org/dc/terms/>
-PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
-PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
-PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
 
 trs:manifest  rdf:type mf:Manifest ;
-   rdfs:label "N-Triples-star Syntax Tests"@en ;
-   skos:prefLabel "La suite des tests pour N-Triples-star"@fr;
-   skos:prefLabel "Conjunto de pruebas para N-Triples-star"@es;
-   dct:issued "2021-06-21"^^xsd:date ;
-   dct:modified "2021-07-18"^^xsd:date ;
-   dct:licence <https://www.w3.org/Consortium/Legal/2008/03-bsd-license> ;
-   dct:creator [ foaf:homepage <https://w3c.github.io/rdf-star/> ; foaf:name " RDF-star Interest Group within the W3C RDF-DEV Community Group" ] ;
-   rdfs:seeAlso <README>;
+    rdfs:label "N-Triples-star Syntax Tests" ;
     mf:entries
     (
         trs:ntriples-star-1
@@ -78,7 +67,7 @@ trs:ntriples-star-bnode-2 rdf:type rdft:TestNTriplesPositiveSyntax ;
    mf:name      "N-Triples-star - Blank node object" ;
    mf:action    <ntriples-star-bnode-2.nt> ;
    .
-
+   
 trs:ntriples-star-nested-1 rdf:type rdft:TestNTriplesPositiveSyntax ;
    mf:name      "N-Triples-star - Nested subject term" ;
    mf:action    <ntriples-star-nested-1.nt> ;
@@ -90,12 +79,12 @@ trs:ntriples-star-nested-2 rdf:type rdft:TestNTriplesPositiveSyntax ;
    .
 
 ## Bad syntax
-
+ 
 trs:ntriples-star-bad-1 rdf:type rdft:TestNTriplesNegativeSyntax ;
     mf:name      "N-Triples-star - Bad - quoted triple as predicate" ;
     mf:action    <ntriples-star-bad-syntax-1.nt> ;
     .
-
+    
 trs:ntriples-star-bad-2 rdf:type rdft:TestNTriplesNegativeSyntax ;
     mf:name      "N-Triples-star - Bad - quoted triple, literal subject" ;
     mf:action    <ntriples-star-bad-syntax-2.nt> ;

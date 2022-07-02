@@ -10,9 +10,6 @@
     "test": "http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#",
     "trs": "https://w3c.github.io/rdf-star/tests/semantics#",
     "@vocab": "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#",
-    "dct": "http://purl.org/dc/terms/",
-    "foaf": "http://xmlns.com/foaf/0.1/",
-    "skos": "http://www.w3.org/2004/02/skos/core#",
     "@base": "https://w3c.github.io/rdf-star/tests/semantics/",
     "include": {
       "@type": "@id",
@@ -48,32 +45,8 @@
     "result": {
       "@type": "@id"
     },
-    "label": {
-      "@id": "rdfs:label",
-      "@container": "@language"
-    },
-    "prefLabel": {
-      "@id": "http://www.w3.org/2004/02/skos/core#prefLabel",
-      "@container": "@language"
-    },
+    "label": "rdfs:label",
     "comment": "rdfs:comment",
-    "issued": {
-      "@id": "dct:issued",
-      "@type": "xsd:date"
-    },
-    "modified": {
-      "@id": "dct:modified",
-      "@type": "xsd:date"
-    },
-    "license": {
-      "@id": "dct:license",
-      "@type": "@id"
-    },
-    "creator": {
-      "@id": "dct:creator",
-      "@type": "@id",
-      "@container": "@set"
-    },
     "seeAlso": {
       "@id": "rdfs:seeAlso",
       "@type": "@vocab"
@@ -180,22 +153,7 @@
     }
   ],
   "@type": "Manifest",
-  "creator": [
-    {
-      "foaf:homepage": {
-        "@id": "../../"
-      },
-      "foaf:name": " RDF-star Interest Group within the W3C RDF-DEV Community Group"
-    }
-  ],
-  "issued": "2021-06-21",
-  "dct:licence": {
-    "@id": "https://www.w3.org/Consortium/Legal/2008/03-bsd-license"
-  },
-  "modified": "2021-07-18",
-  "label": {
-    "en": "RDF-star Semantics tests"
-  },
+  "label": "RDF-star Semantics tests",
   "seeAlso": "https://w3c.github.io/rdf-star/tests/semantics/README",
   "entries": [
     {
@@ -630,9 +588,5 @@
 
       ]
     }
-  ],
-  "prefLabel": {
-    "fr": "La suite des tests pour la sémantique de RDF-star",
-    "es": "Conjunto de pruebas para la semántica de RDF-star"
-  }
+  ]
 }
