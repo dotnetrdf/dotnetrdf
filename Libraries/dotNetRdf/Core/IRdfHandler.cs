@@ -70,6 +70,14 @@ namespace VDS.RDF
         bool HandleTriple(Triple t);
 
         /// <summary>
+        /// Handles a Quad (Triple + Graph).
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be aborted.</returns>
+        bool HandleQuad(Triple t, IRefNode graph);
+
+        /// <summary>
         /// Gets whether the Handler will always handle all data (i.e. won't terminate parsing early).
         /// </summary>
         bool AcceptsAll

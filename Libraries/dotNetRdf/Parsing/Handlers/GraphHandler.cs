@@ -34,7 +34,6 @@ namespace VDS.RDF.Parsing.Handlers
     public class GraphHandler : BaseRdfHandler
     {
         private IGraph _target;
-        private IGraph _g;
 
         /// <summary>
         /// Creates a new Graph Handler.
@@ -43,34 +42,28 @@ namespace VDS.RDF.Parsing.Handlers
         public GraphHandler(IGraph g)
             : base(g)
         {
-            _g = g ?? throw new ArgumentNullException("graph");
+            Graph = g ?? throw new ArgumentNullException(nameof(g));
         }
 
         /// <summary>
         /// Gets the Graph that this handler wraps.
         /// </summary>
-        protected IGraph Graph
-        {
-            get
-            {
-                return _g;
-            }
-        }
+        protected IGraph Graph { get; }
 
         /// <summary>
         /// Starts Handling RDF ensuring that if the target Graph is non-empty RDF is handling into a temporary Graph until parsing completes successfully.
         /// </summary>
         protected override void StartRdfInternal()
         {
-            if (_g.IsEmpty)
+            if (Graph.IsEmpty)
             {
-                _target = _g;
+                _target = Graph;
             }
             else
             {
                 _target = new Graph(true);
-                _target.NamespaceMap.Import(_g.NamespaceMap);
-                _target.BaseUri = _g.BaseUri;
+                _target.NamespaceMap.Import(Graph.NamespaceMap);
+                _target.BaseUri = Graph.BaseUri;
             }
             NodeFactory = _target;
         }
@@ -84,11 +77,11 @@ namespace VDS.RDF.Parsing.Handlers
             if (ok)
             {
                 // If the Target Graph was different from the Destination Graph then do a Merge
-                if (!ReferenceEquals(_g, _target))
+                if (!ReferenceEquals(Graph, _target))
                 {
-                    _g.Merge(_target);
-                    _g.NamespaceMap.Import(_target.NamespaceMap);
-                    if (_g.BaseUri == null) _g.BaseUri = _target.BaseUri;
+                    Graph.Merge(_target);
+                    Graph.NamespaceMap.Import(_target.NamespaceMap);
+                    if (Graph.BaseUri == null) Graph.BaseUri = _target.BaseUri;
                 }
                 else
                 {
@@ -100,9 +93,9 @@ namespace VDS.RDF.Parsing.Handlers
             else
             {
                 // Discard the Parsed Triples if parsing failed
-                if (ReferenceEquals(_g, _target))
+                if (ReferenceEquals(Graph, _target))
                 {
-                    _g.Clear();
+                    Graph.Clear();
                     _target = null;
                 }
             }
@@ -144,6 +137,19 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="t"></param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
+        {
+            _target.Assert(t);
+            return true;
+        }
+
+        /// <summary>
+        /// Handles Quads by asserting them in the target graph specified in the constructor of this handler.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        /// <remarks>This handler asserts all triples received into the target graph, regardless of the graph name passed in <paramref name="graph"/>.</remarks>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
         {
             _target.Assert(t);
             return true;

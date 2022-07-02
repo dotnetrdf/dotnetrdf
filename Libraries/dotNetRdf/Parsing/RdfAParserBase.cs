@@ -759,7 +759,10 @@ namespace VDS.RDF.Parsing
                 {
                     foreach (INode dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "typeof")))
                     {
-                        if (!context.Handler.HandleTriple(new Triple(newSubj, rdfType, dtObj))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(newSubj, rdfType, dtObj)))
+                        {
+                            ParserHelper.Stop();
+                        }
                     }
                 }
             }
@@ -776,14 +779,20 @@ namespace VDS.RDF.Parsing
                 {
                     foreach (INode pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rel")))
                     {
-                        if (!context.Handler.HandleTriple(new Triple(newSubj, pred, currObj))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(newSubj, pred, currObj)))
+                        {
+                            ParserHelper.Stop();
+                        }
                     }
                 }
                 if (rev)
                 {
                     foreach (INode pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rev")))
                     {
-                        if (!context.Handler.HandleTriple(new Triple(currObj, pred, newSubj))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(currObj, pred, newSubj)))
+                        {
+                            ParserHelper.Stop();
+                        }
                     }
                 }
             }
@@ -930,7 +939,10 @@ namespace VDS.RDF.Parsing
                 {
                     foreach (INode pred in ParseAttribute(context, evalContext, GetAttribute(currElement, "property")))
                     {
-                        if (!context.Handler.HandleTriple(new Triple(newSubj, pred, currLiteral))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(newSubj, pred, currLiteral)))
+                        {
+                            ParserHelper.Stop();
+                        }
                     }
                 }
             }
@@ -946,11 +958,17 @@ namespace VDS.RDF.Parsing
                 {
                     if (i.Direction == IncompleteTripleDirection.Forward)
                     {
-                        if (!context.Handler.HandleTriple(new Triple(evalContext.ParentSubject, i.Predicate, newSubj))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(evalContext.ParentSubject, i.Predicate, newSubj)))
+                        {
+                            ParserHelper.Stop();
+                        }
                     }
                     else
                     {
-                        if (!context.Handler.HandleTriple(new Triple(newSubj, i.Predicate, evalContext.ParentSubject))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(newSubj, i.Predicate, evalContext.ParentSubject)))
+                        {
+                            ParserHelper.Stop();
+                        }
                     }
                 }
             }

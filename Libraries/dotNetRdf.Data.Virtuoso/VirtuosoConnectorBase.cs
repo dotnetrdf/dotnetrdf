@@ -566,6 +566,23 @@ namespace VDS.RDF.Storage
             UpdateGraph(u, additions, removals);
         }
 
+        /// <inheritdoc />
+        public override void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            switch (graphName)
+            {
+                case null:
+                    UpdateGraph((Uri)null, additions, removals);
+                    break;
+                case IUriNode graphUri:
+                    UpdateGraph(graphUri.Uri, additions, removals);
+                    break;
+                case IBlankNode blankNode:
+                    throw new RdfStorageException(
+                        "The Virtuoso connector does not support updating graphs with a blank node name.");
+            }
+        }
+
         /// <summary>
         /// Deletes a Graph from the Virtuoso store.
         /// </summary>

@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2022 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,39 +23,18 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
+namespace VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Writing.Formatting
+/// <summary>
+/// Interface for formatting triples in the context of a graph.
+/// </summary>
+public interface IQuadFormatter
 {
     /// <summary>
-    /// Interface for formatters designed to format entire RDF Graphs.
+    /// Formats a triple in the context of a graph as a string.
     /// </summary>
-    public interface IGraphFormatter : ITripleFormatter
-    {
-        /// <summary>
-        /// Generates the header section for the Graph.
-        /// </summary>
-        /// <param name="g">Graph.</param>
-        /// <returns></returns>
-        string FormatGraphHeader(IGraph g);
-
-        /// <summary>
-        /// Generates the header section for the Graph.
-        /// </summary>
-        /// <param name="namespaces">Namespaces.</param>
-        /// <param name="uriFactory">UriFactory to use when creating new Uri instances.</param>
-        /// <returns></returns>
-        string FormatGraphHeader(INamespaceMapper namespaces, IUriFactory uriFactory=null);
-
-        /// <summary>
-        /// Generates a generic header section.
-        /// </summary>
-        /// <returns></returns>
-        string FormatGraphHeader();
-
-        /// <summary>
-        /// Generates the footer section.
-        /// </summary>
-        /// <returns></returns>
-        string FormatGraphFooter();
-    }
+    /// <param name="t">Triple.</param>
+    /// <param name="graph">Containing graph name.</param>
+    /// <returns></returns>
+    string Format(Triple t, IRefNode graph);
 }

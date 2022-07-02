@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Parsing.Handlers
@@ -43,9 +42,10 @@ namespace VDS.RDF.Parsing.Handlers
         public const int DefaultBatchSize = 1000;
 
         private IStorageProvider _manager;
-        private List<Triple> _actions, _bnodeActions;
-        private HashSet<string> _bnodeUris;
-        private Uri _defaultGraphUri, _currGraphUri;
+        private List<Triple> _actions;
+        private List<Tuple<Triple, IRefNode>> _bnodeActions;
+        private HashSet<IRefNode> _bnodeUris;
+        private IRefNode _defaultGraphUri, _currGraphUri;
         private int _batchSize;
 
         /// <summary>
@@ -62,13 +62,13 @@ namespace VDS.RDF.Parsing.Handlers
             if (batchSize <= 0) throw new ArgumentException("batchSize", "Batch Size must be >= 1");
 
             _manager = manager;
-            _defaultGraphUri = defaultGraphUri;
+            _defaultGraphUri = defaultGraphUri == null ? null : new UriNode(defaultGraphUri);
             _batchSize = batchSize;
 
             // Make the Actions Queue one larger than the Batch Size
             _actions = new List<Triple>(_batchSize + 1);
-            _bnodeActions = new List<Triple>(_batchSize + 1);
-            _bnodeUris = new HashSet<string>();
+            _bnodeActions = new List<Tuple<Triple, IRefNode>>();
+            _bnodeUris = new HashSet<IRefNode>();
         }
 
         /// <summary>
@@ -101,7 +101,6 @@ namespace VDS.RDF.Parsing.Handlers
         {
             _actions.Clear();
             _bnodeActions.Clear();
-            _bnodeUris.Clear();
             _currGraphUri = _defaultGraphUri;
         }
 
@@ -117,49 +116,58 @@ namespace VDS.RDF.Parsing.Handlers
                 ProcessBatch();
             }
             // Then process each batch of non-ground triples
-            var uris = (from u in _bnodeUris
-                              select (u.Equals(string.Empty) ? null : UriFactory.Create(u))).ToList();
-            foreach (Uri u in uris)
+            foreach (IRefNode g in _bnodeUris)
             {
                 var batch = new List<Triple>();
                 for (var i = 0; i < _bnodeActions.Count; i++)
                 {
-                    if (EqualityHelper.AreUrisEqual(u, _bnodeActions[i].GraphUri))
+                    if (EqualityHelper.AreRefNodesEqual(g, _bnodeActions[i].Item2))
                     {
-                        batch.Add(_bnodeActions[i]);
+                        batch.Add(_bnodeActions[i].Item1);
                         _bnodeActions.RemoveAt(i);
                         i--;
                     }
                 }
-                if (u == null)
+                if (g == null)
                 {
                     _manager.UpdateGraph(_defaultGraphUri, batch, null);
                 }
                 else
                 {
-                    _manager.UpdateGraph(u, batch, null);
+                    _manager.UpdateGraph(g, batch, null);
                 }
             }
         }
 
         /// <summary>
-        /// Handles Triples by queuing them for writing and enacting the writing if the Batch Size has been reached/exceeded.
+        /// Handles triples by passing them to <see cref="HandleQuadInternal"/> for queuing, passing null as the target graph name.
         /// </summary>
-        /// <param name="t">Triple.</param>
+        /// <param name="t">Triple to handle.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
+        {
+            return HandleQuadInternal(t, _defaultGraphUri);
+        }
+
+        /// <summary>
+        /// Handles quads by queuing them for writing and enacting the writing if the Batch Size has been reached/exceeded.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
         {
             if (t.IsGroundTriple)
             {
                 // Ground Triples are processed in Batches as we handle the Triples
-                if (t.GraphUri != null && !EqualityHelper.AreUrisEqual(t.GraphUri, _currGraphUri))
+                if (graph != null && !EqualityHelper.AreRefNodesEqual(graph, _currGraphUri))
                 {
                     // The Triple has a Graph URI and it is not the same as the Current Graph URI
                     // so we process the existing Batch and then set the Current Graph URI to the new Graph URI
                     ProcessBatch();
-                    _currGraphUri = t.GraphUri;
+                    _currGraphUri = graph;
                 }
-                else if (t.GraphUri == null && !EqualityHelper.AreUrisEqual(_currGraphUri, _defaultGraphUri))
+                else if (graph == null && !EqualityHelper.AreRefNodesEqual(_defaultGraphUri, _currGraphUri))
                 {
                     // The Triple has no Graph URI and the Current Graph URI is not the Default Graph URI so
                     // we process the existing Batch and reset the Current Graph URI to the Default Graph URI
@@ -179,8 +187,8 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 // Non-Ground Triples (i.e. those with Blank Nodes) are saved up until the end to ensure that Blank
                 // Node are persisted properly
-                _bnodeActions.Add(t);
-                _bnodeUris.Add(t.GraphUri.ToSafeString());
+                _bnodeActions.Add(new Tuple<Triple, IRefNode>(t, graph));
+                _bnodeUris.Add(graph);
             }
             return true;
         }

@@ -35,8 +35,8 @@ namespace VDS.RDF.Parsing.Handlers
     public class GraphUriRewriteHandler
         : BaseRdfHandler, IWrappingRdfHandler
     {
-        private IRdfHandler _handler;
-        private Uri _graphUri;
+        private readonly IRdfHandler _handler;
+        private readonly IRefNode _graphName;
 
         /// <summary>
         /// Creates a new Graph URI rewriting handler.
@@ -47,7 +47,18 @@ namespace VDS.RDF.Parsing.Handlers
             : base()
         {
             _handler = handler;
-            _graphUri = graphUri;
+            _graphName = new UriNode(graphUri);
+        }
+
+        /// <summary>
+        /// Creates a new Graph URI rewriting handler.
+        /// </summary>
+        /// <param name="handler">Handler to wrap.</param>
+        /// <param name="graphName">Graph name to rewrite to.</param>
+        public GraphUriRewriteHandler(IRdfHandler handler, IRefNode graphName)
+        {
+            _handler = handler;
+            _graphName = graphName;
         }
 
         /// <summary>
@@ -108,8 +119,18 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            t = new Triple(t.Subject, t.Predicate, t.Object, _graphUri);
-            return _handler.HandleTriple(t);
+            return _handler.HandleQuad(t, _graphName);
+        }
+
+        /// <summary>
+        /// Handles a quad by rewriting the graph name and passing it to the inner handler.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            return _handler.HandleQuad(t, _graphName);
         }
 
         /// <summary>

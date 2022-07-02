@@ -986,12 +986,18 @@ namespace VDS.RDF.Parsing
                 // Assert the Triple
                 if (!reverse)
                 {
-                    if (!context.Handler.HandleTriple(new Triple(subj, pred, obj, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, pred, obj, context.VariableContext)))
+                    {
+                        ParserHelper.Stop();
+                    }
                 }
                 else
                 {
                     // When reversed this means the predicate was Implied By (<=)
-                    if (!context.Handler.HandleTriple(new Triple(obj, pred, subj, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(obj, pred, subj, context.VariableContext)))
+                    {
+                        ParserHelper.Stop();
+                    }
                 }
 
                 // Expect a comma/semicolon/dot terminator if we are to continue
@@ -1112,8 +1118,15 @@ namespace VDS.RDF.Parsing
 
                     case Token.RIGHTBRACKET:
                         // We might terminate here if someone put a comment before the end of the Collection
-                        if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj, context.VariableContext))) ParserHelper.Stop();
-                        if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, context.VariableContext))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj, context.VariableContext)))
+                        {
+                            ParserHelper.Stop();
+                        }
+
+                        if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, context.VariableContext)))
+                        {
+                            ParserHelper.Stop();
+                        }
                         return;
 
                     case Token.QNAME:
@@ -1138,19 +1151,28 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Assert the relevant Triples
-                if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj, context.VariableContext))) ParserHelper.Stop();
+                if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj, context.VariableContext)))
+                {
+                    ParserHelper.Stop();
+                }
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
                     // End of the Collection
                     context.Tokens.Dequeue();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, context.VariableContext)))
+                    {
+                        ParserHelper.Stop();
+                    }
                     return;
                 }
                 else
                 {
                     // More stuff in the collection
                     nextSubj = context.Handler.CreateBlankNode();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, nextSubj, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, nextSubj, context.VariableContext)))
+                    {
+                        ParserHelper.Stop();
+                    }
                     subj = nextSubj;
                 }
             } while (true);
@@ -1255,11 +1277,17 @@ namespace VDS.RDF.Parsing
 
                 if (forward)
                 {
-                    if (!context.Handler.HandleTriple(new Triple(firstItem, secondItem, path, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(firstItem, secondItem, path, context.VariableContext)))
+                    {
+                        ParserHelper.Stop();
+                    }
                 }
                 else
                 {
-                    if (!context.Handler.HandleTriple(new Triple(path, secondItem, firstItem, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(path, secondItem, firstItem, context.VariableContext)))
+                    {
+                        ParserHelper.Stop();
+                    }
                 }
 
                 // Does the Path continue?

@@ -702,7 +702,10 @@ namespace VDS.RDF.Parsing
                 // Assert a Triple regarding Type
                 pred = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
                 obj = Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
-                if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
+                if (!context.Handler.HandleTriple(new Triple(subj, pred, obj)))
+                {
+                    ParserHelper.Stop();
+                }
             }
 
             // Go back over Attributes looking for property attributes
@@ -720,7 +723,10 @@ namespace VDS.RDF.Parsing
                         var uriref = new UriReferenceEvent(attr.Value, attr.SourceXml);
                         obj = Resolve(context, uriref, element.BaseUri);
 
-                        if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(subj, pred, obj)))
+                        {
+                            ParserHelper.Stop();
+                        }
                     }
                     else
                     {
@@ -737,7 +743,10 @@ namespace VDS.RDF.Parsing
                             obj = context.Handler.CreateLiteralNode(attr.Value, element.Language);
                         }
 
-                        if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(subj, pred, obj)))
+                        {
+                            ParserHelper.Stop();
+                        }
                     }
                 }
             }

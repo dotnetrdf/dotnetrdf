@@ -191,7 +191,7 @@ namespace VDS.RDF.Parsing
                                     INode typeNode = MakeNode(handler, type, graphNode);
                                     if (typeNode != null)
                                     {
-                                        handler.HandleTriple(new Triple(subjectNode, rdfTypeNode, typeNode, graphNode));
+                                        handler.HandleQuad(new Triple(subjectNode, rdfTypeNode, typeNode), graphNode);
                                     }
                                 }
                             }
@@ -204,7 +204,7 @@ namespace VDS.RDF.Parsing
                                     INode objectNode = MakeNode(handler, item, graphNode);
                                     if (predicateNode != null && objectNode != null)
                                     {
-                                        handler.HandleTriple(new Triple(subjectNode, predicateNode, objectNode, graphNode));
+                                        handler.HandleQuad(new Triple(subjectNode, predicateNode, objectNode), graphNode);
                                     }
                                 }
                             }
@@ -302,25 +302,25 @@ namespace VDS.RDF.Parsing
                     IBlankNode literalNode = handler.CreateBlankNode();
                     Uri xsdString =
                         UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
-                    handler.HandleTriple(new Triple(
+                    handler.HandleQuad(new Triple(
                         literalNode,
                         handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfValue)),
-                        handler.CreateLiteralNode(literalValue, xsdString),
-                        graphName));
+                        handler.CreateLiteralNode(literalValue, xsdString)),
+                        graphName);
                     if (!string.IsNullOrEmpty(language))
                     {
-                        handler.HandleTriple(new Triple(
+                        handler.HandleQuad(new Triple(
                             literalNode,
                             handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfLanguage)),
-                            handler.CreateLiteralNode(language, xsdString),
-                            graphName));
+                            handler.CreateLiteralNode(language, xsdString)),
+                            graphName);
                     }
 
-                    handler.HandleTriple(new Triple(
+                    handler.HandleQuad(new Triple(
                         literalNode,
                         handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfDirection)),
-                        handler.CreateLiteralNode(direction, xsdString),
-                        graphName));
+                        handler.CreateLiteralNode(direction, xsdString)),
+                        graphName);
 
                     return literalNode;
                 }
@@ -368,10 +368,10 @@ namespace VDS.RDF.Parsing
                 INode obj = MakeNode(handler, list[ix], graphName);
                 if (obj != null)
                 {
-                    handler.HandleTriple(new Triple(subject, rdfFirst, obj, graphName));
+                    handler.HandleQuad(new Triple(subject, rdfFirst, obj), graphName);
                 }
                 INode rest = (ix + 1 < list.Count) ? bNodes[ix + 1] : (INode)rdfNil;
-                handler.HandleTriple(new Triple(subject, rdfRest, rest, graphName));
+                handler.HandleQuad(new Triple(subject, rdfRest, rest), graphName);
             }
             return bNodes[0];
         }

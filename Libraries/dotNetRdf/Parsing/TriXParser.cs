@@ -313,7 +313,11 @@ namespace VDS.RDF.Parsing
             }
 
             // Assert the resulting Triple
-            if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) ParserHelper.Stop();
+            IRefNode graphName = graphUri == null ? null : handler.CreateUriNode(graphUri);
+            if (!handler.HandleQuad(new Triple(subj, pred, obj), graphName))
+            {
+                ParserHelper.Stop();
+            }
         }
 
         private INode TryParseNode(XmlReader reader, IRdfHandler handler, TripleSegment segment, IUriFactory uriFactory)

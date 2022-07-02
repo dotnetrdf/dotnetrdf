@@ -411,17 +411,18 @@ namespace VDS.RDF.JsonLd
         private static void FixStringLiterals(ITripleStore store)
         {
             var xsdString = new Uri("http://www.w3.org/2001/XMLSchema#string");
-            foreach (Triple t in store.Triples.ToList())
+            foreach (IGraph graphToUpdate in store.Graphs)
             {
-                var literalNode = t.Object as ILiteralNode;
-                if (literalNode != null && String.IsNullOrEmpty(literalNode.Language) && literalNode.DataType == null)
+                foreach (Triple t in graphToUpdate.Triples.ToList())
                 {
-                    IGraph graphToUpdate = t.Graph;
-                    graphToUpdate.Retract(t);
-                    graphToUpdate.Assert(
-                        new Triple(t.Subject, t.Predicate,
-                            graphToUpdate.CreateLiteralNode(literalNode.Value, xsdString),
-                            graphToUpdate.BaseUri));
+                    if (t.Object is ILiteralNode literalNode && string.IsNullOrEmpty(literalNode.Language) &&
+                        literalNode.DataType == null)
+                    {
+                        graphToUpdate.Retract(t);
+                        graphToUpdate.Assert(
+                            new Triple(t.Subject, t.Predicate,
+                                graphToUpdate.CreateLiteralNode(literalNode.Value, xsdString)));
+                    }
                 }
             }
         }

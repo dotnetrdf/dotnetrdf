@@ -52,6 +52,17 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
+        /// Handles a quad by doing nothing.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// Indicates that the Handler accepts all Triples.
         /// </summary>
         public override bool AcceptsAll

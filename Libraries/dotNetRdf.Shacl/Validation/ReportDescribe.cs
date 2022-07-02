@@ -55,7 +55,7 @@ namespace VDS.RDF.Shacl.Validation
                         }
                     }
 
-                    if (!handler.HandleTriple(RewriteDescribeBNodes(new Triple(mappedSubject ?? originalSubject, t.Predicate, @object, t.Graph), bnodeMapping, handler)))
+                    if (!handler.HandleTriple(RewriteDescribeBNodes(new Triple(mappedSubject ?? originalSubject, t.Predicate, @object), bnodeMapping, handler)))
                     {
                         ParserHelper.Stop();
                     }

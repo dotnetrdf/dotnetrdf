@@ -94,6 +94,18 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
+        /// Handles Triples by setting the <see cref="AnyHandler.Any">Any</see> flag and terminating parsing.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            _any = true;
+            return false;
+        }
+
+        /// <summary>
         /// Gets that this handler does not accept all triples since it stops as soon as it sees the first triple.
         /// </summary>
         public override bool AcceptsAll

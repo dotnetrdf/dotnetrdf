@@ -43,8 +43,8 @@ namespace VDS.RDF.Parsing.Handlers
         : BaseRdfHandler, IWrappingRdfHandler
     {
         private readonly IRdfHandler _handler;
-        private readonly int _limit = 0, _offset = 0;
-        private int _counter = 0;
+        private readonly int _limit, _offset;
+        private int _counter;
 
         /// <summary>
         /// Creates a new Paging Handler.
@@ -58,8 +58,7 @@ namespace VDS.RDF.Parsing.Handlers
         public PagingHandler(IRdfHandler handler, int limit, int offset)
             : base(handler)
         {
-            if (handler == null) throw new ArgumentNullException("handler");
-            _handler = handler;
+            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
             _limit = Math.Max(-1, limit);
             _offset = Math.Max(0, offset);
         }
@@ -112,6 +111,26 @@ namespace VDS.RDF.Parsing.Handlers
         /// </remarks>
         protected override bool HandleTripleInternal(Triple t)
         {
+            return ApplyPaging(() => _handler.HandleTriple(t));
+        }
+
+        /// <summary>
+        /// Handles a quad by passing it to the Inner Handler only if the Offset has been passed and the Limit has yet to be reached.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Terminates handling immediately upon the reaching of the limit.
+        /// </remarks>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            return ApplyPaging(() => _handler.HandleQuad(t, graph));
+        }
+
+        private bool ApplyPaging(Func<bool> cb)
+        {
+
             // If the Limit is zero stop parsing immediately
             if (_limit == 0) return false;
 
@@ -121,30 +140,15 @@ namespace VDS.RDF.Parsing.Handlers
                 // Limit greater than zero means get a maximum of limit triples after the offset
                 if (_counter > _offset && _counter <= _limit + _offset)
                 {
-                    return _handler.HandleTriple(t);
+                    return cb();
                 }
-                else if (_counter > _limit + _offset)
-                {
-                    // Stop parsing when we've reached the limit
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+
+                // Continue parsing until we've reached the limit
+                return _counter <= _limit + _offset;
             }
-            else
-            {
-                // Limit less than zero means get all triples after the offset
-                if (_counter > _offset)
-                {
-                    return _handler.HandleTriple(t);
-                }
-                else
-                {
-                    return true;
-                }
-            }
+
+            // Limit less than zero means get all triples after the offset
+            return _counter <= _offset || cb();
         }
 
         /// <summary>

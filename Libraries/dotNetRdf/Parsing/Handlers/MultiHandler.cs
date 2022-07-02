@@ -145,6 +145,21 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
+        /// Handles a quad by getting all inner handlers to handler it.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Handling ends if any of the Handlers indicates it should stop but all Handlers are given the chance to finish the current handling action first.
+        /// </remarks>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            var results = _handlers.Select(h => h.HandleQuad(t, graph)).ToList();
+            return results.All(x => x);
+        }
+
+        /// <summary>
         /// Gets whether this Handler accepts all Triples based on whether all inner handlers do so.
         /// </summary>
         public override bool AcceptsAll

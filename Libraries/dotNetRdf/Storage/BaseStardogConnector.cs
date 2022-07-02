@@ -611,6 +611,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <inheritdoc />
+        public void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            if (graphName is IUriNode u)
+            {
+                UpdateGraph(u.Uri, additions, removals);
+            }
+            else
+            {
+                throw new RdfStorageException("Updating a blank-node named graph is not supported.");
+            }
+        }
+
         /// <summary>
         /// Updates a Graph in the Stardog Store.
         /// </summary>
@@ -700,6 +713,7 @@ namespace VDS.RDF.Storage
                 throw;
             }
         }
+
 
         /// <summary>
         /// Updates a Graph in the Stardog store.
