@@ -1,5 +1,4 @@
 ﻿using System;
-using VDS.RDF;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -7,7 +6,7 @@ using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Protocol;
 
-namespace dotNetRdf.AspNet.Configuration
+namespace VDS.RDF.Web.Configuration
 {
     /// <summary>
     /// Factory class for producing SPARQL Graph Store HTTP Protocol Processors from Configuration Graphs.

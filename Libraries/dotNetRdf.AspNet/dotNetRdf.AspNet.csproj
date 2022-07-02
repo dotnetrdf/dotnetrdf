@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Update\Protocol\" />
-    <Folder Include="Web\" />
   </ItemGroup>
 
   <ItemGroup>
