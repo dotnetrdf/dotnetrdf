@@ -1053,8 +1053,11 @@ namespace VDS.RDF.Parsing
 
                 ok = true;
 
-                var triple = new Triple(subj, pred, objNode, graphNode);
-                if (!context.Handler.HandleTriple(triple)) ParserHelper.Stop();
+                var triple = new Triple(subj, pred, objNode);
+                if (!context.Handler.HandleQuad(triple, graphNode))
+                {
+                    ParserHelper.Stop();
+                }
 
                 next = context.Tokens.Peek();
                 if (next.TokenType == Token.STARTANNOTATION)
@@ -1205,21 +1208,21 @@ namespace VDS.RDF.Parsing
                 }
 
                 // Create the subj rdf:first item Triple
-                if (!context.Handler.HandleTriple((new Triple(subj, rdfFirst, item, graphNode)))) ParserHelper.Stop();
+                if (!context.Handler.HandleQuad(new Triple(subj, rdfFirst, item), graphNode)) ParserHelper.Stop();
 
                 // Create the rdf:rest Triple
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
                     // End of Collection
                     context.Tokens.Dequeue();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, graphNode))) ParserHelper.Stop();
+                    if (!context.Handler.HandleQuad(new Triple(subj, rdfRest, rdfNil), graphNode)) ParserHelper.Stop();
                     return;
                 }
                 else
                 {
                     // Continuing Collection
                     temp = context.Handler.CreateBlankNode();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, temp, graphNode))) ParserHelper.Stop();
+                    if (!context.Handler.HandleQuad(new Triple(subj, rdfRest, temp), graphNode)) ParserHelper.Stop();
                     subj = (IBlankNode)temp;
                 }
             } while (true);

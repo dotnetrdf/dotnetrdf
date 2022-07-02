@@ -65,19 +65,36 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
-        /// Handles Triples by asserting them into the appropriate Graph creating the Graph if necessary.
+        /// Handles Triples by asserting them into the un-named graph creating the graph if necessary.
         /// </summary>
         /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            IRefNode targetGraphName = t.GraphName;
-            if (!Store.HasGraph(targetGraphName))
+            if (!Store.HasGraph((IRefNode)null))
             {
-                var g = new Graph(t.GraphName);
+                var g = new Graph();
                 Store.Add(g);
             }
-            IGraph target = Store[targetGraphName];
+            IGraph target = Store[(IRefNode)null];
+            target.Assert(t);
+            return true;
+        }
+
+        /// <summary>
+        /// Handles Triples by asserting them into the appropriate graph creating the graph if necessary.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            if (!Store.HasGraph(graph))
+            {
+                var g = new Graph(graph);
+                Store.Add(g);
+            }
+            IGraph target = Store[graph];
             target.Assert(t);
             return true;
         }

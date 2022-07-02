@@ -345,7 +345,10 @@ namespace VDS.RDF.Parsing
             INode predicate = NTriplesParser.TryParsePredicate(context);
             INode obj = NTriplesParser.TryParseObject(context);
             IRefNode graphName = TryParseContext(context);
-            if (!context.Handler.HandleTriple(new Triple(subj as IRefNode, predicate as IRefNode, obj, graphName))) ParserHelper.Stop();
+            if (!context.Handler.HandleQuad(new Triple(subj as IRefNode, predicate as IRefNode, obj), graphName))
+            {
+                ParserHelper.Stop();
+            }
         }
 
 

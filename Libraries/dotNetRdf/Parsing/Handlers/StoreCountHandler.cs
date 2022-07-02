@@ -34,7 +34,6 @@ namespace VDS.RDF.Parsing.Handlers
     /// </summary>
     public class StoreCountHandler : BaseRdfHandler
     {
-        private int _counter = 0;
         private HashSet<string> _graphs;
 
         /// <summary>
@@ -48,7 +47,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override void StartRdfInternal()
         {
-            _counter = 0;
+            TripleCount = 0;
             _graphs = new HashSet<string>();
         }
 
@@ -59,42 +58,37 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            _counter++;
-            _graphs.Add(t.GraphUri.ToSafeString());
+            TripleCount++;
+            _graphs.Add(String.Empty);
+            return true;
+        }
+
+        /// <summary>
+        /// Handles Triples/Quads by counting the Triples and distinct Graph URIs.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            TripleCount++;
+            _graphs.Add(graph.ToSafeString());
             return true;
         }
 
         /// <summary>
         /// Gets the count of Triples.
         /// </summary>
-        public int TripleCount
-        {
-            get
-            {
-                return _counter;
-            }
-        }
+        public int TripleCount { get; private set; }
 
         /// <summary>
         /// Gets the count of distinct Graph URIs.
         /// </summary>
-        public int GraphCount
-        {
-            get 
-            {
-                return _graphs.Count;
-            }
-        }
+        public int GraphCount => _graphs.Count;
 
         /// <summary>
         /// Gets that this Handler accepts all Triples.
         /// </summary>
-        public override bool AcceptsAll
-        {
-            get 
-            {
-                return true; 
-            }
-        }
+        public override bool AcceptsAll => true;
     }
 }

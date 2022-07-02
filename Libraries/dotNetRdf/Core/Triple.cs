@@ -37,7 +37,7 @@ namespace VDS.RDF
     public sealed class Triple
         : IComparable<Triple>
     {
-        private readonly IRefNode _graphName;
+        // private readonly IRefNode _graphName;
         private readonly int _hashcode;
 
         /// <summary>
@@ -68,10 +68,11 @@ namespace VDS.RDF
         /// <param name="g">Graph.</param>
         /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
         /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
+        [Obsolete("This constructor is obsolete and will be removed in a future version.")]
         public Triple(INode subj, INode pred, INode obj, IGraph g)
             : this(subj, pred, obj)
         {
-            Graph = g;
+            // Graph = g;
         }
 
         /// <summary>
@@ -89,49 +90,52 @@ namespace VDS.RDF
             Context = context;
         }
 
-        /// <summary>
-        /// Creates a Triple and associates it with the given Graph URI permanently (though not with a specific Graph as such).
-        /// </summary>
-        /// <param name="subj">Subject of the Triple.</param>
-        /// <param name="pred">Predicate of the Triple.</param>
-        /// <param name="obj">Object of the Triple.</param>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
-        public Triple(INode subj, INode pred, INode obj, Uri graphUri)
-            : this(subj, pred, obj)
-        {
-            _graphName = graphUri == null ? null : new UriNode(graphUri);
-        }
+        ///// <summary>
+        ///// Creates a Triple and associates it with the given Graph URI permanently (though not with a specific Graph as such).
+        ///// </summary>
+        ///// <param name="subj">Subject of the Triple.</param>
+        ///// <param name="pred">Predicate of the Triple.</param>
+        ///// <param name="obj">Object of the Triple.</param>
+        ///// <param name="graphUri">Graph URI.</param>
+        ///// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
+        ///// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
+        //[Obsolete("This constructor is obsolete and will be remove in a future version.")]
+        //public Triple(INode subj, INode pred, INode obj, Uri graphUri)
+        //    : this(subj, pred, obj)
+        //{
+        //    // _graphName = graphUri == null ? null : new UriNode(graphUri);
+        //}
 
-        /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context.
-        /// </summary>
-        /// <param name="subj">Subject of the Triple.</param>
-        /// <param name="pred">Predicate of the Triple.</param>
-        /// <param name="obj">Object of the Triple.</param>
-        /// <param name="context">Context Information for the Triple.</param>
-        /// <param name="graphUri">Graph URI.</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
-        public Triple(INode subj, INode pred, INode obj, ITripleContext context, Uri graphUri)
-            : this(subj, pred, obj, graphUri)
-        {
-            Context = context;
-        }
+        ///// <summary>
+        ///// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context.
+        ///// </summary>
+        ///// <param name="subj">Subject of the Triple.</param>
+        ///// <param name="pred">Predicate of the Triple.</param>
+        ///// <param name="obj">Object of the Triple.</param>
+        ///// <param name="context">Context Information for the Triple.</param>
+        ///// <param name="graphUri">Graph URI.</param>
+        ///// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory.</remarks>
+        ///// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory.</exception>
+        //[Obsolete("This constructor is obsolete and will be remove in a future version.")]
+        //public Triple(INode subj, INode pred, INode obj, ITripleContext context, Uri graphUri)
+        //    : this(subj, pred, obj, graphUri)
+        //{
+        //    Context = context;
+        //}
 
-        /// <summary>
-        /// Constructs a triple associated with the specified graph.
-        /// </summary>
-        /// <param name="subj">Subject of the Triple.</param>
-        /// <param name="pred">Predicate of the Triple.</param>
-        /// <param name="obj">Object of the Triple.</param>
-        /// <param name="graph">Name of the graph the triple is associated with</param>
-        public Triple(IRefNode subj, IRefNode pred, INode obj, IRefNode graph):
-            this(subj, pred, obj)
-        {
-            _graphName = graph;
-        }
+        ///// <summary>
+        ///// Constructs a triple associated with the specified graph.
+        ///// </summary>
+        ///// <param name="subj">Subject of the Triple.</param>
+        ///// <param name="pred">Predicate of the Triple.</param>
+        ///// <param name="obj">Object of the Triple.</param>
+        ///// <param name="graph">Name of the graph the triple is associated with</param>
+        //[Obsolete("This constructor is obsolete and will be remove in a future version.")]
+        //public Triple(IRefNode subj, IRefNode pred, INode obj, IRefNode graph):
+        //    this(subj, pred, obj)
+        //{
+        //    _graphName = graph;
+        //}
 
         /// <summary>
         /// Gets the Subject of the Triple.
@@ -152,38 +156,40 @@ namespace VDS.RDF
         /// Gets the Graph this Triple was created for.
         /// </summary>
         /// <remarks>This is not necessarily the actual Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
-        public IGraph Graph { get; } = null;
+        // [Obsolete("This property is obsolete and will be removed in a future version.")]
+        //public IGraph Graph { get; } = null;
 
         /// <summary>
         /// Gets the Uri of the Graph this Triple was created for.
         /// </summary>
         /// <remarks>This is not necessarily the actual Graph Uri of the Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
-        [Obsolete("Replaced by GraphName")]
-        public Uri GraphUri
-        {
-            get
-            {
-                IRefNode graphNode = GraphName;
-                return graphNode switch
-                {
-                    IUriNode uriNode => uriNode.Uri,
-                    IBlankNode => throw new RdfException(
-                        "Attempt to read the GraphUri of a triple that targets a graph with a blank node name. Use GraphName instead of GraphUri."),
-                    _ => null
-                };
-            }
-        }
+        //[Obsolete("This property is obsolete and will be removed in a future version.")]
+        //public Uri GraphUri
+        //{
+        //    get
+        //    {
+        //        return null;
+        //        //IRefNode graphNode = GraphName;
+        //        //return graphNode switch
+        //        //{
+        //        //    IUriNode uriNode => uriNode.Uri,
+        //        //    IBlankNode => throw new RdfException(
+        //        //        "Attempt to read the GraphUri of a triple that targets a graph with a blank node name. Use GraphName instead of GraphUri."),
+        //        //    _ => null
+        //        //};
+        //    }
+        //}
 
-        /// <summary>
-        /// Gets the name of the graph that this triple was created for.
-        /// </summary>
-        public IRefNode GraphName
-        {
-            get
-            {
-                return _graphName ?? Graph?.Name;
-            }
-        }
+        ///// <summary>
+        ///// Gets the name of the graph that this triple was created for.
+        ///// </summary>
+        //public IRefNode GraphName
+        //{
+        //    get
+        //    {
+        //        return _graphName ?? Graph?.Name;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the Context Information for this Triple.
@@ -343,17 +349,21 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="compress">Controls whether URIs will be compressed to QNames in the String representation.</param>
         /// <returns></returns>
+        /// <remarks>As of dotNetRdf 3.0, this method is obsolete and does not perform an URI to QName compression. To produce a compressed string, use
+        /// the <see cref="ToString(ITripleFormatter)"/> overload passing in a formatter configured with the desired <see cref="INamespaceMapper"/>.</remarks>
+        [Obsolete("This method is obsolete and will be removed in a future version. Use ToString() or ToString(ITripleFormatter) instead.")]
         public string ToString(bool compress)
         {
-            if (!compress || Graph == null)
-            {
-                return ToString();
-            }
-            else
-            {
-                var formatter = new TurtleFormatter(Graph.NamespaceMap);
-                return formatter.Format(this);
-            }
+            //if (!compress || Graph == null)
+            //{
+            //    return ToString();
+            //}
+            //else
+            //{
+            //    var formatter = new TurtleFormatter(Graph.NamespaceMap);
+            //    return formatter.Format(this);
+            //}
+            return ToString();
         }
 
         /// <summary>

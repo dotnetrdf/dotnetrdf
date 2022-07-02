@@ -349,7 +349,10 @@ namespace VDS.RDF.Parsing
             TryParseLineTerminator(context);
 
             // Assert the Triple
-            if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
+            if (!context.Handler.HandleTriple(new Triple(subj, pred, obj)))
+            {
+                ParserHelper.Stop();
+            }
         }
 
         internal static INode TryParseSubject(TokenisingParserContext context)

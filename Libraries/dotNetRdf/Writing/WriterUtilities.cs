@@ -97,51 +97,75 @@ namespace VDS.RDF.Writing
         /// Error message produced when a User attempts to serialize a Graph containing Graph Literals.
         /// </summary>
         private const string GraphLiteralsUnserializableError = "Graph Literal Nodes are not serializable in {0}";
+
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Unknown Node Types.
         /// </summary>
         private const string UnknownNodeTypeUnserializableError = "Unknown Node Types cannot be serialized as {0}";
+
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Triples with Literal Subjects.
         /// </summary>
-        private const string LiteralSubjectsUnserializableError = "Triples with a Literal Subject are not serializable in {0}";
+        private const string LiteralSubjectsUnserializableError =
+            "Triples with a Literal Subject are not serializable in {0}";
+
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Triples with Literal Predicates.
         /// </summary>
-        private const string LiteralPredicatesUnserializableError = "Triples with a Literal Predicate are not serializable in {0}";
+        private const string LiteralPredicatesUnserializableError =
+            "Triples with a Literal Predicate are not serializable in {0}";
+
         /// <summary>
         /// Error message produced when a User attempts to serialized a Graph containing Triples with Graph Literal Predicates.
         /// </summary>
-        private const string GraphLiteralPredicatesUnserializableError = "Triples with a Graph Literal Predicate are not serializable in {0}";
+        private const string GraphLiteralPredicatesUnserializableError =
+            "Triples with a Graph Literal Predicate are not serializable in {0}";
+
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Triples with Blank Node Predicates.
         /// </summary>
-        private const string BlankPredicatesUnserializableError = "Triples with a Blank Node Predicate are not serializable in {0}";
+        private const string BlankPredicatesUnserializableError =
+            "Triples with a Blank Node Predicate are not serializable in {0}";
+
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing URIs which cannot be reduced to a URIRef or QName as required by the serialization.
         /// </summary>
-        public const string UnreducablePropertyURIUnserializable = "Unable to serialize this Graph since a Property has an unreducable URI";
+        public const string UnreducablePropertyURIUnserializable =
+            "Unable to serialize this Graph since a Property has an unreducable URI";
+
         /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing collections where a collection item has more than one rdf:first triple.
         /// </summary>
-        public const string MalformedCollectionWithMultipleFirsts = "This RDF Graph contains more than one rdf:first Triple for an Item in a Collection which means the Graph is not serializable";
+        public const string MalformedCollectionWithMultipleFirsts =
+            "This RDF Graph contains more than one rdf:first Triple for an Item in a Collection which means the Graph is not serializable";
+
         /// <summary>
         /// Error messages produced when errors occur in a multi-threaded writing process.
         /// </summary>
-        public const string ThreadedOutputError = "One/more errors occurred while outputting RDF in {0} using a multi-threaded writing process";
+        public const string ThreadedOutputError =
+            "One/more errors occurred while outputting RDF in {0} using a multi-threaded writing process";
+
         /// <summary>
         /// Error message produced when a User attempts to serialize a Variable Node in a format which does not support it.
         /// </summary>
         public const string VariableNodesUnserializableError = "Variable Nodes cannot be serialized as {0}";
+
         /// <summary>
         /// Error message produced when a user attempts to serialize a TripleNode in a format which does not support it.
         /// </summary>
         public const string TripleNodesUnserializableError = "Triple Nodes cannot be serialized as {0}";
+
         /// <summary>
         /// Error message produced when a user attempts to serialize a triple containing a TripleNode predicates.
         /// </summary>
         public const string TripleNodePredicateUnserializableError =
             "Triples with a Triple Node Predicate are not serializable in {0}";
+
+        /// <summary>
+        /// Error message produced when a user attempts to serialize a triple an a non-null graph name via a format that supports only triples.
+        /// </summary>
+        public const string QuadsUnserializableError =
+            "Triples in a graph (quads) are not serializable in {0}";
 
         /// <summary>
         /// Gets an Error message indicating that Graph Literals are not serializable with the appropriate RDF format name inserted in the error.
@@ -241,6 +265,11 @@ namespace VDS.RDF.Writing
         public static string TripleNodePredicateUnserializable(string format)
         {
             return string.Format(TripleNodePredicateUnserializableError, format);
+        }
+
+        public static string QuadsUnserializable(string format)
+        {
+            return string.Format(QuadsUnserializableError, format);
         }
     }
 

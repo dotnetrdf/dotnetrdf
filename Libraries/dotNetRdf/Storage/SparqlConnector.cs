@@ -384,6 +384,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Throws an error since this Manager is read-only.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        public virtual void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            throw new RdfStorageException("The SparqlConnector provides a read-only connection");
+        }
+
+        /// <summary>
         /// Returns that Updates are not supported since this connection is read-only.
         /// </summary>
         public virtual bool UpdateSupported

@@ -34,8 +34,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// </summary>
     public class CancellableHandler : BaseRdfHandler, IWrappingRdfHandler
     {
-        private IRdfHandler _handler;
-        private bool _cancelled = false;
+        private readonly IRdfHandler _handler;
+        private bool _cancelled;
 
         /// <summary>
         /// Creates a new Cancellable Handler.
@@ -43,8 +43,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="handler"></param>
         public CancellableHandler(IRdfHandler handler)
         {
-            if (handler == null) throw new ArgumentNullException("handler", "Inner Handler cannot be null");
-            _handler = handler;
+            _handler = handler ?? throw new ArgumentNullException(nameof(handler), "Inner Handler cannot be null");
         }
 
         /// <summary>
@@ -86,8 +85,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            if (_cancelled) return false;
-            return _handler.HandleBaseUri(baseUri);
+            return !_cancelled && _handler.HandleBaseUri(baseUri);
         }
 
         /// <summary>
@@ -98,8 +96,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
-            if (_cancelled) return false;
-            return _handler.HandleNamespace(prefix, namespaceUri);
+            return !_cancelled && _handler.HandleNamespace(prefix, namespaceUri);
         }
 
         /// <summary>
@@ -109,8 +106,18 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (_cancelled) return false;
-            return _handler.HandleTriple(t);
+            return !_cancelled && _handler.HandleTriple(t);
+        }
+
+        /// <summary>
+        /// Handles Quads by passing them to the inner handler and cancelling handling if it has been requested.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            return !_cancelled && _handler.HandleQuad(t, graph);
         }
 
         /// <summary>

@@ -383,6 +383,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <inheritdoc />
+        public virtual void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            UpdateGraph(graphName.ToSafeString(), additions, removals);
+        }
+
         /// <summary>
         /// Deletes a Graph from the store.
         /// </summary>

@@ -26,6 +26,7 @@
 
 using System;
 using System.Data;
+using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Data.DataTables
@@ -89,6 +90,22 @@ namespace VDS.RDF.Data.DataTables
             return true;
         }
 
+        /// <summary>
+        /// Handles a quad by turning it into a row in the Data Table
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This implementation does not support handling triples in any graph other than the default graph. 
+        /// To customize how a Triple is converted into a row in the table derive from this class and override this method
+        /// </remarks>
+        /// <exception cref="RdfParseException">Raised if <paramref name="graph"/> is not null, as this implementation only supports triples in the default graph.</exception>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            if (graph == null) return HandleTripleInternal(t);
+            throw new RdfParseException("The DataTableHandler does not support handling triples in a named graph.");
+        }
         /// <summary>
         /// Indicates that the Handler accepts all triples
         /// </summary>

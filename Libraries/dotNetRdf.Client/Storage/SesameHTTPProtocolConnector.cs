@@ -543,6 +543,12 @@ namespace VDS.RDF.Storage
             UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
+        /// <inheritdoc />
+        public virtual void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            UpdateGraph(graphName.ToSafeString(), additions, removals);
+        }
+
         /// <summary>
         /// Updates a Graph.
         /// </summary>

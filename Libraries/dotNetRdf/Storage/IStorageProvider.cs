@@ -121,6 +121,27 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Updates a Graph in the Store.
         /// </summary>
+        /// <param name="graphName">Name of the Graph to update.</param>
+        /// <param name="additions">Triples to add to the Graph.</param>
+        /// <param name="removals">Triples to remove from the Graph.</param>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> Not all Stores are capable of supporting update at the individual Triple level and as such it is acceptable for such a Store to throw a <see cref="NotSupportedException">NotSupportedException</see> or an <see cref="RdfStorageException">RdfStorageException</see> if the Store cannot provide this functionality.
+        /// </para>
+        /// <para>
+        /// Behaviour of this method with regards to non-existent Graph is up to the implementor, it may create a new empty Graph and apply the updates to that or it may throw an error.  Implementors <strong>should</strong> state in the XML comments for their implementation what behaviour is implemented.
+        /// </para>
+        /// <para>
+        /// Implementers <strong>MUST</strong> allow for either the additions or removals argument to be null.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level.</exception>
+        /// <exception cref="RdfStorageException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level or if some error occurs while attempting the Update.</exception>
+        void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
+
+        /// <summary>
+        /// Updates a Graph in the Store.
+        /// </summary>
         /// <param name="graphUri">Uri of the Graph to update.</param>
         /// <param name="additions">Triples to add to the Graph.</param>
         /// <param name="removals">Triples to remove from the Graph.</param>
@@ -137,6 +158,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level.</exception>
         /// <exception cref="RdfStorageException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level or if some error occurs while attempting the Update.</exception>
+        [Obsolete("Replaced by UpdateGraph(IRefNode, IEnumerable<Triple>, IEnumerable<Triple>)")]
         void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
 
         /// <summary>
@@ -158,6 +180,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level.</exception>
         /// <exception cref="RdfStorageException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level or if some error occurs while attempting the Update.</exception>
+        [Obsolete("Replaced by UpdateGraph(IRefNode, IEnumerable<Triple>, IEnumerable<Triple>)")] 
         void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
 
         /// <summary>

@@ -346,11 +346,37 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
+        /// Handles Quads.
+        /// </summary>
+        /// <param name="t">Triple to handle.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        /// <exception cref="RdfParseException">Raised if the handler is not currently in a state to handle quads.</exception>
+        public bool HandleQuad(Triple t, IRefNode graph)
+        {
+            if (!_inUse) throw new RdfParseException("Cannot Handle Quad as this RDF Handler is not currently in-use");
+            return HandleQuadInternal(t, graph);
+        }
+
+        /// <summary>
         /// Must be overridden by derived handlers to take appropriate Triple handling action.
         /// </summary>
         /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected abstract bool HandleTripleInternal(Triple t);
+
+        /// <summary>
+        /// Must be overridden by derived handlers to take appropriate Quad handling action.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">Name of the graph containing the triple.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Implementations that expect to only handle triples in the un-named graph SHOULD
+        /// provide an implementation for this method that checks if <paramref name="graph"/>
+        /// is null and if so perform their standard triple handling processing.
+        /// </remarks>
+        protected abstract bool HandleQuadInternal(Triple t, IRefNode graph);
 
         /// <summary>
         /// Gets whether the Handler will accept all Triples i.e. it will never abort handling early.

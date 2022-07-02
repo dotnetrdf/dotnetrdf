@@ -90,7 +90,10 @@ namespace VDS.RDF.Parsing.Handlers
                     // Finally handle triples
                     foreach (Triple t in g.Triples)
                     {
-                        if (!handler.HandleTriple(t)) ParserHelper.Stop();
+                        if (!handler.HandleTriple(t))
+                        {
+                            ParserHelper.Stop();
+                        }
                     }
                 }
 
@@ -119,7 +122,10 @@ namespace VDS.RDF.Parsing.Handlers
                 handler.StartRdf();
                 foreach (Triple t in ts)
                 {
-                    if (!handler.HandleTriple(t)) ParserHelper.Stop();
+                    if (!handler.HandleTriple(t))
+                    {
+                        ParserHelper.Stop();
+                    }
                 }
                 handler.EndRdf(false);
             }

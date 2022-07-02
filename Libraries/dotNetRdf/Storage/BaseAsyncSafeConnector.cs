@@ -102,6 +102,14 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Updates a Graph in the Store.
         /// </summary>
+        /// <param name="graphName">Name of the Graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        public abstract void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
+
+        /// <summary>
+        /// Updates a Graph in the Store.
+        /// </summary>
         /// <param name="graphUri">URI of the Graph to update.</param>
         /// <param name="additions">Triples to be added.</param>
         /// <param name="removals">Triples to be removed.</param>

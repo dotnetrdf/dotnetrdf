@@ -32,7 +32,7 @@ namespace VDS.RDF.Parsing.Handlers
     public class CountHandler 
         : BaseRdfHandler
     {
-        private int _counter = 0;
+        private int _counter;
 
         /// <summary>
         /// Creates a Handler which counts Triples.
@@ -55,6 +55,18 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="t">Triple.</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
+        {
+            _counter++;
+            return true;
+        }
+
+        /// <summary>
+        /// Handles the Quad by incrementing the Triple count.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
         {
             _counter++;
             return true;

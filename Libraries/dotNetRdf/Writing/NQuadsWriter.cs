@@ -212,20 +212,10 @@ namespace VDS.RDF.Writing
             output.Append(NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
             output.Append(" ");
             output.Append(NodeToNTriples(context, t.Object, TripleSegment.Object));
-            if (t.GraphName != null || graphName != null)
+            if (graphName != null)
             {
-                // Favour graph name rather than per-triple graph name because we may have a triple with a different graph name than the containing graph
-                if (graphName != null)
-                {
-                    output.Append(" ");
-                    output.Append(context.NodeFormatter.Format(graphName));
-                }
-                else
-                {
-                    output.Append(" <");
-                    output.Append(context.NodeFormatter.Format(t.GraphName));
-                    output.Append(">");
-                }
+                output.Append(" ");
+                output.Append(context.NodeFormatter.Format(graphName));
             }
             output.Append(" .");
 

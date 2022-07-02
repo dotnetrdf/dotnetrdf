@@ -109,6 +109,12 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         public NTriplesSyntax Syntax { get; private set; }
 
+        /// <inheritdoc />
+        public override string Format(Triple t, IRefNode graph)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Formats a URI Node.
         /// </summary>

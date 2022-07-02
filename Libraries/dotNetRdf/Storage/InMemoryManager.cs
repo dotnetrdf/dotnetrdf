@@ -173,19 +173,7 @@ namespace VDS.RDF.Storage
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             IRefNode graphName = graphUri == null ? null : new UriNode(graphUri);
-            if (!_dataset.HasGraph(graphName))
-            {
-                _dataset.AddGraph(new Graph(graphName));
-            }
-
-            if ((additions != null && additions.Any()) || (removals != null && removals.Any()))
-            {
-                IGraph g = _dataset.GetModifiableGraph(graphName);
-                if (additions != null && additions.Any()) g.Assert(additions.ToList());
-                if (removals != null && removals.Any()) g.Retract(removals.ToList());
-            }
-
-            _dataset.Flush();
+            UpdateGraph(graphName, additions, removals);
         }
 
         /// <summary>
@@ -198,16 +186,37 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null)
             {
-                UpdateGraph((Uri)null, additions, removals);
+                UpdateGraph((IRefNode)null, additions, removals);
             }
             else if (graphUri.Equals(string.Empty))
             {
-                UpdateGraph((Uri)null, additions, removals);
+                UpdateGraph((IRefNode)null, additions, removals);
             }
             else
             {
-                UpdateGraph(UriFactory.Create(graphUri), additions, removals);
+                UpdateGraph(new UriNode(UriFactory.Create(graphUri)), additions, removals);
             }
+        }
+
+        /// <inheritdoc />
+        public override void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            if (!_dataset.HasGraph(graphName))
+            {
+                _dataset.AddGraph(new Graph(graphName));
+            }
+
+            var addList = additions?.ToList();
+            var removeList = removals?.ToList();
+
+            if ((addList != null && addList.Any()) || (removeList != null && removeList.Any()))
+            {
+                IGraph g = _dataset.GetModifiableGraph(graphName);
+                if (addList != null && addList.Any()) g.Assert(addList);
+                if (removeList != null && removeList.Any()) g.Retract(removeList);
+            }
+
+            _dataset.Flush();
         }
 
         /// <summary>

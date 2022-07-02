@@ -225,6 +225,12 @@ namespace VDS.RDF.Storage
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
 
+        /// <inheritdoc />
+        public override void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
+        }
+
         /// <summary>
         /// Returns that Updates are not supported since this is a read-only connection.
         /// </summary>

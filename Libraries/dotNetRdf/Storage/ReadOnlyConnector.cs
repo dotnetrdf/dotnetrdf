@@ -153,6 +153,18 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Throws an exception since you cannot update a Graph using a read-only connection.
+        /// </summary>
+        /// <param name="graphName">Name of the Graph.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot update a Graph using a read-only connection.</exception>
+        public void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            throw new RdfStorageException("The Read-Only Connector is a read-only connection");
+        }
+
+        /// <summary>
         /// Returns that Update is not supported.
         /// </summary>
         public bool UpdateSupported

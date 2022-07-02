@@ -307,14 +307,21 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (graphUri == null)
-            {
-                throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
-            }
-            else
-            {
-                UpdateGraph(graphUri.ToString(), additions, removals);
-            }
+            UpdateGraph(graphUri.ToSafeString(), additions, removals);
+        }
+
+        /// <summary>
+        /// Updates a graph in the store.
+        /// </summary>
+        /// <param name="graphName">Name of the graph to update.</param>
+        /// <param name="additions">Triples to be added.</param>
+        /// <param name="removals">Triples to be removed.</param>
+        /// <remarks>
+        /// May throw an error since the default builds of 4store don't support Triple level updates.  There are builds that do support this and the user can instantiate the connector with support for this enabled if they wish, if they do so and the underlying 4store doesn't support updates errors will occur when updates are attempted.
+        /// </remarks>
+        public void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            UpdateGraph(graphName.ToSafeString(), additions, removals);
         }
 
         /// <summary>

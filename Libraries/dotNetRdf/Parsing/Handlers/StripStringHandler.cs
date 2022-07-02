@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="handler">Inner handler to use.</param>
         public StripStringHandler(IRdfHandler handler) : base(handler)
         {
-            _handler = handler ?? throw new ArgumentNullException("handler");
+            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         /// <summary>
@@ -51,10 +51,26 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (t.Object is ILiteralNode literal && EqualityHelper.AreUrisEqual(literal.DataType, DataTypeString))
-                t = new Triple(t.Subject, t.Predicate, new LiteralNode(literal.Value, false));
+            return _handler.HandleTriple(StripString(t));
+        }
 
-            return _handler.HandleTriple(t);
+
+        /// <summary>
+        /// Handles triples by stripping explicit xsd:string datatype on object literals before delegating to inner handler.
+        /// </summary>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            return _handler.HandleQuad(StripString(t), graph);
+        }
+
+        private static Triple StripString(Triple t)
+        {
+            if (t.Object is ILiteralNode literal && EqualityHelper.AreUrisEqual(literal.DataType, DataTypeString))
+            {
+                return new Triple(t.Subject, t.Predicate, new LiteralNode(literal.Value, false));
+            }
+
+            return t;
         }
 
         #region Delegate to inner handler

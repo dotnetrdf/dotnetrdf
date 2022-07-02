@@ -106,6 +106,18 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
+        /// Formats a triple in the context of a graph as a string.
+        /// </summary>
+        /// <param name="t">The triple.</param>
+        /// <param name="graph">The graph containing the triple.</param>
+        /// <returns></returns>
+        public virtual string Format(Triple t, IRefNode graph)
+        {
+            if (graph == null) return this.Format(t);
+            throw new RdfOutputException(WriterErrorMessages.QuadsUnserializable(_format));
+        }
+
+        /// <summary>
         /// Formats a URI Node as a String for the given Format.
         /// </summary>
         /// <param name="u">URI Node.</param>

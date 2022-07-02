@@ -35,13 +35,14 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which writes the handled Triples out to a <see cref="TextWriter">TextWriter</see> using a provided <see cref="ITripleFormatter">ITripleFormatter</see>.
+    /// A RDF Handler which writes the handled Triples out to a <see cref="TextWriter">TextWriter</see> using a provided <see cref="IQuadFormatter">IQuadFormatter</see>.
     /// </summary>
     public class WriteThroughHandler
         : BaseRdfHandler
     {
         private Type _formatterType;
-        private ITripleFormatter _formatter;
+        private IQuadFormatter _formatter;
+        private ITripleFormatter _tripleFormatter;
         private TextWriter _writer;
         private bool _closeOnEnd = true;
         private INamespaceMapper _formattingMapper = new QNameOutputMapper();
@@ -49,24 +50,24 @@ namespace VDS.RDF.Parsing.Handlers
 
         private const int FlushInterval = 50000;
 
+        public WriteThroughHandler(ITripleFormatter formatter, TextWriter writer, bool closeOnEnd)
+        {
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer), "Cannot use a null TextWriter with the WriteThroughHandler");
+            _formatter = null;
+            _tripleFormatter = formatter ?? new NTriples11Formatter();
+            _closeOnEnd = closeOnEnd;
+        }
         /// <summary>
         /// Creates a new Write-Through Handler.
         /// </summary>
         /// <param name="formatter">Triple Formatter to use.</param>
         /// <param name="writer">Text Writer to write to.</param>
         /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
-        public WriteThroughHandler(ITripleFormatter formatter, TextWriter writer, bool closeOnEnd)
+        public WriteThroughHandler(IQuadFormatter formatter, TextWriter writer, bool closeOnEnd)
         {
-            if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Write Through Handler");
-            if (formatter != null)
-            {
-                _formatter = formatter;
-            }
-            else
-            {
-                _formatter = new NTriplesFormatter();
-            }
-            _writer = writer;
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer), "Cannot use a null TextWriter with the Write Through Handler");
+            _formatter = formatter ?? new NQuads11Formatter();
+            _tripleFormatter = null;
             _closeOnEnd = closeOnEnd;
         }
 
@@ -75,7 +76,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="formatter">Triple Formatter to use.</param>
         /// <param name="writer">Text Writer to write to.</param>
-        public WriteThroughHandler(ITripleFormatter formatter, TextWriter writer)
+        public WriteThroughHandler(IQuadFormatter formatter, TextWriter writer)
             : this(formatter, writer, true) { }
 
         /// <summary>
@@ -86,10 +87,8 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
         public WriteThroughHandler(Type formatterType, TextWriter writer, bool closeOnEnd)
         {
-            if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Write Through Handler");
-            if (formatterType == null) throw new ArgumentNullException("formatterType", "Cannot use a null formatter type");
-            _formatterType = formatterType;
-            _writer = writer;
+            _formatterType = formatterType ?? throw new ArgumentNullException(nameof(formatterType), "Cannot use a null formatter type");
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer), "Cannot use a null TextWriter with the Write Through Handler");
             _closeOnEnd = closeOnEnd;
         }
 
@@ -117,6 +116,7 @@ namespace VDS.RDF.Parsing.Handlers
                 ConstructorInfo[] cs = _formatterType.GetConstructors();
                 Type qnameMapperType = typeof(QNameOutputMapper);
                 Type nsMapperType = typeof(INamespaceMapper);
+                object formatter = null;
                 foreach (ConstructorInfo c in cs.OrderByDescending(c => c.GetParameters().Count()))
                 {
                     ParameterInfo[] ps = c.GetParameters();
@@ -126,19 +126,19 @@ namespace VDS.RDF.Parsing.Handlers
                         {
                             if (ps[0].ParameterType == qnameMapperType)
                             {
-                                _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as ITripleFormatter;
+                                formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper });
                             }
                             else if (ps[0].ParameterType == nsMapperType)
                             {
-                                _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as ITripleFormatter;
+                                formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper });
                             }
                         }
                         else if (ps.Length == 0)
                         {
-                            _formatter = Activator.CreateInstance(_formatterType) as ITripleFormatter;
+                            formatter = Activator.CreateInstance(_formatterType);
                         }
 
-                        if (_formatter != null) break;
+                        if (formatter != null) break;
                     }
                     catch
                     {
@@ -146,13 +146,24 @@ namespace VDS.RDF.Parsing.Handlers
                     }
                 }
 
-                // If we get out here and the formatter is null then we throw an error
-                if (_formatter == null) throw new RdfParseException("Unable to instantiate a ITripleFormatter from the given Formatter Type " + _formatterType.FullName);
+                switch (formatter)
+                {
+                    case IQuadFormatter quadFormatter:
+                        _formatter = quadFormatter;
+                        break;
+                    case ITripleFormatter tripleFormatter:
+                        _tripleFormatter = tripleFormatter;
+                        break;
+                    default:
+                        throw new RdfParseException(
+                            "Unable to instantiate an ITripleFormatter or IQuadFormatter from teh given formatter type " +
+                            _formatterType);
+                }
             }
 
-            if (_formatter is IGraphFormatter)
+            if (_tripleFormatter is IGraphFormatter graphFormatter)
             {
-                _writer.WriteLine(((IGraphFormatter)_formatter).FormatGraphHeader(_formattingMapper));
+                _writer.WriteLine(graphFormatter.FormatGraphHeader(_formattingMapper));
             }
             _written = 0;
         }
@@ -163,9 +174,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Indicates whether parsing completed without error.</param>
         protected override void EndRdfInternal(bool ok)
         {
-            if (_formatter is IGraphFormatter)
+            if (_tripleFormatter is IGraphFormatter)
             {
-                _writer.WriteLine(((IGraphFormatter)_formatter).FormatGraphFooter());
+                _writer.WriteLine(((IGraphFormatter)_tripleFormatter).FormatGraphFooter());
             }
             if (_closeOnEnd)
             {
@@ -187,9 +198,9 @@ namespace VDS.RDF.Parsing.Handlers
                 _formattingMapper.AddNamespace(prefix, namespaceUri);
             }
 
-            if (_formatter is INamespaceFormatter)
+            if (_tripleFormatter is INamespaceFormatter nsFormatter)
             {
-                _writer.WriteLine(((INamespaceFormatter)_formatter).FormatNamespace(prefix, namespaceUri));
+                _writer.WriteLine(nsFormatter.FormatNamespace(prefix, namespaceUri));
             }
 
             return true;
@@ -202,9 +213,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            if (_formatter is IBaseUriFormatter)
+            if (_tripleFormatter is IBaseUriFormatter baseUriFormatter)
             {
-                _writer.WriteLine(((IBaseUriFormatter)_formatter).FormatBaseUri(baseUri));
+                _writer.WriteLine(baseUriFormatter.FormatBaseUri(baseUri));
             }
 
             return true;
@@ -218,13 +229,45 @@ namespace VDS.RDF.Parsing.Handlers
         protected override bool HandleTripleInternal(Triple t)
         {
             _written++;
-            _writer.WriteLine(_formatter.Format(t));
-            if (_written >= FlushInterval)
-            {
-                _written = 0;
-                _writer.Flush();
-            }
+            _writer.WriteLine(_tripleFormatter != null ? _tripleFormatter.Format(t) : _formatter.Format(t, null));
+            MaybeFlush();
             return true;
+        }
+
+        /// <summary>
+        /// Handles Triples by writing them using the underlying formatter.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            if (_tripleFormatter != null)
+            {
+                if (graph == null)
+                {
+                    return HandleTripleInternal(t);
+                }
+
+                throw new RdfParseException(
+                    "A quad with a named graph component cannot be handled by the triple formatter.");
+            }
+
+            _written++;
+            _writer.WriteLine(_formatter.Format(t, graph));
+            MaybeFlush();
+            return true;
+        }
+
+        private void MaybeFlush()
+        {
+            if (_written < FlushInterval)
+            {
+                return;
+            }
+
+            _written = 0;
+            _writer.Flush();
         }
 
         /// <summary>

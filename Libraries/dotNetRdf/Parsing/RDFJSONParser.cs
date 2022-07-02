@@ -493,7 +493,10 @@ namespace VDS.RDF.Parsing
                     }
 
                     // Assert as a Triple
-                    if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, pred, obj)))
+                    {
+                        ParserHelper.Stop();
+                    }
                 }
             }
             else

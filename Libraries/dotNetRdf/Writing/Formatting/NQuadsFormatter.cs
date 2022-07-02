@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
@@ -33,7 +32,7 @@ namespace VDS.RDF.Writing.Formatting
     /// Formatter which formats Triples as NQuads adding an additional URI at the end of the Triple if there is a Graph URI associated with the Triple.
     /// </summary>
     public class NQuadsFormatter
-        : NTriplesFormatter
+        : NTriplesFormatter, IQuadFormatter
     {
         /// <summary>
         /// Creates a new NQuads Formatter.
@@ -73,17 +72,18 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
-        /// Formats a Triple as a String.
+        /// Formats a Triple (optionally in the context of a graph) as a String.
         /// </summary>
         /// <param name="t">Triple.</param>
+        /// <param name="graph">The graph containing the triple.</param>
         /// <returns></returns>
-        public override string Format(Triple t)
+        public override string Format(Triple t, IRefNode graph)
         {
-            if (t.GraphUri == null)
+            if (graph == null)
             {
                 return base.Format(t);
             }
-            return Format(t.Subject, TripleSegment.Subject) + " " + Format(t.Predicate, TripleSegment.Predicate) + " " + Format(t.Object, TripleSegment.Object) + " <" + FormatUri(t.GraphUri) + "> .";
+            return Format(t.Subject, TripleSegment.Subject) + " " + Format(t.Predicate, TripleSegment.Predicate) + " " + Format(t.Object, TripleSegment.Object) + " " + Format(graph) + " .";
         }
     }
 

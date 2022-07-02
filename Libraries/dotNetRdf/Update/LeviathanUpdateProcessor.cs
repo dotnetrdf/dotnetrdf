@@ -1115,7 +1115,7 @@ namespace VDS.RDF.Update
                                     try
                                     {
                                         Triple t = p.Construct(constructContext);
-                                        t = new Triple(t.Subject, t.Predicate, t.Object, destUri);
+                                        t = new Triple(t.Subject, t.Predicate, t.Object);
                                         insertedTriples.Add(t);
                                     }
                                     catch (RdfQueryException)

@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// </remarks>
     public class ChainedHandler : BaseRdfHandler, IWrappingRdfHandler
     {
-        private List<IRdfHandler> _handlers = new List<IRdfHandler>();
+        private readonly List<IRdfHandler> _handlers = new();
 
         /// <summary>
         /// Creates a new Chained Handler.
@@ -48,17 +48,26 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="handlers">Inner Handlers to use.</param>
         public ChainedHandler(IEnumerable<IRdfHandler> handlers)
         {
-            if (handlers == null) throw new ArgumentNullException("handlers", "Must be at least 1 Handler for use by the ChainedHandler");
-            if (!handlers.Any()) throw new ArgumentException("Must be at least 1 Handler for use by the ChainedHandler", "handlers");
+            if (handlers == null)
+            {
+                throw new ArgumentNullException(nameof(handlers), "Must be at least 1 Handler for use by the ChainedHandler");
+            }
 
             _handlers.AddRange(handlers);
+            if (!_handlers.Any())
+            {
+                throw new ArgumentException("Must be at least 1 Handler for use by the ChainedHandler", nameof(handlers));
+            }
 
             // Check there are no identical handlers in the List
             for (var i = 0; i < _handlers.Count; i++)
             {
                 for (var j = i + 1; j < _handlers.Count; j++)
                 {
-                    if (ReferenceEquals(_handlers[i], _handlers[j])) throw new ArgumentException("All Handlers must be distinct IRdfHandler instances", "handlers");
+                    if (ReferenceEquals(_handlers[i], _handlers[j]))
+                    {
+                        throw new ArgumentException("All Handlers must be distinct IRdfHandler instances", "handlers");
+                    }
                 }
             }
         }
@@ -131,6 +140,19 @@ namespace VDS.RDF.Parsing.Handlers
             return _handlers.All(h => h.HandleTriple(t));
         }
 
+        /// <summary>
+        /// Handles Quads by getting each inner handler to attempt to handle it.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Handling terminates at the first Handler which indicates handling should stop.
+        /// </remarks>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            return _handlers.All(h => h.HandleQuad(t, graph));
+        }
         /// <summary>
         /// Gets that this Handler accepts all Triples if all inner handlers do so.
         /// </summary>

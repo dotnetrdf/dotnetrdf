@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing.Handlers
     public class UniqueBlankNodesHandler
         : BaseRdfHandler, IWrappingRdfHandler
     {
-        private IRdfHandler _handler;
+        private readonly IRdfHandler _handler;
 
         /// <summary>
         /// Creates a new Unique Blank Nodes handler.
@@ -51,8 +51,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="handler"></param>
         public UniqueBlankNodesHandler(IRdfHandler handler)
         {
-            if (handler == null) throw new ArgumentNullException("handler");
-            _handler = handler;
+            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         /// <summary>
@@ -122,6 +121,17 @@ namespace VDS.RDF.Parsing.Handlers
         protected override bool HandleTripleInternal(Triple t)
         {
             return _handler.HandleTriple(t);
+        }
+
+        /// <summary>
+        /// Handles a quad.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <param name="graph">The name of the graph containing the triple.</param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+        {
+            return _handler.HandleQuad(t, graph);
         }
 
         /// <summary>
