@@ -52,3 +52,5 @@ Build/shfb/Help/
 docs/build/
 docs/obj/
 docs/api/*.yml
+docs/api/.manifest
+docs/node_modules

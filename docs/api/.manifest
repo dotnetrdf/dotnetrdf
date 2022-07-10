@@ -1,8 +1,4 @@
 {
-  "dotNetRdf.AspNet.Configuration": "dotNetRdf.AspNet.Configuration.yml",
-  "dotNetRdf.AspNet.Configuration.ProtocolProcessorFactory": "dotNetRdf.AspNet.Configuration.ProtocolProcessorFactory.yml",
-  "dotNetRdf.AspNet.Configuration.ProtocolProcessorFactory.CanLoadObject(Type)": "dotNetRdf.AspNet.Configuration.ProtocolProcessorFactory.yml",
-  "dotNetRdf.AspNet.Configuration.ProtocolProcessorFactory.TryLoadObject(VDS.RDF.IGraph,VDS.RDF.INode,Type,System.Object@)": "dotNetRdf.AspNet.Configuration.ProtocolProcessorFactory.yml",
   "System.Web.UI": "System.Web.UI.yml",
   "System.Web.UI.HtmlTextWriter": "System.Web.UI.HtmlTextWriter.yml",
   "System.Web.UI.HtmlTextWriter.#ctor(System.IO.TextWriter)": "System.Web.UI.HtmlTextWriter.yml",
@@ -13714,6 +13710,9 @@
   "VDS.RDF.Web.Configuration.Protocol.BaseProtocolHandlerConfiguration.ServiceDescription": "VDS.RDF.Web.Configuration.Protocol.BaseProtocolHandlerConfiguration.yml",
   "VDS.RDF.Web.Configuration.Protocol.ProtocolHandlerConfiguration": "VDS.RDF.Web.Configuration.Protocol.ProtocolHandlerConfiguration.yml",
   "VDS.RDF.Web.Configuration.Protocol.ProtocolHandlerConfiguration.#ctor(VDS.RDF.Web.IHttpContext,VDS.RDF.IGraph,VDS.RDF.INode)": "VDS.RDF.Web.Configuration.Protocol.ProtocolHandlerConfiguration.yml",
+  "VDS.RDF.Web.Configuration.ProtocolProcessorFactory": "VDS.RDF.Web.Configuration.ProtocolProcessorFactory.yml",
+  "VDS.RDF.Web.Configuration.ProtocolProcessorFactory.CanLoadObject(Type)": "VDS.RDF.Web.Configuration.ProtocolProcessorFactory.yml",
+  "VDS.RDF.Web.Configuration.ProtocolProcessorFactory.TryLoadObject(VDS.RDF.IGraph,VDS.RDF.INode,Type,System.Object@)": "VDS.RDF.Web.Configuration.ProtocolProcessorFactory.yml",
   "VDS.RDF.Web.Configuration.Query": "VDS.RDF.Web.Configuration.Query.yml",
   "VDS.RDF.Web.Configuration.Query.BaseQueryHandlerConfiguration": "VDS.RDF.Web.Configuration.Query.BaseQueryHandlerConfiguration.yml",
   "VDS.RDF.Web.Configuration.Query.BaseQueryHandlerConfiguration.#ctor(VDS.RDF.IGraph,VDS.RDF.INode)": "VDS.RDF.Web.Configuration.Query.BaseQueryHandlerConfiguration.yml",

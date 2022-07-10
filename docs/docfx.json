@@ -23,8 +23,8 @@
       },
       {
         "files": ["**/*.{md,yml}"],
-        "exclude": ["api/**/*.{md,yml}"],
-        "src": ".",
+        "exclude": ["api/**/*.{md,yml}", "node_modules/**/*.*"],
+        "src": "."
       },
       {
         "files": ["toc.yml", "index.md"],

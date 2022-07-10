@@ -1,7 +1,7 @@
 {
   "watch": {
     "serve": {
-      "patterns": ["**", "!build", "!obj"],
+      "patterns": ["**", "!build", "!obj", "!api"],
       "extensions": "md,yml"
     }
   },
@@ -10,6 +10,8 @@
     "serve": "docfx build --serve",
     "metadata": "docfx metadata",
     "build": "docfx build"
+  },
+  "devDependencies": {
+    "npm-watch": "^0.11.0"
   }
-  
 }
