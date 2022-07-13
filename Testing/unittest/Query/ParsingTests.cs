@@ -176,6 +176,13 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
+        public void SparqlParsingIfInNumericExpression()
+        {
+            var query = @"SELECT * WHERE { BIND (1 + IF(1, 2, 3) + 1 AS ?x) }";
+            TestQuery(query);
+        }
+
+        [Fact]
         public void SparqlParsingPropertyPathsNegatedSetSimple()
         {
             var query = "SELECT * WHERE { ?s !a ?o }";
