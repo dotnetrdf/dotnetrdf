@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+2.7.5
+-----
+
+Fixes a bug with parsing SPARQL additive expressions with more than two parts to them. Thanks to @jheus for the report (#495)
+
 2.7.4
 -----
 
