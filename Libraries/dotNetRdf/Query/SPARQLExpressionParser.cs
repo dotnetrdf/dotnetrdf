@@ -290,27 +290,27 @@ namespace VDS.RDF.Query
             // Get the First Term of this Expression
             ISparqlExpression firstTerm = TryParseMultiplicativeExpression(tokens);
 
-            if (tokens.Count > 0)
+            while (tokens.Count > 0)
             {
                 IToken next = tokens.Peek();
                 switch (next.TokenType)
                 {
                     case Token.PLUS:
                         tokens.Dequeue();
-                        return new AdditionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
+                        firstTerm = new AdditionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
+                        break;
                     case Token.MINUS:
                         tokens.Dequeue();
-                        return new SubtractionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
+                        firstTerm = new SubtractionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
+                        break;
                     case Token.PLAINLITERAL:
-                        return new AdditionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
+                        firstTerm = new AdditionExpression(firstTerm, TryParseMultiplicativeExpression(tokens));
+                        break;
                     default:
                         return firstTerm;
                 }
             }
-            else
-            {
-                return firstTerm;
-            }
+            return firstTerm;
         }
 
         private ISparqlExpression TryParseMultiplicativeExpression(Queue<IToken> tokens)
