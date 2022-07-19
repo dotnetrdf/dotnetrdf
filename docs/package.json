@@ -1,7 +1,8 @@
 {
   "watch": {
     "serve": {
-      "patterns": ["**", "!build", "!obj", "!api"],
+      "patterns": ["**"],
+	  "ignore": ["build", "obj", "api", "node_modules"],
       "extensions": "md,yml"
     }
   },

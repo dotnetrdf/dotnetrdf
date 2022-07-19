@@ -42,6 +42,6 @@
       "_appLogoPath": "images/rdf_flyer.svg"
     },
     "dest": "build",
-    "template": ["default", "templates"]
+    "template": ["default", "latest"]
   }
 }
