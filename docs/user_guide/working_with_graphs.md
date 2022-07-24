@@ -31,7 +31,7 @@ The `IsEmpty` property is a boolean indicating whether any Triples are contained
 ### NamespaceMap
 
 The `NamespaceMap` property returns the `INamespaceMapper` instance which is associated with this Graph (properly, it actually returns the instance which is associated with the `INodeFactory` instance that the Graph is using when creating new nodes.
-The `INamespaceMapper` is used to map prefixes to URIs in order to allow namespacing and prefixed name resolution, learn about using this class by reading [Using the Namespace Mapper](using_the_namespace-mapper.md).
+The `INamespaceMapper` is used to map prefixes to URIs in order to allow namespacing and prefixed name resolution, learn about using this class by reading the [Namespace Mapper](namespace_mapper.md) page.
 
 ### Nodes and AllNodes
 

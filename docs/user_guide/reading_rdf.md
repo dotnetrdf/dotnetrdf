@@ -218,7 +218,7 @@ Console.WriteLine(handler.Count + " Triple(s)");
 
 There are a variety of included implementations which do various things like redirecting Triples directly to a file, native Triple Store etc. You can also implement your own either entirely from scratch or just derive from [`BaseRdfHandler`](xref:VDS.RDF.Parsing.Handlers.BaseRdfHandler) like our own implementations do to get most of the implementation for free.
 
-Take a look a the [Handlers API](handlers_api.md) for more discussion on this topic.
+Take a look a the [Handlers API](handlers.md) for more discussion on this topic.
 
 # Parser Behaviour
 

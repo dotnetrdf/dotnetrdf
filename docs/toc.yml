@@ -2,3 +2,9 @@
   href: user_guide/
 - name: API Documentation
   href: api/
+- name: Tools
+  href: tools/
+- name: Developer Guide
+  href: developer_guide
+- name: Support
+  href: support/index.md

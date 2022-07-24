@@ -1,14 +1,122 @@
 - name: Getting Started
   href: getting_started.md
-- name: Core Concepts
-  href: core_concepts.md
-- name: Hello World
-  href: hello_world.md
-- name: Reading RDF
-  href: reading_rdf.md
-- name: Writing RDF
-  href: writing_rdf.md
-- name: Working with Graphs
-  href: working_with_graphs.md
-- name: Querying with SPARQL
-  href: sparql.md
+  items:
+    - name: Core Concepts
+      href: core_concepts.md
+    - name: Hello World
+      href: hello_world.md
+    - name: Reading RDF
+      href: reading_rdf.md
+    - name: Writing RDF
+      href: writing_rdf.md
+    - name: Working with Graphs
+      href: working_with_graphs.md
+    - name: Typed Values and Lists
+      href: typed_values_and_lists.md
+    - name: Working with Triple Stores
+      href: working_with_triple_stores.md
+    - name: Building SPARQL
+      href: building_sparql.md
+    - name: Querying with SPARQL
+      href: querying_with_sparql.md
+    - name: Updating with SPARQL
+      href: updating_with_sparql.md
+- name: Going Deeper
+  href: going_deeper.md
+  items:
+    - name: Exceptions
+      href: exceptions.md
+    - name: Event Model
+      href: event_model.md
+    - name: Equality and Comparison
+      href: equality_and_comparison.md
+    - name: Utility Methods
+      href: utility_methods.md
+    - name: Extension Methods
+      href: extension_methods.md
+    - name: Namespace Mapper
+      href: namespace_mapper.md
+    - name: URI Factory
+      href: uri_factory.md
+    - name: Node Factory
+      href: node_factory.md
+- name: Storage API
+  href: storage_api.md
+  items:
+   - name: Triple Store Integration
+     href: triple_store_integration.md
+   - name: Servers API
+     href: storage_servers.md
+   - name: Transactions API
+     href: storage_transactions.md
+- name: Storage Providers
+  href: storage_providers.md
+  items:
+   - name: Allegro Graph
+     href: storage_allegrograph.md
+   - name: Blazegraph
+     href: storage_blazegraph.md
+   - name: Dataset Files
+     href: storage_datasetfile.md
+   - name: 4store
+     href: storage_4store.md
+   - name: Fuseki
+     href: storage_fuseki.md
+   - name: In-Memory
+     href: storage_inmemory.md
+   - name: Sesame
+     href: storage_sesame.md
+   - name: SPARQL Query Endpoints
+     href: storage_sparql_query.md
+   - name: SPARQL Query and Update Endpoints
+     href: storage_sparql_query_and_update.md
+   - name: SPARQL Graph Store Protocol
+     href: storage_sparql_graph_store.md
+   - name: Stardog
+     href: storage_stardog.md
+   - name: Virtuoso
+     href: storage_virtuoso.md
+- name: Advanced SPARQL
+  href: advanced_sparql.md
+  items:
+   - name: Result Formatting
+     href: result_formatting.md
+   - name: SPARQL Datasets
+     href: sparql_datasets.md
+   - name: Full Text Querying with SPARQL
+     href: full_text_querying_with_sparql.md
+   - name: Advanced SPARQL Operations
+     href: advanced_sparql_operations.md
+- name: Ontology API
+  href: ontology_api.md
+- name: Inference and Reasoning
+  href: inference_and_reasoning.md
+- name: ASP.NET Integration
+  href: aspnet_integration.md
+  items:
+   - name: Creating SPARQL Endpoints
+     href: asp_creating_sparql_endpoints.md
+   - name: Deploying with rdfWebDeploy
+     href: asp_deploying_with_rdfwebdeploy.md
+- name: Dynamic API
+  href: dynamic_api.md
+- name: Formatting API
+  href: formatting_api.md
+- name: Configuration API
+  href: configuration/toc.yml
+  topicHref: configuration/index.md
+- name: Handlers API
+  href: handlers_api.md
+- name: JSON-LD API
+  href: jsonld/toc.yml
+  topicHref: jsonld/api.md
+- name: How-To Guides
+  href: howto/toc.yml
+  topicHref: howto/index.md
+- name: Upgrading to dotNetRDF 3.0
+  href: upgrading_to_3_0.md
+  items:
+    - name: Key Changes
+      href: upgrading_changelog.md
+    - name: Global Options Changes
+      href: global_options_changes.md
