@@ -251,6 +251,23 @@ The library includes the following query processors:
 | [RemoteQueryProcessor](xref:VDS.RDF.Query.RemoteQueryProcessor) | Executes queries against a remote SPARQL endpoint |
 | [GenericQueryProcessor](xref:VDS.RDF.Query.GenericQueryProcessor) | Executes a query against a [IQueryableStorage](xref:VDS.RDF.Storage.IQueryableStorage) implementation |
 
+### Customizing Query Processor Behaviour
+
+The [`LeviathanQueryProcessor`](xref:VDS.RDF.Query.LeviathanQueryProcessor) constructors all have an optional `Action<LeviathanQueryOptions>` argument which can be used to set some or all of the default configuration options for the `LeviathanQueryProcessor`.
+A typical use of this argument is shown in the code below:
+
+```csharp
+// Assuming ds is a Dataset that we want to query
+
+//Get the Query processor
+ISparqlQueryProcessor processor = new LeviathanQueryProcessor(ds, (options) => { 
+  // Update execution timeout to 6 minutes.
+  options.QueryExecutionTimeout = 360*1000 
+});
+```
+
+Refer to the API documentation of the [`LeviathanQueryOptions`](xref:VDS.RDF.Query.LeviathanQueryOptions) class for a list of all of the configuration options that can be set in this way.
+
 ### Customizing Query Behaviour 
 
 When you use the `ProcessQuery()` overload that takes a `SparqlQuery` object you have the option of setting some properties on it which control its behaviour with regards to execution timeout. Since some queries can take a very long time to run it is often sensible to limit how long queries can run for, the `Timeout` property of the `SparqlQuery` allows you to specify the timeout. If you wish to get results back even when a timeout occurs then you can set the `PartialResultsOnTimeout` property to ensure you get some results even if a timeout occurs.

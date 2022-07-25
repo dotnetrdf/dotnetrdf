@@ -4,7 +4,7 @@ This page provides an overview and links to further resources about SPARQL exten
 
 ## Full Text Query
 
-Full Text Query is an extension which allows full text search of RDF data to be integrated into SPARQL queries, please see the [Full Text Querying with SPARQL](../user_guide/full_text_querying_with_sparql.md) page for more information on this.
+Full Text Query is an extension which allows full text search of RDF data to be integrated into SPARQL queries, please see the [Full Text Querying with SPARQL](/user_guide/full_text_querying_with_sparql.md) page for more information on this.
 
 ## LET Assignment
 

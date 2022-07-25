@@ -3,7 +3,8 @@
     "serve": {
       "patterns": ["**"],
 	  "ignore": ["build", "obj", "api", "node_modules"],
-      "extensions": "md,yml"
+      "extensions": "md,yml",
+      "delay": 2500
     }
   },
   "scripts": {

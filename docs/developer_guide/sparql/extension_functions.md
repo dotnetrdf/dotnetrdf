@@ -396,4 +396,4 @@ parser.ExpressionFactories = new ISparqlCustomExpressionFactory[] { new MyCustom
 
 Once registered all subsequent queries and updates may now use your newly registered extension functions.
 
-When integrating with ASP.Net applications or using the [Configuration API](../user_guide/configuration_api.md) then you can configure custom expression factories as detailed on the [Configuring SPARQL Expression Factories](../user_guide/configuration/sparql_expression_factories.md) page.
+When integrating with ASP.Net applications or using the [Configuration API](/user_guide/configuration_api.md) then you can configure custom expression factories as detailed on the [Configuring SPARQL Expression Factories](/user_guide/configuration/sparql_expression_factories.md) page.

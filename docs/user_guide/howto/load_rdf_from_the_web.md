@@ -16,4 +16,4 @@ IGraph g = new Graph();
 g.LoadFromUri(new Uri("http://example.org/file.rdf"), new TurtleParser());
 ```
 
-Learn more by reading the [Reading RDF](../user_guide/Reading-RDF.md) documentation.
+Learn more by reading the [Reading RDF](/user_guide/reading_rdf.md) documentation.

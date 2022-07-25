@@ -84,7 +84,10 @@ public class LeviathanUpdateProcessorExample
         InMemoryDataset ds = new InMemoryDataset(ds, new Uri("http://mydefaultgraph.org"));
 
         //Create an Update Processor using our dataset and apply the updates
-        LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
+        LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store, options => {
+            // Set processor options here.
+            options.UpdateExecutionTimeout = 60*1000
+        });
         processor.ProcessCommandSet(cmds);
 
         //We should now have a Graph in our dataset as a result of the LOAD update
