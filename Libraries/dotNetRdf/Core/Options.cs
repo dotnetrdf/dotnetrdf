@@ -123,7 +123,7 @@ namespace VDS.RDF
         /// Rigorous Query evaluation applies more checks to the triples produced by datasets to ensure they actually match the patterns being scanned.  If the underlying index structures are able to guarantee this then rigorous evaluation may be turned off for faster evaluation which it is by default since our default <see cref="TreeIndexedTripleCollection"/> and <see cref="TripleCollection"/> implementations will guarantee this.
         /// </para>
         /// </remarks>
-        [Obsolete("This API will be removed in a future release. This option can be set in the options callback on the LeviathanQueryParser class.")]
+        [Obsolete("This API will be removed in a future release. This option can be set in the options callback on the LeviathanQueryProcessor class.")]
         public static bool RigorousEvaluation { get; set; } = false;
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace VDS.RDF
         /// The only time you may want to disable this is if you are developing queries locally which you want to ensure are portable to other systems or when running the SPARQL compliance tests.
         /// </para>
         /// </remarks>
-        [Obsolete("This API will be removed in a future release. This option can be set in the options callback on the LeviathanQueryParser class.")]
+        [Obsolete("This API will be removed in a future release. This option can be set in the options callback on the LeviathanQueryProcessor class.")]
         public static bool StrictOperators { get; set; } = false;
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace VDS.RDF
         /// <remarks>
         /// For the 0.6.1 release onwards this was an experimental feature and disabled by default, from 0.7.0 onwards this is enabled by default.
         /// </remarks>
-        [Obsolete("This API will be removed in a future release. This option can be set in the options callback on the LeviathanQueryParser class.")]
+        [Obsolete("This API will be removed in a future release. This option can be set in the options callback on the LeviathanQueryProcessor class.")]
         public static bool UsePLinqEvaluation { get; set; } = true;
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This is used to stop SPARQL Updates running away and never completing execution, it defaults to 3 mins (180,000 milliseconds).
         /// </remarks>
-        [Obsolete("This API will be removed in a future release. This option can be set in the options callback on the LeviathanUpdateParser class.")]
+        [Obsolete("This API will be removed in a future release. This option can be set in the options callback on the LeviathanUpdateProcessor class.")]
         public static long UpdateExecutionTimeout
         {
             get => _updateExecutionTimeout;
