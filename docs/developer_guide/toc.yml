@@ -1,0 +1,13 @@
+- name:  SPARQL Engine
+  href: sparql/toc.yml
+  topicHref: sparql/sparql_engine.md
+- name: Deprecation Policy 
+  href: deprecation_policy.md
+- name: Developing for dotNetRDF
+  items:
+    - name: Compiling
+      href: compiling.md
+    - name: Code Style 
+      href: code_style.md
+    - name: Test Environment 
+      href: test_environment.md
