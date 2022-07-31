@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>dotNetRdf.Connectors.Virtuoso.Tests</AssemblyTitle>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFramework>net472</TargetFramework>
     <AssemblyName>dotNetRdf.Connectors.Virtuoso.Tests</AssemblyName>
 	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
@@ -53,10 +53,6 @@
   
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-    <DefineConstants>$(DefineConstants);NO_VIRTUOSO</DefineConstants>
   </PropertyGroup>
 
 </Project>
