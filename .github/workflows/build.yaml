@@ -6,12 +6,16 @@ env:
 
 jobs:
   test:
-    runs-on: windows-latest
     strategy:
       matrix:
-        framework: ["net472", "netcoreapp3.1"]
+        os: ["windows-latest", "ubuntu-latest"]
         suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests",
         "dotNetRdf.TestSuite.RdfStar"]
+        include:
+          - framework: "netcoreapp3.1"
+          - os: "windows-latest"
+            framework: "net472"
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
