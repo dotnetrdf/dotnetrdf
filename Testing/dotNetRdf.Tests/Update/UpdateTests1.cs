@@ -111,10 +111,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateAddCommand()
         {
             IGraph g = new Graph(SourceGraph);
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             IGraph h = new Graph(DestinationGraph);
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
 
             var store = new TripleStore();
             store.Add(g);
@@ -139,10 +139,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateAddCommand2()
         {
             IGraph g = new Graph(SourceGraph);
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
             h.BaseUri = null;
 
             var store = new TripleStore();
@@ -168,10 +168,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateAddCommand3()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             IGraph h = new Graph(DestinationGraph);
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
 
             var store = new TripleStore();
             store.Add(g);
@@ -196,10 +196,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateCopyCommand()
         {
             IGraph g = new Graph(SourceGraph);
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             IGraph h = new Graph(DestinationGraph);
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
 
             var store = new TripleStore();
             store.Add(g);
@@ -224,10 +224,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateCopyCommand2()
         {
             IGraph g = new Graph(SourceGraph);
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
             h.BaseUri = null;
 
             var store = new TripleStore();
@@ -253,10 +253,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateCopyCommand3()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             IGraph h = new Graph(DestinationGraph);
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
 
             var store = new TripleStore();
             store.Add(g);
@@ -281,10 +281,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateMoveCommand()
         {
             IGraph g = new Graph(SourceGraph);
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             IGraph h = new Graph(DestinationGraph);
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
 
             var store = new TripleStore();
             store.Add(g);
@@ -304,7 +304,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.True(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
             var orig = new Graph();
-            FileLoader.Load(orig, "resources\\InferenceTest.ttl");
+            FileLoader.Load(orig, Path.Combine("resources", "InferenceTest.ttl"));
             Assert.Equal(orig, h);
         }
 
@@ -312,10 +312,10 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateMoveCommand2()
         {
             IGraph g = new Graph(SourceGraph);
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             IGraph h = new Graph();
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
 
             var store = new TripleStore();
             store.Add(g);
@@ -335,7 +335,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.True(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
             var orig = new Graph();
-            FileLoader.Load(orig, "resources\\InferenceTest.ttl");
+            FileLoader.Load(orig, Path.Combine("resources", "InferenceTest.ttl"));
             Assert.Equal(orig, h);
         }
 
@@ -343,11 +343,11 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         public void SparqlUpdateMoveCommand3()
         {
             IGraph g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             g.BaseUri = null;
 
             IGraph h = new Graph(DestinationGraph);
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
 
             var store = new TripleStore();
             store.Add(g);
@@ -368,7 +368,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.True(g.IsEmpty, "Source Graph (the Default Graph) should be Empty");
 
             var orig = new Graph();
-            FileLoader.Load(orig, "resources\\InferenceTest.ttl");
+            FileLoader.Load(orig, Path.Combine("resources", "InferenceTest.ttl"));
             Assert.Equal(orig, h);
         }
 
@@ -425,7 +425,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             var store = new TripleStore();
             var g = new Graph(new UriNode(new Uri("http://example.org/temp")));
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlUpdateParser();
@@ -530,7 +530,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\rvesse.ttl");
+            g.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
             store.Add(g);
 
             var origTriples = g.Triples.Count;
@@ -555,7 +555,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\rvesse.ttl");
+            g.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
             store.Add(g);
 
             var origTriples = g.Triples.Count;
@@ -580,7 +580,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\rvesse.ttl");
+            g.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
             store.Add(g);
 
             var origTriples = g.Triples.Count;
@@ -605,7 +605,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\rvesse.ttl");
+            g.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
             store.Add(g);
 
             var origTriples = g.Triples.Count;
@@ -630,7 +630,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\rvesse.ttl");
+            g.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
             store.Add(g);
 
             var origTriples = g.Triples.Count;

@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
@@ -133,7 +134,7 @@ namespace VDS.RDF.Query
         public void SparqlConstructWithOptional()
         {
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             var expected = new Graph();
             expected.Assert(g.GetTriplesWithPredicate(g.CreateUriNode("rdf:type")));
@@ -161,7 +162,7 @@ namespace VDS.RDF.Query
         private IGraph GetNamedTestGraph()
         {
             var g = new Graph(new UriNode(new Uri("http://example.org/vehicles/")));
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             return g;
         }
 

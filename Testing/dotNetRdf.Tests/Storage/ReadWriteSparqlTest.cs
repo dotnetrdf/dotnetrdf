@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Configuration;
@@ -48,7 +49,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
                 g.BaseUri = new Uri("http://example.org/readWriteTest");
 
                 //Save Graph to ReadWriteSparql
@@ -79,7 +80,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
                 g.BaseUri = null;
 
                 //Save Graph to ReadWriteSparql
@@ -111,7 +112,7 @@ namespace VDS.RDF.Storage
             try
             {
                 var g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
                 g.BaseUri = null;
 
                 //Save Graph to ReadWriteSparql
@@ -146,7 +147,7 @@ namespace VDS.RDF.Storage
                 StorageReadWriteSparqlSaveGraph();
 
                 var g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
                 g.BaseUri = new Uri("http://example.org/readWriteTest");
 
                 //Try to load the relevant Graph back from the Store

@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
@@ -291,9 +292,9 @@ namespace VDS.RDF
         private static void TestGraphMatch(string testGraphName)
         {
             var a = new Graph();
-            a.LoadFromFile(string.Format("resources\\diff_cases\\{0}_a.ttl", testGraphName));
+            a.LoadFromFile(Path.Combine("resources", "diff_cases", $"{testGraphName}_a.ttl"));
             var b = new Graph();
-            b.LoadFromFile(string.Format("resources\\diff_cases\\{0}_b.ttl", testGraphName));
+            b.LoadFromFile(Path.Combine("resources", "diff_cases", $"{testGraphName}_b.ttl"));
 
             Assert.True(a.Equals(b));
             Assert.True(b.Equals(a));

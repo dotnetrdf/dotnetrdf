@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Configuration;
@@ -401,7 +402,7 @@ namespace VDS.RDF.Writing
         public void WritingCollectionCompressionComplex2()
         {
             var g = new Graph();
-            g.LoadFromFile("resources\\complex-collections.nt");
+            g.LoadFromFile(Path.Combine("resources", "complex-collections.nt"));
 
             var context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);

@@ -38,13 +38,13 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
         private static readonly string[] SkipTests =
         {
-            "amp-in-url\\test001.rdf", // Uses entities in DTD - not supported in .NET Core RDF/XML parser
-            "rdf-containers-syntax-vs-schema\\test005.rdf", // Obsoleted test file with no root element
-            "xmlbase\\test012.rdf", // Obsoleted test file with no root element
+            // Path.Combine("amp-in-url", "test001.rdf"), // Uses entities in DTD - not supported in .NET Core RDF/XML parser
+            Path.Combine("rdf-containers-syntax-vs-schema", "test005.rdf"), // Obsoleted test file with no root element
+            Path.Combine("xmlbase", "test012.rdf"), // Obsoleted test file with no root element
         };
 
         public RdfXmlDomParser(ITestOutputHelper testOutputHelper)
-            : base(new RdfXmlParser(RdfXmlParserMode.DOM), new NTriplesParser(), "rdfxml\\")
+            : base(new RdfXmlParser(RdfXmlParserMode.DOM), new NTriplesParser(), "rdfxml")
         {
             _testOutputHelper = testOutputHelper;
             CheckResults = false;
@@ -80,7 +80,7 @@ namespace VDS.RDF.Parsing.Suites
             {
                 BaseUri = BaseUri
             };
-            Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
+            Parser.Load(g, Path.Combine("resources", "rdfxml", "xmlbase", "test014.rdf"));
         }
     }
 
@@ -91,13 +91,13 @@ namespace VDS.RDF.Parsing.Suites
 
         private static readonly string[] SkipTests =
         {
-            "amp-in-url\\test001.rdf", // Uses entities in DTD - not supported in .NET Core RDF/XML parser
-            "rdf-containers-syntax-vs-schema\\test005.rdf", // Obsoleted test file with no root element
-            "xmlbase\\test012.rdf", // Obsoleted test file with no root element
+            Path.Combine("amp-in-url", "test001.rdf"), // Uses entities in DTD - not supported in .NET Core RDF/XML parser
+            Path.Combine("rdf-containers-syntax-vs-schema", "test005.rdf"), // Obsoleted test file with no root element
+            Path.Combine("xmlbase", "test012.rdf"), // Obsoleted test file with no root element
         };
 
         public RdfXmlStreamingParser(ITestOutputHelper testOutputHelper)
-            : base(new RdfXmlParser(RdfXmlParserMode.Streaming), new NTriplesParser(), "rdfxml\\")
+            : base(new RdfXmlParser(RdfXmlParserMode.Streaming), new NTriplesParser(), "rdfxml")
         {
             _testOutputHelper = testOutputHelper;
             CheckResults = false;
@@ -125,7 +125,7 @@ namespace VDS.RDF.Parsing.Suites
             {
                 BaseUri = BaseUri
             };
-            Parser.Load(g, "resources\\rdfxml\\xmlbase\\test014.rdf");
+            Parser.Load(g, Path.Combine("resources", "rdfxml", "xmlbase", "test014.rdf"));
         }
     }
 }

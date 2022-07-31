@@ -104,7 +104,7 @@ namespace VDS.RDF.Parsing.Suites
             {
                 var testsPassed = 0;
                 var testsFailed = 0;
-                var files = Directory.GetFiles("resources\\rdfa\\");
+                var files = Directory.GetFiles(Path.Combine("resources", "rdfa"));
                 var parser = new RdfAParser(RdfASyntax.AutoDetectLegacy);
                 //XHtmlPlusRdfAParser parser = new XHtmlPlusRdfAParser();
                 parser.Warning += parser_Warning;

@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing
         public void WritingOwlCharEscaping()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\charescaping.owl");
+            FileLoader.Load(g, Path.Combine("resources", "charescaping.owl"));
 
             var ttlwriter = new CompressingTurtleWriter();
             var serialized = VDS.RDF.Writing.StringWriter.Write(g, ttlwriter);
@@ -89,27 +89,16 @@ namespace VDS.RDF.Writing
         public void WritingHtmlWriter()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var writer = new HtmlWriter();
             var data = VDS.RDF.Writing.StringWriter.Write(g, writer);
-
-            Console.WriteLine("Serialized as XHTML+RDFa");
-            Console.WriteLine(data);
-
-            Console.WriteLine();
 
             var h = new Graph
             {
                 BaseUri = new Uri("http://example.org")
             };
             StringParser.Parse(h, data, new RdfAParser());
-
-            Console.WriteLine("Extracted Triples");
-            foreach (Triple t in h.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
 
             Assert.Equal(g, h);
         }
@@ -118,7 +107,7 @@ namespace VDS.RDF.Writing
         public void WritingRdfCollections()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\swrc.owl");
+            FileLoader.Load(g, Path.Combine("resources", "swrc.owl"));
             var ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
             ttlwriter.Save(g, Console.Out);
         }

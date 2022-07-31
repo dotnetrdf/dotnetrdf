@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Patterns;
 using Xunit;
@@ -16,7 +17,7 @@ namespace VDS.RDF.Query
         public void InsertValuesClause()
         {
             var g = new Graph();
-            g.LoadFromFile("resources\\rvesse.ttl");
+            g.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
             var parser = new SparqlQueryParser();
             SparqlQuery startingQuery =
                 parser.ParseFromString("SELECT * WHERE { <http://www.dotnetrdf.org/people#rvesse> ?p ?o }");

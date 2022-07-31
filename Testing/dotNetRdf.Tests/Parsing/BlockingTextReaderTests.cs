@@ -409,11 +409,11 @@ namespace VDS.RDF.Parsing
 
         private void EnsureNIOData()
         {
-            if (!File.Exists("resources\\nio.ttl"))
+            if (!File.Exists(Path.Combine("resources", "nio.ttl")))
             {
-                using (StreamWriter writer = File.CreateText("resources\\nio.ttl"))
+                using (StreamWriter writer = File.CreateText(Path.Combine("resources", "nio.ttl")))
                 {
-                    using (StreamReader reader = File.OpenText("resources\\dataset_50.ttl.gz"))
+                    using (StreamReader reader = File.OpenText(Path.Combine("resources", "dataset_50.ttl.gz")))
                     {
                         var line = reader.ReadLine();
                         while (line != null)

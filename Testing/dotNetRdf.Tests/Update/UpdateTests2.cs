@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FluentAssertions;
+using System.IO;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -137,7 +138,7 @@ namespace VDS.RDF.Update
         {
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             g.BaseUri = null;
             store.Add(g);
 

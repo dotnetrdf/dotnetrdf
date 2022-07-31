@@ -423,7 +423,7 @@ results.Dispose()
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocal()
         {
             String query;
-            using (StreamReader reader = File.OpenText("resources\\dbpedia-query-time.rq"))
+            using (StreamReader reader = File.OpenText(Path.Combine("resources", "dbpedia-query-time.rq")))
             {
                 query = reader.ReadToEnd();
                 reader.Close();

@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
@@ -44,7 +45,7 @@ namespace VDS.RDF.Query
             {
                 var store = new TripleStore();
                 var g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
                 g.BaseUri = null;
                 store.Add(g);
 

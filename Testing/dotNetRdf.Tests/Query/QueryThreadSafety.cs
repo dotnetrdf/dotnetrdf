@@ -120,13 +120,13 @@ namespace VDS.RDF.Query
 
         }
 
-        [Fact]
+        [SkippableFact(typeof(PlatformNotSupportedException))]
         public void SparqlQueryThreadSafeEvaluation()
         {
             TestTools.TestInMTAThread(SparqlQueryThreadSafeEvaluationActual);
         }
 
-        [Fact]
+        [SkippableFact(typeof(PlatformNotSupportedException))]
         public void SparqlQueryAndUpdateThreadSafeEvaluation()
         {
             for (var i = 1; i <= 10; i++)

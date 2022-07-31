@@ -92,8 +92,8 @@ namespace VDS.RDF
         public void GraphCollectionDiskDemand1()
         {
             var store = new TripleStore(new DiskDemandGraphCollection());
-            var g = new Graph(new UriNode(new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"))));
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            var g = new Graph(new UriNode(new Uri("file://" + Path.GetFullPath(Path.Combine("resources", "InferenceTest.ttl")))));
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             Assert.True(store.HasGraph(g.Name), "Graph Collection should contain the Graph");
             Assert.Equal(g, store[g.Name]);
@@ -105,8 +105,8 @@ namespace VDS.RDF
             //Test that on-demand loading does not kick in for pre-existing graphs
             var store = new TripleStore(new DiskDemandGraphCollection());
 
-            var g = new Graph(new UriNode(new Uri("file:///" + Path.GetFullPath("resources\\InferenceTest.ttl"))));
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            var g = new Graph(new UriNode(new Uri("file:///" + Path.GetFullPath(Path.Combine("resources", "InferenceTest.ttl")))));
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             var empty = new Graph(g.Name)
             {

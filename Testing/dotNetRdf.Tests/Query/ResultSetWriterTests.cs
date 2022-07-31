@@ -42,7 +42,7 @@ namespace VDS.RDF.Query
         public void SparqlXmlWriter()
         {
                 var g = new Graph();
-                g.LoadFromFile("resources\\InferenceTest.ttl");
+                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
                 var results = g.ExecuteQuery("SELECT * WHERE {?s ?p ?o}");
                 if (results is SparqlResultSet)
@@ -55,13 +55,9 @@ namespace VDS.RDF.Query
                 var sparqlWriter = new SparqlXmlWriter();
                 sparqlWriter.Save((SparqlResultSet)results, writer);
 
-                Console.WriteLine();
-                Console.WriteLine(output.ToString());
-                Console.WriteLine();
-
                 var parser = new SparqlXmlParser();
                 var results2 = new SparqlResultSet();
-                StringParser.ParseResultSet(results2, output.ToString());
+                StringParser.ParseResultSet(results2, output.ToString(), parser);
 
                 Assert.Equal(((SparqlResultSet)results).Count, results2.Count);
                 Assert.True(((SparqlResultSet)results).Equals(results2), "Result Sets should have been equal");

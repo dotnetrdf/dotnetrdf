@@ -62,11 +62,11 @@ namespace VDS.RDF.Parsing.Suites
 
         protected BaseParserSuite(TParser testParser, TParser resultsParser, string baseDir)
         {
-            if (baseDir == null) throw new ArgumentNullException("baseDir");
+            if (baseDir == null) throw new ArgumentNullException(nameof(baseDir));
 
-            Parser = testParser ?? throw new ArgumentNullException("testParser");
-            ResultsParser = resultsParser ?? throw new ArgumentNullException("resultsParser");
-            _baseDir = $"resources\\{baseDir}";
+            Parser = testParser ?? throw new ArgumentNullException(nameof(testParser));
+            ResultsParser = resultsParser ?? throw new ArgumentNullException(nameof(resultsParser));
+            _baseDir = Path.Combine("resources", baseDir);
             _passedTests = new List<string>();
             _failedTests = new List<TestFailure>();
             _indeterminateTests = new List<string>();

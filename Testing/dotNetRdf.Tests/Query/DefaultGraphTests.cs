@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
@@ -251,7 +252,7 @@ namespace VDS.RDF.Query
 
             var dataset = new InMemoryDataset();
             IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, Path.Combine("resources", "InferenceTest.ttl"));
             dataset.AddGraph(ex);
 
             IGraph def = new Graph();
@@ -280,7 +281,7 @@ namespace VDS.RDF.Query
 
             var dataset = new InMemoryDataset();
             IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, Path.Combine("resources", "InferenceTest.ttl"));
             dataset.AddGraph(ex);
 
             IGraph def = new Graph();
@@ -308,7 +309,7 @@ namespace VDS.RDF.Query
 
             var dataset = new InMemoryDataset(false);
             IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, Path.Combine("resources", "InferenceTest.ttl"));
             dataset.AddGraph(ex);
 
             IGraph def = new Graph();
@@ -337,7 +338,7 @@ namespace VDS.RDF.Query
 
             var dataset = new InMemoryDataset(false);
             IGraph ex = new Graph(new UriNode(new Uri("http://example.org/graph")));
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, Path.Combine("resources", "InferenceTest.ttl"));
             dataset.AddGraph(ex);
 
             IGraph def = new Graph();
@@ -365,7 +366,7 @@ namespace VDS.RDF.Query
 
             var store = new TripleStore();
             IGraph ex = new Graph(new UriNode(new Uri("http://example.org/named")));
-            FileLoader.Load(ex, "resources\\InferenceTest.ttl");
+            FileLoader.Load(ex, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(ex);
 
             IGraph ex2 = new Graph(new UriNode(new Uri("http://example.org/other")));

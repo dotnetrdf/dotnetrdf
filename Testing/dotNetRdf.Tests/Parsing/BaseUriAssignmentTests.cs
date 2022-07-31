@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using Xunit;
 using VDS.RDF.Writing;
 
@@ -43,7 +44,7 @@ namespace VDS.RDF.Parsing
         public void ParsingBaseUriAssignmentFileLoader()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             Assert.NotNull(g.BaseUri);
         }
 

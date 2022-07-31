@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -803,61 +804,26 @@ namespace VDS.RDF
         public void GraphMerging()
         {
             //Load the Test RDF
-            var ttlparser = new TurtleParser();
+            var parser = new TurtleParser();
             var g = new Graph();
             var h = new Graph();
             Assert.NotNull(g);
             Assert.NotNull(h);
-            ttlparser.Load(g, "resources\\MergePart1.ttl");
-            ttlparser.Load(h, "resources\\MergePart2.ttl");
-
-            Console.WriteLine("Merge Test Data Loaded OK");
-            Console.WriteLine();
-
-            Console.WriteLine("Graph 1 Contains");
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("Graph 2 Contains");
-            foreach (Triple t in h.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
-
-            Console.WriteLine();
-
-            Console.WriteLine("Attempting Graph Merge");
+            parser.Load(g, Path.Combine("resources", "MergePart1.ttl"));
+            parser.Load(h, Path.Combine("resources", "MergePart2.ttl"));
             g.Merge(h);
-            Console.WriteLine();
-
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
-
             Assert.Equal(8, g.Triples.Count);
 
             //Same merge into an Empty Graph
-            Console.WriteLine();
-            Console.WriteLine("Combining the two Graphs with two Merge operations into an Empty Graph");
             var i = new Graph();
 
             //Need to reload g from disk
             g = new Graph();
-            ttlparser.Load(g, "resources\\MergePart1.ttl");
+            parser.Load(g,  Path.Combine("resources", "MergePart1.ttl"));
 
             //Do the actual merge
             i.Merge(g);
             i.Merge(h);
-            Console.WriteLine();
-
-            foreach (Triple t in i.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
 
             Assert.Equal(8, i.Triples.Count);
         }

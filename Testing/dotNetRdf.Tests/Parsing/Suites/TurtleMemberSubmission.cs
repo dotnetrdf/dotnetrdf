@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing.Suites
         public TurtleMemberSubmission(ITestOutputHelper testOutputHelper)
             : base(new TurtleParser(TurtleSyntax.Original, false), 
                 new NTriplesParser(NTriplesSyntax.Original), //KA: test-29 will be indeterminate if using NTriples 1.1 syntax due to \t escape in the expected output result file
-                "turtle\\")
+                "turtle")
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -48,8 +48,8 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingSuiteTurtleOriginal()
         {
             //Run manifests
-            RunManifest("resources/turtle/manifest.ttl", true);
-            RunManifest("resources/turtle/manifest-bad.ttl", false);
+            RunManifest(Path.Combine("resources", "turtle", "manifest.ttl"), true);
+            RunManifest(Path.Combine("resources", "turtle", "manifest-bad.ttl"), false);
 
             if (Count == 0) Assert.True(false, "No tests found");
 
@@ -151,7 +151,7 @@ namespace VDS.RDF.Parsing.Suites
         [Fact]
         public void ParsingTurtleOriginalPrefixedNames2()
         {
-            Parser.Load(new Graph(), @"resources\turtle\test-14.ttl");
+            Parser.Load(new Graph(), Path.Combine("resources", "turtle", "test-14.ttl"));
         }
     }
 }

@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing.Handlers;
@@ -49,7 +50,7 @@ namespace VDS.RDF.Storage
             manager.SaveGraph(g);
 
             g = new Graph(new UriNode(new Uri(TestGraphUri2)));
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
 
@@ -155,7 +156,7 @@ namespace VDS.RDF.Storage
                 Assert.Equal(aExpected, aActual);
 
                 var bExpected = new Graph(new UriNode(new Uri(TestGraphUri2)));
-                bExpected.LoadFromFile("resources\\InferenceTest.ttl");
+                bExpected.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
                 bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 IGraph bActual = store[bExpected.Name];
                 Assert.Equal(bExpected, bActual);

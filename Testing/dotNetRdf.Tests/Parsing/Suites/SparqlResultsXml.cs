@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public SparqlResultsXml(ITestOutputHelper testOutputHelper)
-            : base(new SparqlXmlParser(), new SparqlXmlParser(), "srx\\")
+            : base(new SparqlXmlParser(), new SparqlXmlParser(), "srx")
         {
             _testOutputHelper = testOutputHelper;
             CheckResults = false;
@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             // Test case based off of CORE-410
             var results = new SparqlResultSet();
-            ResultsParser.Load(results, @"resources\sparql\core-410.srx");
+            ResultsParser.Load(results, Path.Combine("resources", "sparql", "core-410.srx"));
 
             TestTools.ShowResults(results);
 
@@ -102,7 +102,7 @@ namespace VDS.RDF.Parsing.Suites
             // Test case based off of CORE-410
             var results = new SparqlResultSet();
 
-            Assert.Throws<RdfParseException>(() => ResultsParser.Load(results, @"resources\sparql\bad-core-410.srx"));
+            Assert.Throws<RdfParseException>(() => ResultsParser.Load(results, Path.Combine("resources", "sparql", "bad-core-410.srx")));
         }
     }
 }

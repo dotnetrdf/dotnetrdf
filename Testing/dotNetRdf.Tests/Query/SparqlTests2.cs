@@ -60,7 +60,7 @@ namespace VDS.RDF.Query
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -222,7 +222,7 @@ namespace VDS.RDF.Query
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_0);
@@ -239,7 +239,7 @@ namespace VDS.RDF.Query
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -254,7 +254,7 @@ namespace VDS.RDF.Query
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -397,7 +397,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser(SparqlQuerySyntax.Extended);
@@ -423,7 +423,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
@@ -440,7 +440,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -473,7 +473,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -506,7 +506,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -539,7 +539,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -572,7 +572,7 @@ WHERE
 
         //    TripleStore store = new TripleStore();
         //    Graph g = new Graph();
-        //    FileLoader.Load(g, "resources\\InferenceTest.ttl");
+        //    FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
         //    store.Add(g);
 
         //    SparqlQueryParser parser = new SparqlQueryParser();
@@ -605,7 +605,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -633,7 +633,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -661,7 +661,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -689,7 +689,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -717,7 +717,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -745,7 +745,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -773,7 +773,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -803,7 +803,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\dataset_50.ttl.gz");
+            FileLoader.Load(g, Path.Combine("resources", "dataset_50.ttl.gz"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -855,7 +855,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -886,7 +886,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -921,7 +921,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -957,7 +957,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -996,7 +996,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -1067,7 +1067,7 @@ WHERE
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -1118,7 +1118,7 @@ WHERE
 { ?car rdf:type eg:Car . ?car eg:Speed ?speed } LIMIT 1";
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
@@ -1146,7 +1146,7 @@ WHERE
 { ?car rdf:type eg:Car . ?car eg:Speed ?speed } LIMIT 20";
 
                 var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
                 var parser = new SparqlQueryParser();
                 SparqlQuery q = parser.ParseFromString(query);
@@ -1166,9 +1166,9 @@ WHERE
         public void SparqlNestedOptionalCore406()
         {
             IGraph g = new Graph();
-            g.LoadFromFile(@"resources\core-406.ttl");
+            g.LoadFromFile(Path.Combine("resources", "core-406.ttl"));
 
-            SparqlQuery query = new SparqlQueryParser().ParseFromFile(@"resources\core-406.rq");
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-406.rq"));
 
             var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
             var results = processor.ProcessQuery(query) as SparqlResultSet;
@@ -1187,9 +1187,9 @@ WHERE
         public void SparqlSubQueryGraphInteractionCore416_Serial()
         {
             var store = new TripleStore();
-            store.LoadFromFile(@"resources\core-416.trig");
+            store.LoadFromFile(Path.Combine("resources", "core-416.trig"));
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-416.rq"));
             //SparqlFormatter formatter = new SparqlFormatter();
             //_output.WriteLine(formatter.Format(q));
 
@@ -1202,19 +1202,16 @@ WHERE
             const int totalRuns = 1000;
             for (var i = 0; i < totalRuns; i++)
             {
-                _output.WriteLine("Starting query run " + i + " of " + totalRuns);
                 var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
 
                 if (q.QueryExecutionTime != null)
                 {
-                    _output.WriteLine("Execution Time: " + q.QueryExecutionTime.Value);
                     total = total + q.QueryExecutionTime.Value;
                 }
                 if (results.Count != 4) TestTools.ShowResults(results);
                 Assert.Equal(4, results.Count);
             }
-
             _output.WriteLine("Total Execution Time: " + total);
             Assert.True(total < new TimeSpan(0, 0, 1 * (totalRuns / 10)));
         }
@@ -1224,9 +1221,9 @@ WHERE
         public void SparqlSubQueryGraphInteractionCore416_Parallel()
         {
             var store = new TripleStore();
-            store.LoadFromFile(@"resources\core-416.trig");
+            store.LoadFromFile(Path.Combine("resources", "core-416.trig"));
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-416.rq");
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-416.rq"));
             _output.WriteLine(q.ToAlgebra().ToString());
             //SparqlFormatter formatter = new SparqlFormatter();
             //_output.WriteLine(formatter.Format(q));
@@ -1234,12 +1231,14 @@ WHERE
             ISparqlDataset dataset = AsDataset(store);
 
             //ExplainQueryProcessor processor = new ExplainQueryProcessor(dataset, ExplanationLevel.OutputToConsoleStdOut | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseNamedGraphs);
-            var processor = new LeviathanQueryProcessor(dataset);
+            var processor = new LeviathanQueryProcessor(dataset, options =>
+            {
+                options.UsePLinqEvaluation = true;
+            });
             var total = new TimeSpan();
             const int totalRuns = 1000;
             for (var i = 0; i < totalRuns; i++)
             {
-                _output.WriteLine("Starting query run " + i + " of " + totalRuns);
                 var results = processor.ProcessQuery(q) as SparqlResultSet;
                 Assert.NotNull(results);
 
@@ -1260,9 +1259,9 @@ WHERE
         public void SparqlInfiniteLoopCore439_01()
         {
             var store = new TripleStore();
-            store.LoadFromFile(@"resources\core-439\data.trig");
+            store.LoadFromFile(Path.Combine("resources", "core-439", "data.trig"));
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-439\bad-query.rq");
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-439", "bad-query.rq"));
             //q.Timeout = 10000;
             _output.WriteLine(q.ToAlgebra().ToString());
 
@@ -1280,9 +1279,9 @@ WHERE
         public void SparqlInfiniteLoopCore439_02()
         {
             var store = new TripleStore();
-            store.LoadFromFile(@"resources\core-439\data.trig");
+            store.LoadFromFile(Path.Combine("resources", "core-439", "data.trig"));
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-439\good-query.rq");
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-439", "good-query.rq"));
             //q.Timeout = 3000;
             _output.WriteLine(q.ToAlgebra().ToString());
 
@@ -1299,9 +1298,9 @@ WHERE
         public void SparqlInfiniteLoopCore439_03()
         {
             var store = new TripleStore();
-            store.LoadFromFile(@"resources\core-439\data.trig");
+            store.LoadFromFile(Path.Combine("resources", "core-439", "data.trig"));
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-439\from-query.rq");
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-439", "from-query.rq"));
             //q.Timeout = 3000;
             _output.WriteLine(q.ToAlgebra().ToString());
 
@@ -1321,7 +1320,7 @@ WHERE
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             var dataset = new InMemoryDataset(g);
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-437.rq");
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-437.rq"));
             var processor = new LeviathanQueryProcessor(dataset);
             var results = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.NotNull(results);
@@ -1332,10 +1331,10 @@ WHERE
         private void RunCore457(String query, bool usePLinq)
         {
             var store = new TripleStore();
-            store.LoadFromFile(@"resources\core-457\data.nq");
+            store.LoadFromFile(Path.Combine("resources", "core-457", "data.nq"));
             var dataset = new InMemoryDataset(store);
 
-            SparqlQuery q = new SparqlQueryParser().ParseFromFile(@"resources\core-457\" + query);
+            SparqlQuery q = new SparqlQueryParser().ParseFromFile(Path.Combine("resources","core-457", query));
             q.Timeout = 15000;
             var processor = new LeviathanQueryProcessor(dataset,
                 options => { options.UsePLinqEvaluation = usePLinq;});

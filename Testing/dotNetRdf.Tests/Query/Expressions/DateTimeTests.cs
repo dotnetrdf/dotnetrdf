@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -161,21 +162,15 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateTimeInequality()
         {
             IGraph g = new Graph();
-            g.LoadFromFile(@"resources\sparql\data-3.ttl");
+            g.LoadFromFile(Path.Combine("resources", "sparql", "data-3.ttl"));
             Assert.False(g.IsEmpty);
 
-            SparqlQuery q = _parser.ParseFromFile(@"resources\sparql\date-2.rq");
+            SparqlQuery q = _parser.ParseFromFile(Path.Combine("resources", "sparql", "date-2.rq"));
             var actual = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.NotNull(actual);
 
-            Console.WriteLine("Actual Results:");
-            TestTools.ShowResults(actual);
-
             var expected = new SparqlResultSet();
-            _resultsParser.Load(expected, @"resources\sparql\date-2-result.srx");
-
-            Console.WriteLine("Expected Results:");
-            TestTools.ShowResults(expected);
+            _resultsParser.Load(expected, Path.Combine("resources", "sparql", "date-2-result.srx"));
 
             Assert.True(expected.Equals(actual));
         }
@@ -184,21 +179,15 @@ namespace VDS.RDF.Query.Expressions
         public void SparqlDateTimeGreaterThan()
         {
             IGraph g = new Graph();
-            g.LoadFromFile(@"resources\sparql\data-3.ttl");
+            g.LoadFromFile(Path.Combine("resources", "sparql", "data-3.ttl"));
             Assert.False(g.IsEmpty);
 
-            SparqlQuery q = _parser.ParseFromFile(@"resources\sparql\date-3.rq");
+            SparqlQuery q = _parser.ParseFromFile(Path.Combine("resources", "sparql", "date-3.rq"));
             var actual = g.ExecuteQuery(q) as SparqlResultSet;
             Assert.NotNull(actual);
 
-            Console.WriteLine("Actual Results:");
-            TestTools.ShowResults(actual);
-
             var expected = new SparqlResultSet();
-            _resultsParser.Load(expected, @"resources\sparql\date-3-result.srx");
-
-            Console.WriteLine("Expected Results:");
-            TestTools.ShowResults(expected);
+            _resultsParser.Load(expected, Path.Combine("resources", "sparql", "date-3-result.srx"));
 
             Assert.True(expected.Equals(actual));
         }

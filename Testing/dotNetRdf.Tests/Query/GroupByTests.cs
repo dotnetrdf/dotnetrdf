@@ -61,7 +61,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var g = new QueryableGraph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet rset)
@@ -82,7 +82,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var g = new QueryableGraph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet resultSet)
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query
             SparqlQuery q = parser.ParseFromString(query);
 
             var g = new QueryableGraph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var results = g.ExecuteQuery(q);
             if (results is SparqlResultSet resultSet)

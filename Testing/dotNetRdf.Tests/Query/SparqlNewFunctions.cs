@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using VDS.RDF.Nodes;
 using Xunit;
 using VDS.RDF.Parsing;
@@ -72,7 +73,7 @@ namespace VDS.RDF.Query
         public void SparqlFunctionsNow()
         {
             var parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromFile("resources\\now01.rq");
+            SparqlQuery q = parser.ParseFromFile(Path.Combine("resources", "now01.rq"));
             var store = new TripleStore();
             var processor = new LeviathanQueryProcessor(store);
             if (processor.ProcessQuery(q) is SparqlResultSet results)
@@ -90,7 +91,7 @@ namespace VDS.RDF.Query
         {
             const string query = "SELECT ?s (RAND() AS ?rand) WHERE { ?s ?p ?o } ORDER BY ?rand";
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             object results = g.ExecuteQuery(query);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
