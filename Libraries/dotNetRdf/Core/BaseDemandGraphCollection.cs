@@ -203,8 +203,7 @@ namespace VDS.RDF
                 try
                 {
                     var g = new Graph(new UriNode(graphUri));
-                    FileLoader.Load(g, graphUri.AbsoluteUri.Substring(8));
-
+                    FileLoader.Load(g, graphUri.AbsolutePath);
                     return g;
                 }
                 catch
