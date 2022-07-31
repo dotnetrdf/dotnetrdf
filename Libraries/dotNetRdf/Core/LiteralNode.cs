@@ -39,7 +39,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        public LiteralNode(string literal, bool normalize)
+        public LiteralNode(string literal, bool normalize = true)
             : base(literal, normalize) { }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="langSpec">String value for the Language Specifier for the Literal.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        public LiteralNode(string literal, string langSpec, bool normalize)
+        public LiteralNode(string literal, string langSpec, bool normalize = true)
             : base(literal, langSpec, normalize) { }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal.</param>
         /// <param name="datatype">Uri for the Literals Data Type.</param>
         /// <param name="normalize">Whether to Normalize the Literal Value.</param>
-        public LiteralNode(string literal, Uri datatype, bool normalize)
+        public LiteralNode(string literal, Uri datatype, bool normalize = true)
             : base(literal, datatype, normalize) { }
 
         /// <summary>

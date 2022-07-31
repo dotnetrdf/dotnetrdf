@@ -23,11 +23,13 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using FluentAssertions;
 using System;
 using System.Globalization;
 using System.Threading;
 using Xunit;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
@@ -202,6 +204,48 @@ namespace VDS.RDF
         {
             IGraph g = new Graph(null, new NodeFactory(new NodeFactoryOptions() { ValidateLanguageSpecifiers = false }));
             g.CreateLiteralNode("example", InvalidLanguageSpecifier);
+        }
+
+        [Fact]
+        public void LiteralStringNormalisation()
+        {
+            var decomposed = "\u0041\u030A";
+            var composed = "\u00C5";
+
+            var lit1 = new LiteralNode(decomposed);
+            var lit2 = new LiteralNode(decomposed, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
+            var lit3 = new LiteralNode(decomposed, "en");
+            var lit4 = new LiteralNode(decomposed, false);
+            var lit5 = new LiteralNode(decomposed, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString), false);
+            var lit6 = new LiteralNode(decomposed, "en", false);
+
+            var normalizingFactory = new NodeFactory(new NodeFactoryOptions { NormalizeLiteralValues = true });
+            var nonNormalizingFactory = new NodeFactory(new NodeFactoryOptions { NormalizeLiteralValues = false });
+
+            ILiteralNode lit7 = normalizingFactory.CreateLiteralNode(decomposed);
+            ILiteralNode lit8 =
+                normalizingFactory.CreateLiteralNode(decomposed, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
+            ILiteralNode lit9 = normalizingFactory.CreateLiteralNode(decomposed, "en");
+            ILiteralNode lit10 = nonNormalizingFactory.CreateLiteralNode(decomposed);
+            ILiteralNode lit11 =
+                nonNormalizingFactory.CreateLiteralNode(decomposed, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
+            ILiteralNode lit12 = nonNormalizingFactory.CreateLiteralNode(decomposed, "en");
+
+            lit1.Value.Should().Be(composed);
+            lit2.Value.Should().Be(composed);
+            lit3.Value.Should().Be(composed);
+
+            lit4.Value.Should().Be(decomposed);
+            lit5.Value.Should().Be(decomposed);
+            lit6.Value.Should().Be(decomposed);
+
+            lit7.Value.Should().Be(composed);
+            lit8.Value.Should().Be(composed);
+            lit9.Value.Should().Be(composed);
+
+            lit10.Value.Should().Be(decomposed);
+            lit11.Value.Should().Be(decomposed);
+            lit12.Value.Should().Be(decomposed);
         }
     }
 }
