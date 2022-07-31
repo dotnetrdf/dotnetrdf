@@ -161,14 +161,8 @@ namespace VDS.RDF.Parsing
             {
                 // Pass through to the FileLoader
                 RaiseWarning("This is a file: URI so invoking the FileLoader instead");
-                if (Path.DirectorySeparatorChar == '/')
-                {
-                    FileLoader.Load(graph, uri.ToString().Substring(7), parser);
-                }
-                else
-                {
-                    FileLoader.Load(graph, uri.ToString().Substring(8), parser);
-                }
+                var path = uri.ToString().Substring(7);
+                FileLoader.Load(graph, path, parser);
                 return;
             }
 
