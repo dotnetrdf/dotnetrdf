@@ -10,12 +10,11 @@ jobs:
       matrix:
         os: ["windows-latest", "ubuntu-latest"]
         suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests",
-        "dotNetRdf.TestSuite.RdfStar"]
+        "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
         include:
           - framework: "netcoreapp3.1"
           - os: "windows-latest"
-            framework: "net472"
-            suite: "dotNetRdf.Data.DataTables.Tests"
+            framework: ["net472", "netcoreapp3.1"]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
@@ -23,7 +22,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Run Tests
-      run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} --collect:"XPlat Code Coverage" Testing\${{matrix.suite}}
+      run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} --collect:"XPlat Code Coverage" Testing/${{matrix.suite}}
     - name: Upload Code Coverage
       uses: actions/upload-artifact@v2
       with:
