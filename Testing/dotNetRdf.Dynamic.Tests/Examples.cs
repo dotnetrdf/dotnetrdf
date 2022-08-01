@@ -75,6 +75,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using VDS.RDF.Query;
 using Xunit;
@@ -87,7 +88,7 @@ namespace VDS.RDF.Dynamic
         public void Example1()
         {
             var g = new Graph();
-            g.LoadFromFile(@"resources\rvesse.ttl");
+            g.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
 
             dynamic d = g.AsDynamic(UriFactory.Root.Create("http://www.dotnetrdf.org/people#"), predicateBaseUri: UriFactory.Root.Create("http://xmlns.com/foaf/0.1/"));
 
@@ -120,7 +121,7 @@ namespace VDS.RDF.Dynamic
         public void Example2()
         {
             var expected = new Graph();
-            expected.LoadFromFile(@"resources\Turtle.ttl");
+            expected.LoadFromFile(Path.Combine("resources", "Turtle.ttl"));
 
             var g = new Graph
             {
@@ -142,7 +143,7 @@ namespace VDS.RDF.Dynamic
                     new[]
                     {
                         "Example Literal",
-                        "Example\r\n     \r\nLong Literal"
+                        String.Format("Example{0}     {0}Long Literal", Environment.NewLine)
                     }
                 },
             };
@@ -204,15 +205,15 @@ namespace VDS.RDF.Dynamic
                 g.CreateUriNode(":item3")
             });
             d[collection]["rdf:type"] = d.CreateUriNode(":Collection");
-
-            Assert.Equal<IGraph>(expected, g);
+            
+            Assert.Equal(expected, g);
         }
 
         [Fact]
         public void Example3()
         {
             var expected = new Graph();
-            expected.LoadFromFile(@"resources\rvesse.ttl");
+            expected.LoadFromFile(Path.Combine("resources", "rvesse.ttl"));
             var actual = new Graph();
             dynamic d = actual.AsDynamic(UriFactory.Root.Create("http://www.dotnetrdf.org/people#"));
 

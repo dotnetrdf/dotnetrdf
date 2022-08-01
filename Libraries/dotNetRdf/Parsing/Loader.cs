@@ -141,7 +141,15 @@ namespace VDS.RDF.Parsing
         {
             if (fileUri.IsFile)
             {
-                return (fileUri.IsAbsoluteUri && !fileUri.IsUnc) ? fileUri.AbsolutePath : fileUri.ToString().Substring(7);
+                if (fileUri.IsAbsoluteUri)
+                {
+                    if (!fileUri.IsUnc)
+                    {
+                        return fileUri.AbsolutePath;
+                    }
+                }
+
+                return fileUri.ToString().Substring(7);
             }
 
             throw new ArgumentException("URI must be a file: URI", nameof(fileUri));

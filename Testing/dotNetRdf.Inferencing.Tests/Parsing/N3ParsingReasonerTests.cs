@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using VDS.RDF.Query.Inference;
 using Xunit;
 using Xunit.Abstractions;
@@ -23,7 +24,7 @@ namespace VDS.RDF.Parsing
             StringParser.Parse(rulesGraph, rules, new Notation3Parser());
 
             var data = new Graph();
-            FileLoader.Load(data, "resources\\InferenceTest.ttl");
+            FileLoader.Load(data, Path.Combine("resources", "InferenceTest.ttl"));
 
             _testOutputHelper.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
             var origCount = data.Triples.Count;
@@ -58,7 +59,7 @@ namespace VDS.RDF.Parsing
             StringParser.Parse(rulesGraph, rules, new Notation3Parser());
 
             var data = new Graph();
-            FileLoader.Load(data, "resources\\InferenceTest.ttl");
+            FileLoader.Load(data, Path.Combine("resources", "InferenceTest.ttl"));
 
             _testOutputHelper.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
             var origCount = data.Triples.Count;
