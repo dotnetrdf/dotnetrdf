@@ -1184,6 +1184,7 @@ WHERE
 
         [Fact]
         [Trait("Coverage", "Skip")]
+        [Trait("Category", "performance")]
         public void SparqlSubQueryGraphInteractionCore416_Serial()
         {
             var store = new TripleStore();
