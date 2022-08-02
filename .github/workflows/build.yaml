@@ -103,7 +103,7 @@ jobs:
         path: Testing/dotNetRdf.Connectors.Virtuoso.Tests/TestResults/*/coverage.cobertura.xml
       
   report:
-    needs: [ "test", "fusekiTests", "virtuosoTests" ]
+    needs: [ "test", "test-linux", "fusekiTests", "virtuosoTests" ]
     runs-on: windows-latest
     steps:
     - name: Checkout
