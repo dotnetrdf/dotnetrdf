@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public NTriples(ITestOutputHelper testOutputHelper)
-            : base(new NTriplesParser(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original), @"ntriples\")
+            : base(new NTriplesParser(NTriplesSyntax.Original), new NTriplesParser(NTriplesSyntax.Original), "ntriples")
         {
             _testOutputHelper = testOutputHelper;
             CheckResults = false;
@@ -63,7 +63,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingNTriplesUnicodeEscapes1()
         {
             var g = new Graph();
-            g.LoadFromFile(@"resources\turtle11\localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt", Parser);
+            g.LoadFromFile(Path.Combine("resources", "turtle11", "localName_with_assigned_nfc_bmp_PN_CHARS_BASE_character_boundaries.nt"), Parser);
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
         }
@@ -105,7 +105,7 @@ namespace VDS.RDF.Parsing.Suites
         : BaseRdfParserSuite
     {
         public NTriples11()
-            : base(new NTriplesParser(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11), @"ntriples11\")
+            : base(new NTriplesParser(NTriplesSyntax.Rdf11), new NTriplesParser(NTriplesSyntax.Rdf11), @"ntriples11")
         {
             CheckResults = false;
             Parser.Warning += TestTools.WarningPrinter;
@@ -121,7 +121,7 @@ namespace VDS.RDF.Parsing.Suites
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
 
             //Run manifests
-            RunManifest(@"resources\ntriples11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+            RunManifest(Path.Combine("resources", "ntriples11", "manifest.ttl"), posSyntaxTest, negSyntaxTest);
 
             if (Count == 0) Assert.True(false, "No tests found");
 
@@ -172,7 +172,7 @@ namespace VDS.RDF.Parsing.Suites
     public class NTriplesStar : BaseRdfParserSuite
     {
         public NTriplesStar()
-            : base(new NTriplesParser(NTriplesSyntax.Rdf11Star), new NTriplesParser(NTriplesSyntax.Rdf11Star), @"ntriples11\")
+            : base(new NTriplesParser(NTriplesSyntax.Rdf11Star), new NTriplesParser(NTriplesSyntax.Rdf11Star), @"ntriples11")
         {
             CheckResults = false;
             Parser.Warning += TestTools.WarningPrinter;
@@ -188,7 +188,7 @@ namespace VDS.RDF.Parsing.Suites
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNTriplesNegativeSyntax");
 
             //Run manifests
-            RunManifest(@"resources\ntriples11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+            RunManifest(Path.Combine("resources", "ntriples11", "manifest.ttl"), posSyntaxTest, negSyntaxTest);
 
             if (Count == 0) Assert.True(false, "No tests found");
 

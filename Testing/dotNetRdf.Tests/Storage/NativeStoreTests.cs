@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using VDS.RDF.Parsing;
 using Xunit;
 using Xunit.Abstractions;
@@ -46,7 +47,7 @@ namespace VDS.RDF.Storage
             var ttlparser = new TurtleParser();
             var testGraphName  =new UriNode(new Uri("http://example.org/testGraph"));
             var g = new Graph(testGraphName);
-            ttlparser.Load(g, "resources\\Turtle.ttl");
+            ttlparser.Load(g, Path.Combine("resources", "Turtle.ttl"));
 
             Assert.False(g.IsEmpty, "Test Graph should be non-empty");
 

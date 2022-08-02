@@ -45,29 +45,21 @@ namespace VDS.RDF.Query
         public void SparqlParsingNestedGraphPatternFirstItem()
         {
                 var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromFile("resources\\childgraphpattern.rq");
-
-                Console.WriteLine(q.ToString());
-                Console.WriteLine();
-                Console.WriteLine(q.ToAlgebra().ToString());
+                SparqlQuery q = parser.ParseFromFile(Path.Combine("resources", "childgraphpattern.rq"));
         }
 
         [Fact]
         public void SparqlParsingNestedGraphPatternFirstItem2()
         {
                 var parser = new SparqlQueryParser();
-                SparqlQuery q = parser.ParseFromFile("resources\\childgraphpattern2.rq");
-
-                Console.WriteLine(q.ToString());
-                Console.WriteLine();
-                Console.WriteLine(q.ToAlgebra().ToString());
+                SparqlQuery q = parser.ParseFromFile(Path.Combine("resources", "childgraphpattern2.rq"));
          }
 
         [Fact]
         public void SparqlParsingSubQueryWithLimitAndOrderBy()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var query = "SELECT * WHERE { { SELECT * WHERE {?s ?p ?o} ORDER BY ?p ?o LIMIT 2 } }";
             var parser = new SparqlQueryParser();
@@ -237,10 +229,10 @@ namespace VDS.RDF.Query
         public void SparqlEvaluationMultipleOptionals()
         {
             var store = new TripleStore();
-            store.LoadFromFile("resources\\multiple-options.trig");
+            store.LoadFromFile(Path.Combine("resources", "multiple-options.trig"));
 
             var parser = new SparqlQueryParser();
-            SparqlQuery query = parser.ParseFromFile("resources\\multiple-optionals.rq");
+            SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "multiple-optionals.rq"));
 
             var processor = new LeviathanQueryProcessor(store);
             var results = processor.ProcessQuery(query);
@@ -258,10 +250,10 @@ namespace VDS.RDF.Query
         public void SparqlEvaluationMultipleOptionals2()
         {
             var store = new TripleStore();
-            store.LoadFromFile("resources\\multiple-options.trig");
+            store.LoadFromFile(Path.Combine("resources", "multiple-options.trig"));
 
             var parser = new SparqlQueryParser();
-            SparqlQuery query = parser.ParseFromFile("resources\\multiple-optionals-alternate.rq");
+            SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "multiple-optionals-alternate.rq"));
 
             var processor = new LeviathanQueryProcessor(store);
             var results = processor.ProcessQuery(query);

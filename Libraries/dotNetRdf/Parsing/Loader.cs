@@ -137,6 +137,24 @@ namespace VDS.RDF.Parsing
             Task.Run(() => LoadGraphAsync(graph, uri, parser, CancellationToken.None)).Wait();
         }
 
+        private string GetFilePath(Uri fileUri)
+        {
+            if (fileUri.IsFile)
+            {
+                if (fileUri.IsAbsoluteUri)
+                {
+                    if (!fileUri.IsUnc)
+                    {
+                        return fileUri.AbsolutePath;
+                    }
+                }
+
+                return fileUri.ToString().Substring(7);
+            }
+
+            throw new ArgumentException("URI must be a file: URI", nameof(fileUri));
+        }
+
         /// <summary>
         /// Load RDF data from the specified URI into the specified graph.
         /// </summary>
@@ -161,14 +179,8 @@ namespace VDS.RDF.Parsing
             {
                 // Pass through to the FileLoader
                 RaiseWarning("This is a file: URI so invoking the FileLoader instead");
-                if (Path.DirectorySeparatorChar == '/')
-                {
-                    FileLoader.Load(graph, uri.ToString().Substring(7), parser);
-                }
-                else
-                {
-                    FileLoader.Load(graph, uri.ToString().Substring(8), parser);
-                }
+                var path = GetFilePath(uri);
+                FileLoader.Load(graph, path, parser);
                 return;
             }
 
@@ -428,15 +440,8 @@ namespace VDS.RDF.Parsing
                 {
                     // Use the FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
-                    if (Path.DirectorySeparatorChar == '/')
-                    {
-                        FileLoader.Load(handler, uri.AbsoluteUri.Substring(7), parser);
-                    }
-                    else
-                    {
-                        FileLoader.Load(handler, uri.AbsoluteUri.Substring(8), parser);
-                    }
-
+                    var path = GetFilePath(uri);
+                    FileLoader.Load(handler, path, parser);
                     return;
                 }
 

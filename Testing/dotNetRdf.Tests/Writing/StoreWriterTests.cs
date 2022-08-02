@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using Xunit;
 using VDS.RDF.Parsing;
 
@@ -39,11 +40,11 @@ namespace VDS.RDF.Writing
             store.Add(g);
 
             g = new Graph(new UriNode(new Uri("http://example.org/graph")));
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             g = new Graph(new UriNode(new Uri("http://example.org/cyrillic")));
-            g.LoadFromFile(@"resources\cyrillic.rdf");
+            g.LoadFromFile(Path.Combine("resources", "cyrillic.rdf"));
             store.Add(g);
 
             if (writer is ICompressingWriter)
@@ -71,13 +72,13 @@ namespace VDS.RDF.Writing
             }
         }
 
-        [Fact]
+        [SkippableFact(typeof(PlatformNotSupportedException))]
         public void WritingTriX()
         {
             TestWriter(new TriXWriter(), new TriXParser(), false);
         }
 
-        [Fact]
+        [SkippableFact(typeof(PlatformNotSupportedException))]
         public void WritingNQuads()
         {
             TestTools.TestInMTAThread(WritingNQuadsActual);
@@ -94,7 +95,7 @@ namespace VDS.RDF.Writing
             TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Original), true);
         }
 
-        [Fact]
+        [SkippableFact(typeof(PlatformNotSupportedException))]
         public void WritingNQuadsMixed()
         {
             TestTools.TestInMTAThread(WritingNQuadsMixedActual);
@@ -111,7 +112,7 @@ namespace VDS.RDF.Writing
             TestWriter(new NQuadsWriter(NQuadsSyntax.Original), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
-        [Fact]
+        [SkippableFact(typeof(PlatformNotSupportedException))]
         public void WritingNQuadsMixedBad()
         {
             Assert.Throws<RdfParseException>(() => TestTools.TestInMTAThread(WritingNQuadsMixedBadActual));
@@ -128,7 +129,7 @@ namespace VDS.RDF.Writing
             TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Original), true);
         }
 
-        [Fact]
+        [SkippableFact(typeof(PlatformNotSupportedException))]
         public void WritingNQuads11()
         {
             TestTools.TestInMTAThread(WritingNQuads11Actual);
@@ -145,7 +146,7 @@ namespace VDS.RDF.Writing
             TestWriter(new NQuadsWriter(NQuadsSyntax.Rdf11), new NQuadsParser(NQuadsSyntax.Rdf11), true);
         }
 
-        [Fact]
+        [SkippableFact(typeof(PlatformNotSupportedException))]
         public void WritingTriG()
         {
             TestTools.TestInMTAThread(WritingTriGActual);
@@ -162,7 +163,7 @@ namespace VDS.RDF.Writing
             TestWriter(new TriGWriter(), new TriGParser(), true);
         }
 
-        [Fact]
+        [SkippableFact(typeof(PlatformNotSupportedException))]
         public void WritingTriGUncompressed()
         {
             TestTools.TestInMTAThread(WritingTriGUncompressedActual);

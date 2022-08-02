@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using System.IO;
 using Xunit;
 
 namespace VDS.RDF.Parsing
@@ -37,7 +38,7 @@ namespace VDS.RDF.Parsing
         {
             //Tests parsing a file which has much invalid RDFa syntax in it, some triples will be produced (6-8) but most of the triples are wrongly encoded and will be ignored
             var g = new Graph {BaseUri = new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale")};
-            FileLoader.Load(g, "resources\\bad_rdfa.html");
+            FileLoader.Load(g, Path.Combine("resources", "bad_rdfa.html"));
             g.IsEmpty.Should().BeFalse("some triples should have been harvested from the bad RDFa example");
         }
 
@@ -64,8 +65,8 @@ namespace VDS.RDF.Parsing
                     BaseUri = g.BaseUri
                 };
 
-                FileLoader.Load(g, $"resources\\{test}.xhtml");
-                FileLoader.Load(h, $"resources\\{test}b.xhtml");
+                FileLoader.Load(g, Path.Combine("resources", $"{test}.xhtml"));
+                FileLoader.Load(h, Path.Combine("resources", $"{test}b.xhtml"));
                 Assert.Equal(g, h);
             }
         }
@@ -77,7 +78,7 @@ namespace VDS.RDF.Parsing
             parser.Warning += TestTools.WarningPrinter;
 
             var g = new Graph();
-            parser.Load(g, "resources\\bad_profile.xhtml");
+            parser.Load(g, Path.Combine("resources", "bad_profile.xhtml"));
 
             TestTools.ShowGraph(g);
 

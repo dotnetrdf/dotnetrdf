@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Moq;
+using System.IO;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -63,7 +64,7 @@ namespace VDS.RDF.Query
             //Prepare the Store
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\Turtle.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "Turtle.ttl"));
             store.Add(g);
 
             var parser = new SparqlQueryParser();
@@ -312,7 +313,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Load our test data
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             var testQueries = new List<string>();
@@ -379,7 +380,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Get the Data we want to query
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
             var processor = new LeviathanQueryProcessor(store);
             //g = new Graph();
@@ -491,7 +492,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Get the Data we want to query
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
             var processor = new LeviathanQueryProcessor(store);
             //g = new Graph();

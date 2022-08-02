@@ -38,7 +38,7 @@ namespace VDS.RDF.Parsing.Suites
         : BaseRdfParserSuite
     {
         public Turtle11Unofficial()
-            : base(new TurtleParser(TurtleSyntax.W3C, false), new NTriplesParser(), "turtle11-unofficial\\") { }
+            : base(new TurtleParser(TurtleSyntax.W3C, false), new NTriplesParser(), "turtle11-unofficial") { }
 
         [SkippableFact]
         public void ParsingSuiteTurtleW3CUnofficialTests()
@@ -65,7 +65,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public Turtle11(ITestOutputHelper testOutputHelper)
-            : base(new TurtleParser(TurtleSyntax.W3C, true), new NTriplesParser(NTriplesSyntax.Rdf11), "turtle11\\")
+            : base(new TurtleParser(TurtleSyntax.W3C, true), new NTriplesParser(NTriplesSyntax.Rdf11), "turtle11")
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing.Suites
             INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
             //Run manifests
-            RunManifest("resources/turtle11/manifest.ttl", new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
+            RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
 
             if (Count == 0) Assert.True(false, "No tests found");
 
@@ -171,14 +171,14 @@ namespace VDS.RDF.Parsing.Suites
             var formatter = new NTriplesFormatter();
 
             var ttl = new Graph();
-            ttl.LoadFromFile(@"resources\\turtle11\localName_with_non_leading_extras.ttl", new TurtleParser(TurtleSyntax.W3C, false));
+            ttl.LoadFromFile(Path.Combine("resources", "turtle11", "localName_with_non_leading_extras.ttl"), new TurtleParser(TurtleSyntax.W3C, false));
             Assert.False(ttl.IsEmpty);
             Console.WriteLine("Subject from Turtle: " + ttl.Triples.First().Subject.ToString(formatter));
 
             var nt = new Graph();
             var parser = new NTriplesParser();
             parser.Warning += TestTools.WarningPrinter;
-            nt.LoadFromFile(@"resources\\turtle11\localName_with_non_leading_extras.nt", parser);
+            nt.LoadFromFile(Path.Combine("resources", "turtle11", "localName_with_non_leading_extras.nt"), parser);
             Assert.False(nt.IsEmpty);
             Console.WriteLine("Subject from NTriples: " + nt.Triples.First().Subject.ToString(formatter));
 
@@ -207,7 +207,7 @@ namespace VDS.RDF.Parsing.Suites
         public void ParsingTurtleW3CLiteralEscapes1()
         {
             var g = new Graph();
-            g.LoadFromFile(@"resources\\turtle11\literal_with_escaped_BACKSPACE.ttl");
+            g.LoadFromFile(Path.Combine("resources", "turtle11", "literal_with_escaped_BACKSPACE.ttl"));
             Assert.False(g.IsEmpty);
             Assert.Equal(1, g.Triples.Count);
             Triple t = g.Triples.First();
@@ -222,12 +222,12 @@ namespace VDS.RDF.Parsing.Suites
             var formatter = new NTriplesFormatter();
 
             var ttl = new Graph();
-            ttl.LoadFromFile(@"resources\\turtle11\LITERAL1_ascii_boundaries.ttl");
+            ttl.LoadFromFile(Path.Combine("resources", "turtle11", "LITERAL1_ascii_boundaries.ttl"));
             Assert.False(ttl.IsEmpty);
             Console.WriteLine("Object from Turtle: " + ttl.Triples.First().Object.ToString(formatter));
 
             var nt = new Graph();
-            nt.LoadFromFile(@"resources\\turtle11\LITERAL1_ascii_boundaries.nt");
+            nt.LoadFromFile(Path.Combine("resources", "turtle11", "LITERAL1_ascii_boundaries.nt"));
             Assert.False(nt.IsEmpty);
             Console.WriteLine("Object from NTriples: " + nt.Triples.First().Object.ToString(formatter));
 
@@ -239,7 +239,7 @@ namespace VDS.RDF.Parsing.Suites
         {
             var g = new Graph();
 
-            Assert.Throws<RdfParseException>(() => g.LoadFromFile(@"resources\\turtle11\turtle-syntax-bad-string-04.ttl"));
+            Assert.Throws<RdfParseException>(() => g.LoadFromFile(Path.Combine("resources", "turtle11", "turtle-syntax-bad-string-04.ttl")));
         }
 
         [Fact]
@@ -442,7 +442,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public TurtleStar11(ITestOutputHelper testOutputHelper)
-            : base(new TurtleParser(TurtleSyntax.Rdf11Star, true), new NTriplesParser(NTriplesSyntax.Rdf11Star), "turtle11\\")
+            : base(new TurtleParser(TurtleSyntax.Rdf11Star, true), new NTriplesParser(NTriplesSyntax.Rdf11Star), "turtle11")
         {
             _testOutputHelper = testOutputHelper;
         }
@@ -458,7 +458,7 @@ namespace VDS.RDF.Parsing.Suites
             INode negEvalTest = g.CreateUriNode("rdft:TestTurtleNegativeEval");
 
             //Run manifests
-            RunManifest("resources/turtle11/manifest.ttl", new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
+            RunManifest(Path.Combine("resources", "turtle11", "manifest.ttl"), new[] { posSyntaxTest }, new[] { negSyntaxTest, negEvalTest });
 
             if (Count == 0) Assert.True(false, "No tests found");
 

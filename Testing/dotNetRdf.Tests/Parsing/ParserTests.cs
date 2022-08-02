@@ -132,7 +132,7 @@ namespace VDS.RDF.Parsing
                 TraceParsing = true
             };
             var g = new Graph();
-                parser.Load(g, "resources\\example.rdf");
+                parser.Load(g, Path.Combine("resources", "example.rdf"));
 
                 TestTools.ShowGraph(g);
         }
@@ -243,10 +243,10 @@ namespace VDS.RDF.Parsing
         {
             var parser = new TurtleParser();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\ttl-with-bom.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "ttl-with-bom.ttl"));
 
             var h = new Graph();
-            FileLoader.Load(h, "resources\\ttl-without-bom.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "ttl-without-bom.ttl"));
 
             Assert.Equal(g, h);
         }
@@ -257,7 +257,7 @@ namespace VDS.RDF.Parsing
             var results = new SparqlResultSet();
             var parser = new SparqlXmlParser();
 
-            Assert.Throws<RdfParseException>(() => parser.Load(results, "resources\\bad_srx.srx"));
+            Assert.Throws<RdfParseException>(() => parser.Load(results, Path.Combine("resources", "bad_srx.srx")));
         }
 
         [Fact]
@@ -266,7 +266,7 @@ namespace VDS.RDF.Parsing
             var g = new Graph();
             var parser = new TurtleParser(TurtleSyntax.Original, false);
 
-            Assert.Throws<RdfParseException>(() => parser.Load(g, "resources\\dbpedia_malformed.ttl"));
+            Assert.Throws<RdfParseException>(() => parser.Load(g, Path.Combine("resources", "dbpedia_malformed.ttl")));
         }
 
         [Fact]

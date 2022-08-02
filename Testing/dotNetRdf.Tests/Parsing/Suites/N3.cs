@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public N3(ITestOutputHelper testOutputHelper)
-            : base(new Notation3Parser(), new NTriplesParser(), "n3\\")
+            : base(new Notation3Parser(), new NTriplesParser(), "n3")
         {
             _testOutputHelper = testOutputHelper;
             CheckResults = false;

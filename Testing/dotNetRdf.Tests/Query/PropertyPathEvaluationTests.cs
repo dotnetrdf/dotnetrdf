@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Configuration;
@@ -250,7 +251,7 @@ namespace VDS.RDF.Query
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
             var dataset = new InMemoryDataset(store, g.Name);
             _processor = new LeviathanQueryProcessor(dataset);
@@ -270,7 +271,7 @@ namespace VDS.RDF.Query
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
             var dataset = new InMemoryDataset(store, g.Name);
             _processor = new LeviathanQueryProcessor(dataset);
@@ -291,7 +292,7 @@ namespace VDS.RDF.Query
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
             var dataset = new InMemoryDataset(store, g.Name);
             _processor = new LeviathanQueryProcessor(dataset);
@@ -312,7 +313,7 @@ namespace VDS.RDF.Query
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
             var dataset = new InMemoryDataset(store, g.Name);
             _processor = new LeviathanQueryProcessor(dataset);
@@ -332,7 +333,7 @@ namespace VDS.RDF.Query
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
             var dataset = new InMemoryDataset(store);
             _processor = new LeviathanQueryProcessor(dataset);
@@ -353,7 +354,7 @@ namespace VDS.RDF.Query
         {
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
             var dataset = new InMemoryDataset(store);
             _processor = new LeviathanQueryProcessor(dataset);
@@ -404,11 +405,11 @@ WHERE
         public void SparqlPropertyPathEvaluationDuplicates()
         {
             IGraph g = new Graph();
-            g.LoadFromFile("resources\\schema-org.ttl");
+            g.LoadFromFile(Path.Combine("resources", "schema-org.ttl"));
 
             var parser = new SparqlQueryParser();
-            var q = parser.ParseFromFile("resources\\schema-org.rq");
-            var qDistinct = parser.ParseFromFile("resources\\schema-org.rq");
+            var q = parser.ParseFromFile(Path.Combine("resources", "schema-org.rq"));
+            var qDistinct = parser.ParseFromFile(Path.Combine("resources", "schema-org.rq"));
             qDistinct.QueryType = SparqlQueryType.SelectDistinct;
 
             var dataset = new InMemoryDataset(g);
@@ -429,7 +430,7 @@ WHERE
         {
             //Test case from CORE-349
             var g = new Graph();
-            g.LoadFromFile(@"resources\core-349.ttl");
+            g.LoadFromFile(Path.Combine("resources", "core-349.ttl"));
             var dataset = new InMemoryDataset(g);
 
             var query = @"SELECT * WHERE 
@@ -454,7 +455,7 @@ WHERE
         {
             //Test case from CORE-349
             var g = new Graph();
-            g.LoadFromFile(@"resources\core-349.ttl");
+            g.LoadFromFile(Path.Combine("resources", "core-349.ttl"));
             var dataset = new InMemoryDataset(g);
 
             var query = @"SELECT * WHERE 
@@ -478,7 +479,7 @@ WHERE
         public void SparqlPropertyPathEvaluationNonRigorous()
         {
             var g = new Graph();
-            g.LoadFromFile(@"resources\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             var dataset = new InMemoryDataset(g);
 
             var query = "SELECT * WHERE { ?subClass <http://www.w3.org/2000/01/rdf-schema#subClassOf>* ?class }";
@@ -496,10 +497,10 @@ WHERE
         public void SparqlPropertyPathEvaluationCore395ExactQuery()
         {
             IGraph g = new Graph();
-            g.LoadFromFile(@"resources/pp.rdf");
+            g.LoadFromFile(Path.Combine("resources", "pp.rdf"));
 
             var dataset = new InMemoryDataset(g);
-            var query = new SparqlQueryParser().ParseFromFile(@"resources/pp.rq");
+            var query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "pp.rq"));
             var processor = new LeviathanQueryProcessor(dataset);
             var results = processor.ProcessQuery(query);
             Assert.NotNull(results);
@@ -541,10 +542,10 @@ select ?superclass where {
         public void SparqlPropertyPathEvaluationCore441ZeroOrMorePath()
         {
             IGraph g = new Graph();
-            g.LoadFromFile(@"resources\core-441\data.ttl");
+            g.LoadFromFile(Path.Combine("resources", "core-441", "data.ttl"));
 
             var dataset = new InMemoryDataset(g);
-            var query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\star-path.rq");
+            var query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-441", "star-path.rq"));
 
             var processor = new LeviathanQueryProcessor(dataset);
             var results = processor.ProcessQuery(query);
@@ -561,10 +562,10 @@ select ?superclass where {
         public void SparqlPropertyPathEvaluationCore441OneOrMorePath()
         {
             IGraph g = new Graph();
-            g.LoadFromFile(@"resources\core-441\data.ttl");
+            g.LoadFromFile(Path.Combine("resources", "core-441", "data.ttl"));
 
             var dataset = new InMemoryDataset(g);
-            var query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\plus-path.rq");
+            var query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-441", "plus-path.rq"));
 
             var processor = new LeviathanQueryProcessor(dataset);
             var results = processor.ProcessQuery(query);
@@ -580,10 +581,10 @@ select ?superclass where {
         public void SparqlPropertyPathEvaluationCore441NoPath()
         {
             IGraph g = new Graph();
-            g.LoadFromFile(@"resources\core-441\data.ttl");
+            g.LoadFromFile(Path.Combine("resources", "core-441", "data.ttl"));
 
             var dataset = new InMemoryDataset(g);
-            var query = new SparqlQueryParser().ParseFromFile(@"resources\core-441\no-path.rq");
+            var query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "core-441", "no-path.rq"));
 
             var processor = new LeviathanQueryProcessor(dataset);
             var results = processor.ProcessQuery(query);

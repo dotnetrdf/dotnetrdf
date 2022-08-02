@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
@@ -134,7 +135,7 @@ namespace VDS.RDF.Query
         {
             var dataset = new InMemoryDataset();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             dataset.AddGraph(g);
 
             return dataset;

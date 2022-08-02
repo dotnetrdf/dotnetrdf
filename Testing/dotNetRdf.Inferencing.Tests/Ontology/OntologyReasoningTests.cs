@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
 using Xunit;
@@ -20,7 +21,7 @@ namespace VDS.RDF.Ontology
             //Load Test Data
             _output.WriteLine("Loading in the standard test data InferenceTest.ttl");
             var g = new OntologyGraph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             OntologyClass c = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
             _output.WriteLine("Things which are cars in an Ontology Graph");

@@ -46,7 +46,7 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlService()
         {
-            _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE \r\n{ ?s ?p ?o . }\r\nLIMIT 10 ");
+            _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { ?s ?p ?o . } LIMIT 10 ");
             var query = $"SELECT * WHERE {{ SERVICE <{_serverFixture.Server.Urls[0] + "/sparql"}> {{ ?s ?p ?o }} }} LIMIT 10";
             var parser = new SparqlQueryParser();
             var q = parser.ParseFromString(query);

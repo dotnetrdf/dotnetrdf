@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -41,15 +42,12 @@ namespace VDS.RDF.Parsing
             var g = new Graph();
             try
             {
-                g.LoadFromFile("resources\\rdfxml-namespaces.rdf");
+                g.LoadFromFile(Path.Combine("resources", "rdfxml-namespaces.rdf"));
                 Assert.True(false, "Parsing should fail as namespaces are not properly defined in the RDF/XML");
             }
             catch (RdfParseException parseEx)
             {
-                Console.WriteLine("Parser Error thrown as expected");
                 Assert.True(parseEx.HasPositionInformation, "Should have position information");
-                Console.WriteLine("Line " + parseEx.StartLine + " Column " + parseEx.StartPosition);
-
                 TestTools.ReportError("Parser Error", parseEx);
             }
         }

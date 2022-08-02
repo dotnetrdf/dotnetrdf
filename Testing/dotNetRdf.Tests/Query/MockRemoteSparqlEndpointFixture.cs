@@ -71,13 +71,20 @@ namespace VDS.RDF.Query
                     .UsingGet()
                     .WithParam(queryParams =>
                         queryParams.ContainsKey("query") &&
-                        queryParams["query"].Any(query.Equals)))
+                        queryParams["query"].Any(x=>SameQuery(query, x))))
                 .RespondWith(Response.Create()
                     .WithBody(SparqlResultsXml, encoding: Encoding.UTF8)
                     .WithHeader("Content-Type", MimeTypesHelper.SparqlResultsXml[0])
                     .WithStatusCode(HttpStatusCode.OK));
         }
 
+        bool SameQuery(string expect, string actual)
+        {
+            var whitespace = new Regex("\\s+");
+            expect = whitespace.Replace(expect, " ");
+            actual = whitespace.Replace(actual, " ");
+            return expect.Equals(actual);
+        }
         public void RegisterSelectQueryGetHandler(Predicate<string> queryPredicate, string results)
         {
             Server

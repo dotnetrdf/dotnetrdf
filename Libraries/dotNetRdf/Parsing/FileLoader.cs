@@ -95,7 +95,16 @@ namespace VDS.RDF.Parsing
                 RaiseWarning("Assigned a file: URI as the Base URI for the input Graph");
                 if (Path.IsPathRooted(filename))
                 {
-                    g.BaseUri = g.UriFactory.Create("file:///" + filename);
+                    if (filename.StartsWith("/"))
+                    {
+                        // Unix-style rooted path
+                        g.BaseUri = g.UriFactory.Create("file://" + filename);
+                    }
+                    else
+                    {
+                        // Windows-style rooted path with volume name
+                        g.BaseUri = g.UriFactory.Create("file:///" + filename);
+                    }
                 }
                 else
                 {

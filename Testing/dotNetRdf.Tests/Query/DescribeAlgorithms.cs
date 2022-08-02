@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -50,7 +51,7 @@ namespace VDS.RDF.Query
             _parser = new SparqlQueryParser();
             var store = new TripleStore();
             var g = new Graph();
-            g.LoadFromFile("resources\\describe-algos.ttl");
+            g.LoadFromFile(Path.Combine("resources", "describe-algos.ttl"));
             store.Add(g);
             _data = new InMemoryDataset(store);
             _processor = new LeviathanQueryProcessor(_data);

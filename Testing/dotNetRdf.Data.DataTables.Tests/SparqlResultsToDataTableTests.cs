@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Data;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Data.DataTables;
@@ -43,24 +44,22 @@ namespace VDS.RDF
             SparqlQuery q = parser.ParseFromString(query);
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-
                 var table = new DataTable();
-                foreach (var var in rset.Variables)
+                foreach (var var in resultSet.Variables)
                 {
                     table.Columns.Add(new DataColumn(var, typeof(INode)));
                 }
 
-                foreach (SparqlResult r in rset)
+                foreach (ISparqlResult r in resultSet)
                 {
                     DataRow row = table.NewRow();
 
-                    foreach (var var in rset.Variables)
+                    foreach (var var in resultSet.Variables)
                     {
                         if (r.HasValue(var))
                         {
@@ -74,18 +73,8 @@ namespace VDS.RDF
                     table.Rows.Add(row);
                 }
 
-                Assert.Equal(rset.Variables.Count(), table.Columns.Count);
-                Assert.Equal(rset.Count, table.Rows.Count);
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        var temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
+                Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
+                Assert.Equal(resultSet.Count, table.Rows.Count);
             }
             else
             {
@@ -101,24 +90,22 @@ namespace VDS.RDF
             SparqlQuery q = parser.ParseFromString(query);
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-
                 var table = new DataTable();
-                foreach (var var in rset.Variables)
+                foreach (var var in resultSet.Variables)
                 {
                     table.Columns.Add(new DataColumn(var, typeof(INode)));
                 }
 
-                foreach (SparqlResult r in rset)
+                foreach (ISparqlResult r in resultSet)
                 {
                     DataRow row = table.NewRow();
 
-                    foreach (var var in rset.Variables)
+                    foreach (var var in resultSet.Variables)
                     {
                         if (r.HasValue(var))
                         {
@@ -132,18 +119,8 @@ namespace VDS.RDF
                     table.Rows.Add(row);
                 }
 
-                Assert.Equal(rset.Variables.Count(), table.Columns.Count);
-                Assert.Equal(rset.Count, table.Rows.Count);
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        var temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
+                Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
+                Assert.Equal(resultSet.Count, table.Rows.Count);
             }
             else
             {
@@ -159,27 +136,14 @@ namespace VDS.RDF
             SparqlQuery q = parser.ParseFromString(query);
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-
-                var table = rset.ToDataTable();
-
-                Assert.Equal(rset.Variables.Count(), table.Columns.Count);
-                Assert.Equal(rset.Count, table.Rows.Count);
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        var temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
+                var table = resultSet.ToDataTable();
+                Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
+                Assert.Equal(resultSet.Count, table.Rows.Count);
             }
             else
             {
@@ -195,27 +159,14 @@ namespace VDS.RDF
             SparqlQuery q = parser.ParseFromString(query);
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-
-                var table = rset.ToDataTable();
-
-                Assert.Equal(rset.Variables.Count(), table.Columns.Count);
-                Assert.Equal(rset.Count, table.Rows.Count);
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        var temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
+                var table = resultSet.ToDataTable();
+                Assert.Equal(resultSet.Variables.Count(), table.Columns.Count);
+                Assert.Equal(resultSet.Count, table.Rows.Count);
             }
             else
             {
@@ -231,29 +182,16 @@ namespace VDS.RDF
             SparqlQuery q = parser.ParseFromString(query);
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
-
-                var table = rset.ToDataTable();
-
-                Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
+                var table = resultSet.ToDataTable();
+                Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
                 Assert.Single(table.Columns);
                 Assert.Single(table.Rows);
                 Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        var temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
             }
             else
             {
@@ -269,29 +207,17 @@ namespace VDS.RDF
             SparqlQuery q = parser.ParseFromString(query);
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var results = g.ExecuteQuery(q);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet resultSet)
             {
-                var rset = (SparqlResultSet)results;
+                var table = resultSet.ToDataTable();
 
-                var table = rset.ToDataTable();
-
-                Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
+                Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
                 Assert.Single(table.Columns);
                 Assert.Single(table.Rows);
                 Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        var temp = row[col];
-                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                    }
-                    Console.WriteLine();
-                }
             }
             else
             {
@@ -302,65 +228,34 @@ namespace VDS.RDF
         [Fact]
         public void SparqlResultSetToDataTable7()
         {
-            var rset = new SparqlResultSet(true);
+            var resultSet = new SparqlResultSet(true);
 
-            var table = rset.ToDataTable();
+            var table = resultSet.ToDataTable();
 
-            Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
+            Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
             Assert.Single(table.Columns);
             Assert.Single(table.Rows);
             Assert.True((bool)table.Rows[0]["ASK"], "Should be true");
-
-            foreach (DataRow row in table.Rows)
-            {
-                foreach (DataColumn col in table.Columns)
-                {
-                    var temp = row[col];
-                    Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                }
-                Console.WriteLine();
-            }
         }
 
         [Fact]
         public void SparqlResultSetToDataTable8()
         {
-            var rset = new SparqlResultSet(false);
+            var resultSet = new SparqlResultSet(false);
 
-            var table = rset.ToDataTable();
+            var table = resultSet.ToDataTable();
 
-            Assert.True(rset.ResultsType == SparqlResultsType.Boolean);
+            Assert.True(resultSet.ResultsType == SparqlResultsType.Boolean);
             Assert.Single(table.Columns);
             Assert.Single(table.Rows);
             Assert.False((bool)table.Rows[0]["ASK"], "Should be false");
-
-            foreach (DataRow row in table.Rows)
-            {
-                foreach (DataColumn col in table.Columns)
-                {
-                    var temp = row[col];
-                    Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
-                }
-                Console.WriteLine();
-            }
         }
 
         [Fact]
         public void SparqlResultSetToDataTable9()
         {
             var results = new SparqlResultSet();
-            try
-            {
-                var table = results.ToDataTable();
-                Assert.True(false, "Should have thrown an InvalidCastException");
-            }
-            catch (InvalidCastException ex)
-            {
-                Assert.Equal(SparqlResultsType.Unknown, results.ResultsType);
-                Console.WriteLine("Errored as expected");
-                Console.WriteLine();
-                TestTools.ReportError("Invalid Cast", ex);
-            }
+            Assert.Throws<InvalidCastException>(() => results.ToDataTable());
         }
     }
 }

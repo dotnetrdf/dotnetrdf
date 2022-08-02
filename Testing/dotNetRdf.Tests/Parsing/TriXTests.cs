@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Writing;
@@ -45,13 +46,14 @@ namespace VDS.RDF.Parsing
         }
 
         [Fact]
+        [Trait("Coverage", "Skip")]
         public void ParsingTriXPerformanceCore351()
         {
             //Test case from CORE-351
             var store = new TripleStore();
             var timer = new Stopwatch();
             timer.Start();
-            _parser.Load(store, @"resources\\lib_p11_ontology.trix");
+            _parser.Load(store, Path.Combine("resources", "lib_p11_ontology.trix"));
             timer.Stop();
             Console.WriteLine("Took " + timer.Elapsed + " to read from disk");
         }
@@ -112,7 +114,7 @@ namespace VDS.RDF.Parsing
         public void ParseTriXWithEmptyGraph()
         {
             var store = new TripleStore();
-            _parser.Load(store, @"resources\\trix\emptygraph.trix");
+            _parser.Load(store, Path.Combine("resources", "trix", "emptygraph.trix"));
             Assert.Equal(0, store.Graphs.Count);
         }
 

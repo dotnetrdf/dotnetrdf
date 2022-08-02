@@ -42,7 +42,7 @@ namespace VDS.RDF
         {
             var g = new Graph();
             var h = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
             h = g;
 
             GraphDiffReport report = g.Difference(h);
@@ -56,8 +56,8 @@ namespace VDS.RDF
         {
             var g = new Graph();
             var h = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            h.LoadFromFile("resources\\Turtle.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            h.LoadFromFile(Path.Combine("resources", "Turtle.ttl"));
 
             GraphDiffReport report = g.Difference(h);
             TestTools.ShowDifferences(report);
@@ -70,8 +70,8 @@ namespace VDS.RDF
         {
             var g = new Graph();
             var h = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            h.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            h.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             GraphDiffReport report = g.Difference(h);
             TestTools.ShowDifferences(report);
@@ -84,8 +84,8 @@ namespace VDS.RDF
         {
             var g = new Graph();
             var h = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            h.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            h.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             //Remove Triples about Ford Fiestas from 2nd Graph
             h.Retract(h.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")).ToList());
@@ -102,8 +102,8 @@ namespace VDS.RDF
         {
             var g = new Graph();
             var h = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            h.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            h.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             //Add additional Triple to 2nd Graph
             IUriNode spaceVehicle = h.CreateUriNode("eg:SpaceVehicle");
@@ -123,8 +123,8 @@ namespace VDS.RDF
         {
             var g = new Graph();
             var h = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            h.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            h.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             //Add additional Triple to 2nd Graph
             INode blank = h.CreateBlankNode();
@@ -144,8 +144,8 @@ namespace VDS.RDF
         {
             var g = new Graph();
             var h = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
-            h.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            h.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             //Remove MSG from 2nd Graph
             INode toRemove = h.Nodes.BlankNodes().FirstOrDefault();
@@ -175,7 +175,7 @@ namespace VDS.RDF
         public void GraphDiffNullReferenceA()
         {
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             var diff = new GraphDiff();
             GraphDiffReport report = diff.Difference(null, g);
@@ -190,7 +190,7 @@ namespace VDS.RDF
         public void GraphDiffNullReferenceB()
         {
             var g = new Graph();
-            g.LoadFromFile("resources\\InferenceTest.ttl");
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
 
             GraphDiffReport report = g.Difference(null);
             TestTools.ShowDifferences(report);

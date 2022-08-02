@@ -35,7 +35,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public TriX(ITestOutputHelper testOutputHelper)
-            : base(new TriXParser(), new NQuadsParser(), "trix\\")
+            : base(new TriXParser(), new NQuadsParser(), "trix")
         {
             _testOutputHelper = testOutputHelper;
             CheckResults = false;

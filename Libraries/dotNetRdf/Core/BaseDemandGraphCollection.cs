@@ -177,18 +177,26 @@ namespace VDS.RDF
     public class DiskDemandGraphCollection
         : BaseDemandGraphCollection
     {
+        private readonly Loader _loader;
+
         /// <summary>
         /// Creates a new Disk Demand Graph Collection which loads Graphs from the Web on demand.
         /// </summary>
         public DiskDemandGraphCollection()
-            : base() { }
+            : base()
+        {
+            _loader = new Loader();
+        }
 
         /// <summary>
         /// Creates a new Disk Demand Graph Collection.
         /// </summary>
         /// <param name="collection">Collection to decorate.</param>
         public DiskDemandGraphCollection(BaseGraphCollection collection)
-            : base(collection) { }
+            : base(collection)
+        {
+            _loader = new Loader();
+        }
 
         /// <summary>
         /// Tries to load a Graph on demand.
@@ -203,8 +211,7 @@ namespace VDS.RDF
                 try
                 {
                     var g = new Graph(new UriNode(graphUri));
-                    FileLoader.Load(g, graphUri.AbsoluteUri.Substring(8));
-
+                    _loader.LoadGraph(g, graphUri);
                     return g;
                 }
                 catch

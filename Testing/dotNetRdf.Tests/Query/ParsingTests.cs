@@ -231,7 +231,7 @@ namespace VDS.RDF.Query
         public void SparqlParsingNoGapPrefixes()
         {
             string query;
-            using (var reader = File.OpenText("resources\\no-gap-prefixes.rq"))
+            using (var reader = File.OpenText(Path.Combine("resources", "no-gap-prefixes.rq")))
             {
                 query = reader.ReadToEnd();
                 reader.Close();

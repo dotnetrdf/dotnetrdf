@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -34,7 +35,7 @@ namespace VDS.RDF.Query
 
             //Load a Graph into the Store to cause the SPARQL View to update
             var g = new Graph(new UriNode(new Uri("http://example.org/data")));
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             Thread.Sleep(500);

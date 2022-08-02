@@ -57,40 +57,21 @@ namespace VDS.RDF.Storage
                 SetUriLoaderCaching(false);
 
                 var g = new Graph();
-                FileLoader.Load(g, "resources\\Turtle.ttl");
+                FileLoader.Load(g, Path.Combine("resources", "Turtle.ttl"));
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Save Graph to SPARQL Uniform Protocol
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.SaveGraph(g);
-                Console.WriteLine("Graph saved to SPARQL Uniform Protocol OK");
 
                 //Now retrieve Graph from SPARQL Uniform Protocol
                 var h = new Graph();
                 sparql.LoadGraph(h, "http://example.org/sparqlTest");
 
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
                 GraphDiffReport diff = g.Difference(h);
                 if (!diff.AreEqual)
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("Graphs are different - should be 1 difference due to New Line Normalization");
-                    Console.WriteLine("Added Triples");
-                    foreach (Triple t in diff.AddedTriples)
-                    {
-                        Console.WriteLine(t.ToString(_formatter));
-                    }
-                    Console.WriteLine("Removed Triples");
-                    foreach (Triple t in diff.RemovedTriples)
-                    {
-                        Console.WriteLine(t.ToString(_formatter));
-                    }
-
+                    TestTools.ShowDifferences(diff);
                     Assert.True(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
                     Assert.True(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
                     Assert.False(diff.AddedMSGs.Any(), "Should not be any MSG differences");
@@ -111,40 +92,21 @@ namespace VDS.RDF.Storage
                 SetUriLoaderCaching(false);
 
                 var g = new Graph();
-                FileLoader.Load(g, "resources\\Turtle.ttl");
+                FileLoader.Load(g, Path.Combine("resources", "Turtle.ttl"));
                 g.BaseUri = new Uri("http://example.org/sparql#test");
 
                 //Save Graph to SPARQL Uniform Protocol
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.SaveGraph(g);
-                Console.WriteLine("Graph saved to SPARQL Uniform Protocol OK");
 
                 //Now retrieve Graph from SPARQL Uniform Protocol
                 var h = new Graph();
                 sparql.LoadGraph(h, "http://example.org/sparql#test");
 
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
                 GraphDiffReport diff = g.Difference(h);
                 if (!diff.AreEqual)
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("Graphs are different - should be 1 difference due to New Line Normalization");
-                    Console.WriteLine("Added Triples");
-                    foreach (Triple t in diff.AddedTriples)
-                    {
-                        Console.WriteLine(t.ToString(_formatter));
-                    }
-                    Console.WriteLine("Removed Triples");
-                    foreach (Triple t in diff.RemovedTriples)
-                    {
-                        Console.WriteLine(t.ToString(_formatter));
-                    }
-
+                    TestTools.ShowDifferences(diff);
                     Assert.True(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
                     Assert.True(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
                     Assert.False(diff.AddedMSGs.Any(), "Should not be any MSG differences");
@@ -167,7 +129,7 @@ namespace VDS.RDF.Storage
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
                 var g = new Graph();
-                FileLoader.Load(g, "resources\\Turtle.ttl");
+                FileLoader.Load(g, Path.Combine("resources", "Turtle.ttl"));
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Try to load the relevant Graph back from the Store
@@ -176,28 +138,10 @@ namespace VDS.RDF.Storage
                 var h = new Graph();
                 sparql.LoadGraph(h, "http://example.org/sparqlTest");
 
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
                 GraphDiffReport diff = g.Difference(h);
                 if (!diff.AreEqual)
                 {
-                    Console.WriteLine();
-                    Console.WriteLine("Graphs are different - should be 1 difference due to New Line Normalization");
-                    Console.WriteLine("Added Triples");
-                    foreach (Triple t in diff.AddedTriples)
-                    {
-                        Console.WriteLine(t.ToString(_formatter));
-                    }
-                    Console.WriteLine("Removed Triples");
-                    foreach (Triple t in diff.RemovedTriples)
-                    {
-                        Console.WriteLine(t.ToString(_formatter));
-                    }
-
+                    TestTools.ShowDifferences(diff);
                     Assert.True(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization (added)");
                     Assert.True(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization (removed)");
                     Assert.False(diff.AddedMSGs.Any(), "Should not be any MSG differences");
@@ -274,7 +218,7 @@ namespace VDS.RDF.Storage
 
                 var g = new Graph();
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.UpdateGraph("http://example.org/sparqlTest", g.Triples, null);
@@ -302,7 +246,7 @@ namespace VDS.RDF.Storage
             {
                 SetUriLoaderCaching(false);
                 var g = new Graph();
-                FileLoader.Load(g, "resources\\InferenceTest.ttl");
+                FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
                 try
                 {
@@ -338,7 +282,7 @@ namespace VDS.RDF.Storage
             request.ContentType = "application/rdf+xml";
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             using (var writer = new StreamWriter(request.GetRequestStream()))
             {
@@ -379,7 +323,7 @@ namespace VDS.RDF.Storage
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
 
             var uris = new List<Uri>();
             for (var i = 0; i < 10; i++)

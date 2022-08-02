@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
@@ -72,8 +73,8 @@ namespace VDS.RDF.Query
         public void SparqlJoinExplosion()
         {
             IGraph g = new Graph();
-            g.LoadFromFile("resources\\LearningStyles.rdf");
-            SparqlQuery query = new SparqlQueryParser().ParseFromFile("resources\\learning-problem.rq");
+            g.LoadFromFile(Path.Combine("resources", "LearningStyles.rdf"));
+            SparqlQuery query = new SparqlQueryParser().ParseFromFile(Path.Combine("resources", "learning-problem.rq"));
 
             var processor = new LeviathanQueryProcessor(new InMemoryDataset(g));
             var results = processor.ProcessQuery(query) as SparqlResultSet;

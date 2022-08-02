@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.IO;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing.Suites
@@ -10,7 +11,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public NQuads(ITestOutputHelper testOutputHelper)
-            : base(new NQuadsParser(), new NQuadsParser(), @"nquads11\")
+            : base(new NQuadsParser(), new NQuadsParser(), "nquads11")
         {
             _testOutputHelper = testOutputHelper;
             CheckResults = false;
@@ -27,7 +28,7 @@ namespace VDS.RDF.Parsing.Suites
             INode negSyntaxTest = g.CreateUriNode("rdft:TestNQuadsNegativeSyntax");
 
             //Run manifests
-            RunManifest(@"resources\nquads11\manifest.ttl", posSyntaxTest, negSyntaxTest);
+            RunManifest(Path.Combine("resources", "nquads11", "manifest.ttl"), posSyntaxTest, negSyntaxTest);
 
             if (Count == 0) Assert.True(false, "No tests found");
 

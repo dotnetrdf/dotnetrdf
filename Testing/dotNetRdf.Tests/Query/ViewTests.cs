@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.IO;
 using System.Threading;
 using Xunit;
 using VDS.RDF.Parsing;
@@ -55,7 +56,7 @@ namespace VDS.RDF.Query
 
             //Load a Graph into the Store to cause the SPARQL View to update
             var g = new Graph(new UriNode(new Uri("http://example.org/data")));
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             Thread.Sleep(1000);
@@ -91,7 +92,7 @@ namespace VDS.RDF.Query
 
             //Load a Graph into the Store to cause the SPARQL View to update
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g, true);
 
             Thread.Sleep(500);
@@ -128,7 +129,7 @@ namespace VDS.RDF.Query
 
             //Load a Graph into the Store to cause the SPARQL View to update
             var g = new Graph(new UriNode(new Uri("http://example.org/data")));
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             Thread.Sleep(500);
@@ -163,7 +164,7 @@ namespace VDS.RDF.Query
 
             //Load a Graph into the Store to cause the SPARQL View to update
             var g = new Graph(new UriNode(new Uri("http://example.org/data")));
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             store.Add(g);
 
             Thread.Sleep(500);
@@ -174,7 +175,7 @@ namespace VDS.RDF.Query
 
             //Load another Graph with a different URI into the Store
             var h = new Graph(new UriNode(new Uri("http://example.org/2")));
-            FileLoader.Load(h, "resources\\Turtle.ttl");
+            FileLoader.Load(h, Path.Combine("resources", "Turtle.ttl"));
             store.Add(h);
 
             Thread.Sleep(500);

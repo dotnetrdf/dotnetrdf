@@ -253,10 +253,8 @@ namespace VDS.RDF.Query
                 });
             var results = leviathan.ProcessQuery(q) as SparqlResultSet;
             var resultValues = results.Select(r => r["a"]).OfType<ILiteralNode>().Select(n => n.Value).ToList();
-            resultValues[0].Should().Be("cote");
-            resultValues[1].Should().Be("côte");
-            resultValues[2].Should().Be("coté");
-            resultValues[3].Should().Be("côté");
+            resultValues.Should().BeInAscendingOrder(CultureInfo.GetCultureInfo("fr-FR").CompareInfo
+                .GetStringComparer(CompareOptions.None));
         }
     }
 }

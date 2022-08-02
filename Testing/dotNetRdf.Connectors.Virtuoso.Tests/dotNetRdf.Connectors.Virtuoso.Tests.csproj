@@ -54,9 +54,9 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
     <DefineConstants>$(DefineConstants);NET40</DefineConstants>
   </PropertyGroup>
-
+	
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-    <DefineConstants>$(DefineConstants);NO_VIRTUOSO</DefineConstants>
+	<DefineConstants>$(DefineConstants);NO_VIRTUOSO</DefineConstants>
   </PropertyGroup>
 
 </Project>

@@ -170,8 +170,8 @@ namespace VDS.RDF.Query
             var a = new SparqlResultSet();
             var b = new SparqlResultSet();
 
-            parser.Load(a, "resources\\list-3.srx");
-            parser.Load(b, "resources\\list-3.srx.out");
+            parser.Load(a, Path.Combine("resources", "list-3.srx"));
+            parser.Load(b, Path.Combine("resources", "list-3.srx.out"));
 
             a.Trim();
             b.Trim();
@@ -179,8 +179,8 @@ namespace VDS.RDF.Query
 
             a = new SparqlResultSet();
             b = new SparqlResultSet();
-            parser.Load(a, "resources\\no-distinct-opt.srx");
-            parser.Load(b, "resources\\no-distinct-opt.srx.out");
+            parser.Load(a, Path.Combine("resources", "no-distinct-opt.srx"));
+            parser.Load(b, Path.Combine("resources", "no-distinct-opt.srx.out"));
 
             a.Trim();
             b.Trim();
@@ -188,8 +188,8 @@ namespace VDS.RDF.Query
 
             a = new SparqlResultSet();
             b = new SparqlResultSet();
-            rdfparser.Load(a, "resources\\result-opt-3.ttl");
-            parser.Load(b, "resources\\result-opt-3.ttl.out");
+            rdfparser.Load(a, Path.Combine("resources", "result-opt-3.ttl"));
+            parser.Load(b, Path.Combine("resources", "result-opt-3.ttl.out"));
 
             a.Trim();
             b.Trim();
@@ -199,13 +199,11 @@ namespace VDS.RDF.Query
         [Fact]
         public void SparqlJsonResultSet()
         {
-            Console.WriteLine("Tests that JSON Parser parses language specifiers correctly");
-
             var query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + ">\nSELECT DISTINCT ?comment WHERE {?s rdfs:comment ?comment}";
 
             var store = new TripleStore();
             var g = new Graph();
-            FileLoader.Load(g, "resources\\json.owl");
+            FileLoader.Load(g, Path.Combine("resources", "json.owl"));
             store.Add(g);
 
             object results = ExecuteQuery(store, query);
@@ -346,14 +344,14 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         {
             var xmlparser = new SparqlXmlParser();
             var results = new SparqlResultSet();
-            xmlparser.Load(results, "resources\\bnodes.srx");
+            xmlparser.Load(results, Path.Combine("resources", "bnodes.srx"));
 
             TestTools.ShowResults(results);
             Assert.Single(results.Results.Distinct());
 
             var jsonparser = new SparqlJsonParser();
             results = new SparqlResultSet();
-            jsonparser.Load(results, "resources\\bnodes.json");
+            jsonparser.Load(results, Path.Combine("resources", "bnodes.json"));
 
             TestTools.ShowResults(results);
             Assert.Single(results.Results.Distinct());
@@ -363,10 +361,10 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         public void SparqlAnton()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\anton.rdf");
+            FileLoader.Load(g, Path.Combine("resources", "anton.rdf"));
 
             var parser = new SparqlQueryParser();
-            SparqlQuery query = parser.ParseFromFile("resources\\anton.rq");
+            SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "anton.rq"));
 
             object results = g.ExecuteQuery(query);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
