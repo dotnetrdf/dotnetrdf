@@ -22,7 +22,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Run Tests
-      run: dotnet test -c Release --filter "Category!=explicit" --framework ${{ matrix.framework }} --collect:"XPlat Code Coverage" Testing/${{matrix.suite}}
+      run: dotnet test -c Release --filter "Category!=explicit&Category!=performance" --framework ${{ matrix.framework }} --collect:"XPlat Code Coverage" Testing/${{matrix.suite}}
     - name: Upload Code Coverage
       uses: actions/upload-artifact@v2
       with:

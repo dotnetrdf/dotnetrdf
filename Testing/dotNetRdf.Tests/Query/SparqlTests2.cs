@@ -1218,6 +1218,7 @@ WHERE
 
         [Fact]
         [Trait("Coverage", "Skip")]
+        [Trait("Category", "performance")]
         public void SparqlSubQueryGraphInteractionCore416_Parallel()
         {
             var store = new TripleStore();
