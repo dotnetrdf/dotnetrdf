@@ -6,16 +6,12 @@ env:
 
 jobs:
   test:
+    runs-on: windows-latest
     strategy:
       matrix:
-        os: ["windows-latest", "ubuntu-latest"]
+        framework: ["net472", "netcoreapp3.1"]
         suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests",
         "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
-        include:
-          - framework: "netcoreapp3.1"
-          - os: "windows-latest"
-            framework: ["net472", "netcoreapp3.1"]
-    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -26,9 +22,29 @@ jobs:
     - name: Upload Code Coverage
       uses: actions/upload-artifact@v2
       with:
-        name: code-coverage ${{matrix.suite}} ${{matrix.framework}}
+        name: code-coverage-windows ${{matrix.suite}} ${{matrix.framework}}
         path: Testing\${{matrix.suite}}\TestResults\**\coverage.cobertura.xml
     
+  test-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        framework: ["netcoreapp3.1"]
+        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests",
+                "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Run Tests
+        run: dotnet test -c Release --filter "Category!=explicit&Category!=performance" --framework ${{ matrix.framework }} --collect:"XPlat Code Coverage" Testing/${{matrix.suite}}
+      - name: Upload Code Coverage
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-ubuntu ${{matrix.suite}} ${{matrix.framework}}
+          path: Testing\${{matrix.suite}}\TestResults\**\coverage.cobertura.xml
+
   fusekiTests:
     runs-on: ubuntu-latest
     steps:
