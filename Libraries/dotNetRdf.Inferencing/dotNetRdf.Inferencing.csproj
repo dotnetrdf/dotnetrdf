@@ -3,12 +3,22 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Inferencing</AssemblyName>
     <AssemblyTitle>dotNetRDF Inferencing Support</AssemblyTitle>
-    <Description>Adds support for basic inferencing from an RDF Schema/Ontology</Description>
-    <PackageId>dotNetRdf.Inferencing</PackageId>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <RootNamespace>VDS.RDF</RootNamespace>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.Inferencing</PackageId>
+    <Title>dotNetRDF Inferencing Support</Title>
+    <Description>Adds support for basic inferencing from an RDF Schema/Ontology</Description>
+    <PackageTags>RDF;RDFSchema;OWL;Inference</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Ontology\" />

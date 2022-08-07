@@ -3,18 +3,23 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf</AssemblyName>
     <AssemblyTitle>dotNetRDF</AssemblyTitle>
-    <VersionPrefix>$(Version)</VersionPrefix>
-    <Description>dotNetRDF is a RDF, SPARQL and Semantic Web API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</Description>
     <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>dotNetRdf</PackageId>
-    <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
     <RootNamespace>VDS.RDF</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <LangVersion>latest</LangVersion>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>   
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf</PackageId>
+    <Title>dotNetRDF Core Library</Title>
+    <Description>dotNetRDF is an RDF, SPARQL and Linked Datat API for .Net.  It provides simple but powerfully extensible APIs for this and integrates with a variety of popular triple stores.</Description>
+    <PackageTags>RDF;Semantic;Web;Linked Data;SPARQL;RDF/XML;Turtle;Notation3;JSON-LD;RDFStar</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="dotNetRdf.Test" />

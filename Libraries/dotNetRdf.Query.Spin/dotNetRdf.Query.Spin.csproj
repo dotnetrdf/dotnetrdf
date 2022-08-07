@@ -3,17 +3,22 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Query.Spin</AssemblyName>
     <AssemblyTitle>dotNetRDF SPIN Support</AssemblyTitle>
-    <Description>A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine</Description>
-    <VersionPrefix>$(Version)</VersionPrefix>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>dotNetRdf.Query.Spin</PackageId>
-    <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
     <RootNamespace>VDS.RDF.Query.Spin</RootNamespace>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.Query.Spin</PackageId>
+    <Title>dotNetRDF SPIN Support</Title>
+    <Description>A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine</Description>
+    <PackageTags>RDF;Semantic;Web;SPARQL;Inference;SPIN</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Constraints\SPINConstraints.cs;Core\ContainsVarChecker.cs;Core\ObjectPropertiesGetter.cs;Core\SPINUtil.cs;Util\DatasetUtil.cs" />

@@ -3,13 +3,22 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.AspNet</AssemblyName>
     <AssemblyTitle>dotNetRDF ASP.NET Support</AssemblyTitle>
-    <Description>Provides a framework for building RDF-powered ASP.NET web applications and web APIs.</Description>
-    <PackageId>dotNetRdf.AspNet</PackageId>
-    <PackageTags>RDF;Semantic;Web;SPARQL;Web API</PackageTags>
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>VDS.RDF</RootNamespace>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.AspNet</PackageId>
+    <Title>dotNetRDF ASP.NET Support</Title>
+    <Description>Provides a framework for building RDF-powered ASP.NET web applications and web APIs.</Description>
+    <PackageTags>RDF;Semantic;Web;SPARQL;Web API</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Update\Protocol\" />

@@ -2,21 +2,32 @@
 
   <PropertyGroup>
     <!-- Default Assembly metadata -->
-    <Copyright>Copyright © dotNetRDF Project 2009-2021</Copyright>
-
+    <Copyright>Copyright © dotNetRDF Project 2009-2022</Copyright>
+    <!-- Default Build Options -->
+    <CodeAnalysisRuleSet>../../dotnetrdf.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
+
   <PropertyGroup>
 	  <!-- Default NuGet Package metadata -->
     <PackageTags>RDF;Semantic;Web;SPARQL;RDF/XML;Turtle;Notation3</PackageTags>
-    <PackageIcon>icon.png</PackageIcon>
     <PackageProjectUrl>http://www.dotnetrdf.org</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RequiresLicenseAcceptance>false</RequiresLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/dotnetrdf/dotnetrdf</RepositoryUrl>
     <Authors>RobVesse;tpluscode;kal_ahmed;ronmichael;dotnetrdf</Authors>
+    <PackageIcon>icon.png</PackageIcon>
+    <!--
+      NB: Ideally this section would contain a common PackageReadmeFile property.
+      However the current version of NuGet fails to properly pack the file/resolve the packed file.
+      As a result the README is included separately in each .csproj file -->
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\icon.png" Pack="true" PackagePath="/"/>
+    <None Include="../../icon.png" pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>

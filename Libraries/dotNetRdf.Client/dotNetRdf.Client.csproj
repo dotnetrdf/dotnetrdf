@@ -1,16 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Client</AssemblyName>
     <AssemblyTitle>dotNetRDF Triple Store Client Library</AssemblyTitle>
-    <Description>Provides a framework for interacting with a variety of open-source and commercial triple-stores.</Description>
-    <PackageId>dotNetRdf.Client</PackageId>
-    <PackageTags>RDF;Client;Allegrograph;Sesame;4Store;Fuseki;Jena</PackageTags>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <RootNamespace>VDS.RDF</RootNamespace>
-    <LangVersion>latest</LangVersion>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.Client</PackageId>
+    <Title>dotNetRDF Triple Store Client Library</Title>
+    <Description>Provides a framework for interacting with a variety of open-source and commercial triple-stores.</Description>
+    <PackageTags>RDF;Client;Allegrograph;Sesame;4Store;Fuseki;Jena</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Configuration\" />
