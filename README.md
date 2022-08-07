@@ -9,6 +9,8 @@ dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .NET
 dotNetRDF is licensed under the MIT License, see the LICENSE.txt file in this repository
 
 The `main` branch of this repository is now used for development of dotNetRDF 3.0. This major update is currently a work in progress and introduces a number of breaking API changes, new features including support for [RDF-Star and SPARQL-Star](https://w3c.github.io/rdf-star/cg-spec), and it also restructures the packaging of the code to minimize dependencies and better separate out core functionality from higher-level APIs.
+For more details on what has changed, including the breaking changes that may require you to update your code, please read the section on [Upgrading to dotNetRDF 3.0](https://dotnetrdf.org/docs/latest/user_guide/upgrading_to_3_0.html) in the documentation.
+
 If you are looking for the code for the dotNetRDF 2.x release series [please check out the `maintenance/2.x` branch](https://github.com/dotnetrdf/dotnetrdf/tree/maintenance/2.x)
 
 The restructured NuGet packages for dotNetRDF 3.0 are:

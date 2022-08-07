@@ -4,7 +4,7 @@
 3.0.0
 -----
 
-This is a new major release of dotNetRDF that introduces a number of breaking API changes. Please refer to the file v3ChangeNotes.md in this directory and/or the updated documentation for more details.
+This is a new major release of dotNetRDF that introduces a number of breaking API changes. Please refer to the file v3ChangeNotes.md in this directory and/or the updated documentation (see https://dotnetrdf.org/docs/latest/user_guide/upgrading_to_3_0.html) for more details.
 
 BREAKING: Restructuring of dotNetRDF packages. We have broken apart the monolithic dotNetRDF NuGet package in to a number of smaller packages. This has been done partly to isolate dependencies but also to break the API up into more manageable chunks. Please see the top-level README and/or the user documentation for a break-down of what each of the packages now contain.
 BREAKING: The global Options class has been removed and options are now specified closer to where they are used or in some cases removed entirely. Please refer to the user documentation and/or to v3ChangeNotes.md for notes on the replacements for specific Options properties.
