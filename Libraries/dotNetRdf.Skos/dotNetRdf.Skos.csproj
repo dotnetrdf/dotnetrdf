@@ -2,14 +2,23 @@
 
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Skos</AssemblyName>
-    <AssemblyTitle>dotNetRdf SKOS API</AssemblyTitle>
-    <Description>Provides a convience API for working the RDF graphs that contain SKOS Concept Schemes.</Description>
+    <AssemblyTitle>dotNetRDF SKOS API</AssemblyTitle>
     <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <RootNamespace>VDS.RDF.Skos</RootNamespace>
-    <PackageId>dotNetRdf.Skos</PackageId>
-    <LangVersion>latest</LangVersion>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.Skos</PackageId>
+    <AssemblyTitle>dotNetRDF SKOS API</AssemblyTitle>
+    <Description>Provides a convience API for working the RDF graphs that contain SKOS Concept Schemes.</Description>
+    <PackageTags>RDF;SKOS;Taxonomy</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />

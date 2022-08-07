@@ -3,18 +3,28 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Data.DataTables</AssemblyName>
     <AssemblyTitle>dotNetRDF DataTables</AssemblyTitle>
-    <Description>Package which allow integrating dotNetRDF with System.Data.DataTable</Description>
-    <PackageId>dotNetRdf.Data.DataTables</PackageId>
-    <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <RootNamespace>VDS.RDF.Data.DataTables</RootNamespace>
-    <VersionPrefix>$(Version)</VersionPrefix>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.Data.DataTables</PackageId>
+    <Title>dotNetRDF DataTables</Title>
+    <Description>Package which allow integrating dotNetRDF with System.Data.DataTable</Description>
+    <PackageTags>RDF;Semantic;Web;DataTables</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
   </ItemGroup>
 

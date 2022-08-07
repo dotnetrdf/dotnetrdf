@@ -1,13 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Writing.HtmlSchema</AssemblyName>
     <AssemblyTitle>dotNetRDF HTML Schema Writer</AssemblyTitle>
-    <Description>Provides an RDF writer that exports the RDF Schema/Ontology information in a graph as an HTML documentation page</Description>
-    <PackageId>dotNetRdf.Writing.HtmlSchema</PackageId>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>VDS.RDF</RootNamespace>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.Writing.HtmlSchema</PackageId>
+    <Title>dotNetRDF HTML Schema Writer</Title>
+    <Description>Provides an RDF writer that exports the RDF Schema/Ontology information in a graph as an HTML documentation page</Description>
+    <PackageTags>RDF;Schema;Documentation;HTML</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Writing\" />

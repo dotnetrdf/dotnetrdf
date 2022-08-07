@@ -3,17 +3,22 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Query.FullText</AssemblyName>
     <AssemblyTitle>dotNetRDF Full Text Query Support</AssemblyTitle>
-    <Description>Provides Full Text SPARQL support as a plugin for the dotNetRDF Leviathan SPARQL Engine using Lucene.Net</Description>
-    <VersionPrefix>$(Version)</VersionPrefix>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>dotNetRdf.Query.FullText</PackageId>
-    <PackageTags>RDF;Semantic;Web;SPARQL;Query;Full;Text;Lucene</PackageTags>
-    <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
     <RootNamespace>VDS.RDF.Query</RootNamespace>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.Query.FullText</PackageId>
+    <Title>dotNetRDF Full Text Query Support</Title>
+    <Description>Provides Full Text SPARQL support as a plugin for the dotNetRDF Leviathan SPARQL Engine using Lucene.Net</Description>
+    <PackageTags>RDF;Semantic;Web;SPARQL;Query;Full;Text;Lucene</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="FullText.ttl" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />

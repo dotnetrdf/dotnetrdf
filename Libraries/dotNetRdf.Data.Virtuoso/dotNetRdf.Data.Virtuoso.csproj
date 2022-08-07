@@ -3,17 +3,22 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Data.Virtuoso</AssemblyName>
     <AssemblyTitle>dotNetRDF Virtuoso connector</AssemblyTitle>
-    <Description>Provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</Description>
-    <VersionPrefix>$(Version)</VersionPrefix>
     <TargetFrameworks>net472</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>dotNetRdf.Data.Virtuoso</PackageId>
-    <PackageTags>RDF;Semantic;Web;SPARQL;Virtuoso;OpenLink</PackageTags>
-    <CodeAnalysisRuleSet>..\..\dotnetrdf.ruleset</CodeAnalysisRuleSet>
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.Data.Virtuoso</PackageId>
+    <Title>dotNetRDF Virtuoso connector</Title>
+    <Description>Provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</Description>
+    <PackageTags>RDF;Semantic;Web;SPARQL;Virtuoso;OpenLink</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
