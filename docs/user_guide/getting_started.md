@@ -4,9 +4,10 @@ The simplest way to get hold of dotNetRDF is via our NuGet packages.
 
 We have split dotNetRDF into a number of separate packages to give developers a little more control over exactly which APIs and which additional third-party dependencies they need to include in their projects.
 
-  * To do basic reading/writing and in-memory processing and querying with SPARQL, get the core `dotNetRdf` package.
+  * To do basic reading/writing and in-memory processing and querying with SPARQL, get the core `dotNetRdf.Core` package.
   * To work with dotNetRDF as a client interacting with one of the supported triple stores (other than Virtuoso), get the `dotNetRdf.Client` package.
   * To work with Virtuoso, get the `dotNetRdf.Data.Virtuoso` package.
+  * For a single dependency that pulls in all of the dotNetRDF libraries, use the `dotNetRdf` meta-package.
   
 > [!NOTE]
 > You may have spotted that although this project is called dotNetRDF, for package names we follow the common .NET approach to camel-casing the TLA RDF. Hence our package names all use dotNetRdf.

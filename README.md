@@ -15,7 +15,8 @@ If you are looking for the code for the dotNetRDF 2.x release series [please che
 
 The restructured NuGet packages for dotNetRDF 3.0 are:
 
-- **dotNetRdf** - contains the core libraries. This includes support for reading and writing RDF; and for managing and querying RDF data in-memory.
+- **dotNetRdf** - a meta-package that pulls in all of the packages listed below.
+- **dotNetRdf.Core** - contains the core libraries. This includes support for reading and writing RDF; and for managing and querying RDF data in-memory.
 - **dotNetRdf.AspNet** - provides a framework for hosting RDF data in an IIS web application. This includes implementations of the SPARQL Protocol and SPARQL Graph Store Protocol.
 - **dotNetRdf.Client** - provides support for working with a range of triple stores. 
 - **dotNetRdf.Data.DataTables** - a package which integrates RDF data with System.Data.DataTable
