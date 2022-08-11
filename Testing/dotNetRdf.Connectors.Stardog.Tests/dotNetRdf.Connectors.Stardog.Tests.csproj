@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\dotNetRdf\dotNetRdf.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Core\dotNetRdf.Core.csproj" />
     <ProjectReference Include="..\dotNetRdf.Connectors.Tests\dotNetRdf.Connectors.Tests.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>

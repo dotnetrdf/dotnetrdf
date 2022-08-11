@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\dotNetRdf\dotNetRdf.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 
@@ -39,6 +38,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Core\dotNetRdf.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
