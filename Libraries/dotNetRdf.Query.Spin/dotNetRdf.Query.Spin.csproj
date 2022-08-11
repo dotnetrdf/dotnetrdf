@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\dotNetRdf.Inferencing\dotNetRdf.Inferencing.csproj" />
-    <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
+    <ProjectReference Include="..\dotNetRdf.Core\dotNetRdf.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

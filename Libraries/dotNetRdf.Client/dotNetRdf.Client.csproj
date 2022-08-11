@@ -25,7 +25,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\dotNetRdf\dotNetRdf.csproj" />
+    <ProjectReference Include="..\dotNetRdf.Core\dotNetRdf.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">

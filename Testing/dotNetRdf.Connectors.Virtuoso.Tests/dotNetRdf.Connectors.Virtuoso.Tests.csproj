@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Core\dotNetRdf.Core.csproj" />
     <ProjectReference Include="..\..\Libraries\dotNetRdf.Data.Virtuoso\dotNetRdf.Data.Virtuoso.csproj" />
-    <ProjectReference Include="..\..\Libraries\dotNetRdf\dotNetRdf.csproj" />
     <ProjectReference Include="..\dotNetRdf.Connectors.Tests\dotNetRdf.Connectors.Tests.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
