@@ -1084,11 +1084,13 @@ namespace VDS.RDF
         /// <param name="sparqlUpdate">Allow SPARQL Update (i.e. .ru files).</param>
         /// <param name="allFiles">Allow All Files (i.e. */*).</param>
         /// <returns></returns>
-        public static string GetFilenameFilter(bool rdf, bool rdfDatasets, bool sparqlResults, bool allFiles)
+        public static string GetFilenameFilter(bool rdf, bool rdfDatasets, bool sparqlResults, bool sparqlQuery, bool sparqlUpdate, bool allFiles)
         {
             return GetFilenameFilter(def => (rdf && (def.CanParseRdf || def.CanWriteRdf))
                                             || (rdfDatasets && (def.CanParseRdfDatasets || def.CanWriteRdfDatasets))
-                                            || (sparqlResults && (def.CanParseSparqlResults || def.CanWriteSparqlResults)), allFiles);
+                                            || (sparqlResults && (def.CanParseSparqlResults || def.CanWriteSparqlResults))
+                                            || (sparqlQuery && def.CanParseObject<SparqlQuery>())
+                                            || (sparqlUpdate && def.CanParseObject<SparqlUpdateCommandSet>()), allFiles);
         }
 
         /// <summary>
