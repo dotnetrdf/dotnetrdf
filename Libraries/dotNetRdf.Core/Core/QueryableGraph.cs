@@ -38,13 +38,14 @@ namespace VDS.RDF
         : Graph
     {
         private ISparqlQueryProcessor _processor;
-        private SparqlQueryParser _parser = new SparqlQueryParser();
+        private readonly SparqlQueryParser _parser = new();
 
         /// <summary>
         /// Creates a new Queryable Graph.
+        /// <param name="graphName">The name to assign to the new graph.</param>
         /// </summary>
-        public QueryableGraph()
-            : base() { }
+        public QueryableGraph(IRefNode graphName = null)
+            : base(graphName) { }
 
         /// <summary>
         /// Executes a SPARQL Query on the Graph.

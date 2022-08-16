@@ -44,7 +44,8 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Creates a new Ontology Graph.
         /// </summary>
-        public OntologyGraph() 
+        /// <param name="graphName">The name to assign to the graph.</param>
+        public OntologyGraph(IRefNode graphName = null) : base(graphName) 
         {
             NamespaceMap.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
         }
