@@ -316,6 +316,8 @@ namespace VDS.RDF
         {
             get
             {
+                if (t == null) throw new ArgumentNullException(nameof(t));
+
                 if (Triples.TryGetKey(t, out Triple actual))
                 {
                     return actual;
@@ -339,6 +341,8 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+
             if (_o != null)
             {
                 if (_o.TryGetValue(obj, out HashSet<Triple> ts))
@@ -356,6 +360,8 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
+            if (pred == null) throw new ArgumentNullException(nameof(pred));
+
             if (_p != null)
             {
                 if (_p.TryGetValue(pred, out HashSet<Triple> ts))
@@ -373,6 +379,8 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
+            if (subj == null) throw new ArgumentNullException(nameof(subj));
+
             if (_s != null)
             {
                 if (_s.TryGetValue(subj, out HashSet<Triple> ts))
@@ -390,6 +398,9 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
+            if (pred == null) throw new ArgumentNullException(nameof(pred));
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+
             if (_po != null)
             {
                 if (_po.TryGetValue(new Triple(_subjVar, pred, obj), out HashSet<Triple> ts))
@@ -407,6 +418,9 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
+            if (subj == null) throw new ArgumentNullException(nameof(subj));
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+
             if (_so != null)
             {
                 if (_so.TryGetValue(new Triple(subj, _predVar, obj), out HashSet<Triple> ts))
@@ -424,6 +438,9 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
+            if (subj == null) throw new ArgumentNullException(nameof(subj));
+            if (pred == null) throw new ArgumentNullException(nameof(pred));
+
             if (_sp != null)
             {
                 if (_sp.TryGetValue(new Triple(subj, pred, _objVar), out HashSet<Triple> ts))
@@ -456,6 +473,8 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> QuotedWithObject(INode obj)
         {
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+
             if (_qo == null)
             {
                 return QuotedTriples(x => x.Object.Equals(obj));
@@ -473,6 +492,8 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> QuotedWithPredicate(INode pred)
         {
+            if (pred == null) throw new ArgumentNullException(nameof(pred));
+
             if (_qp == null)
             {
                 return QuotedTriples(t => t.Predicate.Equals(pred));
@@ -491,6 +512,8 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> QuotedWithSubject(INode subj)
         {
+            if (subj == null) throw new ArgumentNullException(nameof(subj));
+
             if (_qs == null)
             {
                 return QuotedTriples(t => t.Subject.Equals(subj));
@@ -509,6 +532,9 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> QuotedWithPredicateObject(INode pred, INode obj)
         {
+            if (pred == null) throw new ArgumentNullException(nameof(pred));
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+
             if (_qpo == null)
             {
                 return QuotedWithPredicate(pred).Where(t => t.Object.Equals(obj));
@@ -527,6 +553,9 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> QuotedWithSubjectObject(INode subj, INode obj)
         {
+            if (subj == null) throw new ArgumentNullException(nameof(subj));
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
+
             if (_qso == null)
             {
                 return QuotedWithSubject(subj).Where(t => t.Object.Equals(obj));
@@ -545,6 +574,9 @@ namespace VDS.RDF
         /// <inheritdoc/>
         public override IEnumerable<Triple> QuotedWithSubjectPredicate(INode subj, INode pred)
         {
+            if (subj == null) throw new ArgumentNullException(nameof(subj));
+            if (pred == null) throw new ArgumentNullException(nameof(pred));
+
             if (_qsp == null)
             {
                 return QuotedWithSubject(subj).Where(t => t.Predicate.Equals(pred));
