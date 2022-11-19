@@ -6,6 +6,7 @@ env:
 
 jobs:
   test:
+    if: false
     runs-on: windows-latest
     strategy:
       matrix:
@@ -33,10 +34,8 @@ jobs:
         suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests",
                 "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
     steps:
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '3.1.x'
+      - name: Install .NET Core 3.1 Framework
+        run: apt-get install dotnet-sdk-3.1
       - name: Validate Installation
         run: dotnet --list-runtimes
       - name: Checkout
