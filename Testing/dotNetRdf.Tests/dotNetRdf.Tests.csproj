@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>dotNetRdf.Test</AssemblyTitle>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net472;net6.0</TargetFrameworks>
     <AssemblyName>dotNetRdf.Test</AssemblyName>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>

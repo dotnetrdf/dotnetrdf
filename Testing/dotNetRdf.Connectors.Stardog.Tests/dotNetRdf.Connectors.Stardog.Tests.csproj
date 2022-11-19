@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>dotNetRdf.Connectors.Stardog.Tests</AssemblyTitle>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net472;net6.0</TargetFrameworks>
     <AssemblyName>dotNetRdf.Connectors.Stardog.Tests</AssemblyName>
     <IsPackable>false</IsPackable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
