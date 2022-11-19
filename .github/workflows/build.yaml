@@ -35,7 +35,7 @@ jobs:
                 "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
     steps:
       - name: Install .NET Core 3.1 Framework
-        run: apt-get install dotnet-sdk-3.1
+        run: sudo apt-get install dotnet-sdk-3.1
       - name: Validate Installation
         run: dotnet --list-runtimes
       - name: Checkout
