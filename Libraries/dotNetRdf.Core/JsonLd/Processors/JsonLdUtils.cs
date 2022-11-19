@@ -193,6 +193,8 @@ namespace VDS.RDF.JsonLd.Processors
             return token is JArray array && array.Count == 0;
         }
 
+        private static readonly Regex FragmentRegex = new Regex("^([a-zA-Z0-9-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*$");
+
         /// <summary>
         /// Determine if the specified string is an IRI.
         /// </summary>
@@ -200,13 +202,15 @@ namespace VDS.RDF.JsonLd.Processors
         /// <returns>True if <paramref name="value"/> can be parsed as an IRI, false otherwise.</returns>
         public static bool IsIri(string value)
         {
-            // The following would have been ideal, but returns false when the value contains a fragment identifier.
+            // The following would have been ideal, but returns false when the value is a relative IRI that contains a fragment identifier.
             //return Uri.IsWellFormedUriString(value, UriKind.RelativeOrAbsolute);
-
-            return !IsBlankNodeIdentifier(value) &&
-                   Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out _) &&
-                   Uri.EscapeUriString(value).Equals(value) && // Value must be fully escaped
-                   !value.StartsWith("#"); // Value cannot be a fragment identifier on its own
+            if (IsBlankNodeIdentifier(value)) { return false; }
+            if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out Uri parsed)) { return false; }
+            if (parsed.IsAbsoluteUri) { return parsed.IsWellFormedOriginalString(); }
+            if (!value.Contains('#')) { return parsed.IsWellFormedOriginalString() || Uri.EscapeUriString(value).Equals(value); }
+            if (value.StartsWith("#")) return false;
+            var split = value.Split(new[] { '#' }, 2);
+            return Uri.IsWellFormedUriString(split[0], UriKind.Relative) && FragmentRegex.IsMatch(split[1]);
         }
 
         /// <summary>

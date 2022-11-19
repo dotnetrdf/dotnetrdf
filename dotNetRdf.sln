@@ -5,6 +5,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{3B3CCD52-CF1B-492C-A5F8-FBB626C5039C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{F0F45D49-20AC-4407-8618-8C3650E34B97}"
+	ProjectSection(SolutionItems) = preProject
+		Testing\Directory.Build.props = Testing\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Data.Virtuoso", "Libraries\dotNetRdf.Data.Virtuoso\dotNetRdf.Data.Virtuoso.csproj", "{E53A145B-A81A-4FCC-9E2A-4136856F414A}"
 EndProject
