@@ -423,7 +423,7 @@ namespace VDS.RDF.Parsing.Tokens
                                                 quotemarksallowed = true;
                                                 longliteral = true;
                                             }
-                                            else if (char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
+                                            else if (char.IsWhiteSpace(next) || next is '.' or ';' or ',' or '^' or '@' or ']' or ')')
                                             {
                                                 // Empty String
                                                 LastTokenType = Token.LITERAL;
@@ -511,7 +511,7 @@ namespace VDS.RDF.Parsing.Tokens
                                                     altquotemarksallowed = true;
                                                     altlongliteral = true;
                                                 }
-                                                else if (char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
+                                                else if (char.IsWhiteSpace(next) || next is '.' or ';' or ',' or '^' or '@' or ']' or ')')
                                                 {
                                                     // Empty String
                                                     LastTokenType = Token.LITERAL;
