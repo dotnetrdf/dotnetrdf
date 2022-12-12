@@ -45,10 +45,33 @@ namespace VDS.RDF.Ontology
         /// Creates a new Ontology Graph.
         /// </summary>
         /// <param name="graphName">The name to assign to the graph.</param>
-        public OntologyGraph(IRefNode graphName = null) : base(graphName) 
+        /// <param name="nodeFactory">The factory to use when constructing nodes in this graph. If null, defaults to a new <see cref="NodeFactory"/> instance using the same UriFactory instance as this graph.</param>
+        /// <param name="uriFactory">The factory to use when constructing URIs in this graph. If null, default to the <see cref="UriFactory.Root">root UriFactory</see>.</param>
+        /// <param name="tripleCollection">The initial content of the graph. If null, the graph will initially be empty.</param>
+        public OntologyGraph(IRefNode graphName = null, INodeFactory nodeFactory = null, IUriFactory uriFactory=null, BaseTripleCollection tripleCollection = null) : base(graphName, nodeFactory, uriFactory, tripleCollection) 
         {
             NamespaceMap.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
         }
+
+        /// <summary>
+        /// Creates a new Ontology Graph with the specified URI as the graph name.
+        /// </summary>
+        /// <param name="name">The graph name as a URI.</param>
+        public OntologyGraph(Uri name) : this(new UriNode(name)) {}
+
+        /// <summary>
+        /// Creates a new Ontology Graph with the specified name and initial content
+        /// </summary>
+        /// <param name="name">The name to assign to the graph.</param>
+        /// <param name="tripleCollection">The initial content of the graph.</param>
+        public OntologyGraph(IRefNode name, BaseTripleCollection tripleCollection): this(name, null, null, tripleCollection){}
+
+        /// <summary>
+        /// Creates a new Ontology Graph with the specified name and initial content
+        /// </summary>
+        /// <param name="name">The name to assign to the graph.</param>
+        /// <param name="tripleCollection">The initial content of the graph.</param>
+        public OntologyGraph(Uri name, BaseTripleCollection tripleCollection) : this(new UriNode(name), null, null, tripleCollection) { }
 
         /// <summary>
         /// Gets/Creates an ontology resource in the Graph.
