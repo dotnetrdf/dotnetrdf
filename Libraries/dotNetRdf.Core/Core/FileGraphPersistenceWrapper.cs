@@ -49,14 +49,15 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new File Graph Persistence Wrapper around a new emtpy Graph.
+        /// Creates a new File Graph Persistence Wrapper around a new empty Graph.
         /// </summary>
         /// <param name="filename">File to persist to.</param>
+        /// <param name="graphName">The name to assign to the new graph.</param>
         /// <remarks>
         /// If the given file already exists then the Graph will be loaded from that file.
         /// </remarks>
-        public FileGraphPersistenceWrapper(string filename)
-            : base(new Graph())
+        public FileGraphPersistenceWrapper(string filename, IRefNode graphName = null)
+            : base(new Graph(graphName))
         {
             if (filename == null) throw new ArgumentException("Cannot persist to a null Filename", nameof(filename));
 

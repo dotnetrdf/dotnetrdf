@@ -65,8 +65,9 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Graph Persistence Wrapper around a new Graph.
         /// </summary>
-        public GraphPersistenceWrapper()
-            : this(new Graph()) { }
+        /// <param name="graphName">The name to assign to the new graph.</param>
+        public GraphPersistenceWrapper(IRefNode graphName = null)
+            : this(new Graph(graphName)) { }
 
         /// <summary>
         /// Creates a new Graph Persistence Wrapper around a new Graph with the given always queue setting.

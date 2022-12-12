@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>dotNetRDF FourStore Connector Tests</AssemblyTitle>
-    <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net472;net6.0</TargetFrameworks>
     <AssemblyName>dotNetRdf.Connectors.FourStore.Tests</AssemblyName>
 	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\dotNetRdf.Client\dotNetRdf.Client.csproj" />
-    <ProjectReference Include="..\..\Libraries\dotNetRdf\dotNetRdf.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Core\dotNetRdf.Core.csproj" />
     <ProjectReference Include="..\dotNetRdf.Connectors.Tests\dotNetRdf.Connectors.Tests.csproj" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>

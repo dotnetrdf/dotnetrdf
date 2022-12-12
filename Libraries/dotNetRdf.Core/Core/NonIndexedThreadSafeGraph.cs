@@ -46,8 +46,9 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new non-indexed Thread Safe Graph.
         /// </summary>
-        public NonIndexedThreadSafeGraph()
-            : base(new ThreadSafeTripleCollection())
+        /// <param name="graphName">The name to assign to the new graph.</param>
+        public NonIndexedThreadSafeGraph(IRefNode graphName = null)
+            : base(graphName, new ThreadSafeTripleCollection())
         {
         }
     }

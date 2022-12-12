@@ -98,6 +98,7 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Base Graph which uses the default <see cref="TreeIndexedTripleCollection" /> as the Triple Collection.
         /// </summary>
+        /// <param name="graphName">The name to assign to the new graph.</param>
         protected BaseGraph(IRefNode graphName = null)
             : this(new TreeIndexedTripleCollection(), graphName)
         {

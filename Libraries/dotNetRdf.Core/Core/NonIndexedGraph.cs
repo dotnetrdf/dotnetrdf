@@ -37,7 +37,8 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Graph which is not indexed.
         /// </summary>
-        public NonIndexedGraph()
-            : base(new TripleCollection()) { }
+        /// <param name="graphName">The name to assign to the new graph.</param>
+        public NonIndexedGraph(IRefNode graphName = null)
+            : base(graphName, new TripleCollection()) { }
     }
 }

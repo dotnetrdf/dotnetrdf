@@ -38,7 +38,8 @@ namespace VDS.RDF.Skos
         /// <summary>
         /// Creates a new SKOS graph.
         /// </summary>
-        public SkosGraph() : base() { }
+        /// <param name="name">The name to assign to the SKOS graph.</param>
+        public SkosGraph(IRefNode name = null) : base(new Graph(name)) { }
 
         /// <summary>
         /// Creates a new SKOS graph for the given graph.

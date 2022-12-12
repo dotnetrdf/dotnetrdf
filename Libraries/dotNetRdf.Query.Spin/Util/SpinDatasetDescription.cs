@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Spin.Util
 
         #endregion
 
-        internal SpinDatasetDescription(Uri datasetUri)
+        internal SpinDatasetDescription(Uri datasetUri) : base(datasetUri == null ? null : new UriNode(datasetUri))
         {
             BaseUri = datasetUri;
             _sourceUri = datasetUri;

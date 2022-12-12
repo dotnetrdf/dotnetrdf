@@ -47,9 +47,10 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a wrapper around the default Graph implementation, primarily required only for deserialization and requires that the caller call <see cref="WrapperGraph.AttachEventHandlers"/> to properly wire up event handling.
         /// </summary>
-        protected WrapperGraph()
+        /// <param name="graphName">The name to assign to the new graph.</param>
+        protected WrapperGraph(IRefNode graphName = null)
         {
-            _g = new Graph();
+            _g = new Graph(graphName);
 
             // Create Event Handlers and attach to relevant events so the wrapper propogates events upwards
             TripleAssertedHandler = new TripleEventHandler(OnTripleAsserted);

@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -265,6 +266,41 @@ namespace VDS.RDF.JsonLd
             }
 
             warnings.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public void FramingSupportsUrisContainingEncodedUris()
+        {
+            var inputJson = @"[
+  {
+    ""@id"": ""http://localhost:8080/outline/http%3A%2F%2Flocalhost%3A8080%2Fknowledge-graph%2Fengine_01"",
+    ""@type"": [
+      ""http://www.w3.org/ns/hydra/core#Resource"",
+      ""http://example.org/vocab#Engine""
+    ],
+    ""http://example.org/vocab#id"": [
+      {
+        ""@value"": ""engine_01""
+      }
+    ]
+  }
+]";
+
+            var frameJson = @"{
+  ""@context"": {
+    ""ex"": ""http://example.org/vocab#""
+  },
+  ""@id"": ""http://localhost:8080/outline/http%3A%2F%2Flocalhost%3A8080%2Fknowledge-graph%2Fengine_01""
+}";
+ 
+            var input = JToken.Parse(inputJson);
+            var frame = JToken.Parse(frameJson);
+            JObject frameResult = JsonLdProcessor.Frame(input, frame, new JsonLdProcessorOptions());
+            frameResult["@id"]?.ToString().Should()
+                .Be("http://localhost:8080/outline/http%3A%2F%2Flocalhost%3A8080%2Fknowledge-graph%2Fengine_01");
+            frameResult["@type"]?.Children().Count().Should().Be(2);
+            frameResult["ex:id"]?.ToString().Should().Be("engine_01");
+            _output.WriteLine(frameResult.ToString());
         }
         /// <inheritdoc />
         public void Dispose()

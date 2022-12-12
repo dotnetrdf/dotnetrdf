@@ -9,7 +9,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        framework: ["net472", "netcoreapp3.1"]
+        framework: ["net472", "net6.0"]
         suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests",
         "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
     steps:
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        framework: ["netcoreapp3.1"]
+        framework: ["net6.0"]
         suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests",
                 "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
     steps:
@@ -48,14 +48,6 @@ jobs:
   fusekiTests:
     runs-on: ubuntu-latest
     steps:
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '5.0.x'
-    - name: Install .NET Core 3.1 Framework
-      run: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Channel 3.1
-    - name: Validate Installation
-      run: dotnet --list-runtimes
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -63,7 +55,7 @@ jobs:
     - name: Start Fuseki
       run: docker run --rm -d -p 3030:3030 --name fuseki atomgraph/fuseki --mem /ds
     - name: Test Fuskei Connector
-      run: dotnet test -c Release --framework netcoreapp3.1 --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Fuseki.Tests/dotNetRdf.Connectors.Fuseki.Tests.csproj
+      run: dotnet test -c Release --framework net6.0 --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Fuseki.Tests/dotNetRdf.Connectors.Fuseki.Tests.csproj
     - name: Stop Fuseki
       run: docker stop fuseki
     - name: Upload Code Coverage
@@ -75,14 +67,6 @@ jobs:
   virtuosoTests:
     runs-on: ubuntu-latest
     steps:
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '5.0.x'
-    - name: Install .NET Core 3.1 Framework
-      run: curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Channel 3.1
-    - name: Validate Installation
-      run: dotnet --list-runtimes
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -93,7 +77,7 @@ jobs:
     - name: Start Virtuoso
       run: docker run --rm -d -p 8890:8890 -p 1111:111 --name virtuoso virtuoso:latest
     - name: Test Virtuoso Connector
-      run: dotnet test -c Release --framework netcoreapp3.1 --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Virtuoso.Tests/dotNetRdf.Connectors.Virtuoso.Tests.csproj
+      run: dotnet test -c Release --framework net6.0 --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Virtuoso.Tests/dotNetRdf.Connectors.Virtuoso.Tests.csproj
     - name: Stop Virtuoso
       run: docker stop virtuoso
     - name: Upload Code Coverage
