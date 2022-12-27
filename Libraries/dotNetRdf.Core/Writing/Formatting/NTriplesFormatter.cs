@@ -297,7 +297,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <summary>
         /// Return the datatype specification for a literal value.
         /// </summary>
-        /// <param name="datatypeUri">The datatype URI</param>
+        /// <param name="datatypeUri">The datatype URI.</param>
         /// <returns>The formatted datatype specification unless <paramref name="datatypeUri"/> matches the XML Schema String datatype URI, in which case an empty string is returned.</returns>
         protected override string FormatDatatype(Uri datatypeUri)
         {

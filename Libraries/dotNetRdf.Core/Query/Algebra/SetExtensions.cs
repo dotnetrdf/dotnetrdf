@@ -29,7 +29,7 @@ using System.Linq;
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Additional utility methods for ISet
+    /// Additional utility methods for ISet.
     /// </summary>
     public static class SetExtensions
     {
