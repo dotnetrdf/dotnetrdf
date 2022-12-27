@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using CommandLine;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Datasets;
 
 namespace SparqlAnalyzer
 {

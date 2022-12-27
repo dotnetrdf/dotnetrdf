@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 
 namespace VDS.RDF.Query.Inference

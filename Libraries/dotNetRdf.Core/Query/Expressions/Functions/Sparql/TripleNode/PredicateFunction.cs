@@ -23,7 +23,6 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
-using System;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode
 {

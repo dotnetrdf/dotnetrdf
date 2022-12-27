@@ -30,11 +30,9 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
 {

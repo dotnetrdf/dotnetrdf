@@ -25,16 +25,12 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Filters;
-using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;

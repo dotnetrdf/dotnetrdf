@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System.Security.Cryptography;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash

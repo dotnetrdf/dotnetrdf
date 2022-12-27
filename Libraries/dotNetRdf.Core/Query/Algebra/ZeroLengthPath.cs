@@ -24,9 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 

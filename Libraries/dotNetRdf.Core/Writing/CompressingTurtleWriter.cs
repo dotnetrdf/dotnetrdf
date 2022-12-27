@@ -30,7 +30,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
-using VDS.RDF.Storage.Management.Provisioning.Sesame;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 

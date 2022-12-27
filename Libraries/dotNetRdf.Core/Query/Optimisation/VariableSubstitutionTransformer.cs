@@ -25,7 +25,6 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;

@@ -24,10 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 

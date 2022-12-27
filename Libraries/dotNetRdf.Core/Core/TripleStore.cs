@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
-using VDS.RDF.Query.Inference;
 using VDS.RDF.Update;
 
 namespace VDS.RDF

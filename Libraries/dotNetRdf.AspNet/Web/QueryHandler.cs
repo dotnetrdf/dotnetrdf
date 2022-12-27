@@ -30,7 +30,6 @@ using System.Configuration;
 using VDS.RDF.Configuration;
 using VDS.RDF.Web.Configuration;
 using VDS.RDF.Web.Configuration.Query;
-using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Web
 {

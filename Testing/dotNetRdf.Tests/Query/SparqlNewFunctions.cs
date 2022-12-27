@@ -28,7 +28,6 @@ using System.IO;
 using VDS.RDF.Nodes;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
 
 namespace VDS.RDF.Query

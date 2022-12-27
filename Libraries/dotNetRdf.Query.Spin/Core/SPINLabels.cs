@@ -26,8 +26,6 @@
 
 using System;
 using VDS.RDF.Query.Spin.Model;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
 
 namespace VDS.RDF.Query.Spin.Core
 {

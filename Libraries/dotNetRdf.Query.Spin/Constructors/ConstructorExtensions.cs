@@ -24,12 +24,9 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Spin.Util;
-using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Model;
 
 namespace VDS.RDF.Query.Spin.Constructors

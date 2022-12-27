@@ -25,7 +25,6 @@
 */
 
 using System;
-using System.Runtime.CompilerServices;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query.FullText.Indexing

@@ -25,10 +25,6 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -38,7 +34,6 @@ using Lucene.Net.Util;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.FullText.Schema;
-using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText.Indexing.Lucene

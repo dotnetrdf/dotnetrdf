@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query;
 using VDS.RDF.Utils.Describe;
 
 namespace VDS.RDF.Ontology

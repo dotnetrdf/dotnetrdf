@@ -25,10 +25,7 @@
 */
 
 using System;
-using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Util;
 using VDS.RDF.Query.Spin.Model;
-using VDS.RDF;
 
 namespace VDS.RDF.Query.Spin.Core
 {

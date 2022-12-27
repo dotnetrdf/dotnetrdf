@@ -1,6 +1,4 @@
-﻿using System.IO;
-using Xunit;
-using VDS.RDF.Parsing;
+﻿using Xunit;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Query

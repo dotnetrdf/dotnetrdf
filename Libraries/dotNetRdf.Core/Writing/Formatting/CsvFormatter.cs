@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Linq;
 
 namespace VDS.RDF.Writing.Formatting

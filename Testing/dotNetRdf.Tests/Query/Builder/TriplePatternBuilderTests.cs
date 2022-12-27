@@ -28,7 +28,6 @@ using System.Linq;
 using Xunit;
 using Moq;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder

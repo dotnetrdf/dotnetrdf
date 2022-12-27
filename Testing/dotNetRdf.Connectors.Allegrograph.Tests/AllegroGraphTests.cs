@@ -24,13 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Storage;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 

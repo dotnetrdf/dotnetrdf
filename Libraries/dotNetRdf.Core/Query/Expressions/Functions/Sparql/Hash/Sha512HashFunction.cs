@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using System.Security.Cryptography;
-
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
 

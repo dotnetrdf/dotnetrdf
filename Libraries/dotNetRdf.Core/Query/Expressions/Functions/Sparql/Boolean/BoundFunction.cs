@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean

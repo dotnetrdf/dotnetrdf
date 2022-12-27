@@ -27,7 +27,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Schema;
 using Xunit;
 
 namespace VDS.RDF.Writing

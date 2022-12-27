@@ -26,7 +26,7 @@
 
 using System.Collections.Generic;
 using System;
-using VDS.RDF;
+
 namespace VDS.RDF.Query.Spin.Model
 {
     /**

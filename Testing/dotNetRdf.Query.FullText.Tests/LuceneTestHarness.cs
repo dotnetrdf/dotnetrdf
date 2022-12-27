@@ -24,16 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #if !NO_FULLTEXT
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Index;
 using Lucene.Net.Store;
-using VDS.RDF.Query;
-using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Schema;
 
 

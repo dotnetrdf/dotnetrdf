@@ -27,12 +27,10 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using FluentAssertions;
 using Xunit;
-using VDS.RDF.Parsing;
 using Xunit.Abstractions;
 
 namespace VDS.RDF.Parsing

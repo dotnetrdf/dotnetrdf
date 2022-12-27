@@ -26,13 +26,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using FluentAssertions;
 using System;
 using System.Globalization;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 using Xunit.Abstractions;
 

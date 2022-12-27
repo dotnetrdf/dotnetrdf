@@ -26,12 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Linq;
 using FluentAssertions;
-using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Aggregates;
-using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;

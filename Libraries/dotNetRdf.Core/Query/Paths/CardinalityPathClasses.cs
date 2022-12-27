@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 

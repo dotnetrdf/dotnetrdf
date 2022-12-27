@@ -25,18 +25,14 @@
 */
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Dynamic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Aggregates.Leviathan;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Aggregates.XPath;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 

@@ -31,7 +31,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using VDS.RDF.Configuration;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;

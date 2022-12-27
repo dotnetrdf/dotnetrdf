@@ -25,13 +25,9 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Web;
 using VDS.RDF.Web.Configuration.Resource;
 using VDS.RDF.Writing;

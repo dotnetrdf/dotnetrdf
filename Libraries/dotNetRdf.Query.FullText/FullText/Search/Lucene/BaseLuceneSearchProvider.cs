@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Lucene.Net.Index;
 using Lucene.Net.Analysis;
-using Lucene.Net.QueryParsers;
 using LucSearch = Lucene.Net.Search;
 using Lucene.Net.Store;
 using LucUtil = Lucene.Net.Util;

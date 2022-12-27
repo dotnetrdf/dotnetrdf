@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF;
 using VDS.RDF.Query.Spin.SparqlUtil;
 namespace VDS.RDF.Query.Spin.Model
 {

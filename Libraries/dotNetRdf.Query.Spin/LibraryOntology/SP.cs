@@ -27,8 +27,6 @@
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using VDS.RDF;
-using VDS.RDF.Query.Spin;
 using VDS.RDF.Query.Spin.Util;
 
 namespace VDS.RDF.Query.Spin.LibraryOntology

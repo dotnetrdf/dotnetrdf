@@ -25,13 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Linq;
-using System.Threading;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
-using VDS.RDF.Storage.Management.Provisioning.Stardog;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Storage

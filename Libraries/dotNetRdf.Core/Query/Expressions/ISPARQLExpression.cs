@@ -24,10 +24,7 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions
 {
