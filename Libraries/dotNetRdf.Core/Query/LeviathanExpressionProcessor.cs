@@ -147,7 +147,7 @@ namespace VDS.RDF.Query
             };
             var cacheEntry = new ExistsCacheEntry
             {
-                InputHashCode = context.InputMultiset.GetHashCode(), InputCount = context.InputMultiset.Count
+                InputHashCode = context.InputMultiset.GetHashCode(), InputCount = context.InputMultiset.Count,
             };
 
             // REQ: Optimise the algebra here
