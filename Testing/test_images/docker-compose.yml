@@ -15,11 +15,11 @@ services:
             - 10000-10035:10000-10035
             
     fuseki:
-        build:
-            context: fuseki
         ports:
-            - 127.0.0.1:3030:3030
-        entrypoint: [ "/usr/bin/java", "-jar", "fuseki-server.jar", "--mem", "/ds" ]
+            - '3030:3030'
+        container_name: fuseki
+        image: atomgraph/fuseki
+        command: '--mem /ds'
         
     rdf4j:
         build:
@@ -28,8 +28,8 @@ services:
             - 8081:8080
 
     virtuoso:
-#        build:
-#            context: virtuoso
+        build:
+           context: virtuoso
         image: virtuoso:latest
         ports:
             - 8890:8890
