@@ -32,12 +32,20 @@ using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Writing
 {
 
     public class FormattingTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public FormattingTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void WritingFormattingTriples()
         {
@@ -116,16 +124,16 @@ namespace VDS.RDF.Writing
 
             foreach (Triple t in testTriples)
             {
-                Console.WriteLine("Raw Triple:");
-                Console.WriteLine(t.ToString());
-                Console.WriteLine();
+                _testOutputHelper.WriteLine("Raw Triple:");
+                _testOutputHelper.WriteLine(t.ToString());
+                _testOutputHelper.WriteLine();
                 foreach (ITripleFormatter f in formatters)
                 {
-                    Console.WriteLine(f.GetType().ToString());
-                    Console.WriteLine(f.Format(t));
-                    Console.WriteLine();
+                    _testOutputHelper.WriteLine(f.GetType().ToString());
+                    _testOutputHelper.WriteLine(f.Format(t));
+                    _testOutputHelper.WriteLine();
                 }
-                Console.WriteLine();
+                _testOutputHelper.WriteLine();
             }
         }
 
@@ -145,6 +153,8 @@ namespace VDS.RDF.Writing
             g = new Graph();
             g.LoadFromFile(Path.Combine("resources", "complex-collections.nt"));
             graphs.Add(g);
+            g.LoadFromFile(Path.Combine("resources", "issue-522", "urn-uuid.nt"));
+            graphs.Add(g);
 
             var formatters = new List<IGraphFormatter>()
             {
@@ -159,7 +169,7 @@ namespace VDS.RDF.Writing
             for (var i = 0; i < formatters.Count; i++)
             {
                 IGraphFormatter formatter = formatters[i];
-                Console.WriteLine("Using Formatter " + formatter.GetType().ToString());
+                _testOutputHelper.WriteLine("Using Formatter " + formatter.GetType());
 
                 foreach (IGraph graph in graphs)
                 {
@@ -172,7 +182,7 @@ namespace VDS.RDF.Writing
                     }
                     output.AppendLine(formatter.FormatGraphFooter());
 
-                    Console.WriteLine(output.ToString());
+                    _testOutputHelper.WriteLine(output.ToString());
 
                     //Try parsing to check it round trips
                     var h = new Graph();
@@ -188,7 +198,7 @@ namespace VDS.RDF.Writing
                     Assert.Equal(graph, h);
                 }
             }
-            Console.WriteLine();
+            _testOutputHelper.WriteLine();
         }
 
         [Fact]
@@ -197,6 +207,7 @@ namespace VDS.RDF.Writing
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             var expected = g.ExecuteQuery("SELECT * WHERE { ?s a ?type }") as SparqlResultSet;
+            Assert.NotNull(expected);
 
             var formatters = new List<IResultSetFormatter>()
             {
@@ -208,20 +219,20 @@ namespace VDS.RDF.Writing
                 new SparqlXmlParser()
             };
 
-            Console.WriteLine("Using Formatter " + formatters.GetType().ToString());
+            _testOutputHelper.WriteLine("Using Formatter " + formatters.GetType());
             for (var i = 0; i < formatters.Count; i++)
             {
                 IResultSetFormatter formatter = formatters[i];
 
                 var output = new StringBuilder();
                 output.AppendLine(formatter.FormatResultSetHeader(expected.Variables));
-                foreach (SparqlResult r in expected)
+                foreach (ISparqlResult r in expected)
                 {
                     output.AppendLine(formatter.Format(r));
                 }
                 output.AppendLine(formatter.FormatResultSetFooter());
 
-                Console.WriteLine(output.ToString());
+                _testOutputHelper.WriteLine(output.ToString());
 
                 //Try parsing to check it round trips
                 var actual = new SparqlResultSet();
@@ -230,7 +241,7 @@ namespace VDS.RDF.Writing
 
                 Assert.Equal(expected, actual);
             }
-            Console.WriteLine();
+            _testOutputHelper.WriteLine();
         }
     }
 }

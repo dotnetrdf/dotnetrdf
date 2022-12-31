@@ -104,11 +104,12 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">The Uri to attempt to reduce.</param>
         /// <param name="qname">The value to output the QName to if possible.</param>
+        /// <param name="validationFunction">A validation function to use to validate the QName. Only a QName value for which the validation function return true will be returned.</param>
         /// <returns></returns>
         /// <remarks>
         /// This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.
         /// </remarks>
-        bool ReduceToQName(string uri, out string qname);
+        bool ReduceToQName(string uri, out string qname, Func<string, bool> validationFunction  = null);
 
         /// <summary>
         /// Removes a Namespace from the Namespace Map.
