@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF;
 using System;
 
 namespace VDS.RDF.Query.Spin.Model

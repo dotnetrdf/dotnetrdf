@@ -25,7 +25,6 @@
 */
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Utils.Describe;

@@ -28,11 +28,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 

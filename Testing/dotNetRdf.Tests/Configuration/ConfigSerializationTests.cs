@@ -23,17 +23,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF.Configuration;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
 using VDS.RDF.Query.Operators.DateTime;
 using VDS.RDF.Query.Operators.Numeric;
-using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Configuration
 {

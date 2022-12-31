@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String

@@ -23,14 +23,14 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
+using System.Linq;
+using VDS.RDF.Shacl.Validation;
+using VDS.RDF.Writing.Formatting;
+using static VDS.RDF.Shacl.TestSuiteData;
+
 namespace VDS.RDF.Shacl
 {
-    using System;
-    using System.Linq;
-    using VDS.RDF.Shacl.Validation;
-    using VDS.RDF.Writing.Formatting;
-    using static TestSuiteData;
-
     internal static class ImplementationReport
     {
         internal static IGraph Generate()

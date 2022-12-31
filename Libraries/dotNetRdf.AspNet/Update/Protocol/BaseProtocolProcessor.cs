@@ -28,7 +28,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using VDS.RDF;
 using VDS.RDF.Web;
 using VDS.RDF.Writing;
 

@@ -30,8 +30,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;

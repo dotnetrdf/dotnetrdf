@@ -8,7 +8,6 @@ using VDS.RDF.Parsing;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
-using WireMock.Util;
 
 namespace VDS.RDF.Query
 {

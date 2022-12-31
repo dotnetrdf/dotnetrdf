@@ -24,12 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #if !NO_FULLTEXT
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.PropertyFunctions;
 using VDS.RDF.Writing.Formatting;

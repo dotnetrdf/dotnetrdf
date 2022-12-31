@@ -1,11 +1,9 @@
 ﻿using dotNetRdf.TestSupport;
 using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Query.Builder;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
 using Xunit.Abstractions;

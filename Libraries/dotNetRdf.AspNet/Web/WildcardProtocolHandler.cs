@@ -27,7 +27,6 @@
 using System;
 using System.Configuration;
 using System.Web;
-using System.Web.Caching;
 using VDS.RDF.Configuration;
 using VDS.RDF.Web.Configuration;
 using VDS.RDF.Web.Configuration.Protocol;

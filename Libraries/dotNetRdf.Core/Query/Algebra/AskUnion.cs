@@ -24,10 +24,7 @@
 // </copyright>
 */
 
-using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Query.Optimisation;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {

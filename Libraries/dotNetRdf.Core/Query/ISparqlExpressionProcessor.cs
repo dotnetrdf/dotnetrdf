@@ -43,7 +43,6 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.TripleNode;
 using VDS.RDF.Query.Expressions.Functions.XPath;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
-using VDS.RDF.Query.Expressions.Functions.XPath.Numeric;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
 using VDS.RDF.Query.Expressions.Primary;
 using XPath=VDS.RDF.Query.Expressions.Functions.XPath; 

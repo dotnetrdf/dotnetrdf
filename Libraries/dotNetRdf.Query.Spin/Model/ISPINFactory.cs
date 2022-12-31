@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 namespace VDS.RDF.Query.Spin.Model
 {
     interface ISPINFactory

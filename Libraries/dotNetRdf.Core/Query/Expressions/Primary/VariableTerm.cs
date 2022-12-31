@@ -24,10 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Primary
 {

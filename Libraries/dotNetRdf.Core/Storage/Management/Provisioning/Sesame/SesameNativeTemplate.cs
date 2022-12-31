@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.ComponentModel;
 
 namespace VDS.RDF.Storage.Management.Provisioning.Sesame

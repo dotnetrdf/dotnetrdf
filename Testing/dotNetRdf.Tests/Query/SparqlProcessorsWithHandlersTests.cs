@@ -25,14 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.IO;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;

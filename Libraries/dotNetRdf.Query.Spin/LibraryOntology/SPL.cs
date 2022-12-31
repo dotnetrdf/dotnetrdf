@@ -25,11 +25,7 @@
 */
 
 using System;
-using VDS.RDF;
 using System.Runtime.CompilerServices;
-using VDS.RDF.Query.Spin;
-using System.IO;
-using VDS.RDF.Storage;
 using VDS.RDF.Query.Spin.Util;
 namespace VDS.RDF.Query.Spin.LibraryOntology
 {

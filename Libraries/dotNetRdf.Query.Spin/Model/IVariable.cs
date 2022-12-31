@@ -25,7 +25,6 @@
 */
 
 using System;
-using VDS.RDF;
 using System.Collections.Generic;
 using VDS.RDF.Query.Spin.SparqlUtil;
 

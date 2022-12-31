@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
     /// <summary>

@@ -54,7 +54,7 @@ namespace VDS.RDF.Query
         TResult ProcessAsk(Ask ask, TContext context);
 
         /// <summary>
-        /// Processes an optimised ASK of the form ASK WHERE { ?s ?p ?o }
+        /// Processes an optimised ASK of the form ASK WHERE { ?s ?p ?o }.
         /// </summary>
         /// <param name="askAny"></param>
         /// <param name="context"></param>
@@ -252,7 +252,7 @@ namespace VDS.RDF.Query
         TResult ProcessZeroOrMorePath(ZeroOrMorePath zeroOrMorePath, TContext context);
 
         /// <summary>
-        /// Process a 
+        /// Process a. 
         /// </summary>
         /// <param name="filter"></param>
         /// <param name="context"></param>

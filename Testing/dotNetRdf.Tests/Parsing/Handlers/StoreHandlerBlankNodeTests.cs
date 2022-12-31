@@ -27,9 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using Xunit;
-using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing.Handlers
 {

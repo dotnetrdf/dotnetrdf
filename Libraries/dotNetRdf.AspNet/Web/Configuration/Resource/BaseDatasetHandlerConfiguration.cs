@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query.Datasets;
 

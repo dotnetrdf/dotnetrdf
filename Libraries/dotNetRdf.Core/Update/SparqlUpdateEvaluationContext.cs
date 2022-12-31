@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Diagnostics;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;

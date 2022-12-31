@@ -26,10 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Spin.Model;
-using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Util;
-using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Spin.Core
 {

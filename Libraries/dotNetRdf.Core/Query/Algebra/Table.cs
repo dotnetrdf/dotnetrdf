@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Get the fixed set of solutions that this algebra represents
+        /// Get the fixed set of solutions that this algebra represents.
         /// </summary>
         public BaseMultiset Multiset { get; }
 

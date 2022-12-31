@@ -25,20 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading;
 using Xunit;
-using VDS.RDF;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Datasets;
-using VDS.RDF.Storage;
-using VDS.RDF.Update;
-using VDS.RDF.Writing;
 using System.Diagnostics;
 
 namespace VDS.RDF.Query

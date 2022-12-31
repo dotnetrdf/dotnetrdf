@@ -33,7 +33,6 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Ordering;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {

@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Paths

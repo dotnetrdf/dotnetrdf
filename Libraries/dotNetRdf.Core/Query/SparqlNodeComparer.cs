@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;

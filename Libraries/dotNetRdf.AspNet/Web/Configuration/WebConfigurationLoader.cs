@@ -28,7 +28,6 @@ using System;
 using System.IO;
 using System.Web;
 using VDS.RDF.Configuration;
-using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Web.Configuration
 {

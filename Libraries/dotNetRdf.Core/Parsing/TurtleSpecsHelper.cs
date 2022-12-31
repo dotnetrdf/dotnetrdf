@@ -83,7 +83,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Trig 1.1 with RDF-star syntax extensions
         /// </summary>
-        Rdf11Star
+        Rdf11Star,
     }
 
     /// <summary>

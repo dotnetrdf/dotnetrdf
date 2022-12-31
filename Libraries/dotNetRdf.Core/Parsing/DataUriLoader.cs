@@ -27,7 +27,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing

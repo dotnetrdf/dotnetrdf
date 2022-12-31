@@ -25,9 +25,6 @@
 */
 
 using System.Collections.Generic;
-using System.Linq;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 

@@ -26,7 +26,6 @@
 
 using System;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;

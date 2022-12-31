@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 

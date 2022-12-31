@@ -24,11 +24,9 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Utils.Describe
 {

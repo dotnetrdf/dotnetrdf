@@ -24,11 +24,8 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 {

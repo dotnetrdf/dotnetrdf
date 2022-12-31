@@ -27,7 +27,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using VDS.RDF;
 using VDS.RDF.Query;
 using VDS.RDF.Shacl.Validation;
 
