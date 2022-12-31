@@ -31,7 +31,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Class containing helper functions related to SPARQL numeric types
+    /// Class containing helper functions related to SPARQL numeric types.
     /// </summary>
     public static class NumericTypesHelper
     {

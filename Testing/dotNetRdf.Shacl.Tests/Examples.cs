@@ -24,12 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using VDS.RDF.Shacl.Validation;
+using System.Linq;
+using Xunit;
 
 namespace VDS.RDF.Shacl
 {
-    using System.Linq;
-    using Xunit;
-
     public class Examples
     {
         [Fact]

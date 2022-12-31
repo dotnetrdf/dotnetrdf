@@ -27,10 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF.Parsing;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {

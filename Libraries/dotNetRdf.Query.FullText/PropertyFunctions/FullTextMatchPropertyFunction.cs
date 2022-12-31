@@ -27,12 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.FullText;
-using VDS.RDF.Query.FullText.Indexing;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.Patterns;
 

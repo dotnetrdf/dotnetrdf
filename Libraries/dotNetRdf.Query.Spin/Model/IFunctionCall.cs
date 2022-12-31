@@ -24,10 +24,7 @@
 // </copyright>
 */
 
-using VDS.RDF.Storage;
 using System.Collections.Generic;
-using VDS.RDF;
-using System;
 using VDS.RDF.Query.Spin.SparqlUtil;
 namespace VDS.RDF.Query.Spin.Model
 {

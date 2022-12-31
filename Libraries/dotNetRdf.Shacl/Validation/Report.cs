@@ -27,10 +27,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Datasets;
-using VDS.RDF.Query.Describe;
 
 namespace VDS.RDF.Shacl.Validation
 {

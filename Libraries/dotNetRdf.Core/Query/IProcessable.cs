@@ -27,7 +27,7 @@
 namespace VDS.RDF.Query
 {
     /// <summary>
-    /// Interface to be implemented by classes that can be processed by an <see cref="ISparqlQueryAlgebraProcessor{TResult,TContext}"/>
+    /// Interface to be implemented by classes that can be processed by an <see cref="ISparqlQueryAlgebraProcessor{TResult,TContext}"/>.
     /// </summary>
     public interface IProcessable
     {

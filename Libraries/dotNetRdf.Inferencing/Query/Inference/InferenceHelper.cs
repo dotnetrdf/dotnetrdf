@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using System;
-
 namespace VDS.RDF.Query.Inference
 {
     /*public static class InferenceHelper

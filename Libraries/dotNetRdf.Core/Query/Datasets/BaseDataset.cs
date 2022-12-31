@@ -797,7 +797,7 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Gets all the quoted triples in the dataset with the given subject.
         /// </summary>
-        /// <param name="subj">Subject</param>
+        /// <param name="subj">Subject.</param>
         /// <returns></returns>
         protected abstract IEnumerable<Triple> GetQuotedWithSubjectInternal(INode subj);
 

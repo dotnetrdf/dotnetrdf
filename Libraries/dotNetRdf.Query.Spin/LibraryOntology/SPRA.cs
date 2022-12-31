@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using VDS.RDF;
 using System;
 using VDS.RDF.Query.Spin.Util;
 

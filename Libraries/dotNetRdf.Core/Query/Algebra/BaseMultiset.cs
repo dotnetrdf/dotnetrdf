@@ -24,11 +24,9 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.Common.Collections;
-using VDS.Common.Collections.Enumerations;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 

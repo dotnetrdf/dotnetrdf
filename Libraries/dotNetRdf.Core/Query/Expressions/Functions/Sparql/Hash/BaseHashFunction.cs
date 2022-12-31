@@ -24,11 +24,6 @@
 // </copyright>
 */
 
-using System;
-using System.Security.Cryptography;
-using System.Text;
-using VDS.RDF.Nodes;
-
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
 {
     /// <summary>

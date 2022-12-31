@@ -26,18 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_FULLTEXT
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
-using Lucene.Net;
-using Lucene.Net.Search;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.FullText.Indexing;
 using VDS.RDF.Query.FullText.Indexing.Lucene;
-using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.PropertyFunctions;

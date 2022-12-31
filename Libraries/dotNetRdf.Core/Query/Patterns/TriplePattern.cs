@@ -30,7 +30,6 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
-using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Patterns
 {

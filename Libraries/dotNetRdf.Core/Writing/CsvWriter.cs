@@ -26,7 +26,6 @@
 
 using System;
 using System.IO;
-using System.Text;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing

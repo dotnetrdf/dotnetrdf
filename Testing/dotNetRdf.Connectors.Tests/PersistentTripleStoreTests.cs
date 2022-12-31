@@ -28,7 +28,6 @@ using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
-using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using StringWriter = System.IO.StringWriter;
 

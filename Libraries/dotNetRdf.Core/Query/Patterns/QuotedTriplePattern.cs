@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Algebra;
@@ -109,7 +108,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Create a set of bindings by matching <paramref name="node"/> to this pattern.
         /// </summary>
-        /// <param name="node">The node to match</param>
+        /// <param name="node">The node to match.</param>
         /// <returns>A set of result bindings, which may be empty if <paramref name="node"/> does not match this pattern.</returns>
         public ISet CreateResults(INode node)
         {

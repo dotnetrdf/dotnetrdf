@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.IO;
 
 namespace VDS.RDF.Parsing.Tokens

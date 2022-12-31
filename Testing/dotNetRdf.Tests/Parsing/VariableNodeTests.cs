@@ -26,13 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
-using VDS.RDF;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query.Inference;
 using VDS.RDF.Writing;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {

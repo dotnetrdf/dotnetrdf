@@ -25,13 +25,11 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 
 namespace VDS.RDF
 {

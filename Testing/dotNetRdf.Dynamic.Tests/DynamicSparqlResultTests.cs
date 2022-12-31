@@ -24,17 +24,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System.Collections;
+using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Linq.Expressions;
+using VDS.RDF.Query;
+using Xunit;
 
 namespace VDS.RDF.Dynamic
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Dynamic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using VDS.RDF.Query;
-    using Xunit;
-
     public class DynamicSparqlResultTests
     {
         [Fact]

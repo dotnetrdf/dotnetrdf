@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Linq;
 using Xunit;
-using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Primary;

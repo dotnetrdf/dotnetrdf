@@ -27,8 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Filters;
 
 namespace VDS.RDF.Query.Patterns

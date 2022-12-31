@@ -24,8 +24,6 @@
 // </copyright>
 */
 
-using System;
-
 namespace VDS.RDF.Storage
 {
 

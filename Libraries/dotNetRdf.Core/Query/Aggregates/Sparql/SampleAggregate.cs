@@ -25,7 +25,6 @@
 */
 
 using System.Collections.Generic;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Aggregates.Sparql

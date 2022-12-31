@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using VDS.RDF.Query;
 
 namespace VDS.RDF

@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.SparqlUtil;
 using VDS.RDF.Query.Spin.Util;

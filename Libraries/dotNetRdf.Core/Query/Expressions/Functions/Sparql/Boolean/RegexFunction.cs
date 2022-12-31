@@ -27,7 +27,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean

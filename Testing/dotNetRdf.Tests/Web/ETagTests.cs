@@ -24,13 +24,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Web;
 
 namespace VDS.RDF.Web
 {

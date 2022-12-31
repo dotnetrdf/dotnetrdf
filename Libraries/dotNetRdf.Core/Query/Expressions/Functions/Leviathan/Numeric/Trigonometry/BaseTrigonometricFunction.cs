@@ -25,7 +25,6 @@
 */
 
 using System;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
 {

@@ -25,7 +25,6 @@
 */
 
 using System.Text;
-using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Comparison
 {

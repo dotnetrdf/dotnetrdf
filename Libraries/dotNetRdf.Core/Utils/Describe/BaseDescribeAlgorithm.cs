@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Utils.Describe
 {

@@ -25,8 +25,6 @@
 */
 
 using System.Text;
-using VDS.RDF.Nodes;
-using VDS.RDF.Query.Operators;
 
 namespace VDS.RDF.Query.Expressions.Arithmetic
 {

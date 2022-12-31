@@ -26,7 +26,6 @@
 
 using System.Diagnostics;
 using System.Linq;
-using VDS.RDF;
 
 namespace VDS.RDF.Shacl.Validation
 {

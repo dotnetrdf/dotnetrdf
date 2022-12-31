@@ -120,7 +120,7 @@ namespace VDS.RDF.Query
             IValuedNode[] inputs = new[]
             {
                 expr.LeftExpression.Accept(this, context, binding),
-                expr.RightExpression.Accept(this, context, binding)
+                expr.RightExpression.Accept(this, context, binding),
             };
             if (!SparqlOperators.TryGetOperator(operatorType, UseStrictOperators, out ISparqlOperator op, inputs))
             {

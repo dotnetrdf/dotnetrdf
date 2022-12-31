@@ -31,7 +31,6 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
-using Xunit.Sdk;
 using StringWriter = System.IO.StringWriter;
 
 namespace VDS.RDF.Storage

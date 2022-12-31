@@ -28,8 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Update.Commands

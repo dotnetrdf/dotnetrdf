@@ -24,10 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update;

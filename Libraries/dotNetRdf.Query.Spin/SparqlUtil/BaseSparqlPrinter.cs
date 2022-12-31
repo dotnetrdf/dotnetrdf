@@ -26,13 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Resources;
 using System.Text;
-using VDS.RDF;
 using VDS.RDF.Query.Spin.Model;
 using VDS.RDF.Query.Spin.LibraryOntology;
 using VDS.RDF.Query.Spin.Util;
-using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Spin.SparqlUtil
 {

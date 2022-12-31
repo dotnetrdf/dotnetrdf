@@ -36,7 +36,6 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
-using System.Web;
 
 namespace VDS.RDF.Storage
 {

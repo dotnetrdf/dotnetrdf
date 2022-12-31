@@ -28,7 +28,6 @@ using System.IO;
 using System.Net;
 using Xunit;
 using VDS.RDF.Parsing;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Web
 {

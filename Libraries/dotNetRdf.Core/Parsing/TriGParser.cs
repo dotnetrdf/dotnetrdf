@@ -25,7 +25,6 @@
 */
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using VDS.RDF.Parsing.Contexts;

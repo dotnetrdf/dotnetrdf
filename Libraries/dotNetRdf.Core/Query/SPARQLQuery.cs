@@ -89,7 +89,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new SPARQL Query.
         /// </summary>
-        /// <param name="subQuery">Whether this query is a sub-query</param>
+        /// <param name="subQuery">Whether this query is a sub-query.</param>
         public SparqlQuery(bool subQuery):this(null, null, subQuery) { }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query
         public Uri BaseUri { get; set; }
 
         /// <summary>
-        /// Gets the map of namespace prefixes to URIs
+        /// Gets the map of namespace prefixes to URIs.
         /// </summary>
         public INamespaceMapper NamespaceMap { get; }
 
@@ -1069,7 +1069,7 @@ namespace VDS.RDF.Query
         /// Create a query instance that can be passed to remote endpoint when processing a SERVICE clause
         /// in a SPARQL Query.
         /// </summary>
-        /// <param name="serviceGraphPattern">The root graph pattern of the SERVICE query</param>
+        /// <param name="serviceGraphPattern">The root graph pattern of the SERVICE query.</param>
         /// <param name="limit">The limit on the number of results requested.</param>
         /// <returns></returns>
         public static SparqlQuery FromServiceQuery(GraphPattern serviceGraphPattern, int limit)

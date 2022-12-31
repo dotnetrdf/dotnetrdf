@@ -26,20 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_FULLTEXT
 
 using System;
-using System.Text;
-using System.Collections.Generic;
 using DirInfo = System.IO.DirectoryInfo;
-using System.Linq;
-using System.Reflection;
 using Xunit;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Index;
 using Lucene.Net.Store;
-using VDS.RDF;
 using VDS.RDF.Configuration;
-using VDS.RDF.Query;
-using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Indexing;
 using VDS.RDF.Query.FullText.Indexing.Lucene;
 using VDS.RDF.Query.FullText.Schema;

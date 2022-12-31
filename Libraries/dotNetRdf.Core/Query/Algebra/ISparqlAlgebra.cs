@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
