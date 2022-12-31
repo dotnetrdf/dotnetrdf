@@ -335,9 +335,11 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">URI.</param>
         /// <param name="qname">Resulting QName.</param>
+        /// <param name="validationFunction">A validation function to use to validate the QName. Only a QName value for which the validation function return true will be returned.</param>
         /// <returns></returns>
-        public bool ReduceToQName(string uri, out string qname)
+        public bool ReduceToQName(string uri, out string qname, Func<string, bool> validationFunction = null)
         {
+            validationFunction ??= NamespaceMapper.DefaultQNameValidationFunction;
             foreach (Uri u in _uris.Values.Select(l => l.Last().Uri))
             {
                 var baseuri = u.AbsoluteUri;
@@ -350,7 +352,7 @@ namespace VDS.RDF
                     // Add the Prefix back onto the front plus the colon to give a QName
                     qname = GetPrefix(u) + ":" + qname;
                     if (qname.Equals(":")) continue;
-                    if (qname.Contains("/") || qname.Contains("#")) continue;
+                    if (!validationFunction(qname)) continue;
                     return true;
                 }
             }

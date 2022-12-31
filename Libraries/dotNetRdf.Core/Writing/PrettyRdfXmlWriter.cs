@@ -670,52 +670,69 @@ namespace VDS.RDF.Writing
         {
             string uriref, qname;
 
-            if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname) && (type != UriRefType.QName || RdfXmlSpecsHelper.IsValidQName(qname)))
+            if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname, RdfXmlSpecsHelper.IsValidQName))
             {
                 // Reduced to QName OK
                 uriref = qname;
                 outType = UriRefType.QName;
+                if (type == UriRefType.UriRef)
+                {
+                    uriref = ConvertQNameToUriRef(context, uriref, out outType);
+                }
             }
             else
             {
-                // Just use the Uri
                 uriref = u.AbsoluteUri;
                 outType = UriRefType.Uri;
+                if (type == UriRefType.UriRef && context.NamespaceMap.ReduceToQName(uriref, out qname))
+                {
+                    // Attempt to compress the URI to a UriRef via a QName that is not XML-valid
+                    uriref = qname;
+                    if (uriref.Contains(":") && !uriref.StartsWith(":"))
+                    {
+                        uriref = ConvertQNameToUriRef(context, uriref, out outType);
+                    }
+                }
             }
 
-            // Convert to a Uri Ref from a QName if required
-            if (outType == UriRefType.QName && type == UriRefType.UriRef)
+
+
+            return uriref;
+        }
+
+        private static string ConvertQNameToUriRef(RdfXmlWriterContext context, string uriref, out UriRefType outType)
+        {
+            // Attempt to convert QName to a UriRef
+            if (uriref.Contains(':') && !uriref.StartsWith(":"))
             {
-                if (uriref.Contains(':') && !uriref.StartsWith(":"))
+                var prefix = uriref.Substring(0, uriref.IndexOf(':'));
+                if (context.UseDtd && context.NamespaceMap.GetNestingLevel(prefix) == 0)
                 {
-                    var prefix = uriref.Substring(0, uriref.IndexOf(':'));
-                    if (context.UseDtd && context.NamespaceMap.GetNestingLevel(prefix) == 0)
-                    {
-                        // Muse have used a DTD to generate this style of URI Reference
-                        // Can only use entities for non-temporary Namespaces as Temporary Namespaces won't have Entities defined
-                        uriref = "&" + uriref.Replace(':', ';');
-                        outType = UriRefType.UriRef;
-                    }
-                    else
-                    {
-                        uriref = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri + uriref.Substring(uriref.IndexOf(':') + 1);
-                        outType = UriRefType.Uri;
-                    }
+                    // Must have Use DTD enabled
+                    // Can only use entities for non-temporary Namespaces as Temporary Namespaces won't have Entities defined
+                    uriref = "&" + uriref.Replace(':', ';');
+                    outType = UriRefType.UriRef;
                 }
                 else
                 {
-                    if (context.NamespaceMap.HasNamespace(string.Empty))
-                    {
-                        uriref = context.NamespaceMap.GetNamespaceUri(string.Empty).AbsoluteUri + uriref.Substring(1);
-                        outType = UriRefType.Uri;
-                    }
-                    else
-                    {
-                        var baseUri = context.Graph.BaseUri.AbsoluteUri;
-                        if (!baseUri.EndsWith("#")) baseUri += "#";
-                        uriref = baseUri + uriref;
-                        outType = UriRefType.Uri;
-                    }
+                    uriref = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri +
+                             uriref.Substring(uriref.IndexOf(':') + 1);
+                    outType = UriRefType.Uri;
+                }
+            }
+            else
+            {
+                if (context.NamespaceMap.HasNamespace(string.Empty))
+                {
+                    uriref = context.NamespaceMap.GetNamespaceUri(string.Empty).AbsoluteUri + uriref.Substring(1);
+                    outType = UriRefType.Uri;
+                }
+                else
+                {
+                    var baseUri = context.Graph.BaseUri.AbsoluteUri;
+                    if (!baseUri.EndsWith("#")) baseUri += "#";
+                    uriref = baseUri + uriref;
+                    outType = UriRefType.Uri;
                 }
             }
 
@@ -724,18 +741,7 @@ namespace VDS.RDF.Writing
 
         private void GenerateTemporaryNamespace(RdfXmlWriterContext context, IUriNode u, out string tempPrefix, out string tempUri)
         {
-            var uri = u.Uri.AbsoluteUri;
-            string nsUri;
-            if (uri.Contains("#"))
-            {
-                // Create a Hash Namespace Uri
-                nsUri = uri.Substring(0, uri.LastIndexOf("#") + 1);
-            }
-            else
-            {
-                // Create a Slash Namespace Uri
-                nsUri = uri.Substring(0, uri.LastIndexOf("/") + 1);
-            }
+            RdfXmlFormatter.TryReduceUriToQName(u.Uri, out var qName, out var nsUri);
 
             // Create a Temporary Namespace ID
             // Can't use an ID if already in the Namespace Map either at top level (nesting == 0) or at the current nesting

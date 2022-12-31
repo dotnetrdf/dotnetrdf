@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
@@ -336,10 +337,7 @@ namespace VDS.RDF.Writing
             var g = new Graph();
             g.LoadFromString(data, new TurtleParser());
 
-            var writer = new RdfXmlWriter
-            {
-                CompressionLevel = WriterCompressionLevel.High
-            };
+            var writer = new RdfXmlWriter(WriterCompressionLevel.High);
             var outData = StringWriter.Write(g, writer);
 
             Assert.Contains("rdf:about=\"&ex;1s\"", outData);
@@ -393,6 +391,19 @@ namespace VDS.RDF.Writing
             var g = new Graph();
             g.LoadFromString(fragment);
 
+            CheckRoundTrip(g);
+        }
+
+        [Fact]
+        public void PredicateQNameReductionWithExistingNamespace()
+        {
+            var g = new Graph();
+            g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
+            g.NamespaceMap.AddNamespace("u", new Uri("urn:uuid:"));
+            g.Assert(new Triple(g.CreateUriNode("ex:s"), g.CreateUriNode("u:255fed9d-7b10-44e1-8b46-2cabca0706ac"),
+                g.CreateUriNode("ex:p")));
+            g.Assert(new Triple(g.CreateUriNode("ex:s"), g.CreateUriNode("u:e1601555-4367-4c69-982b-b7375fbf76b6"),
+                g.CreateUriNode("ex:p")));
             CheckRoundTrip(g);
         }
     }

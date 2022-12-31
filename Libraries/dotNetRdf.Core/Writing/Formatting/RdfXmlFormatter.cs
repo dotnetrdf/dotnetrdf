@@ -25,8 +25,8 @@
 */
 
 using System;
-using System.Linq;
 using System.Text;
+using System.Xml;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
@@ -124,25 +124,61 @@ namespace VDS.RDF.Writing.Formatting
             return "</rdf:RDF>";
         }
 
-        private void GetQName(Uri u, out string qname, out string ns)
+        /// <summary>
+        /// Attempt to split the string representation of the specified URI into a valid QName and namespace pair.
+        /// </summary>
+        /// <param name="u">The URI to be split.</param>
+        /// <param name="qName">Receives the QName portion of the split URI if splitting was possible, null otherwise.</param>
+        /// <param name="ns">Receives the namespace portion of the split URI if splitting was possible, null otherwise.</param>
+        /// <returns>True if the specified URI could be successfully split into a Namespace/QName pair, false otherwise.</returns>
+        public static bool TryReduceUriToQName(Uri u, out string qName, out string ns)
         {
-            if (_mapper != null && _mapper.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            var uri = u.AbsoluteUri;
+            if (String.IsNullOrEmpty(uri))
             {
-                // Succesfully reduced to a QName using the known namespaces
+                qName = ns = null; 
+                return false;
+            }
+            var lastStart = -1;
+            for (var start = uri.Length - 1; start >= 0; start--)
+            {
+                var c = uri[start];
+                if (!XmlConvert.IsNCNameChar(c))
+                {
+                    // No valid local name by this point
+                    break;
+                }
+                if (XmlConvert.IsStartNCNameChar(c))
+                {
+                    // The longest local name may start here
+                    lastStart = start;
+                }
+            }
+            if (lastStart != -1)
+            {
+                // The local name can be extracted
+                qName = uri.Substring(lastStart);
+                ns = uri.Substring(0, lastStart);
+                return true;
+            }
+            qName = ns = null;
+            return false;
+        }
+
+        private void GetQName(Uri u, out string qName, out string ns)
+        {
+            if (_mapper != null && _mapper.ReduceToQName(u.AbsoluteUri, out qName) && RdfXmlSpecsHelper.IsValidQName(qName))
+            {
+                // Successfully reduced to a QName using the known namespaces
                 ns = string.Empty;
                 return;
             }
-            else if (!u.Fragment.Equals(string.Empty))
+
+            if (TryReduceUriToQName(u, out qName, out ns) && RdfXmlSpecsHelper.IsValidQName(qName))
             {
-                ns = u.AbsoluteUri.Substring(0, u.AbsoluteUri.Length - u.Fragment.Length + 1);
-                qname = u.Fragment.Substring(1);
+                return;
             }
-            else
-            {
-                qname = u.Segments.LastOrDefault();
-                if (qname == null || !RdfXmlSpecsHelper.IsValidQName(qname)) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
-                ns = u.AbsoluteUri.Substring(0, u.AbsoluteUri.Length - qname.Length);
-            }
+            throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
         }
 
         /// <summary>
@@ -173,21 +209,20 @@ namespace VDS.RDF.Writing.Formatting
             }
             output.AppendLine(">");
 
-            string qname;
-            string ns;
+            string qName;
             switch (t.Predicate.NodeType)
             {
                 case NodeType.Uri:
                     Uri u = ((IUriNode)t.Predicate).Uri;
-                    GetQName(u, out qname, out ns);
+                    GetQName(u, out qName, out var ns);
                     output.Append('\t');
                     if (ns.Equals(string.Empty))
                     {
-                        output.Append("<" + qname);
+                        output.Append("<" + qName);
                     }
                     else
                     {
-                        output.Append("<" + qname + " xmlns=\"" + WriterHelper.EncodeForXml(ns) + "\"");
+                        output.Append("<" + qName + " xmlns=\"" + WriterHelper.EncodeForXml(ns) + "\"");
                     }
                     break;
                 case NodeType.Blank:
@@ -214,21 +249,21 @@ namespace VDS.RDF.Writing.Formatting
                     var lit = (ILiteralNode)t.Object;
                     if (lit.DataType.AbsoluteUri == RdfSpecsHelper.RdfLangString && !lit.Language.Equals(string.Empty))
                     {
-                        output.AppendLine(" xml:lang=\"" + lit.Language + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
+                        output.AppendLine(" xml:lang=\"" + lit.Language + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qName + ">");
                     }
                     else if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                     {
-                        output.AppendLine(">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
+                        output.AppendLine(">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qName + ">");
                     }
                     else if (lit.DataType != null)
                     {
                         if (lit.DataType.ToString().Equals(RdfSpecsHelper.RdfXmlLiteral))
                         {
-                            output.AppendLine(" rdf:parseType=\"Literal\">" + lit.Value + "</" + qname + ">");
+                            output.AppendLine(" rdf:parseType=\"Literal\">" + lit.Value + "</" + qName + ">");
                         }
                         else
                         {
-                            output.AppendLine(" rdf:datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
+                            output.AppendLine(" rdf:datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qName + ">");
                         }
                     } 
                     break;
