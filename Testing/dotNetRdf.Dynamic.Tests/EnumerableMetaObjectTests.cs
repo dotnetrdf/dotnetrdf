@@ -41,9 +41,13 @@ namespace VDS.RDF.Dynamic
             var p = g.CreateBlankNode();
             var d = new DynamicNode(s, g);
             dynamic objects = new DynamicObjectCollection(d, p);
-
+#if NET6_0
             Assert.Throws<InvalidOperationException>(() =>
                 objects.Average());
+#else
+            Assert.Throws<ArgumentException>(() =>
+                objects.Average());
+#endif
         }
 
         [Fact]
