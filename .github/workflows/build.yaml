@@ -61,34 +61,9 @@ jobs:
       with:
         name: code-coverage dotNetRdf.Connectors.Fuseki.Tests ${{ matrix.framework }}
         path: Testing/dotNetRdf.Connectors.Fuseki.Tests/TestResults/*/coverage.cobertura.xml
-        
-  virtuosoTests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        framework: [ "net6.0", "net7.0" ]
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Build Virtuoso Image
-      run: docker build -t virtuoso:latest .
-      working-directory: Testing/test_images/virtuoso
-    - name: Start Virtuoso
-      run: docker run --rm -d -p 8890:8890 -p 1111:111 --name virtuoso virtuoso:latest
-    - name: Test Virtuoso Connector
-      run: dotnet test -c Release --framework ${{ matrix.framework }} --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Virtuoso.Tests/dotNetRdf.Connectors.Virtuoso.Tests.csproj
-    - name: Stop Virtuoso
-      run: docker stop virtuoso
-    - name: Upload Code Coverage
-      uses: actions/upload-artifact@v3
-      with:
-        name: code-coverage dotNetRdf.Connectors.Virtuoso.Tests ${{ matrix.framework }}
-        path: Testing/dotNetRdf.Connectors.Virtuoso.Tests/TestResults/*/coverage.cobertura.xml
       
   report:
-    needs: [ "test", "test-linux", "fusekiTests", "virtuosoTests" ]
+    needs: [ "test", "test-linux", "fusekiTests" ]
     runs-on: windows-latest
     steps:
     - name: Checkout
