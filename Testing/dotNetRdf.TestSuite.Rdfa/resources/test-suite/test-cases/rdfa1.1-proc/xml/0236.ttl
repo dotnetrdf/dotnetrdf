@@ -1,0 +1,206 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "final count: 100";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "parse_whole_doc: traversal complete'";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] skip: reused ec";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] skip: reused ec";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "load_initial_contexts: load <http://www.w3.org/2011/rdfa-context/html-rdfa-1.1>";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "load_initial_contexts: load <http://www.w3.org/2011/rdfa-context/rdfa-1.1>";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Error;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description """1:2: ERROR: @1:2: Tokenizer error with an unimplemented error message.
+<?xml version="1.0" encoding="UTF-8"?>
+ ^
+3:3: ERROR: @3:3: That tag isn't allowed here  Currently open tags: html, body, ..
+  <head>
+  ^
+5:3: ERROR: @5:3: That tag isn't allowed here  Currently open tags: html, body, ..
+  </head>
+  ^
+6:62: ERROR: @6:62: Tokenizer error with an unimplemented error message.
+  <body which is not closed should generate a processor error</root>
+                                                             ^
+6:64: ERROR: @6:64: Tokenizer error with an unimplemented error message.
+  <body which is not closed should generate a processor error</root>
+                                                               ^
+6:3: ERROR: @6:3: That tag isn't allowed here  Currently open tags: html, body, ..
+  <body which is not closed should generate a processor error</root>
+  ^
+6:69: ERROR: @6:69: Premature end of file  Currently open tags: html, body, ..
+  <body which is not closed should generate a processor error</root>
+                                                                    ^""";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "version = rdfa1.1,  host_language = html5, library = nokogiri, rdfagraph = [:processor], expand = ";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xml/0236.xml>
+ ] .

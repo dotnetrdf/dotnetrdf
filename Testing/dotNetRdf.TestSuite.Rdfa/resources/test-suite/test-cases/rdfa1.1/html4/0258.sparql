@@ -1,0 +1,6 @@
+# This is a negative test, the triple shown below should not be generated.
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX ex: <http://example.org/>
+ASK WHERE {
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0258.html> ?p ex:test .
+}

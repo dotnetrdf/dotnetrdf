@@ -1,0 +1,4 @@
+ASK WHERE {
+ <http://rdfa.info/test-suite/test-cases/rdfa1.1/xhtml5/0093.xhtml> <http://purl.org/dc/elements/1.1/creator> "Albert Einstein" .
+ <http://rdfa.info/test-suite/test-cases/rdfa1.1/xhtml5/0093.xhtml> <http://purl.org/dc/elements/1.1/title> "E = mc2: The Most Urgent Problem of Our Time"^^<http://www.example.org/XMLLiteral> .
+}

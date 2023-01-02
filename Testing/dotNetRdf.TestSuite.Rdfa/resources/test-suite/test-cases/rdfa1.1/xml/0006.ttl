@@ -1,0 +1,6 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/xml/photo1.jpg> dc11:creator <http://www.blogger.com/profile/1109404> .
+
+<http://www.blogger.com/profile/1109404> foaf:img <http://rdfa.info/test-suite/test-cases/rdfa1.1/xml/photo1.jpg> .

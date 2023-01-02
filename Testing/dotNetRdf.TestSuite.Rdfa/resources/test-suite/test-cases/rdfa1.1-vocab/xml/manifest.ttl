@@ -1,0 +1,95 @@
+@base <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/manifest> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix test: <http://www.w3.org/2006/03/test-description#> .
+@prefix rdfatest: <http://rdfa.info/vocabs/rdfa-test#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "RDFa rdfa1.1-vocab tests for xml" ;
+    mf:entries (
+      <#0240>
+      <#0241>
+      <#0242>
+      <#0243>
+      <#0244>
+      <#0245>
+  ) .
+
+<#0240> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0240: vocab_expansion='true' expands sub-property""";
+  rdfs:comment """
+      A property having an rdfs:subPropertyOf relationship defined in an in-use vocabulary causes
+      triples to be added to the referenced property.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0240.xml>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0240.ttl>;
+  rdfatest:queryParam "vocab_expansion=true";
+  test:specificationReference """10.1.1 RDFa Vocabulary Entailment""";
+  .
+
+<#0241> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0241: vocab_expansion='true' expands equivalent-property""";
+  rdfs:comment """
+      A property having an owl:equivalentProperty relationship defined in an in-use vocabulary causes
+      triples to be added to the referenced property.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0241.xml>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0241.ttl>;
+  rdfatest:queryParam "vocab_expansion=true";
+  test:specificationReference """10.1.1 RDFa Vocabulary Entailment""";
+  .
+
+<#0242> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0242: vocab_expansion='true' expands referenced equivalent-property""";
+  rdfs:comment """
+      A property which is the target of another property having an owl:equivalentProperty relationship defined in an
+      in-use vocabulary causes triples to be added to the defining property.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0242.xml>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0242.ttl>;
+  rdfatest:queryParam "vocab_expansion=true";
+  test:specificationReference """10.1.1 RDFa Vocabulary Entailment""";
+  .
+
+<#0243> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0243: vocab_expansion='true' expands sub-class""";
+  rdfs:comment """
+      A property having an rdfs:subClassOf relationship defined in an in-use vocabulary causes
+      triples to be added to the referenced class.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0243.xml>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0243.ttl>;
+  rdfatest:queryParam "vocab_expansion=true";
+  test:specificationReference """10.1.1 RDFa Vocabulary Entailment""";
+  .
+
+<#0244> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0244: vocab_expansion='true' expands equivalent-class""";
+  rdfs:comment """
+      A class having an owl:equivalentClass relationship defined in an in-use vocabulary causes
+      triples to be added to the referenced class.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0244.xml>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0244.ttl>;
+  rdfatest:queryParam "vocab_expansion=true";
+  test:specificationReference """10.1.1 RDFa Vocabulary Entailment""";
+  .
+
+<#0245> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0245: vocab_expansion='true' expands referenced equivalent-class""";
+  rdfs:comment """
+      A class which is the target of another class having an owl:equivalentClass relationship defined in an
+      in-use vocabulary causes triples to be added to the defining class.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0245.xml>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xml/0245.ttl>;
+  rdfatest:queryParam "vocab_expansion=true";
+  test:specificationReference """10.1.1 RDFa Vocabulary Entailment""";
+  .

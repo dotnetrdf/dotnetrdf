@@ -1,0 +1,10 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://www.example.org/#ben> foaf:knows [
+      a foaf:Person;
+      foaf:name "Mark Birbeck"
+   ], [
+      a foaf:Person;
+      foaf:name "Ivan Herman"
+   ] .

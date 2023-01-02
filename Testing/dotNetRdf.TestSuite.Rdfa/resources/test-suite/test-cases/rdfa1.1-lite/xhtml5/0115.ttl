@@ -1,0 +1,7 @@
+@prefix ex: <http://www.example.com/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/xhtml5/0115.xhtml> ex:entity1 ">";
+   ex:entity2 "Ben & Co.";
+   ex:entity3 "@";
+   ex:entity4 "@" .

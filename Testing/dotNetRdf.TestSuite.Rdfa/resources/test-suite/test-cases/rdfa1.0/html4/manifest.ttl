@@ -1,0 +1,965 @@
+@base <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/manifest> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix test: <http://www.w3.org/2006/03/test-description#> .
+@prefix rdfatest: <http://rdfa.info/vocabs/rdfa-test#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "RDFa rdfa1.0 tests for html4" ;
+    mf:entries (
+      <#0001>
+      <#0006>
+      <#0007>
+      <#0008>
+      <#0009>
+      <#0010>
+      <#0014>
+      <#0015>
+      <#0017>
+      <#0018>
+      <#0019>
+      <#0020>
+      <#0021>
+      <#0023>
+      <#0025>
+      <#0026>
+      <#0027>
+      <#0029>
+      <#0030>
+      <#0031>
+      <#0032>
+      <#0033>
+      <#0034>
+      <#0035>
+      <#0036>
+      <#0037>
+      <#0038>
+      <#0039>
+      <#0040>
+      <#0041>
+      <#0042>
+      <#0048>
+      <#0049>
+      <#0050>
+      <#0051>
+      <#0052>
+      <#0053>
+      <#0054>
+      <#0055>
+      <#0056>
+      <#0057>
+      <#0058>
+      <#0059>
+      <#0060>
+      <#0063>
+      <#0064>
+      <#0065>
+      <#0066>
+      <#0067>
+      <#0068>
+      <#0069>
+      <#0070>
+      <#0071>
+      <#0072>
+      <#0073>
+      <#0074>
+      <#0075>
+      <#0078>
+      <#0079>
+      <#0080>
+      <#0081>
+      <#0082>
+      <#0083>
+      <#0084>
+      <#0085>
+      <#0087>
+      <#0088>
+      <#0089>
+      <#0090>
+      <#0091>
+      <#0093>
+      <#0099>
+      <#0104>
+      <#0106>
+      <#0107>
+      <#0109>
+      <#0110>
+      <#0111>
+      <#0112>
+      <#0114>
+      <#0115>
+      <#0117>
+      <#0118>
+      <#0119>
+      <#0120>
+      <#0122>
+      <#0126>
+      <#0131>
+      <#0134>
+      <#0140>
+      <#0147>
+      <#0174>
+      <#0181>
+      <#0197>
+      <#0207>
+      <#0209>
+      <#0210>
+      <#0211>
+      <#0212>
+      <#0215>
+      <#0258>
+      <#0262>
+      <#0291>
+      <#0311>
+  ) .
+
+<#0001> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0001: Predicate establishment with @property""";
+  rdfs:comment """Tests @property to establish the predicate; literal object is in the content of the element.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0001.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0001.ttl>;
+  .
+
+<#0006> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0006: @rel and @rev""";
+  rdfs:comment """Tests @rev and @rel together, with the object being specified by @href, ignoring content""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0006.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0006.ttl>;
+  .
+
+<#0007> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0007: @rel, @rev, @property, @content""";
+  rdfs:comment """Tests @rel, @rev, @property, and @content together to generate several RDF triples.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0007.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0007.ttl>;
+  .
+
+<#0008> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0008: empty string @about""";
+  rdfs:comment """Tests empty @about.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0008.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0008.ttl>;
+  .
+
+<#0009> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0009: @rev""";
+  rdfs:comment """Tests @rev.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0009.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0009.ttl>;
+  .
+
+<#0010> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0010: @rel, @rev, @href""";
+  rdfs:comment """Tests @rel, @rev, and @href to generate two RDF triples.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0010.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0010.ttl>;
+  .
+
+<#0014> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0014: @datatype, xsd:integer""";
+  rdfs:comment """Tests setting the @datatype to xsd:integer""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0014.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0014.ttl>;
+  .
+
+<#0015> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0015: meta and link""";
+  rdfs:comment """Tests meta and link with no parent @about""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0015.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0015.ttl>;
+  .
+
+<#0017> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0017: Related blanknodes""";
+  rdfs:comment """Tests creation of statements involving explicitly created blank nodes.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0017.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0017.ttl>;
+  .
+
+<#0018> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0018: @rel for predicate""";
+  rdfs:comment """Tests @rel to establish predicate.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0018.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0018.ttl>;
+  .
+
+<#0019> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0019: @about for subject""";
+  rdfs:comment """Tests @about to establish subject.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0019.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0019.ttl>;
+  .
+
+<#0020> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0020: Inheriting @about for subject""";
+  rdfs:comment """Tests @about inheritance to establish subject.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0020.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0020.ttl>;
+  .
+
+<#0021> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0021: Subject inheritance with no @about""";
+  rdfs:comment """Tests inheritance of subject when no @about can be found""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0021.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0021.ttl>;
+  .
+
+<#0023> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0023: @id does not generate subjects""";
+  rdfs:comment """Tests that @id does not generate subjects""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0023.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0023.ttl>;
+  .
+
+<#0025> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0025: simple chaining test""";
+  rdfs:comment """Tests simple chaining with cascade of @resource and @property""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0025.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0025.ttl>;
+  .
+
+<#0026> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0026: @content""";
+  rdfs:comment """Tests @content for literal object""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0026.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0026.ttl>;
+  .
+
+<#0027> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0027: @content, ignore element content""";
+  rdfs:comment """Tests @content for literal object, overriding element content.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0027.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0027.ttl>;
+  .
+
+<#0029> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0029: markup stripping with @datatype""";
+  rdfs:comment """Tests markup stripping from a span element with @datatype=xsd:string""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0029.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0029.ttl>;
+  .
+
+<#0030> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0030: omitted @about""";
+  rdfs:comment """Tests omitted @about.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0030.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0030.ttl>;
+  .
+
+<#0031> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0031: simple @resource""";
+  rdfs:comment """Tests if @resource sets URIref object correct.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0031.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0031.ttl>;
+  .
+
+<#0032> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0032: @resource overrides @href""";
+  rdfs:comment """Tests if @resource overrides @href to set the URIref object.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0032.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0032.ttl>;
+  .
+
+<#0033> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0033: simple chaining test with bNode""";
+  rdfs:comment """Tests simple chaining with cascade of bNode and @property""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0033.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0033.ttl>;
+  .
+
+<#0034> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0034: simple img[@src] test""";
+  rdfs:comment """Tests if a @src (in img element) correctly sets the URIref object""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0034.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0034.ttl>;
+  .
+
+<#0035> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0035: @src/@href test""";
+  rdfs:comment """Tests if @href overwrites @src""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0035.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0035.ttl>;
+  .
+
+<#0036> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0036: @src/@resource test""";
+  rdfs:comment """Tests if @resource overwrites @src""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0036.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0036.ttl>;
+  .
+
+<#0037> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0037: @src/@href/@resource test""";
+  rdfs:comment """Tests if @resource overwrites both @href and @src""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0037.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0037.ttl>;
+  .
+
+<#0038> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0038: @rev - img[@src] test""";
+  rdfs:comment """Tests if a @src (in img element) correctly sets the URIref subject (due to @rev)""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0038.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0038.ttl>;
+  .
+
+<#0039> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0039: @rev - @src/@href test""";
+  rdfs:comment """Tests if @href overwrites @src correctly to set the URIref subject (due to @rev)""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0039.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0039.ttl>;
+  .
+
+<#0040> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0040: @rev - @src/@resource test""";
+  rdfs:comment """Tests if @resource overwrites @src correctly to set the URIref subject (due to @rev)""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0040.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0040.ttl>;
+  .
+
+<#0041> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0041: @rev - @src/@href/@resource test""";
+  rdfs:comment """Tests if @resource overwrites both @href and @src correctly to set the URIref subject (due to @rev)""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0041.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0041.ttl>;
+  .
+
+<#0042> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0042: img[@src] test with omitted @about""";
+  rdfs:comment """Tests if a @src (in img element) correctly sets the URIref object (with omitted @about)""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0042.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0042.ttl>;
+  .
+
+<#0048> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0048: @typeof with @about and @rel present, no @resource""";
+  rdfs:comment """Tests @typeof with @about and @rel present, no @resource""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0048.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0048.ttl>;
+  .
+
+<#0049> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0049: @typeof with @about, no @rel or @resource""";
+  rdfs:comment """Tests @typeof with @about, no @rel or @resource""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0049.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0049.ttl>;
+  .
+
+<#0050> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0050: @typeof without anything else""";
+  rdfs:comment """Tests @typeof without anything else""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0050.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0050.ttl>;
+  .
+
+<#0051> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0051: @typeof with a single @property""";
+  rdfs:comment """Tests @typeof with a single @property""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0051.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0051.ttl>;
+  .
+
+<#0052> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0052: @typeof with @resource and nothing else""";
+  rdfs:comment """Tests to ensure that @typeof does not apply to @resource""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0052.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0052.ttl>;
+  .
+
+<#0053> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0053: @typeof with @resource and nothing else, with a subelement""";
+  rdfs:comment """Tests to make sure that @typeof does not apply to @resource, but @resource sets the subject for the next triple to be generated""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0053.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0053.ttl>;
+  .
+
+<#0054> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0054: multiple @property""";
+  rdfs:comment """Tests multiple @property separated by white spaces""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0054.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0054.ttl>;
+  .
+
+<#0055> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0055: multiple @rel""";
+  rdfs:comment """Tests multiple @rel separated by white spaces""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0055.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0055.ttl>;
+  .
+
+<#0056> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0056: @typeof applies to @about on same element with hanging rel""";
+  rdfs:comment """Tests if @typeof applies to @about on same element with hanging @rel""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0056.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0056.ttl>;
+  .
+
+<#0057> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0057: hanging @rel creates multiple triples""";
+  rdfs:comment """Tests if hanging @rel creates multiple triples""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0057.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0057.ttl>;
+  .
+
+<#0058> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0058: hanging @rel creates multiple triples, @typeof permutation; RDFa 1.0 version""";
+  rdfs:comment """Tests if hanging @rel creates multiple triples with @typeof permutation""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0058.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0058.ttl>;
+  .
+
+<#0059> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0059: multiple hanging @rels with multiple children""";
+  rdfs:comment """Tests multiple hanging @rels with multiple children""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0059.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0059.ttl>;
+  .
+
+<#0060> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0060: UTF-8 conformance""";
+  rdfs:comment """Tests conformance with UTF-8 encoding""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0060.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0060.ttl>;
+  .
+
+<#0063> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0063: @rel in head using reserved XHTML value and empty-prefix CURIE syntax""";
+  rdfs:comment """Tests @rel in head using reserved XHTML value and empty-prefix CURIE syntax""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0063.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0063.ttl>;
+  .
+
+<#0064> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0064: @about with safe CURIE""";
+  rdfs:comment """Tests if @about generates a proper triple when a safe CURIE is used""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0064.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0064.ttl>;
+  .
+
+<#0065> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0065: @rel with safe CURIE""";
+  rdfs:comment """Tests if @rel properly connects triples generated when safe CURIEs are used""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0065.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0065.ttl>;
+  .
+
+<#0066> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0066: @about with @typeof in the head""";
+  rdfs:comment """Test to make sure that @about (with current document) is implied in the head, and the proper triples are generated using @typeof""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0066.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0066.ttl>;
+  .
+
+<#0067> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0067: @property in the head""";
+  rdfs:comment """Test to make sure that @property in head uses the implied current document as the subject if no other subject is specified""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0067.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0067.ttl>;
+  .
+
+<#0068> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0068: Relative URI in @about""";
+  rdfs:comment """Tests to ensure that relative URI is resolved correctly when used in @about""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0068.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0068.ttl>;
+  .
+
+<#0069> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0069: Relative URI in @href""";
+  rdfs:comment """Tests to ensure that relative URI is resolved correctly when used in @href""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0069.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0069.ttl>;
+  .
+
+<#0070> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0070: Relative URI in @resource""";
+  rdfs:comment """Tests to ensure that relative URI is resolved correctly when used in @resource""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0070.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0070.ttl>;
+  .
+
+<#0071> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0071: No explicit @about""";
+  rdfs:comment """Tests to ensure that a triple is generated even if @typeof and @about is not specified anywhere in the document""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0071.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0071.ttl>;
+  .
+
+<#0072> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0072: Relative URI in @about (with XHTML base in head)""";
+  rdfs:comment """Tests to ensure that relative URIs are resolved correctly when used in @about with XHTML base set in head""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0072.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0072.ttl>;
+  .
+
+<#0073> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0073: Relative URI in @resource (with XHTML base in head)""";
+  rdfs:comment """Tests to ensure that relative URIs are resolved correctly when used in @resource with XHTML base set in head""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0073.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0073.ttl>;
+  .
+
+<#0074> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0074: Relative URI in @href (with XHTML base in head)""";
+  rdfs:comment """Tests to ensure that relative URIs are resolved correctly when used in @href with XHTML base set in head""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0074.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0074.ttl>;
+  .
+
+<#0075> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0075: Reserved word 'license' in @rel with no explicit @about""";
+  rdfs:comment """Tests to ensure that the XHTML+RDFa reserved word 'license' when used in @rel (with no @about) generates the proper triple""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0075.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0075.ttl>;
+  .
+
+<#0078> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0078: Multiple incomplete triples, RDFa 1.0 version""";
+  rdfs:comment """Tests multiple ways of handling incomplete triples; the first two triples should use the same bnode as subject ('merged'). The third should have a separate bNode.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0078.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0078.ttl>;
+  .
+
+<#0079> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0079: @resource and @href in completing incomplete triples""";
+  rdfs:comment """Tests role of @resource and @href in completing incomplete triples (including their mutual priorities)""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0079.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0079.ttl>;
+  .
+
+<#0080> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0080: @about overrides @resource in incomplete triples""";
+  rdfs:comment """Tests if @about has a higher priority than @resource in handling incomplete triples""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0080.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0080.ttl>;
+  .
+
+<#0081> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0081: multiple ways of handling incomplete triples (with @rev); RDFa 1.0 version""";
+  rdfs:comment """Tests multiple ways of handling incomplete triples, this time with @rev""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0081.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0081.ttl>;
+  .
+
+<#0082> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0082: multiple ways of handling incomplete triples (with @rel and @rev); RDFa 1.0 version""";
+  rdfs:comment """Tests multiple ways of handling incomplete triples, this time with both @rel and @rev""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0082.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0082.ttl>;
+  .
+
+<#0083> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0083: multiple ways of handling incomplete triples (merged)""";
+  rdfs:comment """Tests multiple ways of handling incomplete triples; the first two triples should use the same bNode as subject ('merged'); the third case should use @about""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0083.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0083.ttl>;
+  .
+
+<#0084> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0084: multiple ways of handling incomplete triples, this time with both @rel and @rev""";
+  rdfs:comment """Tests multiple ways of handling incomplete triples, this time with both @rel and @rev. There is an intermediate div that should be ignored by the process""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0084.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0084.ttl>;
+  .
+
+<#0085> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0085: @resource and @href in completing incomplete triples""";
+  rdfs:comment """Tests the role of @resource and @href in completing incomplete triples (including their mutual priorities), but with an intermediate layer (ie, bNode) added""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0085.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0085.ttl>;
+  .
+
+<#0087> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0087: All reserved XHTML @rel values (with :xxx)""";
+  rdfs:comment """Tests to ensure that all reserved XHTML words are supported in @rel (with :xxx)""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0087.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0087.ttl>;
+  .
+
+<#0088> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0088: Interpretation of the CURIE "_:\"""";
+  rdfs:comment """Test the interpretation of the CURIE "_:\"""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0088.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0088.ttl>;
+  .
+
+<#0089> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0089: @src sets a new subject (@typeof)""";
+  rdfs:comment """Tests to ensure that @src sets a new subject (focuses on @typeof).""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0089.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0089.ttl>;
+  .
+
+<#0090> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0090: @src sets a new subject (@rel/@href)""";
+  rdfs:comment """Tests to ensure that @src sets a new subject (focuses on @rel/@href).""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0090.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0090.ttl>;
+  .
+
+<#0091> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0091: Non-reserved, un-prefixed CURIE in @property""";
+  rdfs:comment """Tests to ensure that non-reserved, un-prefixed CURIEs, when used in @property, generate triples.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0091.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0091.ttl>;
+  .
+
+<#0093> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0093: Tests XMLLiteral content with explicit @datatype (user-data-typed literal)""";
+  rdfs:comment """Tests the explicit specification of an RDF XMLLiteral with @datatype using a non-RDF namespace, yielding a user-data-typed literal""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0093.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0093.ttl>;
+  .
+
+<#0099> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0099: Preservation of white space in literals""";
+  rdfs:comment """Tests the preservation of white space in literals.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0099.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0099.ttl>;
+  .
+
+<#0104> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0104: rdf:value""";
+  rdfs:comment """Tests rdf:value with blank nodes to give a value with a unit""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0104.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0104.ttl>;
+  .
+
+<#0106> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0106: chaining with empty value in inner @rel""";
+  rdfs:comment """Tests the behavior of triple generation in the case where the inner @rel is defined, but is blank, which halts chaining.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0106.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0106.ttl>;
+  .
+
+<#0107> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0107: no garbage collecting bnodes""";
+  rdfs:comment """Checks to make sure that that while we shouldn't garbage collect bnodes no triples are generated.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0107.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0107.ttl>;
+  .
+
+<#0109> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0109: Tests to ensure @xml:base is ignored""";
+  rdfs:comment """Tests to make sure that @xml:base is ignored in XHTML+RDFa 1.0. The input test document is invalid XHTML.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0109.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0109.ttl>;
+  .
+
+<#0110> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0110: bNode generated even though no nested @about exists""";
+  rdfs:comment """Tests to make sure that a bNode is generated even though no nested @about exists.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0110.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0110.ttl>;
+  .
+
+<#0111> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0111: two bNodes generated after three levels of nesting""";
+  rdfs:comment """Tests to make sure that two bNodes are generated after three levels of nesting and that the last div does not generate a triple.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0111.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0111.ttl>;
+  .
+
+<#0112> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0112: plain literal with datatype="\"""";
+  rdfs:comment """Checks to make sure that the RDFa parser emits a plain literal when the datatype is specified as "".""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0112.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0112.ttl>;
+  .
+
+<#0114> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0114: Relative URI dot-segment removal""";
+  rdfs:comment """Checks to make sure that a relative URI is resolved correctly according to RFC3986, section 5 (even when the relative URI is invalid, in this case).""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0114.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0114.ttl>;
+  .
+
+<#0115> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0115: XML Entities must be supported by RDFa parser""";
+  rdfs:comment """Checks to make sure that XML Entities are treated properly by the RDFa parser.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0115.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0115.ttl>;
+  .
+
+<#0117> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0117: Fragment identifiers stripped from BASE""";
+  rdfs:comment """Checks to make sure that fragment identifiers are stripped from [base] when used to generate triples.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0117.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0117.ttl>;
+  .
+
+<#0118> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0118: empty string "" is not equivalent to NULL - @about""";
+  rdfs:comment """Checks to make sure that the empty
+  string "" isn't considered as NULL in languages such as Javascript when
+  generating triples. This test sets the subject in a chain using @href
+  and then immediately changes the subject using @about and generates a
+  triple. A buggy parser may use the @href subject
+  (http://example.org/javascript.html) instead of the one defined by @about.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0118.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0118.ttl>;
+  .
+
+<#0119> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0119: "[prefix:]" CURIE format is valid""";
+  rdfs:comment """Checks to make sure that an RDFa processor expands CURIEs having only a prefix and a
+    colon if a prefix is properly defined using xmlns.
+    """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0119.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0119.ttl>;
+  .
+
+<#0120> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0120: "[:]" CURIE format is valid""";
+  rdfs:comment """Checks to make sure that an RDFa processor expands CURIEs having only a colon to the
+  default prefix "http://www.w3.org/1999/test-cases/vocab#".
+""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0120.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0120.ttl>;
+  .
+
+<#0122> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0122: resource="[]" does not set the object""";
+  rdfs:comment """Checks to make sure that resource="[]" does not set the object since RDFa does not allow non-prefixed CURIEs.
+""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0122.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0122.ttl>;
+  .
+
+<#0126> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0126: Multiple @typeof values""";
+  rdfs:comment """Checks to ensure that multiple (white space separated) values in @typeof trigger multiple rdf:type triples.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0126.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0126.ttl>;
+  .
+
+<#0131> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0131: Whitespace alternatives in attributes""";
+  rdfs:comment """Ensures that multiple whitespace alternatives in attributes are allowed.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0131.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0131.ttl>;
+  .
+
+<#0134> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0134: Uppercase reserved words""";
+  rdfs:comment """Ensures that mixed-case reserved words generate triples.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0134.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0134.ttl>;
+  .
+
+<#0140> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0140: Blank nodes identifiers are not allowed as predicates""";
+  rdfs:comment """The RDF data model does not allow blank node identifiers in predicates. This test ensures that RDFa processors do not emit invalid triples.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0140.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0140.ttl>;
+  test:specificationReference """Section 7.4.4""";
+  .
+
+<#0147> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0147: xmlns prefix 'xmlzzz' (reserved)""";
+  rdfs:comment """Ensures that RDFa processors allow the prefix 'xmlzzz', even though it is a reserved prefix in XML.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0147.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0147.ttl>;
+  .
+
+<#0174> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0174: Support single character prefix in CURIEs""";
+  rdfs:comment """Checks to ensure that the RDFa processor correctly processes single character prefixes when processing CURIEs.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0174.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0174.ttl>;
+  .
+
+<#0181> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0181: Test default XHTML vocabulary""";
+  rdfs:comment """Checks Tests a CURIE with default namespace uses XHTML Vocabulary namespace.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0181.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0181.ttl>;
+  .
+
+<#0197> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0197: Test TERMorCURIEorAbsURI requires an absolute URI""";
+  rdfs:comment """TERMorCURIEorAbsURI requires an absolute URI""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0197.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0197.ttl>;
+  .
+
+<#0207> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0207: Vevent using @typeof""";
+  rdfs:comment """Tests Vevent using @typeof (inlc. dtstart, dtend, etc.)""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0207.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0207.ttl>;
+  test:specificationReference """N.A.""";
+  .
+
+<#0209> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0209: @prefix should be ignored with version set to 1.0""";
+  rdfs:comment """Tests whether the @prefix attribute is ignored if version is explicitly set to 1.0""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0209.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0209.ttl>;
+  test:specificationReference """N.A.""";
+  .
+
+<#0210> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0210: @prefix should be ignored with version set to 1.0, and @xmlns should prevail""";
+  rdfs:comment """Tests whether the @prefix attribute is ignored and @xmlns is used instead if version is explicitly set to 1.0""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0210.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0210.ttl>;
+  test:specificationReference """N.A.""";
+  .
+
+<#0211> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0211: @vocab should be ignored with version set to 1.0""";
+  rdfs:comment """Tests whether the @vocab attribute is ignored if version is explicitly set to 1.0""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0211.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0211.ttl>;
+  test:specificationReference """N.A.""";
+  .
+
+<#0212> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0212: Datatype generation for a literal with XML content, version 1.0""";
+  rdfs:comment """In RDFa 1.0, if a literal contains XML elements, and no explicit datatype is set, the result is XMLLiteral""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0212.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0212.ttl>;
+  test:specificationReference """N.A.""";
+  .
+
+<#0215> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0215: Character encoding detection with large header""";
+  rdfs:comment """Character encoding should work even in view of a large set of characters as attributes in the header, ie, when content sniffing may not work to establish encoding.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0215.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0215.ttl>;
+  .
+
+<#0258> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0258: The underscore character is not allowed as a prefix or in xmlns""";
+  rdfs:comment """Ensures that a prefix cannot start with an underscore character when specified using xmlns or prefix.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0258.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0258.ttl>;
+  .
+
+<#0262> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0262: Predicate establishment with @property, with white spaces before and after the attribute value""";
+  rdfs:comment """Tests @property to establish the predicate; literal object is in the content of the element. There are extra whitespaces before and after the property attribute value which should be ignored""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0262.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0262.ttl>;
+  .
+
+<#0291> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0291: @href as subject overridden by @about""";
+  rdfs:comment """When @property, @datatype, @href and @about are present but @rel and @rev are not, @about is used as subject.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0291.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0291.ttl>;
+  test:specificationReference """RDFa Core 1.1, section 7.5 step 5.2""";
+  .
+
+<#0311> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0311: Ensure no triples are generated when @property is empty""";
+  rdfs:comment """If no terms or CURIEs are present in @property, no triple should be generated from it.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0311.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0311.ttl>;
+  test:specificationReference """RDFa Core 1.1, section 7.5 step 11""";
+  .

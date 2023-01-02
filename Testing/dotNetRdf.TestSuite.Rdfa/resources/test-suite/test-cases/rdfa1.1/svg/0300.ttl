@@ -1,0 +1,3 @@
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+
+<http://www.example.org/> xhv:license <http://www.example.org/license.xhtml> .

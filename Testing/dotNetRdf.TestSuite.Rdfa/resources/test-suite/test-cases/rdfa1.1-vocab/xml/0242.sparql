@@ -1,0 +1,5 @@
+PREFIX rdfatest: <http://rdfa.info/vocabs/rdfa-test#>
+ASK WHERE {
+  ?s rdfatest:eqProp rdfatest:eqProp;
+     rdfatest:baseProp rdfatest:eqProp
+}

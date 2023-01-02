@@ -1,0 +1,6 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix ex: <http://www.example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/xml/0093.xml> dc11:creator "Albert Einstein";
+   dc11:title "E = mc2: The Most Urgent Problem of Our Time"^^ex:XMLLiteral .

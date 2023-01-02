@@ -1,0 +1,284 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "final count: 157";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "parse_whole_doc: traversal complete'";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description """statement: <http://www.example.com> <http://www.example.org/erronouslyRedefinedProperty> "Foo" .
+""";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 11] plain literal (inner text)";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "extract_mappings: prefix rdfa => <http://www.example.org/>";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#PrefixRedefinition>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "Redefining prefix rdfa: from <http://www.w3.org/ns/rdfa#> to <http://www.example.org/>";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] skip: reused ec";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "load_initial_contexts: load <http://www.w3.org/2011/rdfa-context/html-rdfa-1.1>";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "load_initial_contexts: load <http://www.w3.org/2011/rdfa-context/rdfa-1.1>";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .
+
+ [
+     a <http://www.w3.org/ns/rdfa#Info>;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "version = rdfa1.1,  host_language = html5, library = nokogiri, rdfagraph = [:processor], expand = ";
+     <http://www.w3.org/ns/rdfa#context> <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/html5/0313.html>
+ ] .

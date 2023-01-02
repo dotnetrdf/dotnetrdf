@@ -1,0 +1,3 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/html4/0264.html> rdfs:seeAlso <http://www.example.org> .

@@ -1,0 +1,8 @@
+PREFIX schema: <http://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+ASK WHERE {
+  <http://example.org/base> schema:uri <http://example.orb/val1> .
+  <http://greggkellogg.net/#me> schema:name "Gregg Kellogg";
+    foaf:homepage <http://greggkellogg.net/> .
+
+}

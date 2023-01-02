@@ -1,0 +1,4 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+ASK WHERE {
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1/xhtml1/0269.xhtml> rdfs:comment "This is an RDFa test" .
+}

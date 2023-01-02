@@ -1,0 +1,50 @@
+@base <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/html5/manifest> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix test: <http://www.w3.org/2006/03/test-description#> .
+@prefix rdfatest: <http://rdfa.info/vocabs/rdfa-test#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "RDFa rdfa1.1-role tests for html5" ;
+    mf:entries (
+      <#0305>
+      <#0306>
+      <#0307>
+  ) .
+
+<#0305> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0305: role attribute with explicit id and term""";
+  rdfs:comment """When role is specified along with an id the appropriate triple is created.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/html5/0305.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/html5/0305.ttl>;
+  test:specificationReference """
+    http://www.w3.org/TR/role-attribute/#using-role-in-conjunction-with-rdfa
+    says 'if @id is present, it is used to supply the subject...'
+  """;
+  .
+
+<#0306> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0306: role attribute with explicit base id and term""";
+  rdfs:comment """When role is specified along with an id the appropriate triple is created.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/html5/0306.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/html5/0306.ttl>;
+  test:specificationReference """
+    http://www.w3.org/TR/role-attribute/#using-role-in-conjunction-with-rdfa
+    says 'if @id is present, it is used to supply the subject...'
+  """;
+  .
+
+<#0307> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0307: role attribute with term and no id""";
+  rdfs:comment """When role is specified along with an id the appropriate triple is created.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/html5/0307.html>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/html5/0307.ttl>;
+  test:specificationReference """
+    http://www.w3.org/TR/role-attribute/#using-role-in-conjunction-with-rdfa
+    says 'if @id is present, it is used to supply the subject...'
+  """;
+  .

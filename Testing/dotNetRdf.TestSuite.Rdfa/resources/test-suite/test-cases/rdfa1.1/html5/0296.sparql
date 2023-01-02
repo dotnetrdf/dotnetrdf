@@ -1,0 +1,13 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+ASK WHERE {
+  <http://example.com/gregg/#me> a foaf:Person; foaf:name "Gregg";
+    foaf:knows
+      <http://example.com/niklas/#me>,
+      <http://example.com/stéphane/#me>,
+      <http://example.com/ivan/#me>,
+      <http://example.com/manu/#me> .
+  <http://example.com/niklas/#me> a foaf:Person; foaf:name "Niklas" .
+  <http://example.com/stéphane/#me> a foaf:Person; foaf:name "Stéphane" .
+  <http://example.com/ivan/#me> a foaf:Person; foaf:name "Ivan" .      
+  <http://example.com/manu/#me> a foaf:Person; foaf:name "Manu" .      
+}

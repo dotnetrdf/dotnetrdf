@@ -1,0 +1,4 @@
+BASE <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0225.html>
+ASK WHERE {
+  <foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ("Foo"), ("Bar") .
+}

@@ -1,0 +1,9 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix rdfatest: <http://rdfa.info/vocabs/rdfa-test#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/svg/0243.svg> rdfa:usesVocabulary rdfatest: .
+
+ [ a rdfatest:BaseClass,
+       rdfatest:SubClass,
+       rdfatest:EqClass] .

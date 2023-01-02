@@ -1,0 +1,33 @@
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/xhtml1/0260.xhtml>
+  # Vocabulary Terms
+  xhv:alternate "alternate";
+  xhv:appendix "appendix";
+  xhv:cite "cite";
+  xhv:bookmark "bookmark";
+  xhv:contents "contents";
+  xhv:chapter "chapter";
+  xhv:copyright "copyright";
+  xhv:first "first";
+  xhv:glossary "glossary";
+  xhv:help "help";
+  xhv:icon "icon";
+  xhv:index "index";
+  xhv:last "last";
+  xhv:license "license";
+  xhv:meta "meta";
+  xhv:next "next";
+  xhv:prev "prev";
+  xhv:previous "previous";
+  xhv:section "section";
+  xhv:start "start";
+  xhv:stylesheet "stylesheet";
+  xhv:subsection "subsection";
+  xhv:top "top";
+  xhv:up "up";
+
+  # Other terms
+  xhv:p3pv1 "p3pv1"
+.

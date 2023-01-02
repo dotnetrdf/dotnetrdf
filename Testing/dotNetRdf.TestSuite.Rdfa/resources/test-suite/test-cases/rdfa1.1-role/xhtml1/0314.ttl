@@ -1,0 +1,29 @@
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xhtml1/0314.xhtml#a1> xhv:role xhv:appendix .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xhtml1/0314.xhtml#b> xhv:role xhv:banner .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xhtml1/0314.xhtml#contents> xhv:role xhv:list .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xhtml1/0314.xhtml#main> xhv:role xhv:main .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xhtml1/0314.xhtml#s1> xhv:role xhv:section .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xhtml1/0314.xhtml#s2> xhv:role xhv:section .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xhtml1/0314.xhtml#toc> xhv:role xhv:contentinfo .
+
+ [ xhv:role xhv:note] .
+
+ [ xhv:role xhv:heading] .
+
+ [ xhv:role xhv:heading] .
+
+ [ xhv:role xhv:heading] .
+
+ [ xhv:role xhv:listitem] .
+
+ [ xhv:role xhv:listitem] .
+
+ [ xhv:role xhv:listitem] .

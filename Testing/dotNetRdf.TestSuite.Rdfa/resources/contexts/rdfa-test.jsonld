@@ -1,0 +1,20 @@
+{
+  "@context": {
+    "dc":         "http://purl.org/dc/terms/",
+    "xsd":        "http://www.w3.org/2001/XMLSchema#",
+    "rdfatest":   "http://rdfa.info/vocabs/rdfa-test#",
+    "test":       "http://www.w3.org/2006/03/test-description#",
+
+    "classification": {"@id": "test:classification", "@type": "@id"},
+    "contributor":    {"@id": "dc:contributor"},
+    "description":    {"@id": "dc:title"},
+    "expectedResults":{"@id": "test:expectedResults", "@type": "xsd:boolean"},
+    "hostLanguages":  {"@id": "rdfatest:hostLanguage", "@container": "@set"},
+    "input":          {"@id": "test:informationResourceInput", "@type": "@id"},
+    "num":            {"@id": "rdfatest:num"},
+    "purpose":        {"@id": "test:purpose"},
+    "versions":       {"@id": "rdfatest:rdfaVersion", "@container": "@set"},
+    "reference":      {"@id": "test:specificationReference"},
+    "results":        {"@id": "test:informationResourceResults", "@type": "@id"}
+  }
+}

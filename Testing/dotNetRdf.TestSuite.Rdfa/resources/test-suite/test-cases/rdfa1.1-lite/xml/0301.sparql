@@ -1,0 +1,6 @@
+ASK WHERE {
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/xml/0301.xml> <http://www.milowski.com/V/bit> [
+    a <http://www.milowski.com/V/thing>;
+       <http://www.milowski.com/V/name> "Fizzbit"
+  ]
+}

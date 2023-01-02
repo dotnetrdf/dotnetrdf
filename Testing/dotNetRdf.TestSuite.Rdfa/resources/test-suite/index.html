@@ -1,0 +1,162 @@
+---
+layout: test-suite
+title: "RDFa / Test Suite"
+---
+<div class="container">
+  <div class='row'>
+    <div class='col-md-8'>
+      <div class='btn-group' data-toggle='buttons' id='host-languages'></div>
+    </div>
+    <div class='col-md-4' id='processor'>
+      <form class="form-inline">
+        <span class='dropdown'>
+          <button type='button' class='btn btn-default btn-sm dropdown-toggle' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false">Processor <b class="caret"></b></button>
+          <ul class='processors dropdown-menu'></ul>
+        </span>
+        <input id='processor-url' type='text' class='form-control mb-2 mr-sm-2 mb-sm-0' placeholder='Processor URL'/>
+      </form>
+    </div>
+  </div>
+  <div class='row'>
+    <div class='col-md-10'>
+      <div class='btn-group' data-toggle='buttons-radio' id='versions'></div>
+    </div>
+    <div class='col-md-2'>
+      <button class='btn btn-primary btn-sm' data-loading-text='Running' id='run-all'>Run All Tests</button>
+    </div>
+  </div>
+  <div class='row' id='test-progress'>
+    <div class='col-md-10'>
+      <div class='progress progress-success'>
+        <div class='bar'></div>
+      </div>
+    </div>
+    <div class='col-md-2'>
+      <div class='test-status'>
+        <div>Total: <span class="test-total"></span></div>
+        <div>Passed: <span class="test-passed"></span></div>
+        <div>Failed: <span class="test-failed"></span></div>
+        <div class='btn-group' id='earl'>
+          <a class='btn btn-primary btn-sm show' href='#'>EARL Report</a>
+          <a class='btn btn-primary btn-sm dropdown-toggle' data-toggle='dropdown' href='#' aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+          <ul class='dropdown-menu'>
+            <li><a class='show' href='#'>Show</a></li>
+            <li><a class='source' href='#'>Source</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class='row'>
+    <h2>Overview</h2>
+    <noscript>
+      <p>WARNING: You need Javascript enabled to use this web page!</p>
+    </noscript>
+    <p>The RDFa Test Suite provides an interactive mechanism to check the conformance of an RDFa processor and SPARQL query engine. This service is intended for anybody that wants to see how RDFa works as well as developers that want to do conformance testing on their own RDFa/SPARQL implementations.</p>
+    <p>There are several things that you can do on this web page:</p>
+    <ul>
+      <li>To run a unit test, click on the <button class='btn btn-primary btn-sm'>Test</button> link.</li>
+      <li>To see the details of a unit test, click on the <button class='btn btn-info btn-sm'>details</button> link.</li>
+      <li>You can execute every unit test by clicking on the <button class='btn btn-primary btn-sm'>Run All Tests</button> button.</li>
+      <li>After running all tests, you can generate an <a href="">EARL Report</a> using the <button class='btn btn-primary btn-sm'>EARL Report</button> button.</li>
+    </ul>
+    <p>So that the test suite can access the processor to request resources, please be sure to add <code>Access-Control-Allow-Origin: *</code> to returned HTTP headers.</p>
+    <p class="text-warning">Due to differences in how browsers implement XMLHTTPRequest, some tests may not run properly on browsers other than WebKit or Firefox.</p>
+    <p>See <a href="{{ base_url }}/test-suite/suite-details">this page</a> for more information on the design of the test suite and how to create a processor end-point.</p>
+  </div>
+  <div class='row'>
+    <h2>
+      Status
+    </h2>
+    <ul>
+      <li>These tests are in active development by the <a href='http://www.w3.org/2010/02/rdfa/'>RDF Web Applications Working Group</a> at the <a href='http://www.w3c.org'>World Wide Web Consortium</a>
+      </li>
+      <li>These tests may be used to check conformance for an RDFa 1.1 processor.
+      </li>
+      <li>The tests are subject to change at any point between now and June 2011.
+      </li>
+      <li>All bugs, suggestions and thoughts about The RDFa Test Suite should be sent to the <a href='http://lists.w3.org/Archives/Public/public-rdfa-wg/'>RDFa Working Group mailing list.</a>
+      </li>
+    </ul>
+  </div>
+  <div id='tests'></div>
+  <script id='test-loading' type='text/template'>
+    <div class="row">
+      <div class="span12">
+        <h3>Test Manifest Loading</h3>
+        <p>This could take a while.</p>
+      </div>
+    </div>
+  </script>
+
+  <!-- / Templates for Underscore.js rendering -->
+  <!-- / Bits inside of "<%= %>" are expanded in Javascript context, not Haml -->
+  <script id='test-template' type='text/template'>
+    <div class='row'>
+      <div class='col-md-12'>
+        <div class='row'>
+          <div class='col-md-1'>
+            <button class='btn btn-primary btn-sm test' data-loading-text='Running'>Test</button>
+          </div>
+          <div class='col-md-8'>
+            <span class='test-num'>Test <%= num %>:</span>
+            <span class='description'><%= description %> <%= negativeTest %></span>
+          </div>
+          <div class='col-md-3 pull-right'>
+            <button class='btn btn-info btn-sm details' data-complete-text='details' data-loading-text='Loading details ...'>details</button>
+            <button class='btn btn-info btn-sm source' data-complete-text='source' data-loading-text='Loading tests ...'>source</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+  <script id='details-template' type='text/template'>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h3>Purpose</h3>
+    <p><%= purpose %></p>
+    <h3>Source Document</h3>
+    <pre><div class="scrollable-text"><%- docText %></div></pre>
+    <em class='docUrl'>Source <a class='window alert-link'><%= docUrl %></a></em>
+    <h3>Turtle (Reference Implementation Triples)</h3>
+    <pre><div class="scrollable-text"><%- referenceText %></div></pre>
+    <h3>Extracted</h3>
+    <pre><div class="scrollable-text"><%- extractedText %></div></pre>
+    <em class='extractedUrl'>Source <a class='window alert-link'><%= extractedUrl %></a></em>
+    <h3>SPARQL Test<%= expected %></h3>
+    <pre><div class="scrollable-text"><%- sparqlText %></div></pre>
+    <em class='sparql_url'>Source <a class='windowa lert-link'><%= sparqlUrl %></a></em>
+  </script>
+  <script id='earl-report-template' type='text/template'><div about='http://rdfa.info/test-suite/' prefix='earl: http://www.w3.org/ns/earl# doap: http://usefulinc.com/ns/doap# rdfatest: http://rdfa.info/vocabs/rdfa-test# mf: http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#' typeof='earl:Software'>
+    <h3>
+      <a href='http://rdfa.info/' property='doap:name' rel='doap:homepage'>RDFa Test Suite</a>
+    </h3>
+    <p>
+      Report on <a class='href processorURL' typeof='earl:TestSubject'><span property='doap:name'><%= processorName %></span>.</a>
+    </p>
+    <p>
+      Passed <%= passed %> out of <%= total %> test cases ( <%= passed * 100 / total %>%).
+    </p>
+    <div class='rel version'>
+      RDFa Version <%= version %>.
+      <div class='rel hostLanguage' id='items'>
+        Host Language: <%= hostLanguage %>.
+      </div>
+    </div>
+  </script>
+  <script id='earl-item-template' type='text/template'>
+    <h4>
+      Test <span property='dc:identifier'><%= num %>:</span> <span property='mf:name'><%= description %></span>
+    </h4>
+    <p property='rdfs:comment'><%= purpose %></p>
+    <div typeof='earl:Assertion'>
+      <p property='earl:result' typeof='earl:TestResult'>
+        <span property='earl:assertedBy' resource=''>
+          Result:
+          <strong class='resource outcome' property='earl:outcome' resource=''><%= result %></strong>
+        </span>
+      </p>
+    </div>
+  </script>
+</div>

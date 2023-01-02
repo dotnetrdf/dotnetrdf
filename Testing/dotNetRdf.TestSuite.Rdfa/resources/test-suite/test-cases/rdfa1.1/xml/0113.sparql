@@ -1,0 +1,4 @@
+ASK WHERE {
+	<http://rdfa.info/test-suite/test-cases/rdfa1.1/xml/0113.xml#a> <http://purl.org/dc/elements/1.1/title> "" .
+	<http://rdfa.info/test-suite/test-cases/rdfa1.1/xml/0113.xml#b> <http://purl.org/dc/elements/1.1/title> "" .
+}

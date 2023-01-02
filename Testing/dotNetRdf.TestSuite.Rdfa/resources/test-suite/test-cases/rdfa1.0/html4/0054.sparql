@@ -1,0 +1,4 @@
+ASK WHERE {
+	<http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0054.html> <http://purl.org/dc/elements/1.1/creator> "Fabien Gandon" .
+	<http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0054.html> <http://purl.org/dc/elements/1.1/publisher> "Fabien Gandon" .
+}

@@ -1,0 +1,10 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://www.example.org/#somebody> foaf:knows [
+     foaf:mailbox <mailto:ivan@w3.org>;
+     foaf:name "Ivan Herman"
+   ],
+     <http://danbri.org/foaf.rdf#danbri> .
+
+<http://danbri.org/foaf.rdf#danbri> a foaf:Person;
+   foaf:name "Dan Brickley" .

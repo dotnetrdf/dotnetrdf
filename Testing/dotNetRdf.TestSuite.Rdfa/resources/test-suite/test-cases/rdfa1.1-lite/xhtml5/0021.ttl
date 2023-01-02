@@ -1,0 +1,4 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/xhtml5/0021.xhtml> dc11:creator "Mark Birbeck" .

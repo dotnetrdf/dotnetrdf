@@ -1,0 +1,13 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://danbri.org/foaf.rdf#danbri> a foaf:Person;
+   foaf:knows <http://www.example.org/#somebody>;
+   foaf:name "Dan Brickley" .
+
+<http://www.example.org/#somebody> foaf:knows <http://danbri.org/foaf.rdf#danbri>,  [
+     foaf:knows <http://www.example.org/#somebody>;
+     foaf:mailbox <mailto:ivan@w3.org>;
+     foaf:name "Ivan Herman"
+   ] .

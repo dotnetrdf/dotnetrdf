@@ -1,0 +1,14 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://openspring.net/scor#me> a dcterms:Agent,
+     foaf:Person,
+     schema:Person;
+   schema:homepage <http://openspring.net/>;
+   schema:name "Stéphane Corlosquet" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0302.html> rdfa:usesVocabulary schema: .

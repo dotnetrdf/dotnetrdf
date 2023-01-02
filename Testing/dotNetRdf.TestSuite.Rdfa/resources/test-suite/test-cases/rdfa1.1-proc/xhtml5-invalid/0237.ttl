@@ -1,0 +1,259 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "load_initial_contexts: load <http://www.w3.org/2011/rdfa-context/html-rdfa-1.1>";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "load_initial_contexts: load <http://www.w3.org/2011/rdfa-context/rdfa-1.1>";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Error;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description """1:2: ERROR: @1:2: Tokenizer error with an unimplemented error message.
+<?xml version="1.0" encoding="UTF-8"?>
+ ^""";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "version = rdfa1.1,  host_language = html5, library = nokogiri, rdfagraph = [:processor], expand = ";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "final count: 140";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "parse_whole_doc: traversal complete'";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Error;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description """statement <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value>  .
+ is invalid""";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:UnresolvedCURIE;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[$malformed:curie] not matched as a safeCURIE";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 11] resource (resource|href|src)";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] skip: reused ec";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "[Step 13] new ec";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "extract_mappings: nil => <http://www.w3.org/1999/xhtml>";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .
+
+ [
+     a rdfa:Info;
+     dcterms:date "2017-06-22"^^xsd:date;
+     dcterms:description "";
+     rdfa:context <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/xhtml5-invalid/0237.xhtml>
+ ] .

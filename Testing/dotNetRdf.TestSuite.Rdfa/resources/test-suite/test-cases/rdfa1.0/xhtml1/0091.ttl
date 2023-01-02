@@ -1,0 +1,6 @@
+
+ [
+     <http://www.w3.org/1999/xhtml/vocab#definition> "a bi-pedal primate";
+     <http://www.w3.org/1999/xhtml/vocab#foo> "Milky Way";
+     <http://www.w3.org/1999/xhtml/vocab#note> "confused animal"
+ ] .

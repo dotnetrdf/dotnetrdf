@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:ex="http://example.org/">
+  <head about="">
+	<title>Test 0012</title>
+  	<meta about="http://example.org/node" property="ex:property" xml:lang="fr" content="chat" />
+  </head>
+  <body>
+  	<p></p>
+  </body>
+</root>

@@ -1,0 +1,6 @@
+@prefix pr: <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/html5-invalid/relative/iri#> .
+@prefix xpr: <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/html5-invalid/relative/uri#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/> pr:prop "value";
+   xpr:prop "value" .

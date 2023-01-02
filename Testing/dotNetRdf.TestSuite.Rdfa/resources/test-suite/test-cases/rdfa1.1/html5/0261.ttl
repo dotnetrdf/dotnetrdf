@@ -1,0 +1,5 @@
+@prefix ex: <http://example.org/rdf/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://www.example.org> ex:xmllit """This is
+an XMLLiteral"""^^rdf:XMLLiteral .

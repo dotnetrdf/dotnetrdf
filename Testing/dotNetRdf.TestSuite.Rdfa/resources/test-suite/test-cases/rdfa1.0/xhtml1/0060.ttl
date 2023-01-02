@@ -1,0 +1,4 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://www.example.org/#matsumoto-kimiko> a foaf:Person;
+   foaf:name "松本 后子" .

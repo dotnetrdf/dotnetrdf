@@ -1,0 +1,4 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.0/xhtml1/0015.xhtml> dc:creator "Fyodor Dostoevsky";
+   dc:source <urn:isbn:0140449132> .

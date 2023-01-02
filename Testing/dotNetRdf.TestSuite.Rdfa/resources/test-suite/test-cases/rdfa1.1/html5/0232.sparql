@@ -1,0 +1,9 @@
+BASE <http://rdfa.info/test-suite/test-cases/rdfa1.1/html5/0232.html>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+ASK WHERE {
+  <> foaf:maker ?a .
+  ?a a foaf:Person;
+     foaf:name "John Doe" .
+  FILTER ( isBlank(?a) )
+}

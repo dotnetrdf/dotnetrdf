@@ -1,0 +1,6 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.0/xhtml1/0025.xhtml> dc:creator <http://rdfa.info/test-suite/test-cases/rdfa1.0/xhtml1/0025.xhtml#me> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.0/xhtml1/0025.xhtml#me> foaf:name "Ben Adida" .

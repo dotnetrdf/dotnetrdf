@@ -1,0 +1,4 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/> dcterms:description "A yellow rectangle with sharp corners." .

@@ -1,0 +1,6 @@
+@prefix wdrs: <http://www.w3.org/2007/05/powder-s#> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0234.html> xhv:license <http://example.org/license>;
+   xhv:role <http://example.org/role>;
+   wdrs:describedby <http://example.org/describedby> .

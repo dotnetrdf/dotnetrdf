@@ -1,0 +1,12 @@
+ASK WHERE {
+    <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xml/0314.xml#b> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#banner>.
+    <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xml/0314.xml#toc> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#contentinfo>.
+    <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xml/0314.xml#contents> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#list>.
+    <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xml/0314.xml#a1> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#appendix>.
+    <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xml/0314.xml#s1> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#section>.
+    <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xml/0314.xml#s2> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#section>.
+    <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xml/0314.xml#main> <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#main>.
+    [] <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#listitem>.
+    [] <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#heading>.
+    [] <http://www.w3.org/1999/xhtml/vocab#role> <http://www.w3.org/1999/xhtml/vocab#note>.
+}

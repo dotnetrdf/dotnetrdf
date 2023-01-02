@@ -1,0 +1,5 @@
+ASK WHERE {
+	<http://rdfa.info/test-suite/test-cases/rdfa1.1/xhtml5/0033.xhtml> <http://purl.org/dc/elements/1.1/creator> ?a .
+	?a <http://xmlns.com/foaf/0.1/name> "Ben Adida" .
+	FILTER isBlank(?a)
+}

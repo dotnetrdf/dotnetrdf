@@ -1,0 +1,6 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://www.ivan-herman.net/foaf#me> foaf:depiction <http://www.ivan-herman.net/Images/me2003-small.png> .
+
+<http://www.ivan-herman.net/Images/me2003-small.png> a foaf:Image .

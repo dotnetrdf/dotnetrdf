@@ -1,0 +1,5 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+ASK WHERE {
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0297.html> foaf:name "Alex Milowski" .
+  [ a foaf:Person ] .
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <head>
+	<title>Test 0212</title>
+  </head>
+  <body>
+	  <!-- In RDFa 1.0, if a literal contains XML elements, and no explicit datatype is set, the result is XMLLiteral -->
+  	<div about="http://www.example.org/">
+      <h2 property="dc:title">E = mc<sup>2</sup>: The Most Urgent Problem of Our Time</h2>
+	</div>
+  </body>
+
+</root>

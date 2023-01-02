@@ -1,0 +1,3 @@
+ASK WHERE {
+	<http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/html5/0066.html> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> .
+}

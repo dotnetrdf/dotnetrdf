@@ -1,0 +1,11 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/base> schema:uri <http://example.orb/val1> .
+
+<http://greggkellogg.net/#me> schema:name "Gregg Kellogg";
+   foaf:homepage <http://greggkellogg.net/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/xhtml5/0334.xhtml> rdfa:usesVocabulary schema: .

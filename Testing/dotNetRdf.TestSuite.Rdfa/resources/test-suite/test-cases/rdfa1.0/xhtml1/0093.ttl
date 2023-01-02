@@ -1,0 +1,5 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix ex: <http://www.example.org/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.0/xhtml1/0093.xhtml> dc:creator "Albert Einstein";
+   dc:title "E = mc2: The Most Urgent Problem of Our Time"^^ex:XMLLiteral .

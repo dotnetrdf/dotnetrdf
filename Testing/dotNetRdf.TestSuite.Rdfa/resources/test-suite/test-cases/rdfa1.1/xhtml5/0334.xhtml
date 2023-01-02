@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Test 0334: @resource changes the current subject for the nested elements</title>
+</head>
+<body>
+  <div vocab="http://schema.org/" resource="http://example.org/base">
+    <a property="uri" href="http://example.orb/val1">Not This</a>
+    <div resource="http://greggkellogg.net/#me">
+      <a property="name" rel="homepage foaf:homepage" href="http://greggkellogg.net/">Gregg Kellogg</a>
+    </div>
+  </div>
+</body>
+</html>

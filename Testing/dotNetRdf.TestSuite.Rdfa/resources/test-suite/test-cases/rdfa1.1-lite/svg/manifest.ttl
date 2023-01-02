@@ -1,0 +1,149 @@
+@base <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/manifest> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix test: <http://www.w3.org/2006/03/test-description#> .
+@prefix rdfatest: <http://rdfa.info/vocabs/rdfa-test#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "RDFa rdfa1.1-lite tests for svg" ;
+    mf:entries (
+      <#0214>
+      <#0235>
+      <#0238>
+      <#0239>
+      <#0240>
+      <#0241>
+      <#0242>
+      <#0259>
+      <#0296>
+      <#0301>
+      <#0302>
+      <#0311>
+  ) .
+
+<#0214> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0214: Root element has implicit @about="\"""";
+  rdfs:comment """All documents have an implicit @about="\"""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0214.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0214.ttl>;
+  test:specificationReference """N.A.""";
+  .
+
+<#0235> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0235: rdfagraph='processor' does not generate standard triples""";
+  rdfs:comment """Setting rdfagraph query parameter to 'processor' does not output standard triples""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0235.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0235.ttl>;
+  rdfatest:queryParam "rdfagraph=processor";
+  .
+
+<#0238> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0238: rdfagraph='processor' with missing Term definition generates rdfa:Warning""";
+  rdfs:comment """
+      Setting rdfagraph query parameter to 'processor' generates an rdf:Warning when given
+      a missing Term definition.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0238.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0238.ttl>;
+  rdfatest:queryParam "rdfagraph=processor";
+  test:specificationReference """7.6 Processor Status and 7.4.3 General Use of Terms in Attributes""";
+  .
+
+<#0239> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0239: rdfagraph='processor' with undefined prefix generates rdfa:Warning""";
+  rdfs:comment """
+      Setting rdfagraph query parameter to 'processor' generates an rdf:Warning when given
+      a SafeCURIE with an undefined prefix.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0239.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0239.ttl>;
+  rdfatest:queryParam "rdfagraph=processor";
+  test:specificationReference """7.6 Processor Status and 7.4.2 General Use of CURIEs in Attributes""";
+  .
+
+<#0240> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0240: vocab_expansion='true' expands sub-property""";
+  rdfs:comment """
+      A property having an rdfs:subPropertyOf relationship defined in an in-use vocabulary causes
+      triples to be added to the referenced property.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0240.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0240.ttl>;
+  rdfatest:queryParam "vocab_expansion=true";
+  test:specificationReference """10.1.1 RDFa Vocabulary Entailment""";
+  .
+
+<#0241> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0241: vocab_expansion='true' expands equivalent-property""";
+  rdfs:comment """
+      A property having an owl:equivalentProperty relationship defined in an in-use vocabulary causes
+      triples to be added to the referenced property.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0241.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0241.ttl>;
+  rdfatest:queryParam "vocab_expansion=true";
+  test:specificationReference """10.1.1 RDFa Vocabulary Entailment""";
+  .
+
+<#0242> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0242: vocab_expansion='true' expands referenced equivalent-property""";
+  rdfs:comment """
+      A property which is the target of another property having an owl:equivalentProperty relationship defined in an
+      in-use vocabulary causes triples to be added to the defining property.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0242.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0242.ttl>;
+  rdfatest:queryParam "vocab_expansion=true";
+  test:specificationReference """10.1.1 RDFa Vocabulary Entailment""";
+  .
+
+<#0259> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0259: XML+RDFa Initial Context""";
+  rdfs:comment """All processors must load the RDFa Core Initial Context.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0259.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0259.ttl>;
+  test:specificationReference """4.3 XML+RDFa Document Conformance""";
+  .
+
+<#0296> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0296: @property does set parent object without @typeof""";
+  rdfs:comment """When @property is used with a resource attribute (@href, @resource, ...) it does not set parent object.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0296.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0296.ttl>;
+  test:specificationReference """RDFa Core 1.1 section 7.5 step 5.1 and step 11""";
+  .
+
+<#0301> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0301: @property with @typeof creates a typed_resource for chaining""";
+  rdfs:comment """@property with @typeof creates a typed_resource for chaining.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0301.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0301.ttl>;
+  .
+
+<#0302> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0302: @typeof with different content types""";
+  rdfs:comment """Tests that @typof works with terms, CURIES or IRIs.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0302.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0302.ttl>;
+  .
+
+<#0311> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0311: Ensure no triples are generated when @property is empty""";
+  rdfs:comment """If no terms or CURIEs are present in @property, no triple should be generated from it.""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0311.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0311.ttl>;
+  test:specificationReference """RDFa Core 1.1, section 7.5 step 11""";
+  .

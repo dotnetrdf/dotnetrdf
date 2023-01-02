@@ -1,0 +1,8 @@
+PREFIX ex: <http://www.example.com/roles/>
+PREFIX xhv: <http://www.w3.org/1999/xhtml/vocab#>
+
+ASK WHERE {
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1-role/html5-invalid/0310.html#therole> xhv:role ex:somerole,
+     xhv:someOtherRole,
+     <http://www.example.com/alternate/role> .
+}

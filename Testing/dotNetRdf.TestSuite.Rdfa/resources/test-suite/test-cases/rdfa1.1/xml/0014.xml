@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root prefix="ex: http://example.org/ xsd: http://www.w3.org/2001/XMLSchema#">
+	<head>
+		<title>Test 0014</title>
+	</head>
+  <body>
+  	<p>
+  		<span	about="http://example.org/foo"
+        		property="ex:bar" content="10" datatype="xsd:integer">ten</span>
+	</p>
+  </body>
+</root>

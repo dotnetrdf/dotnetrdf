@@ -1,0 +1,6 @@
+PREFIX schema: <http://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+ASK WHERE {
+  [ a schema:Person; schema:name "Amanda"; foaf:name "Amanda" ] .
+  [ a foaf:Person; schema:name "Amanda"; foaf:name "Amanda" ] .
+}

@@ -1,0 +1,44 @@
+ASK WHERE {
+  ?s
+    <http://www.w3.org/ns/csvw#> "CSVW";
+    <http://www.w3.org/ns/dcat#> "DCAT";
+    <http://purl.org/linked-data/cube#> "QB";
+    <http://www.w3.org/2003/g/data-view#> "GRDDL";
+    <http://www.w3.org/ns/ma-ont#> "MA";
+    <http://www.w3.org/ns/org#> "ORG";
+    <http://www.w3.org/2002/07/owl#> "OWL";
+    <http://www.w3.org/ns/prov#> "PROV";
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "RDF";
+    <http://www.w3.org/ns/rdfa#> "RDFa";
+    <http://www.w3.org/2000/01/rdf-schema#> "RDFS";
+    <http://www.w3.org/2007/rif#> "RIF";
+    <http://www.w3.org/ns/r2rml#> "RR";
+    <http://www.w3.org/ns/sparql-service-description#> "SD";
+    <http://www.w3.org/2004/02/skos/core#> "SKOS";
+    <http://www.w3.org/2008/05/skos-xl#> "SKOS-XL";
+    <http://www.w3.org/2007/05/powder#> "WDR";
+    <http://rdfs.org/ns/void#> "VOID";
+    <http://www.w3.org/2007/05/powder-s#> "WDRS";
+    <http://www.w3.org/1999/xhtml/vocab#> "XHV";
+    <http://www.w3.org/XML/1998/namespace> "XML";
+    <http://www.w3.org/2001/XMLSchema#> "XSD";
+
+    # Widely Used prefixes
+    <http://creativecommons.org/ns#> "CC";
+    <http://commontag.org/ns#> "CTAG";
+    <http://purl.org/dc/terms/> "DC", "DCTERMS";
+    <http://xmlns.com/foaf/0.1/> "FOAF";
+    <http://purl.org/goodrelations/v1#> "GR";
+    <http://www.w3.org/2002/12/cal/icaltzd#> "ICAL";
+    <http://ogp.me/ns#> "OG";
+    <http://purl.org/stuff/rev#> "REV";
+    <http://rdfs.org/sioc/ns#> "SIOC";
+    <http://rdf.data-vocabulary.org/#> "V";
+    <http://www.w3.org/2006/vcard/ns#> "VCARD";
+    <http://schema.org/> "Schema";
+
+    # Vocabulary Terms
+    <http://www.w3.org/2007/05/powder-s#describedby> "DescribedBy";
+    <http://www.w3.org/1999/xhtml/vocab#license> "License";
+    <http://www.w3.org/1999/xhtml/vocab#role> "Role";
+}

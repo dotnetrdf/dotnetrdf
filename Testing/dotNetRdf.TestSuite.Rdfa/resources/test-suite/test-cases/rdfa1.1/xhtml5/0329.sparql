@@ -1,0 +1,10 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+ASK WHERE {
+<http://example.org/foaf#me> foaf:familyName "Doe";
+   foaf:givenName "John";
+   foaf:name """
+    John 
+    Doe 
+  """ .
+}

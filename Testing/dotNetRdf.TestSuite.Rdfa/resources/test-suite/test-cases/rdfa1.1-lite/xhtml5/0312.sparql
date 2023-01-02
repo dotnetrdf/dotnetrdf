@@ -1,0 +1,3 @@
+ASK WHERE {
+  ?s <http://schema.org/homepage> <http://example.org/> .
+}

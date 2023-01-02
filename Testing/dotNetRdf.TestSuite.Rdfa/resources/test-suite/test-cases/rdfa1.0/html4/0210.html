@@ -1,0 +1,13 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/MarkUp/DTD/html401-rdfa11-1.dtd">
+<html version="HTML+RDFa 1.1">
+  <head>
+    <title>Test 0210</title>
+    <base href="http://example.org/"/>
+  </head>
+  <body>
+    <!-- prefix has a higher priority than xmlns, but should be ignored because version is explicitly set to 1.0 -->
+  <div about ="#me" xmlns:foaf="http://www.example.com/wrong/foaf/uri/" prefix="foaf: http://xmlns.com/foaf/0.1/" >
+      <p property="foaf:name">Ivan Herman</p>
+  </div>
+  </body>
+</html>

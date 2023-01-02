@@ -1,0 +1,6 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ [
+     foaf:knows [ foaf:mbox <mailto:michael.hausenblas@joanneum.at>];
+     foaf:mbox <mailto:manu.sporny@digitalbazaar.com>
+ ] .

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root prefix="dcterms: http://purl.org/dc/terms/">
+<head>
+   <title>Test 0331</title>
+</head>
+<body lang="en" xml:lang="en">
+  <div property="dcterms:language" datatype="dcterms:RFC5646" content="af">Afrikaans</div>
+</body>
+</root>

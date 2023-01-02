@@ -1,0 +1,5 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+ASK WHERE {
+  [ dcterms:language "af"@en ]
+}

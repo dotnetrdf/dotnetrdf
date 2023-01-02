@@ -1,0 +1,4 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix example: <http://example.org/> .
+
+example: dc:title "Example Website" .

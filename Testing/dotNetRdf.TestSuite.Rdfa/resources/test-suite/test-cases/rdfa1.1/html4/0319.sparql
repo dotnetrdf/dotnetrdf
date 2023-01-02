@@ -1,0 +1,5 @@
+# Checks to see that prefixes with relative IRIs are not resolved to the document base
+# It is resolved against the document origin, though, when the result is parsed
+ASK WHERE {
+  ?s <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/relative/iri#prop> ?o; <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/relative/uri#prop> ?o .
+}
