@@ -96,7 +96,7 @@ jobs:
     - name: List downloads
       run: ls -R
       shell: bash
-    - name: Create Relase
+    - name: Create Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:

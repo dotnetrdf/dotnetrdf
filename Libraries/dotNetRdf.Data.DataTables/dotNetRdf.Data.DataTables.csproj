@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Data.DataTables</AssemblyName>
     <AssemblyTitle>dotNetRDF DataTables</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <RootNamespace>VDS.RDF.Data.DataTables</RootNamespace>
   </PropertyGroup>
 

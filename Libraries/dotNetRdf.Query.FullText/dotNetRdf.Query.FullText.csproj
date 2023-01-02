@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Query.FullText</AssemblyName>
     <AssemblyTitle>dotNetRDF Full Text Query Support</AssemblyTitle>
-    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <RootNamespace>VDS.RDF.Query</RootNamespace>
   </PropertyGroup>
 
@@ -37,12 +36,6 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <Reference Include="System.Xml" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
 </Project>

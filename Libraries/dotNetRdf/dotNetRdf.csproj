@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf</AssemblyName>
     <AssemblyTitle>dotNetRDF</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <RootNamespace>VDS.RDF</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
@@ -27,7 +26,6 @@
     <ProjectReference Include="..\dotNetRdf.Client\dotNetRdf.Client.csproj" />
     <ProjectReference Include="..\dotNetRdf.Core\dotNetRdf.Core.csproj" />
     <ProjectReference Include="..\dotNetRdf.Data.DataTables\dotNetRdf.Data.DataTables.csproj" />
-    <ProjectReference Include="..\dotNetRdf.Data.Virtuoso\dotNetRdf.Data.Virtuoso.csproj" Condition=" '$(TargetFramework)' == 'net472' " />
     <ProjectReference Include="..\dotNetRdf.Dynamic\dotNetRdf.Dynamic.csproj" />
     <ProjectReference Include="..\dotNetRdf.Inferencing\dotNetRdf.Inferencing.csproj" />
     <ProjectReference Include="..\dotNetRdf.Ontology\dotNetRdf.Ontology.csproj" />
@@ -35,11 +33,6 @@
     <ProjectReference Include="..\dotNetRdf.Query.Spin\dotNetRdf.Query.Spin.csproj" />
     <ProjectReference Include="..\dotNetRdf.Shacl\dotNetRdf.Shacl.csproj" />
     <ProjectReference Include="..\dotNetRdf.Skos\dotNetRdf.Skos.csproj" />
-    <ProjectReference Include="..\dotNetRdf.Writing.HtmlSchema\dotNetRdf.Writing.HtmlSchema.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <ProjectReference Include="..\dotNetRdf.AspNet\dotNetRdf.AspNet.csproj" />
   </ItemGroup>
 
 </Project>

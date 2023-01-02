@@ -301,9 +301,6 @@ namespace VDS.RDF.Configuration
 
         static ConfigurationLoader()
         {
-#if NET40
-            SettingsProvider = new ConfigurationManagerSettingsProvider();
-#endif
         }
 
         #region Graph Loading and Auto-Configuration

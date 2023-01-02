@@ -5,6 +5,7 @@
     <Copyright>Copyright © dotNetRDF Project 2009-2022</Copyright>
     <!-- Default Build Options -->
     <CodeAnalysisRuleSet>../../dotnetrdf.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>

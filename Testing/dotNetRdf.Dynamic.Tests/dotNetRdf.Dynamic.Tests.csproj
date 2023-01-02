@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;net6.0</TargetFrameworks>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -22,10 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\dotNetRdf.Dynamic\dotNetRdf.Dynamic.csproj" />
     <ProjectReference Include="..\dotNetRdf.TestSupport\dotNetRdf.TestSupport.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
   <ItemGroup>

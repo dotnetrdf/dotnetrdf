@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <AssemblyTitle>dotNetRdf.Connectors.Tests</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>dotNetRdf.Connectors.Tests</AssemblyName>
 	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
@@ -31,15 +30,6 @@
     </PackageReference>
  </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Data" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Web" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\dotNetRdf.Core\dotNetRdf.Core.csproj" />
   </ItemGroup>
@@ -55,13 +45,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' ">
-    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-    <DefineConstants>$(DefineConstants);NO_VIRTUOSO</DefineConstants>
-  </PropertyGroup>
 
 </Project>
