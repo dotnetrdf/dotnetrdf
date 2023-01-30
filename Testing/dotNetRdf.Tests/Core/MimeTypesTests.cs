@@ -23,13 +23,16 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;
+using System.Net.Http;
 
 namespace VDS.RDF
 {
@@ -2667,6 +2670,38 @@ namespace VDS.RDF
                 Assert.Equal(def.RdfDatasetWriterType, def2.RdfDatasetWriterType);
                 Assert.Equal(def.SparqlResultsWriterType, def2.SparqlResultsWriterType);
             }
+        }
+
+        [Fact]
+        public void MimeTypesDefaultHttpRdfOrSparqlAcceptHeader()
+        {
+            var request = new HttpRequestMessage();
+            request.Headers.Add(HeaderNames.Accept, MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
+            Assert.Equal(52, request.Headers.Accept.Count);
+        }
+
+        [Fact]
+        public void MimeTypesDefaultHttpSparqlAcceptHeader()
+        {
+            var request = new HttpRequestMessage();
+            request.Headers.Add(HeaderNames.Accept, MimeTypesHelper.HttpSparqlAcceptHeader);
+            Assert.Equal(17, request.Headers.Accept.Count);
+        }
+
+        [Fact]
+        public void MimeTypesDefaultHttpAcceptHeader()
+        {
+            var request = new HttpRequestMessage();
+            request.Headers.Add(HeaderNames.Accept, MimeTypesHelper.HttpAcceptHeader);
+            Assert.Equal(41, request.Headers.Accept.Count);
+        }
+
+        [Fact]
+        public void MimeTypesDefaultHttpRdfDatasetAcceptHeader()
+        {
+            var request = new HttpRequestMessage();
+            request.Headers.Add(HeaderNames.Accept, MimeTypesHelper.HttpRdfDatasetAcceptHeader);
+            Assert.Equal(10, request.Headers.Accept.Count);
         }
     }
 }
