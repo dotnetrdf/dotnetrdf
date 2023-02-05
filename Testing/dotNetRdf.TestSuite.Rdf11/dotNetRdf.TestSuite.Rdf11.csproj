@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net472;net6.0</TargetFrameworks>
-
-    <IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.TestSuite.Rdf11</RootNamespace>
   </PropertyGroup>
 

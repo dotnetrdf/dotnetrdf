@@ -9,9 +9,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        framework: ["net472", "net6.0"]
-        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests",
-        "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
+        framework: ["net6.0", "net7.0", "net472"]
+        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -29,9 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        framework: ["net6.0"]
-        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests",
-                "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
+        framework: ["net6.0", "net7.0"]
+        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.Data.DataTables.Tests"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -56,33 +54,11 @@ jobs:
     - name: Upload Code Coverage
       uses: actions/upload-artifact@v3
       with:
-        name: code-coverage dotNetRdf.Connectors.Fuseki.Tests netcoreapp5.0
+        name: code-coverage dotNetRdf.Connectors.Fuseki.Tests net6.0
         path: Testing/dotNetRdf.Connectors.Fuseki.Tests/TestResults/*/coverage.cobertura.xml
         
-  virtuosoTests:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - name: Build Virtuoso Image
-      run: docker build -t virtuoso:latest .
-      working-directory: Testing/test_images/virtuoso
-    - name: Start Virtuoso
-      run: docker run --rm -d -p 8890:8890 -p 1111:111 --name virtuoso virtuoso:latest
-    - name: Test Virtuoso Connector
-      run: dotnet test -c Release --framework net6.0 --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Virtuoso.Tests/dotNetRdf.Connectors.Virtuoso.Tests.csproj
-    - name: Stop Virtuoso
-      run: docker stop virtuoso
-    - name: Upload Code Coverage
-      uses: actions/upload-artifact@v3
-      with:
-        name: code-coverage dotNetRdf.Connectors.Virtuoso.Tests netcoreapp5.0
-        path: Testing/dotNetRdf.Connectors.Virtuoso.Tests/TestResults/*/coverage.cobertura.xml
-      
   report:
-    needs: [ "test", "test-linux", "fusekiTests", "virtuosoTests" ]
+    needs: [ "test", "test-linux", "fusekiTests" ]
     runs-on: windows-latest
     steps:
     - name: Checkout

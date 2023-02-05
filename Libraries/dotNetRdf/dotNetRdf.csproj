@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf</AssemblyName>
     <AssemblyTitle>dotNetRDF</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <RootNamespace>VDS.RDF</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
