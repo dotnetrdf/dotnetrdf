@@ -33,7 +33,7 @@ namespace VDS.RDF.Update
     [Collection("RdfServer")]
     public class UpdateTimeouts
     {
-        private readonly SparqlUpdateParser _parser = new SparqlUpdateParser();
+        private readonly SparqlUpdateParser _parser = new();
         private readonly RdfServerFixture _serverFixture;
 
         public UpdateTimeouts(RdfServerFixture serverFixture)
@@ -44,15 +44,15 @@ namespace VDS.RDF.Update
         [Fact]
         public void SparqlUpdateTimeout()
         {
-            var update = $"CREATE GRAPH <http://example.org/1>; LOAD <{_serverFixture.UriFor("/doap")}>; CREATE GRAPH <http://example.org/2>";
-            var cmds = _parser.ParseFromString(update);
-            cmds.Timeout = 1;
+            var update = $"CREATE GRAPH <http://example.org/1>; LOAD <{_serverFixture.UriFor("/wait")}>; CREATE GRAPH <http://example.org/2>";
+            SparqlUpdateCommandSet commandSet = _parser.ParseFromString(update);
+            commandSet.Timeout = 1;
 
             var store = new TripleStore();
             var processor = new LeviathanUpdateProcessor(store);
-            Assert.Throws<SparqlUpdateTimeoutException>(() => processor.ProcessCommandSet(cmds));
+            Assert.Throws<SparqlUpdateTimeoutException>(() => processor.ProcessCommandSet(commandSet));
 
-            var nodeFactory = new NodeFactory();
+            var nodeFactory = new NodeFactory(new NodeFactoryOptions());
             store.HasGraph(nodeFactory.CreateUriNode(new Uri("http://example.org/1"))).Should().BeFalse("Graph 1 should not exist");
             store.HasGraph(nodeFactory.CreateUriNode(new Uri("http://example.org/2"))).Should().BeFalse("Graph 2 should not exist");
         }
