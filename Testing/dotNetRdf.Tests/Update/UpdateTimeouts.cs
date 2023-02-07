@@ -44,7 +44,7 @@ namespace VDS.RDF.Update
         [Fact]
         public void SparqlUpdateTimeout()
         {
-            var update = $"CREATE GRAPH <http://example.org/1>; LOAD <{_serverFixture.UriFor("/wait")}>; CREATE GRAPH <http://example.org/2>";
+            var update = $"CREATE GRAPH <http://example.org/1>; LOAD <{_serverFixture.UriFor("/slow/doap")}>; CREATE GRAPH <http://example.org/2>";
             SparqlUpdateCommandSet commandSet = _parser.ParseFromString(update);
             commandSet.Timeout = 1;
 
