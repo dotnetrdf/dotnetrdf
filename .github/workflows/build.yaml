@@ -36,7 +36,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Run Tests
-        run: dotnet test -c Release --filter "Category!=explicit&Category!=performance" --framework ${{ matrix.framework }} Testing/${{matrix.suite}}
+        run: dotnet test -c Release --blame --filter "Category!=explicit&Category!=performance" --framework ${{ matrix.framework }} Testing/${{matrix.suite}}
 
   fusekiTests:
     runs-on: ubuntu-latest
