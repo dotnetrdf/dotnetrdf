@@ -48,7 +48,7 @@ namespace VDS.RDF
 
             // Endpoint for testing task cancellation
             Server.Given(Request.Create().WithPath("/wait").UsingGet())
-                .RespondWith(Response.Create().WithDelay(1000).WithNotFound());
+                .RespondWith(Response.Create().WithDelay(2500).WithNotFound());
         }
 
         public Uri UriFor(string path)
