@@ -2,12 +2,9 @@
 
   <PropertyGroup>
     <AssemblyTitle>dotNetRdf.Connectors.Sesame.Tests</AssemblyTitle>
-    <TargetFrameworks>net472;net6.0</TargetFrameworks>
     <AssemblyName>dotNetRdf.Connectors.Sesame.Tests</AssemblyName>
-	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
