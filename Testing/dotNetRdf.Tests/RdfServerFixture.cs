@@ -54,7 +54,10 @@ namespace VDS.RDF
             Server.Given(Request.Create().WithPath("/slow/doap")
                 .UsingGet()
                 .WithHeader("Accept", new WildcardMatcher("*text/turtle*"))
-            ).RespondWith(Response.Create().WithBodyFromFile(Path.Combine("resources", "rdfserver", "doap.ttl")).WithDelay(5000));
+            ).RespondWith(Response.Create()
+                .WithBodyFromFile(Path.Combine("resources", "rdfserver", "doap.ttl"))
+                .WithDelay(2500)
+                .WithHeader("Content-Type", "text/turtle"));
         }
 
         public Uri UriFor(string path)

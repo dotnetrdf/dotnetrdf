@@ -7,6 +7,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{F0F45D49-20AC-4407-8618-8C3650E34B97}"
 	ProjectSection(SolutionItems) = preProject
 		Testing\Directory.Build.props = Testing\Directory.Build.props
+		Testing\xunit.runner.json = Testing\xunit.runner.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Query.FullText", "Libraries\dotNetRdf.Query.FullText\dotNetRdf.Query.FullText.csproj", "{D1839286-0E0F-42C6-BF6B-D2B177B7862A}"
