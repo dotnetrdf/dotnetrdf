@@ -329,8 +329,8 @@ namespace VDS.RDF.Query
                     Method = HttpMethod.Post,
                     RequestUri = EndpointUri,
                     Content = content,
-                }; 
-                requestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(acceptHeader));
+                    Headers = { {HttpRequestHeader.Accept.ToString(), acceptHeader} },
+                };
                 return await _httpClient.SendAsync(requestMessage, cancellationToken);
             }
             else
@@ -339,8 +339,8 @@ namespace VDS.RDF.Query
                 {
                     Method = HttpMethod.Get,
                     RequestUri = new Uri(queryUri.ToString()),
+                    Headers = { {HttpRequestHeader.Accept.ToString(), acceptHeader}},
                 };
-                requestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(acceptHeader));
                 return await _httpClient.SendAsync(requestMessage, cancellationToken);
             }
         }

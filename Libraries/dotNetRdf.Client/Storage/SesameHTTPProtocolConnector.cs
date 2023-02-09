@@ -31,7 +31,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -1357,7 +1356,7 @@ namespace VDS.RDF.Storage
 
             // Create our Request
             var request = new HttpRequestMessage(method, requestUri);
-            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(accept));
+            request.Headers.Add("Accept", accept);
             return request;
         }
 

@@ -30,7 +30,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -351,12 +350,12 @@ namespace VDS.RDF.Storage
                 {
                     queryUri += "?query=" + Uri.EscapeDataString(sparqlQuery);
                     request = new HttpRequestMessage(HttpMethod.Get, queryUri);
-                    request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(MimeTypesHelper.HttpRdfOrSparqlAcceptHeader));
+                    request.Headers.Add("Accept", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
                 }
                 else
                 {
                     request = new HttpRequestMessage(HttpMethod.Post, queryUri);
-                    request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(MimeTypesHelper.HttpRdfOrSparqlAcceptHeader));
+                    request.Headers.Add("Accept", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
                     request.Content =
                         new FormUrlEncodedContent(new[] {new KeyValuePair<string, string>("query", sparqlQuery)});
                 }
@@ -551,7 +550,7 @@ namespace VDS.RDF.Storage
             var queryUri = _queryUri;
 
             var request = new HttpRequestMessage(HttpMethod.Post, queryUri);
-            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse(MimeTypesHelper.HttpRdfOrSparqlAcceptHeader));
+            request.Headers.Add("Accept", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
 
             // Build the Post Data and add to the Request Body
             request.Content =
