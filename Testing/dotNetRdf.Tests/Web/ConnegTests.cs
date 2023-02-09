@@ -34,15 +34,7 @@ namespace VDS.RDF.Web
     {
         private void TestSparqlWriterConneg(String header, Type expected, String contentType)
         {
-            String ctype;
-            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter(header, out ctype);
-
-            Console.WriteLine("Accept Header: " + header);
-            Console.WriteLine("Expected Writer: " + expected.Name);
-            Console.WriteLine("Actual Writer: " + writer.GetType().Name);
-            Console.WriteLine("Expected Content Type: " + contentType);
-            Console.WriteLine("Actual Content Type: " + ctype);
-
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter(header, out var ctype);
             Assert.Equal(expected, writer.GetType());
             Assert.Equal(contentType, ctype);
         }

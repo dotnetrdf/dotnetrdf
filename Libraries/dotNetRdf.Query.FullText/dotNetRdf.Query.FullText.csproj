@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Query.FullText</AssemblyName>
     <AssemblyTitle>dotNetRDF Full Text Query Support</AssemblyTitle>
-    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <RootNamespace>VDS.RDF.Query</RootNamespace>
   </PropertyGroup>
 

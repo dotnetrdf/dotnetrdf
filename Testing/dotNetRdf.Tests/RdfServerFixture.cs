@@ -48,7 +48,16 @@ namespace VDS.RDF
 
             // Endpoint for testing task cancellation
             Server.Given(Request.Create().WithPath("/wait").UsingGet())
-                .RespondWith(Response.Create().WithDelay(1000).WithNotFound());
+                .RespondWith(Response.Create().WithDelay(2500).WithNotFound());
+
+            // Endpoint for testing SPARQL Update timeouts
+            Server.Given(Request.Create().WithPath("/slow/doap")
+                .UsingGet()
+                .WithHeader("Accept", new WildcardMatcher("*text/turtle*"))
+            ).RespondWith(Response.Create()
+                .WithBodyFromFile(Path.Combine("resources", "rdfserver", "doap.ttl"))
+                .WithDelay(2500)
+                .WithHeader("Content-Type", "text/turtle"));
         }
 
         public Uri UriFor(string path)

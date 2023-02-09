@@ -1,5 +1,17 @@
 <Project>
+
   <PropertyGroup>
-    <NoWarn>1591,0618</NoWarn>
+    <!-- Default Assembly metadata -->
+    <Copyright>Copyright © dotNetRDF Project 2009-2023</Copyright>
+    <!-- Default Build Options -->
+    <CodeAnalysisRuleSet>../../dotnetrdf.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TargetFrameworks>net6.0;net7.0;net472</TargetFrameworks>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
+
 </Project>
