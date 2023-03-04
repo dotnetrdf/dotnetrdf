@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2023 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -86,11 +86,6 @@ namespace VDS.RDF.Query
         private DateTimeNode _now;
         private readonly IValuedNode _eNode = new DoubleNode(Math.E);
         private readonly IValuedNode _piNode = new DoubleNode(Math.PI);
-        private SHA1 _sha1;
-        private MD5 _md5;
-        private SHA256 _sha256;
-        private SHA384 _sha384;
-        private SHA512 _sha512;
         private readonly Random _rnd = new Random();
         private readonly Dictionary<string, ISparqlExpression> _functionCache = new Dictionary<string, ISparqlExpression>();
 
@@ -583,8 +578,7 @@ namespace VDS.RDF.Query
 
         public virtual IValuedNode ProcessSha1Function(Sha1Function sha1, TContext context, TBinding binding)
         {
-            if (_sha1 == null) _sha1 = SHA1.Create();
-            return ProcessHashFunction(sha1.InnerExpression.Accept(this, context, binding), _sha1);
+            return ProcessHashFunction(sha1.InnerExpression.Accept(this, context, binding), new SHA1Managed());
         }
 
         public virtual IValuedNode ProcessStringJoinFunction(StringJoinFunction stringJoin, TContext context, TBinding binding)
@@ -693,14 +687,12 @@ namespace VDS.RDF.Query
 
         public virtual IValuedNode ProcessLeviathanMD5HashFunction(MD5HashFunction md5, TContext context, TBinding binding)
         {
-            if (_md5 == null) _md5 = MD5.Create();
-            return ProcessHashFunction(md5.InnerExpression.Accept(this, context, binding), _md5);
+            return ProcessHashFunction(md5.InnerExpression.Accept(this, context, binding), MD5.Create());
         }
 
         public virtual IValuedNode ProcessLeviathanSha256HashFunction(Sha256HashFunction sha256, TContext context, TBinding binding)
         {
-            if (_sha256 == null) _sha256 = SHA256.Create();
-            return ProcessHashFunction(sha256.InnerExpression.Accept(this, context, binding), _sha256);
+            return ProcessHashFunction(sha256.InnerExpression.Accept(this, context, binding), new SHA256Managed());
         }
 
         public virtual IValuedNode ProcessCosecantFunction(CosecantFunction cosec, TContext context, TBinding binding)
@@ -1376,26 +1368,30 @@ namespace VDS.RDF.Query
 
         public virtual IValuedNode ProcessSha1HashFunction(Sha1HashFunction sha1, TContext context, TBinding binding)
         {
-            if (_sha1 == null) _sha1 = SHA1.Create();
-            return ProcessHashFunction(sha1.InnerExpression.Accept(this, context, binding), _sha1);
+            try
+            {
+                return ProcessHashFunction(sha1.InnerExpression.Accept(this, context, binding), new SHA1Managed());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                throw;
+            }
         }
 
         public virtual IValuedNode ProcessSha256HashFunction(Expressions.Functions.Sparql.Hash.Sha256HashFunction sha256, TContext context, TBinding binding)
         {
-            if (_sha256 == null) _sha256 = SHA256.Create();
-            return ProcessHashFunction(sha256.InnerExpression.Accept(this, context, binding), _sha256);
+            return ProcessHashFunction(sha256.InnerExpression.Accept(this, context, binding), new SHA256Managed());
         }
 
         public virtual IValuedNode ProcessSha384HashFunction(Sha384HashFunction sha384, TContext context, TBinding binding)
         {
-            if (_sha384 == null) _sha384 = SHA384.Create();
-            return ProcessHashFunction(sha384.InnerExpression.Accept(this, context, binding), _sha384);
+            return ProcessHashFunction(sha384.InnerExpression.Accept(this, context, binding), new SHA384Managed());
         }
 
         public virtual IValuedNode ProcessSha512HashFunction(Sha512HashFunction sha512, TContext context, TBinding binding)
         {
-            if (_sha512 == null) _sha512 = SHA512.Create();
-            return ProcessHashFunction(sha512.InnerExpression.Accept(this, context, binding), _sha512);
+            return ProcessHashFunction(sha512.InnerExpression.Accept(this, context, binding), new SHA512Managed());
         }
 
         public virtual IValuedNode ProcessAbsFunction(AbsFunction abs, TContext context, TBinding binding)

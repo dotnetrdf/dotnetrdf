@@ -2,12 +2,9 @@
 
   <PropertyGroup>
     <AssemblyTitle>dotNetRdf.Connectors.Tests</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>dotNetRdf.Connectors.Tests</AssemblyName>
-	<IsPackable>false</IsPackable>
     <RootNamespace>VDS.RDF.Storage</RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

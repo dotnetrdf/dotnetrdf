@@ -25,27 +25,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Xunit;
 using VDS.RDF.Parsing;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Web
 {
     public class ETagTests
     {
+        private readonly ITestOutputHelper _output;
+        public ETagTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         [Fact]
         public void WebETagComputation()
         {
             var g = new Graph();
-            FileLoader.Load(g, "resources\\InferenceTest.ttl");
+            FileLoader.Load(g, Path.Combine("resources", "InferenceTest.ttl"));
             var timer = new Stopwatch();
             timer.Start();
             var etag = g.GetETag();
             timer.Stop();
-            Console.WriteLine("ETag is " + etag);
-            Console.WriteLine(etag.Length);
-            Console.WriteLine("Took " + timer.Elapsed + " to calculate");
-            Console.WriteLine();
+            _output.WriteLine("ETag 1 took " + timer.Elapsed + " to calculate");
 
             Assert.False(String.IsNullOrEmpty(etag));
             Assert.Equal(40, etag.Length);
@@ -54,9 +59,7 @@ namespace VDS.RDF.Web
             timer.Start();
             var etag2 = g.GetETag();
             timer.Stop();
-            Console.WriteLine("ETag is " + etag2);
-            Console.WriteLine("Took " + timer.Elapsed + " to calculate");
-            Console.WriteLine();
+            _output.WriteLine("ETag 2 took " + timer.Elapsed + " to calculate after no graph modifications");
 
             Assert.Equal(etag, etag2);
             Assert.Equal(40, etag2.Length);
@@ -66,10 +69,7 @@ namespace VDS.RDF.Web
             timer.Start();
             var etag3 = g.GetETag();
             timer.Stop();
-            Console.WriteLine("Graph has now been altered so ETag should change");
-            Console.WriteLine("ETag is " + etag3);
-            Console.WriteLine("Took " + timer.Elapsed + " to calculate");
-            Console.WriteLine();
+            _output.WriteLine("ETag 3 took " + timer.Elapsed + " to calculate after triple retraction");
 
             Assert.NotEqual(etag, etag3);
             Assert.NotEqual(etag2, etag3);

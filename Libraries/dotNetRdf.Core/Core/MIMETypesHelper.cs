@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2023 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
@@ -746,7 +749,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var output = new StringBuilder();
+                var header = new HttpRequestMessage().Headers.Accept;
 
                 foreach (MimeTypeDefinition definition in Definitions)
                 {
@@ -754,20 +757,24 @@ namespace VDS.RDF
                     {
                         if (definition.Preference < 1.0m)
                         {
-                            output.Append(string.Join(",",
-                                definition.MimeTypes.Select(m => m + ";q=" + definition.Preference.ToString("F"))));
+                            foreach (var mimeType in definition.MimeTypes)
+                            {
+                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType, Convert.ToDouble(definition.Preference)));
+                            }
                         }
                         else
                         {
-                            output.Append(string.Join(",", definition.MimeTypes.ToArray()));
+                            foreach (var mimeType in definition.MimeTypes)
+                            {
+                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
+                            }
                         }
-                        output.Append(',');
                     }
                 }
-                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(",*/*;q=0.5");
 
-                return output.ToString();
+                header.Add(new MediaTypeWithQualityHeaderValue("*/*", .5));
+
+                return header.ToString();
             }
         }
 
@@ -781,7 +788,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var output = new StringBuilder();
+                var header = new HttpRequestMessage().Headers.Accept;
 
                 foreach (MimeTypeDefinition definition in Definitions)
                 {
@@ -789,19 +796,22 @@ namespace VDS.RDF
                     {
                         if (definition.Preference < 1.0m)
                         {
-                            output.Append(string.Join(",",
-                                definition.MimeTypes.Select(m => m + ";q=" + definition.Preference.ToString("F"))));
+                            foreach (var mimeType in definition.MimeTypes)
+                            {
+                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType, Convert.ToDouble(definition.Preference)));
+                            }
                         }
                         else
                         {
-                            output.Append(string.Join(",", definition.MimeTypes.ToArray()));
+                            foreach (var mimeType in definition.MimeTypes)
+                            {
+                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
+                            }
                         }
-                        output.Append(',');
                     }
                 }
-                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
 
-                return output.ToString();
+                return header.ToString();
             }
         }
 
@@ -815,7 +825,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var output = new StringBuilder();
+                var header = new HttpRequestMessage().Headers.Accept;
 
                 foreach (MimeTypeDefinition definition in Definitions)
                 {
@@ -823,21 +833,24 @@ namespace VDS.RDF
                     {
                         if (definition.Preference < 1.0m)
                         {
-                            output.Append(string.Join(",",
-                                definition.MimeTypes.Select(m => m + ";q=" + definition.Preference.ToString("F"))));
+                            foreach (var mimeType in definition.MimeTypes)
+                            {
+                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType, Convert.ToDouble(definition.Preference)));
+                            }
                         }
                         else
                         {
-                            output.Append(string.Join(",", definition.MimeTypes.ToArray()));
+                            foreach (var mimeType in definition.MimeTypes)
+                            {
+                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
+                            }
                         }
-
-                        output.Append(',');
                     }
                 }
-                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(",*/*;q=0.5");
 
-                return output.ToString();
+                header.Add(new MediaTypeWithQualityHeaderValue("*/*", .5));
+
+                return header.ToString();
             }
         }
 
@@ -850,19 +863,20 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var output = new StringBuilder();
+                var header = new HttpRequestMessage().Headers.Accept;
 
                 foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdfDatasets)
                     {
-                        output.Append(string.Join(",", definition.MimeTypes.ToArray()));
-                        output.Append(',');
+                        foreach (var mimeType in definition.MimeTypes)
+                        {
+                            header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
+                        }
                     }
                 }
-                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
 
-                return output.ToString();
+                return header.ToString();
             }
         }
 
@@ -875,20 +889,21 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var output = new StringBuilder();
+                var header = new HttpRequestMessage().Headers.Accept;
 
                 foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdf || definition.CanParseRdfDatasets)
                     {
-                        output.Append(string.Join(",", definition.MimeTypes.ToArray()));
-                        output.Append(',');
+                        foreach (var mimeType in definition.MimeTypes)
+                        {
+                            header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
+                        }
                     }
                 }
-                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(";q=1.0,*/*;q=0.5");
+                header.Add(new MediaTypeWithQualityHeaderValue("*/*", .5));
 
-                return output.ToString();
+                return header.ToString();
             }
         }
 
@@ -904,7 +919,13 @@ namespace VDS.RDF
         /// </remarks>
         public static string CustomHttpAcceptHeader(IEnumerable<string> mimeTypes)
         {
-            return string.Join(",", mimeTypes.ToArray());
+            var header = new HttpRequestMessage().Headers.Accept;
+            foreach (var mimeType in mimeTypes)
+            {
+                header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
+            }
+
+            return header.ToString();
         }
 
         /// <summary>

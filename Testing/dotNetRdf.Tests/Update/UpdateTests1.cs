@@ -70,17 +70,17 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             var prefixes = "PREFIX rdf: <" + NamespaceMapper.RDF + ">\n PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + ">\n PREFIX ex: <http://example.org/>\n PREFIX rdl: <http://example.org/roles>\n PREFIX tpl: <http://example.org/template/>\n";
             var insert = prefixes + "INSERT DATA { " + InsertPatterns1 + "}";
-            Console.WriteLine(insert);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(insert);
+            _testOutputHelper.WriteLine();
             store.ExecuteUpdate(insert);
             insert = prefixes + "INSERT DATA {" + InsertPatterns2 + "}";
-            Console.WriteLine(insert);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(insert);
+            _testOutputHelper.WriteLine();
             store.ExecuteUpdate(insert);
 
             foreach (Triple t in g.Triples)
             {
-                Console.WriteLine(t.ToString());
+                _testOutputHelper.WriteLine(t.ToString());
             }
         }
 
@@ -93,17 +93,17 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             var prefixes = "PREFIX rdf: <" + NamespaceMapper.RDF + ">\n PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + ">\n PREFIX ex: <http://example.org/>\n PREFIX rdl: <http://example.org/roles>\n PREFIX tpl: <http://example.org/template/>\n";
             var insert = prefixes + "INSERT DATA { " + InsertPatterns1 + "}";
-            Console.WriteLine(insert.Replace("_:template","<_:template>"));
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(insert.Replace("_:template","<_:template>"));
+            _testOutputHelper.WriteLine();
             store.ExecuteUpdate(insert.Replace("_:template", "<_:template>"));
             insert = prefixes + "INSERT DATA {" + InsertPatterns2 + "}";
-            Console.WriteLine(insert);
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(insert);
+            _testOutputHelper.WriteLine();
             store.ExecuteUpdate(insert);
 
             foreach (Triple t in g.Triples)
             {
-                Console.WriteLine(t.ToString());
+                _testOutputHelper.WriteLine(t.ToString());
             }
         }
 
@@ -534,7 +534,6 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             store.Add(g);
 
             var origTriples = g.Triples.Count;
-
             var command = new SparqlParameterizedString();
             command.Namespaces.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
             command.CommandText = "INSERT { ?x foaf:mbox_sha1sum ?hash } WHERE { ?x foaf:mbox ?email . BIND(SHA1(STR(?email)) AS ?hash) }";

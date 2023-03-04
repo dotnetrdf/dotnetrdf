@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Writing.HtmlSchema</AssemblyName>
     <AssemblyTitle>dotNetRDF HTML Schema Writer</AssemblyTitle>
-    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <RootNamespace>VDS.RDF</RootNamespace>
   </PropertyGroup>
 

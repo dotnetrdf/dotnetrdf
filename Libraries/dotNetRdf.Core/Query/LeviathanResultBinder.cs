@@ -1,9 +1,9 @@
-﻿/*
+/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2021 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2023 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
+
 using System.Collections.Generic;
 using VDS.RDF.Query.Algebra;
 

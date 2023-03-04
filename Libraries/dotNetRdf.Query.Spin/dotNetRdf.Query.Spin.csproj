@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyName>dotNetRdf.Query.Spin</AssemblyName>
     <AssemblyTitle>dotNetRDF SPIN Support</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <RootNamespace>VDS.RDF.Query.Spin</RootNamespace>
   </PropertyGroup>
 
