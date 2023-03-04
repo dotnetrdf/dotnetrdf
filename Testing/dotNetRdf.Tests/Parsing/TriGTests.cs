@@ -249,5 +249,15 @@ namespace VDS.RDF.Parsing
             Assert.Single(store.Graphs);
             Assert.Single(store.Triples);
         }
+
+        [Fact]
+        public void ParsingPrefixWithDot()
+        {
+            const string data = "@prefix exdata: <https://example.com/data/>. exdata:test1 { exdata:test.1 a <http://example.com/Thing> .}";
+            var store = new TripleStore();
+            store.LoadFromString(data, new TriGParser(TriGSyntax.Rdf11));
+            Assert.Single(store.Graphs);
+            Assert.Single(store.Triples);
+        }
     }
 }
