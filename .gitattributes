@@ -1,4 +1,5 @@
 *.cs text
+*.csproj text
 Testing/dotNetRdf.Tests/resources/turtle/*   -text
 Testing/dotNetRdf.Tests/resources/turtle11/*   -text
 Testing/dotNetRdf.Tests/resources/turtle11-unofficial/*   -text
