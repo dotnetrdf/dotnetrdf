@@ -12,6 +12,9 @@
     <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
     <NoWarn>1591</NoWarn>
-  </PropertyGroup>
+    <AssemblyOriginatorKeyFile>../../Build/dotNetRDF.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <PublicSign>true</PublicSign>
+   </PropertyGroup>
 
 </Project>
