@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\dotNetRdf.Core\dotNetRdf.Core.csproj" />
-    <InternalsVisibleTo Include="dotNetRdf.Query.FullText.Tests" />
   </ItemGroup>
 
   <ItemGroup>
