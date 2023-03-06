@@ -32,7 +32,7 @@ jobs:
         echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.NuGetPreReleaseTag }}"
         
     - name: Build solution
-      run: dotnet pack -o nugets --configuration=Release -p:Version=${{ steps.gitversion.outputs.NuGetVersionV2 }}
+      run: dotnet pack --configuration=Release -p:Version=${{ steps.gitversion.outputs.NuGetVersionV2 }} -p:PackageOutputPath=../../nugets
       
     - name: Upload NuGet Packages
       uses: actions/upload-artifact@v3
