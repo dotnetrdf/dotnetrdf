@@ -30,6 +30,8 @@ Several of these serialisations have multiple variants of them with differing sy
 
 To learn about how to save Graphs to forms of Storage other than files on disk see [Working with Graphs](working_with_graphs.md) and for information on saving Triple Stores see [Working with Triple Stores](working_with_triple_stores.md)
 
+For a complete summary of the formats supported for writing with dotNetRDF see [Formats Supported By dotNetRDF](formats.md).
+
 ## Basic Usage
 
 The Writer classes in dotNetRDF all implement the [`IRdfWriter`](xref:VDS.RDF.IRdfWriter) interface which defines a single method `Save(…)` which takes an [`IGraph`](xref:VDS.RDF.IGraph) and then either a `TextWriter` or a `String`. Basic usage is as follows:
