@@ -714,7 +714,7 @@ namespace VDS.RDF.Storage.Management
         {
             if (disposing)
             {
-                _sysConnection.Dispose();
+                _sysConnection?.Dispose();
             }
             base.Dispose(disposing);
         }
