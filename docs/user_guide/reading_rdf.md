@@ -23,6 +23,7 @@ dotNetRDF currently supports reading RDF files in all of the following RDF seria
 * JSON-LD (1.0 and 1.1)
 
 Several of these serialisations have multiple variants of them with differing syntax rules.
+For a complete summary of the formats supported for writing with dotNetRDF see [Formats Supported By dotNetRDF](formats.md).
 
 # Graph Parsers
 
