@@ -151,7 +151,6 @@ As of the most recent release all of the following objects can be loaded from Co
 * [SPARQL Endpoints](sparql_endpoints.md)
 * [Query Processors](query_processors.md)
 * [Update Processors](update_processors.md)
-* [Protocol Processors](protocol_processors.md)
 * [SPARQL Datasets](sparql_datasets.md)
 * [SPARQL Expression Factories](sparql_expression_factories.md)
 * [SPARQL Operators](sparql_operators.md)
@@ -162,13 +161,6 @@ As of the most recent release all of the following objects can be loaded from Co
 ## 3rd Party Triple Store Integration 
 
 * [Storage Providers](storage_providers.md)
-
-## ASP.Net Integration 
-
-* [HTTP Handlers](http_handlers.md)
-* [User Groups](user_groups.md)
-* [Permissions](permissions.md)
-* [Users](users.md)
 
 ## Miscellaneous 
 

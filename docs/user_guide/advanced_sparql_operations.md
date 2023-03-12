@@ -41,11 +41,6 @@ This optimiser is used by all [`SparqlQueryParser`](xref:VDS.RDF.Parsing.SparqlQ
 The local optimiser setting is controlled by setting the [`QueryOptimiser`](xref:VDS.RDF.Parsing.SparqlQueryParser.QueryOptimiser) property of a [`SparqlQueryParser`](xref:VDS.RDF.Parsing.SparqlQueryParser) instance.
 The local setting always overrides the global setting.
 
-### HTTP Handler Configuration 
-
-If you are configuring a SPARQL endpoint via our [Configuration API](configuration/index.md) you can configure the Query Optimiser to use via the `dnr:queryOptimiser` property.
-See [HTTP Handlers](configuration/http_handlers.md) and [Configuration API - Optimizers](configuration/sparql_optimisers.md) for details on how to do this.
-
 ## Algebra Optimisers 
 
 Algebra Optimisers are applied to queries when they are transformed into SPARQL Algebra and aim to replace the standard operators with optimised forms where possible.
@@ -72,10 +67,6 @@ These optimisers are used when transforming any query into its Algebra form for 
 
 The local optimisers are changed by setting the `AlgebraOptimisers` property on a `SparqlQuery` instance.
 These optimisers are used when transforming the query into the Algebra form and apply ahead of any global optimisers.
-
-### HTTP Handler Configuration 
-
-If you are configuring a SPARQL endpoint via our [Configuration API](configuration/index.md) you can configure the Algebra Optimisers to use via the `dnr:algebraOptimiser` property. See [Configuration API - HTTP Handlers](configuration/http_handlers.md) and [Configuration API - Optimizers](configuration/sparql_optimisers.md) for details on how to do this.
 
 # Thread-Safety 
 

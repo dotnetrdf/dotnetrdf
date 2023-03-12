@@ -103,6 +103,16 @@ The `LoadGraph` method will automatically select the correct Parser to use based
 
 You can also force the loader to use a specific parser by using the 3 argument form [`LoadGraph(IGraph g, Uri u, IRdfReader parser)`](xref:VDS.RDF.Parsing.Loader.LoadGraph(VDS.RDF.IGraph,System.Uri,VDS.RDF.IRdfReader)). The class also provides async variants of these methods.
 
+By default both the .NET `HttpClient` and the dotNetRDF `Loader` class support following HTTP redirects. Due to some restrictions and cross-platform differences with when the .NET `HttpClient` will automatically follow redirects, the `Loader` class implements its own support for following redirects *in addition to* the redirects followed by the `HttpClient`. This additional redirect handling can be disabled by setting the [`FollowRedirects`](xref:VDS.RDF.Parsing.Loader.FollowRedirects) to `false`. To completely disable all automatic redirects, you must also pass in an `HttpClient` instance that is configured to not follow redirects as follows:
+
+```csharp
+// Create an HttpClient configured to not follow redirects
+HttpClient noRedirectClient = new HttpClient(
+  new HttpClientHandler(){ AllowAutoRedirect = false});
+// Create a Loader also configured to not follow redirects.
+Loader loader = new Loader(noRedirectClient) { FollowRedirects = false };
+```
+
 > [!WARNING]
 > Prior to dotNetRDF 3.0, this functionality was provided by the static `UriLoader` class, which was implemented using the older System.Net.HttpWebRequest API. 
 > This class has been retained with the 3.0 release, but is now considered obsolete and code should be updated to use the `Loader` class instead.

@@ -57,7 +57,7 @@ Use the <xref:VDS.RDF.Parsing.ITokenisingParser.TokenQueueMode> property instead
 
 **DEPRECATED**
 
-To force use of blocking IO you must now explicitly wrap the source stream/text reader by calling <xref:VDS.RDF.Parsing.ParsingTextReader.CreateBlocking(System.IO.TextReader)> or <xref:VDS.RDF.Parsing.ParsingTextReader.CreateBlocking(System.IO.TextReader, int)>.
+To force use of blocking IO you must now explicitly wrap the source stream/text reader by calling <xref:VDS.RDF.Parsing.ParsingTextReader.CreateBlocking(System.IO.TextReader)> or <xref:VDS.RDF.Parsing.ParsingTextReader.CreateBlocking(System.IO.TextReader,System.Int32)>.
 By default all parsers will wrap streams other than memory or file streams in a blocking text reader, so this step should only be necessary in rare circumstances of unexpected latency in file or memory IO.
 
 > [!WARNING]
