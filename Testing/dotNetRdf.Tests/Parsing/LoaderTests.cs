@@ -27,11 +27,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Query.Algebra;
 using WireMock.Logging;
 using Xunit;
 
@@ -155,6 +157,58 @@ namespace VDS.RDF.Parsing
             await loader.LoadGraphAsync(g, resourceUri);
             g.Triples.Count.Should().Be(1);
             g.BaseUri.Should().Be(resourceUri, "the loader should set the base URI of the target graph if it is not already set.");
+        }
+
+        [Fact]
+        public async Task FollowRelativeRedirect()
+        {
+            var g = new Graph();
+            var loader = new Loader(_serverFixture.NoRedirectClient);
+            Uri resourceUri = _serverFixture.UriFor("/redirectRelative");
+            await loader.LoadGraphAsync(g, resourceUri);
+            g.IsEmpty.Should().BeFalse();
+            g.BaseUri.Should().Be(resourceUri);
+        }
+
+        [Fact]
+        public async Task FollowAbsoluteRedirect()
+        {
+            var g = new Graph();
+            var loader = new Loader(_serverFixture.NoRedirectClient);
+            Uri resourceUri = _serverFixture.UriFor("/redirectAbsolute");
+            await loader.LoadGraphAsync(g, resourceUri);
+            g.IsEmpty.Should().BeFalse();
+            g.BaseUri.Should().Be(resourceUri);
+        }
+
+        [Fact]
+        public async Task FollowRelativeRedirectForDataset()
+        {
+            var s = new TripleStore();
+            var loader = new Loader(_serverFixture.NoRedirectClient);
+            Uri resourceUri = _serverFixture.UriFor("/redirectQuadsRelative");
+            await loader.LoadDatasetAsync(s, resourceUri);
+            s.Triples.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task FollowAbsoluteRedirectForDataset()
+        {
+            var s = new TripleStore();
+            var loader = new Loader(_serverFixture.NoRedirectClient);
+            Uri resourceUri = _serverFixture.UriFor("/redirectQuadsAbsolute");
+            await loader.LoadDatasetAsync(s, resourceUri);
+            s.Triples.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task RedirectsCanBeDisabled()
+        {
+            var g = new Graph();
+            var loader = new Loader(_serverFixture.NoRedirectClient) {  MaxRedirects = 0 };
+            Uri resourceUri = _serverFixture.UriFor("/redirectAbsolute");
+            RdfException ex = await Assert.ThrowsAsync<RdfException>(() => loader.LoadGraphAsync(g, resourceUri));
+            ex.Message.Should().Contain("303");
         }
 
         [Fact]
