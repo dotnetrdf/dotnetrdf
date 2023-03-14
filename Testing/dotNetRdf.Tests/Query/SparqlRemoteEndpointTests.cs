@@ -58,7 +58,7 @@ namespace VDS.RDF.Query
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             SparqlResultSet results = endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o . }");
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query
             SparqlRemoteEndpoint endpoint = GetQueryEndpoint();
             SparqlResultSet results = endpoint.QueryWithResultSet(input.ToString());
             results.Should().HaveCount(1);
-            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
         }
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query
 
             SparqlResultSet results = endpoint.QueryWithResultSet(queryString);
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -103,7 +103,7 @@ namespace VDS.RDF.Query
 
             SparqlResultSet results = endpoint.QueryWithResultSet(queryString);
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
