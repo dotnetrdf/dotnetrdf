@@ -151,8 +151,6 @@ _:index a dnr-ft:Index ;
   dnr-ft:ensureIndex true .
 ```
 
-For details on how to attach this algebra optimiser to a HTTP Handler please see [Configuration API - HTTP Handlers](http_handlers.md)
-
 ## Datasets 
 
 You can use the [`FullTextIndexedDataset`](xref:VDS.RDF.Query.Datasets.FullTextIndexedDataset) as a decorator over another dataset to automatically keep an index in sync with a dataset as that dataset changes.

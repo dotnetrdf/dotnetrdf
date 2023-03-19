@@ -70,7 +70,7 @@ namespace VDS.RDF.Query
             var results = ProcessQuery(dataset, query);
 
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query
             var results = ProcessQuery(dataset, query);
 
             results.Should().NotBeNull().And.HaveCount(2);
-            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query
             var results = ProcessQuery(dataset, query);
 
             results.Should().NotBeNull().And.HaveCount(102);
-            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(2);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
             sparqlLogEntries[1].RequestMessage.Method.Should().BeEquivalentTo("get");
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query
             var results = ProcessQuery(dataset, query);
 
             results.Should().NotBeNull().And.HaveCount(1);
-            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/sparql")).ToList();
+            var sparqlLogEntries = _serverFixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/sparql")).ToList();
             sparqlLogEntries.Should().HaveCount(1);
             sparqlLogEntries[0].RequestMessage.Method.Should().BeEquivalentTo("get");
         }

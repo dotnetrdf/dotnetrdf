@@ -5,8 +5,6 @@ Optimisers come in two forms both of which can be configured using the Configura
 * [`IQueryOptimiser`](xref:VDS.RDF.Query.Optimisation.IQueryOptimiser) are optimisers which optimise Graph Patterns in a Query
 * [`IAlgebraOptimiser`](xref:VDS.RDF.Query.Optimisation.IAlgebraOptimiser) are optimisers which optimise SPARQL Algebra
 
-Please see [Configuration API - HTTP Handlers](http_handlers.md) for details on how to attach optimisers to HTTP Handlers.
-
 # Configuring Query Optimisers 
 
 ## Basic Configuration 

@@ -104,7 +104,7 @@ namespace VDS.RDF.Query
             { Timeout = 3000, IgnoreFailedRequests = true };
             SparqlResultSet results = await endpoint.QueryWithResultSetAsync("SELECT * WHERE {?s ?p ?o}");
             results.Should().NotBeNull().And.HaveCount(1);
-            _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/query"))
+            _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/query"))
                 .Should().HaveCount(1).And.Contain(x =>
                     x.RequestMessage.Method.Equals("get", StringComparison.InvariantCultureIgnoreCase));
         }
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query
             IGraph results = await endpoint.QueryWithResultGraphAsync("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
             results.Should().NotBeNull();
             results.Triples.Count.Should().Be(1);
-            _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/query2"))
+            _fixture.Server1.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/query2"))
                 .Should().HaveCount(1).And.Contain(x =>
                     x.RequestMessage.Method.Equals("get", StringComparison.InvariantCultureIgnoreCase));
         }

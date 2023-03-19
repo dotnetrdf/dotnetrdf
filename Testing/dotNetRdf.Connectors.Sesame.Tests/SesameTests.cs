@@ -30,6 +30,7 @@ using System.Text;
 using Xunit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
 {
@@ -470,6 +471,14 @@ DELETE WHERE
             {
                 Assert.True(((SparqlResultSet) results).Result);
             }
+        }
+
+        [Fact]
+        public void SesameServerDispose()
+        {
+            // Reproduction of issue #507 - NRE on dispose
+            var sesame = new SesameServer("http://localhost:8080/sesame");
+            sesame.Dispose();
         }
     }
 }

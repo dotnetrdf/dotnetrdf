@@ -23,6 +23,7 @@ dotNetRDF currently supports reading RDF files in all of the following RDF seria
 * JSON-LD (1.0 and 1.1)
 
 Several of these serialisations have multiple variants of them with differing syntax rules.
+For a complete summary of the formats supported for writing with dotNetRDF see [Formats Supported By dotNetRDF](formats.md).
 
 # Graph Parsers
 
@@ -101,6 +102,16 @@ The `Loader` class uses an HttpClient instance to make web requests, and provide
 The `LoadGraph` method will automatically select the correct Parser to use based on the returned `Content-Type` header of the HTTP Response. In addition to the normal errors thrown by parsers the `Loader` may also throw a [`RdfException`](xref:VDS.RDF.RdfException) if the input URI is not valid or an `HttpRequestException` if an error occurs in retrieving the URI using HTTP.
 
 You can also force the loader to use a specific parser by using the 3 argument form [`LoadGraph(IGraph g, Uri u, IRdfReader parser)`](xref:VDS.RDF.Parsing.Loader.LoadGraph(VDS.RDF.IGraph,System.Uri,VDS.RDF.IRdfReader)). The class also provides async variants of these methods.
+
+By default both the .NET `HttpClient` and the dotNetRDF `Loader` class support following HTTP redirects. Due to some restrictions and cross-platform differences with when the .NET `HttpClient` will automatically follow redirects, the `Loader` class implements its own support for following redirects *in addition to* the redirects followed by the `HttpClient`. This additional redirect handling can be disabled by setting the [`FollowRedirects`](xref:VDS.RDF.Parsing.Loader.FollowRedirects) to `false`. To completely disable all automatic redirects, you must also pass in an `HttpClient` instance that is configured to not follow redirects as follows:
+
+```csharp
+// Create an HttpClient configured to not follow redirects
+HttpClient noRedirectClient = new HttpClient(
+  new HttpClientHandler(){ AllowAutoRedirect = false});
+// Create a Loader also configured to not follow redirects.
+Loader loader = new Loader(noRedirectClient) { FollowRedirects = false };
+```
 
 > [!WARNING]
 > Prior to dotNetRDF 3.0, this functionality was provided by the static `UriLoader` class, which was implemented using the older System.Net.HttpWebRequest API. 

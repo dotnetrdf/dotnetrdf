@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -41,6 +42,33 @@ namespace VDS.RDF.Parsing
         private HttpClient _httpClient;
 
         /// <summary>
+        /// Get or set a value that indicates the Loader should follow redirection responses from the underlying
+        /// HttpClient.
+        /// </summary>
+        /// <remarks>
+        /// <para>The .NET HttpClient should automatically follow redirects unless configured not to. 
+        /// However, we have encountered issues with the default HttpClient not following HTTPS to HTTPS redirects on 
+        /// commonly used endpoints like DBPedia.org.</para>
+        /// <para>To support easier loading from endpoints that redirect in ways that the underlying HttpClientHandler
+        /// does not support the Loader class implements its own redirect following layered on top of the HttpClient redirect following.</para>
+        /// <para>This flag can be used to enable or disable that additional level of redirect following. It is enabled by default.</para>
+        /// <para>To disable all redirect following you must both disable this flag and also construct the Loader with an <see cref="HttpClient"/> 
+        /// instance that has been initialised with an <see cref="HttpClientHandler"/> instance with <see cref="HttpClientHandler.AllowAutoRedirect"/>
+        /// set to false.</para>
+        /// <code>
+        /// // Construct a loader that will never follow redirect responses
+        /// var loader = new Loader(new HttpClient(new HttpClientHandler { AllowAutoRedirects = false })) { FollowRedirects = false };
+        /// </code>
+        /// </remarks>
+        public bool FollowRedirects { get; set; } = true;
+
+        /// <summary>
+        /// Get or set the maximum number of redirects that the Loader will follow.
+        /// </summary>
+        /// <remarks>The number of redirects followed by the Loader will be in addition to any redirects followed by the underlying HttpClient. Defaults to 10.</remarks>
+        public int MaxRedirects { get; set; } = 10;
+
+        /// <summary>
         /// Get or set the client to use for making HTTP requests.
         /// </summary>
         /// <remarks>This property must not be set to null.</remarks>
@@ -52,14 +80,13 @@ namespace VDS.RDF.Parsing
         /// <param name="httpClient">The HTTP client instance to use. Must not be null.</param>
         public Loader(HttpClient httpClient)
         {
-
             HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
         /// <summary>
         /// Create a new Loader instance with a new default HTTP client.
         /// </summary>
-        public Loader() : this(new HttpClient()){}
+        public Loader() : this(new HttpClient(new HttpClientHandler { AllowAutoRedirect = true })){}
 
         /// <summary>
         /// Load RDF data from the specified URI into the specified graph.
@@ -241,11 +268,11 @@ namespace VDS.RDF.Parsing
                 }
 
                 uri = Tools.StripUriFragment(uri);
-                var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
-                requestMessage.Headers.Add("Accept",
-                    parser != null ? MimeTypesHelper.CustomHttpAcceptHeader(parser) : MimeTypesHelper.HttpAcceptHeader);
-
-                using HttpResponseMessage httpResponse = await HttpClient.SendAsync(requestMessage, cancellationToken);
+                KeyValuePair<string, string>[] headers = new[]
+                {
+                    new KeyValuePair<string, string>("Accept", parser != null ? MimeTypesHelper.CustomHttpAcceptHeader(parser) : MimeTypesHelper.HttpAcceptHeader),
+                };
+                using HttpResponseMessage httpResponse = await GetFollowingRedirects(uri, headers, cancellationToken);
                 AssertResponseSuccess(uri, httpResponse);
 
                 parser ??= MimeTypesHelper.GetParser(httpResponse.Content.Headers.ContentType.MediaType);
@@ -258,6 +285,37 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfParseException("Unable to load from the given URI '" + uri.AbsoluteUri + "' since it's format was invalid", ex);
             }
+        }
+
+        private async Task<HttpResponseMessage> GetFollowingRedirects(Uri uri, IEnumerable<KeyValuePair<string, string>> addHeaders, CancellationToken cancellationToken, int redirectDepth = 0)
+        {
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
+            foreach(var headerEntry in addHeaders)
+            {
+                requestMessage.Headers.Add(headerEntry.Key, headerEntry.Value);
+            }
+            HttpResponseMessage responseMessage = await HttpClient.SendAsync(requestMessage, cancellationToken);
+            if (responseMessage.IsSuccessStatusCode) return responseMessage;
+            if (CanRedirect(responseMessage, redirectDepth))
+            {
+                Uri location = responseMessage.Headers.Location;
+                if (!location.IsAbsoluteUri)
+                {
+                    location = new Uri(uri, location);
+                }
+                responseMessage.Dispose();
+                responseMessage = await GetFollowingRedirects(location, addHeaders, cancellationToken, redirectDepth + 1);
+            }
+            return responseMessage;
+        }
+
+        private bool CanRedirect(HttpResponseMessage response, int currentRedirectDepth)
+        {
+            return FollowRedirects && 
+                currentRedirectDepth < MaxRedirects &&
+                (int)response.StatusCode >= 300 &&
+                (int)response.StatusCode < 400 &&
+                response.Headers.Location != null;
         }
 
         private static void AssertResponseSuccess(Uri uri, HttpResponseMessage httpResponse)
@@ -456,16 +514,14 @@ namespace VDS.RDF.Parsing
                 // Sanitize request URI by removing any fragment ID
                 uri = Tools.StripUriFragment(uri);
 
-                // Set up the request
-                var requestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
-
                 // Set Accept header
-                requestMessage.Headers.Add("Accept",
-                    parser != null
+                KeyValuePair<string, string>[] headers = new[]
+                {
+                    new KeyValuePair<string, string>("Accept", parser != null
                         ? MimeTypesHelper.CustomHttpAcceptHeader(parser)
-                        : MimeTypesHelper.HttpRdfDatasetAcceptHeader);
-
-                using HttpResponseMessage responseMessage = await HttpClient.SendAsync(requestMessage, cancellationToken);
+                        : MimeTypesHelper.HttpRdfDatasetAcceptHeader),
+                };
+                using HttpResponseMessage responseMessage = await GetFollowingRedirects(uri, headers, cancellationToken);
                 AssertResponseSuccess(uri, responseMessage);
 
                 if (parser == null)

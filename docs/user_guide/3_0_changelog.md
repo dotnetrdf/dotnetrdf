@@ -2,6 +2,35 @@
 
 This document describes the main changes made between version 2.x and version 3.0 of dotNetRDF.
 
+## Packaging Changes
+
+The dotNetRDF packages have been restructured to break apart the monolithic dotNetRDF NuGet package into a number of smaller packages.
+
+The restructured NuGet packages for dotNetRDF 3.0 are:
+
+- **dotNetRdf** - a meta-package that pulls in all of the packages listed below.
+- **dotNetRdf.Core** - contains the core libraries. This includes support for reading and writing RDF; and for managing and querying RDF data in-memory.
+- **dotNetRdf.Client** - provides support for working with a range of triple stores. 
+- **dotNetRdf.Data.DataTables** - a package which integrates RDF data with System.Data.DataTable
+- **dotNetRdf.Dynamic** - provides an API for accessing and updating RDF graphs using .NET's dynamic objects.
+- **dotNetRdf.HtmlSchema** - provides an RDF writer that generates HTML documentation for an ontology that uses the RDF Schema vocabulary.
+- **dotNetRdf.Inferencing** - provides some basic inferencing support including RDF-Schema, SKOS and a small subset of OWL reasoning.
+- **dotNetRdf.Ontology** - provides an API for manipulating an OWL ontology.
+- **dotNetRdf.Query.FullText** - provides a full-text query plugin for dotNetRDF's Leviathan SPARQL query engine. The text indexing is provided by Lucene.
+- **dotNetRdf.Query.Spin** - provides an implementation of [SPIN](http://spinrdf.org/) using dotNetRDF's Leviathan SPARQL query engine.
+- **dotNetRdf.Shacl** - provides an API for validating a graph using [SHACL](https://www.w3.org/TR/shacl/).
+- **dotNetRdf.Skos** - provides an API for working with a [SKOS](https://www.w3.org/TR/skos-reference/) taxonomy.
+
+Existing projects that reference the dotNetRdf NuGet package will now be referncing the meta-package.
+
+## Support for Pellet Reasoning has been dropped
+
+Due to lack of a supported open-source implementation of the Pellet server to test against, we have decided to drop support for reasoning via Pellet.
+
+## Support for the Virtuoso client library has been dropped
+
+The Virtuoso client library is only supported on .NET Framework. To provide a consistent set of features across all environments we have decided to drop support for connecting to a Virtuoso server via the client library. Applications can still use dotNetRDF's generic SPARQL connectors to connect to a Virtuoso server via its SPARQL endpoints.
+
 ## Removed Global Options
 The global Options class has been removed and options are now specified closer to where they are used or in some cases removed entirely
 
@@ -158,3 +187,7 @@ Because `Triple` has been changed to remove this property, the `IRdfHandler` int
 This method is invoked when handling a triple that is asserted in a graph, with the name of the graph as the `IRefNode` argument.
 When updating your implementations of `IRdfHandler`, please be aware that some parsers (especially those that support graphs as part of their syntax) may report triples in the default graph by invoking `HandleQuad` with a null value for the `IRefNode` argument, rather than by invoking `HandleTriple`.
 You should therefore ensure that you provide an implementation of `HandleQuad` even if your handler does not handle triples in a named graph. In your handler you can then decide whether to treat a non-null `IRefNode` argument as an error or to handle it in some other way (e.g. by ignoring the graph component, or by ignoring the whole quad).
+
+## RDF-Star and SPARQL-Star support
+
+This release adds support for RDF-Star and SPARQL-Star. This enhancement adds a new node type `ITripleNode` representing a quoted triple in an RDF-star graph. This enhancement also adds RDF-star syntax varients for the Turtle, TriG, NTriples and NQuads parsers as well as a syntax varient for the SPARQL parser. Leviathan has been updated to be able to process SPARQL-star queries on in-memory datasets. Please note that support for RDF-star/SPARQL-star on third-party triple stores is entirely dependent on those stores implementing support themselves.

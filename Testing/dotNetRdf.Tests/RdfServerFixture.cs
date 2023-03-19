@@ -16,10 +16,14 @@ namespace VDS.RDF
 
         public HttpClient Client { get; }
 
+        public HttpClient NoRedirectClient { get; }
+
         public RdfServerFixture()
         {
             Client = new HttpClient();
             Client.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("no-cache");
+            NoRedirectClient = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
+            NoRedirectClient.DefaultRequestHeaders.CacheControl = CacheControlHeaderValue.Parse("no-cache");
 
             Server = WireMockServer.Start();
 
@@ -58,6 +62,16 @@ namespace VDS.RDF
                 .WithBodyFromFile(Path.Combine("resources", "rdfserver", "doap.ttl"))
                 .WithDelay(2500)
                 .WithHeader("Content-Type", "text/turtle"));
+
+            // Endpoints for testing a redirect with See Other
+            Server.Given(Request.Create().WithPath("/redirectRelative").UsingGet())
+                .RespondWith(Response.Create().WithStatusCode(303).WithHeader("Location", "/resource/Southampton"));
+            Server.Given(Request.Create().WithPath("/redirectAbsolute").UsingGet())
+                .RespondWith(Response.Create().WithStatusCode(303).WithHeader("Location", Server.Urls[0] + "/resource/Southampton"));
+            Server.Given(Request.Create().WithPath("/redirectQuadsRelative").UsingGet())
+                .RespondWith(Response.Create().WithStatusCode(303).WithHeader("Location", "/one.trig"));
+            Server.Given(Request.Create().WithPath("/redirectQuadsAbsolute").UsingGet())
+                .RespondWith(Response.Create().WithStatusCode(303).WithHeader("Location", Server.Urls[0] + "/one.trig"));
         }
 
         public Uri UriFor(string path)
