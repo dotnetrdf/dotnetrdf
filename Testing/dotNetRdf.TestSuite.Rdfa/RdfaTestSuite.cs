@@ -2,7 +2,7 @@ using dotNetRdf.TestSupport;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using Xunit;
+using VDS.RDF.Writing.Formatting;
 using Xunit.Abstractions;
 
 namespace dotNetRdf.TestSuite.Rdfa
@@ -10,7 +10,7 @@ namespace dotNetRdf.TestSuite.Rdfa
     public class RdfaTestSuite : RdfTestSuite
     {
         private readonly ITestOutputHelper _output;
-        private readonly string[] TestHostLanguages = new[] { "html5", "html5-invalid", "html4", "xhtml5", "xhtml5-invalid", "xml" };
+        private readonly string[] _testHostLanguages = { "html5", "html5-invalid", "html4", "xhtml5", "xhtml5-invalid", "xml" };
 
         public static RdfaTestDataProvider RdfaTests = new RdfaTestDataProvider(
             new Uri("http://rdfa.info/test-suite/manifest.jsonld"),
@@ -30,7 +30,7 @@ namespace dotNetRdf.TestSuite.Rdfa
             Assert.NotNull(testParams);
             Assert.Single(testParams);
             Assert.NotNull(testParams[0]);
-            var testData = Assert.IsType<RdfaTestData>(testParams[0]);
+            RdfaTestData testData = Assert.IsType<RdfaTestData>(testParams[0]);
             Assert.NotNull(testData.Description);
             Assert.NotNull(testData.Input);
             Assert.NotNull(testData.Results);
@@ -43,15 +43,17 @@ namespace dotNetRdf.TestSuite.Rdfa
         {
             _output.WriteLine($"{t.Id}: {t.InputPath}");
             _output.WriteLine(string.Join(", ", t.Versions));
-            SparqlQueryParser queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
+            var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
+            var baseUri = new Uri(t.Id);
+            var lastSegment = baseUri.Segments[baseUri.Segments.Length - 1];
             if (t.Versions.Contains("rdfa1.1"))
             {
-                foreach (var hostLanguage in TestHostLanguages) {
+                foreach (var hostLanguage in _testHostLanguages) {
                     if (t.HostLangauges.Contains(hostLanguage))
                     {
                         _output.WriteLine(hostLanguage);
                         var parser = new RdfAParser(RdfASyntax.RDFa_1_1);
-                        var g = new Graph { BaseUri = new Uri(t.Id) };
+                        var g = new Graph { BaseUri = new Uri(baseUri, $"rdfa1.1/{hostLanguage}/{lastSegment}") };
                         var inputPath = t.GetInputPath("rdfa1.1", hostLanguage);
                         parser.Load(g, inputPath);
                         if (t.Results != null) {
@@ -62,10 +64,20 @@ namespace dotNetRdf.TestSuite.Rdfa
                         }
                     } else
                     {
-                        Console.WriteLine($"Host language {hostLanguage} not found in {t.HostLangauges}");
+                        _output.WriteLine($"Host language {hostLanguage} not found in {t.HostLangauges}");
                     }
                 }
             }
+        }
+
+        [Fact]
+        public void RunSingleTest()
+        {
+            var testCase = "0006";
+            RdfaTestData? testData = RdfaTests.Select(testParams => testParams[0]).OfType<RdfaTestData>()
+                .FirstOrDefault(testData => testData.Id.EndsWith(testCase));
+            Assert.NotNull(testData);
+            RunTest(testData);
         }
     }
 }
