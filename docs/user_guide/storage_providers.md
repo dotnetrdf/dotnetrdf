@@ -19,7 +19,12 @@ The available providers are as follows:
 | [SPARQL Query and Update Endpoints](storage_sparql_query_and_update.md) | Any store providing both a query and update endpoint |
 | [SPARQL Graph Store Protocol](storage_sparql_graph_store.md) | Any SPARQL Graph Store Protocol endpoint |
 | [Stardog](storage_stardog.md) | Stardog |
-| [Virtuoso](storage_virtuoso.md) | Virtuoso Universal Server |
+
+> [!INFO]
+> dotNetRDF 3.0 has dropped support for connecting to a Virtuoso server through the Virtuoso client library as this library
+> requires a dependency on .NET Framework and cannot be used on a modern .NET stack. It is still possible to connect to
+> a Virtuoso server via its SPARQL query, update and graph store protocol endpoints using the generic SPARQL connectors
+> provided by dotNetRDF.
 
 There are also some useful wrappers available:
 

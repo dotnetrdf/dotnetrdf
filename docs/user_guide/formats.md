@@ -23,7 +23,7 @@ Note, for some formats parsing or writing is not supported. This is shown by the
 | N-Triples         | Original W3C Specification<br> RDF 1.1<br> **RDF-Star** | Graph | [NTriplesParser](xref:VDS.RDF.Parsing.NTriplesParser) | [NTriplesWriter](xref:VDS.RDF.Writing.NTriplesWriter) | application/n-triples<br> text/plain<br> text/ntriples<br> text/ntriples+turtle<br> application/rdf-triples<br> application/x-ntriples<br> application/ntriples | .nt
 | GZipped N-Triples | Original W3C Specification<br> RDF 1.1<br> **RDF-Star** | Graph | [GZippedNTriplesParser](xref:VDS.RDF.Parsing.GZippedNTriplesParser) | [GZippedNTriplesWriter](xref:VDS.RDF.Writing.GZippedNTriplesWriter) |  | .nt.gz
 | Turtle            | Original<br> RDF 1.1<br> **RDF-Star** | Graph | [TurtleParser](xref:VDS.RDF.Parsing.TurtleParser) | [CompressingTurtleWriter](xref:VDS.RDF.Writing.CompressingTurtleWriter) | text/turtle<br> application/x-turtle<br> application/turtle | .ttl
-| GZipped Turtle    | Original<br> RDF 1.1<br> **RDF-Star** | Graph | [GzippedTurtleParser](xref:VDS.RDF.Parsing.GzippedTurtleParser) | [GZippedTurtleWriter](xref:VDS.RDF.Writing.GZippedTurtleWriter) | | .ttl.gz
+| GZipped Turtle    | Original<br> RDF 1.1<br> **RDF-Star** | Graph | [GzippedTurtleParser](xref:VDS.RDF.Parsing.GZippedTurtleParser) | [GZippedTurtleWriter](xref:VDS.RDF.Writing.GZippedTurtleWriter) | | .ttl.gz
 | N3 (Notation 3)   |          | Graph | [Notation3Parser](xref:VDS.RDF.Parsing.Notation3Parser) | [Notation3Writer](xref:VDS.RDF.Writing.Notation3Writer) |  text/n3<br> text/rdf+n3 | .n3
 | GZipped N3        |          | Graph | [GZippedNotation3Parser](xref:VDS.RDF.Parsing.GZippedNotation3Parser) | [GZippedNotation3Writer](xref:VDS.RDF.Writing.GZippedNotation3Writer) | | .n3.gz
 | NQuads            | Original DERI Specification<br> RDF 1.1<br> **RDF-Star** | Store | [NQuadsParser](xref:VDS.RDF.Parsing.NQuadsParser) | [NQuadsWriter](xref:VDS.RDF.Writing.NQuadsWriter) | application/n-quads<br> text/x-nquads | .nq 
@@ -37,15 +37,15 @@ Note, for some formats parsing or writing is not supported. This is shown by the
 | RDF/JSON          |          | Graph | [RdfJsonParser](xref:VDS.RDF.Parsing.RdfJsonParser) | [RdfJsonWriter](xref:VDS.RDF.Writing.RdfJsonWriter) | application/json<br> text/json<br> application/rdf+json | .rj<br>.json
 | GZipped RDF/JSON  |          | Graph | [GZippedRdfJsonParser](xref:VDS.RDF.Parsing.GZippedRdfJsonParser) | [GZippedRdfJsonWriter](xref:VDS.RDF.Writing.GZippedRdfJsonWriter) | | .rj.gz<br>.json.gz
 | JSON-LD           | JSON-LD 1.0<br> JSON-LD 1.1 | Store | [JsonLdParser](xref:VDS.RDF.Parsing.JsonLdParser) | [JsonLdWriter](xref:VDS.RDF.Writing.JsonLdWriter) | application/ld+json | .jsonld<br>.json |
-| GZipped JSON-LD   | JSON-LD 1.0<br> JSON-LD 1.1 | Store | [GZippedJsonLdParser](xref:VDS.RDF.Parsing.GZippedJsonLdParser) | [GZippedJsonLdWriter](xref:VDS.RDF.Writing.GzippedJsonLdWriter) | | .jsonld.gz<br>.json.gz
+| GZipped JSON-LD   | JSON-LD 1.0<br> JSON-LD 1.1 | Store | [GZippedJsonLdParser](xref:VDS.RDF.Parsing.GZippedJsonLdParser) | [GZippedJsonLdWriter](xref:VDS.RDF.Writing.GZippedJsonLdWriter) | | .jsonld.gz<br>.json.gz
 | HTML + RDFa       | RDFa 1.0<br> RDFa 1.1<br> **Auto-detect** (see notes) | Graph | [RdfAParser](xref:VDS.RDF.Parsing.RdfAParser) | [HtmlWriter](xref:VDS.RDF.Writing.HtmlWriter) | text/html<br> application/xhtml+xml | .html<br>.xhtml
-| GZipped HTML + RDFa |        | Graph | [GZippedRdfAParser](xref:VDS.RDF.Parsing.GzippedRdfAParser) | [GZippedRdfAWriter](xref:VDS.RDF.Writing.GZippedRdfAWriter) | | .html.gz<br>.xhtml.gz
+| GZipped HTML + RDFa |        | Graph | [GZippedRdfAParser](xref:VDS.RDF.Parsing.GZippedRdfAParser) | [GZippedRdfAWriter](xref:VDS.RDF.Writing.GZippedRdfAWriter) | | .html.gz<br>.xhtml.gz
 | CSV (Triples)     |          | Graph | N/A | [CsvWriter](xref:VDS.RDF.Writing.CsvWriter) | |
 | CSV (Quads)       |          | Store | N/A | [CsvStoreWriter](xref:VDS.RDF.Writing.CsvStoreWriter)|
 | TSV (Triples)     |          | Graph | N/A | [TsvWriter](xref:VDS.RDF.Writing.TsvWriter) |
 | TSV (Quads)       |          | Store | N/A | [TsvStoreWriter](xref:VDS.RDF.Writing.TsvStoreWriter)| text/html<br> application/xhtml+xml
 | SPARQL Results XML |         | SPARQL Results | [SparqlXmlParser](xref:VDS.RDF.Parsing.SparqlXmlParser) | [SparqlXmlWriter](xref:VDS.RDF.Writing.SparqlXmlWriter) | application/sparql-results+xml | .srx
-| GZipped SPARQL Results XML | | SPARQL Results | [GzippedSparqlXmlParser](xref:VDS.RDF.Parsing.GzippedSparqlXmlParser) | [GzippedSparqlXmlWriter](xref:VDS.RDF.Writing.GzippedSparqlXmlWriter) | | .srx.gz
+| GZipped SPARQL Results XML | | SPARQL Results | [GZippedSparqlXmlParser](xref:VDS.RDF.Parsing.GZippedSparqlXmlParser) | [GZippedSparqlXmlWriter](xref:VDS.RDF.Writing.GZippedSparqlXmlWriter) | | .srx.gz
 | SPARQL Results JSON |        | SPARQL Results | [SparqlJsonParser](xref:VDS.RDF.Parsing.SparqlJsonParser) | [SparqlJsonWriter](xref:VDS.RDF.Writing.SparqlJsonWriter) | application/sparql-results+json | .srj<br>.json
 | GZipped SPARQL Results JSON | | SPARQL Results | [GZippedSparqlJsonParser](xref:VDS.RDF.Parsing.GZippedSparqlJsonParser) | [GZippedSparqlJsonWriter](xref:VDS.RDF.Writing.GZippedSparqlJsonWriter) | | .srj.gz<br>.json.gz
 | SPARQL Results Boolean |     | SPARQL Results | [SparqlBooleanParser](xref:VDS.RDF.Parsing.SparqlBooleanParser) | N/A | text/boolean 

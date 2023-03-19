@@ -76,8 +76,6 @@
      href: storage_sparql_graph_store.md
    - name: Stardog
      href: storage_stardog.md
-   - name: Virtuoso
-     href: storage_virtuoso.md
 - name: Advanced SPARQL
   href: advanced_sparql.md
   items:
@@ -93,13 +91,6 @@
   href: ontology_api.md
 - name: Inference and Reasoning
   href: inference_and_reasoning.md
-- name: ASP.NET Integration
-  href: aspnet_integration.md
-  items:
-   - name: Creating SPARQL Endpoints
-     href: asp_creating_sparql_endpoints.md
-   - name: Deploying with rdfWebDeploy
-     href: asp_deploying_with_rdfwebdeploy.md
 - name: Dynamic API
   href: dynamic_api.md
 - name: Formatting API

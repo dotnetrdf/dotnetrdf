@@ -13,5 +13,3 @@ They can be configured quite simply as follows:
 _:factory a dnr:SparqlExpressionFactory ;
   dnr:type "YourNamespace.YourType, YourAssembly" .
 ```
-
-In this example an expression factory from an external namespace is configured. As described in [Configuration API - HTTP Handlers](http_handlers.md) expression factories can be attached to HTTP Handlers using the `dnr:expressionFactory` property.

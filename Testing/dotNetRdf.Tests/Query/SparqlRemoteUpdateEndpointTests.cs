@@ -32,7 +32,7 @@ namespace VDS.RDF.Query
 
             var endpoint = GetUpdateEndpoint();
             endpoint.Update(input);
-            var logEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/update")).ToList();
+            var logEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/update")).ToList();
             logEntries.Should().HaveCount(1);
             logEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
         }
@@ -46,7 +46,7 @@ namespace VDS.RDF.Query
 
             var endpoint = GetUpdateEndpoint();
             endpoint.Update(input.ToString());
-            var logEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, "/update")).ToList();
+            var logEntries = _fixture.Server.FindLogEntries(new RequestMessagePathMatcher(MatchBehaviour.AcceptOnMatch, MatchOperator.Or, "/update")).ToList();
             logEntries.Should().HaveCount(1);
             logEntries[0].RequestMessage.Method.Should().BeEquivalentTo("post");
         }

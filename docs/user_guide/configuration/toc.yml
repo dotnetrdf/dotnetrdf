@@ -14,8 +14,6 @@
   href: query_processors.md
 - name: Update Processors
   href: update_processors.md
-- name: Protocol Processors
-  href: protocol_processors.md
 - name: SPARQL Datasets
   href: sparql_datasets.md
 - name: SPARQL Expression Factories
@@ -30,12 +28,6 @@
   href: reasoners.md
 - name: Storage Providers
   href: storage_providers.md
-- name: User Groups
-  href: user_groups.md
-- name: Permissions
-  href: permissions.md
-- name: Users
-  href: users.md
 - name: Static Options
   href: options.md
 - name: Proxy Servers

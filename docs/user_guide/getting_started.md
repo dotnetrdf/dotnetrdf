@@ -14,9 +14,6 @@ We have split dotNetRDF into a number of separate packages to give developers a 
 
 We also provide a number of additional packages that extend the core APIs with additional functionality and support for other RDF-related standards.
 
-  `dotNetRdf.AspNet`
-  : Provides utilities for implementing RDF-related services under IIS.
-  
   `dotNetRdf.Data.DataTables`
   : Supports integration between the dotNetRDF API and `System.Data.DataTables`
   

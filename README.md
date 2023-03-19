@@ -8,7 +8,7 @@ dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .NET
 
 dotNetRDF is licensed under the MIT License, see the LICENSE.txt file in this repository
 
-The `main` branch of this repository is now used for development of dotNetRDF 3.0. This major update is currently a work in progress and introduces a number of breaking API changes, new features including support for [RDF-Star and SPARQL-Star](https://w3c.github.io/rdf-star/cg-spec), and it also restructures the packaging of the code to minimize dependencies and better separate out core functionality from higher-level APIs.
+The `main` branch of this repository is now used for development of dotNetRDF 3.x. This is a major update that introduces a number of breaking API changes, new features including support for [RDF-Star and SPARQL-Star](https://w3c.github.io/rdf-star/cg-spec), and it also restructures the packaging of the code to minimize dependencies and better separate out core functionality from higher-level APIs.
 For more details on what has changed, including the breaking changes that may require you to update your code, please read the section on [Upgrading to dotNetRDF 3.0](https://dotnetrdf.org/docs/latest/user_guide/upgrading_to_3_0.html) in the documentation.
 
 If you are looking for the code for the dotNetRDF 2.x release series [please check out the `maintenance/2.x` branch](https://github.com/dotnetrdf/dotnetrdf/tree/maintenance/2.x)
@@ -20,7 +20,6 @@ The restructured NuGet packages for dotNetRDF 3.0 are:
 - **dotNetRdf.AspNet** - provides a framework for hosting RDF data in an IIS web application. This includes implementations of the SPARQL Protocol and SPARQL Graph Store Protocol.
 - **dotNetRdf.Client** - provides support for working with a range of triple stores. 
 - **dotNetRdf.Data.DataTables** - a package which integrates RDF data with System.Data.DataTable
-- **dotNetRdf.Data.Virtuoso** - provides support for using OpenLink Virtuoso as a backend store with dotNetRDF.
 - **dotNetRdf.Dynamic** - provides an API for accessing and updating RDF graphs using .NET's dynamic objects.
 - **dotNetRdf.HtmlSchema** - provides an RDF writer that generates HTML documentation for an ontology that uses the RDF Schema vocabulary.
 - **dotNetRdf.Inferencing** - provides some basic inferencing support including RDF-Schema, SKOS and a small subset of OWL reasoning.
@@ -30,10 +29,7 @@ The restructured NuGet packages for dotNetRDF 3.0 are:
 - **dotNetRdf.Shacl** - provides an API for validating a graph using [SHACL](https://www.w3.org/TR/shacl/).
 - **dotNetRdf.Skos** - provides an API for working with a [SKOS](https://www.w3.org/TR/skos-reference/) taxonomy.
 
-As of release 3.0 of dotNetRDF, we provide support for the following .NET frameworks:
-
-- .NET 4.7.2+
-- .NET Standard 2.0
+As of release 3.0 of dotNetRDF, we provide support for .NET Standard 2.0. This ensures compatibility of the libraries with .NET Framwork from 4.7 forwards, .NET Core from 2.0 forwards and .NET from 5.0 forwards.
 
 The documentation and examples will be gradually updated and published on the "latest" branch of the documentation repository:
 
