@@ -53,7 +53,7 @@ namespace dotNetRdf.TestSuite.Rdfa
                     {
                         _output.WriteLine(hostLanguage);
                         var parser = new RdfAParser(RdfASyntax.RDFa_1_1);
-                        var g = new Graph { BaseUri = new Uri(baseUri, $"rdfa1.1/{hostLanguage}/{lastSegment}") };
+                        var g = new Graph { BaseUri = t.GetInputUrl("rdfa1.1", hostLanguage) };
                         var inputPath = t.GetInputPath("rdfa1.1", hostLanguage);
                         parser.Load(g, inputPath);
                         if (t.Results != null) {
@@ -73,7 +73,7 @@ namespace dotNetRdf.TestSuite.Rdfa
         [Fact]
         public void RunSingleTest()
         {
-            var testCase = "0006";
+            var testCase = "0008";
             RdfaTestData? testData = RdfaTests.Select(testParams => testParams[0]).OfType<RdfaTestData>()
                 .FirstOrDefault(testData => testData.Id.EndsWith(testCase));
             Assert.NotNull(testData);

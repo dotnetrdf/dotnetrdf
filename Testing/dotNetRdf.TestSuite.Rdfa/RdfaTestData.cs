@@ -38,6 +38,12 @@ namespace dotNetRdf.TestSupport
 
         public string GetInputPath(string version, string hostLanguage)
         {
+            var fileName = GetInputFileName(version, hostLanguage);
+            return Path.Combine(InputPath, $"..", version, hostLanguage, fileName);
+        }
+
+        private string GetInputFileName(string version, string hostLanguage)
+        {
             var fileName = Path.GetFileNameWithoutExtension(InputPath);
             if (hostLanguage.Contains("xhtml"))
             {
@@ -51,7 +57,14 @@ namespace dotNetRdf.TestSupport
             {
                 fileName += ".xml";
             }
-            return Path.Combine(InputPath, $"..", version, hostLanguage, fileName);
+
+            return fileName;
+        }
+
+        public Uri GetInputUrl(string version, string hostLanguage)
+        {
+            var fileName = GetInputFileName(version, hostLanguage);
+            return new Uri(TestNode.Uri, $"{version}/{hostLanguage}/{fileName}");
         }
 
         public string GetResultPath(string version, string hostLanguage)
