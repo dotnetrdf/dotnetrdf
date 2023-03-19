@@ -2,7 +2,6 @@ using dotNetRdf.TestSupport;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Writing.Formatting;
 using Xunit.Abstractions;
 
 namespace dotNetRdf.TestSuite.Rdfa
@@ -64,20 +63,51 @@ namespace dotNetRdf.TestSuite.Rdfa
                         }
                     } else
                     {
-                        _output.WriteLine($"Host language {hostLanguage} not found in {t.HostLangauges}");
+                        _output.WriteLine($"Host language {hostLanguage} not found in test host languages. SKIPPED.");
                     }
                 }
             }
         }
 
+        private void RunTestInternal(RdfaTestData t, string[] hostLanguages)
+        {
+            var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
+            var baseUri = new Uri(t.Id);
+            if (t.Versions.Contains("rdfa1.1"))
+            {
+                foreach (var hostLanguage in hostLanguages)
+                {
+                    if (t.HostLangauges.Contains(hostLanguage))
+                    {
+                        _output.WriteLine(hostLanguage);
+                        var parser = new RdfAParser(RdfASyntax.RDFa_1_1);
+                        var g = new Graph { BaseUri = t.GetInputUrl("rdfa1.1", hostLanguage) };
+                        var inputPath = t.GetInputPath("rdfa1.1", hostLanguage);
+                        parser.Load(g, inputPath);
+                        if (t.Results != null)
+                        {
+                            SparqlQuery q = queryParser.ParseFromFile(t.GetResultPath("rdfa1.1", hostLanguage));
+                            var results = g.ExecuteQuery(q);
+                            SparqlResultSet resultSet = Assert.IsType<SparqlResultSet>(results);
+                            Assert.Equal(t.ExpectedResults, resultSet.Result);
+                        }
+                    }
+                    else
+                    {
+                        _output.WriteLine($"Host language {hostLanguage} not found in {t.HostLangauges}");
+                    }
+                }
+            }
+        } 
+
         [Fact]
         public void RunSingleTest()
         {
-            var testCase = "0008";
+            var testCase = "0106";
             RdfaTestData? testData = RdfaTests.Select(testParams => testParams[0]).OfType<RdfaTestData>()
                 .FirstOrDefault(testData => testData.Id.EndsWith(testCase));
             Assert.NotNull(testData);
-            RunTest(testData);
+            RunTestInternal(testData, new []{"xhtml5"});
         }
     }
 }

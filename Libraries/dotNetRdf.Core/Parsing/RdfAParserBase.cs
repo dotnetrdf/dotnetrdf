@@ -530,6 +530,8 @@ namespace VDS.RDF.Parsing
                             break;
                         case "xmlns":
                             // Can use @xmlns to override the default namespace
+                            /*
+                             * - Breaks test suite 0063, 0087 and others when processing XHTML documents
                             uri = GetAttributeValue(attr);
                             if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
                             if (evalContext.NamespaceMap.HasNamespace(string.Empty))
@@ -540,6 +542,7 @@ namespace VDS.RDF.Parsing
                             evalContext.NamespaceMap.AddNamespace(string.Empty, context.UriFactory.Create(uri));
                             inScopePrefixes.Add(string.Empty);
                             noDefaultNamespace = true;
+                            */
                             break;
                         case "prefix":
                             // Can use @prefix to set multiple namespaces with one attribute
@@ -594,7 +597,7 @@ namespace VDS.RDF.Parsing
                                     foreach (KeyValuePair<string, string> ns in evalContext.LocalVocabulary.Namespaces)
                                     {
                                         uri = Tools.ResolveUri(ns.Value, baseUri);
-                                        if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
+                                        // if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
                                         if (evalContext.NamespaceMap.HasNamespace(ns.Key))
                                         {
                                             if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
@@ -1260,6 +1263,7 @@ namespace VDS.RDF.Parsing
         private List<INode> ParseComplexAttribute(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string value)
         {
             var nodes = new List<INode>();
+            if (string.IsNullOrWhiteSpace(value)) return nodes;
 
             string[] values;
             if (value.Contains(" "))
@@ -1571,7 +1575,7 @@ namespace VDS.RDF.Parsing
             if (value.StartsWith(":"))
             {
                 var reference = value.Substring(1);
-                return evalContext.NamespaceMap.HasNamespace(string.Empty) && IriSpecsHelper.IsIrelativeRef(value);
+                return evalContext.NamespaceMap.HasNamespace(string.Empty) && IriSpecsHelper.IsIrelativeRef(reference);
             }
             else if (value.Contains(':'))
             {
