@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
@@ -548,7 +549,7 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                ParsePrefixAttribute(context, evalContext, attr, baseUri, hiddenPrefixes, inScopePrefixes);
+                                ParsePrefixAttribute(context, evalContext, attr, baseUri, ref hiddenPrefixes, inScopePrefixes);
                             }
                             break;
                         case "rel":
@@ -1325,87 +1326,35 @@ namespace VDS.RDF.Parsing
             return nodes;
         }
 
-        private void ParsePrefixAttribute(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, TAttribute attr, string baseUri, Dictionary<string, Uri> hiddenPrefixes, List<string> inScopePrefixes)
+        private readonly Regex _prefixRegex = new Regex(@"\s*(?<prefix>[^\s]*):\s+(?<url>[^\s]+)", RegexOptions.Compiled);
+
+        private void ParsePrefixAttribute(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, TAttribute attr, string baseUri, ref Dictionary<string, Uri> hiddenPrefixes, List<string> inScopePrefixes)
         {
             // Do nothing if the @prefix attribute is empty
             if (GetAttributeValue(attr).Equals(string.Empty)) return;
-
-            var reader = new StringReader(GetAttributeValue(attr));
-            char next;
-            var canExit = false;
-
-            do
+            var attrValue = GetAttributeValue(attr);
+            MatchCollection matches = _prefixRegex.Matches(attrValue);
+            foreach (Match match in matches)
             {
-                var prefixData = new StringBuilder();
-                var uriData = new StringBuilder();
-
-                // Grab a Prefix - characters up to the next colon
-                next = (char)reader.Peek();
-                while (next != ':')
-                {
-                    // Add the Character and discard it
-                    prefixData.Append(next);
-                    reader.Read();
-                    if (reader.Peek() == -1)
-                    {
-                        OnWarning("Aborted parsing a prefix attribute since failed to find a prefix of the form prefix: from the following content: " + prefixData.ToString());
-                        return;
-                    }
-                    else
-                    {
-                        next = (char)reader.Peek();
-                    }
-                }
-
-                // Discard the colon
-                reader.Read();
-
-                // Discard the whitespace
-                next = (char)reader.Peek();
-                while (char.IsWhiteSpace(next))
-                {
-                    reader.Read();
-                    if (reader.Peek() == -1)
-                    {
-                        OnWarning("Aborted parsing a prefix attribute since reached the end of the attribute without finding a URI to go with the prefix '" + prefixData.ToString() + ":'");
-                        return;
-                    }
-                    else
-                    {
-                        next = (char)reader.Peek();
-                    }
-                }
-
-                // Grab the URI - characters up to the next whitespace or end of string
-                next = (char)reader.Peek();
-                while (!char.IsWhiteSpace(next))
-                {
-                    uriData.Append(next);
-                    reader.Read();
-                    if (reader.Peek() == -1)
-                    {
-                        // End of string so will exit after this
-                        canExit = true;
-                        break;
-                    }
-                    else
-                    {
-                        next = (char)reader.Peek();
-                    }
-                }
-
-                // Now resolve the URI and apply it
-                var uri = Tools.ResolveUri(uriData.ToString(), baseUri);
-                if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
-                var prefix = prefixData.ToString();
+                var prefix = match.Groups["prefix"].Value;
+                var u = match.Groups["url"].Value;
+                var uri = Tools.ResolveUri(u, baseUri);
                 if (evalContext.NamespaceMap.HasNamespace(prefix))
                 {
-                    if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
+                    hiddenPrefixes ??= new Dictionary<string, Uri>();
                     hiddenPrefixes.Add(prefix, context.UriFactory.Create(uri));
                 }
                 evalContext.NamespaceMap.AddNamespace(prefix, context.UriFactory.Create(uri));
                 inScopePrefixes.Add(prefix);
-            } while (!canExit);
+            }
+
+            if (matches.Count == 0)
+            {
+                if (!string.IsNullOrWhiteSpace(attrValue))
+                {
+                    OnWarning("Failed to parse prefix attribute: " + attrValue);
+                }
+            }
         }
 
         private IEnumerable<KeyValuePair<string, string>> GetPrefixMappings(RdfAParserContext<THtmlDocument> context, IGraph g)
