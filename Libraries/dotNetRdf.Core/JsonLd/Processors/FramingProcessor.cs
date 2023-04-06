@@ -341,8 +341,9 @@ namespace VDS.RDF.JsonLd.Processors
                         var reverseProperty = rp.Name;
                         JToken subFrame = rp.Value;
                         // 4.7.5.1 - Create a @reverse property in output with a new dictionary reverse dict as its value.
-                        var reverseDict = new JObject();
-                        output["@reverse"] = reverseDict;
+                        if (output["@reverse"] == null)
+                            output["@reverse"] = new JObject();
+                        var reverseDict = output["@reverse"];
 
                         // 4.7.5.2 - For each reverse id and node in the map of flattened subjects that has the property reverse property containing a node reference with an @id of id:
                         foreach (JProperty p in state.Subjects.Properties())
