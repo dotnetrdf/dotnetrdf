@@ -1,0 +1,23 @@
+{
+  "@context": [
+    "https://w3c.github.io/json-ld-api/tests/context.jsonld",
+    { "@base": "frame-manifest" }
+  ],
+  "@id": "",
+  "@type": "mf:Manifest",
+  "name": "Framing",
+  "description": "Additional tests for the JSON-LD [Framing Algorithm](https://www.w3.org/TR/json-ld11-framing/#framing-algorithm).",
+  "baseIri": "https://dotnetrdf.org/json-ld-framing/tests/",
+  "sequence": [
+    {
+      "@id": "#t0001",
+      "@type": [ "jld:PositiveEvaluationTest", "jld:FrameTest" ],
+      "name": "Frame with multiple @reverse",
+      "purpose": "Reproduce issue 556",
+      "option": { "processingMode": "json-ld-1.1" },
+      "input": "frame/0001-in.jsonld",
+      "frame": "frame/0001-frame.jsonld",
+      "expect":  "frame/0001-out.jsonld"
+    }
+  ]
+}
