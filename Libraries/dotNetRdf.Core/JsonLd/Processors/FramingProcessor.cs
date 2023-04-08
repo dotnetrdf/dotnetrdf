@@ -341,22 +341,19 @@ namespace VDS.RDF.JsonLd.Processors
                         var reverseProperty = rp.Name;
                         JToken subFrame = rp.Value;
                         // 4.7.5.1 - Create a @reverse property in output with a new dictionary reverse dict as its value.
-                        if (output["@reverse"] == null)
-                            output["@reverse"] = new JObject();
-                        var reverseDict = output["@reverse"];
+                        output["@reverse"] ??= new JObject();
+                        JToken reverseDict = output["@reverse"];
 
                         // 4.7.5.2 - For each reverse id and node in the map of flattened subjects that has the property reverse property containing a node reference with an @id of id:
                         foreach (JProperty p in state.Subjects.Properties())
                         {
                             var n = p.Value as JObject;
-                            var reversePropertyValues = n[reverseProperty] as JArray;
-                            if (reversePropertyValues == null) continue;
+                            if (n[reverseProperty] is not JArray reversePropertyValues) continue;
                             if (reversePropertyValues.Any(x => x["@id"]?.Value<string>().Equals(id) == true))
                             {
                                 // 4.7.5.2.1 - Add reverse property to reverse dict with a new empty array as its value.
                                 var reverseId = p.Name;
-                                if (reverseDict[reverseProperty] == null)
-                                    reverseDict[reverseProperty] = new JArray();
+                                reverseDict[reverseProperty] ??= new JArray();
                                 // 4.7.5.2.2 - Invoke the recursive algorithm using state, the reverse id as the sole member of a new subjects array, sub frame as frame, null as active property, and the array value of reverse property in reverse dict as parent.
                                 var oldEmbedded = state.Embedded;
                                 state.Embedded = true;
