@@ -38,6 +38,8 @@ namespace VDS.RDF.JsonLd
         public static IEnumerable<object[]> W3CFrameTests =>
             ProcessFrameManifest(Path.Combine("resources", "jsonld-framing11"), "frame-manifest.jsonld");
 
+        public static IEnumerable<object[]> DnrFrameTests =>
+            ProcessFrameManifest(Path.Combine("resources", "dnr-jsonld-framing11"), "frame-manifest.jsonld");
 
         private static IEnumerable<object[]> ProcessManifest(string resourceDirPath, string manifestPath, string skipTestsPath = null)
         {

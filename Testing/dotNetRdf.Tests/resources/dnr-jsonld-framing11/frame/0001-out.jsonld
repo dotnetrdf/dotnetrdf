@@ -1,0 +1,18 @@
+{
+  "@context": {
+    "ex": "http://example.com/",
+    "containedBy": {
+      "@reverse": "ex:contains"
+    },
+    "includedBy": {
+      "@reverse": "ex:includes"
+    }
+  },
+  "@id": "ex:1",
+  "containedBy": {
+    "@id": "ex:2"
+  },
+  "includedBy": {
+    "@id": "ex:3"
+  }
+}
