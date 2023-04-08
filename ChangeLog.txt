@@ -1,6 +1,8 @@
 ﻿Change Log
 ==========
 
+FIX: Fix for the JSON-LD Framing processor to correctly handle a frame with multiple @reverse properties. Thanks to @huibertalblas for the bug report and fix. (#556)
+
 3.0.0
 -----
 
