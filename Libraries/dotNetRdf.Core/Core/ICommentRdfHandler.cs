@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,51 +24,19 @@
 // </copyright>
 */
 
-using System;
-using System.Text.RegularExpressions;
-using System.Web;
-
-namespace VDS.RDF.Writing.Formatting
+namespace VDS.RDF
 {
     /// <summary>
-    /// Formatter for formatting as HTML.
+    /// Interface for Handlers which are able to accept comments.
     /// </summary>
-    public class HtmlFormatter : IUriFormatter, ICommentFormatter
+    public interface ICommentRdfHandler
+        : IRdfHandler
     {
         /// <summary>
-        /// Formats URIs using HTML encoding.
+        /// Handles a Comment.
         /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        public string FormatUri(Uri u)
-        {
-            return FormatUri(u.AbsoluteUri);
-        }
-
-        /// <summary>
-        /// Formats URIs using HTML encoding.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        public string FormatUri(string u)
-        {
-            return HttpUtility.HtmlEncode(u);
-        }
-
-        /// <summary>
-        /// Matches ">" or "->" at the beginning of string, and any hyphen that is followed by another hyphen or the end of the string.
-        /// </summary>
-        static readonly Regex commentHyphenRegex = new Regex(@"^(>|->)|(-)(?=-|$)", RegexOptions.Compiled);
-
-        /// <summary>
-        /// Formats comments in HTML.
-        /// </summary>
-        /// <param name="text">Comment text.</param>
-        /// <returns></returns>
-        public string FormatComment(string text)
-        {
-            text = WriterHelper.RemoveInvalidXmlChars(text);
-            return "<!--" + commentHyphenRegex.Replace(text, "$2\u200B$1") + "-->";
-        }
+        /// <param name="text">The text String of the Comment.</param>
+        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be aborted.</returns>
+        bool HandleComment(string text);
     }
 }

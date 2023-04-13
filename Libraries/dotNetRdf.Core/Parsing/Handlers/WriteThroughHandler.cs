@@ -259,6 +259,21 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        /// <summary>
+        /// Handles Comments passing them to the underlying formatter if applicable.
+        /// </summary>
+        /// <param name="text">Comment text.</param>
+        /// <returns></returns>
+        protected override bool HandleCommentInternal(string text)
+        {
+            if (_tripleFormatter is ICommentFormatter commentFormatter)
+            {
+                _writer.WriteLine(commentFormatter.FormatComment(text));
+            }
+
+            return true;
+        }
+
         private void MaybeFlush()
         {
             if (_written < FlushInterval)
