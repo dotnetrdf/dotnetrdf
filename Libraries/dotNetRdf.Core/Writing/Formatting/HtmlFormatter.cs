@@ -25,6 +25,7 @@
 */
 
 using System;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace VDS.RDF.Writing.Formatting
@@ -32,7 +33,7 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for formatting as HTML.
     /// </summary>
-    public class HtmlFormatter : IUriFormatter
+    public class HtmlFormatter : IUriFormatter, ICommentFormatter
     {
         /// <summary>
         /// Formats URIs using HTML encoding.
@@ -54,5 +55,20 @@ namespace VDS.RDF.Writing.Formatting
             return HttpUtility.HtmlEncode(u);
         }
 
+        /// <summary>
+        /// Matches ">" or "->" at the beginning of string, and any hyphen that is followed by another hyphen or the end of the string.
+        /// </summary>
+        static readonly Regex commentHyphenRegex = new Regex(@"^(>|->)|(-)(?=-|$)", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Formats comments in HTML.
+        /// </summary>
+        /// <param name="text">Comment text.</param>
+        /// <returns></returns>
+        public string FormatComment(string text)
+        {
+            text = WriterHelper.RemoveInvalidXmlChars(text);
+            return "<!--" + commentHyphenRegex.Replace(text, "$2\u200B$1") + "-->";
+        }
     }
 }
