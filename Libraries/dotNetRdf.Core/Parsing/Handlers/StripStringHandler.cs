@@ -99,6 +99,11 @@ namespace VDS.RDF.Parsing.Handlers
         /// Delegates namespace handling to inner handler.
         /// </summary>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri) => _handler.HandleNamespace(prefix, namespaceUri);
+        
+        /// <summary>
+        /// Delegates comment handling to inner handler.
+        /// </summary>
+        protected override bool HandleCommentInternal(string text) => (_handler as ICommentRdfHandler)?.HandleComment(text) ?? true;
 
         /// <summary>
         /// Gets whether inner handler accepts all triples.
