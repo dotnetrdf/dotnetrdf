@@ -772,6 +772,11 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
+        /// Matches control characters and invalid surrogate pairs.
+        /// </summary>
+        static readonly Regex invalidXmlChars = new Regex(@"[\x00-\x08\x0B\x0C\x0E-\x1F]+|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])", RegexOptions.Compiled);
+
+        /// <summary>
         /// Removes characters invalid in XML documents.
         /// </summary>
         /// <param name="content">The string to filter.</param>
@@ -780,6 +785,7 @@ namespace VDS.RDF.Writing
         /// </returns>
         public static string RemoveInvalidXmlChars(string content)
         {
+            content = invalidXmlChars.Replace(content, "");
             try
             {
                 return XmlConvert.VerifyXmlChars(content);
