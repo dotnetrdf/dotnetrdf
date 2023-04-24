@@ -103,11 +103,11 @@ namespace dotNetRdf.TestSuite.Rdfa
         [Fact]
         public void RunSingleTest()
         {
-            var testCase = "0106";
+            var testCase = "0175";
             RdfaTestData? testData = RdfaTests.Select(testParams => testParams[0]).OfType<RdfaTestData>()
                 .FirstOrDefault(testData => testData.Id.EndsWith(testCase));
             Assert.NotNull(testData);
-            RunTestInternal(testData, new []{"xhtml5"});
+            RunTestInternal(testData, new []{"html5"});
         }
     }
 }

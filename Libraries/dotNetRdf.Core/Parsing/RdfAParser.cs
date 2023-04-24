@@ -29,6 +29,8 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using System;
+using System.Linq;
 using VDS.RDF.Parsing.Contexts;
 
 namespace VDS.RDF.Parsing
@@ -43,6 +45,7 @@ namespace VDS.RDF.Parsing
     /// </remarks>
     public class RdfAParser : RdfAParserBase<HtmlDocument, HtmlNode, HtmlNode, HtmlAttribute>
     {
+        private Regex Html5DoctypeRegex = new Regex("^<!DOCTYPE\\s+HTML\\s?>", RegexOptions.IgnoreCase);
         /// <summary>
         /// Creates a new RDFa Parser which will auto-detect which RDFa version to use (assumes 1.1 if none explicitly specified).
         /// </summary>
@@ -75,7 +78,7 @@ namespace VDS.RDF.Parsing
         /// <inheritdoc/>
         protected override string GetAttribute(HtmlNode element, string attributeName)
         {
-            return element.Attributes[attributeName].Value;
+            return element.Attributes[attributeName].DeEntitizeValue;
         }
 
         /// <inheritdoc/>
@@ -96,12 +99,23 @@ namespace VDS.RDF.Parsing
             HtmlNodeCollection docTypes = document.DocumentNode.SelectNodes("comment()");
             if (docTypes != null)
             {
-                foreach (HtmlNode docType in docTypes)
+                foreach (HtmlCommentNode docType in docTypes.OfType<HtmlCommentNode>())
                 {
-                    if (docType.InnerText.StartsWith("<!DOCTYPE"))
+                    if (Html5DoctypeRegex.IsMatch(docType.Comment))
                     {
+                        // HTML5 documents don't support @xml:base
+                        return false;
+                    }
+
+                    if (docType.Comment.StartsWith("<!DOCTYPE", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (docType.Comment.Contains("\"-//W3C//DTD HTML 4.01"))
+                        {
+                            // HTML4 documents don't support @xml:base
+                            return false;
+                        }
                         // Extract the Document Type
-                        Match dtd = Regex.Match(docType.InnerText, "\"([^\"]+)\">");
+                        Match dtd = Regex.Match(docType.Comment, "\"([^\"]+)\">");
                         if (dtd.Success)
                         {
                             if (dtd.Groups[1].Value.Equals(XHtmlPlusRdfADoctype))

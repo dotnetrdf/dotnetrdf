@@ -100,7 +100,7 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public class XHtmlRdfAVocabulary : IRdfAVocabulary
     {
-        private string[] _terms = new string[]
+        private readonly string[] _terms = new string[]
         {
             "alternate",
             "appendix",
@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public bool HasTerm(string term)
         {
-            return _terms.Contains(term);
+            return _terms.Contains(term.ToLowerInvariant());
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public string ResolveTerm(string term)
         {
-            return RdfAParser.XHtmlVocabNamespace + term;
+            return RdfAParser.XHtmlVocabNamespace + term.ToLowerInvariant();
         }
 
         /// <summary>
