@@ -89,18 +89,163 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets the Namespace Mappings.
         /// </summary>
+        [Obsolete("Use the NamespaceMapper property to access the namespace map")]
         IEnumerable<KeyValuePair<string, string>> Namespaces
         {
             get;
+        }
+
+        /// <summary>
+        /// Gets the namespace mappings.
+        /// </summary>
+        INamespaceMapper NamespaceMap { get; }
+
+        /// <summary>
+        /// Resolve a CURIE using the namespaces defined in this vocabulary.
+        /// </summary>
+        /// <param name="curie">The CURIE string to resolve.</param>
+        /// <param name="baseUri"></param>
+        /// <returns></returns>
+        string ResolveCurie(string curie, Uri baseUri);
+
+    }
+
+    /// <summary>
+    /// Base implementation of the <see cref="IRdfAVocabulary"/> interface.
+    /// </summary>
+    public class TermMappings: IRdfAVocabulary
+    {
+        private readonly Dictionary<string, string> _termMap;
+        private readonly NamespaceMapper _namespaceMapper;
+
+        /// <inheritdoc />
+        public string VocabularyUri { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Create a new empty vocabulary.
+        /// </summary>
+        public TermMappings()
+        {
+            _termMap = new Dictionary<string, string>();
+            _namespaceMapper = new NamespaceMapper(true);
+        }
+
+        /// <summary>
+        /// Create a new vocabulary with the specified URI, terms and namespace prefixes.
+        /// </summary>
+        /// <param name="vocabularyUri">The base URI for the vocabulary. Used to resolve terms to IRIs.</param>
+        /// <param name="terms">The list of terms defined by the vocabulary.</param>
+        /// <param name="prefixMappings">The namespace prefixes defined by the vocabulary.</param>
+        public TermMappings(Uri vocabularyUri, IEnumerable<string> terms = null,
+            IEnumerable<KeyValuePair<string, Uri>> prefixMappings = null)
+        {
+            _termMap = terms?.ToDictionary(t=>t.ToLowerInvariant(), t=>vocabularyUri + t) ?? new Dictionary<string, string>();
+            _namespaceMapper = new NamespaceMapper(true);
+            if (prefixMappings != null)
+            {
+                foreach (KeyValuePair<string, Uri> entry in prefixMappings)
+                {
+                    _namespaceMapper.AddNamespace(entry.Key, entry.Value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create a new vocabulary from an existing vocabulary.
+        /// </summary>
+        /// <param name="vocabulary">The base vocabulary to copy.</param>
+        public TermMappings(IRdfAVocabulary vocabulary)
+        {
+            VocabularyUri = vocabulary.VocabularyUri;
+            _namespaceMapper = new NamespaceMapper(vocabulary.NamespaceMap);
+            if (vocabulary is TermMappings mappings)
+            {
+                _termMap = new Dictionary<string, string>(mappings._termMap);
+            }
+            else
+            {
+                _termMap = new Dictionary<string, string>();
+                foreach (KeyValuePair<string, string> entry in vocabulary.Mappings)
+                {
+                    _termMap[entry.Key.ToLowerInvariant()] = entry.Value;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public bool HasTerm(string term)
+        {
+            return _termMap.ContainsKey(term.ToLowerInvariant());
+        }
+
+        /// <inheritdoc />
+        public string ResolveTerm(string term)
+        {
+            var lcTerm = term.ToLowerInvariant();
+            if (_termMap.TryGetValue(lcTerm, out var mapping))
+            {
+                return mapping;
+            }
+
+            if (!string.IsNullOrEmpty(VocabularyUri))
+            {
+                return VocabularyUri + lcTerm;
+            }
+            return null;
+        }
+
+        /// <inheritdoc />
+        public void AddTerm(string term, string uri)
+        {
+            _termMap[term.ToLowerInvariant()] = uri;
+        }
+
+        /// <inheritdoc />
+        public void AddNamespace(string prefix, string nsUri)
+        {
+            _namespaceMapper.AddNamespace(prefix, new Uri(nsUri));
+        }
+
+        /// <inheritdoc />
+        public void Merge(IRdfAVocabulary vocab)
+        {
+            foreach (KeyValuePair<string, string> mapping in vocab.Mappings)
+            {
+                _termMap[mapping.Key] = mapping.Value;
+            }
+
+            foreach (var importPrefix in vocab.NamespaceMap.Prefixes)
+            {
+                _namespaceMapper.AddNamespace(importPrefix, vocab.NamespaceMap.GetNamespaceUri(importPrefix));
+            }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<KeyValuePair<string, string>> Mappings => _termMap;
+
+        /// <inheritdoc />
+        public IEnumerable<KeyValuePair<string, string>> Namespaces => _namespaceMapper.Prefixes.Select(p=> new KeyValuePair<string, string>(p, _namespaceMapper.GetNamespaceUri(p).AbsoluteUri));
+
+        /// <inheritdoc />
+        public INamespaceMapper NamespaceMap => _namespaceMapper;
+        /// <inheritdoc />
+        public string ResolveCurie(string curie, Uri baseUri)
+        {
+            return Tools.ResolveQName(curie, _namespaceMapper, baseUri);
         }
     }
 
     /// <summary>
     /// Vocabulary for XHTML+RDFa (and HTML+RDFa).
     /// </summary>
-    public class XHtmlRdfAVocabulary : IRdfAVocabulary
+    public class XHtmlRdfAVocabulary : TermMappings
     {
-        private readonly string[] _terms = new string[]
+        /// <summary>
+        /// Construct a new XHTML+RDFa vocabulary definition.
+        /// </summary>
+        public XHtmlRdfAVocabulary():base(new Uri(RdfAParser.XHtmlVocabNamespace), Terms, 
+            VocabNamespaces) {}
+        private static readonly string[] Terms = new[]
         {
             "alternate",
             "appendix",
@@ -129,107 +274,62 @@ namespace VDS.RDF.Parsing
             "up",
         };
 
-        /// <summary>
-        /// Gets whether the Vocabulary contains a Term.
-        /// </summary>
-        /// <param name="term">Term.</param>
-        /// <returns></returns>
-        public bool HasTerm(string term)
+        private static readonly Dictionary<string, Uri> VocabNamespaces = new()
         {
-            return _terms.Contains(term.ToLowerInvariant());
-        }
-
-        /// <summary>
-        /// Resolves a Term in the Vocabulary.
-        /// </summary>
-        /// <param name="term">Term.</param>
-        /// <returns></returns>
-        public string ResolveTerm(string term)
-        {
-            return RdfAParser.XHtmlVocabNamespace + term.ToLowerInvariant();
-        }
-
-        /// <summary>
-        /// Adds a Term to the Vocabulary.
-        /// </summary>
-        /// <param name="term">Term.</param>
-        /// <param name="uri">URI.</param>
-        /// <exception cref="NotSupportedException">Thrown since this vocabulary is fixed and cannot be changed.</exception>
-        public void AddTerm(string term, string uri)
-        {
-            throw new NotSupportedException("Cannot add a term to a fixed vocabulary");
-        }
-
-        /// <summary>
-        /// Adds a Namespace to the Vocabulary.
-        /// </summary>
-        /// <param name="prefix">Prefix.</param>
-        /// <param name="nsUri">Namespace URI.</param>
-        /// <exception cref="NotSupportedException">Thrown since this vocabulary is fixed and cannot be changed.</exception>
-        public void AddNamespace(string prefix, string nsUri)
-        {
-            throw new NotSupportedException("Cannot add a namespace to a fixed vocabulary");
-        }
-
-        /// <summary>
-        /// Merges another Vocabulary into this one.
-        /// </summary>
-        /// <param name="vocab">Vocabulary.</param>
-        /// <exception cref="NotSupportedException">Thrown since this vocabulary is fixed and cannot be changed.</exception>
-        public void Merge(IRdfAVocabulary vocab)
-        {
-            throw new NotSupportedException("Cannot merge a vocabulary into a fixed vocabulary");
-        }
-
-        /// <summary>
-        /// Gets the Term Mappings.
-        /// </summary>
-        public IEnumerable<KeyValuePair<string, string>> Mappings
-        {
-            get
-            {
-                return (from t in _terms
-                        select new KeyValuePair<string, string>(t, RdfAParser.XHtmlVocabNamespace + t));
-            }
-        }
-
-        /// <summary>
-        /// Gets the Namespace Mappings.
-        /// </summary>
-        public IEnumerable<KeyValuePair<string, string>> Namespaces
-        {
-            get
-            {
-                return Enumerable.Empty<KeyValuePair<string, string>>();
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Vocabulary URI.
-        /// </summary>
-        /// <exception cref="NotSupportedException">Set throws this since this vocabulary is fixed and cannot be changed.</exception>
-        public string VocabularyUri
-        {
-            get
-            {
-                return RdfAParser.XHtmlVocabNamespace;
-            }
-            set
-            {
-                throw new NotSupportedException("Cannot change the Vocabulary URI of a fixed vocabulary");
-            }
-        }
+            { "dcat", new Uri("http://www.w3.org/ns/dcat#") },
+            { "grddl", new Uri("http://www.w3.org/2003/g/data-view#") },
+            { "as", new Uri("https://www.w3.org/ns/activitystreams#") },
+            { "duv", new Uri("https://www.w3.org/ns/duv#") },
+            { "csvw", new Uri("http://www.w3.org/ns/csvw#") },
+            { "odrl", new Uri("http://www.w3.org/ns/odrl/2/") },
+            { "oa", new Uri("http://www.w3.org/ns/oa#") },
+            { "ma", new Uri("http://www.w3.org/ns/ma-ont#") },
+            { "dqv", new Uri("http://www.w3.org/ns/dqv#") },
+            { "org", new Uri("http://www.w3.org/ns/org#") },
+            { "prov", new Uri("http://www.w3.org/ns/prov#") },
+            { "ldp", new Uri("http://www.w3.org/ns/ldp#") },
+            { "qb", new Uri("http://purl.org/linked-data/cube#") },
+            { "rdf", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#") },
+            { "owl", new Uri("http://www.w3.org/2002/07/owl#") },
+            { "rdfa", new Uri("http://www.w3.org/ns/rdfa#") },
+            { "sd", new Uri("http://www.w3.org/ns/sparql-service-description#") },
+            { "jsonld", new Uri("http://www.w3.org/ns/json-ld#") },
+            { "skosxl", new Uri("http://www.w3.org/2008/05/skos-xl#") },
+            { "time", new Uri("http://www.w3.org/2006/time#") },
+            { "sosa", new Uri("http://www.w3.org/ns/sosa/") },
+            { "ssn", new Uri("http://www.w3.org/ns/ssn/") },
+            { "void", new Uri("http://rdfs.org/ns/void#") },
+            { "wdr", new Uri("http://www.w3.org/2007/05/powder#") },
+            { "wdrs", new Uri("http://www.w3.org/2007/05/powder-s#") },
+            { "xml", new Uri("http://www.w3.org/XML/1998/namespace") },
+            { "xsd", new Uri("http://www.w3.org/2001/XMLSchema#") },
+            { "xhv", new Uri("http://www.w3.org/1999/xhtml/vocab#") },
+            { "rr", new Uri("http://www.w3.org/ns/r2rml#") },
+            { "rdfs", new Uri("http://www.w3.org/2000/01/rdf-schema#") },
+            { "dc", new Uri("http://purl.org/dc/terms/") },
+            { "cc", new Uri("http://creativecommons.org/ns#") },
+            { "ctag", new Uri("http://commontag.org/ns#") },
+            { "dcterms", new Uri("http://purl.org/dc/terms/") },
+            { "dc11", new Uri("http://purl.org/dc/elements/1.1/") },
+            { "gr", new Uri("http://purl.org/goodrelations/v1#") },
+            { "rev", new Uri("http://purl.org/stuff/rev#") },
+            { "foaf", new Uri("http://xmlns.com/foaf/0.1/") },
+            { "v", new Uri("http://rdf.data-vocabulary.org/#") },
+            { "og", new Uri("http://ogp.me/ns#") },
+            { "sioc", new Uri("http://rdfs.org/sioc/ns#") },
+            { "schema", new Uri("http://schema.org/") },
+            { "ical", new Uri("http://www.w3.org/2002/12/cal/icaltzd#") },
+            { "vcard", new Uri("http://www.w3.org/2006/vcard/ns#") },
+            { "skos", new Uri("http://www.w3.org/2004/02/skos/core#") },
+            { "rif", new Uri("http://www.w3.org/2007/rif#") },
+        };
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Represents a dynamic vocabulary for RDFa.
     /// </summary>
-    public class TermMappings : IRdfAVocabulary
+    public class TermMappings : BaseRdfAVocabulary
     {
-        private Dictionary<string, string> _terms = new Dictionary<string, string>();
-        private Dictionary<string, string> _namespaces = new Dictionary<string, string>();
-        private string _vocabUri = string.Empty;
-
         /// <summary>
         /// Creates a new set of Term Mappings.
         /// </summary>
@@ -241,9 +341,8 @@ namespace VDS.RDF.Parsing
         /// Creates a new set of Term Mappings with the given Vocabulary URI.
         /// </summary>
         /// <param name="vocabUri">Vocabulary URI.</param>
-        public TermMappings(string vocabUri)
+        public TermMappings(string vocabUri) : base(new Uri(vocabUri), Array.Empty<string>(), Array.Empty<KeyValuePair<string, Uri>>())
         {
-            _vocabUri = vocabUri;
         }
 
         /// <summary>
@@ -303,7 +402,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw new RdfParseException("The Term '" + term + "' cannot be resolved to a valid URI as it is not a term in this vocabularly nor is there a vocabulary URI defined");
+                throw new RdfParseException("The Term '" + term + "' cannot be resolved to a valid URI as it is not a term in this vocabulary nor is there a vocabulary URI defined");
             }
 
         }
@@ -378,5 +477,5 @@ namespace VDS.RDF.Parsing
                 _vocabUri = value;
             }
         }
-    }
+    }*/
 }

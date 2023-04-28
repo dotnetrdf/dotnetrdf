@@ -125,7 +125,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Default Vocabularly.
+        /// Gets/Sets the Default Vocabulary.
         /// </summary>
         public IRdfAVocabulary DefaultVocabulary
         {

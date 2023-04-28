@@ -61,6 +61,15 @@ namespace VDS.RDF.Parsing
         {
         }
 
+        /// <summary>
+        /// Creates a new RDFa parser with the provided configuration options.
+        /// </summary>
+        /// <param name="parserOptions">The options to use to configure the parser.</param>
+        public RdfAParser(RdfAParserOptions parserOptions) : base(parserOptions)
+        {
+
+        }
+
         /// <inheritdoc/>
         protected override HtmlDocument LoadAndParse(TextReader input)
         {
@@ -196,6 +205,12 @@ namespace VDS.RDF.Parsing
         protected override bool IsTextNode(HtmlNode node)
         {
             return node.NodeType == HtmlNodeType.Text;
+        }
+
+        /// <inheritdoc/>
+        protected override bool IsRoot(HtmlNode node)
+        {
+            return node.ParentNode?.NodeType == HtmlNodeType.Document && node.NodeType == HtmlNodeType.Element;
         }
 
         /// <inheritdoc/>

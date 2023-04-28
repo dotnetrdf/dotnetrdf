@@ -58,7 +58,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Namespace URI for XHTML.
         /// </summary>
-        public const string XHtmlNamespace = "http://www.w3.org/1999/xhtml#";
+        public const string XHtmlNamespace = "http://www.w3.org/1999/xhtml";
         /// <summary>
         /// Namespace URI for RDFa.
         /// </summary>
@@ -73,6 +73,8 @@ namespace VDS.RDF.Parsing
                              HtmlPlusRdfA10Version = "HTML+RDFa 1.0";
 
         private readonly RdfASyntax _syntax = RdfASyntax.AutoDetectLegacy;
+        private readonly RdfAParserOptions _options = null;
+
 
         /// <summary>
         /// Creates a new RDFa Parser which will auto-detect which RDFa version to use (assumes 1.1 if none explicitly specified).
@@ -89,6 +91,16 @@ namespace VDS.RDF.Parsing
         protected RdfAParserBase(RdfASyntax syntax)
         {
             _syntax = syntax;
+        }
+
+        /// <summary>
+        /// Creates a new RDFa Parser configured with the provided parser options.
+        /// </summary>
+        /// <param name="options">The parser options settings.</param>
+        protected RdfAParserBase(RdfAParserOptions options)
+        {
+            _syntax = options.Syntax;
+            _options = options;
         }
 
         /// <summary>
@@ -265,7 +277,7 @@ namespace VDS.RDF.Parsing
         protected abstract TElement GetBaseElement(THtmlDocument document);
 
         /// <summary>
-        /// Deterine if the HTML document can have an xml:base element.
+        /// Determine if the HTML document can have an xml:base element.
         /// </summary>
         /// <param name="document"></param>
         /// <returns></returns>
@@ -348,6 +360,13 @@ namespace VDS.RDF.Parsing
         /// <returns>True if <paramref name="node"/> is a text node, false otherwise.</returns>
         protected abstract bool IsTextNode(TNode node);
 
+        /// <summary>
+        /// Determine if a node in the parsed HTML document tree is the root document node.
+        /// </summary>
+        /// <param name="node">The node to evaluate/</param>
+        /// <returns>True if <paramref name="node"/> is a root node, false otherwise.</returns>
+        protected abstract bool IsRoot(TNode node);
+
         private void Parse(RdfAParserContext<THtmlDocument> context)
         {
             try
@@ -355,7 +374,7 @@ namespace VDS.RDF.Parsing
                 context.Handler.StartRdf();
 
                 // Setup the basic evaluation context and start processing
-                var evalContext = new RdfAEvaluationContext(context.BaseUri);
+                var evalContext = new RdfAEvaluationContext(_options?.Base ?? context.BaseUri);
                 evalContext.NamespaceMap.AddNamespace(string.Empty, context.UriFactory.Create(XHtmlVocabNamespace));
 
                 // Set the Default and Local Vocabulary
@@ -526,6 +545,12 @@ namespace VDS.RDF.Parsing
                                 oldBase = evalContext.BaseUri;
                                 baseChanged = true;
                                 evalContext.BaseUri = context.UriFactory.Create(baseUri);
+                                if (evalContext.ParentSubject == null ||
+                                    (evalContext.ParentSubject is IUriNode parentUriNode &&
+                                     parentUriNode.Uri.Equals(oldBase)))
+                                {
+                                    evalContext.ParentSubject = context.Handler.CreateUriNode(evalContext.BaseUri);
+                                }
                             }
                             break;
                         case "xmlns":
@@ -658,7 +683,7 @@ namespace VDS.RDF.Parsing
                     // New Subject is the URI
                     newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
                 }
-                else if (GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
+                else if (IsRoot(currElement) || GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
                 {
                     // New Subject is the Base URI
                     try
@@ -705,7 +730,7 @@ namespace VDS.RDF.Parsing
                     // New Subject is the URI
                     newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
                 }
-                else if (GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
+                else if (IsRoot(currElement) || GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
                 {
                     // New Subject is the Base URI
                     try
@@ -754,17 +779,14 @@ namespace VDS.RDF.Parsing
 #region Step 8 of the RDFa Processing Rules
 
             // If the Subject is not a null then we'll generate type triples if there's any @typeof attributes
-            if (newSubj != null)
+            if (newSubj != null && type)
             {
                 INode rdfType = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-                if (type)
+                foreach (INode dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "typeof")))
                 {
-                    foreach (INode dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "typeof")))
+                    if (!context.Handler.HandleTriple(new Triple(newSubj, rdfType, dtObj)))
                     {
-                        if (!context.Handler.HandleTriple(new Triple(newSubj, rdfType, dtObj)))
-                        {
-                            ParserHelper.Stop();
-                        }
+                        ParserHelper.Stop();
                     }
                 }
             }
@@ -844,7 +866,7 @@ namespace VDS.RDF.Parsing
                     // Resolve the Datatype attribute into URIs
                     try
                     {
-                        dtNode = ResolveTermOrCurieOrUri(context, evalContext, GetAttribute(currElement, "datatype"));
+                        dtNode = ResolveTermOrCurieOrAbsUri(context, evalContext, GetAttribute(currElement, "datatype"));
                     }
                     catch (RdfException)
                     {
@@ -867,7 +889,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            // Value is concatentation of child text nodes
+                            // Value is concatenation of child text nodes
                             var lit = new StringBuilder();
                             foreach (TNode n in GetChildren(currElement))
                             {
@@ -876,21 +898,14 @@ namespace VDS.RDF.Parsing
                             currLiteral = context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()), dt);
                         }
                     }
-                    else if (context.Syntax == RdfASyntax.RDFa_1_0)
+                    else
                     {
-                        // It's an XML Literal - this is now RDFa 1.0 Only
-                        // This is an incompatability with RDFa 1.1
+                        // It's an explicitly declared XML Literal
                         foreach (TElement child in GetChildren(currElement).OfType<TElement>().Where(c=>!IsTextNode(c)))
                         {
                             ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
                         }
                         currLiteral = context.Handler.CreateLiteralNode(GetInnerHtml(currElement), dt);
-                    }
-                    else if (context.Syntax == RdfASyntax.RDFa_1_1)
-                    {
-                        // For RDFa 1.1 we now treat as a plain literal instead
-                        // Setting this to null forces us to go into the if that processes plain literals
-                        dtNode = null;
                     }
                 }
 
@@ -914,25 +929,27 @@ namespace VDS.RDF.Parsing
                     }
                     else if (GetChildren(currElement).All(IsTextNode))
                     {
-                        // Value is concatenation of all Text Child Nodes
-                        var lit = new StringBuilder();
-                        foreach (TNode n in GetChildren(currElement).Where(IsTextNode))
-                        {
-                            lit.Append(GetInnerText(n));
-                        }
-
-                        currLiteral = string.IsNullOrEmpty(lang)
-                            ? context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()))
-                            : context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()), lang);
+                        currLiteral = ProcessPlainLiteral(context, currElement, lang);
                     }
                     else if (!datatype || (datatype && GetAttribute(currElement, "datatype").Equals(string.Empty)))
                     {
-                        // Value is an XML Literal
-                        foreach (TElement child in GetChildren(currElement).OfType<TElement>().Where(c=>!IsTextNode(c)))
+                        if (context.Syntax == RdfASyntax.RDFa_1_0)
                         {
-                            ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
+                            // Value is an XML Literal
+                            foreach (TElement child in GetChildren(currElement).OfType<TElement>()
+                                         .Where(c => !IsTextNode(c)))
+                            {
+                                ProcessXmlLiteral(evalContext, child, noDefaultNamespace);
+                            }
+
+                            currLiteral = context.Handler.CreateLiteralNode(GetInnerHtml(currElement),
+                                context.UriFactory.Create(RdfSpecsHelper.RdfXmlLiteral));
                         }
-                        currLiteral = context.Handler.CreateLiteralNode(GetInnerHtml(currElement), context.UriFactory.Create(RdfSpecsHelper.RdfXmlLiteral));
+                        else
+                        {
+                            // Value is a plain literal
+                            currLiteral = ProcessPlainLiteral(context, currElement, lang);
+                        }
                     }
                 }
 
@@ -1064,6 +1081,21 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        private INode ProcessPlainLiteral(IParserContext context, TElement element, string lang)
+        {
+            // Value is concatenation of all Text Child Nodes
+            var lit = new StringBuilder();
+            foreach (TNode n in GetChildren(element))
+            {
+                lit.Append(GetInnerText(n));
+            }
+
+            INode literalNode = string.IsNullOrEmpty(lang)
+                ? context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()))
+                : context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(lit.ToString()), lang);
+            return literalNode;
+        }
+
         /// <summary>
         /// Resolves a CURIE to a Node.
         /// </summary>
@@ -1087,20 +1119,45 @@ namespace VDS.RDF.Parsing
                 {
                     return context.Handler.CreateUriNode(context.UriFactory.Create(XHtmlVocabNamespace + curie.Substring(1)));
                 }
-                else if (curie.Contains(":"))
+
+                if (curie.Contains(":"))
                 {
-                    return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
+                    return context.Handler.CreateUriNode(
+                        context.UriFactory.Create(
+                            evalContext.LocalVocabulary.ResolveCurie(curie, evalContext.BaseUri)));
+                    // return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
                 }
-                else
-                {
-                    throw new RdfParseException("The value '" + curie + "' is not valid as a CURIE as it does not have a prefix");
-                }
+
+                throw new RdfParseException("The value '" + curie + "' is not valid as a CURIE as it does not have a prefix");
             }
 
             // RDFa 1.1
-            return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
+            var resolvedIri = ResolveQName(context, evalContext, curie);
+            if (resolvedIri != null)
+            {
+                return context.Handler.CreateUriNode(context.UriFactory.Create(resolvedIri));
+            }
+
+            throw new RdfParseException($"Could not resolve the value '${curie}' as a CURIE.");
         }
 
+        private string ResolveQName(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext,
+            string curie)
+        {
+            var parts = curie.Split(new[] { ':' }, 2);
+            if (parts.Length == 1) return evalContext.BaseUri + parts[0];
+            if (evalContext.NamespaceMap.HasNamespace(parts[0]))
+            {
+                return evalContext.NamespaceMap.GetNamespaceUri(parts[0]).AbsoluteUri + parts[1];
+            }
+
+            if (context.DefaultVocabulary.NamespaceMap.HasNamespace(parts[0]))
+            {
+                return context.DefaultVocabulary.NamespaceMap.GetNamespaceUri(parts[0]).AbsoluteUri + parts[1];
+            }
+
+            return null;
+        }
         /// <summary>
         /// Resolves an Attribute which may be a CURIE/URI to a Node.
         /// </summary>
@@ -1119,7 +1176,7 @@ namespace VDS.RDF.Parsing
                     return ResolveCurie(context, evalContext, curie);
                 }
 
-                if (IsCurie(evalContext, uriref))
+                if (IsCurie(context, evalContext, uriref))
                 {
                     // CURIE
                     return ResolveCurie(context, evalContext, uriref);
@@ -1220,7 +1277,7 @@ namespace VDS.RDF.Parsing
             throw new RdfParseException("Unable to resolve a Term since there is no appropriate Local/Default Vocabulary in scope");
         }
 
-        private INode ResolveTermOrCurieOrUri(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string value)
+        private INode ResolveTermOrCurieOrAbsUri(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string value)
         {
             if (IsTerm(value))
             {
@@ -1232,12 +1289,22 @@ namespace VDS.RDF.Parsing
                 return context.Handler.CreateBlankNode(value.Substring(2));
             }
 
-            if (IsCurie(evalContext, value))
+            if (IsCurie(context, evalContext, value))
             {
                 return ResolveCurie(context, evalContext, value);
             }
 
-            return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(value, evalContext.BaseUri.ToSafeString())));
+            try
+            {
+                Uri uri = context.UriFactory.Create(value);
+                if (uri.IsAbsoluteUri) return context.Handler.CreateUriNode(uri);
+            }
+            catch (UriFormatException)
+            {
+                // Fall through to raise the RdfParseException
+            }
+
+            throw new RdfParseException("Unable to resolve the value '" + value + "' as a Term, CURIE or absolute URI");
         }
 
         /// <summary>
@@ -1260,14 +1327,14 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    INode n = ResolveTermOrCurieOrUri(context, evalContext, val);
+                    INode n = ResolveTermOrCurieOrAbsUri(context, evalContext, val);
                     nodes.Add(n);
                 }
                 catch
                 {
                     // Errors are ignored, they don't produce a URI
                     // Raise a warning anyway
-                    OnWarning("Ignoring the value '" + val + "' since this is not a valid Term/CURIE/URI or it cannot be resolved into a URI given the in-scope Namespace Prefixes and Base URI");
+                    OnWarning("Ignoring the value '" + val + "' since this is not a valid Term/CURIE/URI or it cannot be resolved into a URI given the in-scope Namespace Prefixes");
                 }
             }
 
@@ -1317,6 +1384,7 @@ namespace VDS.RDF.Parsing
         private readonly Regex _tokenListRegex = new(@"(?<token>[^ \t\r\n]+)", RegexOptions.Compiled);
 
         private readonly Regex _prefixRegex = new(@"\s*(?<prefix>[^\s]*):\s+(?<url>[^\s]+)", RegexOptions.Compiled);
+        private readonly Regex _curieRegex = new(@"(?<prefix>[^:]+):(?<suffix>[^\s]+)", RegexOptions.Compiled);
 
         private void ParsePrefixAttribute(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, TAttribute attr, string baseUri, ref Dictionary<string, Uri> hiddenPrefixes, List<string> inScopePrefixes)
         {
@@ -1338,6 +1406,7 @@ namespace VDS.RDF.Parsing
                 {
                     hiddenPrefixes ??= new Dictionary<string, Uri>();
                     hiddenPrefixes.Add(prefix, context.UriFactory.Create(uri));
+                    evalContext.NamespaceMap.RemoveNamespace(prefix);
                 }
                 evalContext.NamespaceMap.AddNamespace(prefix, context.UriFactory.Create(uri));
                 inScopePrefixes.Add(prefix);
@@ -1493,6 +1562,11 @@ namespace VDS.RDF.Parsing
             else
             {
                 evalContext.LocalVocabulary.VocabularyUri = GetAttributeValue(attr);
+                // Record the use of the new vocabulary
+                context.Handler.HandleTriple(new Triple(
+                    context.Handler.CreateUriNode(evalContext.BaseUri),
+                    context.Handler.CreateUriNode(context.UriFactory.Create(RdfANamespace + "usesVocabulary")),
+                    context.Handler.CreateUriNode(context.UriFactory.Create(evalContext.LocalVocabulary.VocabularyUri))));
             }
         }
 
@@ -1503,6 +1577,8 @@ namespace VDS.RDF.Parsing
         /// <param name="node"></param>
         protected abstract void GrabText(StringBuilder output, TNode node);
 
+        private readonly string[] _curieAttributes =
+            new[] { "about", "resource", "datatype", "property", "typeof", "rel", "rev" };
         private void ProcessXmlLiteral(RdfAEvaluationContext evalContext, TElement n, bool noDefaultNamespace)
         {
             // Add Default Namespace as XHTML Namespace unless this would override an existing namespace
@@ -1541,6 +1617,33 @@ namespace VDS.RDF.Parsing
                     SetAttribute(n, "xml:lang", evalContext.Language);
                 }
             }
+            // Add namespaces from the current context
+            foreach (var prefix in evalContext.NamespaceMap.Prefixes)
+            {
+                if (string.Empty.Equals(prefix)) continue;
+                if (!HasAttribute(n, "xmlns:" + prefix))
+                {
+                    SetAttribute(n, "xmlns:"+ prefix, evalContext.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);
+                }
+            }
+            // Add namespaces for any CURIE-valued properties
+            //foreach (var attrName in _curieAttributes)
+            //{
+            //    if (HasAttribute(n, attrName))
+            //    {
+            //        MatchCollection curieMatches = _curieRegex.Matches(GetAttribute(n, attrName));
+            //        foreach (Match curieMatch in curieMatches)
+            //        {
+            //            var prefix = curieMatch.Groups["prefix"].Value;
+            //            if (!string.IsNullOrEmpty(prefix) &&
+            //                evalContext.NamespaceMap.HasNamespace(prefix) &&
+            //                !HasAttribute(n, "xmlns:" + prefix))
+            //            {
+            //                SetAttribute(n, "xmlns:" + prefix, evalContext.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);
+            //            }
+            //        }
+            //    }
+            //}
 
             // Recurse on any child nodes
             foreach (TElement child in GetChildren(n).OfType<TElement>().Where(c=>!IsTextNode(c)))
@@ -1559,7 +1662,7 @@ namespace VDS.RDF.Parsing
             return value.StartsWith("_:");
         }
 
-        private bool IsCurie(RdfAEvaluationContext evalContext, string value)
+        private bool IsCurie(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string value)
         {
             if (value.StartsWith(":"))
             {
@@ -1570,7 +1673,9 @@ namespace VDS.RDF.Parsing
             {
                 var prefix = value.Substring(0, value.IndexOf(':'));
                 var reference = value.Substring(value.IndexOf(':') + 1);
-                return (XmlSpecsHelper.IsNCName(prefix) || prefix.Equals("_")) && evalContext.NamespaceMap.HasNamespace(prefix) && IriSpecsHelper.IsIrelativeRef(reference);
+                return (XmlSpecsHelper.IsNCName(prefix) || prefix.Equals("_")) && 
+                       (evalContext.NamespaceMap.HasNamespace(prefix) || context.DefaultVocabulary.NamespaceMap.HasNamespace(prefix))  && 
+                       IriSpecsHelper.IsIrelativeRef(reference);
             }
             else
             {

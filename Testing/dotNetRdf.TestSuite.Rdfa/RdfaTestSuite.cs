@@ -72,7 +72,6 @@ namespace dotNetRdf.TestSuite.Rdfa
         private void RunTestInternal(RdfaTestData t, string[] hostLanguages)
         {
             var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
-            var baseUri = new Uri(t.Id);
             if (t.Versions.Contains("rdfa1.1"))
             {
                 foreach (var hostLanguage in hostLanguages)
@@ -80,8 +79,12 @@ namespace dotNetRdf.TestSuite.Rdfa
                     if (t.HostLangauges.Contains(hostLanguage))
                     {
                         _output.WriteLine(hostLanguage);
-                        var parser = new RdfAParser(RdfASyntax.RDFa_1_1);
-                        var g = new Graph { BaseUri = t.GetInputUrl("rdfa1.1", hostLanguage) };
+                        var options = new RdfAParserOptions
+                        {
+                            Syntax = RdfASyntax.RDFa_1_1, Base = t.GetInputUrl("rdfa1.1", hostLanguage)
+                        };
+                        var parser = new RdfAParser(options);
+                        var g = new Graph { BaseUri = options.Base };
                         var inputPath = t.GetInputPath("rdfa1.1", hostLanguage);
                         parser.Load(g, inputPath);
                         if (t.Results != null)
@@ -103,7 +106,7 @@ namespace dotNetRdf.TestSuite.Rdfa
         [Fact]
         public void RunSingleTest()
         {
-            var testCase = "0175";
+            var testCase = "0217";
             RdfaTestData? testData = RdfaTests.Select(testParams => testParams[0]).OfType<RdfaTestData>()
                 .FirstOrDefault(testData => testData.Id.EndsWith(testCase));
             Assert.NotNull(testData);

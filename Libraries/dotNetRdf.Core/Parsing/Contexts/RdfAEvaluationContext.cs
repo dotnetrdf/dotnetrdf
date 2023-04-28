@@ -59,7 +59,10 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets/Sets the Base URI.
         /// </summary>
-        public Uri BaseUri { get; set; }
+        public Uri BaseUri
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Gets/Sets the Parent Subject.
