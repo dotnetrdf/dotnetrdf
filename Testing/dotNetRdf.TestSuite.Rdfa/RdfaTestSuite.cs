@@ -78,7 +78,7 @@ namespace dotNetRdf.TestSuite.Rdfa
                 {
                     if (t.HostLangauges.Contains(hostLanguage))
                     {
-                        _output.WriteLine(hostLanguage);
+                        _output.WriteLine($"Running test for ${hostLanguage}");
                         var options = new RdfAParserOptions
                         {
                             Syntax = RdfASyntax.RDFa_1_1, Base = t.GetInputUrl("rdfa1.1", hostLanguage)
@@ -106,7 +106,7 @@ namespace dotNetRdf.TestSuite.Rdfa
         [Fact]
         public void RunSingleTest()
         {
-            var testCase = "0217";
+            var testCase = "0226";
             RdfaTestData? testData = RdfaTests.Select(testParams => testParams[0]).OfType<RdfaTestData>()
                 .FirstOrDefault(testData => testData.Id.EndsWith(testCase));
             Assert.NotNull(testData);

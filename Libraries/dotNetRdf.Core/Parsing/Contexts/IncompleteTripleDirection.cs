@@ -39,5 +39,9 @@ namespace VDS.RDF.Parsing.Contexts
         /// Reverse
         /// </summary>
         Reverse,
+        /// <summary>
+        /// None
+        /// </summary>
+        None,
     }
 }

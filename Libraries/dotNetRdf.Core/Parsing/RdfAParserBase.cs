@@ -485,6 +485,7 @@ namespace VDS.RDF.Parsing
                  about = false,
                  src = false,
                  href = false,
+                 inlist = false,
                  property = false,
                  type = false,
                  resource = false,
@@ -502,6 +503,7 @@ namespace VDS.RDF.Parsing
             var oldLang = lang;
             var langChanged = false;
             var baseUri = (evalContext.BaseUri == null) ? string.Empty : evalContext.BaseUri.AbsoluteUri;
+            Dictionary<INode, List<INode>> listMapping = evalContext.ListMapping;
 
 #region Steps 2-5 of the RDFa Processing Rules
 
@@ -594,6 +596,9 @@ namespace VDS.RDF.Parsing
                             break;
                         case "href":
                             href = true;
+                            break;
+                        case "inlist":
+                            inlist = true;
                             break;
                         case "resource":
                             resource = true;
@@ -774,9 +779,9 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-#endregion
+            #endregion
 
-#region Step 8 of the RDFa Processing Rules
+            #region Step 8 of the RDFa Processing Rules
 
             // If the Subject is not a null then we'll generate type triples if there's any @typeof attributes
             if (newSubj != null && type)
@@ -791,9 +796,14 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-#endregion
+            #endregion
 
-#region Steps 9-10 of the RDFa Processing Rules
+            if (newSubj != null && !newSubj.Equals(evalContext.ParentObject))
+            {
+                listMapping = new Dictionary<INode, List<INode>>();
+            }
+
+            #region Steps 9-10 of the RDFa Processing Rules
 
             // If the Object is not null we'll generate triples
             if (newSubj != null && currObj != null)
@@ -803,7 +813,15 @@ namespace VDS.RDF.Parsing
                 {
                     foreach (INode pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rel")))
                     {
-                        if (!context.Handler.HandleTriple(new Triple(newSubj, pred, currObj)))
+                        if (inlist)
+                        {
+                            if (!listMapping.ContainsKey(pred))
+                            {
+                                listMapping[pred] = new List<INode>();
+                            }
+                            listMapping[pred].Add(currObj);
+                        } 
+                        else if (!context.Handler.HandleTriple(new Triple(newSubj, pred, currObj)))
                         {
                             ParserHelper.Stop();
                         }
@@ -829,7 +847,18 @@ namespace VDS.RDF.Parsing
                     foreach (INode pred in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "rel")))
                     {
                         preds = true;
-                        incomplete.Add(new IncompleteTriple(pred, IncompleteTripleDirection.Forward));
+                        if (inlist)
+                        {
+                            if (!listMapping.ContainsKey(pred))
+                            {
+                                listMapping[pred] = new List<INode>();
+                            }
+                            incomplete.Add(new IncompleteTriple(listMapping[pred], IncompleteTripleDirection.None));
+                        }
+                        else
+                        {
+                            incomplete.Add(new IncompleteTriple(pred, IncompleteTripleDirection.Forward));
+                        }
                     }
                 }
                 if (rev)
@@ -962,6 +991,14 @@ namespace VDS.RDF.Parsing
                         {
                             OnWarning("Ignoring blank node predicate for " + newSubj.ToString());
                         }
+                        else if (inlist)
+                        {
+                            if (!listMapping.ContainsKey(predicateNode))
+                            {
+                                listMapping[predicateNode] = new List<INode>();
+                            }
+                            listMapping[predicateNode].Add(currLiteral);
+                        }
                         else if (!context.Handler.HandleTriple(new Triple(newSubj, predicateNode, currLiteral)))
                         {
                             ParserHelper.Stop();
@@ -979,19 +1016,29 @@ namespace VDS.RDF.Parsing
             {
                 foreach (IncompleteTriple i in evalContext.IncompleteTriples)
                 {
-                    if (i.Direction == IncompleteTripleDirection.Forward)
+                    switch (i.Direction)
                     {
-                        if (!context.Handler.HandleTriple(new Triple(evalContext.ParentSubject, i.Predicate, newSubj)))
-                        {
-                            ParserHelper.Stop();
-                        }
-                    }
-                    else
-                    {
-                        if (!context.Handler.HandleTriple(new Triple(newSubj, i.Predicate, evalContext.ParentSubject)))
-                        {
-                            ParserHelper.Stop();
-                        }
+                        case IncompleteTripleDirection.None:
+                            i.List.Add(newSubj);
+                            break;
+                        case IncompleteTripleDirection.Forward:
+                            {
+                                if (!context.Handler.HandleTriple(new Triple(evalContext.ParentSubject, i.Predicate, newSubj)))
+                                {
+                                    ParserHelper.Stop();
+                                }
+
+                                break;
+                            }
+                        case IncompleteTripleDirection.Reverse:
+                            {
+                                if (!context.Handler.HandleTriple(new Triple(newSubj, i.Predicate, evalContext.ParentSubject)))
+                                {
+                                    ParserHelper.Stop();
+                                }
+
+                                break;
+                            }
                     }
                 }
             }
@@ -1038,6 +1085,8 @@ namespace VDS.RDF.Parsing
                         {
                             newEvalContext.ParentObject = evalContext.ParentSubject;
                         }
+
+                        newEvalContext.ListMapping = listMapping;
                         newEvalContext.IncompleteTriples.AddRange(incomplete);
                         newEvalContext.Language = lang;
                     }
@@ -1052,8 +1101,21 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-#endregion
+            #endregion
+            #region Step 14 of RDFa Processing Rules
 
+            foreach (KeyValuePair<INode, List<INode>> entry in listMapping)
+            {
+                if (entry.Value.Count == 0)
+                {
+                    EmitTriple(context, newSubj, entry.Key, context.Handler.CreateUriNode( context.UriFactory.Create(RdfSpecsHelper.RdfListNil)));
+                }
+                else
+                {
+                    EmitList(context, newSubj, entry.Key, entry.Value);
+                }
+            }
+            #endregion
             // Now any in-scope prefixes go out of scope
             foreach (var prefix in inScopePrefixes)
             {
@@ -1079,6 +1141,29 @@ namespace VDS.RDF.Parsing
             {
                 evalContext.Language = oldLang;
             }
+        }
+
+        private void EmitTriple(IParserContext context, INode subject, INode predicate, INode obj)
+        {
+            if (!context.Handler.HandleTriple(new Triple(subject, predicate, obj)))
+            {
+                ParserHelper.Stop();
+            }
+        }
+
+        private void EmitList(IParserContext context, INode subject, INode predicate, IReadOnlyList<INode> listMembers)
+        {
+            INode nextNode = null;
+            INode first = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            INode rest = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListRest));
+            for (var i = listMembers.Count - 1; i >= 0; i--)
+            {
+                IBlankNode listNode = context.Handler.CreateBlankNode();
+                EmitTriple(context, listNode, first, listMembers[i]);
+                EmitTriple(context, listNode, rest, nextNode ?? context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil)));
+                nextNode = listNode;
+            }
+            EmitTriple(context, subject, predicate, nextNode);
         }
 
         private INode ProcessPlainLiteral(IParserContext context, TElement element, string lang)

@@ -24,6 +24,8 @@
 // </copyright>
 */
 
+using System.Collections.Generic;
+
 namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
@@ -31,9 +33,6 @@ namespace VDS.RDF.Parsing.Contexts
     /// </summary>
     public class IncompleteTriple
     {
-        private INode _pred;
-        private IncompleteTripleDirection _dir;
-
         /// <summary>
         /// Creates a new Incomplete Triple.
         /// </summary>
@@ -41,30 +40,34 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="direction">Direction.</param>
         public IncompleteTriple(INode pred, IncompleteTripleDirection direction)
         {
-            _pred = pred;
-            _dir = direction;
+            Predicate = pred;
+            Direction = direction;
         }
+
+        /// <summary>
+        /// Creates a new incomplete list triple.
+        /// </summary>
+        /// <param name="list">List content.</param>
+        /// <param name="direction">Direction.</param>
+        public IncompleteTriple(List<INode> list, IncompleteTripleDirection direction)
+        {
+            List = list;
+            Direction = direction;
+        }
+
+        /// <summary>
+        /// Gets the list associated with the incomplete triple
+        /// </summary>
+        public List<INode> List { get; }
 
         /// <summary>
         /// Gets the Predicate of the Incomplete Triple.
         /// </summary>
-        public INode Predicate
-        {
-            get
-            {
-                return _pred;
-            }
-        }
+        public INode Predicate { get; }
 
         /// <summary>
         /// Gets the Direction of the Incomplete Triple.
         /// </summary>
-        public IncompleteTripleDirection Direction
-        {
-            get
-            {
-                return _dir;
-            }
-        }
+        public IncompleteTripleDirection Direction { get; }
     }
 }

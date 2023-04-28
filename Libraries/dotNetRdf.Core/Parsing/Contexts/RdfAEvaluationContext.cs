@@ -93,5 +93,10 @@ namespace VDS.RDF.Parsing.Contexts
         /// Gets/Sets the Local Vocabulary.
         /// </summary>
         public IRdfAVocabulary LocalVocabulary { get; set; }
+
+        /// <summary>
+        /// Get the list mapping.
+        /// </summary>
+        public Dictionary<INode, List<INode>> ListMapping { get; set; } = new();
     }
 }
