@@ -363,10 +363,15 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Determine if a node in the parsed HTML document tree is the root document node.
         /// </summary>
-        /// <param name="node">The node to evaluate/</param>
+        /// <param name="node">The node to evaluate.</param>
         /// <returns>True if <paramref name="node"/> is a root node, false otherwise.</returns>
         protected abstract bool IsRoot(TNode node);
 
+        /// <summary>
+        /// Determine if a node in the parsed HTML document tree is an element node.
+        /// </summary>
+        /// <param name="node">The node to evaluate.</param>
+        /// <returns>True if <paramref name="node"/> is an element node, false otherwise.</returns>
         protected abstract bool IsElement(TNode node);
 
         private void Parse(RdfAParserContext<THtmlDocument> context)
@@ -380,8 +385,8 @@ namespace VDS.RDF.Parsing
                 evalContext.NamespaceMap.AddNamespace(string.Empty, context.UriFactory.Create(XHtmlVocabNamespace));
 
                 // Set the Default and Local Vocabulary
-                context.DefaultVocabulary = new XHtmlRdfAVocabulary();
-                evalContext.LocalVocabulary = new TermMappings();
+                context.DefaultContext = this._options?.DefaultContext ?? StaticRdfAContexts.XhtmlRdfAContext;
+                evalContext.LocalContext = new RdfAContext();
 
                 // If there's a base element this permanently changes the Base URI
                 TElement baseEl = GetBaseElement(context.Document);
@@ -627,7 +632,7 @@ namespace VDS.RDF.Parsing
                             {
                                 if (ParseProfileAttribute(context, evalContext, attr))
                                 {
-                                    foreach (KeyValuePair<string, string> ns in evalContext.LocalVocabulary.Namespaces)
+                                    foreach (KeyValuePair<string, string> ns in evalContext.LocalContext.Namespaces)
                                     {
                                         uri = Tools.ResolveUri(ns.Value, baseUri);
                                         // if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
@@ -663,90 +668,135 @@ namespace VDS.RDF.Parsing
 
 #endregion
 
-#region Steps 6-7 of the RDFa Processing Rules
+            #region Step 5 - 7
+
+            INode typedResource = null;
 
             // If we hit an invalid CURIE/URI at any point then ResolveUriOrCurie will return a null and 
             // later processing steps will be skipped for this element
             // Calls to Tools.ResolveUri which error will still cause the parser to halt
             if (!rel && !rev)
             {
-                // No @rel or @rev attributes
-                if (about && !GetAttribute(currElement, "about").Equals("[]"))
+                #region Step 5
+
+                if (property && !content && !datatype)
                 {
-                    // New Subject is the URI
-                    newSubj = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "about"));
-                    explicitNewSubj = newSubj != null;
-                }
-                else if (src)
-                {
-                    // New Subject is the URI
-                    newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
-                    explicitNewSubj = newSubj != null;
-                }
-                else if (resource && !GetAttribute(currElement, "resource").Equals("[]"))
-                {
-                    // New Subject is the URI
-                    newSubj = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "resource"));
-                    explicitNewSubj = newSubj != null;
-                }
-                else if (href)
-                {
-                    // New Subject is the URI
-                    newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
-                    explicitNewSubj = newSubj != null;
-                }
-                else if (IsRoot(currElement) || GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
-                {
-                    // New Subject is the Base URI
-                    try
+                    // 5.1
+                    if (about && !GetAttribute(currElement, "about").Equals("[]"))
                     {
-                        newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
+                        newSubj = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "about"));
+                        explicitNewSubj = newSubj != null;
+                        typedResource = newSubj;
+                    }
+                    else if (GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body") && evalContext.ParentObject != null)
+                    {
+                        // HTML+RDFa 3.1
+                        newSubj = evalContext.ParentObject;
+                    }
+                    else if (IsRoot(currElement))
+                    {
+                        newSubj = context.Handler.CreateUriNode(
+                            context.UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
+                        explicitNewSubj = newSubj != null;
+                        typedResource = newSubj;
+                    }
+                    else if (evalContext.ParentObject != null)
+                    {
+                        newSubj = evalContext.ParentObject;
+                    }
+
+                    if (type && typedResource == null)
+                    {
+                        if (resource && !GetAttribute(currElement, "resource").Equals("[]"))
+                        {
+                            typedResource = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "resource"));
+                        } else if (href)
+                        {
+                            typedResource = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
+                        } else if (src)
+                        {
+                            typedResource = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
+                        }
+
+                        currObj = typedResource;
+                    }
+                }
+                else
+                {
+                    // 5.2
+                    if (about && !GetAttribute(currElement, "about").Equals("[]"))
+                    {
+                        // New Subject is the URI
+                        newSubj = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "about"));
                         explicitNewSubj = newSubj != null;
                     }
-                    catch (RdfException)
+                    else if (resource && !GetAttribute(currElement, "resource").Equals("[]"))
                     {
-                        if (baseUri.Equals(string.Empty))
+                        // New Subject is the URI
+                        newSubj = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "resource"));
+                        explicitNewSubj = newSubj != null;
+                    }
+                    else if (href)
+                    {
+                        // New Subject is the URI
+                        newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
+                        explicitNewSubj = newSubj != null;
+                    }
+                    else if (src)
+                    {
+                        // New Subject is the URI
+                        newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
+                        explicitNewSubj = newSubj != null;
+                    }
+                    else if (GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body") && evalContext.ParentObject != null)
+                    {
+                        // HTML+RDFa 3.1
+                        newSubj = evalContext.ParentObject;
+                    }
+                    else if (IsRoot(currElement))
+                    {
+                        newSubj = context.Handler.CreateUriNode(
+                            context.UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
+                        explicitNewSubj = newSubj != null;
+                    }
+                    else if (type)
+                    {
+                        newSubj = context.Handler.CreateBlankNode();
+                    }
+                    else if (evalContext.ParentObject != null)
+                    {
+                        newSubj = evalContext.ParentObject;
+                        if (!property)
                         {
-                            OnWarning("Unable to generate a valid Subject for a Triple since the Base URI should be used but there is no in-scope Base URI");
-                            newSubj = null;
-                        }
-                        else
-                        {
-                            throw;
+                            skip = true;
                         }
                     }
+
+                    if (type)
+                    {
+                        typedResource = newSubj;
+                    }
                 }
-                else if (type)
-                {
-                    // New Subject is a Blank Node
-                    newSubj = context.Handler.CreateBlankNode();
-                    explicitNewSubj = newSubj != null;
-                }
-                else if (evalContext.ParentObject != null)
-                {
-                    // New Subject is the Parent Object and will skip if no property attributes
-                    newSubj = evalContext.ParentObject;
-                    if (!property) skip = true;
-                }
+                #endregion
             }
             else
             {
-                // A @rel or @rev attribute was encountered
+                // Step 6: A @rel or @rev attribute was encountered
 
                 // For this we first set the Subject
                 if (about && !GetAttribute(currElement, "about").Equals("[]"))
                 {
                     // New Subject is the URI
                     newSubj = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "about"));
+                    if (type) { typedResource = newSubj; }
                     explicitNewSubj = newSubj != null;
                 }
-                else if (src)
+                else if (GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body") && evalContext.ParentObject != null)
                 {
-                    // New Subject is the URI
-                    newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
-                    explicitNewSubj = newSubj != null;
+                    // HTML+RDFa 3.1
+                    newSubj = evalContext.ParentObject;
                 }
-                else if (IsRoot(currElement) || GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
+                else if (IsRoot(currElement))
                 {
                     // New Subject is the Base URI
                     try
@@ -766,12 +816,6 @@ namespace VDS.RDF.Parsing
                             throw;
                         }
                     }
-                }
-                else if (type)
-                {
-                    // New Subject is a Blank Node
-                    newSubj = context.Handler.CreateBlankNode();
-                    explicitNewSubj = newSubj != null;
                 }
                 else if (evalContext.ParentObject != null)
                 {
@@ -790,19 +834,34 @@ namespace VDS.RDF.Parsing
                     // New Object is the URI
                     currObj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
                 }
+                else if (src)
+                {
+                    currObj = context.Handler.CreateUriNode(
+                        context.Handler.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
+                }
+                else if (type && !about)
+                {
+                    currObj = context.Handler.CreateBlankNode();
+                }
+
+                // Set the typed resource
+                if (type && !about)
+                {
+                    typedResource = currObj;
+                }
             }
 
             #endregion
 
-            #region Step 8 of the RDFa Processing Rules
+            #region Step 7
 
             // If the Subject is not a null then we'll generate type triples if there's any @typeof attributes
-            if (newSubj != null && type)
+            if (type && typedResource != null)
             {
                 INode rdfType = context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
                 foreach (INode dtObj in ParseComplexAttribute(context, evalContext, GetAttribute(currElement, "typeof")))
                 {
-                    if (!context.Handler.HandleTriple(new Triple(newSubj, rdfType, dtObj)))
+                    if (!context.Handler.HandleTriple(new Triple(typedResource, rdfType, dtObj)))
                     {
                         ParserHelper.Stop();
                     }
@@ -811,10 +870,12 @@ namespace VDS.RDF.Parsing
 
             #endregion
 
+            #region Step 8
             if (newSubj != null && !newSubj.Equals(evalContext.ParentSubject))
             {
                 listMapping = new Dictionary<INode, List<INode>>();
             }
+            #endregion
 
             #region Steps 9-10 of the RDFa Processing Rules
 
@@ -830,7 +891,7 @@ namespace VDS.RDF.Parsing
                         {
                             if (explicitNewSubj)
                             {
-                                this.EmitList(context, newSubj, pred, new []{currObj});
+                                EmitList(context, newSubj, pred, new []{currObj});
                             }
                             else
                             {
@@ -1112,7 +1173,7 @@ namespace VDS.RDF.Parsing
                         newEvalContext.Language = lang;
                     }
 
-                    newEvalContext.LocalVocabulary = new TermMappings(evalContext.LocalVocabulary);
+                    newEvalContext.LocalContext = new RdfAContext(evalContext.LocalContext);
 
                     // Iterate over the Nodes
                     foreach (TElement element in GetChildren(currElement).OfType<TElement>().Where(IsElement))
@@ -1235,7 +1296,7 @@ namespace VDS.RDF.Parsing
                 {
                     return context.Handler.CreateUriNode(
                         context.UriFactory.Create(
-                            evalContext.LocalVocabulary.ResolveCurie(curie, evalContext.BaseUri)));
+                            evalContext.LocalContext.ResolveCurie(curie, evalContext.BaseUri)));
                     // return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
                 }
 
@@ -1262,9 +1323,9 @@ namespace VDS.RDF.Parsing
                 return evalContext.NamespaceMap.GetNamespaceUri(parts[0]).AbsoluteUri + parts[1];
             }
 
-            if (context.DefaultVocabulary.NamespaceMap.HasNamespace(parts[0]))
+            if (context.DefaultContext.NamespaceMap.HasNamespace(parts[0]))
             {
-                return context.DefaultVocabulary.NamespaceMap.GetNamespaceUri(parts[0]).AbsoluteUri + parts[1];
+                return context.DefaultContext.NamespaceMap.GetNamespaceUri(parts[0]).AbsoluteUri + parts[1];
             }
 
             return null;
@@ -1320,10 +1381,9 @@ namespace VDS.RDF.Parsing
             if (context.Syntax == RdfASyntax.RDFa_1_0)
             {
                 // RDFa 1.0
-                var vocab = new XHtmlRdfAVocabulary();
                 if (curie.StartsWith(":"))
                 {
-                    return context.Handler.CreateUriNode(context.UriFactory.Create(vocab.ResolveTerm(curie.Substring(1))));
+                    return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultContext.ResolveTerm(curie.Substring(1))));
                 }
 
                 if (curie.Contains(":"))
@@ -1331,9 +1391,9 @@ namespace VDS.RDF.Parsing
                     return ResolveCurie(context, evalContext, curie);
                 }
 
-                if (vocab.HasTerm(curie))
+                if (context.DefaultContext.HasTerm(curie))
                 {
-                    return context.Handler.CreateUriNode(context.UriFactory.Create(vocab.ResolveTerm(curie)));
+                    return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultContext.ResolveTerm(curie)));
                 }
 
                 throw new RdfParseException("Cannot use an unprefixed CURIE in RDFa 1.0 - only reserved XHTML terms are permitted");
@@ -1342,47 +1402,47 @@ namespace VDS.RDF.Parsing
             // RDFa 1.1
             if (curie.StartsWith(":"))
             {
-                if (evalContext.LocalVocabulary != null)
+                if (evalContext.LocalContext != null)
                 {
-                    if (evalContext.LocalVocabulary.HasTerm(curie.Substring(1)) || !evalContext.LocalVocabulary.VocabularyUri.Equals(string.Empty))
+                    if (evalContext.LocalContext.HasTerm(curie.Substring(1)) || !evalContext.LocalContext.VocabularyUri.Equals(string.Empty))
                     {
-                        return context.Handler.CreateUriNode(context.UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie.Substring(1))));
+                        return context.Handler.CreateUriNode(context.UriFactory.Create(evalContext.LocalContext.ResolveTerm(curie.Substring(1))));
                     }
 
-                    if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie.Substring(1)))
+                    if (context.DefaultContext != null && context.DefaultContext.HasTerm(curie.Substring(1)))
                     {
-                        return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie.Substring(1))));
+                        return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultContext.ResolveTerm(curie.Substring(1))));
                     }
 
                     return ResolveCurie(context, evalContext, curie);
                 }
 
-                if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie.Substring(1)))
+                if (context.DefaultContext != null && context.DefaultContext.HasTerm(curie.Substring(1)))
                 {
-                    return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie.Substring(1))));
+                    return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultContext.ResolveTerm(curie.Substring(1))));
                 }
 
                 return ResolveCurie(context, evalContext, curie);
             }
 
-            if (evalContext.LocalVocabulary != null)
+            if (evalContext.LocalContext != null)
             {
-                if (evalContext.LocalVocabulary.HasTerm(curie) || !evalContext.LocalVocabulary.VocabularyUri.Equals(string.Empty))
+                if (evalContext.LocalContext.HasTerm(curie) || !evalContext.LocalContext.VocabularyUri.Equals(string.Empty))
                 {
-                    return context.Handler.CreateUriNode(context.UriFactory.Create(evalContext.LocalVocabulary.ResolveTerm(curie)));
+                    return context.Handler.CreateUriNode(context.UriFactory.Create(evalContext.LocalContext.ResolveTerm(curie)));
                 }
 
-                if (context.DefaultVocabulary != null && context.DefaultVocabulary.HasTerm(curie))
+                if (context.DefaultContext != null && context.DefaultContext.HasTerm(curie))
                 {
-                    return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
+                    return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultContext.ResolveTerm(curie)));
                 }
 
                 throw new RdfParseException("Unable to resolve a Term since there is no appropriate Local/Default Vocabulary in scope");
             }
 
-            if (context.DefaultVocabulary != null)
+            if (context.DefaultContext != null)
             {
-                return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultVocabulary.ResolveTerm(curie)));
+                return context.Handler.CreateUriNode(context.UriFactory.Create(context.DefaultContext.ResolveTerm(curie)));
             }
 
             throw new RdfParseException("Unable to resolve a Term since there is no appropriate Local/Default Vocabulary in scope");
@@ -1592,7 +1652,7 @@ namespace VDS.RDF.Parsing
                     if (profile.Equals(XHtmlVocabNamespace) || profile.Equals(XHtmlVocabNamespace.Substring(0, XHtmlVocabNamespace.Length - 1)))
                     {
                         // XHTML Vocabulary is a fixed vocabulary
-                        evalContext.LocalVocabulary.Merge(new XHtmlRdfAVocabulary());
+                        evalContext.LocalContext.Merge(StaticRdfAContexts.XhtmlRdfAContext);
                     }
                     else
                     {
@@ -1610,7 +1670,7 @@ namespace VDS.RDF.Parsing
                         // Namespace Mappings
                         foreach (KeyValuePair<string, string> mapping in GetPrefixMappings(context, g))
                         {
-                            evalContext.LocalVocabulary.AddNamespace(mapping.Key, mapping.Value);
+                            evalContext.LocalContext.AddNamespace(mapping.Key, mapping.Value);
                         }
                         //var results = g.ExecuteQuery(prefixQuery);
                         //if (results is SparqlResultSet)
@@ -1632,7 +1692,7 @@ namespace VDS.RDF.Parsing
                         // Term Mappings
                         foreach (KeyValuePair<string, string> termMapping in GetTermMappings(context, g))
                         {
-                            evalContext.LocalVocabulary.AddTerm(termMapping.Key, termMapping.Value);
+                            evalContext.LocalContext.AddTerm(termMapping.Key, termMapping.Value);
                         }
                         //results = g.ExecuteQuery(termQuery);
                         //if (results is SparqlResultSet)
@@ -1668,16 +1728,16 @@ namespace VDS.RDF.Parsing
             if (GetAttributeValue(attr).Equals(string.Empty))
             {
                 // Reset Local Vocabulary
-                evalContext.LocalVocabulary = new TermMappings(context.DefaultVocabulary);
+                evalContext.LocalContext = new RdfAContext(context.DefaultContext);
             }
             else
             {
-                evalContext.LocalVocabulary.VocabularyUri = GetAttributeValue(attr);
+                evalContext.LocalContext.VocabularyUri = GetAttributeValue(attr);
                 // Record the use of the new vocabulary
                 context.Handler.HandleTriple(new Triple(
                     context.Handler.CreateUriNode(evalContext.BaseUri),
                     context.Handler.CreateUriNode(context.UriFactory.Create(RdfANamespace + "usesVocabulary")),
-                    context.Handler.CreateUriNode(context.UriFactory.Create(evalContext.LocalVocabulary.VocabularyUri))));
+                    context.Handler.CreateUriNode(context.UriFactory.Create(evalContext.LocalContext.VocabularyUri))));
             }
         }
 
@@ -1785,7 +1845,7 @@ namespace VDS.RDF.Parsing
                 var prefix = value.Substring(0, value.IndexOf(':'));
                 var reference = value.Substring(value.IndexOf(':') + 1);
                 return (XmlSpecsHelper.IsNCName(prefix) || prefix.Equals("_")) && 
-                       (evalContext.NamespaceMap.HasNamespace(prefix) || context.DefaultVocabulary.NamespaceMap.HasNamespace(prefix))  && 
+                       (evalContext.NamespaceMap.HasNamespace(prefix) || context.DefaultContext.NamespaceMap.HasNamespace(prefix))  && 
                        IriSpecsHelper.IsIrelativeRef(reference);
             }
             else

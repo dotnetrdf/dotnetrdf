@@ -27,76 +27,85 @@
 using System;
 using System.Collections.Generic;
 
-namespace VDS.RDF.Parsing.Contexts
+namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Evaluation Context for RDFa Parsers.
+    /// Interface for RDFa Vocabularies.
     /// </summary>
-    public class RdfAEvaluationContext
+    public interface IRdfAContext
     {
         /// <summary>
-        /// Creates a new RDFa Evaluation Context.
+        /// Gets whether a Vocabulary contains a Term.
         /// </summary>
-        /// <param name="baseUri">Base URI.</param>
-        public RdfAEvaluationContext(Uri baseUri)
+        /// <param name="term">Term.</param>
+        /// <returns></returns>
+        bool HasTerm(string term);
+
+        /// <summary>
+        /// Resolves a Term in the Vocabulary.
+        /// </summary>
+        /// <param name="term">Term.</param>
+        /// <returns></returns>
+        string ResolveTerm(string term);
+
+        /// <summary>
+        /// Adds a Term to the Vocabulary.
+        /// </summary>
+        /// <param name="term">Term.</param>
+        /// <param name="uri">URI.</param>
+        void AddTerm(string term, string uri);
+
+        /// <summary>
+        /// Adds a Namespace to the Vocabulary.
+        /// </summary>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="nsUri">Namespace URI.</param>
+        void AddNamespace(string prefix, string nsUri);
+
+        /// <summary>
+        /// Merges another Vocabulary into this one.
+        /// </summary>
+        /// <param name="vocab">Vocabulary.</param>
+        void Merge(IRdfAContext vocab);
+
+        /// <summary>
+        /// Gets/Sets the Vocabulary URI.
+        /// </summary>
+        string VocabularyUri
         {
-            BaseUri = baseUri;
-            NamespaceMap = new NamespaceMapper(true);
-            NamespaceMap.AddNamespace(string.Empty, UriFactory.Root.Create(RdfAParser.XHtmlVocabNamespace));
+            get;
+            set;
         }
 
         /// <summary>
-        /// Creates a new RDFa Evaluation Context.
+        /// Gets the Term Mappings.
         /// </summary>
-        /// <param name="baseUri">Base URI.</param>
-        /// <param name="nsmap">Namespace Map.</param>
-        public RdfAEvaluationContext(Uri baseUri, NamespaceMapper nsmap)
+        IEnumerable<KeyValuePair<string, string>> Mappings
         {
-            BaseUri = baseUri;
-            NamespaceMap = nsmap;
+            get;
         }
 
         /// <summary>
-        /// Gets/Sets the Base URI.
+        /// Gets the Namespace Mappings.
         /// </summary>
-        public Uri BaseUri
+        [Obsolete("Use the NamespaceMapper property to access the namespace map")]
+        IEnumerable<KeyValuePair<string, string>> Namespaces
         {
-            get; set;
+            get;
         }
 
         /// <summary>
-        /// Gets/Sets the Parent Subject.
+        /// Gets the namespace mappings.
         /// </summary>
-        public INode ParentSubject { get; set; }
+        INamespaceMapper NamespaceMap { get; }
 
         /// <summary>
-        /// Gets/Sets the Parent Object.
+        /// Resolve a CURIE using the namespaces defined in this vocabulary.
         /// </summary>
-        public INode ParentObject { get; set; }
+        /// <param name="curie">The CURIE string to resolve.</param>
+        /// <param name="baseUri"></param>
+        /// <returns></returns>
+        string ResolveCurie(string curie, Uri baseUri);
 
-        /// <summary>
-        /// Gets the Namespace Map.
-        /// </summary>
-        public NamespaceMapper NamespaceMap { get; }
-
-        /// <summary>
-        /// Gets/Sets the Language.
-        /// </summary>
-        public string Language { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets the list of incomplete Triples.
-        /// </summary>
-        public List<IncompleteTriple> IncompleteTriples { get; } = new List<IncompleteTriple>();
-
-        /// <summary>
-        /// Gets/Sets the Local Vocabulary.
-        /// </summary>
-        public IRdfAContext LocalContext { get; set; }
-
-        /// <summary>
-        /// Get the list mapping.
-        /// </summary>
-        public Dictionary<INode, List<INode>> ListMapping { get; set; } = new();
     }
 }

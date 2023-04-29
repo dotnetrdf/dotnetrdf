@@ -42,5 +42,10 @@ namespace VDS.RDF.Parsing
         /// The RDFa syntax to process
         /// </summary>
         public RdfASyntax Syntax { get; set; }
+
+        /// <summary>
+        /// Get/set the default RDFa context to use for the resolution of terms and prefixes.
+        /// </summary>
+        public RdfAContext DefaultContext { get; set; } = StaticRdfAContexts.XhtmlRdfAContext;
     }
 }
