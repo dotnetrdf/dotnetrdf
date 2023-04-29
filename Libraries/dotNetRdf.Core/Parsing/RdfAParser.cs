@@ -198,7 +198,7 @@ namespace VDS.RDF.Parsing
         /// <inheritdoc/>
         protected override bool HasChildren(HtmlNode element)
         {
-            return element.HasChildNodes;
+            return element.ChildNodes.Any(c=>c.NodeType == HtmlNodeType.Element);
         }
 
         /// <inheritdoc/>
@@ -211,6 +211,11 @@ namespace VDS.RDF.Parsing
         protected override bool IsRoot(HtmlNode node)
         {
             return node.ParentNode?.NodeType == HtmlNodeType.Document && node.NodeType == HtmlNodeType.Element;
+        }
+
+        protected override bool IsElement(HtmlNode node)
+        {
+            return node.NodeType == HtmlNodeType.Element;
         }
 
         /// <inheritdoc/>

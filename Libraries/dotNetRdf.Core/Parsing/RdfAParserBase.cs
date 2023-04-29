@@ -367,6 +367,8 @@ namespace VDS.RDF.Parsing
         /// <returns>True if <paramref name="node"/> is a root node, false otherwise.</returns>
         protected abstract bool IsRoot(TNode node);
 
+        protected abstract bool IsElement(TNode node);
+
         private void Parse(RdfAParserContext<THtmlDocument> context)
         {
             try
@@ -494,6 +496,7 @@ namespace VDS.RDF.Parsing
             var noDefaultNamespace = false;
 
             INode newSubj = null, currObj = null;
+            var explicitNewSubj = false;
             var incomplete = new List<IncompleteTriple>();
             var inScopePrefixes = new List<string>();
             Dictionary<string, Uri> hiddenPrefixes = null;
@@ -505,7 +508,7 @@ namespace VDS.RDF.Parsing
             var baseUri = (evalContext.BaseUri == null) ? string.Empty : evalContext.BaseUri.AbsoluteUri;
             Dictionary<INode, List<INode>> listMapping = evalContext.ListMapping;
 
-#region Steps 2-5 of the RDFa Processing Rules
+            #region Steps 2-5 of the RDFa Processing Rules
 
             // Locate namespaces and other relevant attributes
             foreach (TAttribute attr in GetAttributes(currElement))
@@ -672,21 +675,25 @@ namespace VDS.RDF.Parsing
                 {
                     // New Subject is the URI
                     newSubj = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "about"));
+                    explicitNewSubj = newSubj != null;
                 }
                 else if (src)
                 {
                     // New Subject is the URI
                     newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
+                    explicitNewSubj = newSubj != null;
                 }
                 else if (resource && !GetAttribute(currElement, "resource").Equals("[]"))
                 {
                     // New Subject is the URI
                     newSubj = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "resource"));
+                    explicitNewSubj = newSubj != null;
                 }
                 else if (href)
                 {
                     // New Subject is the URI
                     newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "href"), baseUri)));
+                    explicitNewSubj = newSubj != null;
                 }
                 else if (IsRoot(currElement) || GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
                 {
@@ -694,6 +701,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
+                        explicitNewSubj = newSubj != null;
                     }
                     catch (RdfException)
                     {
@@ -712,6 +720,7 @@ namespace VDS.RDF.Parsing
                 {
                     // New Subject is a Blank Node
                     newSubj = context.Handler.CreateBlankNode();
+                    explicitNewSubj = newSubj != null;
                 }
                 else if (evalContext.ParentObject != null)
                 {
@@ -729,11 +738,13 @@ namespace VDS.RDF.Parsing
                 {
                     // New Subject is the URI
                     newSubj = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "about"));
+                    explicitNewSubj = newSubj != null;
                 }
                 else if (src)
                 {
                     // New Subject is the URI
                     newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
+                    explicitNewSubj = newSubj != null;
                 }
                 else if (IsRoot(currElement) || GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body"))
                 {
@@ -741,6 +752,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
+                        explicitNewSubj = newSubj != null;
                     }
                     catch (RdfException)
                     {
@@ -759,6 +771,7 @@ namespace VDS.RDF.Parsing
                 {
                     // New Subject is a Blank Node
                     newSubj = context.Handler.CreateBlankNode();
+                    explicitNewSubj = newSubj != null;
                 }
                 else if (evalContext.ParentObject != null)
                 {
@@ -798,7 +811,7 @@ namespace VDS.RDF.Parsing
 
             #endregion
 
-            if (newSubj != null && !newSubj.Equals(evalContext.ParentObject))
+            if (newSubj != null && !newSubj.Equals(evalContext.ParentSubject))
             {
                 listMapping = new Dictionary<INode, List<INode>>();
             }
@@ -815,11 +828,19 @@ namespace VDS.RDF.Parsing
                     {
                         if (inlist)
                         {
-                            if (!listMapping.ContainsKey(pred))
+                            if (explicitNewSubj)
                             {
-                                listMapping[pred] = new List<INode>();
+                                this.EmitList(context, newSubj, pred, new []{currObj});
                             }
-                            listMapping[pred].Add(currObj);
+                            else
+                            {
+                                if (!listMapping.ContainsKey(pred))
+                                {
+                                    listMapping[pred] = new List<INode>();
+                                }
+
+                                listMapping[pred].Add(currObj);
+                            }
                         } 
                         else if (!context.Handler.HandleTriple(new Triple(newSubj, pred, currObj)))
                         {
@@ -1094,7 +1115,7 @@ namespace VDS.RDF.Parsing
                     newEvalContext.LocalVocabulary = new TermMappings(evalContext.LocalVocabulary);
 
                     // Iterate over the Nodes
-                    foreach (TElement element in GetChildren(currElement).OfType<TElement>())
+                    foreach (TElement element in GetChildren(currElement).OfType<TElement>().Where(IsElement))
                     {
                         ProcessElement(context, newEvalContext, element);
                     }
@@ -1106,9 +1127,14 @@ namespace VDS.RDF.Parsing
 
             foreach (KeyValuePair<INode, List<INode>> entry in listMapping)
             {
+                if (evalContext.ListMapping.TryGetValue(entry.Key, out List<INode> ecList) && ecList.SequenceEqual(entry.Value))
+                {
+                    break;
+                }
                 if (entry.Value.Count == 0)
                 {
-                    EmitTriple(context, newSubj, entry.Key, context.Handler.CreateUriNode( context.UriFactory.Create(RdfSpecsHelper.RdfListNil)));
+                    EmitTriple(context, newSubj, entry.Key,
+                        context.Handler.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfListNil)));
                 }
                 else
                 {
