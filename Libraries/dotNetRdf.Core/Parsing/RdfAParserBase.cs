@@ -1223,7 +1223,7 @@ namespace VDS.RDF.Parsing
                 return context.Handler.CreateUriNode(context.UriFactory.Create(resolvedIri));
             }
 
-            throw new RdfParseException($"Could not resolve the value '${curie}' as a CURIE.");
+            throw new RdfParseException($"Could not resolve the value '{curie}' as a CURIE.");
         }
 
         private string ResolveQName(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext,
