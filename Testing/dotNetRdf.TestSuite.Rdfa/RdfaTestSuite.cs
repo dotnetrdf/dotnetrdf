@@ -106,7 +106,7 @@ namespace dotNetRdf.TestSuite.Rdfa
         [Fact]
         public void RunSingleTest()
         {
-            var testCase = "0266";
+            var testCase = "0275";
             RdfaTestData? testData = RdfaTests.Select(testParams => testParams[0]).OfType<RdfaTestData>()
                 .FirstOrDefault(testData => testData.Id.EndsWith(testCase));
             Assert.NotNull(testData);

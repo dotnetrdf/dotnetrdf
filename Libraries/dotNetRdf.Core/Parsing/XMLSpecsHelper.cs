@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
@@ -100,37 +101,77 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public const string XmlSchemaTimeFormatImprecise = "HH:mm:ssK";
 
+        /// <summary>
+        /// A permissive regular expression that matches the structure of the lexical space for an XML Schema Duration.
+        /// </summary>
+        /// <remarks>This regular expression will match certain invalid constructs, in particular a duration with a `T` followed by no time components.</remarks>
+        public static Regex XmlSchemaDurationRegex =
+            new(@"^-?P(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+(\.\d+)?S))?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// A permissive regular expression that matches the structure of xsd:dateTime.
+        /// </summary>
+        /// <remarks>This regular expression does not catch out-of-range errors on any of the date or time components.</remarks>
+        public static Regex XmlSchemaDateTimeRegex =
+            new(@"^-?(\d\d\d\d+)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d(\.\d+)?)(Z|(\+|-)?(\d\d):(\d\d))$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// A permissive regular expression that matches the structure of xsd:date.
+        /// </summary>
+        /// <remarks>This regular expression does not catch out-of-range errors on any of the date components.</remarks>
+        public static Regex XmlSchemaDateRegex =
+            new(@"^-?(\d\d\d\d+)-(\d\d)-(\d\d)$", RegexOptions.Compiled);
+
+        /// <summary>
+        /// A permissive regular expression that matches the structure of xsd:time.
+        /// </summary>
+        /// <remarks>This regular expression does not catch out-of-range errors on any of the time components.</remarks>
+        public static Regex XmlSchemaTimeRegex =
+            new(@"^(\d\d):(\d\d):(\d\d(\.\d+)?)(Z|(\+|-)?(\d\d):(\d\d))?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// A permissive regular expression that matches the structure of xsd:gMonthYear
+        /// </summary>
+        public static Regex XmlSchemaYearMonthRegex =
+            new (@"^-?(\d\d\d\d+)-(\d\d)(Z|(\+|-)?(\d\d):(\d\d))?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// A permissive regular expression that matches the structure of xsd:gYear
+        /// </summary>
+        public static Regex XmlSchemaYearRegex =
+            new(@"^-?(\d\d\d\d+)(Z|(\+|-)?(\d\d):(\d\d))?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Data Type Uri Constants for XML Schema Data Types.
         /// </summary>
         public const string XmlSchemaDataTypeAnyUri = NamespaceXmlSchema + "anyURI",
-                            XmlSchemaDataTypeBase64Binary = NamespaceXmlSchema + "base64Binary",
-                            XmlSchemaDataTypeBoolean = NamespaceXmlSchema + "boolean",
-                            XmlSchemaDataTypeByte = NamespaceXmlSchema + "byte",
-                            XmlSchemaDataTypeDate = NamespaceXmlSchema + "date",
-                            XmlSchemaDataTypeDateTime = NamespaceXmlSchema + "dateTime",
-                            XmlSchemaDataTypeDayTimeDuration = NamespaceXmlSchema + "dayTimeDuration",
-                            XmlSchemaDataTypeDuration = NamespaceXmlSchema + "duration",
-                            XmlSchemaDataTypeDecimal = NamespaceXmlSchema + "decimal",
-                            XmlSchemaDataTypeDouble = NamespaceXmlSchema + "double",
-                            XmlSchemaDataTypeFloat = NamespaceXmlSchema + "float",
-                            XmlSchemaDataTypeHexBinary = NamespaceXmlSchema + "hexBinary",
-                            XmlSchemaDataTypeInt = NamespaceXmlSchema + "int",
-                            XmlSchemaDataTypeInteger = NamespaceXmlSchema + "integer",
-                            XmlSchemaDataTypeLong = NamespaceXmlSchema + "long",
-                            XmlSchemaDataTypeNegativeInteger = NamespaceXmlSchema + "negativeInteger",
-                            XmlSchemaDataTypeNonNegativeInteger = NamespaceXmlSchema + "nonNegativeInteger",
-                            XmlSchemaDataTypeNonPositiveInteger = NamespaceXmlSchema + "nonPositiveInteger",
-                            XmlSchemaDataTypePositiveInteger = NamespaceXmlSchema + "positiveInteger",
-                            XmlSchemaDataTypeShort = NamespaceXmlSchema + "short",
-                            XmlSchemaDataTypeTime = NamespaceXmlSchema + "time",
-                            XmlSchemaDataTypeString = NamespaceXmlSchema + "string",
-                            XmlSchemaDataTypeUnsignedByte = NamespaceXmlSchema + "unsignedByte",
-                            XmlSchemaDataTypeUnsignedInt = NamespaceXmlSchema + "unsignedInt",
-                            XmlSchemaDataTypeUnsignedLong = NamespaceXmlSchema + "unsignedLong",
-                            XmlSchemaDataTypeUnsignedShort = NamespaceXmlSchema + "unsignedShort";
+            XmlSchemaDataTypeBase64Binary = NamespaceXmlSchema + "base64Binary",
+            XmlSchemaDataTypeBoolean = NamespaceXmlSchema + "boolean",
+            XmlSchemaDataTypeByte = NamespaceXmlSchema + "byte",
+            XmlSchemaDataTypeDate = NamespaceXmlSchema + "date",
+            XmlSchemaDataTypeDateTime = NamespaceXmlSchema + "dateTime",
+            XmlSchemaDataTypeDayTimeDuration = NamespaceXmlSchema + "dayTimeDuration",
+            XmlSchemaDataTypeDuration = NamespaceXmlSchema + "duration",
+            XmlSchemaDataTypeDecimal = NamespaceXmlSchema + "decimal",
+            XmlSchemaDataTypeDouble = NamespaceXmlSchema + "double",
+            XmlSchemaDataTypeFloat = NamespaceXmlSchema + "float",
+            XmlSchemaDataTypeHexBinary = NamespaceXmlSchema + "hexBinary",
+            XmlSchemaDataTypeInt = NamespaceXmlSchema + "int",
+            XmlSchemaDataTypeInteger = NamespaceXmlSchema + "integer",
+            XmlSchemaDataTypeLong = NamespaceXmlSchema + "long",
+            XmlSchemaDataTypeNegativeInteger = NamespaceXmlSchema + "negativeInteger",
+            XmlSchemaDataTypeNonNegativeInteger = NamespaceXmlSchema + "nonNegativeInteger",
+            XmlSchemaDataTypeNonPositiveInteger = NamespaceXmlSchema + "nonPositiveInteger",
+            XmlSchemaDataTypePositiveInteger = NamespaceXmlSchema + "positiveInteger",
+            XmlSchemaDataTypeShort = NamespaceXmlSchema + "short",
+            XmlSchemaDataTypeTime = NamespaceXmlSchema + "time",
+            XmlSchemaDataTypeString = NamespaceXmlSchema + "string",
+            XmlSchemaDataTypeUnsignedByte = NamespaceXmlSchema + "unsignedByte",
+            XmlSchemaDataTypeUnsignedInt = NamespaceXmlSchema + "unsignedInt",
+            XmlSchemaDataTypeUnsignedLong = NamespaceXmlSchema + "unsignedLong",
+            XmlSchemaDataTypeUnsignedShort = NamespaceXmlSchema + "unsignedShort",
+            XmlSchemaDataTypeYearMonth = NamespaceXmlSchema + "gYearMonth",
+            XmlSchemaDataTypeYear = NamespaceXmlSchema + "gYear";
 
         /// <summary>
         /// Array of Constants for Data Types that are supported by the Literal Node CompareTo method.

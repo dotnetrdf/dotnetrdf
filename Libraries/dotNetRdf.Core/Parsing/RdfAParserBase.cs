@@ -497,7 +497,8 @@ namespace VDS.RDF.Parsing
                  type = false,
                  resource = false,
                  content = false,
-                 datatype = false;
+                 datatype = false,
+                 datetime = false;
             var noDefaultNamespace = false;
 
             INode newSubj = null, currObj = null;
@@ -619,6 +620,16 @@ namespace VDS.RDF.Parsing
                             break;
                         case "datatype":
                             datatype = true;
+                            break;
+                        case "datetime":
+                            if (context.Syntax == RdfASyntax.RDFa_1_0)
+                            {
+                                OnWarning("Ignoring the @datetime attribute in RDFa 1.1");
+                            }
+                            else
+                            {
+                                datetime = true;
+                            }
                             break;
                         case "property":
                             property = true;
@@ -992,11 +1003,20 @@ namespace VDS.RDF.Parsing
 
                     if (!dt.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
                     {
-                        // There's a Datatype and it's not XML Literal
                         if (content)
                         {
                             // Content attribute is used as the value
                             currLiteral = context.Handler.CreateLiteralNode(GetAttribute(currElement, "content"), dt);
+                        }
+                        else if (datetime)
+                        {
+                            // local @datatype attribute overrides any detected datatype
+                            currLiteral = context.Handler.CreateLiteralNode(GetAttribute(currElement, "datetime"), dt);
+                        }
+                        else if (GetElementName(currElement) == "time" && context.Syntax != RdfASyntax.RDFa_1_0)
+                        {
+                            // Process time element content the same as @datetime
+                            currLiteral = context.Handler.CreateLiteralNode(GetInnerText(currElement), dt);
                         }
                         else
                         {
@@ -1028,6 +1048,15 @@ namespace VDS.RDF.Parsing
                         currLiteral = String.IsNullOrEmpty(lang)
                             ? context.Handler.CreateLiteralNode(GetAttribute(currElement, "content"))
                             : context.Handler.CreateLiteralNode(GetAttribute(currElement, "content"), lang);
+                    }
+                    else if (datetime)
+                    {
+                        currLiteral = ProcessDateTimeLiteral(context, GetAttribute(currElement, "datetime"), lang);
+                    }
+                    else if (GetElementName(currElement) == "time" && context.Syntax != RdfASyntax.RDFa_1_0)
+                    {
+                        // Process time element content the same as @datetime
+                        currLiteral = ProcessDateTimeLiteral(context, GetInnerText(currElement), lang);
                     }
                     else if (!(rel || rev || content) && (resource || href || src))
                     {
@@ -1269,6 +1298,41 @@ namespace VDS.RDF.Parsing
                 nextNode = listNode;
             }
             EmitTriple(context, subject, predicate, nextNode);
+        }
+
+        private INode ProcessDateTimeLiteral(IParserContext context, string literalValue, string lang)
+        {
+            Uri dt= null;
+            if (XmlSpecsHelper.XmlSchemaDurationRegex.IsMatch(literalValue))
+            {
+                dt = context.Handler.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration);
+            }
+            else if (XmlSpecsHelper.XmlSchemaDateTimeRegex.IsMatch(literalValue))
+            {
+                dt = context.Handler.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime);
+            }
+            else if (XmlSpecsHelper.XmlSchemaDateRegex.IsMatch(literalValue))
+            {
+                dt = context.Handler.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate);
+            }
+            else if (XmlSpecsHelper.XmlSchemaTimeRegex.IsMatch(literalValue))
+            {
+                dt = context.Handler.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeTime);
+            }
+            else if (XmlSpecsHelper.XmlSchemaYearMonthRegex.IsMatch(literalValue))
+            {
+                dt = context.Handler.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeYearMonth);
+            }
+            else if (XmlSpecsHelper.XmlSchemaYearRegex.IsMatch(literalValue))
+            {
+                dt = context.Handler.UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeYear);
+            }
+
+            if (dt != null)
+            {
+                return context.Handler.CreateLiteralNode(literalValue, dt);
+            } 
+            return string.IsNullOrEmpty(lang) ? context.Handler.CreateLiteralNode(literalValue) : context.Handler.CreateLiteralNode(literalValue, lang);
         }
 
         private INode ProcessPlainLiteral(IParserContext context, TElement element, string lang)
