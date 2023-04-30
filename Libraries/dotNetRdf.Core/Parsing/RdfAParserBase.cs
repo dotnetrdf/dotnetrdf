@@ -959,9 +959,9 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-#endregion
+            #endregion
 
-#region Step 11 of the RDFa Processing Rules
+            #region Step 11 of the RDFa Processing Rules
 
             // Get the Current Object Literal
             if (newSubj != null && property)
@@ -1022,13 +1022,31 @@ namespace VDS.RDF.Parsing
 
                 if (dtNode == null)
                 {
-                    // A Plain Literal
                     if (content)
                     {
                         // Content attribute is used as the value
                         currLiteral = String.IsNullOrEmpty(lang)
                             ? context.Handler.CreateLiteralNode(GetAttribute(currElement, "content"))
                             : context.Handler.CreateLiteralNode(GetAttribute(currElement, "content"), lang);
+                    }
+                    else if (!(rel || rev || content) && (resource || href || src))
+                    {
+                        if (resource)
+                        {
+                            currLiteral = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "resource"));
+                        }
+                        else if (href)
+                        {
+                            currLiteral = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "href"));
+                        }
+                        else if (src)
+                        {
+                            currLiteral = ResolveUriOrCurie(context, evalContext, GetAttribute(currElement, "src"));
+                        }
+                    }
+                    else if (type && !about)
+                    {
+                        currLiteral = typedResource;
                     }
                     else if (!HasChildren(currElement))
                     {
