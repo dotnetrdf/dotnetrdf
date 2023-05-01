@@ -114,15 +114,15 @@ public class RdfAContext: IRdfAContext
     /// <param name="vocabularyUri"></param>
     /// <param name="terms"></param>
     /// <param name="prefixMappings"></param>
-    public RdfAContext(IRdfAContext baseContext, string vocabularyUri, IEnumerable<string> terms = null,
+    public RdfAContext(IRdfAContext baseContext, string vocabularyUri, IEnumerable<KeyValuePair<string, string>> terms = null,
         IEnumerable<KeyValuePair<string, Uri>> prefixMappings = null) : this(baseContext)
     {
         VocabularyUri = vocabularyUri;
         if (terms != null)
         {
-            foreach (var term in terms)
+            foreach (KeyValuePair<string, string> entry in terms)
             {
-                AddTerm(term, vocabularyUri + term);
+                AddTerm(entry.Key, entry.Value);
             }
         }
 
@@ -155,7 +155,7 @@ public class RdfAContext: IRdfAContext
 
         if (!string.IsNullOrEmpty(VocabularyUri))
         {
-            return VocabularyUri + lcTerm;
+            return VocabularyUri + term;
         }
         return null;
     }
