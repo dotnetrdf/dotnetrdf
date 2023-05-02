@@ -69,8 +69,9 @@ namespace VDS.RDF.Parsing
         void Merge(IRdfAContext vocab);
 
         /// <summary>
-        /// Gets/Sets the Vocabulary URI.
+        /// Gets/Sets the Default Vocabulary URI.
         /// </summary>
+        /// <remarks>May be NULL if the context does not define a default vocabulary URI.</remarks>
         string VocabularyUri
         {
             get;

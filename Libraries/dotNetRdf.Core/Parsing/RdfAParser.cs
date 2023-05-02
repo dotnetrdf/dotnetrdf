@@ -45,11 +45,12 @@ namespace VDS.RDF.Parsing
     /// </remarks>
     public class RdfAParser : RdfAParserBase<HtmlDocument, HtmlNode, HtmlNode, HtmlAttribute>
     {
-        private Regex Html5DoctypeRegex = new Regex("^<!DOCTYPE\\s+HTML\\s?>", RegexOptions.IgnoreCase);
+        private readonly Regex _html5DoctypeRegex = new("^<!DOCTYPE\\s+HTML\\s?>", RegexOptions.IgnoreCase);
+
         /// <summary>
         /// Creates a new RDFa Parser which will auto-detect which RDFa version to use (assumes 1.1 if none explicitly specified).
         /// </summary>
-        public RdfAParser() : base()
+        public RdfAParser()
         {
         }
 
@@ -110,7 +111,7 @@ namespace VDS.RDF.Parsing
             {
                 foreach (HtmlCommentNode docType in docTypes.OfType<HtmlCommentNode>())
                 {
-                    if (Html5DoctypeRegex.IsMatch(docType.Comment))
+                    if (_html5DoctypeRegex.IsMatch(docType.Comment))
                     {
                         // HTML5 documents don't support @xml:base
                         return false;
@@ -213,6 +214,7 @@ namespace VDS.RDF.Parsing
             return node.ParentNode?.NodeType == HtmlNodeType.Document && node.NodeType == HtmlNodeType.Element;
         }
 
+        /// <inheritdoc />
         protected override bool IsElement(HtmlNode node)
         {
             return node.NodeType == HtmlNodeType.Element;

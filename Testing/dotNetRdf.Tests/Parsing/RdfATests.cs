@@ -69,9 +69,6 @@ namespace VDS.RDF.Parsing
                     new RdfAParser(new RdfAParserOptions() { Base = new Uri("http://example.org/goodrelations") });
                 parser.Load(g, Path.Combine("resources", $"{test}.xhtml"));
                 parser.Load(h, Path.Combine("resources", $"{test}b.xhtml"));
-                //FileLoader.Load(g, Path.Combine("resources", $"{test}.xhtml"));
-                //FileLoader.Load(h, Path.Combine("resources", $"{test}b.xhtml"));
-                //TestTools.CompareGraphs(g, h, true);
                 Assert.Equal(g, h);
             }
         }
