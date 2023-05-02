@@ -45,5 +45,10 @@ namespace VDS.RDF.Parsing
         /// URI for the RDFa copy property type.
         /// </summary>
         public const string RdfACopy = RdfANamespace + "copy";
+
+        public const string RdfAPrefix = RdfANamespace + "prefix";
+        public const string RdfAUri = RdfANamespace + "uri";
+        public const string RdfATerm = RdfANamespace + "term";
+        public const string RdfAVocabulary = RdfANamespace + "vocabulary";
     }
 }

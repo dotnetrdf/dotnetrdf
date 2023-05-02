@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Parsing.Contexts;
 
 namespace VDS.RDF.Parsing;
 
@@ -49,6 +50,12 @@ public class RdfAContext: IRdfAContext
         _namespaceMapper = new NamespaceMapper(true);
     }
 
+    /// <summary>
+    /// Create a new RDFa context with the specified default vocabulary URI, term and prefix mappings.
+    /// </summary>
+    /// <param name="vocabularyUri">The default vocabulary URI. If null, the context will be defined with no default vocabulary URI.</param>
+    /// <param name="terms">An enumeration of key value pairs mapping each term to the URI that the term maps to. May be null.</param>
+    /// <param name="prefixes">An enumeration of key value pairs mapping each prefix to the URI that the prefix maps to. May be null.</param>
     public RdfAContext(string vocabularyUri, IEnumerable<KeyValuePair<string, string>> terms,
         IEnumerable<KeyValuePair<string, string>> prefixes)
     {
@@ -60,27 +67,6 @@ public class RdfAContext: IRdfAContext
             foreach (KeyValuePair<string, string> prefixMapping in prefixes)
             {
                 _namespaceMapper.AddNamespace(prefixMapping.Key, new Uri(prefixMapping.Value));
-            }
-        }
-    }
-
-    /// <summary>
-    /// Create a new vocabulary with the specified URI, terms and namespace prefixes.
-    /// </summary>
-    /// <param name="vocabularyUri">The base URI for the vocabulary. Used to resolve terms to IRIs.</param>
-    /// <param name="terms">The list of terms defined by the vocabulary.</param>
-    /// <param name="prefixMappings">The namespace prefixes defined by the vocabulary.</param>
-    public RdfAContext(string vocabularyUri, IEnumerable<string> terms = null,
-        IEnumerable<KeyValuePair<string, Uri>> prefixMappings = null)
-    {
-        VocabularyUri = vocabularyUri;
-        _termMap = terms?.ToDictionary(t=>t.ToLowerInvariant(), t=>vocabularyUri + t) ?? new Dictionary<string, string>();
-        _namespaceMapper = new NamespaceMapper(true);
-        if (prefixMappings != null)
-        {
-            foreach (KeyValuePair<string, Uri> entry in prefixMappings)
-            {
-                _namespaceMapper.AddNamespace(entry.Key, entry.Value);
             }
         }
     }
@@ -198,5 +184,79 @@ public class RdfAContext: IRdfAContext
     public string ResolveCurie(string curie, Uri baseUri)
     {
         return Tools.ResolveQName(curie, _namespaceMapper, baseUri);
+    }
+
+    /// <summary>
+    /// Create a new RDFa context by processing the triples in the specified graph.
+    /// </summary>
+    /// <param name="g">The graph to process.</param>
+    /// <returns>A new <see cref="IRdfAContext"/> instance containing the vocabulary declaration, term and prefix mappings defined in the graph.</returns>
+    public static IRdfAContext Load(IGraph g)
+    {
+        IEnumerable<KeyValuePair<string, string>> prefixMappings = GetPrefixMappings(g);
+        IEnumerable<KeyValuePair<string, string>> termMappings = GetTermMappings(g);
+        var vocabularyUri = GetVocabularyUri(g);
+        return new RdfAContext(vocabularyUri, termMappings, prefixMappings);
+    }
+
+    private static IEnumerable<KeyValuePair<string, string>> GetPrefixMappings(IGraph g)
+    {
+        IUriNode prefix = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAPrefix));
+        IUriNode uri = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAUri));
+        if (prefix == null || uri == null)
+        {
+            // Graph contains no mappings
+            return Enumerable.Empty<KeyValuePair<string, string>>();
+        }
+        return GetMappings(prefix, uri, g);
+    }
+
+    private static IEnumerable<KeyValuePair<string, string>> GetTermMappings(IGraph g)
+    {
+        IUriNode term = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfATerm));
+        IUriNode uri = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAUri));
+        if (term == null || uri == null)
+        {
+            // Graph contains no mappings
+            return Enumerable.Empty<KeyValuePair<string, string>>();
+        }
+        return GetMappings(term, uri, g);
+    }
+
+    private static IEnumerable<KeyValuePair<string, string>> GetMappings(INode keyPredicateNode, INode valuePredicateNode,
+        IGraph graph)
+    {
+        IDictionary<INode, INode> prefixByMapNode = graph.GetTriplesWithPredicate(keyPredicateNode)
+            .GroupBy(t => t.Subject)
+            .Where(grouping => grouping.Count() == 1)
+            .ToDictionary(grouping => grouping.Key, grouping => grouping.First().Object);
+
+        IDictionary<INode, INode> uriByMapNode = graph.GetTriplesWithPredicate(valuePredicateNode)
+            .GroupBy(t => t.Subject)
+            .Where(g => g.Count() == 1)
+            .ToDictionary(g => g.Key, g => g.First().Object);
+
+        foreach (INode mappingNode in prefixByMapNode.Keys.Intersect(uriByMapNode.Keys))
+        {
+            INode prefixNode = prefixByMapNode[mappingNode];
+            INode nsNode = uriByMapNode[mappingNode];
+            if (prefixNode is ILiteralNode prefixLiteralNode &&
+                nsNode is ILiteralNode nsListLiteralNode)
+            {
+                yield return new KeyValuePair<string, string>(
+                    prefixLiteralNode.Value.ToLower(),
+                    nsListLiteralNode.Value);
+            }
+        }
+    }
+
+    private static string GetVocabularyUri(IGraph g)
+    {
+        IUriNode vocabulary = g.GetUriNode(g.UriFactory.Create(RdfASpecsHelper.RdfAVocabulary));
+        return g.GetTriplesWithPredicate(vocabulary)
+            .Select(t => t.Predicate)
+            .OfType<IUriNode>()
+            .Select(node => node.Uri.AbsoluteUri)
+            .FirstOrDefault();
     }
 }

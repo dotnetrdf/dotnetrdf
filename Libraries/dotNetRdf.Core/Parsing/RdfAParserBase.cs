@@ -1669,48 +1669,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private static IEnumerable<KeyValuePair<string, string>> GetPrefixMappings(IParserContext context, IGraph g)
-        {
-            var prefix = new UriNode(context.UriFactory.Create(RdfANamespace + "prefix"));
-            var uri = new UriNode(context.UriFactory.Create(RdfANamespace + "uri"));
-            return GetMappings(prefix, uri, g);
-        }
-
-        private static IEnumerable<KeyValuePair<string, string>> GetTermMappings(IParserContext context,
-            IGraph g)
-        {
-            var term = new UriNode(context.UriFactory.Create(RdfANamespace + "term"));
-            var uri = new UriNode(context.UriFactory.Create(RdfANamespace + "uri"));
-            return GetMappings(term, uri, g);
-        }
-
-        private static IEnumerable<KeyValuePair<string, string>> GetMappings(INode keyPredicateNode, INode valuePredicateNode,
-            IGraph graph)
-        {
-            IDictionary<INode, INode> prefixByMapNode = graph.GetTriplesWithPredicate(keyPredicateNode)
-                .GroupBy(t => t.Subject)
-                .Where(grouping => grouping.Count() == 1)
-                .ToDictionary(grouping => grouping.Key, grouping => grouping.First().Object);
-
-            IDictionary<INode, INode> uriByMapNode = graph.GetTriplesWithPredicate(valuePredicateNode)
-                .GroupBy(t => t.Subject)
-                .Where(g => g.Count() == 1)
-                .ToDictionary(g => g.Key, g => g.First().Object);
-
-            foreach (INode mappingNode in prefixByMapNode.Keys.Intersect(uriByMapNode.Keys))
-            {
-                INode prefixNode = prefixByMapNode[mappingNode];
-                INode nsNode = uriByMapNode[mappingNode];
-                if (prefixNode is ILiteralNode prefixLiteralNode &&
-                    nsNode is ILiteralNode nsListLiteralNode)
-                {
-                    yield return new KeyValuePair<string, string>(
-                        prefixLiteralNode.Value.ToLower(),
-                        nsListLiteralNode.Value);
-                }
-            }
-        }
-
         private bool ParseProfileAttribute(IParserContext context, RdfAEvaluationContext evalContext, TAttribute attr)
         {
             var attrValue = GetAttributeValue(attr);
@@ -1733,24 +1691,14 @@ namespace VDS.RDF.Parsing
                         try
                         {
                             loader.LoadGraph(g, context.UriFactory.Create(profile));
+                            IRdfAContext profileContext = RdfAContext.Load(g);
+                            evalContext.LocalContext.Merge(profileContext);
                         }
                         catch
                         {
                             // If we fail then we return false which indicates that the DOM subtree is ignored
                             OnWarning("Unable to retrieve a Profile document which the library could parse from the URI '" + profile + "'");
                             return false;
-                        }
-
-                        // Namespace Mappings
-                        foreach (KeyValuePair<string, string> mapping in GetPrefixMappings(context, g))
-                        {
-                            evalContext.LocalContext.AddNamespace(mapping.Key, mapping.Value);
-                        }
-
-                        // Term Mappings
-                        foreach (KeyValuePair<string, string> termMapping in GetTermMappings(context, g))
-                        {
-                            evalContext.LocalContext.AddTerm(termMapping.Key, termMapping.Value);
                         }
                     }
                 }
