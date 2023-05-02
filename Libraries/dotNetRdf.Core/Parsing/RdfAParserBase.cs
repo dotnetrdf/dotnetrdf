@@ -190,6 +190,10 @@ namespace VDS.RDF.Parsing
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
         public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
         {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
+            uriFactory ??= UriFactory.Root;
+
             if (_options.PropertyCopyEnabled)
             {
                 handler = new RdfAPatternCopyingHandler(handler);
