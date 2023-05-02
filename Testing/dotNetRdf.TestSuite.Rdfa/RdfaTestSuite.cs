@@ -51,7 +51,11 @@ namespace dotNetRdf.TestSuite.Rdfa
                     if (t.HostLangauges.Contains(hostLanguage))
                     {
                         _output.WriteLine(hostLanguage);
-                        var parser = new RdfAParser(RdfASyntax.RDFa_1_1);
+                        var options = new RdfAParserOptions
+                        {
+                            Syntax = RdfASyntax.RDFa_1_1, Base = t.GetInputUrl("rdfa1.1", hostLanguage)
+                        };
+                        var parser = new RdfAParser(options);
                         var g = new Graph { BaseUri = t.GetInputUrl("rdfa1.1", hostLanguage) };
                         var inputPath = t.GetInputPath("rdfa1.1", hostLanguage);
                         parser.Load(g, inputPath);
@@ -106,7 +110,7 @@ namespace dotNetRdf.TestSuite.Rdfa
         [Fact]
         public void RunSingleTest()
         {
-            var testCase = "0321";
+            var testCase = "0326";
             RdfaTestData? testData = RdfaTests.Select(testParams => testParams[0]).OfType<RdfaTestData>()
                 .FirstOrDefault(testData => testData.Id.EndsWith(testCase));
             Assert.NotNull(testData);

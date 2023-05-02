@@ -23,31 +23,27 @@
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 */
-using System;
 
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// A collection of options for configuring the RDFa Parser
+    /// Provides constants for use in processing RDFa documents.
     /// </summary>
-    public class RdfAParserOptions
+    public static class RdfASpecsHelper
     {
         /// <summary>
-        /// The base IRI to use when processing the document.
+        /// Namespace URI for RDFa.
         /// </summary>
-        /// <remarks>If set, this overrides the input document's IRI, but does not override any @base attribute in the document itself.</remarks>
-        public Uri Base { get; set; }
+        public const string RdfANamespace = "http://www.w3.org/ns/rdfa#";
 
         /// <summary>
-        /// The RDFa syntax to process
+        /// URI for the RDFa Pattern resource type.
         /// </summary>
-        public RdfASyntax Syntax { get; set; }
-
+        public const string RdfAPattern = RdfANamespace + "Pattern";
+        
         /// <summary>
-        /// Get/set the default RDFa context to use for the resolution of terms and prefixes.
+        /// URI for the RDFa copy property type.
         /// </summary>
-        public RdfAContext DefaultContext { get; set; } = StaticRdfAContexts.XhtmlRdfAContext;
-
-        public bool PropertyCopyEnabled { get; set; } = true;
+        public const string RdfACopy = RdfANamespace + "copy";
     }
 }

@@ -72,8 +72,7 @@ namespace VDS.RDF.Parsing
                              XHtmlPlusRdfA10Version = "XHTML+RDFa 1.0",
                              HtmlPlusRdfA10Version = "HTML+RDFa 1.0";
 
-        private readonly RdfASyntax _syntax = RdfASyntax.AutoDetectLegacy;
-        private readonly RdfAParserOptions _options = null;
+        private readonly RdfAParserOptions _options = new () { Syntax = RdfASyntax.AutoDetectLegacy };
 
 
         /// <summary>
@@ -90,7 +89,7 @@ namespace VDS.RDF.Parsing
         /// <param name="syntax">RDFa Syntax Version.</param>
         protected RdfAParserBase(RdfASyntax syntax)
         {
-            _syntax = syntax;
+            _options.Syntax = syntax;
         }
 
         /// <summary>
@@ -99,8 +98,7 @@ namespace VDS.RDF.Parsing
         /// <param name="options">The parser options settings.</param>
         protected RdfAParserBase(RdfAParserOptions options)
         {
-            _syntax = options.Syntax;
-            _options = options;
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         /// <summary>
@@ -190,12 +188,18 @@ namespace VDS.RDF.Parsing
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream.</exception>
         public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory)
         {
+            if (_options.PropertyCopyEnabled)
+            {
+                handler = new RdfAPatternCopyingHandler(handler);
+            }
             try
 
             {
                 THtmlDocument doc = LoadAndParse(input);
 
-                var context = new RdfAParserContext<THtmlDocument>(handler, doc, uriFactory);
+                var context =
+                    new RdfAParserContext<THtmlDocument>(handler, doc, uriFactory) { BaseUri = _options.Base };
+                
                 Parse(context);
             }
             finally
@@ -221,7 +225,7 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            Load(handler, File.OpenText(filename));
+            Load(handler, filename, UriFactory.Root);
         }
 
         /// <summary>
@@ -234,6 +238,10 @@ namespace VDS.RDF.Parsing
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+            if (_options.Base == null)
+            {
+                _options.Base = new Uri(Path.GetFullPath(filename));
+            }
             Load(handler, File.OpenText(filename), uriFactory);
         }
 
@@ -414,7 +422,7 @@ namespace VDS.RDF.Parsing
                 context.XmlBaseAllowed = IsXmlBaseIsPermissible(context.Document);
 
                 // Select the Syntax Version to use
-                context.Syntax = _syntax;
+                context.Syntax = _options?.Syntax ?? RdfASyntax.AutoDetectLegacy;
                 if (context.Syntax == RdfASyntax.AutoDetect || context.Syntax == RdfASyntax.AutoDetectLegacy)
                 {
                     TElement docNode = GetHtmlElement(context.Document);
@@ -522,7 +530,7 @@ namespace VDS.RDF.Parsing
                          .Where(attr => GetAttributeName(attr).StartsWith("xmlns:")))
             {
                 // Namespace URIs are resolved against the document URI, not any declared base
-                var uri = Tools.ResolveUri(GetAttributeValue(attr), context.BaseUri.AbsoluteUri);
+                var uri = Tools.ResolveUri(GetAttributeValue(attr), context.BaseUri?.AbsoluteUri ?? string.Empty);
                 var prefix = GetAttributeName(attr).Substring(GetAttributeName(attr).IndexOf(':') + 1);
                 if (evalContext.NamespaceMap.HasNamespace(prefix))
                 {
@@ -541,40 +549,39 @@ namespace VDS.RDF.Parsing
                 {
                     continue;
                 }
-                else
+
+                switch (GetAttributeName(attr))
                 {
-                    switch (GetAttributeName(attr))
-                    {
-                        case "xml:lang":
-                        case "lang":
-                            // @lang and @xml:lang have the same affect
-                            if (!langChanged)
+                    case "xml:lang":
+                    case "lang":
+                        // @lang and @xml:lang have the same affect
+                        if (!langChanged)
+                        {
+                            oldLang = lang;
+                            lang = GetAttributeValue(attr);
+                            langChanged = true;
+                        }
+                        break;
+                    case "xml:base":
+                        // @xml:base may be permitted in some cases
+                        if (context.XmlBaseAllowed)
+                        {
+                            baseUri = Tools.ResolveUri(GetAttributeValue(attr), baseUri);
+                            if (!(baseUri.EndsWith("/") || baseUri.EndsWith("#"))) baseUri += "#";
+                            oldBase = evalContext.BaseUri;
+                            baseChanged = true;
+                            evalContext.BaseUri = context.UriFactory.Create(baseUri);
+                            if (evalContext.ParentSubject == null ||
+                                (evalContext.ParentSubject is IUriNode parentUriNode &&
+                                 parentUriNode.Uri.Equals(oldBase)))
                             {
-                                oldLang = lang;
-                                lang = GetAttributeValue(attr);
-                                langChanged = true;
+                                evalContext.ParentSubject = context.Handler.CreateUriNode(evalContext.BaseUri);
                             }
-                            break;
-                        case "xml:base":
-                            // @xml:base may be permitted in some cases
-                            if (context.XmlBaseAllowed)
-                            {
-                                baseUri = Tools.ResolveUri(GetAttributeValue(attr), baseUri);
-                                if (!(baseUri.EndsWith("/") || baseUri.EndsWith("#"))) baseUri += "#";
-                                oldBase = evalContext.BaseUri;
-                                baseChanged = true;
-                                evalContext.BaseUri = context.UriFactory.Create(baseUri);
-                                if (evalContext.ParentSubject == null ||
-                                    (evalContext.ParentSubject is IUriNode parentUriNode &&
-                                     parentUriNode.Uri.Equals(oldBase)))
-                                {
-                                    evalContext.ParentSubject = context.Handler.CreateUriNode(evalContext.BaseUri);
-                                }
-                            }
-                            break;
-                        case "xmlns":
-                            // Can use @xmlns to override the default namespace
-                            /*
+                        }
+                        break;
+                    case "xmlns":
+                        // Can use @xmlns to override the default namespace
+                        /*
                              * - Breaks test suite 0063, 0087 and others when processing XHTML documents
                             uri = GetAttributeValue(attr);
                             if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
@@ -587,101 +594,100 @@ namespace VDS.RDF.Parsing
                             inScopePrefixes.Add(string.Empty);
                             noDefaultNamespace = true;
                             */
-                            break;
-                        case "prefix":
-                            // Can use @prefix to set multiple namespaces with one attribute
-                            if (context.Syntax == RdfASyntax.RDFa_1_0)
+                        break;
+                    case "prefix":
+                        // Can use @prefix to set multiple namespaces with one attribute
+                        if (context.Syntax == RdfASyntax.RDFa_1_0)
+                        {
+                            OnWarning("Cannot use the @prefix attribute to define prefixes in RDFa 1.0");
+                        }
+                        else
+                        {
+                            ParsePrefixAttribute(context, evalContext, attr, context.BaseUri.AbsoluteUri, ref hiddenPrefixes, inScopePrefixes);
+                        }
+                        break;
+                    case "rel":
+                        rel = true;
+                        break;
+                    case "rev":
+                        rev = true;
+                        break;
+                    case "about":
+                        about = true;
+                        break;
+                    case "src":
+                        src = true;
+                        break;
+                    case "href":
+                        href = true;
+                        break;
+                    case "inlist":
+                        inlist = true;
+                        break;
+                    case "resource":
+                        resource = true;
+                        break;
+                    case "typeof":
+                        type = true;
+                        break;
+                    case "content":
+                        content = true;
+                        break;
+                    case "datatype":
+                        datatype = true;
+                        break;
+                    case "datetime":
+                        if (context.Syntax == RdfASyntax.RDFa_1_0)
+                        {
+                            OnWarning("Ignoring the @datetime attribute in RDFa 1.1");
+                        }
+                        else
+                        {
+                            datetime = true;
+                        }
+                        break;
+                    case "property":
+                        property = true;
+                        break;
+                    case "profile":
+                        if (context.Syntax == RdfASyntax.RDFa_1_0)
+                        {
+                            OnWarning("Cannot use the @profile attribute in RDFa 1.0");
+                        }
+                        else
+                        {
+                            if (ParseProfileAttribute(context, evalContext, attr))
                             {
-                                OnWarning("Cannot use the @prefix attribute to define prefixes in RDFa 1.0");
-                            }
-                            else
-                            {
-                                ParsePrefixAttribute(context, evalContext, attr, context.BaseUri.AbsoluteUri, ref hiddenPrefixes, inScopePrefixes);
-                            }
-                            break;
-                        case "rel":
-                            rel = true;
-                            break;
-                        case "rev":
-                            rev = true;
-                            break;
-                        case "about":
-                            about = true;
-                            break;
-                        case "src":
-                            src = true;
-                            break;
-                        case "href":
-                            href = true;
-                            break;
-                        case "inlist":
-                            inlist = true;
-                            break;
-                        case "resource":
-                            resource = true;
-                            break;
-                        case "typeof":
-                            type = true;
-                            break;
-                        case "content":
-                            content = true;
-                            break;
-                        case "datatype":
-                            datatype = true;
-                            break;
-                        case "datetime":
-                            if (context.Syntax == RdfASyntax.RDFa_1_0)
-                            {
-                                OnWarning("Ignoring the @datetime attribute in RDFa 1.1");
-                            }
-                            else
-                            {
-                                datetime = true;
-                            }
-                            break;
-                        case "property":
-                            property = true;
-                            break;
-                        case "profile":
-                            if (context.Syntax == RdfASyntax.RDFa_1_0)
-                            {
-                                OnWarning("Cannot use the @profile attribute in RDFa 1.0");
-                            }
-                            else
-                            {
-                                if (ParseProfileAttribute(context, evalContext, attr))
+                                foreach (KeyValuePair<string, string> ns in evalContext.LocalContext.Namespaces)
                                 {
-                                    foreach (KeyValuePair<string, string> ns in evalContext.LocalContext.Namespaces)
+                                    uri = Tools.ResolveUri(ns.Value, baseUri);
+                                    // if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
+                                    if (evalContext.NamespaceMap.HasNamespace(ns.Key))
                                     {
-                                        uri = Tools.ResolveUri(ns.Value, baseUri);
-                                        // if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
-                                        if (evalContext.NamespaceMap.HasNamespace(ns.Key))
-                                        {
-                                            if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
-                                            hiddenPrefixes.Add(ns.Key, evalContext.NamespaceMap.GetNamespaceUri(ns.Key));
-                                        }
-                                        evalContext.NamespaceMap.AddNamespace(ns.Key, context.UriFactory.Create(uri));
-                                        inScopePrefixes.Add(ns.Key);
+                                        if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
+                                        hiddenPrefixes.Add(ns.Key, evalContext.NamespaceMap.GetNamespaceUri(ns.Key));
                                     }
+                                    evalContext.NamespaceMap.AddNamespace(ns.Key, context.UriFactory.Create(uri));
+                                    inScopePrefixes.Add(ns.Key);
                                 }
-                                else
-                                {
-                                    OnWarning("Unable to resolve a Profile document specified by the @profile attribute on the element <" + GetElementName(currElement) + "> - ignoring the DOM subtree of this element");
-                                    return;
-                                }
-                            }
-                            break;
-                        case "vocab":
-                            if (context.Syntax == RdfASyntax.RDFa_1_0)
-                            {
-                                OnWarning("Cannot use the @vocab attribute in RDFa 1.0");
                             }
                             else
                             {
-                                ParseVocabAttribute(context, evalContext, attr);
+                                OnWarning("Unable to resolve a Profile document specified by the @profile attribute on the element <" + GetElementName(currElement) + "> - ignoring the DOM subtree of this element");
+                                return;
                             }
-                            break;
-                    }
+                        }
+                        break;
+                    case "vocab":
+                        if (context.Syntax == RdfASyntax.RDFa_1_0)
+                        {
+                            OnWarning("Cannot use the @vocab attribute in RDFa 1.0");
+                        }
+                        else
+                        {
+                            ParseVocabAttribute(context, evalContext, attr);
+                        }
+                        break;
                 }
             }
 
@@ -780,7 +786,8 @@ namespace VDS.RDF.Parsing
                     else if (src)
                     {
                         // New Subject is the URI
-                        newSubj = context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
+                        newSubj = context.Handler.CreateUriNode(
+                            context.UriFactory.Create(Tools.ResolveUri(GetAttribute(currElement, "src"), baseUri)));
                         explicitNewSubj = newSubj != null;
                     }
                     else if (GetElementName(currElement).Equals("head") || GetElementName(currElement).Equals("body") && evalContext.ParentObject != null)
@@ -790,9 +797,12 @@ namespace VDS.RDF.Parsing
                     }
                     else if (IsRoot(currElement))
                     {
-                        newSubj = context.Handler.CreateUriNode(
-                            context.UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
-                        explicitNewSubj = newSubj != null;
+                        if (!string.IsNullOrEmpty(baseUri))
+                        {
+                            newSubj = context.Handler.CreateUriNode(
+                                context.UriFactory.Create(Tools.ResolveUri(string.Empty, baseUri)));
+                            explicitNewSubj = newSubj != null;
+                        }
                     }
                     else if (type)
                     {
@@ -1507,21 +1517,6 @@ namespace VDS.RDF.Parsing
             return context.Handler.CreateLiteralNode(literalValue);
         }
 
-        private string GetLiteralValue(TElement element, bool content)
-        {
-            if (content)
-            {
-                // Value is specified by @content
-                return HttpUtility.HtmlDecode(GetAttribute(element, "content"));
-            }
-            // Value is concatenation of all Text Child Nodes
-            var lit = new StringBuilder();
-            foreach (TNode n in GetChildren(element))
-            {
-                lit.Append(GetInnerText(n));
-            }
-            return HttpUtility.HtmlDecode(lit.ToString());
-        }
 
         private INode ProcessPlainLiteral(IParserContext context, TElement element, string lang)
         {
@@ -1564,10 +1559,16 @@ namespace VDS.RDF.Parsing
 
                 if (curie.Contains(":"))
                 {
-                    return context.Handler.CreateUriNode(
-                        context.UriFactory.Create(
-                            evalContext.LocalContext.ResolveCurie(curie, evalContext.BaseUri)));
-                    // return context.Handler.CreateUriNode(context.UriFactory.Create(Tools.ResolveQName(curie, evalContext.NamespaceMap, evalContext.BaseUri)));
+                    var resolved = ResolveQName(context, evalContext, curie);
+                    if (resolved != null)
+                    {
+                        return context.Handler.CreateUriNode(context.UriFactory.Create(resolved));
+                    }
+
+                    throw new RdfParseException($"Could not resolve the value '{curie}' as a CURIE.");
+                    //return context.Handler.CreateUriNode(
+                    //    context.UriFactory.Create(
+                    //        evalContext.LocalContext.ResolveCurie(curie, evalContext.BaseUri)));
                 }
 
                 throw new RdfParseException("The value '" + curie + "' is not valid as a CURIE as it does not have a prefix");
@@ -2032,8 +2033,6 @@ namespace VDS.RDF.Parsing
         /// <param name="node"></param>
         protected abstract void GrabText(StringBuilder output, TNode node);
 
-        private readonly string[] _curieAttributes =
-            new[] { "about", "resource", "datatype", "property", "typeof", "rel", "rev" };
         private void ProcessXmlLiteral(RdfAEvaluationContext evalContext, TElement n, bool noDefaultNamespace)
         {
             // Add Default Namespace as XHTML Namespace unless this would override an existing namespace
