@@ -1,6 +1,8 @@
 ﻿Change Log
 ==========
 
+ENHANCEMENT: The RDFa parser has been updated to be more conformant with the RDFa specs. By default the parser implements RDFa+(X)HTML processing and now passes all of the RDFa 1.1 test suite for the HTML, XHTML and XML host languages.
+
 3.0.0
 -----
 
