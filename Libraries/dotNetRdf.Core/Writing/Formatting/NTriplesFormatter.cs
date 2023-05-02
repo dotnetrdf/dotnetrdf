@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
@@ -35,7 +36,7 @@ namespace VDS.RDF.Writing.Formatting
     /// Formatter for formatting as NTriples.
     /// </summary>
     public class NTriplesFormatter
-        : BaseFormatter
+        : BaseFormatter, ICommentFormatter
     {
         private readonly BlankNodeOutputMapper _bnodeMapper;
 
@@ -277,6 +278,17 @@ namespace VDS.RDF.Writing.Formatting
         public override string FormatUri(string u)
         {
             return FormatChar(u.ToCharArray());
+        }
+
+        /// <summary>
+        /// Matches the beginning of all lines.
+        /// </summary>
+        static readonly Regex commentLineRegex = new Regex(@"^", RegexOptions.Compiled | RegexOptions.Multiline);
+
+        /// <inheritdoc />
+        public virtual string FormatComment(string text)
+        {
+            return commentLineRegex.Replace(text, "#");
         }
     }
 

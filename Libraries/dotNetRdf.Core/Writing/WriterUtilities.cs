@@ -27,7 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Contexts;
 
@@ -767,6 +769,48 @@ namespace VDS.RDF.Writing
                 .Replace(">", "&gt;")
                 .Replace("'", "&apos;")
                 .Replace("\"", "&quot;");
+        }
+
+        /// <summary>
+        /// Matches control characters and invalid surrogate pairs.
+        /// </summary>
+        static readonly Regex invalidXmlChars = new Regex(@"[\x00-\x08\x0B\x0C\x0E-\x1F]+|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Removes characters invalid in XML documents.
+        /// </summary>
+        /// <param name="content">The string to filter.</param>
+        /// <returns>
+        /// New string that does not contain any invalid characters.
+        /// </returns>
+        public static string RemoveInvalidXmlChars(string content)
+        {
+            content = invalidXmlChars.Replace(content, "");
+            try
+            {
+                return XmlConvert.VerifyXmlChars(content);
+            }
+            catch (XmlException xmlException)
+            {
+                var sb = new StringBuilder();
+                while (true)
+                {
+                    var position = xmlException.LinePosition - 1;
+                    sb.Append(content, 0, position);
+                    content = content.Substring(position + 1);
+                    try
+                    {
+                        content = XmlConvert.VerifyXmlChars(content);
+                        break;
+                    }
+                    catch (XmlException xmlException2)
+                    {
+                        xmlException = xmlException2;
+                    }
+                }
+                sb.Append(content);
+                return sb.ToString();
+            }
         }
 
         /// <summary>

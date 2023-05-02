@@ -3,6 +3,8 @@
 
 ENHANCEMENT: The RDFa parser has been updated to be more conformant with the RDFa specs. By default the parser implements RDFa+(X)HTML processing and now passes all of the RDFa 1.1 test suite for the HTML, XHTML and XML host languages.
 
+FIX: Fix for the JSON-LD Framing processor to correctly handle a frame with multiple @reverse properties. Thanks to @huibertalblas for the bug report and fix. (#556)
+
 3.0.0
 -----
 

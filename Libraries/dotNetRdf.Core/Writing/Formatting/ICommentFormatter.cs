@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,51 +24,18 @@
 // </copyright>
 */
 
-using System;
-using System.Text.RegularExpressions;
-using System.Web;
-
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter for formatting as HTML.
+    /// Interface for Comment Formatters.
     /// </summary>
-    public class HtmlFormatter : IUriFormatter, ICommentFormatter
+    public interface ICommentFormatter
     {
         /// <summary>
-        /// Formats URIs using HTML encoding.
+        /// Formats a String as comment String with the specified text.
         /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        public string FormatUri(Uri u)
-        {
-            return FormatUri(u.AbsoluteUri);
-        }
-
-        /// <summary>
-        /// Formats URIs using HTML encoding.
-        /// </summary>
-        /// <param name="u">URI.</param>
-        /// <returns></returns>
-        public string FormatUri(string u)
-        {
-            return HttpUtility.HtmlEncode(u);
-        }
-
-        /// <summary>
-        /// Matches ">" or "->" at the beginning of string, and any hyphen that is followed by another hyphen or the end of the string.
-        /// </summary>
-        static readonly Regex commentHyphenRegex = new Regex(@"^(>|->)|(-)(?=-|$)", RegexOptions.Compiled);
-
-        /// <summary>
-        /// Formats comments in HTML.
-        /// </summary>
-        /// <param name="text">Comment text.</param>
-        /// <returns></returns>
-        public string FormatComment(string text)
-        {
-            text = WriterHelper.RemoveInvalidXmlChars(text);
-            return "<!--" + commentHyphenRegex.Replace(text, "$2\u200B$1") + "-->";
-        }
+        /// <param name="text">The comment String text.</param>
+        /// <returns>Comment string.</returns>
+        string FormatComment(string text);
     }
 }

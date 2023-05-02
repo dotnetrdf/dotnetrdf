@@ -1,0 +1,21 @@
+[
+  {
+    "@id": "http://example.com/2",
+    "http://example.com/contains": [
+      {
+        "@id": "http://example.com/1"
+      }
+    ]
+  },
+  {
+    "@id": "http://example.com/3",
+    "http://example.com/includes": [
+      {
+        "@id": "http://example.com/1"
+      }
+    ]
+  },
+  {
+    "@id": "http://example.com/1"
+  }
+]

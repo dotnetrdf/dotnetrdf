@@ -1,6 +1,6 @@
 # SPARQL Engine
 
-This page acts as a hub for topics about our SPARQL Engine, if you are interested in learning how to make queries and updates please see the [Querying with SPARQL](/user_guide/querying_with_sparql.md) and [Updating with SPARQL](/user_guide/updating_with_sparql.md) pages.
+This page acts as a hub for topics about our SPARQL Engine, if you are interested in learning how to make queries and updates please see the [Querying with SPARQL](../../user_guide/querying_with_sparql.md) and [Updating with SPARQL](../../user_guide/updating_with_sparql.md) pages.
 
 ## Leviathan
 

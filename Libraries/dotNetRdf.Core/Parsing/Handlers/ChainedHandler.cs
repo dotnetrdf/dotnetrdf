@@ -153,6 +153,20 @@ namespace VDS.RDF.Parsing.Handlers
         {
             return _handlers.All(h => h.HandleQuad(t, graph));
         }
+
+        /// <summary>
+        /// Handles Comments by getting each inner handler to attempt to handle it.
+        /// </summary>
+        /// <param name="text">Comment text.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Handling terminates at the first Handler which indicates handling should stop.
+        /// </remarks>
+        protected override bool HandleCommentInternal(string text)
+        {
+            return _handlers.OfType<ICommentRdfHandler>().All(h => h.HandleComment(text));
+        }
+
         /// <summary>
         /// Gets that this Handler accepts all Triples if all inner handlers do so.
         /// </summary>

@@ -106,6 +106,16 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
+        /// Handles Comments by ignoring them.
+        /// </summary>
+        /// <param name="text">Comment text.</param>
+        /// <returns></returns>
+        protected override bool HandleCommentInternal(string text)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// Gets that this handler does not accept all triples since it stops as soon as it sees the first triple.
         /// </summary>
         public override bool AcceptsAll

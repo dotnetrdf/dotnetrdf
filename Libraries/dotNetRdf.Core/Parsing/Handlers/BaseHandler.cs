@@ -234,7 +234,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// Abstract Base Class for RDF Handlers.
     /// </summary>
     public abstract class BaseRdfHandler 
-        : BaseHandler, IRdfHandler
+        : BaseHandler, ICommentRdfHandler
     {
         private bool _inUse;
 
@@ -377,6 +377,27 @@ namespace VDS.RDF.Parsing.Handlers
         /// is null and if so perform their standard triple handling processing.
         /// </remarks>
         protected abstract bool HandleQuadInternal(Triple t, IRefNode graph);
+        
+        /// <summary>
+        /// Handles Comments.
+        /// </summary>
+        /// <param name="text">Comment text.</param>
+        /// <returns></returns>
+        public bool HandleComment(string text)
+        {
+            if (!_inUse) throw new RdfParseException("Cannot Handle Comment as this RDF Handler is not currently in-use");
+            return HandleCommentInternal(text);
+        }
+
+        /// <summary>
+        /// Optionally used by derived Handlers to do additional actions on handling Comments.
+        /// </summary>
+        /// <param name="text">Comment text.</param>
+        /// <returns></returns>
+        protected virtual bool HandleCommentInternal(string text)
+        {
+            return true;
+        }
 
         /// <summary>
         /// Gets whether the Handler will accept all Triples i.e. it will never abort handling early.

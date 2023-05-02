@@ -26,6 +26,7 @@
 
 using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using VDS.RDF.Parsing;
 
@@ -35,7 +36,7 @@ namespace VDS.RDF.Writing.Formatting
     /// A formatter which formats triples for RDF/XML output.
     /// </summary>
     public class RdfXmlFormatter 
-        : IGraphFormatter
+        : IGraphFormatter, ICommentFormatter
     {
         private QNameOutputMapper _mapper;
 
@@ -278,6 +279,18 @@ namespace VDS.RDF.Writing.Formatting
 
             output.Append("</rdf:Description>");
             return output.ToString();
+        }
+
+        /// <summary>
+        /// Matches any hyphen that is followed by another hyphen or the end of the string.
+        /// </summary>
+        static readonly Regex commentHyphenRegex = new Regex(@"-(?=-|$)", RegexOptions.Compiled);
+
+        /// <inheritdoc />
+        public virtual string FormatComment(string text)
+        {
+            text = WriterHelper.RemoveInvalidXmlChars(text);
+            return "<!--" + commentHyphenRegex.Replace(text, "-\u200B") + "-->";
         }
 
         /// <summary>
