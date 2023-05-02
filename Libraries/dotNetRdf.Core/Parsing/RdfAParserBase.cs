@@ -568,7 +568,6 @@ namespace VDS.RDF.Parsing
                         if (context.XmlBaseAllowed)
                         {
                             baseUri = Tools.ResolveUri(GetAttributeValue(attr), baseUri);
-                            if (!(baseUri.EndsWith("/") || baseUri.EndsWith("#"))) baseUri += "#";
                             oldBase = evalContext.BaseUri;
                             baseChanged = true;
                             evalContext.BaseUri = context.UriFactory.Create(baseUri);
@@ -579,22 +578,6 @@ namespace VDS.RDF.Parsing
                                 evalContext.ParentSubject = context.Handler.CreateUriNode(evalContext.BaseUri);
                             }
                         }
-                        break;
-                    case "xmlns":
-                        // Can use @xmlns to override the default namespace
-                        /*
-                             * - Breaks test suite 0063, 0087 and others when processing XHTML documents
-                            uri = GetAttributeValue(attr);
-                            if (!(uri.EndsWith("/") || uri.EndsWith("#"))) uri += "#";
-                            if (evalContext.NamespaceMap.HasNamespace(string.Empty))
-                            {
-                                if (hiddenPrefixes == null) hiddenPrefixes = new Dictionary<string, Uri>();
-                                hiddenPrefixes.Add(string.Empty, evalContext.NamespaceMap.GetNamespaceUri(string.Empty));
-                            }
-                            evalContext.NamespaceMap.AddNamespace(string.Empty, context.UriFactory.Create(uri));
-                            inScopePrefixes.Add(string.Empty);
-                            noDefaultNamespace = true;
-                            */
                         break;
                     case "prefix":
                         // Can use @prefix to set multiple namespaces with one attribute
