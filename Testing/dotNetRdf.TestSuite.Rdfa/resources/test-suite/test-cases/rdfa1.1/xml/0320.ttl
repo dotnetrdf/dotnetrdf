@@ -1,0 +1,10 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/gregg/#me> a foaf:Person;
+   foaf:homepage <http://example.com/gregg/>;
+   foaf:name "Gregg" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/xml/0320.xml> rdfa:usesVocabulary foaf: .

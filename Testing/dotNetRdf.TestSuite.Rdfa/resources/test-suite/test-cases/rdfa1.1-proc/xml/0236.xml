@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <head>
+    <title>Test 0236</title>
+  </head>
+  <body which is not closed should generate a processor error</root>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:foaf="http://xmlns.com/foaf/0.1/">
+ <head>
+      <title>Test 0089</title>
+   </head>
+   <body>
+      <div>
+      	<img src="http://example.org/example.png" typeof="foaf:Image" alt="example image" />
+      </div>
+   </body>
+</root>

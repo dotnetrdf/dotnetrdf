@@ -1,0 +1,5 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.0/xhtml1/0113.xhtml#a> dc:title "" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.0/xhtml1/0113.xhtml#b> dc:title "" .

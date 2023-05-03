@@ -1,0 +1,8 @@
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ [
+     xhv:definition "a bi-pedal primate";
+     xhv:foo "Milky Way";
+     xhv:note "confused animal"
+ ] .

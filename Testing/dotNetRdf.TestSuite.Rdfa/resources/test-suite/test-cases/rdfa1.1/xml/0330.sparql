@@ -1,0 +1,6 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ASK WHERE {
+  [ dcterms:date "2010-11-12"^^xsd:date ]
+}

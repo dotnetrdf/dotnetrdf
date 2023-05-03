@@ -1,0 +1,6 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ [
+     a foaf:Document;
+     foaf:maker [ foaf:name "John Doe"]
+ ] .

@@ -1,0 +1,5 @@
+# This is a negative test, there should be no triples generated.
+ASK WHERE {
+  ?s ?p ?o .
+}
+

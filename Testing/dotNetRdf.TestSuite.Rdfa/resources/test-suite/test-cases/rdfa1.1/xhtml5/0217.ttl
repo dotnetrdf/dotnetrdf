@@ -1,0 +1,7 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/> rdfa:usesVocabulary foaf: .
+
+<http://example.org/#me> foaf:name "Gregg Kellogg" .

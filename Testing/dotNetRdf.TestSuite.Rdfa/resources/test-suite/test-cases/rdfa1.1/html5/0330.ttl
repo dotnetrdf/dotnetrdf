@@ -1,0 +1,4 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/html5/0330.html> dcterms:date "2010-11-12"^^xsd:date .

@@ -1,0 +1,371 @@
+@prefix : <http://xmlns.com/foaf/0.1/> .
+@prefix cal: <http://www.w3.org/2002/12/cal/icaltzd#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix ctag: <http://commontag.org/ns#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix ex: <http://www.example.org/> .
+@prefix google: <http://rdf.data-vocabulary.org/#> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix grddl: <http://www.w3.org/2003/g/data-view#> .
+@prefix ma: <http://www.w3.org/ns/ma-ont#> .
+@prefix og: <http://ogp.me/ns#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix rdfatest: <http://rdfa.info/vocabs/rdfa-test#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rev: <http://purl.org/stuff/rev#> .
+@prefix rif: <http://www.w3.org/2007/rif#> .
+@prefix schema: <http://schema.org/> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix wdr: <http://www.w3.org/2007/05/powder#> .
+@prefix wdrs: <http://www.w3.org/2007/05/powder-s#> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xmlzzz: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.net/> rdf:value "value",
+     "value one",
+     "value two" .
+
+xmlzzz: dct:title "Test Case 0121", "Example Website";
+   rdf:value "value" ;
+   dct:contributor "Shane McCarron" .
+
+xmlzzz:example.png a :Image;
+   xhv:license <http://creativecommons.org/licenses/by-nc-sa/2.0/> .
+
+xmlzzz:foo xmlzzz:bar 10;
+   dct:creator "Mark Birbeck" .
+
+xmlzzz:jd vcard:fn "John Doe" .
+
+<http://internet-apps.blogspot.com/> dct:creator "Mark Birbeck" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0067.svg> dct:title "Test 0067" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0077.svg> xhv:license xmlzzz:license;
+   xhv:role xmlzzz:role .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg> a :Document;
+   dct:title "Test 0109",
+     "E = mc2: The Most Urgent Problem of Our Time"^^xmlzzz:XMLLiteral;
+   cc:license <http://creativecommons.org/licenses/by-nc-nd/2.5/>,
+     <http://creativecommons.org/licenses/by-nd/3.0/>;
+   dct:creator <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/jane>,
+     "Albert Einstein",
+     "Mark Birbeck",
+     <http://www-sop.inria.fr/acacia/fabien/>,  [ :name "Ben Adida"],
+     <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg#me>,
+     <http://www.example.org/#manu>,
+     <http://www.example.org/#fabien>,  [],
+     "Ben",
+     "Fabien Gandon";
+   dct:publisher <http://www-sop.inria.fr/acacia/fabien/>,
+     "Fabien Gandon",
+     <http://www.example.org/#manu>,
+     <http://www.example.org/#fabien>;
+   rdf:inlist <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/res>;
+   rdf:value ("Foo" <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/foo>),  (<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/foo> <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/bar>),
+     (),  ("Foo" "Bar"),  (<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/foo>),  ("Foo"),  ("Foo" "Bar"),  ("Foo"),
+     "Baz",  ("Foo");
+   xhv:alternate xmlzzz:alternate;
+   xhv:appendix xmlzzz:appendix;
+   xhv:bookmark xmlzzz:bookmark;
+   xhv:chapter xmlzzz:chapter;
+   xhv:cite xmlzzz:cite;
+   xhv:contents xmlzzz:contents;
+   xhv:copyright xmlzzz:copyright;
+   xhv:first xmlzzz:first;
+   xhv:glossary xmlzzz:glossary;
+   xhv:help xmlzzz:help;
+   xhv:icon xmlzzz:icon;
+   xhv:index xmlzzz:index;
+   xhv:last xmlzzz:last;
+   xhv:license xmlzzz:license,
+     <http://creativecommons.org/licenses/by-nc-sa/2.0/>,
+     <http://creativecommons.org/licenses/by-nd/3.0/>;
+   xhv:meta xmlzzz:meta;
+   xhv:next <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0070.svg>,
+     [ xhv:next [] ],
+	 [],
+	 xmlzzz:next;
+   xhv:p3pv1 xmlzzz:p3pv1;
+   xhv:prev xmlzzz:prev,
+     <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0069.svg>;
+   xhv:role xmlzzz:role;
+   xhv:section xmlzzz:section;
+   xhv:start xmlzzz:start;
+   xhv:stylesheet xmlzzz:stylesheet;
+   xhv:subsection xmlzzz:subsection;
+   xhv:up xmlzzz:up;
+   rdfa:usesVocabulary :,
+     <http://example.org/wrong/foaf/uri/>,
+     <http://www.example.org/vocab#>;
+   :img <http://sw-app.org/img/mic_2007_01.jpg>;
+   :maker <http://www.example.org/#me>,  [
+     a :Document;
+     :name "John Doe"
+   ];
+   :topic "John Doe" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg#event1> a cal:Vevent;
+   cal:dtend "2006-10-23"^^xsd:date;
+   cal:dtstart "2006-10-21"^^xsd:date;
+   cal:location "Iona, UK";
+   cal:summary "Weekend off in Iona";
+   cal:url <http://freetime.example.org/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg#interfenestration> xmlzzz:size [
+     xmlzzz:unit "character";
+     rdf:value "17"
+   ] .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg#mark> a :Person;
+   :firstName "Mark";
+   :name "<span property=\"foaf:firstName\" xmlns:air=\"http://www.daml.org/2001/10/html/airport-ont#\" xmlns:bio=\"http://vocab.org/bio/0.1/\" xmlns:cal=\"http://www.w3.org/2002/12/cal/icaltzd#\" xmlns:cc=\"http://creativecommons.org/ns#\" xmlns:cert=\"http://www.w3.org/ns/auth/cert#\" xmlns:contact=\"http://www.w3.org/2000/10/swap/pim/contact#\" xmlns:dc=\"http://purl.org/dc/terms/\" xmlns:dct=\"http://purl.org/dc/terms/\" xmlns:earl=\"http://www.w3.org/ns/earl#\" xmlns:ex=\"http://example.org/\" xmlns:example=\"http://example.org/\" xmlns:foaf=\"http://xmlns.com/foaf/0.1/\" xmlns:google=\"http://rdf.data-vocabulary.org/#\" xmlns:ical=\"http://www.w3.org/2002/12/cal/icaltzd#\" xmlns:openid=\"http://xmlns.openid.net/auth#\" xmlns:owl=\"http://www.w3.org/2002/07/owl#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfatest=\"http://rdfa.info/vocabs/rdfa-test#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\" xmlns:rel=\"http://vocab.org/relationship/\" xmlns:rsa=\"http://www.w3.org/ns/auth/rsa#\" xmlns:rss=\"http://web.resource.org/rss/1.0/\" xmlns:sioc=\"http://rdfs.org/sioc/ns#\" xmlns:v=\"http://www.w3.org/2006/vcard/ns#\" xmlns:wot=\"http://xmlns.com/wot/0.1/\" xmlns:xhv=\"http://www.w3.org/1999/xhtml/vocab#\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\">Mark</span> <span property=\"foaf:surname\" xmlns:air=\"http://www.daml.org/2001/10/html/airport-ont#\" xmlns:bio=\"http://vocab.org/bio/0.1/\" xmlns:cal=\"http://www.w3.org/2002/12/cal/icaltzd#\" xmlns:cc=\"http://creativecommons.org/ns#\" xmlns:cert=\"http://www.w3.org/ns/auth/cert#\" xmlns:contact=\"http://www.w3.org/2000/10/swap/pim/contact#\" xmlns:dc=\"http://purl.org/dc/terms/\" xmlns:dct=\"http://purl.org/dc/terms/\" xmlns:earl=\"http://www.w3.org/ns/earl#\" xmlns:ex=\"http://example.org/\" xmlns:example=\"http://example.org/\" xmlns:foaf=\"http://xmlns.com/foaf/0.1/\" xmlns:google=\"http://rdf.data-vocabulary.org/#\" xmlns:ical=\"http://www.w3.org/2002/12/cal/icaltzd#\" xmlns:openid=\"http://xmlns.openid.net/auth#\" xmlns:owl=\"http://www.w3.org/2002/07/owl#\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:rdfatest=\"http://rdfa.info/vocabs/rdfa-test#\" xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\" xmlns:rel=\"http://vocab.org/relationship/\" xmlns:rsa=\"http://www.w3.org/ns/auth/rsa#\" xmlns:rss=\"http://web.resource.org/rss/1.0/\" xmlns:sioc=\"http://rdfs.org/sioc/ns#\" xmlns:v=\"http://www.w3.org/2006/vcard/ns#\" xmlns:wot=\"http://xmlns.com/wot/0.1/\" xmlns:xhv=\"http://www.w3.org/1999/xhtml/vocab#\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\">Birbeck</span>"^^rdf:XMLLiteral;
+   :surname "Birbeck" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg#this> a dct:Agent;
+   :name "A particular agent" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg#wtw> dct:identifier <urn:ISBN:0752820907> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/faq> dct:title "Example FAQ" .
+
+<http://www.cwi.nl/~steven/> xmlzzz:likes """
+    We put thirty spokes together and call it a wheel;
+    But it is on the space where there is nothing that the usefulness of the wheel depends.
+    We turn clay to make a vessel;
+    But it is on the space where there is nothing that the usefulness of the vessel depends.
+    We pierce doors and windows to make a house;
+    And it is on these spaces where there is nothing that the usefulness of the house depends.
+    Therefore just as we take advantage of what is, we should recognize the usefulness of what is not.
+
+    Lao Tzu: Tao Te Ching""" .
+
+<http://www.example.org> xmlzzz:plainlit "This is a plain literal";
+   xmlzzz:xmllit "This is an XMLLiteral"^^rdf:XMLLiteral,
+     """This is
+an XMLLiteral"""^^rdf:XMLLiteral;
+   ex:column:test "Test" .
+
+ex: dct:title "E = mc2: The Most Urgent Problem of Our Time" .
+
+<http://www.example.org/#article> a sioc:Post,
+     :Document;
+   dct:title "My article" .
+
+<http://www.example.org/#ben> a :Person;
+   :knows [ :name [ a :Person],  [ a :Person]],
+     <http://www.example.org/#ivan>,
+     <http://www.example.org/#mark> .
+
+<http://www.example.org/#matsumoto-kimiko> a :Person;
+   :name "松本 后子" .
+
+ex:software <http://www.example.org/vocab#license> <http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231>;
+   xhv:license <http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231> .
+
+xhv: dct:title "The XHTML Vocabulary Document" .
+
+xsd:maxExclusive a owl:DatatypeProperty .
+
+<http://www.w3.org/Person/Ivan#me> owl:sameAs <http://www.ivan-herman.net/foaf#me> .
+
+xmlzzz:node xmlzzz:property """not an XML Literal,
+whitespace     preserved
+""",
+     """ελληνικό
+άσπρο   διάστημα
+"""@el .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg#a> dct:title "" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg#me> xhv:name "Ivan Herman";
+   :name "Gregg Kellogg",
+     "Ben Adida",
+     "Ivan Herman" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/photo1.jpg> dct:title "Portrait of Mark";
+   dct:creator "Mark Birbeck",
+     <http://www.blogger.com/profile/1109404> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/res> rdf:value ("Bar"),  ("Bar") .
+
+<http://sw-app.org/img/mic_2006_03.jpg> xhv:alternate <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg>;
+   :depicts <http://sw-app.org/mic.xhtml#i> .
+
+<http://sw-app.org/mic.xhtml#photo> :depicts <http://sw-app.org/mic.xhtml#i> .
+
+<http://www.blogger.com/profile/1109404> :img <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/photo1.jpg> .
+
+<http://www.example.org/#ivan> :name "Ivan Herman" .
+
+<http://www.example.org/#mark> :name "Mark Birbeck" .
+
+<http://www.ivan-herman.net/Images/me2003-small.png> a :Image .
+
+<http://www.ivan-herman.net/foaf#me> a :Person;
+   :depiction <http://www.ivan-herman.net/Images/me2003-small.png>;
+   :name "Iván" .
+
+<mailto:manu.sporny@digitalbazaar.com> :knows <mailto:michael.hausenblas@joanneum.at> .
+
+<http://danbri.org/foaf.rdf#danbri> a :Person;
+   :knows <http://www.example.org/#somebody>;
+   :name "Dan Brickley" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg#b> dct:title "".
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg>
+   dct:title "rdfagraph";
+   xmlzzz:entity1 ">";
+   xmlzzz:entity2 "Ben & Co.";
+   xmlzzz:entity3 "@";
+   xmlzzz:entity4 "@";
+   ctag: "CTAG";
+   cc: "CC";
+   cc:attributionURL <http://rdfa.info/>;
+   xmlzzz:test "Test";
+   og: "OG";
+   dct: "DC",
+     "DCTERMS";
+   dct:contributor "Mark Birbeck";
+   dct:language "Ruby";
+   gr: "GR";
+   rev: "REV";
+   vcard: "V";
+   void: "VOID";
+   sioc: "SIOC";
+   schema: "Schema";
+   rdf: "RDF";
+   rdf:value "2012-03"^^xsd:gYearMonth,
+     "not this",
+     "2012"^^xsd:gYear,
+     "P2011Y06M28DT00H00M00S"^^xsd:duration,
+     "00:00:00Z"^^xsd:time,
+     "2012-03-18T00:00:00Z"^^xsd:dateTime,
+     " 2012-03-18Z"^^xsd:dateTime,
+     "2012-03-18T00:00:00-08:00"^^xsd:dateTime,
+     "2012-03-18T00:00:00Z"^^xsd:date,
+     " 2012-03-18Z",
+     "2012-03-18Z"^^xsd:date,
+     "D-Day"@en,
+	 "I came, I saw, I conquered"@lat,
+     "";
+   xhv: "XHV";
+   xhv:index <http://rdfa.info/test-suite/#>;
+   xhv:license "License", "license";
+   xhv:next <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0115.svg>;
+   xhv:role "Role";
+   xhv:up <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/>;
+   rdfs: "RDFS";
+   xsd: "XSD";
+   owl: "OWL";
+   cal: "ICAL";
+   grddl: "GRDDL";
+   skos: "SKOS";
+   vcard: "VCARD";
+   wdr: "WDR";
+   wdrs: "WDRS";
+   wdrs:describedby xmlzzz:describedby,
+     "DescribedBy";
+   rif: "RIF";
+   skosxl: "SKOS-XL";
+   xml: "XML";
+   earl:testcase [];
+   ma: "MA";
+   rdfa: "RDFa";
+   : "FOAF";
+   :img <http://sw-app.org/img/mic_2007_01.jpg>;
+   :maker [
+     a :Person;
+     :name "John Doe"
+   ],
+     <http://www.example.org/#me>;
+   rdfatest:cornerCase1 <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/>;
+   rdfatest:cornerCase2 <http://example.org/>;
+   rdfatest:cornerCase3 <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/...>;
+   rdfatest:cornerCase4 <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0295.svg?foo=bar../baz>;
+   rdfatest:cornerCase5 <http://rdfa.info/test-suite/test-cases/.../.htaccess>.
+
+<http://www.example.org/#fabien> :name "Fabien Gandon" .
+
+<http://www.example.org/#manu> :name "Manu Sporny" .
+
+<http://www.example.org/#me> a :Person,
+     :Document;
+   :knows [ :name "John Doe"];
+   :name "John Doe" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/foo> rdf:value ("Foo"),  ("Bar") .
+
+<http://sw-app.org/img/mic_2007_01.jpg> :depicts <http://sw-app.org/mic.xhtml#i> .
+
+<http://sw-app.org/mic.xhtml#i> :img <http://sw-app.org/mic.xhtml#photo>,
+     <http://sw-app.org/img/mic_2007_01.jpg>,
+     <http://sw-app.org/img/mic_2006_03.jpg> .
+
+<http://www.example.org/#somebody> :knows [
+     :knows <http://www.example.org/#somebody>;
+     :mailbox <mailto:ivan@w3.org>;
+     :name "Ivan Herman",  [ a :Person]
+   ],
+     <http://www.w3.org/People/Berners-Lee/card#i>,  [
+     a :Person;
+     :name "Dan Brickley"
+   ],
+     <http://www.ivan-herman.org/Ivan_Herman>,  [ :knows <http://www.w3.org/People/Berners-Lee/card#i>,
+       <http://www.ivan-herman.org/Ivan_Herman>,
+       <http://danbri.org/foaf.rdf#danbri>],  [
+     :knows <http://www.example.org/#somebody>;
+     :mailbox <mailto:ivan@w3.org>;
+     :name "Ivan Herman"
+   ],  [
+     :mailbox <mailto:ivan@w3.org>;
+     :name "Ivan Herman",  [ a :Person]
+   ],
+     <http://danbri.org/foaf.rdf#danbri>,  [
+     :mailbox <mailto:ivan@w3.org>;
+     :name "Ivan Herman"
+   ] .
+
+ [
+     :knows [ :name "Ralph Swick"];
+     :name "Manu Sporny"
+ ] .
+
+ [
+     :knows <http://www.example.org/#somebody>;
+     :mailbox <mailto:ivan@w3.org>;
+     :name "Ivan Herman",  [ a :Person]
+ ] .
+
+ [
+     a :Person;
+     :name "John Doe"
+ ] .
+
+ [
+     xhv:definition "a bi-pedal primate";
+     xhv:foo "Milky Way";
+     xhv:note "confused animal"
+ ] .
+
+_:gregg :knows [
+     :knows [
+       :knows <http://digitalbazaar.com/people/manu>;
+       :mbox <mailto:michael.hausenblas@joanneum.at>
+     ],
+       _:gregg;
+     :mbox <mailto:manu.sporny@digitalbazaar.com>
+   ];
+   :mbox <mailto:gregg@kellogg-assoc.com>;
+   :name "Gregg Kellogg" .

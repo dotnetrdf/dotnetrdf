@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<head  property="rdfs:seeAlso" resource="http://www.example.org">
+	<title>Test 0264</title>
+</head>
+<body>
+  <p> </p>
+</body>
+</root>

@@ -1,0 +1,3 @@
+@prefix dc: <http://purl.org/dc/terms/> .
+
+<http://www.example.org/me> dc:language "Ruby" .

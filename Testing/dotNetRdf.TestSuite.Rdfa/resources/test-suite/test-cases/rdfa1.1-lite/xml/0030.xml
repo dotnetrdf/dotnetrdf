@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root prefix="cc: http://creativecommons.org/ns#">
+	<head>
+		<title>Test 0030</title>
+	</head>
+  <body>
+  	<p>This document is licensed under a
+  		<a 	rel="cc:license"
+    		href="http://creativecommons.org/licenses/by-nc-nd/2.5/">
+       		Creative Commons License
+  		</a>.
+  	</p>	
+  </body>
+</root>

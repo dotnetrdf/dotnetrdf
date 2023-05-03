@@ -56,7 +56,8 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override INode Value(string name, int bindingID)
         {
-            return _context.InputMultiset[bindingID][name];
+            return _context.InputMultiset is IdentityMultiset ? null : _context.InputMultiset[bindingID][name];
+            // return _context.InputMultiset[bindingID][name];
         }
 
         /// <summary>

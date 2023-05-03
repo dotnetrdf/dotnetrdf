@@ -1,0 +1,6 @@
+@prefix ex: <http://www.example.com/roles/> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-role/xml/0310.xml#therole> xhv:role ex:somerole,
+     xhv:someOtherRole,
+     <http://www.example.com/alternate/role> .

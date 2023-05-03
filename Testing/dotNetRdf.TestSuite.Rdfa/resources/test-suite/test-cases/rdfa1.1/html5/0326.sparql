@@ -1,0 +1,11 @@
+BASE <http://example.com/>
+PREFIX rdfa: <http://www.w3.org/ns/rdfa#>
+PREFIX schema: <http://schema.org/>
+ASK WHERE {
+  <#referencing> a schema:Person; schema:name "Bella" .
+  <#unreferenced> a rdfa:Pattern; schema:name "Lola" .
+  OPTIONAL {
+    ?p a rdfa:Pattern; schema:name "Bella" .
+  }
+  FILTER (! bound (?p))
+}

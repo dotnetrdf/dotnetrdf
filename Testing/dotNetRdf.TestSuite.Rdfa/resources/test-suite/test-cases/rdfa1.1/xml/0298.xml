@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+<head>
+  <title>Test 0298: Testing @typeof and @about=[]</title>
+</head>
+<body>
+  <div about="[]" typeof="foaf:Person">
+    <span property="foaf:name">Alex Milowski</span>
+  </div>
+</body>
+</root>

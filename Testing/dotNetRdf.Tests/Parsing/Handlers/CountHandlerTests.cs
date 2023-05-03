@@ -64,7 +64,10 @@ namespace VDS.RDF.Parsing.Handlers
         [Fact]
         public void ParsingCountHandlerRdfA()
         {
-            ParsingUsingCountHandler("test.html", new RdfAParser());
+            ParsingUsingCountHandler("test.html", new RdfAParser(
+                // The property copying handler can't be used with the mock node factory of the count handler
+                new RdfAParserOptions{PropertyCopyEnabled = false}
+                ));
         }
 
         [Fact]

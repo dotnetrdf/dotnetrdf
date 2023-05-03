@@ -1,0 +1,243 @@
+---
+layout: default
+title: "RDFa / Test Suite Endpoint"
+nav_index: 4
+---
+<div class="container">
+
+  <div class="row">
+<h1 id="rdfa_test_suite">RDFa Test Suite</h1>
+
+<p>The RDFa Test Suite is a set of Web Services, markup and tests that can 
+be used to verify RDFa Processor conformance to the set of specifications
+that constitute RDFa 1.1. The goal of the suite is to provide an easy and 
+comprehensive RDFa testing solution for developers creating RDFa Processors.</p>
+
+<h2 id="design">Design</h2>
+
+<p>The RDFa Test suite allows developers to mix and match RDFa processor endpoints
+with different RDFa versions and Host Languages.</p>
+
+<p>The RDFa Test Suite is an single-page HTML application driving the entire
+process.</p>
+
+<p>The page is loaded with the complete lists of tests associated with different RDFa versions and host languages.
+To execute a test, the application uses the <code>processorUrl</code> and appends URI query parameters identifying the test source and other necessary parameters, upon which the processor will return the parsed RDF represented as either <a href="">N-Triples</a> or <a href="">Turtle</a>. As the processor executes in HTML, it is important that the processor return the header <code>Access-Control-Allow-Origin: *</code>.
+The application also fetches an associated SPARQL query, which
+uses an <em>ASK</em> form to return true or false.</p>
+
+<p>The test-suite is implemented using <a href="https://en.wikipedia.org/wiki/JavaScript">JavaScript</a> and  <a href="https://github.com/linkeddata/rdflib.js/">rdflib.js</a>.
+The user interface is implemented in JavaScript using
+<a href="http://twitter.github.com/bootstrap/">Bootstrap.js</a> and <a href="http://documentcloud.github.com/backbone/">Backbone.js</a>.</p>
+
+<p>The test files are managed statically using <a href="https://jekyllrb.com">Jekyll</a> with a <a href="https://en.wikipedia.org/wiki/Rake_(software">Rake task</a>) used to build version- and language-specific test files.</p>
+
+<p>The HTML application is implemented principally in JavaScript using <a href="http://documentcloud.github.com/backbone/">Backbone.js</a> as a model-viewer-controller, which downloads the test suite manifest and creates a simple user interface using <a href="http://twitter.github.com/bootstrap/">Bootstrap.js</a> to run tests, or get test details.</p>
+
+<p>Processing happens in the following order:</p>
+
+<pre><code>RDFa Test Suite | RDFa Website | RDFa Processor
+load webpage    -&gt;
+                &lt;- test scaffold
+load manifest   -&gt;
+                &lt;- JSON-LD manifest
+run test        -&gt; Load SPARQL query.
+                                -&gt; Process referenced
+                                   test document and
+                                   return RDF with
+                                   Content-Type indicating
+                                &lt;- format.
+SPARQL runs with
+returned document
+returning _true_
+or _false_.
+
+display results
+</code></pre>
+
+<h2 id="running_the_test_suite">Running the test suite</h2>
+
+<p>You can view and run this test suite at the following URL:</p>
+
+<p><a href="http://rdfa.info/test-suite">http://rdfa.info/test-suite</a></p>
+
+<h2 id="how_to_add_a_unit_test">How to add a unit test</h2>
+
+<p>In order to add a unit test, you must follow these steps:</p>
+
+<ol>
+<li>Pick a new unit test number. For example - 250. To be consistent, please use
+the next available unit test number.</li>
+<li>Create a markup file in the tests/ directory with a .txt extension. 
+For example: tests/250.txt</li>
+<li>Create a SPARQL query file in the tests/ directory with a .sparql extension.
+For example: tests/250.sparql</li>
+<li>Add your test to manifest.ttl and indicate the host language(s) and version(s) for which
+it applies. For example, if you would like your example to only apply to HTML4,
+you would specify <code>rdfatest:hostLanguage "html4";</code> in the test case entry.</li>
+</ol>
+
+<p>There are three classifications for Unit Tests:</p>
+
+<ul>
+<li>required - These are tests that are required for proper operation per the
+       appropriate RDFa specification.</li>
+<li>optional - These are tests for optional features supported by some RDFa 
+       Processors.</li>
+<li>buggy    - These are tests that are buggy or are not considered valid test
+       cases by all RDFa processor maintainers.</li>
+</ul>
+
+<p>The test suite is designed to empower RDFa processor maintainers to create
+and add tests as they see fit. This may mean that the test suite may become
+unstable from time to time, but this approach has been taken so that the 
+long-term goal of having a comprehensive test suite for RDFa can be achieved
+by the RDFa community.</p>
+
+<p>When running locally, after adding a unit test, run <code>rake cache:clear</code> to remove cached files and ensure that necessary HTTP resources are regenerated. For the deployed website, this happens automatically each time a Git commit is pushed to the server.</p>
+
+<h2 id="how_to_create_a_processor_endpoint">How to create a processor endpoint.</h2>
+
+<p>The Test Suite operates by making a call to a <em>processor endpoint</em> with a query parameter that indicates
+the URL of the test document to be processed. Within the test suite, a text box (upper right-hand corner)
+allows a processor endpoint to be selected or added manually. It is presumed that the endpoint URL ends
+with a query parameter to which a test URL can be appended. For example, the <em>pyrdfa</em> endpoint is
+defined as follows: <code>http://www.w3.org/2012/pyRdfa/extract?uri=</code>. When invoked, the URL of an actual
+test will be appended, such as the following:
+<code>http://www.w3.org/2012/pyRdfa/extract?uri=http://rdfa.info/test-suite/test-cases/xml/rdfa1.1/0001.xml</code>.</p>
+
+<p>Everything required by a processor can be presumed from the content of the document provided, however
+the test suite will also set a <code>Content-Type</code> HTTP header appropriate for the document provided, these include
+* application/xhtml+xml,
+* application/xml,
+* image/svg+xml, and
+* text/html</p>
+
+<p>The processor is called with HTTP Accept header indicating appropriate result formats (currently,
+<code>text/turtle</code> (indicating <a href="http://www.w3.org/TR/turtle/">Turtle</a>),
+<code>application/rdf+xml</code> (indicating <a href="http://www.w3.org/TR/rdf-syntax-grammar/">RDF/XML</a>), and
+<code>text/plain</code> (indicating <a href="http://www.w3.org/TR/rdf-testcases/#ntriples">N-Triples</a>)), and the processor may
+respond with an appropriate RDF format. Processors <em>SHOULD</em> set the HTTP <code>Content-Type</code> of the resulting
+document to the associated document Mime Type.</p>
+
+<p>In some cases, the test suite may add additional query parameters to the endpoint URL to test different
+required or optional behaviors, these include <code>rdfagraph</code>, taking a value of <code>original</code>, <code>processor</code>, or
+<code>original,processor</code> to control the processor output
+(see <a href="http://www.w3.org/TR/rdfa-core/#accessing-the-processor-graph">RDFa Core 1.1 Section 7.6.1</a>).
+Also, <code>vocab_expansion</code> taking any value is used
+to control optional RDFa vocabulary expansion
+(see <a href="http://www.w3.org/TR/rdfa-core/#s_expansion_control">RDFa Core 1.1 Section 10.2</a>).</p>
+
+<p>To add a processor to the test suite, add to the object definition in
+<code>processors.json</code> in alphabetical order. This is currently defined as follows:</p>
+
+<pre><code>{
+  "any23 (Java)": {
+    "endpoint": "http://any23.org/turtle/",
+    "doap": "http://any23.org/",
+    "doap_url": "/earl-reports/any23-doap.ttl"
+  },
+  "clj-rdfa (Clojure)": {
+    "endpoint": "http://clj-rdfa.herokuapp.com/extract.ttl?url=",
+    "doap": "https://github.com/niklasl/clj-rdfa",
+    "doap_url": "/earl-reports/clj-rdfa-doap.ttl"
+  },
+  "EasyRdf (PHP)": {
+    "endpoint": "http://www.easyrdf.org/converter?input_format=rdfa&amp;raw=1&amp;uri=",
+    "doap": "http://www.aelius.com/njh/easyrdf/",
+    "doap_url": "/earl-reports/easyrdf-doap.ttl"
+  },
+  "Green Turtle (JavaScript)": {
+    "doap": "https://code.google.com/p/green-turtle/",
+    "doap_url": "/earl-reports/green-turtle-doap.ttl"
+  },
+  "java-rdfa (Java)": {
+    "endpoint": "http://rdf-in-html.appspot.com/translate/?parser=XHTML&amp;uri=",
+    "doap": "https://github.com/shellac/java-rdfa",
+    "doap_url": "/earl-reports/java-rdfa-doap.ttl"
+  },
+  "librdfa (C)": {
+    "endpoint": "http://librdfa.digitalbazaar.com/rdfa2rdf.py?uri=",
+    "doap": "https://github.com/rdfa/librdfa",
+    "doap_url": "/earl-reports/librdfa-doap.ttl"
+  },
+  "pyRdfa (Python)": {
+    "endpoint": "http://www.w3.org/2012/pyRdfa/extract?uri=",
+    "doap": "http://www.w3.org/2012/pyRdfa"
+  },
+  "RDF::RDFa (Ruby)": {
+    "endpoint": "http://rdf.greggkellogg.net/distiller?raw=true&amp;in_fmt=rdfa&amp;uri=",
+    "doap": "http://rubygems.org/gems/rdf-rdfa",
+    "doap_url": "/earl-reports/rdf-rdfa-doap.ttl"
+  },
+  "RDF::RDFa::Parser (Perl)": {
+    "endpoint": "http://buzzword.org.uk/2012/rdfa-distiller/?format=rdfxml&amp;url=",
+    "doap": "http://purl.org/NET/cpan-uri/dist/RDF-RDFa-Parser/v_1-097",
+    "doap_url": "/earl-reports/rdf-rdfa-parser-doap.ttl"
+  },
+  "Semargl (Java)": {
+    "endpoint": "http://demo.semarglproject.org/process?uri=",
+    "doap": "http://semarglproject.org"
+  },
+  "other":  {
+    "endpoint": "",
+    "doap": ""
+  }
+}
+</code></pre>
+
+<p>The <code>doap</code> is the IRI defining the processor. It should be an information resource resulting in a
+<a href="https://github.com/edumbill/doap/wiki">DOAP</a> project description, and will be used when formatting reports.</p>
+
+<p>If the DOAP project description location differs from the identifying IRI, set that location in <code>doap_url</code></p>
+
+<h2 id="document_caching">Document caching</h2>
+
+<p>Test cases are provided with HTTP ETag headers and expiration values.
+Processors <em>MAY</em> cache test case documents but <em>MUST</em> validate the document using HTTP HEAD or conditional GET
+operations.</p>
+
+<h2 id="crazy_ivan">Crazy Ivan</h2>
+
+<p>The test suite is termed <em>Crazy Ivan</em> because of an unusual maneuver popularized in <a href="http://www.imdb.com/title/tt0099810/quotes?qt=qt0458296">The Hunt for Red October</a>
+and <a href="http://www.youtube.com/watch?v=Oi6BLxusAM8">Firefly</a>. It is a term used to detect problems that are hiding, which is what the test suite.</p>
+
+<blockquote>
+  <p>Seaman Jones: Conn, sonar! Crazy Ivan! 
+Capt. Bart Mancuso: All stop! Quick quiet! [the ships engines are shut down completely] 
+Beaumont: What&#8217;s goin&#8217; on? 
+Seaman Jones: Russian captains sometime turn suddenly to see if anyone&#8217;s behind them. We call it &#8220;Crazy Ivan.&#8221; The only thing you can do is go dead. Shut everything down and make like a hole in the water. 
+Beaumont: So what&#8217;s the catch? 
+Seaman Jones: The catch is, a boat this big doesn&#8217;t exactly stop on a dime&#8230; and if we&#8217;re too close, we&#8217;ll drift right into the back of him. </p>
+</blockquote>
+
+<h1 id="contributing">Contributing</h1>
+
+<p>If you would like to contribute a to the website, include an additional
+test suite processor endpoint, contribute a new test or to a fix to an existing test,
+please follow these steps:</p>
+
+<ol>
+<li>Notify the RDFa mailing list, public-rdfa@w3.org ([archives](https://lists.w3.org/Archives/Public/public-rdfa/)),
+that you will be creating a new test or fix and the purpose of the
+change.</li>
+<li>Clone the git repository: <a href="https://github.com/rdfa/rdfa.github.io">git://github.com/rdfa/rdfa.github.io.git</a>.</li>
+<li>Make your changes and submit them via github, or via a &#8216;git format-patch&#8217;
+to the RDFa mailing list.</li>
+</ol>
+
+<p>Optionally, you can ask for direct access to the repository and may make
+changes directly to the RDFa Website source code. All updates to the test 
+suite go live within seconds of pushing changes to github via a WebHook call.</p>
+
+<h2 id="caution_cached_assets">Caution: Cached assets</h2>
+
+<p>The JavaScript and CSS files are minimized into cached assets. Any change to CSS or JavaScript files
+requires that the assets be re-compiled. This can be done as follows:</p>
+
+<pre><code>rake assets:precompile
+</code></pre>
+
+<p>Make sure to do this before committing changes that involve any CSS or JavaScript contained within <code>file:public/stylesheets</code> or <code>public/javascripts</code>.</p>
+</div>
+</div>

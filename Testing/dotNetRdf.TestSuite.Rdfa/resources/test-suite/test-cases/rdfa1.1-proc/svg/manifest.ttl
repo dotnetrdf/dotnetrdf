@@ -1,0 +1,74 @@
+@base <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/manifest> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf: <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix test: <http://www.w3.org/2006/03/test-description#> .
+@prefix rdfatest: <http://rdfa.info/vocabs/rdfa-test#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "RDFa rdfa1.1-proc tests for svg" ;
+    mf:entries (
+      <#0235>
+      <#0236>
+      <#0237>
+      <#0238>
+      <#0239>
+  ) .
+
+<#0235> a rdfatest:NegativeEvaluationTest;
+  mf:name """Test 0235: rdfagraph='processor' does not generate standard triples""";
+  rdfs:comment """Setting rdfagraph query parameter to 'processor' does not output standard triples""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0235.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0235.ttl>;
+  rdfatest:queryParam "rdfagraph=processor";
+  .
+
+<#0236> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0236: rdfagraph='processor' with a markup error generates rdfa:Error""";
+  rdfs:comment """Setting rdfagraph query parameter to 'processor' generates an rdfa:Error""";
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0236.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0236.ttl>;
+  rdfatest:queryParam "rdfagraph=processor";
+  test:specificationReference """7.6 Processor Status""";
+  .
+
+<#0237> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0237: rdfagraph='processor' with invalid SafeCURIE generates rdfa:Warning""";
+  rdfs:comment """
+      Setting rdfagraph query parameter to 'processor' generates an rdf:Warning when given
+      a SafeCURIE with an invalid prefix.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0237.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0237.ttl>;
+  rdfatest:queryParam "rdfagraph=processor";
+  test:specificationReference """7.6 Processor Status and 7.4.2 General Use of CURIEs in Attributes""";
+  .
+
+<#0238> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0238: rdfagraph='processor' with missing Term definition generates rdfa:Warning""";
+  rdfs:comment """
+      Setting rdfagraph query parameter to 'processor' generates an rdf:Warning when given
+      a missing Term definition.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0238.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0238.ttl>;
+  rdfatest:queryParam "rdfagraph=processor";
+  test:specificationReference """7.6 Processor Status and 7.4.3 General Use of Terms in Attributes""";
+  .
+
+<#0239> a rdfatest:PositiveEvaluationTest;
+  mf:name """Test 0239: rdfagraph='processor' with undefined prefix generates rdfa:Warning""";
+  rdfs:comment """
+      Setting rdfagraph query parameter to 'processor' generates an rdf:Warning when given
+      a SafeCURIE with an undefined prefix.
+   """;
+  test:classification <http://www.w3.org/2006/03/test-description#required>;
+  mf:action <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0239.svg>;
+  mf:result <http://rdfa.info/test-suite/test-cases/rdfa1.1-proc/svg/0239.ttl>;
+  rdfatest:queryParam "rdfagraph=processor";
+  test:specificationReference """7.6 Processor Status and 7.4.2 General Use of CURIEs in Attributes""";
+  .

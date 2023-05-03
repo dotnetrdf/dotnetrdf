@@ -1,0 +1,5 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://www.example.org/#somebody> foaf:knows [ foaf:knows <http://www.w3.org/People/Berners-Lee/card#i>,
+       <http://www.ivan-herman.org/Ivan_Herman>,
+       <http://danbri.org/foaf.rdf#danbri>] .

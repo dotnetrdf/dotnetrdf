@@ -1,0 +1,4 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.example.org/> dc11:title "E = mc2: The Most Urgent Problem of Our Time" .

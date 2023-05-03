@@ -1,0 +1,3 @@
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+
+<http://sw-app.org/img/mic_2006_03.jpg> xhv:alternate <http://rdfa.info/test-suite/test-cases/rdfa1.1/html5/0228.html> .

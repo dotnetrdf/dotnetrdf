@@ -1,0 +1,4 @@
+ASK WHERE {
+	<http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0025.html> <http://purl.org/dc/elements/1.1/creator> <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0025.html#me> .
+	<http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0025.html#me> <http://xmlns.com/foaf/0.1/name> "Ben Adida" .
+}

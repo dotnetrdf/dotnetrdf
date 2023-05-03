@@ -1,0 +1,4 @@
+# This test should result in a 'NO', i.e. no triples should be generated from the XHTML+RDFa input document.
+ASK WHERE {
+	<http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0107.html> <http://www.w3.org/1999/xhtml/vocab#next> ?a .
+ }

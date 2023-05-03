@@ -1,0 +1,12 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.0/xml/0059.xml> dc11:creator <http://www.example.org/#manu>,
+     <http://www.example.org/#fabien>;
+   dc11:publisher <http://www.example.org/#manu>,
+     <http://www.example.org/#fabien> .
+
+<http://www.example.org/#fabien> foaf:name "Fabien Gandon" .
+
+<http://www.example.org/#manu> foaf:name "Manu Sporny" .

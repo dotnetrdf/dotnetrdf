@@ -1,0 +1,7 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+ASK WHERE {
+<http://www.ivan-herman.net/foaf#me> foaf:depiction <http://www.ivan-herman.net/Images/me2003-small.png> .
+<http://www.ivan-herman.net/Images/me2003-small.png> a foaf:Image .
+}

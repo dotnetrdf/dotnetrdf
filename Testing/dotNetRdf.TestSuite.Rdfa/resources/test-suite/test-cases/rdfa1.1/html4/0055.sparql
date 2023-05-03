@@ -1,0 +1,4 @@
+ASK WHERE {
+	<http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0055.html> <http://purl.org/dc/elements/1.1/creator> <http://www-sop.inria.fr/acacia/fabien/> .
+	<http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0055.html> <http://purl.org/dc/elements/1.1/publisher> <http://www-sop.inria.fr/acacia/fabien/> .
+}

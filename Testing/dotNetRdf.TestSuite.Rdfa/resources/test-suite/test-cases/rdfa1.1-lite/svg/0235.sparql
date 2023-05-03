@@ -1,0 +1,4 @@
+PREFIX dc: <http://purl.org/dc/terms/>
+ASK WHERE {
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg> dc:title "rdfagraph" .
+}

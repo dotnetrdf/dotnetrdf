@@ -1,0 +1,7 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/html5/0318.html> rdfa:usesVocabulary foaf: .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/html5/0318.html#me> foaf:name "Ivan Herman" .

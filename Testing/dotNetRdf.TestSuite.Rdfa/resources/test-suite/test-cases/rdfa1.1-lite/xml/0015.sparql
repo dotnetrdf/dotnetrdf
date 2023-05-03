@@ -1,0 +1,4 @@
+ASK WHERE {
+	<http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/xml/0015.xml> <http://purl.org/dc/elements/1.1/creator> "Fyodor Dostoevsky" .
+	<http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/xml/0015.xml> <http://purl.org/dc/elements/1.1/source> <urn:isbn:0140449132> .
+}

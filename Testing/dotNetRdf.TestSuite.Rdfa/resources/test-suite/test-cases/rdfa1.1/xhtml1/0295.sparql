@@ -1,0 +1,2 @@
+# Just test to see that some triples are generated
+ASK WHERE {?s ?p ?o}

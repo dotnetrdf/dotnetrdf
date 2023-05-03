@@ -1,0 +1,7 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+ASK WHERE {
+<http://www.w3.org/Person/Ivan#me> owl:sameAs <http://www.ivan-herman.net/foaf#me> .
+<http://www.ivan-herman.net/foaf#me> a foaf:Person .
+}

@@ -1,0 +1,8 @@
+ASK WHERE {
+	<http://www.blogger.com/profile/1109404> <http://xmlns.com/foaf/0.1/img> <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/photo1.jpg> .
+	<http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/photo1.jpg> <http://purl.org/dc/elements/1.1/creator> <http://www.blogger.com/profile/1109404> .
+}
+
+
+ 
+ 

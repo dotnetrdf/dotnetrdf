@@ -1,0 +1,6 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+ [
+     foaf:knows [ foaf:name "Ralph Swick"];
+     foaf:name "Manu Sporny"
+ ] .

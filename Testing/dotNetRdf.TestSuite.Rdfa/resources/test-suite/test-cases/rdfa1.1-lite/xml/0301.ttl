@@ -1,0 +1,9 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/xml/0301.xml> <http://www.milowski.com/V/bit> [
+     a <http://www.milowski.com/V/thing>;
+     <http://www.milowski.com/V/name> "Fizzbit"
+   ];
+   rdfa:usesVocabulary <http://www.milowski.com/V/> .

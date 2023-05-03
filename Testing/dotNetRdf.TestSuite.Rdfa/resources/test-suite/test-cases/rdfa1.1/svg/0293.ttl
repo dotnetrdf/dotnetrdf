@@ -1,0 +1,4 @@
+@prefix ex: <http://www.example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.example.org> ex:column:test "Test" .

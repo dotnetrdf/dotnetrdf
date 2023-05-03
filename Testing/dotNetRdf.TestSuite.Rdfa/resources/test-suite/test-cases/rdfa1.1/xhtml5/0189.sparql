@@ -1,0 +1,5 @@
+ASK WHERE {
+  <http://www.example.org/software>
+    <http://www.example.org/vocab#license>
+      <http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231> .
+}

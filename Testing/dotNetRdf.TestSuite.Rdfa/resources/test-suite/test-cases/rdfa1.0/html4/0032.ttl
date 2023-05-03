@@ -1,0 +1,3 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0032.html#wtw> dc11:identifier <urn:ISBN:0752820907> .

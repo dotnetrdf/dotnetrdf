@@ -1,0 +1,2 @@
+PREFIX rdfa: <http://www.w3.org/ns/rdfa#>
+ASK WHERE { ?s a rdfa:UnresolvedTerm }

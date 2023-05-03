@@ -1,0 +1,7 @@
+# Check that foaf:name exists, but there is no statement with "value".
+
+ASK WHERE {
+  ?s <http://xmlns.com/foaf/0.1/name> "Ivan Herman" .
+  OPTIONAL {?s ?p "value" } .
+  FILTER (! bound (?p))
+}

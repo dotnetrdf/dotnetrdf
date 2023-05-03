@@ -1,0 +1,26 @@
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0087.html> xhv:alternate <http://example.org/alternate>;
+   xhv:appendix <http://example.org/appendix>;
+   xhv:bookmark <http://example.org/bookmark>;
+   xhv:chapter <http://example.org/chapter>;
+   xhv:cite <http://example.org/cite>;
+   xhv:contents <http://example.org/contents>;
+   xhv:copyright <http://example.org/copyright>;
+   xhv:first <http://example.org/first>;
+   xhv:glossary <http://example.org/glossary>;
+   xhv:help <http://example.org/help>;
+   xhv:icon <http://example.org/icon>;
+   xhv:index <http://example.org/index>;
+   xhv:last <http://example.org/last>;
+   xhv:license <http://example.org/license>;
+   xhv:meta <http://example.org/meta>;
+   xhv:next <http://example.org/next>;
+   xhv:p3pv1 <http://example.org/p3pv1>;
+   xhv:prev <http://example.org/prev>;
+   xhv:role <http://example.org/role>;
+   xhv:section <http://example.org/section>;
+   xhv:start <http://example.org/start>;
+   xhv:stylesheet <http://example.org/stylesheet>;
+   xhv:subsection <http://example.org/subsection>;
+   xhv:up <http://example.org/up> .

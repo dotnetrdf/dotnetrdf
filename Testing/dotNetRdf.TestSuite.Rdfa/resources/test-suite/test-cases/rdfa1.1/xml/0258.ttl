@@ -1,0 +1,3 @@
+@prefix earl: <http://www.w3.org/ns/earl#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/xml/0258.xml> earl:testcase [] .

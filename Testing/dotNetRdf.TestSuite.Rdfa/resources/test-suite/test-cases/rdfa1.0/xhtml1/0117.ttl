@@ -1,0 +1,4 @@
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+<http://www.example.org/tc117.xhtml> dc:contributor "Mark Birbeck";
+   dc:title "Test 0117" .

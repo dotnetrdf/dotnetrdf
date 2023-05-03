@@ -1,0 +1,6 @@
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix rdfatest: <http://rdfa.info/vocabs/rdfa-test#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/svg/0242.svg> rdfatest:baseProp rdfatest:eqProp;
+   rdfatest:eqProp rdfatest:eqProp;
+   rdfa:usesVocabulary rdfatest: .

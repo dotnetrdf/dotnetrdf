@@ -1,0 +1,8 @@
+PREFIX xhv: <http://www.w3.org/1999/xhtml/vocab#>
+PREFIX powder: <http://www.w3.org/2007/05/powder-s#>
+PREFIX ex: <http://example.org/>
+ASK WHERE {
+  ?s powder:describedby ex:describedby;
+     xhv:license ex:license;
+     xhv:role ex:role
+}

@@ -1,0 +1,30 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/gregg/#me> a foaf:Person;
+   foaf:homepage <http://example.com/gregg/>;
+   foaf:knows <http://example.com/niklas/#me>,
+     <http://example.com/ivan/#me>,
+     <http://example.com/manu/#me>,
+     <http://example.com/stéphane/#me>;
+   foaf:name "Gregg" .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/xhtml5/0296.xhtml> rdfa:usesVocabulary foaf: .
+
+<http://example.com/ivan/#me> a foaf:Person;
+   foaf:homepage <http://example.com/ivan/>;
+   foaf:name "Ivan" .
+
+<http://example.com/manu/#me> a foaf:Person;
+   foaf:homepage <http://example.com/manu/>;
+   foaf:name "Manu" .
+
+<http://example.com/niklas/#me> a foaf:Person;
+   foaf:homepage <http://example.com/niklas/>;
+   foaf:name "Niklas" .
+
+<http://example.com/stéphane/#me> a foaf:Person;
+   foaf:homepage <http://example.com/stéphane/>;
+   foaf:name "Stéphane" .

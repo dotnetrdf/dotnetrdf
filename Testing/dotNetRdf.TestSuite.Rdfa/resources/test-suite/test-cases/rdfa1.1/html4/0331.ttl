@@ -1,0 +1,3 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0331.html> dcterms:language "af"^^dcterms:RFC5646 .

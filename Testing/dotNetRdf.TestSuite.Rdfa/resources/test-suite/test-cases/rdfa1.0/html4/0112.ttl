@@ -1,0 +1,6 @@
+@prefix ex: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:node ex:property """not an XML Literal,
+whitespace     preserved
+""" .

@@ -1,0 +1,5 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0054.html> dc11:creator "Fabien Gandon";
+   dc11:publisher "Fabien Gandon" .

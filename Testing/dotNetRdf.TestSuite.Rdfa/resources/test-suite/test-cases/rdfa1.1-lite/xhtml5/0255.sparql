@@ -1,0 +1,5 @@
+ASK WHERE {
+  <http://example.org/> <http://example.org/terms#prop> "Just a plain literal." .
+  <http://example.org/> <http://example.org/terms#prop> ?plain .
+  FILTER(lang(?plain) = "")
+}

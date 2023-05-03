@@ -1,0 +1,73 @@
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix csvw: <http://www.w3.org/ns/csvw#> .
+@prefix ctag: <http://commontag.org/ns#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix gr: <http://purl.org/goodrelations/v1#> .
+@prefix grddl: <http://www.w3.org/2003/g/data-view#> .
+@prefix ical: <http://www.w3.org/2002/12/cal/icaltzd#> .
+@prefix ma: <http://www.w3.org/ns/ma-ont#> .
+@prefix og: <http://ogp.me/ns#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix qb: <http://purl.org/linked-data/cube#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rev: <http://purl.org/stuff/rev#> .
+@prefix rif: <http://www.w3.org/2007/rif#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix schema: <http://schema.org/> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix v: <http://rdf.data-vocabulary.org/#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix wdr: <http://www.w3.org/2007/05/powder#> .
+@prefix wdrs: <http://www.w3.org/2007/05/powder-s#> .
+@prefix xhv: <http://www.w3.org/1999/xhtml/vocab#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-lite/xhtml5/0259.xhtml> ctag: "CTAG";
+   cc: "CC";
+   og: "OG";
+   dcterms: "DC",
+     "DCTERMS";
+   gr: "GR";
+   qb: "QB";
+   rev: "REV";
+   v: "V";
+   void: "VOID";
+   sioc: "SIOC";
+   schema: "Schema";
+   rdf: "RDF";
+   xhv: "XHV";
+   xhv:license "License";
+   xhv:role "Role";
+   rdfs: "RDFS";
+   xsd: "XSD";
+   owl: "OWL";
+   ical: "ICAL";
+   grddl: "GRDDL";
+   skos: "SKOS";
+   vcard: "VCARD";
+   wdr: "WDR";
+   wdrs: "WDRS";
+   wdrs:describedby "DescribedBy";
+   rif: "RIF";
+   skosxl: "SKOS-XL";
+   xml: "XML";
+   csvw: "CSVW";
+   dcat: "DCAT";
+   ma: "MA";
+   org: "ORG";
+   prov: "PROV";
+   rr: "RR";
+   rdfa: "RDFa";
+   sd: "SD";
+   foaf: "FOAF" .

@@ -1,0 +1,4 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/xhtml5/0055.xhtml> dc11:creator <http://www-sop.inria.fr/acacia/fabien/>;
+   dc11:publisher <http://www-sop.inria.fr/acacia/fabien/> .

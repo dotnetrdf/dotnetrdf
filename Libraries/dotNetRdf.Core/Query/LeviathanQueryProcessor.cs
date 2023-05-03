@@ -3416,7 +3416,10 @@ namespace VDS.RDF.Query
                             results = EvaluateAskBgp(triplePatterns, context, pattern + 1, out halt);
 
                             // If recursion leads to a halt then we halt and return immediately
-                            if (halt) return results;
+                            if (halt)
+                            {
+                                return results;
+                            }
 
                             // Otherwise we need to keep going here
                             // So must reset our input and outputs before continuing

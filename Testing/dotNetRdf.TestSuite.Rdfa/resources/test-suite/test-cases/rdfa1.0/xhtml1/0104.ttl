@@ -1,0 +1,7 @@
+@prefix example: <http://www.example.org/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.0/xhtml1/0104.xhtml#interfenestration> example:size [
+     example:unit "character";
+     rdf:value "17"
+   ] .

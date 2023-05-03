@@ -1,0 +1,3 @@
+@prefix cc: <http://creativecommons.org/ns#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0071.html> cc:license <http://creativecommons.org/licenses/by-nd/3.0/> .

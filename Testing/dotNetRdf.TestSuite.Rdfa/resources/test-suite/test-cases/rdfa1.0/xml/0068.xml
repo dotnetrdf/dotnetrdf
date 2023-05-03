@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:dc="http://purl.org/dc/elements/1.1/">
+   <head>
+      <title>Test 0068</title>
+   </head>
+   <body>
+      <p about="0067.xml">
+         The previous test was
+         <span property="dc:title">Test 0067</span>.
+      </p>
+   </body>
+</root>

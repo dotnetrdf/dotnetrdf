@@ -1,0 +1,4 @@
+PREFIX schema: <http://schema.org/>
+ASK WHERE {
+  [ a schema:Person; schema:name "Gregg", "Kellogg" ]
+}

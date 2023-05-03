@@ -34,7 +34,7 @@ namespace VDS.RDF.Parsing.Contexts
         private readonly THtmlDocument _document;
         private RdfASyntax _syntax = RdfASyntax.RDFa_1_1;
         private bool _allowXmlBase = true;
-        private IRdfAVocabulary _defaultVocabulary;
+        private IRdfAContext _defaultContext;
 
         /// <summary>
         /// Creates a new Parser Context.
@@ -125,17 +125,17 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets/Sets the Default Vocabularly.
+        /// Gets/Sets the Default Vocabulary.
         /// </summary>
-        public IRdfAVocabulary DefaultVocabulary
+        public IRdfAContext DefaultContext
         {
             get
             {
-                return _defaultVocabulary;
+                return _defaultContext;
             }
             set
             {
-                _defaultVocabulary = value;
+                _defaultContext = value;
             }
         }
 

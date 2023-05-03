@@ -59,7 +59,10 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets/Sets the Base URI.
         /// </summary>
-        public Uri BaseUri { get; set; }
+        public Uri BaseUri
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Gets/Sets the Parent Subject.
@@ -89,6 +92,11 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Gets/Sets the Local Vocabulary.
         /// </summary>
-        public IRdfAVocabulary LocalVocabulary { get; set; }
+        public IRdfAContext LocalContext { get; set; }
+
+        /// <summary>
+        /// Get the list mapping.
+        /// </summary>
+        public Dictionary<INode, List<INode>> ListMapping { get; set; } = new();
     }
 }

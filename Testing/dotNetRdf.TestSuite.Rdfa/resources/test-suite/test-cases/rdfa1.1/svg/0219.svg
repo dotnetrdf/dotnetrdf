@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg>
+<head>
+  <title>Test 0219</title>
+</head>
+<body>
+  <div about="">
+    <p property="rdf:value" inlist="">Foo</p>
+  </div>
+</body>
+</svg>

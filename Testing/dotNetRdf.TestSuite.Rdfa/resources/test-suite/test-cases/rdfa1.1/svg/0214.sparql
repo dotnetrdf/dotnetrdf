@@ -1,0 +1,4 @@
+ASK WHERE {
+    <http://rdfa.info/test-suite/test-cases/rdfa1.1/svg/0214.svg> a <http://xmlns.com/foaf/0.1/Document>;
+        <http://purl.org/dc/terms/title> "Test 0214" .
+}

@@ -1,0 +1,7 @@
+@prefix rdfa: <http://www.w3.org/ns/rdfa#> .
+@prefix rdfatest: <http://rdfa.info/vocabs/rdfa-test#> .
+
+<http://rdfa.info/test-suite/test-cases/rdfa1.1-vocab/xhtml1/0240.xhtml> rdfatest:baseProp rdfatest:subProp;
+   rdfatest:eqProp rdfatest:subProp;
+   rdfatest:subProp rdfatest:subProp;
+   rdfa:usesVocabulary rdfatest: .

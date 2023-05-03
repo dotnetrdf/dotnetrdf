@@ -29,6 +29,8 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using System;
+using System.Linq;
 using VDS.RDF.Parsing.Contexts;
 
 namespace VDS.RDF.Parsing
@@ -43,10 +45,12 @@ namespace VDS.RDF.Parsing
     /// </remarks>
     public class RdfAParser : RdfAParserBase<HtmlDocument, HtmlNode, HtmlNode, HtmlAttribute>
     {
+        private readonly Regex _html5DoctypeRegex = new("^<!DOCTYPE\\s+HTML\\s?>", RegexOptions.IgnoreCase);
+
         /// <summary>
         /// Creates a new RDFa Parser which will auto-detect which RDFa version to use (assumes 1.1 if none explicitly specified).
         /// </summary>
-        public RdfAParser() : base()
+        public RdfAParser()
         {
         }
 
@@ -56,6 +60,15 @@ namespace VDS.RDF.Parsing
         /// <param name="syntax">RDFa Syntax Version.</param>
         public RdfAParser(RdfASyntax syntax) : base(syntax)
         {
+        }
+
+        /// <summary>
+        /// Creates a new RDFa parser with the provided configuration options.
+        /// </summary>
+        /// <param name="parserOptions">The options to use to configure the parser.</param>
+        public RdfAParser(RdfAParserOptions parserOptions) : base(parserOptions)
+        {
+
         }
 
         /// <inheritdoc/>
@@ -75,7 +88,7 @@ namespace VDS.RDF.Parsing
         /// <inheritdoc/>
         protected override string GetAttribute(HtmlNode element, string attributeName)
         {
-            return element.Attributes[attributeName].Value;
+            return element.Attributes[attributeName].DeEntitizeValue;
         }
 
         /// <inheritdoc/>
@@ -96,12 +109,23 @@ namespace VDS.RDF.Parsing
             HtmlNodeCollection docTypes = document.DocumentNode.SelectNodes("comment()");
             if (docTypes != null)
             {
-                foreach (HtmlNode docType in docTypes)
+                foreach (HtmlCommentNode docType in docTypes.OfType<HtmlCommentNode>())
                 {
-                    if (docType.InnerText.StartsWith("<!DOCTYPE"))
+                    if (_html5DoctypeRegex.IsMatch(docType.Comment))
                     {
+                        // HTML5 documents don't support @xml:base
+                        return false;
+                    }
+
+                    if (docType.Comment.StartsWith("<!DOCTYPE", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (docType.Comment.Contains("\"-//W3C//DTD HTML 4.01"))
+                        {
+                            // HTML4 documents don't support @xml:base
+                            return false;
+                        }
                         // Extract the Document Type
-                        Match dtd = Regex.Match(docType.InnerText, "\"([^\"]+)\">");
+                        Match dtd = Regex.Match(docType.Comment, "\"([^\"]+)\">");
                         if (dtd.Success)
                         {
                             if (dtd.Groups[1].Value.Equals(XHtmlPlusRdfADoctype))
@@ -175,13 +199,25 @@ namespace VDS.RDF.Parsing
         /// <inheritdoc/>
         protected override bool HasChildren(HtmlNode element)
         {
-            return element.HasChildNodes;
+            return element.ChildNodes.Any(c=>c.NodeType == HtmlNodeType.Element);
         }
 
         /// <inheritdoc/>
         protected override bool IsTextNode(HtmlNode node)
         {
             return node.NodeType == HtmlNodeType.Text;
+        }
+
+        /// <inheritdoc/>
+        protected override bool IsRoot(HtmlNode node)
+        {
+            return node.ParentNode?.NodeType == HtmlNodeType.Document && node.NodeType == HtmlNodeType.Element;
+        }
+
+        /// <inheritdoc />
+        protected override bool IsElement(HtmlNode node)
+        {
+            return node.NodeType == HtmlNodeType.Element;
         }
 
         /// <inheritdoc/>

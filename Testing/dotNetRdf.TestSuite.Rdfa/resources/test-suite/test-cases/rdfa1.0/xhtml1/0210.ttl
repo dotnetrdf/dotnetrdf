@@ -1,0 +1,3 @@
+@prefix foaf: <http://www.example.com/wrong/foaf/uri/> .
+
+<http://example.org/#me> foaf:name "Ivan Herman" .

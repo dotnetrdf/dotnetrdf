@@ -1,0 +1,9 @@
+PREFIX po: <http://purl.org/ontology/po/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+ASK WHERE {
+  ?s po:role <http://example.org/profiles/director.html> .
+
+  <http://example.org/profiles/director.html> a po:Role;
+     rdfs:label "Director" .
+}

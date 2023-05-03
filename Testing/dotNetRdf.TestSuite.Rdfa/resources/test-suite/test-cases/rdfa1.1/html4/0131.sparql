@@ -1,0 +1,7 @@
+ASK WHERE {
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0131.html> <http://www.w3.org/1999/xhtml/vocab#next> <http://example.org/test.css> .
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0131.html> <http://www.w3.org/1999/xhtml/vocab#prev> <http://example.org/test.css> .
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0131.html> <http://www.w3.org/1999/xhtml/vocab#first> <http://example.org/test.css> .
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0131.html> <http://www.w3.org/1999/xhtml/vocab#last> <http://example.org/test.css> .
+  <http://rdfa.info/test-suite/test-cases/rdfa1.1/html4/0131.html> <http://www.w3.org/1999/xhtml/vocab#subsection> <http://example.org/test.css> .
+}

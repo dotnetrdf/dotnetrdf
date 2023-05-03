@@ -1,0 +1,5 @@
+@prefix ex: <http://example.org/> .
+
+ex:node ex:property """ελληνικό
+άσπρο   διάστημα
+"""@el .

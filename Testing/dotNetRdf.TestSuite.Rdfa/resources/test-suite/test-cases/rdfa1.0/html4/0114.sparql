@@ -1,0 +1,14 @@
+PREFIX xhv: <http://www.w3.org/1999/xhtml/vocab#>
+PREFIX cc: <http://creativecommons.org/ns#>
+PREFIX rdfatest: <http://rdfa.info/vocabs/rdfa-test#>
+ASK WHERE {
+  <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0114.html>
+    xhv:index <http://rdfa.info/test-suite/#>;
+    xhv:next <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0115.html>;
+    xhv:up <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/>;
+    cc:attributionURL <http://rdfa.info/>;
+    rdfatest:cornerCase1 <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/>;
+    rdfatest:cornerCase3 <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/...>;
+    rdfatest:cornerCase4 <http://rdfa.info/test-suite/test-cases/rdfa1.0/html4/0114.html?foo=bar../baz>;
+    rdfatest:cornerCase5 <http://rdfa.info/test-suite/test-cases/.../.htaccess>.
+}

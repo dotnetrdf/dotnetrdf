@@ -1,0 +1,5 @@
+@prefix dc11: <http://purl.org/dc/elements/1.1/> .
+@prefix example: <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+example: dc11:title "Example Website" .

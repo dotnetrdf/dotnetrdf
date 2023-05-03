@@ -1,0 +1,8 @@
+PREFIX schema: <http://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc: <http://purl.org/dc/terms/>
+ASK WHERE {
+  <http://openspring.net/scor#me> a schema:Person, foaf:Person, dc:Agent;
+    schema:name "Stéphane Corlosquet";
+    schema:homepage <http://openspring.net/> .
+}
