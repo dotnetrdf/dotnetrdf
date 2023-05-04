@@ -71,11 +71,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             EndExpression = endExpr;
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessSubstringFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitSubstringFunction(this);
@@ -107,11 +109,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         {
             if (EndExpression != null)
             {
-                return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + StringExpression.ToString() + "," + StartExpression.ToString() + "," + EndExpression.ToString() + ")";
+                return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + StringExpression + "," + StartExpression + "," + EndExpression + ")";
             }
             else
             {
-                return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + StringExpression.ToString() + "," + StartExpression.ToString() + ")";
+                return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + StringExpression + "," + StartExpression + ")";
             }
         }
 

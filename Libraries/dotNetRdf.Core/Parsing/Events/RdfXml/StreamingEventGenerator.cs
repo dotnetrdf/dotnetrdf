@@ -221,7 +221,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                         return GetNextEvent();
 
                     default:
-                        throw new RdfParseException("Unexpected XML Node Type " + _reader.NodeType.ToString() + " encountered");
+                        throw new RdfParseException("Unexpected XML Node Type " + _reader.NodeType + " encountered");
                 }
             }
             else

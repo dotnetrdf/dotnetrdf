@@ -88,11 +88,13 @@ namespace VDS.RDF.Query.Algebra
             return "SelectDistinctGraphs()";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessSelectDistinctGraphs(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitSelectDistinctGraphs(this);
@@ -104,8 +106,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
+            var q = new SparqlQuery { RootGraphPattern = ToGraphPattern() };
             q.AddVariable(_graphVar, true);
             q.Optimise();
             return q;
@@ -164,11 +165,13 @@ namespace VDS.RDF.Query.Algebra
             return "AskAnyTriples()";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessAskAnyTriples(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitAskAnyTriples(this);
@@ -180,9 +183,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
-            q.QueryType = SparqlQueryType.Ask;
+            var q = new SparqlQuery { RootGraphPattern = ToGraphPattern(), QueryType = SparqlQueryType.Ask };
             return q;
         }
 

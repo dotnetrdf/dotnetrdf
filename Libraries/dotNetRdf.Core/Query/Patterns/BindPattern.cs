@@ -73,11 +73,13 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessBindPattern(this, context);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitBindPattern(this);
@@ -162,7 +164,7 @@ namespace VDS.RDF.Query.Patterns
         {
             var output = new StringBuilder();
             output.Append("BIND(");
-            output.Append(InnerExpression.ToString());
+            output.Append(InnerExpression);
             output.Append(" AS ?");
             output.Append(Variable);
             output.Append(")");

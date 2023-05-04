@@ -191,7 +191,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "SPARQL Results in RDF as " + _writer.ToString();
+            return "SPARQL Results in RDF as " + _writer;
         }
     }
 }

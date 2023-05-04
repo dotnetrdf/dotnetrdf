@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Patterns
             output.AppendLine("{");
             foreach (BindingTuple t in _tuples)
             {
-                output.AppendLine("  " + t.ToString());
+                output.AppendLine("  " + t);
             }
             output.AppendLine("}");
 

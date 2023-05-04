@@ -108,11 +108,13 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessUnion(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitUnion(this);
@@ -124,7 +126,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Union(" + _lhs.ToString() + ", " + _rhs.ToString() + ")";
+            return "Union(" + _lhs + ", " + _rhs + ")";
         }
 
         /// <summary>

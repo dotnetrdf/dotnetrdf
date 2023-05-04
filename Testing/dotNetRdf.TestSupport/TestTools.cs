@@ -432,12 +432,20 @@ namespace VDS.RDF
 
         public static void TestInMTAThread(Action action)
         {
-            Exception ex = null;
-            var t = new Thread(() => ThreadExecute(action, out ex));
-            t.SetApartmentState(ApartmentState.MTA);
-            t.Start();
-            t.Join();
-            if (ex != null) throw ex;
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform
+                    .Windows))
+            {
+                Exception ex = null;
+                var t = new Thread(() => ThreadExecute(action, out ex));
+                t.SetApartmentState(ApartmentState.MTA);
+                t.Start();
+                t.Join();
+                if (ex != null) throw ex;
+            }
+            else
+            {
+                throw new PlatformNotSupportedException();
+            }
         }
 
         public static void ExecuteWithChangedCulture(CultureInfo cultureInfoOverride, Action test)

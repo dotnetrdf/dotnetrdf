@@ -290,7 +290,7 @@ namespace VDS.RDF.Query
         #endregion
 
         /// <summary>
-        /// Evaluates an Algebra Operator in this Context using the current Query Processor (if any) or the default <see cref="ISparqlAlgebra.Evaluate">Evaluate()</see> method.
+        /// Evaluates an Algebra Operator in this Context using the current Query Processor (if any) or the default query processor.
         /// </summary>
         /// <param name="algebra">Algebra.</param>
         /// <returns></returns>
@@ -301,7 +301,7 @@ namespace VDS.RDF.Query
 
         private LeviathanQueryProcessor GetDefaultQueryProcessor()
         {
-            return new(Data, Options);
+            return new LeviathanQueryProcessor(Data, Options);
         }
 
         /// <summary>
@@ -608,6 +608,11 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Return all quoted triples in the dataset that match the specified pattern.
+        /// </summary>
+        /// <param name="qtp"></param>
+        /// <returns></returns>
         public IEnumerable<ITripleNode> GetQuotedTriples(QuotedTriplePattern qtp)
         {
             TriplePattern triplePattern = qtp.QuotedTriple;
@@ -661,6 +666,10 @@ namespace VDS.RDF.Query
             return Enumerable.Empty<ITripleNode>();
         }
 
+        /// <summary>
+        /// Evaluate a triple pattern.
+        /// </summary>
+        /// <param name="triplePattern"></param>
         public void Evaluate(TriplePattern triplePattern)
         {
             if ( triplePattern.IndexType == TripleIndexType.NoVariables)

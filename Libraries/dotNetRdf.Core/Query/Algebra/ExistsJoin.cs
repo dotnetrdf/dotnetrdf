@@ -128,6 +128,7 @@ namespace VDS.RDF.Query.Algebra
             return processor.ProcessExistsJoin(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitExistsJoin(this);
@@ -140,8 +141,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
+            var q = new SparqlQuery { RootGraphPattern = ToGraphPattern() };
             q.Optimise();
             return q;
         }

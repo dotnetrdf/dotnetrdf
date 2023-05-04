@@ -90,11 +90,13 @@ namespace VDS.RDF.Query.Algebra
             return "ParallelUnion(" + Lhs + ", " + Rhs + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessUnion(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitUnion(this);

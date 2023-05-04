@@ -352,7 +352,7 @@ namespace VDS.RDF.Writing
                         if (!contextWritten && t.Context != null && t.Context is VariableContext)
                         {
                             contextWritten = GenerateVariableQuantificationOutput(subcontext, (VariableContext)t.Context);
-                            if (contextWritten) output.Append(temp.ToString());
+                            if (contextWritten) output.Append(temp);
                         }
 
                         output.Append(GenerateNodeOutput(subcontext, t.Subject, TripleSegment.Subject, 0));

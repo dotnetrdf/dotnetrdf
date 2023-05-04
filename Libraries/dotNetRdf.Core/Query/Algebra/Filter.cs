@@ -92,11 +92,13 @@ namespace VDS.RDF.Query.Algebra
             return "Filter(" + InnerAlgebra + ", " + filter + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessFilter(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitFilter(this);

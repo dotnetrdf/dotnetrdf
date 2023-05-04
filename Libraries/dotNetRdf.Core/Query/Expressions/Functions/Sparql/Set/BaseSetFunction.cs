@@ -65,7 +65,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         /// </summary>
         public IList<ISparqlExpression> SetExpressions { get => _expressions; }
 
+        /// <inheritdoc />
         public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+
+        /// <inheritdoc />
         public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>

@@ -384,7 +384,7 @@ namespace VDS.RDF.Parsing
         {
             if (_parser != null)
             {
-                return "SPARQL Results in RDF (" + _parser.ToString() + ")";
+                return "SPARQL Results in RDF (" + _parser + ")";
             }
             else
             {

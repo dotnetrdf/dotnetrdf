@@ -278,7 +278,7 @@ namespace VDS.RDF
                 case Token.DATATYPE:
                     return ResolveQName(t.Value, nsmap, baseUri);
                 default:
-                    throw new RdfParseException("Unable to resolve a '" + t.GetType().ToString() + "' Token into a URI", t);
+                    throw new RdfParseException("Unable to resolve a '" + t.GetType() + "' Token into a URI", t);
             }
         }
 

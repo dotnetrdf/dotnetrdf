@@ -184,7 +184,7 @@ namespace VDS.RDF
         {
             if (_manager.UpdateSupported)
             {
-                _manager.UpdateGraph(BaseUri, null, ts);
+                _manager.UpdateGraph(Name, null, ts);
             }
             else
             {
@@ -200,7 +200,7 @@ namespace VDS.RDF
         {
             if (_manager.UpdateSupported)
             {
-                _manager.UpdateGraph(BaseUri, ts, null);
+                _manager.UpdateGraph(Name, ts, null);
             }
             else
             {

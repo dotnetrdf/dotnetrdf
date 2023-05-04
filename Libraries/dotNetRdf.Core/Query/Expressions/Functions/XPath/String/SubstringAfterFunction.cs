@@ -40,11 +40,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public SubstringAfterFunction(ISparqlExpression stringExpr, ISparqlExpression findExpr)
             : base(stringExpr, findExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessSubstringAfterFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitSubstringAfterFunction(this);
@@ -56,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter + ">(" + _expr + "," + _arg + ")";
         }
 
         /// <summary>

@@ -106,7 +106,7 @@ namespace VDS.RDF.Storage
 
         private static void UpdateGraph(IStorageProvider storage, Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            storage.UpdateGraph(graphUri, additions, removals);
+            storage.UpdateGraph(graphUri == null ? null : new UriNode(graphUri), additions, removals);
         }
 
         /// <summary>

@@ -44,19 +44,19 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Storage of Literal Properties.
         /// </summary>
-        protected Dictionary<string, List<ILiteralNode>> _literalProperties = new Dictionary<string, List<ILiteralNode>>();
+        protected Dictionary<string, List<ILiteralNode>> _literalProperties = new();
         /// <summary>
         /// Storage of Resource Properties.
         /// </summary>
-        protected Dictionary<string, HashSet<INode>> _resourceProperties = new Dictionary<string, HashSet<INode>>();
+        protected Dictionary<string, HashSet<INode>> _resourceProperties = new();
         /// <summary>
         /// The Node which this Resource is a wrapper around.
         /// </summary>
-        protected INode _resource;
+        protected readonly INode _resource;
         /// <summary>
         /// The Graph from which this Resource originates.
         /// </summary>
-        protected IGraph _graph;
+        protected readonly IGraph _graph;
 
         /// <summary>
         /// Creates a new Ontology Resource for the given Resource in the given Graph.
@@ -65,11 +65,8 @@ namespace VDS.RDF.Ontology
         /// <param name="graph">Graph.</param>
         protected internal OntologyResource(INode resource, IGraph graph)
         {
-            if (resource == null) throw new RdfOntologyException("Cannot create an Ontology Resource for a null Resource");
-            if (graph == null) throw new RdfOntologyException("Cannot create an Ontology Resource in a null Graph");
-
-            _resource = resource;
-            _graph = graph;
+            _resource = resource ?? throw new RdfOntologyException("Cannot create an Ontology Resource for a null Resource");
+            _graph = graph ?? throw new RdfOntologyException("Cannot create an Ontology Resource in a null Graph");
 
             // Find the relevant Properties and populate them
             IntialiseProperty(OntologyHelper.PropertyComment, true);
@@ -227,16 +224,15 @@ namespace VDS.RDF.Ontology
         /// <param name="persist">Whether the removed values are removed from the Graph.</param>
         public bool ClearLiteralProperty(string propertyUri, bool persist)
         {
-            if (_literalProperties.ContainsKey(propertyUri))
-            {
-                _literalProperties[propertyUri].Clear();
-                if (persist) _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, _graph.CreateUriNode(_graph.UriFactory.Create(propertyUri))).ToList());
-                return true;
-            }
-            else
+            if (!_literalProperties.TryGetValue(propertyUri, out List<ILiteralNode> literals))
             {
                 return false;
             }
+
+            literals.Clear();
+            if (persist) _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, _graph.CreateUriNode(_graph.UriFactory.Create(propertyUri))).ToList());
+            return true;
+
         }
 
         /// <summary>
@@ -246,7 +242,7 @@ namespace VDS.RDF.Ontology
         /// <param name="persist">Whether the removed values are removed from the Graph.</param>
         public bool ClearLiteralProperty(Uri propertyUri, bool persist)
         {
-            if (propertyUri == null) throw new ArgumentNullException("propertyUri");
+            if (propertyUri == null) throw new ArgumentNullException(nameof(propertyUri));
             return ClearLiteralProperty(propertyUri.AbsoluteUri, persist);
         }
 
@@ -257,16 +253,15 @@ namespace VDS.RDF.Ontology
         /// <param name="persist">Whether the removed values are removed from the Graph.</param>
         public bool ClearResourceProperty(string propertyUri, bool persist)
         {
-            if (_resourceProperties.ContainsKey(propertyUri))
-            {
-                _resourceProperties[propertyUri].Clear();
-                if (persist) _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, _graph.CreateUriNode(_graph.UriFactory.Create(propertyUri))).ToList());
-                return true;
-            }
-            else
+            if (!_resourceProperties.TryGetValue(propertyUri, out HashSet<INode> resources))
             {
                 return false;
             }
+
+            resources.Clear();
+            if (persist) _graph.Retract(_graph.GetTriplesWithSubjectPredicate(_resource, _graph.CreateUriNode(_graph.UriFactory.Create(propertyUri))).ToList());
+            return true;
+
         }
 
         /// <summary>
@@ -276,7 +271,7 @@ namespace VDS.RDF.Ontology
         /// <param name="persist">Whether the removed values are removed from the Graph.</param>
         public bool ClearResourceProperty(Uri propertyUri, bool persist)
         {
-            if (propertyUri == null) throw new ArgumentNullException("propertyUri");
+            if (propertyUri == null) throw new ArgumentNullException(nameof(propertyUri));
             return ClearResourceProperty(propertyUri.AbsoluteUri, persist);
         }
 
@@ -399,7 +394,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveComment(ILiteralNode comment)
         {
-            return RemoveLiteralProperty(OntologyHelper.PropertyComment, (ILiteralNode)comment, true);
+            return RemoveLiteralProperty(OntologyHelper.PropertyComment, comment, true);
         }
 
         /// <summary>
@@ -611,7 +606,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveLabel(ILiteralNode label)
         {
-            return RemoveLiteralProperty(OntologyHelper.PropertyLabel, (ILiteralNode)label, true);
+            return RemoveLiteralProperty(OntologyHelper.PropertyLabel, label, true);
         }
 
         /// <summary>
@@ -881,7 +876,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveVersionInfo(ILiteralNode info)
         {
-            return RemoveLiteralProperty(OntologyHelper.PropertyVersionInfo, (ILiteralNode)info, true);
+            return RemoveLiteralProperty(OntologyHelper.PropertyVersionInfo, info, true);
         }
 
         /// <summary>
@@ -905,14 +900,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public IEnumerable<ILiteralNode> GetLiteralProperty(string propertyUri)
         {
-            if (_literalProperties.ContainsKey(propertyUri))
-            {
-                return _literalProperties[propertyUri];
-            }
-            else
-            {
-                return Enumerable.Empty<ILiteralNode>();
-            }
+            return _literalProperties.TryGetValue(propertyUri, out List<ILiteralNode> literals) ? literals : Enumerable.Empty<ILiteralNode>();
         }
 
         /// <summary>
@@ -922,7 +910,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public IEnumerable<ILiteralNode> GetLiteralProperty(Uri propertyUri)
         {
-            if (propertyUri == null) throw new ArgumentNullException("propertyUri");
+            if (propertyUri == null) throw new ArgumentNullException(nameof(propertyUri));
             return GetLiteralProperty(propertyUri.AbsoluteUri);
         }
 
@@ -933,14 +921,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public IEnumerable<INode> GetResourceProperty(string propertyUri)
         {
-            if (_resourceProperties.ContainsKey(propertyUri))
-            {
-                return _resourceProperties[propertyUri];
-            }
-            else
-            {
-                return Enumerable.Empty<INode>();
-            }
+            return _resourceProperties.TryGetValue(propertyUri, out HashSet<INode> resources) ? resources : Enumerable.Empty<INode>();
         }
 
         /// <summary>
@@ -950,7 +931,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public IEnumerable<INode> GetResourceProperty(Uri propertyUri)
         {
-            if (propertyUri == null) throw new ArgumentNullException("propertyUri");
+            if (propertyUri == null) throw new ArgumentNullException(nameof(propertyUri));
             return GetResourceProperty(propertyUri.AbsoluteUri);
         }
 
@@ -1154,7 +1135,7 @@ namespace VDS.RDF.Ontology
             }
 
             var g = new Graph();
-            g.Merge((IGraph)results);
+            g.Merge(results);
             return g;
 
         }

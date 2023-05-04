@@ -47,11 +47,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         public NormalizeUnicodeFunction(ISparqlExpression stringExpr, ISparqlExpression normalizationFormExpr)
             : base(stringExpr, normalizationFormExpr, true, XPathFunctionFactory.AcceptStringArguments) { }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessNormalizeUnicodeFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitNormalizeUnicodeFunction(this);
@@ -65,11 +67,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             if (_arg != null)
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr + "," + _arg + ")";
             }
             else
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + _expr + ")";
             }
         }
 

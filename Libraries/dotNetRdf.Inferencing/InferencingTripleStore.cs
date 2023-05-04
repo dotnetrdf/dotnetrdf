@@ -30,12 +30,15 @@ using VDS.RDF.Query.Inference;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// An implementation of the <see cref="IInferencingTripleStore"/> interface over an in-memory <see cref="TripleStore"/>.
+    /// </summary>
     public class InferencingTripleStore : TripleStore, IInferencingTripleStore
     {
         /// <summary>
         /// List of Reasoners that are applied to Graphs as they are added to the Triple Store.
         /// </summary>
-        protected List<IInferenceEngine> _reasoners = new List<IInferenceEngine>();
+        protected List<IInferenceEngine> _reasoners = new();
 
         #region Loading with Inference
 

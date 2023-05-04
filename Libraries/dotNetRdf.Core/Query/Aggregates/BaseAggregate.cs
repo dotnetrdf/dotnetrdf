@@ -64,6 +64,7 @@ namespace VDS.RDF.Query.Aggregates
             _distinct = distinct;
         }
 
+        /// <inheritdoc />
         public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings);
 

@@ -30,38 +30,37 @@ namespace VDS.RDF.Query
             // Numeric nodes are comparable
             new object[]
             {
-                new LiteralNode("123", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger), true),
-                new LiteralNode("123.0", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal), true),
+                new LiteralNode("123", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
+                new LiteralNode("123.0", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal)),
                 ExpectCompare.Equal
             },
             // Numeric nodes are comparable
             new object[]
             {
-                new LiteralNode("123", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger), true),
-                new LiteralNode("1.24E2", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal), true),
+                new LiteralNode("123", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)),
+                new LiteralNode("1.24E2", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal)),
                 ExpectCompare.Lower
             },
             // Simple Literals are comparable
-            new object[] { new LiteralNode("a", true), new LiteralNode("b", true), ExpectCompare.Lower },
+            new object[] { new LiteralNode("a"), new LiteralNode("b"), ExpectCompare.Lower },
             // XSD string literals are comparable
             new object[]
             {
-                new LiteralNode("b", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString), true),
-                new LiteralNode("a", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString), true), ExpectCompare.Greater
+                new LiteralNode("b", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)),
+                new LiteralNode("a", new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)), ExpectCompare.Greater
             },
             // XSD boolean literals are comparable
             new object[]
             {
-                new LiteralNode("true", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean), true),
-                new LiteralNode("false", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean), true),
+                new LiteralNode("true", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean)),
+                new LiteralNode("false", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean)),
                 ExpectCompare.Greater
             },
             // XSD dateTime literals are comparable
             new object[]
             {
-                new LiteralNode("2020-01-01T00:00:00Z", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime), true),
-                new LiteralNode("2020-01-01T01:00:00+01:00", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime),
-                    true),
+                new LiteralNode("2020-01-01T00:00:00Z", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)),
+                new LiteralNode("2020-01-01T01:00:00+01:00", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)),
                 ExpectCompare.Equal
             }
         };
@@ -75,6 +74,7 @@ namespace VDS.RDF.Query
 
         [Theory]
         [MemberData(nameof(NodeCompareTestData))]
+        [Obsolete("Tests obsolete compare method")]
         public void TestSparqlComparison(INode left, INode right, ExpectCompare expect)
         {
             switch (expect)
@@ -93,6 +93,31 @@ namespace VDS.RDF.Query
                     break;
             }
         }
-        
+
+        [Theory]
+        [MemberData(nameof(NodeCompareTestData))]
+        public void TestSparqlTryCompare(INode left, INode right, ExpectCompare expect)
+        {
+            int result;
+            switch (expect)
+            {
+                case ExpectCompare.Error:
+                    Assert.False(_comparer.TryCompare(left, right, out result));
+                    break;
+                case ExpectCompare.Equal:
+                    _comparer.TryCompare(left, right, out result).Should().BeTrue();
+                    result.Should().Be(0);
+                    break;
+                case ExpectCompare.Lower:
+                    _comparer.TryCompare(left, right, out result).Should().BeTrue();
+                    result.Should().BeNegative();
+                    break;
+                case ExpectCompare.Greater:
+                    _comparer.TryCompare(left, right, out result).Should().BeTrue();
+                    result.Should().BePositive();
+                    break;
+            }
+        }
+
     }
 }

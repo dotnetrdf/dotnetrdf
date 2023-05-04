@@ -37,6 +37,9 @@ namespace VDS.RDF.Query.Algebra
     public class Service
         : ITerminalOperator
     {
+        /// <summary>
+        /// Get whether evaluation errors are suppressed.
+        /// </summary>
         public bool Silent { get; }
 
         /// <summary>
@@ -116,11 +119,13 @@ namespace VDS.RDF.Query.Algebra
             return "Service(" + EndpointSpecifier.Value + ", " + Pattern + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessService(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitService(this);

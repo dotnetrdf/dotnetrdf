@@ -28,7 +28,7 @@ using System;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// A collection of options for configuring the RDFa Parser
+    /// A collection of options for configuring the RDFa Parser.
     /// </summary>
     public class RdfAParserOptions
     {
@@ -39,7 +39,7 @@ namespace VDS.RDF.Parsing
         public Uri Base { get; set; }
 
         /// <summary>
-        /// The RDFa syntax to process
+        /// The RDFa syntax to process.
         /// </summary>
         public RdfASyntax Syntax { get; set; }
 
@@ -48,6 +48,9 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public RdfAContext DefaultContext { get; set; } = StaticRdfAContexts.XhtmlRdfAContext;
 
+        /// <summary>
+        /// Get/set the flag that indicates if the parser should perform RDFa property copying.
+        /// </summary>
         public bool PropertyCopyEnabled { get; set; } = true;
     }
 }

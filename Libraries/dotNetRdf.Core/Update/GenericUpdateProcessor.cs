@@ -172,7 +172,7 @@ namespace VDS.RDF.Update
                                 // Can approximate by loading the Graph and then deleting all Triples from it
                                 g = new NonIndexedGraph();
                                 _manager.LoadGraph(g, cmd.TargetGraphName?.ToString());
-                                _manager.UpdateGraph(cmd.TargetGraphName?.ToString(), null, g.Triples);
+                                _manager.UpdateGraph(cmd.TargetGraphName, null, g.Triples);
                             }
                             else
                             {
@@ -189,12 +189,15 @@ namespace VDS.RDF.Update
                                 var graphs = _manager.ListGraphNames().ToList();
                                 foreach (var u in graphs)
                                 {
+                                    IRefNode graphName = u == null
+                                        ? null
+                                        : u.StartsWith("_:")
+                                            ? new BlankNode(u)
+                                            : new UriNode(new Uri(u));
                                     if ((u == null && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (u != null && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
                                     {
                                         // Can approximate by saving an empty Graph over the existing Graph
-                                        g = new Graph(u == null ? null : u.StartsWith("_:")
-                                            ? new BlankNode(u)
-                                            : new UriNode(new Uri(u)));
+                                        g = new Graph(graphName);
                                         _manager.SaveGraph(g);
                                     }
                                     else if (_manager.UpdateSupported && (_manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
@@ -202,7 +205,7 @@ namespace VDS.RDF.Update
                                         // Can approximate by loading the Graph and then deleting all Triples from it
                                         g = new NonIndexedGraph();
                                         _manager.LoadGraph(g, u);
-                                        _manager.UpdateGraph(u, null, g.Triples);
+                                        _manager.UpdateGraph(graphName, null, g.Triples);
                                     }
                                     else
                                     {
@@ -478,7 +481,7 @@ namespace VDS.RDF.Update
 
                         // Generate the Triples for each Solution
                         var deletedTriples = new List<Triple>();
-                        var deletedGraphTriples = new Dictionary<string, List<Triple>>();
+                        var deletedGraphTriples = new Dictionary<IUriNode, List<Triple>>();
                         foreach (ISet s in mset.Sets)
                         {
                             var tempDeletedTriples = new List<Triple>();
@@ -511,29 +514,23 @@ namespace VDS.RDF.Update
                                 tempDeletedTriples.Clear();
                                 try
                                 {
-                                    string graphUri;
+                                    IUriNode graphUri;
                                     switch (gp.GraphSpecifier.TokenType)
                                     {
                                         case Token.URI:
-                                            graphUri = gp.GraphSpecifier.Value;
+                                            graphUri = new UriNode(UriFactory.Root.Create(gp.GraphSpecifier.Value));
                                             break;
                                         case Token.VARIABLE:
                                             var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                             if (s.ContainsVariable(graphVar))
                                             {
-                                                INode temp = s[graphVar];
-                                                if (temp == null)
+                                                if (s[graphVar] is IUriNode u)
                                                 {
-                                                    // If the Variable is not bound then skip
-                                                    continue;
-                                                }
-                                                else if (temp.NodeType == NodeType.Uri)
-                                                {
-                                                    graphUri = temp.ToSafeString();
+                                                    graphUri = u;
                                                 }
                                                 else
                                                 {
-                                                    // If the Variable is not bound to a URI then skip
+                                                    // Variable is either not bound or not bound to a URI
                                                     continue;
                                                 }
                                             }
@@ -574,8 +571,8 @@ namespace VDS.RDF.Update
                         // Now decide how to apply the update
                         if (_manager.UpdateSupported)
                         {
-                            _manager.UpdateGraph(cmd.WithGraphName?.ToString(), Enumerable.Empty<Triple>(), deletedTriples);
-                            foreach (KeyValuePair<string, List<Triple>> graphDeletion in deletedGraphTriples)
+                            _manager.UpdateGraph(cmd.WithGraphName, Enumerable.Empty<Triple>(), deletedTriples);
+                            foreach (KeyValuePair<IUriNode, List<Triple>> graphDeletion in deletedGraphTriples)
                             {
                                 _manager.UpdateGraph(graphDeletion.Key, Enumerable.Empty<Triple>(), graphDeletion.Value);
                             }
@@ -587,10 +584,10 @@ namespace VDS.RDF.Update
                             g.Retract(deletedTriples);
                             _manager.SaveGraph(g);
 
-                            foreach (KeyValuePair<string, List<Triple>> graphDeletion in deletedGraphTriples)
+                            foreach (KeyValuePair<IUriNode, List<Triple>> graphDeletion in deletedGraphTriples)
                             {
                                 g = new Graph();
-                                _manager.LoadGraph(g, graphDeletion.Key);
+                                _manager.LoadGraph(g, graphDeletion.Key.Uri);
                                 g.Retract(graphDeletion.Value);
                                 _manager.SaveGraph(g);
                             }
@@ -664,7 +661,7 @@ namespace VDS.RDF.Update
                 {
                     if (!IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
 
-                    Uri graphUri = null;
+                    IUriNode graphUri = null;
                     if (pattern.IsGraph)
                     {
                         switch (pattern.GraphSpecifier.TokenType)
@@ -672,7 +669,7 @@ namespace VDS.RDF.Update
                             case Token.QNAME:
                                 throw new NotSupportedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
                             case Token.URI:
-                                graphUri = UriFactory.Root.Create(pattern.GraphSpecifier.Value);
+                                graphUri = new UriNode(UriFactory.Root.Create(pattern.GraphSpecifier.Value));
                                 break;
                             default:
                                 throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command as the Graph Specifier is not a QName/URI");
@@ -683,20 +680,19 @@ namespace VDS.RDF.Update
                     if (!_manager.UpdateSupported)
                     {
                         // If the Graph to be deleted from is empty then can skip as will have no affect on the Graph
-                        _manager.LoadGraph(g, graphUri);
+                        _manager.LoadGraph(g, graphUri?.Uri);
                         if (g.IsEmpty) continue;
                     }
                     // Note that if the Manager supports Triple Level updates we won't load the Graph
                     // so we can't know whether it is empty or not and so can't skip the delete step
 
                     // Delete the actual Triples
-                    INode subj, pred, obj;
                     var context = new ConstructContext(g, false);
                     foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                     {
-                        subj = p.Subject.Construct(context);
-                        pred = p.Predicate.Construct(context);
-                        obj = p.Object.Construct(context);
+                        INode subj = p.Subject.Construct(context);
+                        INode pred = p.Predicate.Construct(context);
+                        INode obj = p.Object.Construct(context);
 
                         if (!_manager.UpdateSupported)
                         {
@@ -760,7 +756,7 @@ namespace VDS.RDF.Update
                                 // Can approximate by loading the Graph and then deleting all Triples from it
                                 g = new NonIndexedGraph();
                                 _manager.LoadGraph(g, cmd.TargetGraphName?.ToString());
-                                _manager.UpdateGraph(cmd.TargetGraphName?.ToString(), null, g.Triples);
+                                _manager.UpdateGraph(cmd.TargetGraphName, null, g.Triples);
                             }
                             else
                             {
@@ -775,6 +771,8 @@ namespace VDS.RDF.Update
                                 var graphs = _manager.ListGraphNames().ToList();
                                 foreach (var u in graphs)
                                 {
+                                    IRefNode graphName = u == null ? null :
+                                        u.StartsWith("_:") ? new BlankNode(u) : new UriNode(new Uri(u));
                                     if (_manager.DeleteSupported)
                                     {
                                         // If available use DeleteGraph()
@@ -783,8 +781,7 @@ namespace VDS.RDF.Update
                                     else if ((u == null && (_manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (u != null && (_manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
                                     {
                                         // Can approximate by saving an empty Graph over the existing Graph
-                                        g = new Graph(u == null ? null :
-                                            u.StartsWith("_:") ? new BlankNode(u) : new UriNode(new Uri(u)));
+                                        g = new Graph();
                                         _manager.SaveGraph(g);
                                     }
                                     else if (_manager.UpdateSupported && (_manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
@@ -792,7 +789,7 @@ namespace VDS.RDF.Update
                                         // Can approximate by loading the Graph and then deleting all Triples from it
                                         g = new NonIndexedGraph();
                                         _manager.LoadGraph(g, u);
-                                        _manager.UpdateGraph(u, null, g.Triples);
+                                        _manager.UpdateGraph(graphName, null, g.Triples);
                                     }
                                     else
                                     {
@@ -874,7 +871,7 @@ namespace VDS.RDF.Update
 
                         // Generate the Triples for each Solution
                         var insertedTriples = new List<Triple>();
-                        var insertedGraphTriples = new Dictionary<string, List<Triple>>();
+                        var insertedGraphTriples = new Dictionary<IUriNode, List<Triple>>();
                         foreach (ISet s in mset.Sets)
                         {
                             var tempInsertedTriples = new List<Triple>();
@@ -907,29 +904,23 @@ namespace VDS.RDF.Update
                                 tempInsertedTriples.Clear();
                                 try
                                 {
-                                    string graphUri;
+                                    IUriNode graphUri;
                                     switch (gp.GraphSpecifier.TokenType)
                                     {
                                         case Token.URI:
-                                            graphUri = gp.GraphSpecifier.Value;
+                                            graphUri = new UriNode(UriFactory.Root.Create(gp.GraphSpecifier.Value));
                                             break;
                                         case Token.VARIABLE:
                                             var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                             if (s.ContainsVariable(graphVar))
                                             {
-                                                INode temp = s[graphVar];
-                                                if (temp == null)
+                                                if (s[graphVar] is IUriNode graphUriNode)
                                                 {
-                                                    // If the Variable is not bound then skip
-                                                    continue;
-                                                }
-                                                else if (temp.NodeType == NodeType.Uri)
-                                                {
-                                                    graphUri = temp.ToSafeString();
+                                                    graphUri = graphUriNode;
                                                 }
                                                 else
                                                 {
-                                                    // If the Variable is not bound to a URI then skip
+                                                    // Variable is not bound or not bound to a URI
                                                     continue;
                                                 }
                                             }
@@ -970,8 +961,8 @@ namespace VDS.RDF.Update
                         // Now decide how to apply the update
                         if (queryableStorage.UpdateSupported)
                         {
-                            queryableStorage.UpdateGraph(cmd.WithGraphName?.ToString(), insertedTriples, Enumerable.Empty<Triple>());
-                            foreach (KeyValuePair<string, List<Triple>> graphInsertion in insertedGraphTriples)
+                            queryableStorage.UpdateGraph(cmd.WithGraphName, insertedTriples, Enumerable.Empty<Triple>());
+                            foreach (KeyValuePair<IUriNode, List<Triple>> graphInsertion in insertedGraphTriples)
                             {
                                 queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
                             }
@@ -983,10 +974,10 @@ namespace VDS.RDF.Update
                             g.Assert(insertedTriples);
                             queryableStorage.SaveGraph(g);
 
-                            foreach (KeyValuePair<string, List<Triple>> graphInsertion in insertedGraphTriples)
+                            foreach (KeyValuePair<IUriNode, List<Triple>> graphInsertion in insertedGraphTriples)
                             {
                                 g = new Graph();
-                                queryableStorage.LoadGraph(g, graphInsertion.Key);
+                                queryableStorage.LoadGraph(g, graphInsertion.Key.Uri);
                                 g.Assert(graphInsertion.Value);
                                 queryableStorage.SaveGraph(g);
                             }
@@ -1060,7 +1051,7 @@ namespace VDS.RDF.Update
                 {
                     if (!IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate an INSERT DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
 
-                    Uri graphUri = null;
+                    IUriNode graphUri = null;
                     if (pattern.IsGraph)
                     {
                         switch (pattern.GraphSpecifier.TokenType)
@@ -1068,7 +1059,7 @@ namespace VDS.RDF.Update
                             case Token.QNAME:
                                 throw new NotSupportedException("Graph Specifiers as QNames for INSERT DATA Commands are not supported - please specify an absolute URI instead");
                             case Token.URI:
-                                graphUri = UriFactory.Root.Create(pattern.GraphSpecifier.Value);
+                                graphUri = new UriNode(UriFactory.Root.Create(pattern.GraphSpecifier.Value));
                                 break;
                             default:
                                 throw new SparqlUpdateException("Cannot evaluate an INSERT DATA Command as the Graph Specifier is not a QName/URI");
@@ -1076,16 +1067,15 @@ namespace VDS.RDF.Update
                     }
 
                     var g = new Graph();
-                    if (!_manager.UpdateSupported) _manager.LoadGraph(g, graphUri);
+                    if (!_manager.UpdateSupported) _manager.LoadGraph(g, graphUri?.Uri);
 
                     // Insert the actual Triples
-                    INode subj, pred, obj;
                     var context = new ConstructContext(g, false);
                     foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                     {
-                        subj = p.Subject.Construct(context);
-                        pred = p.Predicate.Construct(context);
-                        obj = p.Object.Construct(context);
+                        INode subj = p.Subject.Construct(context);
+                        INode pred = p.Predicate.Construct(context);
+                        INode obj = p.Object.Construct(context);
 
                         g.Assert(new Triple(subj, pred, obj));
                     }
@@ -1108,9 +1098,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Load Command.</param>
         public void ProcessLoadCommand(LoadCommand cmd)
         {
-            if (_manager is IUpdateableStorage)
+            if (_manager is IUpdateableStorage updateableStorage)
             {
-                ((IUpdateableStorage)_manager).Update(cmd.ToString());
+                updateableStorage.Update(cmd.ToString());
             }
             else
             {
@@ -1138,7 +1128,7 @@ namespace VDS.RDF.Update
                     Loader.LoadGraph(g, cmd.SourceUri);
                     if (_manager.UpdateSupported)
                     {
-                        _manager.UpdateGraph(cmd.TargetGraphName?.ToString(), g.Triples, Enumerable.Empty<Triple>());
+                        _manager.UpdateGraph(cmd.TargetGraphName, g.Triples, Enumerable.Empty<Triple>());
                     }
                     else
                     {
@@ -1225,7 +1215,7 @@ namespace VDS.RDF.Update
 
                         // Generate the Triples for each Solution
                         var deletedTriples = new List<Triple>();
-                        var deletedGraphTriples = new Dictionary<string, List<Triple>>();
+                        var deletedGraphTriples = new Dictionary<IUriNode, List<Triple>>();
                         foreach (ISet s in mset.Sets)
                         {
                             var tempDeletedTriples = new List<Triple>();
@@ -1258,29 +1248,23 @@ namespace VDS.RDF.Update
                                 tempDeletedTriples.Clear();
                                 try
                                 {
-                                    string graphUri;
+                                    IUriNode graphUri;
                                     switch (gp.GraphSpecifier.TokenType)
                                     {
                                         case Token.URI:
-                                            graphUri = gp.GraphSpecifier.Value;
+                                            graphUri = new UriNode(UriFactory.Create(gp.GraphSpecifier.Value));
                                             break;
                                         case Token.VARIABLE:
                                             var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                             if (s.ContainsVariable(graphVar))
                                             {
-                                                INode temp = s[graphVar];
-                                                if (temp == null)
+                                                if (s[graphVar] is IUriNode graphUriNode)
                                                 {
-                                                    // If the Variable is not bound then skip
-                                                    continue;
-                                                }
-                                                else if (temp.NodeType == NodeType.Uri)
-                                                {
-                                                    graphUri = temp.ToSafeString();
+                                                    graphUri = graphUriNode;
                                                 }
                                                 else
                                                 {
-                                                    // If the Variable is not bound to a URI then skip
+                                                    // Variable is either not bound or not bound to a URI
                                                     continue;
                                                 }
                                             }
@@ -1320,7 +1304,7 @@ namespace VDS.RDF.Update
 
                         // Generate the Triples for each Solution
                         var insertedTriples = new List<Triple>();
-                        var insertedGraphTriples = new Dictionary<string, List<Triple>>();
+                        var insertedGraphTriples = new Dictionary<IUriNode, List<Triple>>();
                         foreach (ISet s in mset.Sets)
                         {
                             var tempInsertedTriples = new List<Triple>();
@@ -1353,29 +1337,22 @@ namespace VDS.RDF.Update
                                 tempInsertedTriples.Clear();
                                 try
                                 {
-                                    string graphUri;
+                                    IUriNode graphUri;
                                     switch (gp.GraphSpecifier.TokenType)
                                     {
                                         case Token.URI:
-                                            graphUri = gp.GraphSpecifier.Value;
+                                            graphUri = new UriNode(UriFactory.Create(gp.GraphSpecifier.Value));
                                             break;
                                         case Token.VARIABLE:
                                             var graphVar = gp.GraphSpecifier.Value.Substring(1);
                                             if (s.ContainsVariable(graphVar))
                                             {
-                                                INode temp = s[graphVar];
-                                                if (temp == null)
+                                                if (s[graphVar] is IUriNode graphUriNode)
                                                 {
-                                                    // If the Variable is not bound then skip
-                                                    continue;
-                                                }
-                                                else if (temp.NodeType == NodeType.Uri)
-                                                {
-                                                    graphUri = temp.ToSafeString();
+                                                    graphUri = graphUriNode;
                                                 }
                                                 else
                                                 {
-                                                    // If the Variable is not bound to a URI then skip
                                                     continue;
                                                 }
                                             }
@@ -1416,15 +1393,15 @@ namespace VDS.RDF.Update
                         // Now decide how to apply the update
                         if (queryableStorage.UpdateSupported)
                         {
-                            queryableStorage.UpdateGraph(cmd.WithGraphName?.ToString(), insertedTriples, deletedTriples);
+                            queryableStorage.UpdateGraph(cmd.WithGraphName, insertedTriples, deletedTriples);
                             // We do these two operations sequentially even if in some cases they could be combined to ensure that the underlying
                             // Manager doesn't do any optimisations which would have the result of our updates not being properly applied
                             // e.g. ignoring Triples which are both asserted and retracted in one update
-                            foreach (KeyValuePair<string, List<Triple>> graphDeletion in deletedGraphTriples)
+                            foreach (KeyValuePair<IUriNode, List<Triple>> graphDeletion in deletedGraphTriples)
                             {
                                 queryableStorage.UpdateGraph(graphDeletion.Key, Enumerable.Empty<Triple>(), graphDeletion.Value);
                             }
-                            foreach (KeyValuePair<string, List<Triple>> graphInsertion in insertedGraphTriples)
+                            foreach (KeyValuePair<IUriNode, List<Triple>> graphInsertion in insertedGraphTriples)
                             {
                                 queryableStorage.UpdateGraph(graphInsertion.Key, graphInsertion.Value, Enumerable.Empty<Triple>());
                             }
@@ -1436,12 +1413,12 @@ namespace VDS.RDF.Update
                             g.Retract(deletedTriples);
                             queryableStorage.SaveGraph(g);
 
-                            foreach (var graphUri in deletedGraphTriples.Keys.Concat(insertedGraphTriples.Keys).Distinct())
+                            foreach (IUriNode graphUri in deletedGraphTriples.Keys.Concat(insertedGraphTriples.Keys).Distinct())
                             {
                                 g = new Graph();
-                                queryableStorage.LoadGraph(g, graphUri);
-                                if (deletedGraphTriples.ContainsKey(graphUri)) g.Retract(deletedGraphTriples[graphUri]);
-                                if (insertedGraphTriples.ContainsKey(graphUri)) g.Assert(insertedGraphTriples[graphUri]);
+                                queryableStorage.LoadGraph(g, graphUri.Uri);
+                                if (deletedGraphTriples.TryGetValue(graphUri, out List<Triple> triplesToRetract)) g.Retract(triplesToRetract);
+                                if (insertedGraphTriples.TryGetValue(graphUri, out List<Triple> triplesToAssert)) g.Assert(triplesToAssert);
                                 queryableStorage.SaveGraph(g);
                             }
                         }

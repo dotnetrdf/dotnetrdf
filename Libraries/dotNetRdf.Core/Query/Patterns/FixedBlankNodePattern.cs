@@ -63,6 +63,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="context">SPARQL Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
+        /// <param name="s"></param>
         /// <returns></returns>
         public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
         {
@@ -93,11 +94,13 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <inheritdoc />
         public override INode Bind(ISet variableBindings)
         {
             return new BlankNode(InternalID);
         }
 
+        /// <inheritdoc />
         public override void AddBindings(INode forNode, ISet toSet)
         {
             // No-op for fixed patterns

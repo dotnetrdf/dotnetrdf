@@ -80,11 +80,13 @@ namespace VDS.RDF.Query.Algebra
             return "ZeroLengthPath(" + PathStart + ", " + Path.ToString() + ", " + PathEnd + ")";
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitZeroLengthPath(this);
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessZeroLengthPath(this, context);

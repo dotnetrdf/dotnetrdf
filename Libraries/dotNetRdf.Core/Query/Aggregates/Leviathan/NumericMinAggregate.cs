@@ -65,6 +65,9 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             Variable = expr.ToString().Substring(1);
         }
 
+        /// <summary>
+        /// The variable to aggregate.
+        /// </summary>
         public string Variable { get; }
 
         /// <summary>
@@ -76,6 +79,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             : base(expr, distinct) { }
 
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {
@@ -94,7 +98,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             output.Append(LeviathanFunctionFactory.NumericMin);
             output.Append(">(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(')');
             return output.ToString();
         }

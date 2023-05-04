@@ -71,7 +71,7 @@ namespace VDS.RDF.Ontology
                 _resourceProperties[PropertyDirectSubClass].Add(t.Subject);
             }
 
-            var c = 0;
+            int c;
             do
             {
                 c = _resourceProperties[PropertyDerivedClass].Count;
@@ -693,15 +693,18 @@ namespace VDS.RDF.Ontology
         {
             if (obj == null) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj is OntologyClass)
+            if (obj is OntologyClass other)
             {
-                var other = (OntologyClass)obj;
                 return other.Resource.Equals(_resource) && ReferenceEquals(other.Graph, _graph);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return _resource.GetHashCode();
         }
     }
 }

@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Ask(" + InnerAlgebra.ToString() + ")";
+            return "Ask(" + InnerAlgebra + ")";
         }
 
         /// <summary>
@@ -116,11 +116,13 @@ namespace VDS.RDF.Query.Algebra
             return new Ask(optimiser.Optimise(InnerAlgebra));
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitAsk(this);
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessAsk(this, context);

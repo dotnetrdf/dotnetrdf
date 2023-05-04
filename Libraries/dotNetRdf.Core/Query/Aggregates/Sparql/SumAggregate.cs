@@ -73,6 +73,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             : this(expr, false) { }
 
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {
@@ -88,7 +89,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             var output = new StringBuilder();
             output.Append("SUM(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString() + ")");
+            output.Append(_expr + ")");
             return output.ToString();
         }
 

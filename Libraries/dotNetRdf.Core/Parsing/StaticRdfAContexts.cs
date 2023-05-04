@@ -34,7 +34,7 @@ namespace VDS.RDF.Parsing;
 public static class StaticRdfAContexts
 {
     /// <summary>
-    /// A static definition of the RDFa 1.1 Core context
+    /// A static definition of the RDFa 1.1 Core context.
     /// </summary>
     public static RdfAContext RdfACoreContext = new(
         null,
@@ -91,11 +91,11 @@ public static class StaticRdfAContexts
             new("ical", "http://www.w3.org/2002/12/cal/icaltzd#"),
             new("vcard", "http://www.w3.org/2006/vcard/ns#"),
             new("skos", "http://www.w3.org/2004/02/skos/core#"),
-            new("rif", "http://www.w3.org/2007/rif#")
+            new("rif", "http://www.w3.org/2007/rif#"),
         });
 
     /// <summary>
-    /// A static definition of the RDFa 1.1 + XHTML context
+    /// A static definition of the RDFa 1.1 + XHTML context.
     /// </summary>
     public static RdfAContext XhtmlRdfAContext = new (
         RdfACoreContext,

@@ -656,7 +656,7 @@ namespace VDS.RDF.Writing.Formatting
                 else
                 {
                     onLine += 1;
-                    output.Append(v.ToString());
+                    output.Append(v);
                 }
 
                 // Maximum of 6 things per line (aggregates worth 2 and expression worth 3)
@@ -760,7 +760,7 @@ namespace VDS.RDF.Writing.Formatting
                         }
                         else
                         {
-                            output.Append(expr.ToString());
+                            output.Append(expr);
                         }
                         break;
 

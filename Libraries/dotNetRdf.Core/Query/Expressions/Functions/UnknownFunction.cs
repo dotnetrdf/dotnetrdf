@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         : ISparqlExpression
     {
         private readonly Uri _funcUri;
-        private readonly List<ISparqlExpression> _args = new List<ISparqlExpression>();
+        private readonly List<ISparqlExpression> _args = new();
 
         /// <summary>
         /// Creates a new Unknown Function that has no Arguments.
@@ -69,19 +69,21 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// Creates a new Unknown Function that has multiple Arguments.
         /// </summary>
         /// <param name="funcUri">Function URI.</param>
-        /// <param name="exprs">Argument Expressions.</param>
-        public UnknownFunction(Uri funcUri, IEnumerable<ISparqlExpression> exprs)
+        /// <param name="argumentExpressions">Argument Expressions.</param>
+        public UnknownFunction(Uri funcUri, IEnumerable<ISparqlExpression> argumentExpressions)
             : this(funcUri)
         {
-            _args.AddRange(exprs);
+            _args.AddRange(argumentExpressions);
         }
 
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessUnknownFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitUnknownFunction(this);
@@ -157,7 +159,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append('(');
             for (var i = 0; i < _args.Count; i++)
             {
-                output.Append(_args[i].ToString());
+                output.Append(_args[i]);
 
                 if (i < _args.Count - 1)
                 {
@@ -175,7 +177,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new UnknownFunction(_funcUri, _args.Select(e => transformer.Transform(e)));
+            return new UnknownFunction(_funcUri, _args.Select(transformer.Transform));
         }
     }
 }

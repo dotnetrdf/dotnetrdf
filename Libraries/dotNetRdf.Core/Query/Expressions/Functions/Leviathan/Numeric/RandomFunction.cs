@@ -81,23 +81,25 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             switch (_args)
             {
                 case 1:
-                    output.Append(_rightExpr.ToString());
+                    output.Append(_rightExpr);
                     break;
                 case 2:
-                    output.Append(_leftExpr.ToString());
+                    output.Append(_leftExpr);
                     output.Append(',');
-                    output.Append(_rightExpr.ToString());
+                    output.Append(_rightExpr);
                     break;
             }
             output.Append(')');
             return output.ToString();
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessRandomFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitRandomFunction(this);

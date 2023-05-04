@@ -105,7 +105,6 @@ namespace VDS.RDF
         private List<INode> _bound;
         private Dictionary<INode, INode> _mapping;
         private HashSet<Triple> _sourceTriples;
-        private HashSet<Triple> _sourceQuoted;
         private HashSet<Triple> _targetTriples;
         private HashSet<Triple> _targetQuoted;
 

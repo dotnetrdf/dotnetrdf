@@ -73,7 +73,7 @@ namespace VDS.RDF.Ontology
                 _resourceProperties[PropertyDirectSubProperty].Add(t.Subject);
             }
 
-            var c = 0;
+            int c;
             do
             {
                 c = _resourceProperties[PropertyDerivedProperty].Count;

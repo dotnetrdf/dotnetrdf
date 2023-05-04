@@ -83,7 +83,12 @@ namespace VDS.RDF.Query.Expressions
         /// <returns></returns>
         TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
 
-
+        /// <summary>
+        /// Accept a <see cref="ISparqlExpressionVisitor{T}"/> by calling the appropriate method on its interface for this expression.
+        /// </summary>
+        /// <typeparam name="T">Type of result that the called method returns.</typeparam>
+        /// <param name="visitor">The visitor to be invoked.</param>
+        /// <returns>The result of calling the method on the visitor.</returns>
         T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>

@@ -25,11 +25,9 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
@@ -40,16 +38,23 @@ namespace VDS.RDF.Parsing.Handlers
     public class WriteThroughHandler
         : BaseRdfHandler
     {
-        private Type _formatterType;
+        private readonly Type _formatterType;
         private IQuadFormatter _formatter;
         private ITripleFormatter _tripleFormatter;
         private TextWriter _writer;
-        private bool _closeOnEnd = true;
+        private readonly bool _closeOnEnd;
         private INamespaceMapper _formattingMapper = new QNameOutputMapper();
-        private int _written = 0;
+        private int _written;
 
         private const int FlushInterval = 50000;
 
+        /// <summary>
+        /// Creates a new Write-Through Handler.
+        /// </summary>
+        /// <param name="formatter">Triple formatter to use.</param>
+        /// <param name="writer">Text write to write to.</param>
+        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public WriteThroughHandler(ITripleFormatter formatter, TextWriter writer, bool closeOnEnd)
         {
             _writer = writer ?? throw new ArgumentNullException(nameof(writer), "Cannot use a null TextWriter with the WriteThroughHandler");
@@ -60,7 +65,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <summary>
         /// Creates a new Write-Through Handler.
         /// </summary>
-        /// <param name="formatter">Triple Formatter to use.</param>
+        /// <param name="formatter">Quad Formatter to use.</param>
         /// <param name="writer">Text Writer to write to.</param>
         /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
         public WriteThroughHandler(IQuadFormatter formatter, TextWriter writer, bool closeOnEnd)
@@ -114,7 +119,7 @@ namespace VDS.RDF.Parsing.Handlers
 
                 // Instantiate a new Formatter
                 ConstructorInfo[] cs = _formatterType.GetConstructors();
-                Type qnameMapperType = typeof(QNameOutputMapper);
+                Type qNameMapperType = typeof(QNameOutputMapper);
                 Type nsMapperType = typeof(INamespaceMapper);
                 object formatter = null;
                 foreach (ConstructorInfo c in cs.OrderByDescending(c => c.GetParameters().Count()))
@@ -124,13 +129,13 @@ namespace VDS.RDF.Parsing.Handlers
                     {
                         if (ps.Length == 1)
                         {
-                            if (ps[0].ParameterType == qnameMapperType)
+                            if (ps[0].ParameterType == qNameMapperType)
                             {
-                                formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper });
+                                formatter = Activator.CreateInstance(_formatterType, _formattingMapper);
                             }
                             else if (ps[0].ParameterType == nsMapperType)
                             {
-                                formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper });
+                                formatter = Activator.CreateInstance(_formatterType, _formattingMapper);
                             }
                         }
                         else if (ps.Length == 0)
@@ -294,195 +299,6 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 return true;
             }
-        }
-    }
-
-    /// <summary>
-    /// A Results Handler which writes the handled Results out to a <see cref="TextWriter">TextWriter</see> using a provided <see cref="IResultFormatter">IResultFormatter</see>.
-    /// </summary>
-    public class ResultWriteThroughHandler 
-        : BaseResultsHandler
-    {
-        private Type _formatterType;
-        private IResultFormatter _formatter;
-        private TextWriter _writer;
-        private bool _closeOnEnd = true;
-        private INamespaceMapper _formattingMapper = new QNameOutputMapper();
-        private SparqlResultsType _currentType = SparqlResultsType.Boolean;
-        private List<string> _currVariables = new List<string>();
-        private bool _headerWritten = false;
-
-        /// <summary>
-        /// Creates a new Write-Through Handler.
-        /// </summary>
-        /// <param name="formatter">Triple Formatter to use.</param>
-        /// <param name="writer">Text Writer to write to.</param>
-        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
-        public ResultWriteThroughHandler(IResultFormatter formatter, TextWriter writer, bool closeOnEnd)
-        {
-            if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Result Write Through Handler");
-            if (formatter != null)
-            {
-                _formatter = formatter;
-            }
-            else
-            {
-                _formatter = new NTriplesFormatter();
-            }
-            _writer = writer;
-            _closeOnEnd = closeOnEnd;
-        }
-
-        /// <summary>
-        /// Creates a new Write-Through Handler.
-        /// </summary>
-        /// <param name="formatter">Triple Formatter to use.</param>
-        /// <param name="writer">Text Writer to write to.</param>
-        public ResultWriteThroughHandler(IResultFormatter formatter, TextWriter writer)
-            : this(formatter, writer, true) { }
-
-        /// <summary>
-        /// Creates a new Write-Through Handler.
-        /// </summary>
-        /// <param name="formatterType">Type of the formatter to create.</param>
-        /// <param name="writer">Text Writer to write to.</param>
-        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling.</param>
-        public ResultWriteThroughHandler(Type formatterType, TextWriter writer, bool closeOnEnd)
-        {
-            if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Result Write Through Handler");
-            if (formatterType == null) throw new ArgumentNullException("formatterType", "Cannot use a null formatter type");
-            _formatterType = formatterType;
-            _writer = writer;
-            _closeOnEnd = closeOnEnd;
-        }
-
-        /// <summary>
-        /// Creates a new Write-Through Handler.
-        /// </summary>
-        /// <param name="formatterType">Type of the formatter to create.</param>
-        /// <param name="writer">Text Writer to write to.</param>
-        public ResultWriteThroughHandler(Type formatterType, TextWriter writer)
-            : this(formatterType, writer, true) { }
-
-        /// <summary>
-        /// Starts writing results.
-        /// </summary>
-        protected override void StartResultsInternal()
-        {
-            if (_closeOnEnd && _writer == null) throw new RdfParseException("Cannot use this ResultWriteThroughHandler as an Results Handler for parsing as you set closeOnEnd to true and you have already used this Handler and so the provided TextWriter was closed");
-            _currentType = SparqlResultsType.Unknown;
-            _currVariables.Clear();
-            _headerWritten = false;
-
-            if (_formatterType != null)
-            {
-                _formatter = null;
-                _formattingMapper = new QNameOutputMapper();
-
-                // Instantiate a new Formatter
-                ConstructorInfo[] cs = _formatterType.GetConstructors();
-                Type qnameMapperType = typeof(QNameOutputMapper);
-                Type nsMapperType = typeof(INamespaceMapper);
-                foreach (ConstructorInfo c in cs.OrderByDescending(c => c.GetParameters().Count()))
-                {
-                    ParameterInfo[] ps = c.GetParameters();
-                    try
-                    {
-                        if (ps.Length == 1)
-                        {
-                            if (ps[0].ParameterType.Equals(qnameMapperType))
-                            {
-                                _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as IResultFormatter;
-                            }
-                            else if (ps[0].ParameterType.Equals(nsMapperType))
-                            {
-                                _formatter = Activator.CreateInstance(_formatterType, new object[] { _formattingMapper }) as IResultFormatter;
-                            }
-                        }
-                        else if (ps.Length == 0)
-                        {
-                            _formatter = Activator.CreateInstance(_formatterType) as IResultFormatter;
-                        }
-
-                        if (_formatter != null) break;
-                    }
-                    catch
-                    {
-                        // Suppress errors since we'll throw later if necessary
-                    }
-                }
-
-                // If we get out here and the formatter is null then we throw an error
-                if (_formatter == null) throw new RdfParseException("Unable to instantiate a IResultFormatter from the given Formatter Type " + _formatterType.FullName);
-            }
-        }
-
-        /// <summary>
-        /// Ends the writing of results closing the <see cref="TextWriter">TextWriter</see> depending on the option set when this instance was instantiated.
-        /// </summary>
-        /// <param name="ok"></param>
-        protected override void EndResultsInternal(bool ok)
-        {
-            if (_formatter is IResultSetFormatter)
-            {
-                _writer.WriteLine(((IResultSetFormatter)_formatter).FormatResultSetFooter());
-            }
-            if (_closeOnEnd)
-            {
-                _writer.Close();
-                _writer = null;
-            }
-            _currentType = SparqlResultsType.Unknown;
-            _currVariables.Clear();
-            _headerWritten = false;
-        }
-
-        /// <summary>
-        /// Writes a Boolean Result to the output.
-        /// </summary>
-        /// <param name="result">Boolean Result.</param>
-        protected override void HandleBooleanResultInternal(bool result)
-        {
-            if (_currentType != SparqlResultsType.Unknown) throw new RdfParseException("Cannot handle a Boolean Result when the handler has already handled other types of results");
-            _currentType = SparqlResultsType.Boolean;
-            if (!_headerWritten && _formatter is IResultSetFormatter)
-            {
-                _writer.WriteLine(((IResultSetFormatter)_formatter).FormatResultSetHeader());
-                _headerWritten = true;
-            }
-
-            _writer.WriteLine(_formatter.FormatBooleanResult(result));
-        }
-
-        /// <summary>
-        /// Writes a Variable declaration to the output.
-        /// </summary>
-        /// <param name="var">Variable Name.</param>
-        /// <returns></returns>
-        protected override bool HandleVariableInternal(string var)
-        {
-            if (_currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handler a Variable when the handler has already handled a boolean result");
-            _currentType = SparqlResultsType.VariableBindings;
-            _currVariables.Add(var);
-            return true;
-        }
-
-        /// <summary>
-        /// Writes a Result to the output.
-        /// </summary>
-        /// <param name="result">SPARQL Result.</param>
-        /// <returns></returns>
-        protected override bool HandleResultInternal(ISparqlResult result)
-        {
-            if (_currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handle a Result when the handler has already handled a boolean result");
-            _currentType = SparqlResultsType.VariableBindings;
-            if (!_headerWritten && _formatter is IResultSetFormatter)
-            {
-                _writer.WriteLine(((IResultSetFormatter)_formatter).FormatResultSetHeader(_currVariables.Distinct()));
-                _headerWritten = true;
-            }
-            _writer.WriteLine(_formatter.Format(result));
-            return true;
         }
     }
 }

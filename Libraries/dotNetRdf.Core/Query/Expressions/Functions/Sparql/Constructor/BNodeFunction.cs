@@ -72,6 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             }
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitBNodeFunction(this);
@@ -84,8 +85,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         {
             get
             {
-                if (InnerExpression == null) return Enumerable.Empty<string>();
-                return base.Variables;
+                return InnerExpression == null ? Enumerable.Empty<string>() : base.Variables;
             }
         }
 
@@ -121,6 +121,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             return SparqlSpecsHelper.SparqlKeywordBNode + "(" + InnerExpression.ToSafeString() + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessBNodeFunction(this, context, binding);

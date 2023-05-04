@@ -1166,7 +1166,7 @@ namespace VDS.RDF.Storage
                 ? "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
                 : $"CONSTRUCT {{ ?s ?p ?o }} WHERE {{ GRAPH <{graphUri}> {{ ?s ?p ?o }} }}";
 
-            serviceParams.Add("query", construct.ToString());
+            serviceParams.Add("query", construct);
 
             HttpRequestMessage request = CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, HttpMethod.Get,
                 serviceParams);

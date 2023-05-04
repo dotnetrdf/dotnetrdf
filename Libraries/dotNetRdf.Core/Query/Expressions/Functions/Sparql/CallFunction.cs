@@ -47,11 +47,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             _args.AddRange(expressions);
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessCallFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitCallFunction(this);
@@ -80,7 +82,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             output.Append("CALL(");
             for (var i = 0; i < _args.Count; i++)
             {
-                output.Append(_args[i].ToString());
+                output.Append(_args[i]);
                 if (i < _args.Count - 1)
                 {
                     output.Append(", ");

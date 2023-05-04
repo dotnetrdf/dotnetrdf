@@ -360,11 +360,11 @@ namespace VDS.RDF
                                         // additions and removals to happen in the order we care about
                                         if (toDelete)
                                         {
-                                            _manager.UpdateGraph(currentGraph?.ToString(), null, batch);
+                                            _manager.UpdateGraph(currentGraph, null, batch);
                                         }
                                         else
                                         {
-                                            _manager.UpdateGraph(currentGraph?.ToString(), batch, null);
+                                            _manager.UpdateGraph(currentGraph, batch, null);
                                         }
                                         batch.Clear();
                                     }
@@ -377,11 +377,11 @@ namespace VDS.RDF
                             {
                                 if (toDelete)
                                 {
-                                    _manager.UpdateGraph(currentGraph?.ToString(), null, batch);
+                                    _manager.UpdateGraph(currentGraph, null, batch);
                                 }
                                 else
                                 {
-                                    _manager.UpdateGraph(currentGraph?.ToString(), batch, null);
+                                    _manager.UpdateGraph(currentGraph, batch, null);
                                 }
                             }
                         }

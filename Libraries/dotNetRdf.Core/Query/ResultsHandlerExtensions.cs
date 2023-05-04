@@ -30,6 +30,9 @@ using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query
 {
+    /// <summary>
+    /// Extension methods for <see cref="ISparqlResultsHandler"/> instances.
+    /// </summary>
     public static class ResultsHandlerExtensions
     {
         internal static void Apply(this ISparqlResultsHandler handler, SparqlEvaluationContext context)

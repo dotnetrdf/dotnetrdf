@@ -61,6 +61,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="context">Evaluation Context.</param>
         /// <param name="obj">Node to test.</param>
+        /// <param name="s"></param>
         /// <returns></returns>
         public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
         {

@@ -28,6 +28,9 @@ using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.PropertyFunctions
 {
+    /// <summary>
+    /// Extended interface for property functions in the Leviathan query engine.
+    /// </summary>
     public interface ILeviathanPropertyFunction : ISparqlPropertyFunction
     {
         /// <summary>

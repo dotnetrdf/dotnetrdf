@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return (InnerAlgebra.Variables.Concat(SparqlFilter.Variables)).Distinct();
+                return InnerAlgebra.Variables.Concat(SparqlFilter.Variables).Distinct();
             }
         }
 
@@ -99,11 +99,13 @@ namespace VDS.RDF.Query.Algebra
         {
             var filter = SparqlFilter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
-            return GetType().Name + "(" + InnerAlgebra.ToString() + ", " + filter + ")";
+            return GetType().Name + "(" + InnerAlgebra + ", " + filter + ")";
         }
 
+        /// <inheritdoc />
         public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context);
 
+        /// <inheritdoc />
         public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
 
         /// <summary>
@@ -112,8 +114,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
+            var q = new SparqlQuery { RootGraphPattern = ToGraphPattern() };
             q.Optimise();
             return q;
         }
@@ -163,11 +164,13 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public ConstantTerm RestrictionValue { get; }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessSingleValueRestrictionFilter(this, context);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitSingleValueRestrictionFilter(this);
@@ -196,14 +199,12 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            if (optimiser is IExpressionTransformer)
+            if (optimiser is IExpressionTransformer expressionTransformer)
             {
-                return new IdentityFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(RestrictionValue));
+                return new IdentityFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, (ConstantTerm)expressionTransformer.Transform(RestrictionValue));
             }
-            else
-            {
-                return new IdentityFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
-            }
+
+            return new IdentityFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
         }
     }
 
@@ -229,14 +230,12 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            if (optimiser is IExpressionTransformer)
+            if (optimiser is IExpressionTransformer expressionTransformer)
             {
-                return new SameTermFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(RestrictionValue));
+                return new SameTermFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, (ConstantTerm)expressionTransformer.Transform(RestrictionValue));
             }
-            else
-            {
-                return new SameTermFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
-            }
+
+            return new SameTermFilter(optimiser.Optimise(InnerAlgebra), RestrictionVariable, RestrictionValue);
         }
     }
 }

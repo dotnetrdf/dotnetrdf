@@ -34,7 +34,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
     /// Class representing COUNT(*) Aggregate Function.
     /// </summary>
     /// <remarks>
-    /// Differs from a COUNT in that it justs counts rows in the results.
+    /// Differs from a COUNT in that it just counts rows in the results.
     /// </remarks>
     public class CountAllAggregate 
         : BaseAggregate
@@ -47,6 +47,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         {
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {

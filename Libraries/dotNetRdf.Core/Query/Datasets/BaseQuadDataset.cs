@@ -545,7 +545,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets whether the dataset contains a triple.
+        /// Gets whether the specified triple is asserted in any graph in the dataset.
         /// </summary>
         /// <param name="t">Triple.</param>
         /// <returns></returns>
@@ -554,6 +554,11 @@ namespace VDS.RDF.Query.Datasets
             return ActiveGraphNames.Any(u => ContainsQuad(u, t));
         }
 
+        /// <summary>
+        /// Gets whether the specified triple is quoted in any graph in the dataset.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <returns></returns>
         public bool ContainsQuotedTriple(Triple t)
         {
             return ActiveGraphNames.Any(u => ContainsQuoted(u, t));

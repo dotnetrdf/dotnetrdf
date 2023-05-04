@@ -138,6 +138,11 @@ namespace VDS.RDF.Query.Algebra
             return _variables.Contains(var);
         }
 
+        /// <summary>
+        /// Returns whether the given Variables are all present (together or separately) in any Set in this Multiset.
+        /// </summary>
+        /// <param name="vars">Variables.</param>
+        /// <returns></returns>
         public override bool ContainsVariables(IEnumerable<string> vars)
         {
             return vars.All(_variables.Contains);

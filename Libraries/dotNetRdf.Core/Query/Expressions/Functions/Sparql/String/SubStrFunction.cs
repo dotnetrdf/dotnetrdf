@@ -56,15 +56,28 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             LengthExpression = lengthExpr;
         }
 
+        /// <summary>
+        /// Get the expression that evaluates to the string to be processed.
+        /// </summary>
         public ISparqlExpression StringExpression { get; }
+
+        /// <summary>
+        /// Get the expression that evaluates to the start index of the substring to be returned.
+        /// </summary>
         public ISparqlExpression StartExpression { get; }
+
+        /// <summary>
+        /// Get the expression that evaluates to the length of the substring to be returned.
+        /// </summary>
         public ISparqlExpression LengthExpression { get; }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessSubStrFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitSubStrFunction(this);
@@ -77,14 +90,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                if (LengthExpression != null)
-                {
-                    return StringExpression.Variables.Concat(StartExpression.Variables).Concat(LengthExpression.Variables);
-                }
-                else
-                {
-                    return StringExpression.Variables.Concat(StartExpression.Variables);
-                }
+                return LengthExpression != null ? StringExpression.Variables.Concat(StartExpression.Variables).Concat(LengthExpression.Variables) : StringExpression.Variables.Concat(StartExpression.Variables);
             }
         }
 
@@ -96,12 +102,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             if (LengthExpression != null)
             {
-                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression.ToString() + "," + StartExpression.ToString() + "," + LengthExpression.ToString() + ")";
+                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression + "," + StartExpression + "," + LengthExpression + ")";
             }
-            else
-            {
-                return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression.ToString() + "," + StartExpression.ToString() + ")";
-            }
+
+            return SparqlSpecsHelper.SparqlKeywordSubStr + "(" + StringExpression + "," + StartExpression + ")";
         }
 
         /// <summary>
@@ -133,14 +137,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                if (LengthExpression != null)
-                {
-                    return new ISparqlExpression[] { StringExpression, StartExpression, LengthExpression };
-                }
-                else
-                {
-                    return new ISparqlExpression[] { StringExpression, StartExpression };
-                }
+                return LengthExpression != null ? new[] { StringExpression, StartExpression, LengthExpression } : new[] { StringExpression, StartExpression };
             }
         }
 
@@ -162,14 +159,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (LengthExpression != null)
-            {
-                return new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression));
-            }
-            else
-            {
-                return new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression));
-            }
+            return LengthExpression != null 
+                ? new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression)) 
+                : new SubStrFunction(transformer.Transform(StringExpression), transformer.Transform(StartExpression));
         }
     }
 }

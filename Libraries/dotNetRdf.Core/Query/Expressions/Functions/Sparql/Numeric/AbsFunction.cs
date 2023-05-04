@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordAbs + "(" + InnerExpression.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordAbs + "(" + InnerExpression + ")";
         }
 
         /// <summary>

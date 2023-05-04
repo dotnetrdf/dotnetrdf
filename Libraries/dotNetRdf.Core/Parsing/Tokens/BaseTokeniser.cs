@@ -292,7 +292,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else
             {
-                throw Error("Unexpected End of Stream while trying to tokenise from the following input:\n" + _output.ToString());
+                throw Error("Unexpected End of Stream while trying to tokenise from the following input:\n" + _output);
             }
         }
 
@@ -420,7 +420,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else
             {
-                throw Error("Unexpected End of Stream while trying to tokenise from the following input:\n" + _output.ToString());
+                throw Error("Unexpected End of Stream while trying to tokenise from the following input:\n" + _output);
             }
         }
 
@@ -582,7 +582,7 @@ namespace VDS.RDF.Parsing.Tokens
                     // Did we get four Hex Digits
                     if (localOutput.Length != 4)
                     {
-                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + _output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
+                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + _output + "\nThe \\u Escape must be followed by four Hex Digits");
                     }
                     _output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
                     return;
@@ -605,7 +605,7 @@ namespace VDS.RDF.Parsing.Tokens
                     // Did we get eight Hex Digits
                     if (localOutput.Length != 8)
                     {
-                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + _output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
+                        throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + _output + "\nThe \\U Escape must be followed by eight Hex Digits");
                     }
                     _output.Append(UnicodeSpecsHelper.ConvertToChars(localOutput.ToString()));
                     return;
@@ -693,7 +693,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw Error("Invalid % encoded character encountered");
             }
-            _output.Append(localOutput.ToString());
+            _output.Append(localOutput);
         }
 
 

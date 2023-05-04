@@ -6,13 +6,14 @@ namespace dotNetRdf.TestSuite.Rdfa
     public class RdfaTestManifest
     {
         public Uri BaseUri { get; }
-        public string LocalDirectory { get; }
+        public string? LocalDirectory { get; }
         public Uri LocalManifestUri { get; }
         public TripleStore Store { get; }
         public IGraph Graph { get; private set; }
 
         public RdfaTestManifest(Uri baseUri, string localFilePath)
         {
+            if (localFilePath == null) throw new ArgumentNullException(nameof(localFilePath));
             BaseUri = baseUri;
             Store = new TripleStore();
             Graph = new Graph();

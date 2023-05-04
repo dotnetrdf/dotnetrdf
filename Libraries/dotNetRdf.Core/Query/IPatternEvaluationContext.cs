@@ -26,6 +26,9 @@
 
 namespace VDS.RDF.Query
 {
+    /// <summary>
+    /// The interface for the context object to be passed to pattern evaluation functions.
+    /// </summary>
     public interface IPatternEvaluationContext
     {
         /// <summary>

@@ -31,14 +31,26 @@ using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
 {
+    /// <summary>
+    /// Class for representing quoted triple patterns in SPARQL-Star.
+    /// </summary>
     public class QuotedTriplePattern : PatternItem
     {
+        /// <summary>
+        /// Get the pattern for the quoted triple.
+        /// </summary>
         public TriplePattern QuotedTriple { get; }
+
+        /// <summary>
+        /// Create a new quoted triple pattern.
+        /// </summary>
+        /// <param name="qtPattern">The pattern for matching quoted triples.</param>
         public QuotedTriplePattern(TriplePattern qtPattern)
         {
             QuotedTriple = qtPattern;
         }
 
+        /// <inheritdoc />
         public override bool Accepts(IPatternEvaluationContext context, INode obj, ISet s)
         {
             if (obj is ITripleNode tripleNode)

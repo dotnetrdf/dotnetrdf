@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordMinutes + "(" + InnerExpression.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordMinutes + "(" + InnerExpression + ")";
         }
 
         /// <summary>
@@ -69,11 +69,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
             return new MinutesFunction(transformer.Transform(InnerExpression));
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessMinutesFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitMinutesFunction(this);

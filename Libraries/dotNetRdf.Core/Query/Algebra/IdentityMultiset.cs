@@ -48,8 +48,7 @@ namespace VDS.RDF.Query.Algebra
         {
             // If Other is Null/Empty then the Join still results in Identity
             if (other is NullMultiset) return this;
-            if (other.IsEmpty) return this;
-            return other;
+            return other.IsEmpty ? this : other;
         }
 
         /// <summary>
@@ -58,13 +57,13 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="other">Other Multiset.</param>
         /// <param name="expr">Expression which the Join is predicated on.</param>
         /// <param name="baseContext">The parent context for the evaluation of the join.</param>
+        /// <param name="expressionProcessor">The processor to use when evaluating the join.</param>
         /// <returns>The other Multiset.</returns>
         public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr, SparqlEvaluationContext baseContext, ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> expressionProcessor)
         {
             // If Other is Null/Empty then the Join still results in Identity
             if (other is NullMultiset) return this;
-            if (other.IsEmpty) return this;
-            return other;
+            return other.IsEmpty ? this : other;
         }
 
         /// <summary>
@@ -77,15 +76,15 @@ namespace VDS.RDF.Query.Algebra
         {
             if (mustExist)
             {
-                if (other is NullMultiset) return other;
-                return this;
+                return other is NullMultiset ? other : this;
             }
-            else
+
+            return other switch
             {
-                if (other is NullMultiset) return this;
-                if (other is IdentityMultiset) return new NullMultiset();
-                return this;
-            }
+                NullMultiset => this,
+                IdentityMultiset => new NullMultiset(),
+                _ => this
+            };
         }
 
         /// <summary>
@@ -146,6 +145,11 @@ namespace VDS.RDF.Query.Algebra
             return false;
         }
 
+        /// <summary>
+        /// Returns False since the Identity Multiset contains no Variables.
+        /// </summary>
+        /// <param name="vars">Variable.</param>
+        /// <returns></returns>
         public override bool ContainsVariables(IEnumerable<string> vars)
         {
             return false;
@@ -197,7 +201,7 @@ namespace VDS.RDF.Query.Algebra
         /// <exception cref="RdfQueryException">Thrown since this operation is invalid on an Identity Multiset.</exception>
         public override void Remove(int id)
         {
-            throw new RdfQueryException("Cannot remove a Set from the Identity Mutliset");
+            throw new RdfQueryException("Cannot remove a Set from the Identity Multiset");
         }
 
         /// <summary>

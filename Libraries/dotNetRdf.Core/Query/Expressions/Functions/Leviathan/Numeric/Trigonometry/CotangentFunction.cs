@@ -34,8 +34,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
     public class CotangentFunction
         : BaseTrigonometricFunction
     {
-        private static Func<double, double> _cotangent = (d => (Math.Cos(d) / Math.Sin(d)));
-        private static Func<double, double> _arccotangent = (d => Math.Atan(1 / d));
+        private static readonly Func<double, double> _cotangent = (d => (Math.Cos(d) / Math.Sin(d)));
+        private static readonly Func<double, double> _arccotangent = (d => Math.Atan(1 / d));
 
         /// <summary>
         /// Creates a new Leviathan Cotangent Function.
@@ -53,16 +53,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             : base(expr)
         {
             Inverse = inverse;
-            if (Inverse)
-            {
-                _func = _arccotangent;
-            }
-            else
-            {
-                _func = _cotangent;
-            }
+            _func = Inverse ? _arccotangent : _cotangent;
         }
 
+        /// <summary>
+        /// Gets whether this is the inverse function.
+        /// </summary>
         public bool Inverse { get; }
 
         /// <summary>
@@ -73,19 +69,21 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             if (Inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv + ">(" + InnerExpression.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv + ">(" + InnerExpression + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan + ">(" + InnerExpression.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan + ">(" + InnerExpression + ")";
             }
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessCotangentFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitCotangentFunction(this);

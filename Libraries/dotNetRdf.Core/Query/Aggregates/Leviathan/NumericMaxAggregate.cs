@@ -73,9 +73,13 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
         public NumericMaxAggregate(ISparqlExpression expr, bool distinct)
             : base(expr, distinct) { }
 
+        /// <summary>
+        /// The variable to aggregate.
+        /// </summary>
         public string Variable { get; }
 
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {
@@ -94,7 +98,7 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
             output.Append(LeviathanFunctionFactory.NumericMax);
             output.Append(">(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(')');
             return output.ToString();
         }

@@ -30,6 +30,9 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// Extension methods for working with a <see cref="IGraph"/> instance as an in-memory queryable SPARQL dataset.
+    /// </summary>
     public static class InMemoryExtensions
     {
         /// <summary>

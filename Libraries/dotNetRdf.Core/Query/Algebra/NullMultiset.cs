@@ -51,11 +51,12 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Left Joins another Multiset to this Null Mutliset.
+        /// Left Joins another Multiset to this Null Multiset.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <param name="expr">Expression the join is predicate upon.</param>
         /// <param name="baseContext">The parent context for the evaluation of the join.</param>
+        /// <param name="expressionProcessor">The processor to use to evaluate <paramref name="expr"/>.</param>
         /// <returns>
         /// Results in this Null Multiset since Null joined to anything is Null.
         /// </returns>
@@ -66,7 +67,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Exists Joins another Multiset to this Null Mutliset.
+        /// Exists Joins another Multiset to this Null Multiset.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <param name="mustExist">Whether joinable solutions must exist in the other Multiset for joins to be made.</param>
@@ -135,13 +136,18 @@ namespace VDS.RDF.Query.Algebra
             return false;
         }
 
+        /// <summary>
+        /// Returns false since the Null Multiset contains no variables.
+        /// </summary>
+        /// <param name="vars">Variables.</param>
+        /// <returns></returns>
         public override bool ContainsVariables(IEnumerable<string> vars)
         {
             return false;
         }
 
         /// <summary>
-        /// Returns true since the Null Multiset is disjoint with all Multisets.
+        /// Returns true since the Null Multiset is disjoint with any Multiset.
         /// </summary>
         /// <param name="other">Other Multiset.</param>
         /// <returns></returns>

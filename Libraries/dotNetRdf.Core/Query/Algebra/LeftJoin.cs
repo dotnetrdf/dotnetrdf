@@ -127,14 +127,16 @@ namespace VDS.RDF.Query.Algebra
         {
             var filter = Filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
-            return "LeftJoin(" + Lhs.ToString() + ", " + Rhs.ToString() + ", " + filter + ")";
+            return "LeftJoin(" + Lhs + ", " + Rhs + ", " + filter + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessLeftJoin(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitLeftJoin(this);

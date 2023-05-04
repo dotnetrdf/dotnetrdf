@@ -55,7 +55,10 @@ namespace VDS.RDF.Query.Expressions
         /// <returns></returns>
         public abstract override string ToString();
 
+        /// <inheritdoc />
         public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+
+        /// <inheritdoc />
         public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
@@ -154,7 +157,10 @@ namespace VDS.RDF.Query.Expressions
         /// <returns></returns>
         public abstract override string ToString();
 
+        /// <inheritdoc />
         public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+
+        /// <inheritdoc />
         public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>

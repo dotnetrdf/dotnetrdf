@@ -54,9 +54,13 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public CountAggregate(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// The variable to aggregate.
+        /// </summary>
         public string Variable { get; }
 
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {
@@ -70,7 +74,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override string ToString()
         {
             var output = new StringBuilder();
-            output.Append("COUNT(" + _expr.ToString() + ")");
+            output.Append("COUNT(" + _expr + ")");
             return output.ToString();
         }
 

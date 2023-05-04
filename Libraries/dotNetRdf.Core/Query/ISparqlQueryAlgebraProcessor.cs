@@ -222,12 +222,12 @@ namespace VDS.RDF.Query
         TResult ProcessSlice(Slice slice, TContext context);
         
         /// <summary>
-        /// Processes a subquery.
+        /// Processes a sub-query.
         /// </summary>
-        /// <param name="subquery">Subquery.</param>
+        /// <param name="subQuery">Sub-query.</param>
         /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
-        TResult ProcessSubQuery(SubQuery subquery, TContext context);
+        TResult ProcessSubQuery(SubQuery subQuery, TContext context);
 
         /// <summary>
         /// Processes a Union.
@@ -253,23 +253,99 @@ namespace VDS.RDF.Query
         TResult ProcessZeroOrMorePath(ZeroOrMorePath zeroOrMorePath, TContext context);
 
         /// <summary>
-        /// Process a. 
+        /// Process a <see cref="BoundFilter"/>.
         /// </summary>
         /// <param name="filter"></param>
         /// <param name="context"></param>
         /// <returns></returns>
         TResult ProcessBoundFilter(BoundFilter filter, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="UnaryExpressionFilter"/>.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessUnaryExpressionFilter(UnaryExpressionFilter filter, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="ChainFilter"/>.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessChainFilter(ChainFilter filter, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="SingleValueRestrictionFilter"/>.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessSingleValueRestrictionFilter(SingleValueRestrictionFilter filter, TContext context);
 
+        /// <summary>
+        /// Process a <see cref="BindPattern"/>.
+        /// </summary>
+        /// <param name="bindPattern"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessBindPattern(BindPattern bindPattern, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="FilterPattern"/>.
+        /// </summary>
+        /// <param name="filterPattern"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessFilterPattern(FilterPattern filterPattern, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="LetPattern"/>.
+        /// </summary>
+        /// <param name="letPattern"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessLetPattern(LetPattern letPattern, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="PropertyFunction"/>.
+        /// </summary>
+        /// <param name="propertyFunction"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessPropertyFunction(PropertyFunction propertyFunction, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="PropertyPathPattern"/>.
+        /// </summary>
+        /// <param name="propertyPathPattern"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessPropertyPathPattern(PropertyPathPattern propertyPathPattern, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="SubQueryPattern"/>.
+        /// </summary>
+        /// <param name="subQueryPattern"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessSubQueryPattern(SubQueryPattern subQueryPattern, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="PropertyFunctionPattern"/>.
+        /// </summary>
+        /// <param name="propFunctionPattern"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessPropertyFunctionPattern(PropertyFunctionPattern propFunctionPattern, TContext context);
+
+        /// <summary>
+        /// Process a <see cref="TriplePattern"/>.
+        /// </summary>
+        /// <param name="triplePattern"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         TResult ProcessTriplePattern(TriplePattern triplePattern, TContext context);
 
         /// <summary>

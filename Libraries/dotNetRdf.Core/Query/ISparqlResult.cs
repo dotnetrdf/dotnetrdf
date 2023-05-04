@@ -32,6 +32,9 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
+    /// <summary>
+    /// Interface representing a single row in a SPARQL results set.
+    /// </summary>
     public interface ISparqlResult : IEnumerable<KeyValuePair<string, INode>>, IEquatable<ISparqlResult>
     {
         /// <summary>

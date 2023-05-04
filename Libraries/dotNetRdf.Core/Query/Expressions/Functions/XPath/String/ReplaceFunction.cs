@@ -38,15 +38,54 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     public class ReplaceFunction
         : ISparqlExpression
     {
-        public string FindPattern { get; private set; }
-        public string ReplacePattern { get; private set; }
+        /// <summary>
+        /// Get the fixed string to be located.
+        /// </summary>
+        public string FindPattern { get; }
+
+        /// <summary>
+        /// Get the fixed string to use as the replacement.
+        /// </summary>
+        public string ReplacePattern { get; }
+
+        /// <summary>
+        /// Get the regular expression matching options to apply.
+        /// </summary>
         public RegexOptions Options { get; private set; } = RegexOptions.None;
+        
+        /// <summary>
+        /// True if the find pattern is specified by <see cref="FindPattern"/>, false if it is specified by <see cref="FindExpression"/>.
+        /// </summary>
         public bool FixedFindPattern { get; }
+
+        /// <summary>
+        /// True if the replacement pattern is specified by <see cref="ReplacePattern"/>, false if it is specified by <see cref="ReplaceExpression"/>.
+        /// </summary>
         public bool FixedReplacePattern { get; }
+
+        /// <summary>
+        /// True if the matching options are specified by <see cref="Options"/>, false if they are specified by <see cref="OptionsExpression"/>.
+        /// </summary>
         public bool FixedOptions { get; }
+
+        /// <summary>
+        /// Get the expression that evaluates to the string to process.
+        /// </summary>
         public ISparqlExpression TestExpression { get; }
+
+        /// <summary>
+        /// Get the expression that evaluates to the pattern to find.
+        /// </summary>
         public ISparqlExpression FindExpression { get; }
+
+        /// <summary>
+        /// Get the expression that evaluates to the replacement pattern.
+        /// </summary>
         public ISparqlExpression ReplaceExpression { get; }
+
+        /// <summary>
+        /// Get the expression that evaluates to the matching options.
+        /// </summary>
         public ISparqlExpression OptionsExpression { get; }
 
         /// <summary>
@@ -97,7 +136,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             // Get the Replace
             if (replace is ConstantTerm constantReplace)
             {
-                // If the Replace is a Node Expresison Term then it is a fixed Pattern
+                // If the Replace is a Node Expression Term then it is a fixed Pattern
                 IValuedNode n = constantReplace.Node;
                 if (n.NodeType == NodeType.Literal)
                 {
@@ -189,7 +228,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
             output.Append(XPathFunctionFactory.Replace);
             output.Append(">(");
-            output.Append(TestExpression.ToString());
+            output.Append(TestExpression);
             output.Append(",");
             if (FixedFindPattern)
             {
@@ -199,7 +238,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             }
             else
             {
-                output.Append(FindExpression.ToString());
+                output.Append(FindExpression);
             }
             output.Append(",");
             if (FixedReplacePattern)
@@ -210,22 +249,24 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             }
             else if (ReplaceExpression != null)
             {
-                output.Append(ReplaceExpression.ToString());
+                output.Append(ReplaceExpression);
             }
             if (OptionsExpression != null)
             {
-                output.Append("," + OptionsExpression.ToString());
+                output.Append("," + OptionsExpression);
             }
             output.Append(")");
 
             return output.ToString();
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessReplaceFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitReplaceFunction(this);
@@ -276,14 +317,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                if (OptionsExpression != null)
-                {
-                    return new ISparqlExpression[] { TestExpression, FindExpression, ReplaceExpression, OptionsExpression };
-                }
-                else
-                {
-                    return new ISparqlExpression[] { TestExpression, FindExpression, ReplaceExpression };
-                }
+                return OptionsExpression != null 
+                    ? new[] { TestExpression, FindExpression, ReplaceExpression, OptionsExpression } 
+                    : new[] { TestExpression, FindExpression, ReplaceExpression };
             }
         }
 
@@ -294,7 +330,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return TestExpression.CanParallelise && FindExpression.CanParallelise && ReplaceExpression.CanParallelise && (OptionsExpression == null || OptionsExpression.CanParallelise);
+                return TestExpression.CanParallelise &&
+                       FindExpression.CanParallelise &&
+                       ReplaceExpression.CanParallelise &&
+                       (OptionsExpression == null || OptionsExpression.CanParallelise);
             }
         }
 
@@ -305,14 +344,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (OptionsExpression != null)
-            {
-                return new ReplaceFunction(transformer.Transform(TestExpression), transformer.Transform(FindExpression), transformer.Transform(ReplaceExpression), transformer.Transform(OptionsExpression));
-            }
-            else
-            {
-                return new ReplaceFunction(transformer.Transform(TestExpression), transformer.Transform(FindExpression), transformer.Transform(ReplaceExpression));
-            }
+            return OptionsExpression != null 
+                ? new ReplaceFunction(transformer.Transform(TestExpression), transformer.Transform(FindExpression), transformer.Transform(ReplaceExpression), transformer.Transform(OptionsExpression)) 
+                : new ReplaceFunction(transformer.Transform(TestExpression), transformer.Transform(FindExpression), transformer.Transform(ReplaceExpression));
         }
     }
 }

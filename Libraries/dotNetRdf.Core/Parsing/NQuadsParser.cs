@@ -220,25 +220,25 @@ namespace VDS.RDF.Parsing
             if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
             if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
             // Check for incorrect stream encoding and issue warning if appropriate
-            if (input is StreamReader)
+            if (input is StreamReader reader)
             {
                 switch (Syntax)
                 {
                     case NQuadsSyntax.Original:
                         // Issue a Warning if the Encoding of the Stream is not ASCII
-                        if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.ASCII))
+                        if (!reader.CurrentEncoding.Equals(Encoding.ASCII))
                         {
                             RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " +
-                                         ((StreamReader)input).CurrentEncoding.EncodingName +
+                                         reader.CurrentEncoding.EncodingName +
                                          " - Please be aware that parsing errors may occur as a result");
                         }
 
                         break;
                     default:
-                        if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.UTF8))
+                        if (!reader.CurrentEncoding.Equals(Encoding.UTF8))
                         {
                             RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " +
-                                         ((StreamReader)input).CurrentEncoding.EncodingName +
+                                         reader.CurrentEncoding.EncodingName +
                                          " - Please be aware that parsing errors may occur as a result");
                         }
 
@@ -291,9 +291,6 @@ namespace VDS.RDF.Parsing
 
         private void Parse(TokenisingParserContext context)
         {
-            IToken next;
-            IToken s, p, o;
-
             try
             {
                 context.Handler.StartRdf();
@@ -301,7 +298,7 @@ namespace VDS.RDF.Parsing
                 context.Tokens.InitialiseBuffer(10);
 
                 // Expect a BOF token at start
-                next = context.Tokens.Dequeue();
+                IToken next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.BOF)
                 {
                     throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a BOF token at the start of the input", next);
@@ -329,7 +326,7 @@ namespace VDS.RDF.Parsing
             catch (RdfParsingTerminatedException)
             {
                 context.Handler.EndRdf(true);
-                // Discard this - it justs means the Handler told us to stop
+                // Discard this - it just means the Handler told us to stop
             }
             catch
             {

@@ -86,7 +86,7 @@ namespace VDS.RDF.Storage.Virtualisation
             : this(g, type, id, provider)
         {
             _value = value;
-            if (_value.NodeType != _type) throw new RdfException("Cannot create a pre-materialized Virtual Node where the materialized value is a Node of the wrong type! Expected " + _type.ToString() + " but got " + _value.NodeType.ToString());
+            if (_value.NodeType != _type) throw new RdfException("Cannot create a pre-materialized Virtual Node where the materialized value is a Node of the wrong type! Expected " + _type + " but got " + _value.NodeType);
             OnMaterialise();
         }
 
@@ -99,7 +99,7 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 // Materialise the value
                 _value = _provider.GetValue(_g, _id);
-                if (_value.NodeType != _type) throw new RdfException("The Virtual RDF Provider materialized a Node of the wrong type! Expected " + _type.ToString() + " but got " + _value.NodeType.ToString());
+                if (_value.NodeType != _type) throw new RdfException("The Virtual RDF Provider materialized a Node of the wrong type! Expected " + _type + " but got " + _value.NodeType);
                 OnMaterialise();
             }
         }

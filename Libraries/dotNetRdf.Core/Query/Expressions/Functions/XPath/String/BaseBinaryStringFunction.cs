@@ -54,8 +54,19 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         protected Func<Uri, bool> _argumentTypeValidator;
 
+        /// <summary>
+        /// Get the left child expression.
+        /// </summary>
         public ISparqlExpression LeftExpression { get => _expr; }
+
+        /// <summary>
+        /// Get the right child expression.
+        /// </summary>
         public ISparqlExpression RightExpression { get => _arg; }
+
+        /// <summary>
+        /// Get the flag that indicates if null arguments are allowed.
+        /// </summary>
         public bool AllowNullArgument { get => _allowNullArgument; }
 
         /// <summary>
@@ -65,7 +76,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <param name="argExpr">Argument.</param>
         /// <param name="allowNullArgument">Whether the argument may be null.</param>
         /// <param name="argumentTypeValidator">Type validator for the argument.</param>
-        public BaseBinaryStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr, bool allowNullArgument, Func<Uri, bool> argumentTypeValidator)
+        protected BaseBinaryStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr, bool allowNullArgument, Func<Uri, bool> argumentTypeValidator)
         {
             _expr = stringExpr;
             _arg = argExpr;
@@ -74,12 +85,20 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             _argumentTypeValidator = argumentTypeValidator;
         }
 
+        /// <summary>
+        /// Validate that the specified datatype is acceptable as a function argument datatype.
+        /// </summary>
+        /// <param name="datatype">The datatype to be validated.</param>
+        /// <returns>True if the datatype is acceptable, false otherwise.</returns>
         public bool ValidateArgumentType(Uri datatype)
         {
             return _argumentTypeValidator(datatype);
         }
 
+        /// <inheritdoc />
         public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+
+        /// <inheritdoc />
         public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>
@@ -89,14 +108,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                if (_arg == null)
-                {
-                    return _expr.Variables;
-                }
-                else
-                {
-                    return _expr.Variables.Concat(_arg.Variables);
-                }
+                return _arg == null ? _expr.Variables : _expr.Variables.Concat(_arg.Variables);
             }
         }
 
@@ -132,7 +144,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return new ISparqlExpression[] { _expr, _arg };
+                return new[] { _expr, _arg };
             }
         }
 

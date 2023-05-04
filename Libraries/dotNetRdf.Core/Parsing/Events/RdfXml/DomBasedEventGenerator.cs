@@ -468,7 +468,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
 
             if (context.TraceParsing)
             {
-                Console.Write(nesting + " " + evt.GetType().ToString());
+                Console.Write(nesting + " " + evt.GetType());
             }
 
             // Iterate over Children where present
@@ -536,7 +536,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                     var temp = (ElementEvent)evt;
                     endDescrip = " " + temp.QName;
                 }
-                Console.WriteLine(nesting + " " + end.GetType().ToString() + endDescrip);
+                Console.WriteLine(nesting + " " + end.GetType() + endDescrip);
             }
         }
     }

@@ -64,8 +64,8 @@ namespace VDS.RDF.Query
             ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>
     {
         private readonly ISparqlDataset _dataset;
-        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-        private readonly LeviathanQueryOptions _options = new LeviathanQueryOptions();
+        private readonly ReaderWriterLockSlim _lock = new();
+        private readonly LeviathanQueryOptions _options = new();
         private readonly ISparqlExpressionProcessor<IValuedNode, SparqlEvaluationContext, int> _expressionProcessor;
         private readonly ISparqlAggregateProcessor<IValuedNode, SparqlEvaluationContext, int> _aggregateProcessor;
         private readonly IDictionary<Bindings, BaseMultiset> _bindingsCache = new Dictionary<Bindings, BaseMultiset>();
@@ -103,6 +103,12 @@ namespace VDS.RDF.Query
             _expressionProcessor = expressionProcessor;
         }
 
+        /// <summary>
+        /// Create a new Leviathan query processor.
+        /// </summary>
+        /// <param name="data">SPARQL dataset.</param>
+        /// <param name="options">Query processor options.</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public LeviathanQueryProcessor(ISparqlDataset data, LeviathanQueryOptions options)
         {
             _options = options ??
@@ -163,12 +169,12 @@ namespace VDS.RDF.Query
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             // Do Handler null checks before evaluating the query
-            if (query == null) throw new ArgumentNullException("query", "Cannot evaluate a null query");
-            if (rdfHandler == null && (query.QueryType == SparqlQueryType.Construct || query.QueryType == SparqlQueryType.Describe || query.QueryType == SparqlQueryType.DescribeAll)) throw new ArgumentNullException("rdfHandler", "Cannot use a null RDF Handler when the Query is a CONSTRUCT/DESCRIBE");
-            if (resultsHandler == null && (query.QueryType == SparqlQueryType.Ask || SparqlSpecsHelper.IsSelectQuery(query.QueryType))) throw new ArgumentNullException("resultsHandler", "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
+            if (query == null) throw new ArgumentNullException(nameof(query), "Cannot evaluate a null query");
+            if (rdfHandler == null && query.QueryType is SparqlQueryType.Construct or SparqlQueryType.Describe or SparqlQueryType.DescribeAll) throw new ArgumentNullException(nameof(rdfHandler), "Cannot use a null RDF Handler when the Query is a CONSTRUCT/DESCRIBE");
+            if (resultsHandler == null && (query.QueryType == SparqlQueryType.Ask || SparqlSpecsHelper.IsSelectQuery(query.QueryType))) throw new ArgumentNullException(nameof(resultsHandler), "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
 
             // Handle the Thread Safety of the Query Evaluation
-            ReaderWriterLockSlim currLock = (_dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)_dataset).Lock : _lock;
+            ReaderWriterLockSlim currLock = (_dataset is IThreadSafeDataset threadSafeDataset) ? threadSafeDataset.Lock : _lock;
             try
             {
                 currLock.EnterReadLock();
@@ -201,12 +207,11 @@ namespace VDS.RDF.Query
 
                     // Convert to Algebra and execute the Query
                     SparqlEvaluationContext context = GetContext(query);
-                    BaseMultiset result;
                     try
                     {
                         context.StartExecution(_options.QueryExecutionTimeout);
                         ISparqlAlgebra algebra = query.ToAlgebra(_options.AlgebraOptimisation, _options.AlgebraOptimisers);
-                        result = context.Evaluate(algebra);
+                        BaseMultiset _ = context.Evaluate(algebra);
 
                         context.EndExecution();
                         query.QueryExecutionTime = new TimeSpan(context.QueryTimeTicks);
@@ -431,14 +436,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         private ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> GetProcessorForContext()
         {
-            if (GetType().Equals(typeof(LeviathanQueryProcessor)))
-            {
-                return null;
-            }
-            else
-            {
-                return this;
-            }
+            return GetType() == typeof(LeviathanQueryProcessor) ? null : this;
         }
 
 
@@ -451,7 +449,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public BaseMultiset ProcessAlgebra(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             return algebra.Accept(this, context);
         }
 
@@ -462,7 +460,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessAsk(Ask ask, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
 
             try
             {
@@ -492,10 +490,10 @@ namespace VDS.RDF.Query
             return context.OutputMultiset;
         }
 
-
+        /// <inheritdoc />
         public virtual BaseMultiset ProcessAskAnyTriples(AskAnyTriples askAny, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             context.OutputMultiset =
                 context.Data.HasTriples ? (BaseMultiset)new IdentityMultiset() : new NullMultiset();
             return context.OutputMultiset;
@@ -508,7 +506,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessBgp(IBgp bgp, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             switch (bgp)
             {
                 case AskBgp askBgp:
@@ -631,7 +629,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessDistinct(Distinct distinct, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             context.InputMultiset = distinct.InnerAlgebra.Accept(this, context);
 
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
@@ -662,7 +660,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessExtend(Extend extend, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             // First evaluate the inner algebra
             BaseMultiset results = extend.InnerAlgebra.Accept(this, context);
             context.OutputMultiset = new Multiset();
@@ -735,8 +733,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessExistsJoin(IExistsJoin existsJoin, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
-            BaseMultiset initialInput = context.InputMultiset;
+            context ??= GetContext();
             BaseMultiset lhsResult = existsJoin.Lhs.Accept(this, context);
             context.CheckTimeout();
 
@@ -770,7 +767,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessFilter(IFilter filter, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             // Apply the Pattern first
             context.InputMultiset = filter.InnerAlgebra.Accept(this, context);
 
@@ -811,7 +808,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessGraph(Algebra.Graph graph, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             // Q: Can we optimise GRAPH when the input is the Null Multiset to just return the Null Multiset?
 
             var datasetOk = false;
@@ -1005,7 +1002,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessGroupBy(GroupBy groupBy, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             BaseMultiset results = groupBy.InnerAlgebra.Accept(this, context);
             context.InputMultiset = results;
 
@@ -1014,7 +1011,7 @@ namespace VDS.RDF.Query
             {
                 results = new Multiset();
             }
-            GroupMultiset groupSet = new GroupMultiset(results);
+            var groupSet = new GroupMultiset(results);
             List<BindingGroup> groups;
 
             // Calculate Groups
@@ -1202,7 +1199,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessHaving(Having having, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             context.InputMultiset = having.InnerAlgebra.Accept(this, context);
 
             if (context.Query != null)
@@ -1225,9 +1222,8 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessJoin(IJoin join, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             if (join is ParallelJoin pj) return EvaluateParallelJoin(pj, context);
-            BaseMultiset initialInput = context.InputMultiset;
             BaseMultiset lhsResult = join.Lhs.Accept(this, context);
             context.CheckTimeout();
 
@@ -1261,7 +1257,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessLeftJoin(ILeftJoin leftJoin, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             // Need to be careful about whether we linearize (CORE-406)
             if (!CanLinearizeLhs(leftJoin, context))
             {
@@ -1330,7 +1326,7 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context.</param>
         public virtual BaseMultiset ProcessMinus(IMinus minus, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             BaseMultiset initialInput = context.InputMultiset;
             BaseMultiset lhsResult = minus.Lhs.Accept(this, context);
             context.CheckTimeout();
@@ -1375,7 +1371,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public virtual BaseMultiset ProcessNegatedPropertySet(NegatedPropertySet negPropSet, SparqlEvaluationContext context)
         {
-            if (context == null) context = GetContext();
+            context ??= GetContext();
             IEnumerable<Triple> ts;
             var subjVars = negPropSet.PathStart.Variables.ToList();
             var objVars = negPropSet.PathEnd.Variables.ToList();
@@ -1416,9 +1412,7 @@ namespace VDS.RDF.Query
             // Q: Should this not go at the start of evaluation?
             if (negPropSet.Inverse)
             {
-                var temp = objVars;
-                objVars = subjVars;
-                subjVars = temp;
+                (subjVars, objVars) = (objVars, subjVars);
             }
             foreach (Triple t in ts)
             {
@@ -1460,7 +1454,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Processes a One or More Path.
         /// </summary>
-        /// <param name="path">Path.</param>
+        /// <param name="oneOrMorePath">Path.</param>
         /// <param name="context">SPARQL Evaluation Context.</param>
         /// <returns></returns>
         public virtual BaseMultiset ProcessOneOrMorePath(OneOrMorePath oneOrMorePath, SparqlEvaluationContext context)
@@ -1648,19 +1642,14 @@ namespace VDS.RDF.Query
         protected void GetPathStarts(IPathOperator pathOperator, SparqlEvaluationContext context, List<List<INode>> paths, bool reverse)
         {
             var nodes = new HashSet<KeyValuePair<INode, INode>>();
-            if (pathOperator.Path is Property)
+            if (pathOperator.Path is Property path)
             {
-                INode predicate = ((Property)pathOperator.Path).Predicate;
+                INode predicate = path.Predicate;
                 foreach (Triple t in context.Data.GetTriplesWithPredicate(predicate))
                 {
-                    if (reverse)
-                    {
-                        nodes.Add(new KeyValuePair<INode, INode>(t.Object, t.Subject));
-                    }
-                    else
-                    {
-                        nodes.Add(new KeyValuePair<INode, INode>(t.Subject, t.Object));
-                    }
+                    nodes.Add(reverse
+                        ? new KeyValuePair<INode, INode>(t.Object, t.Subject)
+                        : new KeyValuePair<INode, INode>(t.Subject, t.Object));
                 }
             }
             else
@@ -1706,11 +1695,13 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         protected List<INode> EvaluateStep(IPathOperator pathOperator, SparqlEvaluationContext context, List<INode> path, bool reverse)
         {
-            if (pathOperator.Path is Property)
+            if (pathOperator.Path is Property pathOperatorPath)
             {
                 var nodes = new HashSet<INode>();
-                INode predicate = ((Property)pathOperator.Path).Predicate;
-                IEnumerable<Triple> ts = (reverse ? context.Data.GetTriplesWithPredicateObject(predicate, path[path.Count - 1]) : context.Data.GetTriplesWithSubjectPredicate(path[path.Count - 1], predicate));
+                INode predicate = pathOperatorPath.Predicate;
+                IEnumerable<Triple> ts = reverse 
+                    ? context.Data.GetTriplesWithPredicateObject(predicate, path[path.Count - 1]) 
+                    : context.Data.GetTriplesWithSubjectPredicate(path[path.Count - 1], predicate);
                 foreach (Triple t in ts)
                 {
                     if (reverse)
@@ -2259,7 +2250,7 @@ namespace VDS.RDF.Query
                 return new FederatedSparqlQueryClient(serviceEndpoints);
             }
 
-            throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + endpointSpecifier.GetType().ToString() + " Token was provided");
+            throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + endpointSpecifier.GetType() + " Token was provided");
         }
 
         /// <summary>
@@ -2387,9 +2378,9 @@ namespace VDS.RDF.Query
                     context.OutputMultiset = subcontext.Evaluate(query);
 
                     // If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
-                    if (context.OutputMultiset is GroupMultiset)
+                    if (context.OutputMultiset is GroupMultiset groupMultiset)
                     {
-                        context.OutputMultiset = new Multiset((GroupMultiset)context.OutputMultiset);
+                        context.OutputMultiset = new Multiset(groupMultiset);
                     }
 
                     // Strip out any Named Graphs from the subquery
@@ -2400,7 +2391,7 @@ namespace VDS.RDF.Query
                 }
                 catch (RdfQueryException queryEx)
                 {
-                    throw new RdfQueryException("Query failed due to a failure in Subquery Execution:\n" + queryEx.Message, queryEx);
+                    throw new RdfQueryException("Query failed due to a failure in sub-query execution:\n" + queryEx.Message, queryEx);
                 }
             }
 
@@ -2839,6 +2830,7 @@ namespace VDS.RDF.Query
             return context.OutputMultiset;
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessBoundFilter(BoundFilter filter, SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset) return context.InputMultiset;
@@ -2879,6 +2871,7 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessUnaryExpressionFilter(UnaryExpressionFilter filter, SparqlEvaluationContext context)
         {
             switch (context.InputMultiset)
@@ -2942,6 +2935,7 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessChainFilter(ChainFilter filter, SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset) return context.InputMultiset;
@@ -2954,6 +2948,7 @@ namespace VDS.RDF.Query
             return context.InputMultiset;
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessSingleValueRestrictionFilter(SingleValueRestrictionFilter filter, SparqlEvaluationContext context)
         {
             INode term = filter.RestrictionValue.Accept(_expressionProcessor, context, 0);
@@ -3043,6 +3038,7 @@ namespace VDS.RDF.Query
             return context.OutputMultiset;
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessBindPattern(BindPattern bindPattern, SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset)
@@ -3093,6 +3089,7 @@ namespace VDS.RDF.Query
             return context.OutputMultiset;
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessFilterPattern(FilterPattern filterPattern, SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset)
@@ -3129,6 +3126,7 @@ namespace VDS.RDF.Query
             return context.OutputMultiset;
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessLetPattern(LetPattern letPattern, SparqlEvaluationContext context)
         {
             if (context.InputMultiset is NullMultiset)
@@ -3194,6 +3192,7 @@ namespace VDS.RDF.Query
             return context.OutputMultiset;
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessPropertyFunction(PropertyFunction propertyFunction, SparqlEvaluationContext context)
         {
             context.InputMultiset = propertyFunction.InnerAlgebra.Accept(this, context);
@@ -3206,6 +3205,7 @@ namespace VDS.RDF.Query
                                         " as no implementation compatible with the Leviathan engine could be found.");
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessPropertyPathPattern(PropertyPathPattern propertyPathPattern, SparqlEvaluationContext context)
         {
             // Try and generate an Algebra expression
@@ -3250,6 +3250,10 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <inheritdoc />
+        /// <inheritdoc />
+        /// <inheritdoc />
+        /// <inheritdoc />
         public BaseMultiset ProcessSubQueryPattern(SubQueryPattern subQueryPattern, SparqlEvaluationContext context)
         {
             // Use the same algebra optimisers as the parent query (if any)
@@ -3307,6 +3311,7 @@ namespace VDS.RDF.Query
             return context.OutputMultiset;
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessPropertyFunctionPattern(PropertyFunctionPattern propFunctionPattern,
             SparqlEvaluationContext context)
         {
@@ -3320,12 +3325,14 @@ namespace VDS.RDF.Query
 
         }
 
+        /// <inheritdoc />
         public BaseMultiset ProcessTriplePattern(TriplePattern triplePattern, SparqlEvaluationContext context)
         {
             context.Evaluate(triplePattern);
             return context.OutputMultiset;
         }
 
+        /// <inheritdoc />
         public virtual BaseMultiset ProcessUnknownOperator(ISparqlAlgebra op, SparqlEvaluationContext context)
         {
             switch (op)
@@ -3737,15 +3744,15 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Evaluates the BGP against the Evaluation Context.
         /// </summary>
+        /// <param name="bgp">The BGP to be evaluated.</param>
         /// <param name="context">Evaluation Context.</param>
         /// <returns></returns>
         private BaseMultiset EvaluateLazyBgp(LazyBgp bgp, SparqlEvaluationContext context)
         {
-            bool halt;
             BaseMultiset results = null;
             var origRequired = bgp.RequiredResults;
 
-            // May need to detect the actual amount of required results if not specified at instantation
+            // May need to detect the actual amount of required results if not specified at instantiation
             if (bgp.RequiredResults < 0)
             {
                 if (context.Query != null)
@@ -3793,7 +3800,7 @@ namespace VDS.RDF.Query
                     // Do streaming evaluation
                     if (bgp.RequiredResults != 0)
                     {
-                        results = StreamingEvaluate(bgp, context, 0, out halt);
+                        results = StreamingEvaluate(bgp, context, 0, out var halt);
                         if (results is Multiset && results.IsEmpty) results = new NullMultiset();
                     }
                     break;
@@ -3801,7 +3808,7 @@ namespace VDS.RDF.Query
             bgp.RequiredResults = origRequired;
 
             context.OutputMultiset = results;
-            context.OutputMultiset.Trim();
+            context.OutputMultiset?.Trim();
             return context.OutputMultiset;
         }
 

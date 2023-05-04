@@ -32,7 +32,6 @@ namespace VDS.RDF.Query.Paths
     /// <summary>
     /// Evaluation Context for evaluating complex property paths in SPARQL.
     /// </summary>
-    /// <typeparam name="T">The type of the SPARQL evaluation context to use when evaluating the path.</typeparam>
     public class PathEvaluationContext
     {
         /// <summary>

@@ -293,7 +293,7 @@ namespace VDS.RDF.Update
 
             for (var i = 0; i < _commands.Count; i++)
             {
-                output.Append(_commands[i].ToString());
+                output.Append(_commands[i]);
                 if (i < _commands.Count - 1)
                 {
                     output.AppendLine(";");

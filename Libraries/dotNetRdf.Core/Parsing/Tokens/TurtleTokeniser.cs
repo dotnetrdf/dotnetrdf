@@ -61,6 +61,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">Input to read from.</param>
         /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
         public TurtleTokeniser(TextReader input, bool validateIris = false, bool withTrig = false)
             : this(ParsingTextReader.Create(input), TurtleSyntax.W3C, validateIris, withTrig) { }
 
@@ -70,6 +71,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">The Input Stream to generate Tokens from.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
         /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
         public TurtleTokeniser(StreamReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
             : this(ParsingTextReader.Create(input), syntax, validateIris, withTrig) { }
@@ -80,6 +82,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">The Input Stream to generate Tokens from.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
         /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
         public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
             : base(input)
@@ -97,6 +100,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">Input to read from.</param>
         /// <param name="syntax">Turtle Syntax.</param>
         /// <param name="validateIris">Whether to validate IRI tokens.</param>
+        /// <param name="withTrig">Whether to support emitting TRiG-specific tokens.</param>
         /// <remarks>IRIs will only be validated if <paramref name="syntax"/> is set to <see cref="TurtleSyntax.W3C"/> and <paramref name="validateIris"/> is true.</remarks>
         public TurtleTokeniser(TextReader input, TurtleSyntax syntax, bool validateIris = false, bool withTrig = false)
             : this(ParsingTextReader.Create(input), syntax, validateIris, withTrig) { }
@@ -1444,7 +1448,7 @@ namespace VDS.RDF.Parsing.Tokens
                 else
                 {
                     // If we got a PlainLiteralToken or anything else something went wrong
-                    throw Error("Parsed a '" + temp.GetType().ToString() + "' Token while attempting to get a QNameToken for a DataType");
+                    throw Error("Parsed a '" + temp.GetType() + "' Token while attempting to get a QNameToken for a DataType");
                 }
             }
 

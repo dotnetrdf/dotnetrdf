@@ -56,15 +56,26 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             LengthExpression = lengthExpr;
         }
 
+        /// <summary>
+        /// Expression that returns the string to perform the substring operation on.
+        /// </summary>
         public ISparqlExpression InnerExpression { get; }
+        /// <summary>
+        /// Get the expression that returns the start index of the substring operation.
+        /// </summary>
         public ISparqlExpression StartExpression { get; }
+        /// <summary>
+        /// Get the expression that returns the length of substring for the operation to return.
+        /// </summary>
         public ISparqlExpression LengthExpression { get; }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessSubstringFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitSubstringFunction(this);
@@ -96,11 +107,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             if (LengthExpression != null)
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression.ToString() + "," + StartExpression.ToString() + "," + LengthExpression.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression + "," + StartExpression + "," + LengthExpression + ")";
             }
             else
             {
-                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression.ToString() + "," + StartExpression.ToString() + ")";
+                return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + InnerExpression + "," + StartExpression + ")";
             }
         }
 
@@ -133,14 +144,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                if (LengthExpression != null)
-                {
-                    return new ISparqlExpression[] { InnerExpression, StartExpression, LengthExpression };
-                }
-                else
-                {
-                    return new ISparqlExpression[] { InnerExpression, StartExpression };
-                }
+                return LengthExpression != null ? new[] { InnerExpression, StartExpression, LengthExpression } : new[] { InnerExpression, StartExpression };
             }
         }
 
@@ -162,14 +166,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (LengthExpression != null)
-            {
-                return new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression));
-            }
-            else
-            {
-                return new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression));
-            }
+            return LengthExpression != null 
+                ? new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression), transformer.Transform(LengthExpression)) 
+                : new SubstringFunction(transformer.Transform(InnerExpression), transformer.Transform(StartExpression));
         }
     }
 }

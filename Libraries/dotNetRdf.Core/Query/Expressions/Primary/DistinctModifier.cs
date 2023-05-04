@@ -35,11 +35,13 @@ namespace VDS.RDF.Query.Expressions.Primary
     public class DistinctModifier 
         : ISparqlExpression
     {
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessDistinctModifier(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitDistinctModifier(this);

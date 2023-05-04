@@ -31,6 +31,14 @@ namespace VDS.RDF.Query
     /// </summary>
     public interface IProcessable
     {
+        /// <summary>
+        /// Called by an algebra visitor to process an item by invoking the appropriate method on the <paramref name="processor"/> passed in.
+        /// </summary>
+        /// <param name="processor">The processor to invoke.</param>
+        /// <param name="context">The context to pass to the processor.</param>
+        /// <typeparam name="TResult">The type of result returned by the processor.</typeparam>
+        /// <typeparam name="TContext">The type of the context object to be provided to the processor.</typeparam>
+        /// <returns>The result of invoking the processor method.</returns>
         TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context);
     }
 }

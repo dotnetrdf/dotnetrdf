@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the list associated with the incomplete triple
+        /// Gets the list associated with the incomplete triple.
         /// </summary>
         public List<INode> List { get; }
 

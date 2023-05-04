@@ -67,11 +67,5 @@ namespace VDS.RDF
         /// <returns></returns>
         T ParseFromString(string data);
 
-        /// <summary>
-        /// Parses an Object from a Parameterized String.
-        /// </summary>
-        /// <param name="cmdString">Parameterized String.</param>
-        /// <returns></returns>
-        //T ParseFromString(SparqlParameterizedString cmdString);
     }
 }

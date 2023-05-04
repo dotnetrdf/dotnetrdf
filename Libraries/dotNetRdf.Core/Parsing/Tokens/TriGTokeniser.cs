@@ -696,7 +696,7 @@ namespace VDS.RDF.Parsing.Tokens
                 IToken qname = TryGetQName();
                 if (qname.TokenType != Token.QNAME)
                 {
-                    throw Error("Unexpected Token '" + qname.GetType().ToString() + "' parsed when a QName Token to specify a Data Type was expected");
+                    throw Error("Unexpected Token '" + qname.GetType() + "' parsed when a QName Token to specify a Data Type was expected");
                 }
                 else
                 {

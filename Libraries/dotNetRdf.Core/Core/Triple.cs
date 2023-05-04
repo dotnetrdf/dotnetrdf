@@ -153,45 +153,6 @@ namespace VDS.RDF
         public INode Object { get; private set; }
 
         /// <summary>
-        /// Gets the Graph this Triple was created for.
-        /// </summary>
-        /// <remarks>This is not necessarily the actual Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
-        // [Obsolete("This property is obsolete and will be removed in a future version.")]
-        //public IGraph Graph { get; } = null;
-
-        /// <summary>
-        /// Gets the Uri of the Graph this Triple was created for.
-        /// </summary>
-        /// <remarks>This is not necessarily the actual Graph Uri of the Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
-        //[Obsolete("This property is obsolete and will be removed in a future version.")]
-        //public Uri GraphUri
-        //{
-        //    get
-        //    {
-        //        return null;
-        //        //IRefNode graphNode = GraphName;
-        //        //return graphNode switch
-        //        //{
-        //        //    IUriNode uriNode => uriNode.Uri,
-        //        //    IBlankNode => throw new RdfException(
-        //        //        "Attempt to read the GraphUri of a triple that targets a graph with a blank node name. Use GraphName instead of GraphUri."),
-        //        //    _ => null
-        //        //};
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Gets the name of the graph that this triple was created for.
-        ///// </summary>
-        //public IRefNode GraphName
-        //{
-        //    get
-        //    {
-        //        return _graphName ?? Graph?.Name;
-        //    }
-        //}
-
-        /// <summary>
         /// Gets the Context Information for this Triple.
         /// </summary>
         /// <remarks>

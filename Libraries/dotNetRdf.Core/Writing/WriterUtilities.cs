@@ -269,6 +269,11 @@ namespace VDS.RDF.Writing
             return string.Format(TripleNodePredicateUnserializableError, format);
         }
 
+        /// <summary>
+        /// Gets an error message indicating that quads are not serializable in the specified format.
+        /// </summary>
+        /// <param name="format">RDF format (syntax) name.</param>
+        /// <returns></returns>
         public static string QuadsUnserializable(string format)
         {
             return string.Format(QuadsUnserializableError, format);

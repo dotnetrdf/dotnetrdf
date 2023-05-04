@@ -44,6 +44,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         {
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {
