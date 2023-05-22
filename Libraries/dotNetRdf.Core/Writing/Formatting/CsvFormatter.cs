@@ -25,6 +25,7 @@
 */
 
 using System.Linq;
+using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
@@ -39,6 +40,23 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         public CsvFormatter()
             : base("CSV") { }
+
+        /// <summary>
+        /// Formats a Triple for CSV output.
+        /// </summary>
+        /// <param name="t">Triple.</param>
+        /// <returns></returns>
+        public override string Format(Triple t)
+        {
+            var output = new StringBuilder();
+            output.Append(Format(t.Subject));
+            output.Append(',');
+            output.Append(Format(t.Predicate));
+            output.Append(',');
+            output.Append(Format(t.Object));
+            output.Append("\r\n");
+            return output.ToString();
+        }
 
         /// <summary>
         /// Formats URIs for CSV output.
