@@ -142,7 +142,9 @@ namespace VDS.RDF.Writing.Formatting
             var node = FormatAsJObject(t);
             if (graph != null)
             {
-                node["@graph"] = FormatAsJObject(graph);
+                var graphNode = FormatAsJObject(graph);
+                graphNode["@graph"] = node;
+                node = graphNode;
             }
             return node.ToString(JsonFormatting) + ",";
         }
