@@ -161,7 +161,7 @@ namespace VDS.RDF.Parsing.Handlers
                 }
             }
 
-            if (_tripleFormatter is IGraphFormatter graphFormatter)
+            if (((object)_tripleFormatter ?? _formatter) is IGraphFormatter graphFormatter)
             {
                 _writer.WriteLine(graphFormatter.FormatGraphHeader(_formattingMapper));
             }
@@ -174,9 +174,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Indicates whether parsing completed without error.</param>
         protected override void EndRdfInternal(bool ok)
         {
-            if (_tripleFormatter is IGraphFormatter)
+            if (((object)_tripleFormatter ?? _formatter) is IGraphFormatter graphFormatter)
             {
-                _writer.WriteLine(((IGraphFormatter)_tripleFormatter).FormatGraphFooter());
+                _writer.WriteLine(graphFormatter.FormatGraphFooter());
             }
             if (_closeOnEnd)
             {
@@ -213,7 +213,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            if (_tripleFormatter is IBaseUriFormatter baseUriFormatter)
+            if (((object)_tripleFormatter ?? _formatter) is IBaseUriFormatter baseUriFormatter)
             {
                 _writer.WriteLine(baseUriFormatter.FormatBaseUri(baseUri));
             }
@@ -266,7 +266,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleCommentInternal(string text)
         {
-            if (_tripleFormatter is ICommentFormatter commentFormatter)
+            if (((object)_tripleFormatter ?? _formatter) is ICommentFormatter commentFormatter)
             {
                 _writer.WriteLine(commentFormatter.FormatComment(text));
             }
