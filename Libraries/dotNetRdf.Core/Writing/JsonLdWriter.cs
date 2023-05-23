@@ -28,21 +28,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.JsonLd;
 using VDS.RDF.JsonLd.Processors;
 using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
     /// <summary>
     /// Class for serializing a Triple Store in JSON-LD syntax.
     /// </summary>
-    public class JsonLdWriter : BaseStoreWriter
+    public class JsonLdWriter : BaseStoreWriter, IFormatterBasedWriter
     {
         private readonly JsonLdWriterOptions _options;
+        private readonly JsonLdFormatter _formatter;
 
         /// <summary>
         /// Create a new serializer with default serialization options.
@@ -50,8 +51,8 @@ namespace VDS.RDF.Writing
         public JsonLdWriter()
         {
             _options = new JsonLdWriterOptions();
+            _formatter = new JsonLdFormatter(_options);
         }
-
 
         /// <summary>
         /// Create a new serializer with the specified serialization options.
@@ -59,8 +60,35 @@ namespace VDS.RDF.Writing
         /// <param name="options"></param>
         public JsonLdWriter(JsonLdWriterOptions options)
         {
-            _options = options;
+            _options = options ?? new JsonLdWriterOptions();
+            _formatter = new JsonLdFormatter(options);
         }
+
+        /// <summary>
+        /// Create a new serializer with the specified serialization options.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="formatter"></param>
+        public JsonLdWriter(JsonLdWriterOptions options, JsonLdFormatter formatter)
+        {
+            _options = options ?? new JsonLdWriterOptions();
+            _formatter = formatter ?? new JsonLdFormatter(_options);
+        }
+
+        /// <summary>
+        /// Create a new serializer with the specified serialization options.
+        /// </summary>
+        /// <param name="formatter"></param>
+        public JsonLdWriter(JsonLdFormatter formatter)
+        {
+            _options = new JsonLdWriterOptions();
+            _formatter = formatter ?? new JsonLdFormatter(_options);
+        }
+
+        /// <summary>
+        /// Gets the type of the Triple Formatter used by this writer.
+        /// </summary>
+        public Type TripleFormatterType => typeof(JsonLdFormatter);
 
         /// <inheritdoc/>
         public override void Save(ITripleStore store, TextWriter output, bool leaveOpen)
@@ -128,9 +156,9 @@ namespace VDS.RDF.Writing
                 // 5.7 - For each triple in graph consisting of subject, predicate, and object:
                 foreach (Triple triple in graph.Triples)
                 {
-                    var subject = MakeNodeString(triple.Subject);
-                    var predicate = MakeNodeString(triple.Predicate);
-                    var @object = triple.Object is IUriNode || triple.Object is IBlankNode ? MakeNodeString(triple.Object) : null;
+                    var subject = _formatter.MakeNodeString(triple.Subject);
+                    var predicate = _formatter.MakeNodeString(triple.Predicate);
+                    var @object = triple.Object is IUriNode || triple.Object is IBlankNode ? _formatter.MakeNodeString(triple.Object) : null;
 
                     // 5.7.1 - If node map does not have a subject entry, create one and initialize its value to a new map consisting of a single entry @id whose value is set to subject.
                     if (!nodeMap.ContainsKey(subject))
@@ -178,7 +206,7 @@ namespace VDS.RDF.Writing
                     }
 
                     // 5.7.6 - Initialize value to the result of using the RDF to Object Conversion algorithm, passing object, rdfDirection, and useNativeTypes.
-                    JToken value = RdfToObject(triple.Object);
+                    JToken value = _formatter.FormatAsJObject(triple.Object);
 
                     // 5.7.7 -If node does not have a predicate entry, create one and initialize its value to an empty array.
                     if (!node.ContainsKey(predicate))
@@ -413,155 +441,12 @@ namespace VDS.RDF.Writing
             return true;
         }
 
-        private JToken RdfToObject(INode value)
-        {
-            switch (value)
-            {
-                // 1 - If value is an IRI or a blank node identifier, return a new dictionary consisting of a single member @id whose value is set to value.
-                case IUriNode uriNode:
-                    return new JObject(new JProperty("@id", uriNode.Uri.OriginalString));
-                case IBlankNode bNode:
-                    return new JObject(new JProperty("@id", "_:" + bNode.InternalID));
-                case ILiteralNode literal:
-                    // 2 - Otherwise value is an RDF literal:
-                    // 2.1 - Initialize a new empty dictionary result.
-                    var result = new JObject();
-                    // 2.2 - Initialize converted value to value.
-                    JToken convertedValue = new JValue(literal.Value);
-                    // 2.3 - Initialize type to null
-                    string type = null;
-                    // 2.4 - If use native types is true
-                    if (_options.UseNativeTypes && literal.DataType != null)
-                    {
-                        // 2.4.1 - If the datatype IRI of value equals xsd:string, set converted value to the lexical form of value.
-                        if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            convertedValue = new JValue(literal.Value);
-                        }
-                        // 2.4.2 - Otherwise, if the datatype IRI of value equals xsd:boolean, set converted value to true if the lexical form of value matches true, or false if it matches false. If it matches neither, set type to xsd:boolean.
-                        else if (literal.DataType.ToString()
-                                     .Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
-                        {
-                            if (literal.Value.Equals("true"))
-                            {
-                                convertedValue = new JValue(true);
-                            }
-                            else if (literal.Value.Equals("false"))
-                            {
-                                convertedValue = new JValue(false);
-                            }
-                            else
-                            {
-                                type = XmlSpecsHelper.XmlSchemaDataTypeBoolean;
-                            }
-                        }
-                        // 2.4.3 - Otherwise, if the datatype IRI of value equals xsd:integer or xsd:double and its lexical form is a valid xsd:integer or xsd:double according [XMLSCHEMA11-2], set converted value to the result of converting the lexical form to a JSON number.
-                        else if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
-                        {
-                            if (IsWellFormedInteger(literal.Value))
-                            {
-                                convertedValue = new JValue(long.Parse(literal.Value));
-                            }
-                        }
-                        else if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
-                        {
-                            if (IsWellFormedDouble(literal.Value))
-                            {
-                                convertedValue = new JValue(double.Parse(literal.Value));
-                            }
-                        }
-                        // KA: Step missing from spec - otherwise set type to the datatype IRI
-                        else
-                        {
-                            type = literal.DataType.ToString();
-                        }
-                    }
-                    // 2.5 - Otherwise, if processing mode is not json-ld-1.0, and value is a JSON literal, set converted value to the result of turning the lexical value of value into the JSON-LD internal representation, and set type to @json. If the lexical value of value is not valid JSON according to the JSON Grammar [RFC8259], an invalid JSON literal error has been detected and processing is aborted.
-                    else if (_options.ProcessingMode != JsonLdProcessingMode.JsonLd10 &&
-                             RdfSpecsHelper.RdfJson.Equals(literal.DataType?.ToString()))
-                    {
-                        try
-                        {
-                            convertedValue = JToken.Parse(literal.Value);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidJsonLiteral,
-                                "Invalid JSON literal. " + ex.Message);
-                        }
-
-                        type = "@json";
-                    }
-                    // 2.6 - Otherwise, if the datatype IRI of value starts with https://www.w3.org/ns/i18n#, and rdfDirection is i18n-datatype:
-                    else if (_options.RdfDirection == JsonLdRdfDirectionMode.I18NDatatype && literal.DataType != null &&
-                             literal.DataType.ToString().StartsWith("https://www.w3.org/ns/i18n#"))
-                    {
-                        var fragment = literal.DataType.Fragment.TrimStart('#');
-                        if (!string.IsNullOrEmpty(literal.DataType.Fragment) && fragment.Contains("_"))
-                        {
-                            convertedValue = literal.Value;
-                            var sepIx = fragment.IndexOf("_", StringComparison.Ordinal);
-                            if (sepIx > 0)
-                            {
-                                result["@language"] = fragment.Substring(0, sepIx);
-                            }
-                            result["@direction"] = fragment.Substring(sepIx + 1);
-                        }
-                    }
-                    // 2.7 - Otherwise, if value is a language-tagged string add a member @language to result and set its value to the language tag of value.
-                    else if (!string.IsNullOrEmpty(literal.Language))
-                    {
-                        result["@language"] = literal.Language;
-                    }
-                    // 2.8 - Otherwise, set type to the datatype IRI of value, unless it equals xsd:string which is ignored.
-                    else
-                    {
-                        if (literal.DataType != null && !literal.DataType.ToString()
-                                .Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            type = literal.DataType.ToString();
-                        }
-                    }
-                    // 2.9 - Add a member @value to result whose value is set to converted value.
-                    result["@value"] = convertedValue;
-                    // 2.10 - If type is not null, add a member @type to result whose value is set to type.
-                    if (type != null) result["@type"] = type;
-                    // 2.11 - Return result.
-                    return result;
-            }
-
-            return null;
-        }
-
-        private static readonly Regex IntegerLexicalRepresentation = new Regex(@"^(\+|\-)?\d+$");
-        private static bool IsWellFormedInteger(string literal)
-        {
-            return IntegerLexicalRepresentation.IsMatch(literal);
-        }
-
-        private static readonly Regex DoubleLexicalRepresentation = new Regex(@"^((\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?|(\+|-)?INF|NaN)$");
-
-        private static bool IsWellFormedDouble(string literal)
-        {
-            return DoubleLexicalRepresentation.IsMatch(literal);
-        }
-
         private static void AppendUniqueElement(JToken element, JArray toArray)
         {
             if (!toArray.Any(x => JToken.DeepEquals(x, element)))
             {
                 toArray.Add(element);
             }
-        }
-
-        private static string MakeNodeString(INode node)
-        {
-            return node switch
-            {
-                IUriNode uriNode => uriNode.Uri.OriginalString,
-                IBlankNode blankNode => "_:" + blankNode.InternalID,
-                _ => throw new ArgumentException("Node must be a blank node or URI node", nameof(node))
-            };
         }
 
         /// <inheritdoc/>
