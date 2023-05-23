@@ -28,7 +28,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Text.RegularExpressions;
-using VDS.RDF.JsonLd;
+using System.Xml;
 using VDS.RDF.JsonLd.Syntax;
 using VDS.RDF.Parsing;
 
@@ -246,47 +246,55 @@ namespace VDS.RDF.Writing.Formatting
                     // 2.4 - If use native types is true
                     if (_options.UseNativeTypes && literal.DataType != null)
                     {
-                        // 2.4.1 - If the datatype IRI of value equals xsd:string, set converted value to the lexical form of value.
-                        if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                        switch (literal.DataType.ToString())
                         {
-                            convertedValue = new JValue(literal.Value);
-                        }
-                        // 2.4.2 - Otherwise, if the datatype IRI of value equals xsd:boolean, set converted value to true if the lexical form of value matches true, or false if it matches false. If it matches neither, set type to xsd:boolean.
-                        else if (literal.DataType.ToString()
-                                     .Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
-                        {
-                            if (literal.Value.Equals("true"))
-                            {
-                                convertedValue = new JValue(true);
-                            }
-                            else if (literal.Value.Equals("false"))
-                            {
-                                convertedValue = new JValue(false);
-                            }
-                            else
-                            {
-                                type = XmlSpecsHelper.XmlSchemaDataTypeBoolean;
-                            }
-                        }
-                        // 2.4.3 - Otherwise, if the datatype IRI of value equals xsd:integer or xsd:double and its lexical form is a valid xsd:integer or xsd:double according [XMLSCHEMA11-2], set converted value to the result of converting the lexical form to a JSON number.
-                        else if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
-                        {
-                            if (IsWellFormedInteger(literal.Value))
-                            {
-                                convertedValue = new JValue(long.Parse(literal.Value));
-                            }
-                        }
-                        else if (literal.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
-                        {
-                            if (IsWellFormedDouble(literal.Value))
-                            {
-                                convertedValue = new JValue(double.Parse(literal.Value));
-                            }
-                        }
-                        // KA: Step missing from spec - otherwise set type to the datatype IRI
-                        else
-                        {
-                            type = literal.DataType.ToString();
+                            // 2.4.1 - If the datatype IRI of value equals xsd:string, set converted value to the lexical form of value.
+                            case XmlSpecsHelper.XmlSchemaDataTypeString:
+                                convertedValue = new JValue(literal.Value);
+                                break;
+
+                            // 2.4.2 - Otherwise, if the datatype IRI of value equals xsd:boolean, set converted value to true if the lexical form of value matches true, or false if it matches false. If it matches neither, set type to xsd:boolean.
+                            case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
+                                if (literal.Value.Equals("true"))
+                                {
+                                    convertedValue = new JValue(true);
+                                }
+                                else if (literal.Value.Equals("false"))
+                                {
+                                    convertedValue = new JValue(false);
+                                }
+                                else
+                                {
+                                    goto default;
+                                }
+                                break;
+
+                            // 2.4.3 - Otherwise, if the datatype IRI of value equals xsd:integer or xsd:double and its lexical form is a valid xsd:integer or xsd:double according [XMLSCHEMA11-2], set converted value to the result of converting the lexical form to a JSON number.
+                            case XmlSpecsHelper.XmlSchemaDataTypeInteger:
+                                if (IsWellFormedInteger(literal.Value))
+                                {
+                                    convertedValue = new JValue(XmlConvert.ToInt64(literal.Value));
+                                }
+                                else
+                                {
+                                    goto default;
+                                }
+                                break;
+                            case XmlSpecsHelper.XmlSchemaDataTypeDouble:
+                                if (IsWellFormedDouble(literal.Value))
+                                {
+                                    convertedValue = new JValue(XmlConvert.ToDouble(literal.Value));
+                                }
+                                else
+                                {
+                                    goto default;
+                                }
+                                break;
+
+                            // KA: Step missing from spec - otherwise set type to the datatype IRI
+                            default:
+                                type = literal.DataType.ToString();
+                                break;
                         }
                     }
                     // 2.5 - Otherwise, if processing mode is not json-ld-1.0, and value is a JSON literal, set converted value to the result of turning the lexical value of value into the JSON-LD internal representation, and set type to @json. If the lexical value of value is not valid JSON according to the JSON Grammar [RFC8259], an invalid JSON literal error has been detected and processing is aborted.
@@ -296,14 +304,12 @@ namespace VDS.RDF.Writing.Formatting
                         try
                         {
                             convertedValue = JToken.Parse(literal.Value);
+                            type = "@json";
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            throw new JsonLdProcessorException(JsonLdErrorCode.InvalidJsonLiteral,
-                                "Invalid JSON literal. " + ex.Message);
+                            type = RdfSpecsHelper.RdfJson;
                         }
-
-                        type = "@json";
                     }
                     // 2.6 - Otherwise, if the datatype IRI of value starts with https://www.w3.org/ns/i18n#, and rdfDirection is i18n-datatype:
                     else if (_options.RdfDirection == JsonLdRdfDirectionMode.I18NDatatype && literal.DataType != null &&
@@ -319,6 +325,10 @@ namespace VDS.RDF.Writing.Formatting
                                 result["@language"] = fragment.Substring(0, sepIx);
                             }
                             result["@direction"] = fragment.Substring(sepIx + 1);
+                        }
+                        else
+                        {
+                            type = literal.DataType.ToString();
                         }
                     }
                     // 2.7 - Otherwise, if value is a language-tagged string add a member @language to result and set its value to the language tag of value.
