@@ -486,6 +486,11 @@ namespace VDS.RDF.Writing
                         // Strange error
                         throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
                     }
+                    else if (firsts.Length == 0)
+                    {
+                        // If it has no firsts, the list cannot be compressed
+                        break;
+                    }
                     else if (firsts.Length == 1)
                     {
                         // Stick this item onto the Stack
@@ -494,9 +499,10 @@ namespace VDS.RDF.Writing
                     }
 
                     // See if this thing is the rdf:rest of anything else
+                    bool canCompress = true;
                     do
                     {
-                        Triple[] ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject).ToArray();
+                        Triple[] ts = context.Graph.GetTriplesWithPredicateObject(rest, temp.Subject).ToArray();
 
                         // Stop when there isn't a rdf:rest
                         if (ts.Length == 0)
@@ -513,6 +519,11 @@ namespace VDS.RDF.Writing
                                 // Strange error
                                 throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
                             }
+                            else if (firsts.Length == 0)
+                            {
+                                // Cannot compress a list with an empty node
+                                canCompress = false;
+                            }
                             else if (firsts.Length == 1)
                             {
                                 // Stick this item onto the Stack
@@ -526,10 +537,10 @@ namespace VDS.RDF.Writing
                                 c.Triples.Add(temp);
                             }
                         }
-                    } while (true);
+                    } while (canCompress);
 
                     // Can only compress if every List Node has a Blank Node Subject
-                    if (c.Triples.All(x => x.Subject.NodeType == NodeType.Blank))
+                    if (canCompress && c.Triples.All(x => x.Subject.NodeType == NodeType.Blank))
                     {
                         context.Collections.Add(firsts[0].Subject, c);
                     }

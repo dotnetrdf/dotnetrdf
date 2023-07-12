@@ -262,12 +262,12 @@ namespace VDS.RDF.Writing
             CheckCompressionRoundTrip(g);
         }
 
-        private Dictionary<INode, OutputRdfCollection> FindCollections(IGraph g)
+        private Dictionary<INode, OutputRdfCollection> FindCollections(IGraph g, CollectionSearchMode mode = CollectionSearchMode.All)
         {
             var sw = new System.IO.StringWriter();
             var context = new CompressingTurtleWriterContext(g, sw);
             _output.WriteLine(sw.ToString());
-            WriterHelper.FindCollections(context);
+            WriterHelper.FindCollections(context, mode);
             return context.Collections;
         }
 
@@ -571,7 +571,5 @@ namespace VDS.RDF.Writing
             CheckCompressionRoundTrip(g);
 
         }
-
-
     }
 }

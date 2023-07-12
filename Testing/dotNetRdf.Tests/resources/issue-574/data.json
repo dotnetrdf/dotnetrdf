@@ -1,0 +1,4041 @@
+{
+  "_:autos16687": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16688",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/KBRSOORT",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16688": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "vrije overspanning",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16689",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16689": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "overspanning via tussenpunten",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16690",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16690": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "overspanning via landhoofden binnen het doorstroomprofiel",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16691",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16691": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "overspan. via landhfd. binnen doorstroomprof. en tussenpunten",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16692",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16692": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "overig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16693",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16693": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "onbekend",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16694",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16694": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16695": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16696",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/KBRMATBD",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16696": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "aluminium",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16697",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16697": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "hout",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16698",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16698": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "ijzer",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16699",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16699": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "koper",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16700",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16700": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kunststof",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16701",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16701": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kunststoffolie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16702",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16702": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kurk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16703",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16703": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "lood",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16704",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16704": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "metselwerk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16705",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16705": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "plaatstaal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16706",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16706": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "puinsteen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16707",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16707": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "asbest-cement",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16708",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16708": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "PVC",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16709",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16709": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "staal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16710",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16710": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "steen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16711",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16711": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "voorgespannen beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16712",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16712": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "riet en/of biezen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16713",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16713": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "zand",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16714",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16714": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gips",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16715",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16715": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gres (GRE)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16716",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16716": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Roestvrijstaal (RVS)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16717",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16717": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Eternit (ETR)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16718",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16718": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16719",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16719": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gecreosorteerd naaldhout (GNH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16720",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16720": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Spirosol (SPI)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16721",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16721": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Loofhout (LH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16722",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16722": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Europees naaldhout (ENH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16723",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16723": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Stortsteen (SST)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16724",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16724": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Tropisch hardhout (THH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16725",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16725": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Grond",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16726",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16726": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gegolfd plaatstaal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16727",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16727": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gewapend beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16728",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16728": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gietijzer",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16729",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16729": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "glad staal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16730",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16730": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "glas",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16731",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16731": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "grasbetontegels",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16732",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16732": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Onbekend",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16733",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16733": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "overig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16734",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16734": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16735": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16736",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/KDUMATDC",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16736": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "aluminium",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16737",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16737": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "hout",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16738",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16738": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "ijzer",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16739",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16739": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "koper",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16740",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16740": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kunststof",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16741",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16741": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kunststoffolie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16742",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16742": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kurk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16743",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16743": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "lood",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16744",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16744": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "metselwerk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16745",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16745": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "plaatstaal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16746",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16746": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "puinsteen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16747",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16747": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "asbest-cement",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16748",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16748": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "PVC",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16749",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16749": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "staal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16750",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16750": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "steen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16751",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16751": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "voorgespannen beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16752",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16752": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "riet en/of biezen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16753",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16753": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "zand",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16754",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16754": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gips",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16755",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16755": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gres (GRE)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16756",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16756": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Roestvrijstaal (RVS)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16757",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16757": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Eternit (ETR)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16758",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16758": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16759",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16759": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gecreosorteerd naaldhout (GNH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16760",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16760": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Spirosol (SPI)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16761",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16761": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Loofhout (LH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16762",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16762": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Europees naaldhout (ENH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16763",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16763": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Stortsteen (SST)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16764",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16764": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Tropisch hardhout (THH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16765",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16765": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Grond",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16766",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16766": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gegolfd plaatstaal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16767",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16767": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gewapend beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16768",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16768": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gietijzer",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16769",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16769": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "glad staal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16770",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16770": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "glas",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16771",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16771": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "grasbetontegels",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16772",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16772": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Onbekend",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16773",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16773": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "overig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16774",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16774": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16775": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16776",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/KBRMATPY",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16776": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "aluminium",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16777",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16777": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "hout",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16778",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16778": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "ijzer",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16779",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16779": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "koper",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16780",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16780": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kunststof",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16781",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16781": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kunststoffolie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16782",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16782": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kurk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16783",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16783": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "lood",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16784",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16784": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "metselwerk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16785",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16785": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "plaatstaal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16786",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16786": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "puinsteen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16787",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16787": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "asbest-cement",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16788",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16788": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "PVC",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16789",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16789": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "staal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16790",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16790": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "steen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16791",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16791": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "voorgespannen beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16792",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16792": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "riet en/of biezen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16793",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16793": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "zand",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16794",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16794": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gips",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16795",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16795": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gres (GRE)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16796",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16796": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Roestvrijstaal (RVS)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16797",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16797": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Eternit (ETR)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16798",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16798": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16799",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16799": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gecreosorteerd naaldhout (GNH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16800",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16800": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Spirosol (SPI)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16801",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16801": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Loofhout (LH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16802",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16802": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Europees naaldhout (ENH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16803",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16803": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Stortsteen (SST)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16804",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16804": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Tropisch hardhout (THH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16805",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16805": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Grond",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16806",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16806": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gegolfd plaatstaal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16807",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16807": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gewapend beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16808",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16808": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gietijzer",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16809",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16809": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "glad staal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16810",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16810": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "glas",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16811",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16811": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "grasbetontegels",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16812",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16812": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Onbekend",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16813",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16813": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "overig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16814",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16814": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16815": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16816",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/KBRMATLH",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16816": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "aluminium",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16817",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16817": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "hout",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16818",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16818": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "ijzer",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16819",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16819": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "koper",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16820",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16820": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kunststof",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16821",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16821": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kunststoffolie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16822",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16822": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "kurk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16823",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16823": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "lood",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16824",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16824": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "metselwerk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16825",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16825": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "plaatstaal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16826",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16826": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "puinsteen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16827",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16827": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "asbest-cement",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16828",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16828": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "PVC",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16829",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16829": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "staal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16830",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16830": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "steen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16831",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16831": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "voorgespannen beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16832",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16832": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "riet en/of biezen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16833",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16833": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "zand",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16834",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16834": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gips",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16835",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16835": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gres (GRE)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16836",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16836": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Roestvrijstaal (RVS)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16837",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16837": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Eternit (ETR)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16838",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16838": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16839",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16839": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gecreosorteerd naaldhout (GNH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16840",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16840": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Spirosol (SPI)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16841",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16841": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Loofhout (LH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16842",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16842": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Europees naaldhout (ENH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16843",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16843": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Stortsteen (SST)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16844",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16844": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Tropisch hardhout (THH)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16845",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16845": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Grond",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16846",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16846": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gegolfd plaatstaal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16847",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16847": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gewapend beton",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16848",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16848": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gietijzer",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16849",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16849": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "glad staal",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16850",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16850": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "glas",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16851",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16851": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "grasbetontegels",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16852",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16852": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Onbekend",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16853",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16853": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "overig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16854",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16854": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16855": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16856",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/KBRBEWEG",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16856": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Ja",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16857",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16857": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Nee",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16858",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16858": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16859": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16860",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/KBRBESRT",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16860": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "basculebrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16861",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16861": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "dubbele ophaalbrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16862",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16862": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "pontonbrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16863",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16863": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "pontondraaibrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16864",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16864": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "rolbrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16865",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16865": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "dubbele basculebrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16866",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16866": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "rolbasculebrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16867",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16867": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "dubbele rolbasculebrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16868",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16868": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "hefbrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16869",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16869": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "draaibrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16870",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16870": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "dubbele draaibrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16871",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16871": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "klapbrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16872",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16872": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "ophaalbrug",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16873",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16873": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16874": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16875",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/KWKSTATU",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16875": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gerealiseerd/in bedrijf/in gebruik/operationeel",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16876",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16876": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "planvorming",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16877",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16877": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "realisatie plan (in uitvoering)",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16878",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16878": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "niet meer aanwezig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16879",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16879": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "gerealiseerd, maar niet overgedragen",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16880",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16880": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "buiten bedrijf",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16881",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16881": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16882": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16883",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/IWS_LEGGERSTATUS",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16883": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Vastgesteld",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16884",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16884": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gewijzigd",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16885",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16885": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Verwijderd",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16886",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16886": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Niet van toepassing",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16887",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16887": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "In ontwerp",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16888",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16888": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16889": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16890",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/IWS_AFST_B",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16890": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Nee",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16891",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16891": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Op afstand bedienbaar",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16892",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16892": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Zelfbediening",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16893",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16893": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Lokale bediening",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16894",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16894": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16895": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16896",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/WS_MONUMENT",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16896": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Ja",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16897",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16897": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Nee",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16898",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16898": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16899": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16900",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/WS_WK_LEGGERSTATUS",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16900": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Vastgesteld",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16901",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16901": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gewijzigd",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16902",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16902": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Verwijderd",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16903",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16903": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Niet van toepassing",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16904",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16904": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "In ontwerp",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16905",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16905": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16906": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16907",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/WS_NOODKUNSTWERK",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16907": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Ja",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16908",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16908": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Nee",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16909",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16909": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16910": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16911",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/WS_BEHEERDER",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16911": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Rijk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16912",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16912": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Waterschap",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16913",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16913": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gemeente / Stadsdeel",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16914",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16914": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Plas- of Recreatieschap",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16915",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16915": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Provincie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16916",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16916": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Natuurbeschermingsorganisatie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16917",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16917": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Eigenaar",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16918",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16918": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Pachter",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16919",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16919": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Overig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16920",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16920": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16921": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16922",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/WS_FUNCTIONEEL_ONDERH",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16922": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Rijk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16923",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16923": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Waterschap",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16924",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16924": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gemeente / Stadsdeel",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16925",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16925": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Plas- of Recreatieschap",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16926",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16926": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Provincie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16927",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16927": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Natuurbeschermingsorganisatie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16928",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16928": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Eigenaar",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16929",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16929": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Pachter",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16930",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16930": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Overig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16931",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16931": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16932": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16933",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/WS_CONSTRUCTIEF_ONDERH",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16933": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Rijk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16934",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16934": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Waterschap",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16935",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16935": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gemeente / Stadsdeel",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16936",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16936": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Plas- of Recreatieschap",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16937",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16937": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Provincie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16938",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16938": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Natuurbeschermingsorganisatie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16939",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16939": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Eigenaar",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16940",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16940": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Pachter",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16941",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16941": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Overig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16942",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16942": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16943": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16944",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/WS_BEDIENING",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16944": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Rijk",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16945",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16945": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Waterschap",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16946",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16946": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gemeente / Stadsdeel",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16947",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16947": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Plas- of Recreatieschap",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16948",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16948": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Provincie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16949",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16949": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Natuurbeschermingsorganisatie",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16950",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16950": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Eigenaar",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16951",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16951": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Pachter",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16952",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16952": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Overig",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16953",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16953": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16954": {
+    "http://www.w3.org/ns/shacl#in": [
+      {
+        "value": "_:autos16955",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#path": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/IWS_EIGENAAR_K",
+        "type": "uri"
+      }
+    ]
+  },
+  "_:autos16955": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Waterschap",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16956",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16956": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Derden",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16957",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16957": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Onbekend",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16958",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16958": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#first": [
+      {
+        "value": "Gemeente",
+        "datatype": "http://www.w3.org/2001/XMLSchema#string",
+        "type": "literal"
+      }
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "_:autos16959",
+        "type": "bnode"
+      }
+    ]
+  },
+  "_:autos16959": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest": [
+      {
+        "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+        "type": "uri"
+      }
+    ]
+  },
+  "https://otl.waternet.nl/gis/shapes/7e9192c61fe611eebe560242ac120002": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+      {
+        "value": "http://www.w3.org/ns/shacl#NodeShape",
+        "type": "uri"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#property": [
+      {
+        "value": "_:autos16687",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16695",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16735",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16775",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16815",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16855",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16859",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16874",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16882",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16889",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16895",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16899",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16906",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16910",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16921",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16932",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16943",
+        "type": "bnode"
+      },
+      {
+        "value": "_:autos16954",
+        "type": "bnode"
+      }
+    ],
+    "http://www.w3.org/ns/shacl#targetClass": [
+      {
+        "value": "https://otl.waternet.nl/gis/def/7e9192c61fe611eebe560242ac120002",
+        "type": "uri"
+      }
+    ]
+  }
+}
