@@ -198,7 +198,7 @@ namespace VDS.RDF.JsonLd
         /// <para>
         /// If set to 0, remote context processing is disabled.
         /// If set to a value less than 0, there is no limit on the number of remote contexts that can be processed.
-        /// Defaults to 50.
+        /// Defaults to 10.
         /// </para>
         /// <para>
         /// This property is no longer part of the JSON-LD specification but is provided as as convenience for
@@ -206,7 +206,7 @@ namespace VDS.RDF.JsonLd
         /// is completely disabled by setting this property to 0).
         /// </para>
         /// </remarks>
-        public int RemoteContextLimit { get; set; } = 50;
+        public int RemoteContextLimit { get; set; } = 10;
 
         /// <summary>
         /// Create a copy of this instance, cloning all of its values.
