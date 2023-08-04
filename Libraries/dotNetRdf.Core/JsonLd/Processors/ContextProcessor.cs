@@ -163,7 +163,7 @@ namespace VDS.RDF.JsonLd.Processors
                     {
                         throw new JsonLdProcessorException(JsonLdErrorCode.ContextOverflow, "Number of loaded remote context references exceeds the limit.");
                     }
-                    if (!remoteContexts.Contains(remoteUrl)) remoteContexts.Add(remoteUrl);
+                    remoteContexts.Add(remoteUrl);
 
                     // 5.2.4 If context was previously dereferenced, then the processor MUST NOT do a further dereference,
                     // and context is set to the previously established internal representation:
