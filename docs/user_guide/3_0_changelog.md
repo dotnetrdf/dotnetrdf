@@ -173,13 +173,6 @@ The ISparqlResultSet interface has been added to allow a more clean separation b
 
 The method is now a static method of VDS.RDF.Configuration.SparqlConfigurationLoader so calls to `ConfigurationLoader.AutoConfigureSparqlOperators` will need to be changed to `SparqlConfigurationLoader.AutoConfigureSparqlOperators`
 
-## MIME types for SPARQL Query and Update are no longer registered by default
-
-Because the parsers for SPARQL Query and Update are now in a separate assembly from the core assembly containing the MIME type registry, these parsers need to be registered. The static method `VDS.RDF.SparqlMimeTypeExtensions.RegisterSparqlMimeTypes()`
-will perform this registration.
-
-This change will break existing code that uses the MimeTypesHelper class to retrieve SPARQL query or update parsers.
-
 ## Triple and IRdfHandler changes
 
 The `Triple` class no longer has a `Graph` property. This property was used in dotNetRDF 2.x to reference the `IGraph` instance that the triple was created in and not necessarily the graph that the triple existed in, which could lead to some confusion.
