@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+3.0.1
+-----
+
+FIX: The JSON-LD context processor has been updated to a stack overflow vulnnerability when processing remote contexts. As part of this change the default value of the `RemoteContextLimit` property of the  `JsonLdProcessorOptions` has been changed from `-1` (unlimited) to `10`. The processor has also been modified to treat every repeat call to the same remote URL as counting towards this limit. Thanks to the dotNetRDF user who reported this.
+
 ENHANCEMENT: The RDFa parser has been updated to be more conformant with the RDFa specs. By default the parser implements RDFa+(X)HTML processing and now passes all of the RDFa 1.1 test suite for the HTML, XHTML and XML host languages.
 
 FIX: Fix for the JSON-LD Framing processor to correctly handle a frame with multiple @reverse properties. Thanks to @huibertalblas for the bug report and fix. (#556)
