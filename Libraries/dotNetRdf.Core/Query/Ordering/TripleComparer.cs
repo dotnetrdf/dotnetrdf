@@ -33,6 +33,7 @@ namespace VDS.RDF.Query.Ordering
     {
         private IComparer<Triple> _child;
         private Func<Triple, Triple, int> _compareFunc;
+       
         private int _modifier = 1;
 
         public TripleComparer(Func<Triple, Triple, int> compareFunc, bool descending, IComparer<Triple> child)

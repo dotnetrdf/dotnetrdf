@@ -83,6 +83,9 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public ISparqlAlgebra InnerAlgebra { get; }
 
+        /// <summary>
+        /// Gets the flag that indicates whether temporary variable should be trimmed before determining if a particular binding is distinct.
+        /// </summary>
         public bool TrimTemporaryVariables { get; } = true;
 
         /// <summary>
@@ -94,11 +97,13 @@ namespace VDS.RDF.Query.Algebra
             return "Distinct(" + InnerAlgebra + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessDistinct(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitDistinct(this);

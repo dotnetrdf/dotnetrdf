@@ -35,16 +35,18 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <summary>
         /// Creates a new XPath Compare function.
         /// </summary>
-        /// <param name="a">First Comparand.</param>
-        /// <param name="b">Second Comparand.</param>
+        /// <param name="a">First comparand.</param>
+        /// <param name="b">Second comparand.</param>
         public CompareFunction(ISparqlExpression a, ISparqlExpression b)
             : base(a, b, false, XPathFunctionFactory.AcceptStringArguments) { }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessCompareFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitCompareFunction(this);
@@ -56,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare + ">(" + _expr + "," + _arg + ")";
         }
 
         /// <summary>

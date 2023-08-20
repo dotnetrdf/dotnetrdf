@@ -1746,7 +1746,7 @@ namespace VDS.RDF.Parsing.Tokens
                 }
                 else
                 {
-                    throw Error("Unexpected Token '" + temp.GetType().ToString() + "' was produced when a QName for a Data Type was expected!");
+                    throw Error("Unexpected Token '" + temp.GetType() + "' was produced when a QName for a Data Type was expected!");
                 }
             } 
             else

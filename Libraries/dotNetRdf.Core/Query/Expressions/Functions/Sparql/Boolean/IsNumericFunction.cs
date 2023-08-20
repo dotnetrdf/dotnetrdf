@@ -67,14 +67,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + InnerExpression.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + InnerExpression + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessIsNumericFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitIsNumericFunction(this);

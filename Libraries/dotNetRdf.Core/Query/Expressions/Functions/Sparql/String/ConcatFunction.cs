@@ -69,11 +69,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             }
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessConcatFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitConcatFunction(this);
@@ -103,7 +105,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             output.Append('(');
             for (var i = 0; i < _exprs.Count; i++)
             {
-                output.Append(_exprs[i].ToString());
+                output.Append(_exprs[i]);
                 if (i < _exprs.Count - 1) output.Append(", ");
             }
             output.Append(")");

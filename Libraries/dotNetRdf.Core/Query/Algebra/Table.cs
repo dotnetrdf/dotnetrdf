@@ -123,11 +123,13 @@ namespace VDS.RDF.Query.Algebra
             return "Table()";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessUnknownOperator(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitUnknownOperator(this);

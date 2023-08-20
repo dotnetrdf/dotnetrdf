@@ -46,14 +46,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max + ">(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max + ">(" + _leftExpr + ", " + _rightExpr + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessMaxFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitMaxFunction(this);

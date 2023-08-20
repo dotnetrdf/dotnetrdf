@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     public class ConcatFunction
         : ISparqlExpression
     {
-        private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
+        private readonly List<ISparqlExpression> _exprs = new();
 
         /// <summary>
         /// Creates a new XPath Concatenation function.
@@ -58,6 +58,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             _exprs.AddRange(expressions);
         }
 
+        /// <summary>
+        /// Get the expressions whose evaluated values are to be concatenated.
+        /// </summary>
         public IEnumerable<ISparqlExpression> Expressions { get => _exprs; }
 
         /// <summary>
@@ -82,11 +85,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             }
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessConcatFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitConcatFunction(this);
@@ -99,9 +104,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         {
             get
             {
-                return (from expr in _exprs
-                        from v in expr.Variables
-                        select v);
+                return from expr in _exprs
+                    from v in expr.Variables
+                    select v;
             }
         }
 
@@ -118,7 +123,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             output.Append(">(");
             for (var i = 0; i < _exprs.Count; i++)
             {
-                output.Append(_exprs[i].ToString());
+                output.Append(_exprs[i]);
                 if (i < _exprs.Count - 1) output.Append(", ");
             }
             output.Append(")");

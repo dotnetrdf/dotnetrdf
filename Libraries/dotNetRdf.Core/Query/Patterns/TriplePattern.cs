@@ -303,7 +303,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            return Subject.ToString() + " " + Predicate.ToString() + " " + Object.ToString();
+            return Subject + " " + Predicate + " " + Object;
         }
 
         /// <summary>

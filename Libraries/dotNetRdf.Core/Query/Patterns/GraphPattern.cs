@@ -756,7 +756,7 @@ namespace VDS.RDF.Query.Patterns
             // Unplaced Assignments
             foreach (IAssignmentPattern ap in _unplacedAssignments)
             {
-                output.Append(ap.ToString());
+                output.Append(ap);
                 if (linebreaks) output.AppendLine();
             }
             // Inline Data
@@ -805,13 +805,13 @@ namespace VDS.RDF.Query.Patterns
             if (_filter != null)
             {
                 output.Append(indent);
-                output.Append(_filter.ToString());
+                output.Append(_filter);
                 if (linebreaks) output.AppendLine();
             }
             foreach (ISparqlFilter filter in _unplacedFilters)
             {
                 output.Append(indent);
-                output.Append(filter.ToString());
+                output.Append(filter);
                 if (linebreaks) output.AppendLine();
             }
             output.Append("}");

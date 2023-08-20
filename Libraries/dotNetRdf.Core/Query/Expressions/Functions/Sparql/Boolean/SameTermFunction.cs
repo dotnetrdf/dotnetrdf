@@ -46,14 +46,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "SAMETERM(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+            return "SAMETERM(" + _leftExpr + "," + _rightExpr + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessSameTermFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitSameTermFunction(this);

@@ -57,14 +57,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordStrStarts + "(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordStrStarts + "(" + _leftExpr + ", " + _rightExpr + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessStrStartsFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitStrStartsFunction(this);

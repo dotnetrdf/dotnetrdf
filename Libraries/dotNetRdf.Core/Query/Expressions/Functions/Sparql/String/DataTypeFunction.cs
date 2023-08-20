@@ -45,14 +45,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "DATATYPE(" + InnerExpression.ToString() + ")";
+            return "DATATYPE(" + InnerExpression + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessDataTypeFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitDataTypeFunction(this);
@@ -107,11 +109,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public DataType11Function(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessDataType11Function(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitDataType11Function(this);

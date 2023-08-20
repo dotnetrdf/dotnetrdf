@@ -41,6 +41,11 @@ namespace VDS.RDF.Query.Describe
         : ISparqlDescribe
     {
         private readonly IDescribeAlgorithm _describeAlgorithm;
+
+        /// <summary>
+        /// Create a new describer instance that uses the specified algorithm.
+        /// </summary>
+        /// <param name="describeAlgorithm">Describe algorithm.</param>
         public SparqlDescriber(IDescribeAlgorithm describeAlgorithm)
         {
             _describeAlgorithm = describeAlgorithm;

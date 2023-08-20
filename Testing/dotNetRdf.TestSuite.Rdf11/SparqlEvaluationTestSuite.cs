@@ -32,7 +32,7 @@ namespace VDS.RDF.TestSuite.Rdf11
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#QueryEvaluationTest")]
-        public void QueryEvaluationTest(ManifestTestData t)
+        internal void QueryEvaluationTest(ManifestTestData t)
         {
             var queryInputPath = t.Manifest.ResolveResourcePath(t.Query);
             var dataInputPath = t.Manifest.ResolveResourcePath(t.Data);
@@ -87,7 +87,7 @@ namespace VDS.RDF.TestSuite.Rdf11
         //}
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveSyntaxTest11")]
-        public void PositiveSyntaxTest(ManifestTestData t)
+        internal void PositiveSyntaxTest(ManifestTestData t)
         {
             var queryInputPath = t.Manifest.ResolveResourcePath(t.Action);
             var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1) { DefaultBaseUri = t.Action };
@@ -95,7 +95,7 @@ namespace VDS.RDF.TestSuite.Rdf11
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeSyntaxTest11")]
-        public void NegativeSyntaxTest(ManifestTestData t)
+        internal void NegativeSyntaxTest(ManifestTestData t)
         {
             var queryInputPath = t.Manifest.ResolveResourcePath(t.Action);
             var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1) { DefaultBaseUri = t.Action };

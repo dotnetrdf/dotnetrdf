@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Paths
 
             for (var i = 0; i < _properties.Count; i++)
             {
-                output.Append(_properties[i].ToString());
+                output.Append(_properties[i]);
                 if (i < _properties.Count - 1 || _inverseProperties.Count > 0)
                 {
                     output.Append(" | ");
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Paths
             }
             for (var i = 0; i < _inverseProperties.Count; i++)
             {
-                output.Append(_inverseProperties[i].ToString());
+                output.Append(_inverseProperties[i]);
                 if (i < _inverseProperties.Count - 1)
                 {
                     output.Append(" | ");

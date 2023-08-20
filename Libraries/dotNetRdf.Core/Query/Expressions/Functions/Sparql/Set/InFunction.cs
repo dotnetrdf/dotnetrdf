@@ -44,11 +44,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public InFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
             : base(expr, set) { }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessInFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitInFunction(this);
@@ -73,12 +75,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         {
             var output = new StringBuilder();
             if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append('(');
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             if (_expr.Type == SparqlExpressionType.BinaryOperator || _expr.Type == SparqlExpressionType.GraphOperator || _expr.Type == SparqlExpressionType.SetOperator) output.Append(')');
             output.Append(" IN (");
             for (var i = 0; i < _expressions.Count; i++)
             {
-                output.Append(_expressions[i].ToString());
+                output.Append(_expressions[i]);
                 if (i < _expressions.Count - 1)
                 {
                     output.Append(" , ");

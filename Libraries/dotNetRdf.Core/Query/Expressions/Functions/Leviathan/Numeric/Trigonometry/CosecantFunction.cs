@@ -34,8 +34,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
     public class CosecantFunction
         : BaseTrigonometricFunction
     {
-        private static Func<double, double> _cosecant = (d => (1 / Math.Sin(d)));
-        private static Func<double, double> _arccosecant = (d => Math.Asin(1 / d));
+        private static readonly Func<double, double> _cosecant = (d => (1 / Math.Sin(d)));
+        private static readonly Func<double, double> _arccosecant = (d => Math.Asin(1 / d));
 
         /// <summary>
         /// Creates a new Leviathan Cosecant Function.
@@ -53,16 +53,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             : base(expr)
         {
             Inverse = inverse;
-            if (Inverse)
-            {
-                _func = _arccosecant;
-            }
-            else
-            {
-                _func = _cosecant;
-            }
+            _func = Inverse ? _arccosecant : _cosecant;
         }
 
+        /// <summary>
+        /// Get whether this is the inverse function.
+        /// </summary>
         public bool Inverse { get; }
 
         /// <summary>
@@ -73,19 +69,21 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             if (Inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv + ">(" + InnerExpression.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv + ">(" + InnerExpression + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec + ">(" + InnerExpression.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec + ">(" + InnerExpression + ")";
             }
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessCosecantFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitCosecantFunction(this);

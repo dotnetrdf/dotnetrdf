@@ -37,7 +37,7 @@ namespace VDS.RDF.Query.Algebra
     public sealed class Set 
         : BaseSet, IEquatable<Set>
     {
-        private Dictionary<string, INode> _values;
+        private readonly Dictionary<string, INode> _values;
 
         /// <summary>
         /// Creates a new Set.
@@ -242,9 +242,14 @@ namespace VDS.RDF.Query.Algebra
         public bool Equals(Set other)
         {
             if (other == null) return false;
-            return _values.All(pair => other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || pair.Value.Equals(other[pair.Key])));
+            return _values.All(pair => other.ContainsVariable(pair.Key) && 
+                                       ((pair.Value == null && other[pair.Key] == null) || (pair.Value != null && pair.Value.Equals(other[pair.Key]))));
         }
 
+        /// <summary>
+        /// Create a new <see cref="ISparqlResult"/> instance that contains the values in this set.
+        /// </summary>
+        /// <returns></returns>
         public ISparqlResult ToSparqlResult()
         {
             return new SparqlResult(_values);

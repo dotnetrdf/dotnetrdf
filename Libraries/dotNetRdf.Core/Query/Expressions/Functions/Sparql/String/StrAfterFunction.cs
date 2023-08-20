@@ -46,15 +46,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             StartsExpression = startsExpr;
         }
 
+        /// <summary>
+        /// Get the expression that evaluates to the string to be processed.
+        /// </summary>
         public ISparqlExpression StringExpression { get; }
+
+        /// <summary>
+        /// Get the expression that evaluates to the starting substring to locate.
+        /// </summary>
         public ISparqlExpression StartsExpression { get; }
 
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessStrAfterFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitStrAfterFunction(this);
@@ -100,7 +109,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return new ISparqlExpression[] { StringExpression, StartsExpression };
+                return new[] { StringExpression, StartsExpression };
             }
         }
 
@@ -111,7 +120,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return StringExpression.CanParallelise && StringExpression.CanParallelise;
+                return StringExpression.CanParallelise && StartsExpression.CanParallelise;
             }
         }
 
@@ -131,7 +140,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordStrAfter + "(" + StringExpression.ToString() + ", " + StartsExpression.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordStrAfter + "(" + StringExpression + ", " + StartsExpression + ")";
         }
     }
 }

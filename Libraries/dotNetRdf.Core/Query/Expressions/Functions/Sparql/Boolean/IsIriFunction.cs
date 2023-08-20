@@ -46,14 +46,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "ISIRI(" + InnerExpression.ToString() + ")";
+            return "ISIRI(" + InnerExpression + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessIsIriFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitIsIriFunction(this);
@@ -111,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public override string ToString()
         {
-            return "ISURI(" + InnerExpression.ToString() + ")";
+            return "ISURI(" + InnerExpression + ")";
         }
 
         /// <summary>

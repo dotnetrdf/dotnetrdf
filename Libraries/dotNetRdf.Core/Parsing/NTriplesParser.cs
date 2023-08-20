@@ -303,7 +303,7 @@ namespace VDS.RDF.Parsing
                 IToken start = context.Tokens.Dequeue();
                 if (start.TokenType != Token.BOF)
                 {
-                    throw Error("Unexpected Token '" + start.GetType().ToString() + "' encountered, expected a Beginning of File Token", start);
+                    throw Error("Unexpected Token '" + start.GetType() + "' encountered, expected a Beginning of File Token", start);
                 }
 
                 // Expect Triples
@@ -380,7 +380,7 @@ namespace VDS.RDF.Parsing
                 case Token.STARTQUOTE:
                     return TryParseQuotedTriple(context);
                 default:
-                    throw Error("Unexpected Token '" + subjToken.GetType().ToString() + "' encountered, expected a Blank Node or URI for the Subject of a Triple", subjToken);
+                    throw Error("Unexpected Token '" + subjToken.GetType() + "' encountered, expected a Blank Node or URI for the Subject of a Triple", subjToken);
             }
         }
 
@@ -406,7 +406,7 @@ namespace VDS.RDF.Parsing
                 case Token.LITERALWITHLANG:
                     throw Error("Predicate cannot be a Literal in NTriples", predToken);
                 default:
-                    throw Error("Unexpected Token '" + predToken.GetType().ToString() + "' encountered, expected a URI for the Predicate of a Triple", predToken);
+                    throw Error("Unexpected Token '" + predToken.GetType() + "' encountered, expected a URI for the Predicate of a Triple", predToken);
             }
         }
 
@@ -455,7 +455,7 @@ namespace VDS.RDF.Parsing
                 case Token.STARTQUOTE:
                     return TryParseQuotedTriple(context);
                 default:
-                    throw Error("Unexpected Token '" + objToken.GetType().ToString() + "' encountered, expected a Blank Node, Literal or URI for the Object of a Triple", objToken);
+                    throw Error("Unexpected Token '" + objToken.GetType() + "' encountered, expected a Blank Node, Literal or URI for the Object of a Triple", objToken);
             }
         }
 
@@ -472,7 +472,7 @@ namespace VDS.RDF.Parsing
             // Ensure we finish with a Dot terminator
             if (next.TokenType != Token.DOT)
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Dot Line Terminator to terminate a Triple", next);
+                throw Error("Unexpected Token '" + next.GetType() + "' encountered, expected a Dot Line Terminator to terminate a Triple", next);
             }
         }
 
@@ -522,7 +522,7 @@ namespace VDS.RDF.Parsing
             // Ensure we finish with an end quote
             if (next.TokenType != Token.ENDQUOTE)
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a '>>' to terminate a quoted triple.", next);
+                throw Error("Unexpected Token '" + next.GetType() + "' encountered, expected a '>>' to terminate a quoted triple.", next);
             }
         }
 

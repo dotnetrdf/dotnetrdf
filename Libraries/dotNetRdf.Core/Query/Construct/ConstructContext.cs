@@ -43,14 +43,8 @@ namespace VDS.RDF.Query.Construct
         /// <summary>
         /// Creates a new Construct Context.
         /// </summary>
-        /// <param name="g">Graph to construct Triples in.</param>
-        /// <param name="s">Set to construct from.</param>
+        /// <param name="g">Graph to construct Triples in. May be null.</param>
         /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is.</param>
-        /// <remarks>
-        /// <para>
-        /// Either the <paramref name="s">Set</paramref>  or <paramref name="g">Graph</paramref> parameters may be null if required.
-        /// </para>
-        /// </remarks>
         public ConstructContext(IGraph g, bool preserveBNodes)
         {
             Graph = g;
@@ -61,14 +55,8 @@ namespace VDS.RDF.Query.Construct
         /// <summary>
         /// Creates a new Construct Context.
         /// </summary>
-        /// <param name="factory">Factory to create nodes with.</param>
-        /// <param name="s">Set to construct from.</param>
+        /// <param name="factory">Factory to create nodes with. May be null.</param>
         /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is.</param>
-        /// <remarks>
-        /// <para>
-        /// Either the <paramref name="s">Set</paramref>  or <paramref name="factory">Factory</paramref> parameters may be null if required.
-        /// </para>
-        /// </remarks>
         public ConstructContext(INodeFactory factory, bool preserveBNodes)
         {
             NodeFactory = factory ?? GlobalFactory.Value;
@@ -117,9 +105,9 @@ namespace VDS.RDF.Query.Construct
         /// </remarks>
         public INode GetBlankNode(string id)
         {
-            if (_bnodeMap == null) _bnodeMap = new Dictionary<string, INode>();
+            _bnodeMap ??= new Dictionary<string, INode>();
 
-            if (_bnodeMap.ContainsKey(id)) return _bnodeMap[id];
+            if (_bnodeMap.TryGetValue(id, out INode node)) return node;
 
             INode temp;
             if (Graph != null)
@@ -149,14 +137,14 @@ namespace VDS.RDF.Query.Construct
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// In effect all this does is ensure that all Nodes end up in the same Graph which may occassionally not happen otherwise when Graph wrappers are involved.
+        /// In effect all this does is ensure that all Nodes end up in the same Graph which may occasionally not happen otherwise when Graph wrappers are involved.
         /// </para>
         /// </remarks>
         public INode GetNode(INode n)
         {
-            if (_nodeMap == null) _nodeMap = new MultiDictionary<INode,INode>(new FastVirtualNodeComparer());
+            _nodeMap ??= new MultiDictionary<INode, INode>(new FastVirtualNodeComparer());
 
-            if (_nodeMap.ContainsKey(n)) return _nodeMap[n];
+            if (_nodeMap.TryGetValue(n, out INode node)) return node;
 
             INode temp;
             switch (n.NodeType)
@@ -198,13 +186,11 @@ namespace VDS.RDF.Query.Construct
 
                 case NodeType.Triple:
                     var t = (ITripleNode)n;
-                    var _s = GetNode(t.Triple.Subject);
-                    var _p = GetNode(t.Triple.Predicate);
-                    var _o = GetNode(t.Triple.Object);
-                    var _t = new Triple(_s, _p, _o);
-                    temp = NodeFactory.CreateTripleNode(_t);
-                    //temp = _factory.CreateTripleNode(new Triple(GetNode(t.Triple.Subject), GetNode(t.Triple.Predicate),
-                    //    GetNode(t.Triple.Object)));
+                    INode s = GetNode(t.Triple.Subject);
+                    INode p = GetNode(t.Triple.Predicate);
+                    INode o = GetNode(t.Triple.Object);
+                    var triple = new Triple(s, p, o);
+                    temp = NodeFactory.CreateTripleNode(triple);
                     break;
 
                 default:

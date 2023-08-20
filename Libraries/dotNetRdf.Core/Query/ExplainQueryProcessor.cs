@@ -232,7 +232,7 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    PrintExplanations("Minus on " + vars.ToString());
+                    PrintExplanations("Minus on " + vars);
                 }
             }
             else
@@ -243,7 +243,7 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    PrintExplanations("Join on " + vars.ToString());
+                    PrintExplanations("Join on " + vars);
                 }
             }
         }
@@ -464,7 +464,7 @@ namespace VDS.RDF.Query
                 DateTime start = _startTimes.Value.Pop();
                 TimeSpan elapsed = DateTime.Now - start;
                 // this.PrintExplanations("Took " + elapsed.ToString());
-                ExplainEvaluationAction(algebra, context, "Took " + elapsed.ToString());
+                ExplainEvaluationAction(algebra, context, "Took " + elapsed);
             }
             // Show Intermediate Result Count (if enabled)
             if (HasFlag(ExplanationLevel.ShowIntermediateResultCount))

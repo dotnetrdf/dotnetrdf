@@ -122,6 +122,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="results">Result Set to parse into.</param>
         /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs while tokenising.</param>
         public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, IUriFactory uriFactory = null)
             : base(results, uriFactory)
         {
@@ -134,6 +135,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="results">Result Set to parse into.</param>
         /// <param name="tokeniser">Tokeniser to use.</param>
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs while tokenising.</param>
         public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, TokenQueueMode queueMode, IUriFactory uriFactory = null)
             : base(results, uriFactory)
         {
@@ -159,6 +161,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs while tokenising.</param>
         public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
             : this(results, tokeniser, uriFactory)
         {
@@ -175,6 +178,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs while tokenising.</param>
         public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
             : base(results, traceParsing, uriFactory)
         {
@@ -200,6 +204,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">Results Handler.</param>
         /// <param name="tokeniser">Tokeniser to use.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs while tokenising.</param>
         public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, IUriFactory uriFactory = null)
             : base(handler, uriFactory)
         {
@@ -212,6 +217,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="handler">Results Handler.</param>
         /// <param name="tokeniser">Tokeniser to use.</param>
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs while tokenising.</param>
         public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, IUriFactory uriFactory = null)
             : base(handler, uriFactory)
         {
@@ -237,6 +243,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs while tokenising.</param>
         public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
             : this(handler, tokeniser, uriFactory)
         {
@@ -253,6 +260,8 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="queueMode">Tokeniser Queue Mode.</param>
         /// <param name="traceParsing">Whether to trace parsing.</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation.</param>
+        /// <param name="uriFactory">The factory to use when creating URIs while tokenising.</param>
+
         public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser, IUriFactory uriFactory = null)
             : base(handler, traceParsing, uriFactory)
         {

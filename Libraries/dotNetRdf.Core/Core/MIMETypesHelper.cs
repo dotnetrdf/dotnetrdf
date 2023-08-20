@@ -1956,7 +1956,7 @@ namespace VDS.RDF
                 }
             }
 
-            throw new RdfException("Unable to determine the appropriate File Extension for the RDF Writer '" + writer.GetType().ToString() + "'");
+            throw new RdfException("Unable to determine the appropriate File Extension for the RDF Writer '" + writer.GetType() + "'");
         }
 
         /// <summary>
@@ -1976,7 +1976,7 @@ namespace VDS.RDF
                 }
             }
                 
-            throw new RdfException("Unable to determine the appropriate File Extension for the Store Writer '" + writer.GetType().ToString() + "'");
+            throw new RdfException("Unable to determine the appropriate File Extension for the Store Writer '" + writer.GetType() + "'");
         }
    }
 }

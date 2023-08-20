@@ -235,13 +235,7 @@ namespace VDS.RDF.Query.Datasets
         [Obsolete("Replaced by AddQuad(IRefNode, Triple)")]
         public override bool AddQuad(Uri graphUri, Triple t)
         {
-            if (!_store.HasGraph(graphUri))
-            {
-                var g = new Graph();
-                g.BaseUri = graphUri;
-                _store.Add(g);
-            }
-            return _store[graphUri].Assert(t);
+            return AddQuad(new UriNode(graphUri), t);
         }
 
         /// <summary>
@@ -273,7 +267,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Gets all quads for a given graph.
+        /// Gets all asserted triples for a given graph.
         /// </summary>
         /// <param name="graphName">Graph name.</param>
         /// <returns></returns>
@@ -282,6 +276,11 @@ namespace VDS.RDF.Query.Datasets
             return _store.HasGraph(graphName) ? _store[graphName].Triples : Enumerable.Empty<Triple>();
         }
 
+        /// <summary>
+        /// Gets all quoted triples for a given graph.
+        /// </summary>
+        /// <param name="graphName"></param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetQuoted(IRefNode graphName)
         {
             return _store.HasGraph(graphName) ? _store[graphName].Triples.Quoted : Enumerable.Empty<Triple>();
@@ -305,6 +304,12 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Get the quoted triples with a given object in the specified graph.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetQuotedWithObject(IRefNode graphName, INode obj)
         {
             return _store.HasGraph(graphName)
@@ -330,6 +335,12 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets all the quoted triples in the specified graph that have the specified predicate.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetQuotedWithPredicate(IRefNode graphName, INode pred)
         {
             return _store.HasGraph(graphName)
@@ -356,6 +367,13 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Get all the quoted triples in the specified graph that have the specified predicate and object.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetQuotedWithPredicateObject(IRefNode graphName, INode pred, INode obj)
         {
             return _store.HasGraph(graphName)
@@ -381,6 +399,12 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Get all the quoted triples in the specified graph that have the specified subject.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="subj">Subject.</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetQuotedWithSubject(IRefNode graphName, INode subj)
         {
             return _store.HasGraph(graphName)
@@ -407,6 +431,13 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Get all the quoted triples in the specified graph that have the specified subject and object.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetQuotedWithSubjectObject(IRefNode graphName, INode subj, INode obj)
         {
             return _store.HasGraph(graphName)
@@ -423,16 +454,16 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IEnumerable<Triple> GetQuadsWithSubjectPredicate(IRefNode graphName, INode subj, INode pred)
         {
-            if (_store.HasGraph(graphName))
-            {
-                return _store[graphName].GetTriplesWithSubjectPredicate(subj, pred);
-            }
-            else
-            {
-                return Enumerable.Empty<Triple>();
-            }
+            return _store.HasGraph(graphName) ? _store[graphName].GetTriplesWithSubjectPredicate(subj, pred) : Enumerable.Empty<Triple>();
         }
 
+        /// <summary>
+        /// Get all the quoted triples in the specified graph that have the specified subject and predicate.
+        /// </summary>
+        /// <param name="graphName">Graph name.</param>
+        /// <param name="subj">Subject.</param>
+        /// <param name="pred">Predicate.</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(IRefNode graphName, INode subj, INode pred)
         {
             return _store.HasGraph(graphName)

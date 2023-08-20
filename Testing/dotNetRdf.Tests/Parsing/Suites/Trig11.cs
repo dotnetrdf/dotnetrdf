@@ -33,7 +33,7 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigPositiveSyntax")]
-        public void PositiveSyntaxTest(ManifestTestData t)
+        internal void PositiveSyntaxTest(ManifestTestData t)
         {
             if (t.Id == "http://www.w3.org/2013/TriGTests/#trig-syntax-minimal-whitespace-01")
             {
@@ -47,7 +47,7 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigNegativeSyntax")]
-        public void NegativeSyntaxTest(ManifestTestData t)
+        internal void NegativeSyntaxTest(ManifestTestData t)
         {
             if (t.Id == "http://www.w3.org/2013/TriGTests/#trig-graph-bad-02")
             {
@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigEval")]
-        public void EvaluationTest(ManifestTestData t)
+        internal void EvaluationTest(ManifestTestData t)
         {
             var trigParser = new TriGParser(TriGSyntax.Rdf11Star);
             var actual = new TripleStore();
@@ -77,9 +77,8 @@ namespace VDS.RDF.Parsing.Suites
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigNegativeEval")]
-        public void NegativeEvaluationTest(ManifestTestData t)
+        internal void NegativeEvaluationTest(ManifestTestData t)
         {
-            //throw new SkipException("TriG Evaluation Tests not yet implemented");
             var trigParser = new TriGParser(TriGSyntax.Rdf11Star) { ValidateIris = true };
             var actual = new TripleStore();
             using var reader = new StreamReader(t.Manifest.ResolveResourcePath(t.Action));

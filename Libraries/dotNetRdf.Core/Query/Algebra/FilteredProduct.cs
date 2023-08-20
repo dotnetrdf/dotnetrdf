@@ -61,6 +61,9 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         public ISparqlAlgebra Rhs { get; }
 
+        /// <summary>
+        /// Get the filter expression to apply.
+        /// </summary>
         public ISparqlExpression FilterExpression { get; }
 
         /// <summary>
@@ -158,19 +161,21 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the string represenation of the algebra.
+        /// Gets the string representation of the algebra.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "FilteredProduct(" + Lhs.ToString() + ", " + Rhs.ToString() + ", " + FilterExpression.ToString() + ")";
+            return "FilteredProduct(" + Lhs + ", " + Rhs + ", " + FilterExpression + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessUnknownOperator(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitUnknownOperator(this);

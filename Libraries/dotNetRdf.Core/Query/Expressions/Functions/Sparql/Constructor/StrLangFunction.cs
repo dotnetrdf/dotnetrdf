@@ -46,14 +46,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         /// <returns></returns>
         public override string ToString()
         {
-            return "STRLANG(" + _leftExpr.ToString() + ", " + _rightExpr.ToString() + ")";
+            return "STRLANG(" + _leftExpr + ", " + _rightExpr + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessStrLangFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitStrLangFunction(this);

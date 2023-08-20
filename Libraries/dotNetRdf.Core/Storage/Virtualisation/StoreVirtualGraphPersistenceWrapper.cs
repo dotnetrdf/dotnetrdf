@@ -133,7 +133,7 @@ namespace VDS.RDF.Storage.Virtualisation
             {
                 return t;
             }
-            return new Triple(s, p, o, _g);
+            return new Triple(s, p, o);
         }
 
         /// <summary>

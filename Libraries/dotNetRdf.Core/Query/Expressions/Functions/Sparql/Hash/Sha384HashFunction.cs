@@ -58,11 +58,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
             return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + InnerExpression + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessSha384HashFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitSha384HashFunction(this);

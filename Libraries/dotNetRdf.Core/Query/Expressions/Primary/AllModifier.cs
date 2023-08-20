@@ -35,11 +35,13 @@ namespace VDS.RDF.Query.Expressions.Primary
     public class AllModifier 
         : ISparqlExpression
     {
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessAllModifier(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitAllModifier(this);

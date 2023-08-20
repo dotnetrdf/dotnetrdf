@@ -35,19 +35,22 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public class SubQuery : ITerminalOperator
     {
+        /// <summary>
+        /// Get the sub-query.
+        /// </summary>
         public SparqlQuery Query { get; }
 
         /// <summary>
-        /// Creates a new subquery operator.
+        /// Creates a new sub-query operator.
         /// </summary>
-        /// <param name="q">Subquery.</param>
+        /// <param name="q">Sub-query.</param>
         public SubQuery(SparqlQuery q)
         {
             Query = q;
         }
 
         /// <summary>
-        /// Gets the variables used in the subquery which are projected out of it.
+        /// Gets the variables used in the sub-query which are projected out of it.
         /// </summary>
         public IEnumerable<string> Variables
         {
@@ -73,13 +76,12 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            var q = new SparqlQuery();
-            q.RootGraphPattern = ToGraphPattern();
+            var q = new SparqlQuery { RootGraphPattern = ToGraphPattern() };
             return q;
         }
 
         /// <summary>
-        /// Converts the algebra back into a Subquery.
+        /// Converts the algebra back into a sub-query.
         /// </summary>
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
@@ -98,11 +100,13 @@ namespace VDS.RDF.Query.Algebra
             return "Subquery()";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessSubQuery(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitSubQuery(this);

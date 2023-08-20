@@ -143,6 +143,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="input">Input Stream.</param>
         /// <param name="handler">Results Handler.</param>
+        /// <param name="uriFactory">Factory to use when creating new URIs.</param>
         private void Parse(TextReader input, ISparqlResultsHandler handler, IUriFactory uriFactory)
         {
             ParseResultSetObject(new SparqlJsonParserContext(new CommentIgnoringJsonTextReader(input), handler, uriFactory));
@@ -366,7 +367,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' with value '" + context.Input.Value + "' encountered, expected the Start of an Array giving the list of Variables for the 'vars' property of the Header Object of the JSON Result Set");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' with value '" + context.Input.Value + "' encountered, expected the Start of an Array giving the list of Variables for the 'vars' property of the Header Object of the JSON Result Set");
                 }
             }
             else
@@ -599,9 +600,6 @@ namespace VDS.RDF.Parsing
         /// <param name="headSeen"></param>
         private void ParseBoundVariable(SparqlJsonParserContext context, string var, ISparqlResult r, bool headSeen)
         {
-            string nodeType, nodeLang, nodeDatatype;
-            var nodeValue = nodeType = nodeLang = nodeDatatype = null;
-
             // Can we read the start of an Object
             if (context.Input.Read())
             {

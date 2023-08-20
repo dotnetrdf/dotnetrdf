@@ -64,11 +64,13 @@ namespace VDS.RDF.Query.Algebra
             return "PropertyPath()";
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitPropertyPath(this);
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessPropertyPath(this, context);

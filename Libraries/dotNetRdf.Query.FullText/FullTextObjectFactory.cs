@@ -352,6 +352,7 @@ namespace VDS.RDF.Configuration
         {
             switch (ver)
             {
+#pragma warning disable CS0618
                 case 3000:
                     return LuceneVersion.LUCENE_30;
                 case 3100:
@@ -382,6 +383,7 @@ namespace VDS.RDF.Configuration
                     return LuceneVersion.LUCENE_46;
                 case 4700:
                     return LuceneVersion.LUCENE_47;
+#pragma warning restore CS0618
                 case 4800:
                     return LuceneVersion.LUCENE_48;
                 default:

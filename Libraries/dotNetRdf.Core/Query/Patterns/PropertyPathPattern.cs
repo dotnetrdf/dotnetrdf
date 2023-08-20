@@ -90,11 +90,13 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         public override IEnumerable<string> FloatingVariables { get; } = Enumerable.Empty<string>();
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessPropertyPathPattern(this, context);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitPropertyPathPattern(this);
@@ -137,11 +139,11 @@ namespace VDS.RDF.Query.Patterns
         public override string ToString()
         {
             var output = new StringBuilder();
-            output.Append(Subject.ToString());
+            output.Append(Subject);
             output.Append(' ');
             output.Append(Path.ToString());
             output.Append(' ');
-            output.Append(Object.ToString());
+            output.Append(Object);
             return output.ToString();
         }
     }

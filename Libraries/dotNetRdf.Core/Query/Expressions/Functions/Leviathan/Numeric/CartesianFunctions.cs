@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="x1">Expression for X Coordinate of 1st point.</param>
         /// <param name="y1">Expression for Y Coordinate of 1st point.</param>
-        /// <param name="z1">Expression for Z Coordiante of 1st point.</param>
+        /// <param name="z1">Expression for Z Coordinate of 1st point.</param>
         /// <param name="x2">Expression for X Coordinate of 2nd point.</param>
         /// <param name="y2">Expression for Y Coordinate of 2nd point.</param>
         /// <param name="z2">Expression for Z Coordinate of 2nd point.</param>
@@ -71,20 +71,42 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             Is3D = true;
         }
 
+        /// <summary>
+        /// Return true if the function has three dimensions, false if it has two.
+        /// </summary>
         public bool Is3D { get; }
+        /// <summary>
+        /// The x-coordinate of the first point.
+        /// </summary>
         public ISparqlExpression X1 { get; }
+        /// <summary>
+        /// The x-coordinate of the second point.
+        /// </summary>
         public ISparqlExpression X2 { get; }
+        /// <summary>
+        /// The y-coordinate of the first point.
+        /// </summary>
         public ISparqlExpression Y1 { get; }
+        /// <summary>
+        /// The y-coordinate of the second point.
+        /// </summary>
         public ISparqlExpression Y2 { get; }
+        /// <summary>
+        /// The z-coordinate of the first point. Null if the function is a 2D function.
+        /// </summary>
         public ISparqlExpression Z1 { get; }
+        /// <summary>
+        /// The z-coordinate of the second point. Null if the function is a 2D function.
+        /// </summary>
         public ISparqlExpression Z2 { get; }
 
-
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessCartesianFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitCartesianFunction(this);
@@ -97,14 +119,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             get
             {
-                if (Is3D)
-                {
-                    return X1.Variables.Concat(Y1.Variables).Concat(Z1.Variables).Concat(X2.Variables).Concat(Y2.Variables).Concat(Z2.Variables);
-                }
-                else
-                {
-                    return X1.Variables.Concat(Y1.Variables).Concat(X2.Variables).Concat(Y2.Variables);
-                }
+                return Is3D 
+                    ? X1.Variables.Concat(Y1.Variables).Concat(Z1.Variables).Concat(X2.Variables).Concat(Y2.Variables).Concat(Z2.Variables) 
+                    : X1.Variables.Concat(Y1.Variables).Concat(X2.Variables).Concat(Y2.Variables);
             }
         }
 
@@ -116,22 +133,22 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             var output = new StringBuilder();
             output.Append("<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cartesian + ">(");
-            output.Append(X1.ToString());
+            output.Append(X1);
             output.Append(',');
-            output.Append(Y1.ToString());
+            output.Append(Y1);
             output.Append(',');
             if (Is3D)
             {
-                output.Append(Z1.ToString());
+                output.Append(Z1);
                 output.Append(',');
             }
-            output.Append(X2.ToString());
+            output.Append(X2);
             output.Append(',');
-            output.Append(Y2.ToString());
+            output.Append(Y2);
             if (Is3D)
             {
                 output.Append(',');
-                output.Append(Z2.ToString());
+                output.Append(Z2);
             }
             output.Append(')');
             return output.ToString();
@@ -164,16 +181,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
-            get 
+            get
             {
-                if (Is3D)
-                {
-                    return new ISparqlExpression[] { X1, Y1, Z1, X2, Y2, Z2 };
-                }
-                else
-                {
-                    return new ISparqlExpression[] { X1, Y1, X2, Y2 };
-                }
+                return Is3D 
+                    ? new[] { X1, Y1, Z1, X2, Y2, Z2 } 
+                    : new[] { X1, Y1, X2, Y2 };
             }
         }
 
@@ -202,14 +214,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (Is3D)
-            {
-                return new CartesianFunction(transformer.Transform(X1), transformer.Transform(Y1), transformer.Transform(Z1), transformer.Transform(X2), transformer.Transform(Y2), transformer.Transform(Z2));
-            }
-            else
-            {
-                return new CartesianFunction(transformer.Transform(X1), transformer.Transform(Y1), transformer.Transform(X2), transformer.Transform(Y2));
-            }
+            return Is3D 
+                ? new CartesianFunction(
+                    transformer.Transform(X1), transformer.Transform(Y1), transformer.Transform(Z1),
+                    transformer.Transform(X2), transformer.Transform(Y2), transformer.Transform(Z2)) 
+                : new CartesianFunction(
+                    transformer.Transform(X1), transformer.Transform(Y1),
+                    transformer.Transform(X2), transformer.Transform(Y2));
         }
     }
 }

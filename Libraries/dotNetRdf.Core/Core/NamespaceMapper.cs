@@ -487,8 +487,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">The Uri to attempt to reduce.</param>
         /// <param name="qname">The value to output the QName to if possible.</param>
+        /// <param name="validationFunction">OPTIONAL: a function which when applied to a candidate QName string returns true if the string is acceptable, and false otherwise.</param>
         /// <returns></returns>
-        /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter qname will contain the reduction, otherwise it will be the empty string.</remarks>
+        /// <remarks>This function will return a Boolean indicated whether it succeeded in reducing the Uri to a QName.  If it did then the out parameter <paramref name="qname"/> will contain the reduction, otherwise it will be the empty string.</remarks>
         public override bool ReduceToQName(string uri, out string qname, Func<string, bool> validationFunction = null)
         {
             // See if we've cached this mapping
@@ -532,25 +533,25 @@ namespace VDS.RDF
         /// A Function which attempts to reduce a Uri to a QName and issues a Temporary Namespace if required.
         /// </summary>
         /// <param name="uri">The Uri to attempt to reduce.</param>
-        /// <param name="qname">The value to output the QName to if possible.</param>
+        /// <param name="qName">The value to output the QName to if possible.</param>
         /// <param name="tempNamespace">The Temporary Namespace issued (if any).</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This function will always returns a possible QName for the URI if the format of the URI permits it.  It doesn't guarentee that the QName will be valid for the syntax it is being written to - it is up to implementers of writers to validate the QNames returned.
+        /// This function will always returns a possible QName for the URI if the format of the URI permits it.  It doesn't guarantee that the QName will be valid for the syntax it is being written to - it is up to implementers of writers to validate the QNames returned.
         /// </para>
         /// <para>
         /// Where necessary a Temporary Namespace will be issued and the <paramref name="tempNamespace">tempNamespace</paramref> parameter will be set to the prefix of the new temporary namespace.
         /// </para>
         /// </remarks>
-        public bool ReduceToQName(string uri, out string qname, out string tempNamespace)
+        public bool ReduceToQName(string uri, out string qName, out string tempNamespace)
         {
             tempNamespace = string.Empty;
 
             // See if we've cached this mapping
             if (Mapping.TryGetValue(uri, out QNameMapping mapping))
             {
-                qname = mapping.QName;
+                qName = mapping.QName;
                 return true;
             }
             mapping = new QNameMapping(uri);
@@ -564,15 +565,15 @@ namespace VDS.RDF
                 if (uri.StartsWith(baseUri))
                 {
                     // Remove the Base Uri from the front of the Uri
-                    qname = uri.Substring(baseUri.Length);
+                    qName = uri.Substring(baseUri.Length);
                     // Add the Prefix back onto the front plus the colon to give a QName
                     if (_prefixes.ContainsKey(u.GetEnhancedHashCode()))
                     {
-                        qname = _prefixes[u.GetEnhancedHashCode()][0] + ":" + qname;
-                        if (qname.Equals(":")) continue;
-                        if (qname.Contains("/") || qname.Contains("#")) continue;
+                        qName = _prefixes[u.GetEnhancedHashCode()][0] + ":" + qName;
+                        if (qName.Equals(":")) continue;
+                        if (qName.Contains("/") || qName.Contains("#")) continue;
                         // Cache the Mapping
-                        mapping.QName = qname;
+                        mapping.QName = qName;
                         AddToCache(uri, mapping);
                         return true;
                     }
@@ -594,7 +595,7 @@ namespace VDS.RDF
             else
             {
                 // Failed to find a Reduction and unable to issue a Temporary Namespace
-                qname = string.Empty;
+                qName = string.Empty;
                 return false;
             }
 
@@ -604,7 +605,7 @@ namespace VDS.RDF
             // Cache mapping and return
             mapping.QName = nsPrefix + ":" + uri.Replace(nsUri, string.Empty);
             AddToCache(uri, mapping);
-            qname = mapping.QName;
+            qName = mapping.QName;
             tempNamespace = nsPrefix;
             return true;
         }

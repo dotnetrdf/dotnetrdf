@@ -205,7 +205,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             var output = new StringBuilder();
             output.Append("REGEX(");
-            output.Append(TextExpression.ToString());
+            output.Append(TextExpression);
             output.Append(",");
             if (FixedPattern)
             {
@@ -215,22 +215,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
             else
             {
-                output.Append(PatternExpression.ToString());
+                output.Append(PatternExpression);
             }
             if (OptionsExpression != null)
             {
-                output.Append("," + OptionsExpression.ToString());
+                output.Append("," + OptionsExpression);
             }
             output.Append(")");
 
             return output.ToString();
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessRegexFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitRegexFunction(this);

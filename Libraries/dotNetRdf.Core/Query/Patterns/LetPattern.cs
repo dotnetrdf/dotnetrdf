@@ -62,11 +62,13 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessLetPattern(this, context);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitLetPattern(this);
@@ -142,7 +144,7 @@ namespace VDS.RDF.Query.Patterns
             output.Append("?");
             output.Append(VariableName);
             output.Append(" := ");
-            output.Append(AssignExpression.ToString());
+            output.Append(AssignExpression);
             output.Append(")");
 
             return output.ToString();

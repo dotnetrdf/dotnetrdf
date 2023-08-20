@@ -1,10 +1,10 @@
-﻿using System;
+﻿using dotNetRdf.TestSupport;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using VDS.RDF;
 
-namespace dotNetRdf.TestSupport
+namespace VDS.RDF
 {
     public class Manifest
     {

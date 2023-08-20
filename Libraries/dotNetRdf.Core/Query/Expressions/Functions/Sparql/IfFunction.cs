@@ -64,11 +64,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         /// </summary>
         public ISparqlExpression FalseBranchExpression { get; }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessIfElseFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitIfElseFunction(this);
@@ -93,11 +95,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         {
             var output = new StringBuilder();
             output.Append("IF (");
-            output.Append(ConditionExpression.ToString());
+            output.Append(ConditionExpression);
             output.Append(" , ");
-            output.Append(TrueBranchExpression.ToString());
+            output.Append(TrueBranchExpression);
             output.Append(" , ");
-            output.Append(FalseBranchExpression.ToString());
+            output.Append(FalseBranchExpression);
             output.Append(')');
             return output.ToString();
         }

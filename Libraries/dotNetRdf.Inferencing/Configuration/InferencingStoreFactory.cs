@@ -31,6 +31,9 @@ using VDS.RDF.Query.Inference;
 
 namespace VDS.RDF.Configuration
 {
+    /// <summary>
+    /// An configuration object factory for stores that support simple inferencing.
+    /// </summary>
     public class InferencingStoreFactory : IObjectFactory
     {
 
@@ -49,12 +52,9 @@ namespace VDS.RDF.Configuration
             obj = null;
 
             ITripleStore store = null;
-            INode subObj;
-            object temp;
 
             // Get Property Nodes we need
-            INode propStorageProvider = new UriNode(g.UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
-                  propAsync = g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAsync));
+            g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyAsync));
 
             // Check whether to use a specific Graph Collection
             INode collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
@@ -69,8 +69,11 @@ namespace VDS.RDF.Configuration
                     }
                     else
                     {
-                        var graphCollection = ConfigurationLoader.LoadObject(g, collectionNode) as BaseGraphCollection;
-                        if (graphCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Triple Store identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of the required type BaseGraphCollection");
+                        if (ConfigurationLoader.LoadObject(g,
+                                collectionNode) is not BaseGraphCollection graphCollection)
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Triple Store identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of the required type BaseGraphCollection");
+                        }
                         store = new TripleStore(graphCollection);
                     }
                     break;
@@ -82,12 +85,13 @@ namespace VDS.RDF.Configuration
                 IEnumerable<INode> sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraph)));
 
                 // Read from Graphs
+                object temp;
                 foreach (INode source in sources)
                 {
                     temp = ConfigurationLoader.LoadObject(g, source);
-                    if (temp is IGraph)
+                    if (temp is IGraph graph)
                     {
-                        store.Add((IGraph)temp);
+                        store.Add(graph);
                     }
                     else
                     {
@@ -124,15 +128,15 @@ namespace VDS.RDF.Configuration
                 }
 
                 // Finally we'll apply any reasoners
-                if (store is IInferencingTripleStore)
+                if (store is IInferencingTripleStore inferencingTripleStore)
                 {
                     IEnumerable<INode> reasoners = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyReasoner)));
                     foreach (INode reasoner in reasoners)
                     {
                         temp = ConfigurationLoader.LoadObject(g, reasoner);
-                        if (temp is IInferenceEngine)
+                        if (temp is IInferenceEngine inferenceEngine)
                         {
-                            ((IInferencingTripleStore)store).AddInferenceEngine((IInferenceEngine)temp);
+                            inferencingTripleStore.AddInferenceEngine(inferenceEngine);
                         }
                         else
                         {
@@ -142,14 +146,14 @@ namespace VDS.RDF.Configuration
                 }
 
                 // And as an absolute final step if the store is transactional we'll flush any changes we've made
-                if (store is ITransactionalStore)
+                if (store is ITransactionalStore transactionalStore)
                 {
-                    ((ITransactionalStore)store).Flush();
+                    transactionalStore.Flush();
                 }
             }
 
             obj = store;
-            return (store != null);
+            return store != null;
         }
 
         /// <summary>
@@ -159,13 +163,11 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
-            switch (t.FullName)
+            return t.FullName switch
             {
-                case InferencingTripleStore:
-                    return true;
-                default:
-                    return false;
-            }
+                InferencingTripleStore => true,
+                _ => false
+            };
         }
     }
 }

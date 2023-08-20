@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordMonth + "(" + InnerExpression.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordMonth + "(" + InnerExpression + ")";
         }
 
         /// <summary>
@@ -69,11 +69,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
             return new MonthFunction(transformer.Transform(InnerExpression));
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessMonthFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitMonthFunction(this);

@@ -45,14 +45,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.DegreesToRadians + ">(" + InnerExpression.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.DegreesToRadians + ">(" + InnerExpression + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessDegreesToRadiansFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitDegreesToRadiansFunction(this);

@@ -112,11 +112,13 @@ namespace VDS.RDF.Query.Algebra
             return "Slice(" + InnerAlgebra + ", LIMIT " + Limit + ", OFFSET " + Offset + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessSlice(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitSlice(this);

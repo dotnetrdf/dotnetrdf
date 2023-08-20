@@ -115,11 +115,13 @@ namespace VDS.RDF.Query.Algebra
             return $"Graph({_graphSpecifier.Value}, {_pattern})";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessGraph(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitGraph(this);

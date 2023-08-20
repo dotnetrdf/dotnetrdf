@@ -513,7 +513,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent next = context.Events.Dequeue();
             if (!(next is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', an EndElementEvent was expected", "RDF", element);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', an EndElementEvent was expected", "RDF", element);
             }
 
             // Exit the current namespace scope
@@ -583,7 +583,7 @@ namespace VDS.RDF.Parsing
             if (!(first is ElementEvent))
             {
                 // Unexpected Event
-                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType().ToString() + "'", "Node Element", first);
+                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType() + "'", "Node Element", first);
             }
 
             // Check it has a valid Uri
@@ -763,7 +763,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent last = eventlist.Dequeue();
             if (!(last is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + last.GetType().ToString() + "', expected an EndElement Event", "NodeElement", last);
+                throw ParserHelper.Error("Unexpected Event '" + last.GetType() + "', expected an EndElement Event", "NodeElement", last);
             }
 
             // Exit the current namespace scope
@@ -836,7 +836,7 @@ namespace VDS.RDF.Parsing
             if (!(first is ElementEvent))
             {
                 // Unexpected Event
-                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType().ToString() + "'", "PropertyElement", first);
+                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType() + "'", "PropertyElement", first);
             }
 
             // Validate the Uri
@@ -968,7 +968,7 @@ namespace VDS.RDF.Parsing
             // Next must be an ElementEvent
             if (!(next is ElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an ElementEvent as the first Event in a Resource Property Elements Event list", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an ElementEvent as the first Event in a Resource Property Elements Event list", next);
             }
 
             // Get list of Sub Events
@@ -983,7 +983,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent last = eventlist.Dequeue();
             if (!(last is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + last.GetType().ToString() + "', expected an EndElement Event", last);
+                throw ParserHelper.Error("Unexpected Event '" + last.GetType() + "', expected an EndElement Event", last);
             }
 
             // Now we can generate the relevant RDF
@@ -992,7 +992,7 @@ namespace VDS.RDF.Parsing
             // Validate the Type of the Parent
             if (!(parent is ElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Parent Event '" + parent.GetType().ToString() + "', expected an ElementEvent", parent);
+                throw ParserHelper.Error("Unexpected Parent Event '" + parent.GetType() + "', expected an ElementEvent", parent);
             }
             var parentEl = (ElementEvent)parent;
 
@@ -1067,7 +1067,7 @@ namespace VDS.RDF.Parsing
             // Validate that the middle event is a TextEvent
             if (!(middle is TextEvent))
             {
-                throw ParserHelper.Error("Unexpected event '" + middle.GetType().ToString() + "', expected a TextEvent in a Literal Property Element", middle);
+                throw ParserHelper.Error("Unexpected event '" + middle.GetType() + "', expected a TextEvent in a Literal Property Element", middle);
             }
             var text = (TextEvent)middle;
 
@@ -1210,7 +1210,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent lit = eventlist.Dequeue();
             if (!(lit is TypedLiteralEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + lit.GetType().ToString() + "', expected a TypedLiteralEvent after a Property Element with Parse Type 'Literal'", "Parse Type Literal Property Element", lit);
+                throw ParserHelper.Error("Unexpected Event '" + lit.GetType() + "', expected a TypedLiteralEvent after a Property Element with Parse Type 'Literal'", "Parse Type Literal Property Element", lit);
             }
 
             // Get the Subject from the Parent
@@ -1251,7 +1251,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent next = eventlist.Dequeue();
             if (!(next is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Literal Property Element!", "Parse Type Literal Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Literal Property Element!", "Parse Type Literal Property Element", next);
             }
 
             // End the namespace scope
@@ -1380,13 +1380,13 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an ElementEvent or EndElementEvent after a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an ElementEvent or EndElementEvent after a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
             }
 
             // Check for the last thing being an EndElement Event
             if (!(next is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
             }
 
             // End the namespace scope
@@ -1575,7 +1575,7 @@ namespace VDS.RDF.Parsing
             next = eventlist.Dequeue();
             if (!(next is EndElementEvent))
             {
-                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Collection Property Element!", "Parse Type Collection Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType() + "', expected an EndElementEvent to terminate a Parse Type Collection Property Element!", "Parse Type Collection Property Element", next);
             }
 
             // End the current namespace scope

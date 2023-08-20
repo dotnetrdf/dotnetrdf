@@ -63,6 +63,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             }
         }
 
+        /// <summary>
+        /// Get whether this is the inverse function.
+        /// </summary>
         public bool Inverse { get; }
 
         /// <summary>
@@ -73,19 +76,21 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
         {
             if (Inverse)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv + ">(" + InnerExpression.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv + ">(" + InnerExpression + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec + ">(" + InnerExpression.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec + ">(" + InnerExpression + ")";
             }
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessSecantFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitSecantFunction(this);

@@ -47,14 +47,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Sha256Hash + ">(" + InnerExpression.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Sha256Hash + ">(" + InnerExpression + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessLeviathanSha256HashFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitLeviathanSha256HashFunction(this);

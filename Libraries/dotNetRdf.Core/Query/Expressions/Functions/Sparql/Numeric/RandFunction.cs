@@ -35,11 +35,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
     public class RandFunction
         : ISparqlExpression
     {
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessRandFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitRandFunction(this);

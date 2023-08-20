@@ -70,8 +70,12 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public AverageAggregate(ISparqlExpression expr)
             : this(expr, false) { }
 
+        /// <summary>
+        /// The variable to aggregate.
+        /// </summary>
         public string Variable { get; }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {
@@ -87,7 +91,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             var output = new StringBuilder();
             output.Append("AVG(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString() + ")");
+            output.Append(_expr + ")");
             return output.ToString();
         }
 

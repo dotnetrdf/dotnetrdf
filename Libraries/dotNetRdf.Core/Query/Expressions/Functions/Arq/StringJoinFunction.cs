@@ -39,16 +39,30 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     {
         private readonly List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
 
+        /// <summary>
+        /// Get the fixed separator string to use.
+        /// </summary>
         public string Separator { get; }
+        /// <summary>
+        /// Return true if a <see cref="FixedSeparator"/> string is to be used, false if a <see cref="SeparatorExpression"/> is to be evaluated when joining strings.
+        /// </summary>
         public bool FixedSeparator { get; } = false;
+
+        /// <summary>
+        /// The expression to evaluate when joining strings.
+        /// </summary>
         public ISparqlExpression SeparatorExpression { get; }
+        
+        /// <summary>
+        /// The expressions whose values are to be joined.
+        /// </summary>
         public IList<ISparqlExpression> Expressions { get => _exprs; }
 
         /// <summary>
         /// Creates a new ARQ String Join function.
         /// </summary>
         /// <param name="sepExpr">Separator Expression.</param>
-        /// <param name="expressions">Expressions to concatentate.</param>
+        /// <param name="expressions">Expressions to concatenate.</param>
         public StringJoinFunction(ISparqlExpression sepExpr, IEnumerable<ISparqlExpression> expressions)
         {
             if (sepExpr is ConstantTerm ct && ct.Node.NodeType == NodeType.Literal)
@@ -65,11 +79,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessStringJoinFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitStringJoinFunction(this);
@@ -99,11 +115,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             output.Append(ArqFunctionFactory.ArqFunctionsNamespace);
             output.Append(ArqFunctionFactory.StrJoin);
             output.Append(">(");
-            output.Append(SeparatorExpression.ToString());
+            output.Append(SeparatorExpression);
             output.Append(",");
             for (var i = 0; i < _exprs.Count; i++)
             {
-                output.Append(_exprs[i].ToString());
+                output.Append(_exprs[i]);
                 if (i < _exprs.Count - 1) output.Append(',');
             }
             output.Append(")");

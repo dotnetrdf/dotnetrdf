@@ -49,16 +49,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             MustExist = mustExist;
         }
 
+        /// <summary>
+        /// Get whether this is an EXIST (true) or NOT EXIST (false).
+        /// </summary>
         public bool MustExist { get; }
 
+        /// <summary>
+        /// Get the pattern to test for (non-)existence.
+        /// </summary>
         public GraphPattern Pattern { get; }
 
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessExistsFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitExistsFunction(this);
@@ -103,7 +111,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             {
                 output.Append("NOT EXISTS ");
             }
-            output.Append(Pattern.ToString());
+            output.Append(Pattern);
             return output.ToString();
         }
 

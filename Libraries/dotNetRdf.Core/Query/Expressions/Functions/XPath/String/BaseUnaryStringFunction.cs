@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// Creates a new XPath Unary String function.
         /// </summary>
         /// <param name="stringExpr">Expression.</param>
-        public BaseUnaryStringFunction(ISparqlExpression stringExpr)
+        protected BaseUnaryStringFunction(ISparqlExpression stringExpr)
         {
             _expr = stringExpr;
         }
@@ -53,7 +53,10 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// </summary>
         public ISparqlExpression InnerExpression { get => _expr; }
 
+        /// <inheritdoc />
         public abstract TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding);
+
+        /// <inheritdoc />
         public abstract T Accept<T>(ISparqlExpressionVisitor<T> visitor);
 
         /// <summary>

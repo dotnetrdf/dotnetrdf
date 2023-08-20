@@ -45,14 +45,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.E + ">(" + InnerExpression.ToString() + ")";
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.E + ">(" + InnerExpression + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessLeviathanEFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitLeviathanEFunction(this);

@@ -211,7 +211,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public override string ToString()
         {
-            return "GZipped " + _parser.ToString();
+            return "GZipped " + _parser;
         }
     }
 

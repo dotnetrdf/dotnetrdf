@@ -38,11 +38,13 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Stores the list of variables that are used in the Pattern.
         /// </summary>
-        protected List<string> _vars = new List<string>();
+        protected List<string> _vars = new();
 
+        /// <inheritdoc />
         public abstract TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor,
             TContext context);
 
+        /// <inheritdoc />
         public abstract T Accept<T>(ISparqlAlgebraVisitor<T> visitor);
 
         /// <summary>
@@ -145,7 +147,7 @@ namespace VDS.RDF.Query.Patterns
         /// Gets whether a Triple Pattern is Thread Safe when evaluated.
         /// </summary>
         /// <remarks>
-        /// Almost all Triple Patterns are Thread Safe unless they are subquery patterns which themselves are not thread safe.
+        /// Almost all Triple Patterns are Thread Safe unless they are sub-query patterns which themselves are not thread safe.
         /// </remarks>
         public virtual bool UsesDefaultDataset
         {

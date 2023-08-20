@@ -34,6 +34,16 @@ namespace VDS.RDF.Query.Aggregates
     /// </summary>
     public interface ISparqlAggregate
     {
+        /// <summary>
+        /// Called when the aggregate is visited during algebra processing.
+        /// </summary>
+        /// <typeparam name="TResult">The type of result object returned by the processor.</typeparam>
+        /// <typeparam name="TContext">The type of the context object to be passed to the processor.</typeparam>
+        /// <typeparam name="TBinding">The type of the binding objects to be passed to the processor.</typeparam>
+        /// <param name="processor">The processor that handles this algebra.</param>
+        /// <param name="context">The current context.</param>
+        /// <param name="bindings">The current set of bindings.</param>
+        /// <returns>The result of the aggregate processing.</returns>
         TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings);
 

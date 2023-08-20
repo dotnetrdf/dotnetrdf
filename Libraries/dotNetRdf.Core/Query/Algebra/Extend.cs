@@ -148,11 +148,13 @@ namespace VDS.RDF.Query.Algebra
             return "Extend(" + InnerAlgebra.ToSafeString() + ", " + AssignExpression + " AS ?" + VariableName + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessExtend(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitExtend(this);

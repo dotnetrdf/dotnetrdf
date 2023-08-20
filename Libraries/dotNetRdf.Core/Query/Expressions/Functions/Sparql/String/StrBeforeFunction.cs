@@ -46,14 +46,23 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             EndsExpression = startsExpr;
         }
 
+        /// <summary>
+        /// Get the expression that evaluates to the string to be processed.
+        /// </summary>
         public ISparqlExpression StringExpression { get; }
+
+        /// <summary>
+        /// Get the expression that evaluates to the substring to search for.
+        /// </summary>
         public ISparqlExpression EndsExpression { get; }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessStrBeforeFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitStrBeforeFunction(this);
@@ -130,7 +139,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + StringExpression.ToString() + ", " + EndsExpression.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + StringExpression + ", " + EndsExpression + ")";
         }
     }
 }

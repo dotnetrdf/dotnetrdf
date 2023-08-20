@@ -51,29 +51,31 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             var output = new StringBuilder();
             if (_leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + _leftExpr.ToString() + ")");
+                output.Append("(" + _leftExpr + ")");
             }
             else
             {
-                output.Append(_leftExpr.ToString());
+                output.Append(_leftExpr);
             }
             output.Append(" / ");
             if (_rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
-                output.Append("(" + _rightExpr.ToString() + ")");
+                output.Append("(" + _rightExpr + ")");
             }
             else
             {
-                output.Append(_rightExpr.ToString());
+                output.Append(_rightExpr);
             }
             return output.ToString();
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessDivisionExpression(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitDivisionExpression(this);

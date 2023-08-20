@@ -48,14 +48,19 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
             _expr = expr;
         }
 
+        /// <summary>
+        /// Get the expression that evaluates to the datetime value to process.
+        /// </summary>
         public ISparqlExpression InnerExpression { get => _expr; }
 
 
+        /// <inheritdoc />
         public virtual TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessTimezoneFromDateTimeFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public virtual T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitTimezoneFromDateTimeFunction(this);
@@ -78,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.TimezoneFromDateTime + ">(" + _expr.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.TimezoneFromDateTime + ">(" + _expr + ")";
         }
 
         /// <summary>

@@ -27,7 +27,7 @@
 namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
 {
     /// <summary>
-    /// Represents the XPath fn:round() function.
+    /// Represents the XPath fn:round-half-to-even() function.
     /// </summary>
     public class RoundHalfToEvenFunction
         : BaseUnaryExpression
@@ -50,6 +50,9 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
             Precision = precision;
         }
 
+        /// <summary>
+        /// Get the expression that resolves to the precision of the rounding.
+        /// </summary>
         public ISparqlExpression Precision { get; }
 
         /// <summary>
@@ -58,14 +61,16 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven + ">(" + InnerExpression.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven + ">(" + InnerExpression + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessRoundHalfToEvenFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitRoundHalfToEvenFunction(this);

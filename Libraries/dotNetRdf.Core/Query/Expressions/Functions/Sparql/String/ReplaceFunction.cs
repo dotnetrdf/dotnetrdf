@@ -38,15 +38,45 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     public class ReplaceFunction
         : ISparqlExpression
     {
+        /// <summary>
+        /// The expression that provides the text to process.
+        /// </summary>
         public ISparqlExpression TextExpression { get; }
+        /// <summary>
+        /// The expression that provides the text to find.
+        /// </summary>
         public ISparqlExpression FindExpression { get; }
+        /// <summary>
+        /// The expression that provides the find options.
+        /// </summary>
         public ISparqlExpression OptionsExpression { get; }
+        /// <summary>
+        /// The expression that provides the replacement value for the located string.
+        /// </summary>
         public ISparqlExpression ReplaceExpression { get; }
+        /// <summary>
+        /// True if <see cref="Find"/> should be used to define the text to find, false if <see cref="FindExpression"/> should be used.
+        /// </summary>
         public bool FixedPattern { get; }
+        /// <summary>
+        /// True if <see cref="Replace"/> should be used to define the replacement text, false if <see cref="ReplaceExpression"/> should be used.
+        /// </summary>
         public bool FixedReplace { get; }
+        /// <summary>
+        /// True if <see cref="Options"/> should be used to define the search options, false if <see cref="OptionsExpression"/> should be used.
+        /// </summary>
         public bool FixedOptions { get; }
+        /// <summary>
+        /// The fixed find string.
+        /// </summary>
         public string Find { get; }
+        /// <summary>
+        /// The fixed replacement string.
+        /// </summary>
         public string Replace { get; }
+        /// <summary>
+        /// The fixed matching options string.
+        /// </summary>
         public RegexOptions Options { get; } = RegexOptions.None;
 
         /// <summary>
@@ -80,7 +110,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     try
                     {
                         var p = n.AsString();
-                        var temp = new Regex(p);
+                        var _ = new Regex(p);
 
                         // It's a Valid Pattern
                         FixedPattern = true;
@@ -97,7 +127,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             // Get the Replace
             if (replace is ConstantTerm constantReplace)
             {
-                // If the Replace is a Node Expresison Term then it is a fixed Pattern
+                // If the Replace is a Node Expression Term then it is a fixed Pattern
                 IValuedNode n = constantReplace.Node;
                 if (n.NodeType == NodeType.Literal)
                 {
@@ -193,7 +223,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
             output.Append(XPathFunctionFactory.Replace);
             output.Append(">(");
-            output.Append(TextExpression.ToString());
+            output.Append(TextExpression);
             output.Append(",");
             if (FixedPattern)
             {
@@ -203,7 +233,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             }
             else
             {
-                output.Append(FindExpression.ToString());
+                output.Append(FindExpression);
             }
             output.Append(",");
             if (FixedReplace)
@@ -214,22 +244,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             }
             else if (ReplaceExpression != null)
             {
-                output.Append(ReplaceExpression.ToString());
+                output.Append(ReplaceExpression);
             }
             if (OptionsExpression != null)
             {
-                output.Append("," + OptionsExpression.ToString());
+                output.Append("," + OptionsExpression);
             }
             output.Append(")");
 
             return output.ToString();
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessReplaceFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitReplaceFunction(this);
@@ -280,14 +312,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                if (OptionsExpression != null)
-                {
-                    return new ISparqlExpression[] { TextExpression, FindExpression, ReplaceExpression, OptionsExpression };
-                }
-                else
-                {
-                    return new ISparqlExpression[] { TextExpression, FindExpression, ReplaceExpression };
-                }
+                return OptionsExpression != null 
+                    ? new[] { TextExpression, FindExpression, ReplaceExpression, OptionsExpression } 
+                    : new[] { TextExpression, FindExpression, ReplaceExpression };
             }
         }
 
@@ -309,14 +336,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            if (OptionsExpression != null)
-            {
-                return new ReplaceFunction(transformer.Transform(TextExpression), transformer.Transform(FindExpression), transformer.Transform(ReplaceExpression), transformer.Transform(OptionsExpression));
-            }
-            else
-            {
-                return new ReplaceFunction(transformer.Transform(TextExpression), transformer.Transform(FindExpression), transformer.Transform(ReplaceExpression));
-            }
+            return OptionsExpression != null 
+                ? new ReplaceFunction(transformer.Transform(TextExpression), transformer.Transform(FindExpression), transformer.Transform(ReplaceExpression), transformer.Transform(OptionsExpression)) 
+                : new ReplaceFunction(transformer.Transform(TextExpression), transformer.Transform(FindExpression), transformer.Transform(ReplaceExpression));
         }
     }
 }

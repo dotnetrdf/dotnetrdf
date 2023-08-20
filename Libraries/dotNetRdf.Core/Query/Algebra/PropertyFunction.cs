@@ -54,6 +54,10 @@ namespace VDS.RDF.Query.Algebra
         /// Gets the Inner Algebra.
         /// </summary>
         public ISparqlAlgebra InnerAlgebra { get; }
+
+        /// <summary>
+        /// Gets the function implementation.
+        /// </summary>
         public ISparqlPropertyFunction Function { get; }
 
         /// <summary>
@@ -119,14 +123,16 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "PropertyFunction(" + InnerAlgebra.ToString() + "," + Function.FunctionUri + ")";
+            return "PropertyFunction(" + InnerAlgebra + "," + Function.FunctionUri + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessPropertyFunction(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitPropertyFunction(this);

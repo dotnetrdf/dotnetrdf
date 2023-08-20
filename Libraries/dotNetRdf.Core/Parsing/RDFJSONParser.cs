@@ -225,12 +225,12 @@ namespace VDS.RDF.Parsing
                     // We ignore any content which is beyond the end of the initial object
                     if (context.Input.TokenType != JsonToken.EndObject)
                     {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the JSON Graph Object was expected", startPos);
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, end of the JSON Graph Object was expected", startPos);
                     }
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, start of the JSON Graph Object was expected", startPos);
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, start of the JSON Graph Object was expected", startPos);
                 }
             }
             else
@@ -268,7 +268,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a JSON Property Name to represent the Subject of a Triple", startPos);
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected a JSON Property Name to represent the Subject of a Triple", startPos);
                     }
                     context.Input.Read();
                 }
@@ -305,7 +305,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Name which represents a Predicate", startPos);
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected a Property Name which represents a Predicate", startPos);
                         }
 
                         context.Input.Read();
@@ -313,7 +313,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of a JSON Object to represent a Predicate Object List", startPos);
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected the start of a JSON Object to represent a Predicate Object List", startPos);
                 }
             }
             else
@@ -345,7 +345,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of a JSON Array to represent an Object List", startPos);
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected the start of a JSON Array to represent an Object List", startPos);
                 }
             }
             else
@@ -388,7 +388,7 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Object Node", startPos);
+                                    throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected a Property Value describing one of the properties of an Object Node", startPos);
                                 }
                             }
 
@@ -408,7 +408,7 @@ namespace VDS.RDF.Parsing
                                 {
                                     // Shouldn't end up here as it should have been caught in the initial token type check
                                     throw Error(context,
-                                        "Unexpected Token '" + context.Input.TokenType.ToString() +
+                                        "Unexpected Token '" + context.Input.TokenType +
                                         "' encountered, expected a Property Value describing one of the properties of an Object Node",
                                         startPos);
                                 }
@@ -446,7 +446,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Name describing one of the properties of an Object Node", startPos);
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType + "' encountered, expected a Property Name describing one of the properties of an Object Node", startPos);
                         }
 
                         context.Input.Read();

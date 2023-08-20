@@ -94,11 +94,13 @@ namespace VDS.RDF.Query.Algebra
             return "Minus(" + Lhs + ", " + Rhs + ")";
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessMinus(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitMinus(this);

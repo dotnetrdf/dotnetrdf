@@ -130,13 +130,13 @@ namespace VDS.RDF.Parsing
             new(@"^(\d\d):(\d\d):(\d\d(\.\d+)?)(Z|(\+|-)?(\d\d):(\d\d))?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// A permissive regular expression that matches the structure of xsd:gMonthYear
+        /// A permissive regular expression that matches the structure of xsd:gMonthYear.
         /// </summary>
         public static Regex XmlSchemaYearMonthRegex =
             new (@"^-?(\d\d\d\d+)-(\d\d)(Z|(\+|-)?(\d\d):(\d\d))?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
-        /// A permissive regular expression that matches the structure of xsd:gYear
+        /// A permissive regular expression that matches the structure of xsd:gYear.
         /// </summary>
         public static Regex XmlSchemaYearRegex =
             new(@"^-?(\d\d\d\d+)(Z|(\+|-)?(\d\d):(\d\d))?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

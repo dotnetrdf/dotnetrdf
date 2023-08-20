@@ -165,11 +165,13 @@ namespace VDS.RDF.Query.Algebra
             return output.ToString();
         }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessNegatedPropertySet(this, context);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitNegatedPropertySet(this);

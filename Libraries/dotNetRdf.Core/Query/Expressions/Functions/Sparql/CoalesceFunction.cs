@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
     public class CoalesceFunction 
         : ISparqlExpression
     {
-        private List<ISparqlExpression> _expressions = new List<ISparqlExpression>();
+        private readonly List<ISparqlExpression> _expressions = new();
 
         /// <summary>
         /// Creates a new COALESCE function with the given expressions as its arguments.
@@ -47,13 +47,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             _expressions.AddRange(expressions);
         }
 
+        /// <summary>
+        /// Get the list of expressions to coalesce over.
+        /// </summary>
         public IEnumerable<ISparqlExpression> InnerExpressions { get => _expressions; }
 
+        /// <inheritdoc />
         public TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessCoalesceFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitCoalesceFunction(this);
@@ -82,7 +87,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
             output.Append("COALESCE(");
             for (var i = 0; i < _expressions.Count; i++)
             {
-                output.Append(_expressions[i].ToString());
+                output.Append(_expressions[i]);
                 if (i < _expressions.Count - 1)
                 {
                     output.Append(", ");

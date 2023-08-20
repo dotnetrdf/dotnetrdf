@@ -41,11 +41,13 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             : base(stringExpr, suffixExpr, false, XPathFunctionFactory.AcceptStringArguments) { }
 
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessEndsWithFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitEndsWithFunction(this);
@@ -57,7 +59,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith + ">(" + _expr.ToString() + "," + _arg.ToString() + ")";
+            return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith + ">(" + _expr + "," + _arg + ")";
         }
 
         /// <summary>

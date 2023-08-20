@@ -53,6 +53,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public LogFunction(ISparqlExpression arg, ISparqlExpression logBase)
             : base(arg, logBase) { }
 
+        /// <summary>
+        /// Get whether the function was created as a default base-10 log function.
+        /// </summary>
         public bool Log10 { get; }
 
         /// <summary>
@@ -63,19 +66,21 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         {
             if (Log10)
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr + ")";
             }
             else
             {
-                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr.ToString() + "," + _rightExpr.ToString() + ")";
+                return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + _leftExpr + "," + _rightExpr + ")";
             }
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessLogFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitLogFunction(this);

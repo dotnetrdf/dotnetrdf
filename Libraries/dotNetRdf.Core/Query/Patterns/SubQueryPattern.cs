@@ -88,11 +88,13 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext>(ISparqlQueryAlgebraProcessor<TResult, TContext> processor, TContext context)
         {
             return processor.ProcessSubQueryPattern(this, context);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlAlgebraVisitor<T> visitor)
         {
             return visitor.VisitSubQueryPattern(this);

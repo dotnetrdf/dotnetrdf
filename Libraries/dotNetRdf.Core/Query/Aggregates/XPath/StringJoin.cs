@@ -64,9 +64,13 @@ namespace VDS.RDF.Query.Aggregates.XPath
             _sep = sep;
         }
 
+        /// <summary>
+        /// An expression whose value is the string to use to join the values passed into this aggregation.
+        /// </summary>
         public ISparqlExpression SeparatorExpression { get => _sep; }
 
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {
@@ -85,10 +89,10 @@ namespace VDS.RDF.Query.Aggregates.XPath
             output.Append(XPathFunctionFactory.StringJoin);
             output.Append(">(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             if (_customSep)
             {
-                output.Append(_sep.ToString());
+                output.Append(_sep);
             }
             output.Append(')');
             return output.ToString();

@@ -29,7 +29,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestNTriplesPositiveSyntax")]
-        public void PositiveSyntaxTest(ManifestTestData t)
+        internal void PositiveSyntaxTest(ManifestTestData t)
         {
             _output.WriteLine($"Load from {t.Manifest.ResolveResourcePath(t.Action)}");
             var parser = new NTriplesParser(NTriplesSyntax.Rdf11Star);
@@ -38,7 +38,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestNTriplesNegativeSyntax")]
-        public void NegativeSyntaxTest(ManifestTestData t)
+        internal void NegativeSyntaxTest(ManifestTestData t)
         {
             var parser = new NTriplesParser(NTriplesSyntax.Rdf11Star);
             var g = new Graph();

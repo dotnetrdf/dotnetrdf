@@ -223,6 +223,11 @@ namespace VDS.RDF.Query.Datasets
             return _store.Contains(t);
         }
 
+        /// <summary>
+        /// Gets whether the specified triple is quoted in any graph in the dataset.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
         protected override bool ContainsQuotedTripleInternal(Triple t)
         {
             return Graphs.Any(g => g.ContainsQuotedTriple(t));
@@ -237,6 +242,10 @@ namespace VDS.RDF.Query.Datasets
             return _store.Triples;
         }
 
+        /// <summary>
+        /// Gets all the quoted triples in the underlying in-memory store.
+        /// </summary>
+        /// <returns></returns>
         protected override IEnumerable<Triple> GetAllQuotedTriples()
         {
             return Graphs.SelectMany(g => g.QuotedTriples).Distinct();
@@ -254,6 +263,11 @@ namespace VDS.RDF.Query.Datasets
                 select t;
         }
 
+        /// <summary>
+        /// Get all the quoted triples in the dataset with the given subject.
+        /// </summary>
+        /// <param name="subj">Subject.</param>
+        /// <returns></returns>
         protected override IEnumerable<Triple> GetQuotedWithSubjectInternal(INode subj)
         {
             return Graphs.SelectMany(g => g.GetQuotedWithSubject(subj));
@@ -271,6 +285,11 @@ namespace VDS.RDF.Query.Datasets
                 select t;
         }
 
+        /// <summary>
+        /// Get all the quoted triples in the dataset with the given predicate.
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         protected override IEnumerable<Triple> GetQuotedWithPredicateInternal(INode predicate)
         {
             return Graphs.SelectMany(g => g.GetQuotedWithPredicate(predicate));
@@ -288,6 +307,11 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        /// <summary>
+        /// Gets all the quoted triples in the dataset with the given object.
+        /// </summary>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
         protected override IEnumerable<Triple> GetQuotedWithObjectInternal(INode obj)
         {
             return Graphs.SelectMany(g => g.GetQuotedWithObject(obj));
@@ -306,6 +330,12 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        /// <summary>
+        /// Gets all the quoted triples in the dataset with the given subject and predicate.
+        /// </summary>
+        /// <param name="subj">Subject.</param>
+        /// <param name="predicate">Predicate.</param>
+        /// <returns></returns>
         protected override IEnumerable<Triple> GetQuotedWithSubjectPredicateInternal(INode subj, INode predicate)
         {
             return Graphs.SelectMany(g => g.GetQuotedWithSubjectPredicate(subj, predicate));
@@ -324,6 +354,12 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        /// <summary>
+        /// Gets all the quoted triples in the dataset with the given subject and object.
+        /// </summary>
+        /// <param name="subj">Subject.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
         protected override IEnumerable<Triple> GetQuotedWithSubjectObjectInternal(INode subj, INode obj)
         {
             return Graphs.SelectMany(g => g.GetQuotedWithSubjectObject(subj, obj));
@@ -342,6 +378,12 @@ namespace VDS.RDF.Query.Datasets
                     select t);
         }
 
+        /// <summary>
+        /// Gets all the quoted triples in the dataset with the given predicate and object.
+        /// </summary>
+        /// <param name="pred">Predicate.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns></returns>
         protected override IEnumerable<Triple> GetQuotedWithPredicateObjectInternal(INode pred, INode obj)
         {
             return Graphs.SelectMany(g => g.GetQuotedWithPredicateObject(pred, obj));
@@ -354,9 +396,9 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected override void FlushInternal()
         {
-            if (_store is ITransactionalStore)
+            if (_store is ITransactionalStore transactionalStore)
             {
-                ((ITransactionalStore)_store).Flush();
+                transactionalStore.Flush();
             }
         }
     }

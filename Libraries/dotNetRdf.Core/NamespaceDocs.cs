@@ -34,7 +34,7 @@ namespace VDS.RDF
     /// Specific Namespaces within the Hierarchy provide <see cref="VDS.RDF.Parsing">Parsing</see> and <see cref="VDS.RDF.Writing">Serialization</see> functionality along with a host of related classes to support these functions.
     /// </para>
     /// <para>
-    /// Support for querying RDF is provided in the <see cref="VDS.RDF.Query">Query</see> namespace which includes SPARQL Query, limited reasoning support in the <see cref="VDS.RDF.Query.Inference">Query.Inference</see> namespace and a Pellet Server client in the <see cref="VDS.RDF.Query.Inference.Pellet">Query.Inference.Pellet</see> namespace.
+    /// Support for querying RDF is provided in the <see cref="VDS.RDF.Query">Query</see> namespace which includes SPARQL Query, limited reasoning support in the dotNetRdf.Inferencing package.
     /// </para>
     /// <para>
     /// Support for updating RDF based on the SPARQL 1.1 Update and Graph Store HTTP Protocol for RDF Graph Management is provided in the <see cref="VDS.RDF.Update">Update</see> and <see cref="VDS.RDF.Update.Protocol">Update.Protocol</see> namespaces.
@@ -68,10 +68,6 @@ namespace VDS.RDF
     /// <h3>Notes</h3>
     /// <para>
     /// dotNetRDF is now considered a stable release, this means it should be stable for production scenarios.  However it is open source software and despite our best efforts there may still be bugs.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="https://github.com/dotnetrdf/dotnetrdf/issues">GitHub Issues list</a> to report bugs or request new features. You can ask questions on StackOverflow using the tag <a href="https://stackoverflow.com/questions/tagged/dotnetrdf">dotnetrdf</a>.
-    /// </para>
-    /// <h5>Client Profile Build</h5>
-    /// <para>
-    /// The Client Profile build omits the reference to <see cref="System.Web">System.Web</see> so lacks the ASP.Net integration and some other features that rely on this dependency but is otherwise a fairly complete build of the library.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -126,21 +122,7 @@ namespace VDS.RDF.Nodes
     }
 }
 
-namespace VDS.RDF.Ontology
-{
-    /// <summary>
-    /// <para>
-    /// The Ontology Namespace is based upon <a href="http://jena.sourceforge.net/ontology/">Jena's Ontology API</a>.  It allows for a more ontology-centric way of manipulating RDF graphs within the dotNetRDF API.
-    /// </para>
-    /// <para>
-    /// The <see cref="OntologyResource">OntologyResource</see> is the base class of resources and allows for the retrieval and manipulation of various common properties of a resource.  More specialised classes like <see cref="OntologyClass">OntologyClass</see> and <see cref="OntologyProperty">OntologyProperty</see> are used to work with classes and properties etc.
-    /// </para>
-    /// </summary>
-    class NamespaceDoc
-    {
 
-    }
-}
 
 namespace VDS.RDF.Parsing
 {
@@ -636,53 +618,6 @@ namespace VDS.RDF.Query.Grouping
     }
 }
 
-namespace VDS.RDF.Query.Inference
-{
-    /// <summary>
-    /// <para>
-    /// Namespace for Inference Classes which provide Inferencing capabilities on RDF - these features are currently experimental and may not work as expected.
-    /// </para>
-    /// <para>
-    /// Classes which implement reasoning must implement the <see cref="IInferenceEngine">IInferenceEngine</see> interface, these can then be attached to classes which implement the <see cref="IInferencingTripleStore">IInferencingTripleStore</see> interface or they can be used to apply inference to any <see cref="IGraph">IGraph</see> implementation with the inferred Triples optionally output to a separate Graph.
-    /// </para>
-    /// <para>
-    /// OWL reasoning currently has extremely limited support, we provide a Pellet client in the <see cref="Pellet">Pellet</see> namespace which can be used to connect to a Pellet Server but that currently only provides reasoning on external knowledge bases on the Pellet Server.
-    /// </para>
-    /// </summary>
-    class NamespaceDoc
-    {
-
-    }
-}
-
-namespace VDS.RDF.Query.Inference.Pellet
-{
-    /// <summary>
-    /// <para>
-    /// Namespace which provides a client for interacting with a Pellet Server.
-    /// </para>
-    /// <para>
-    /// Due to Pellet Server being a relatively new product it is currently only possible to reason over external knowledge bases on a Pellet Server and not to use Pellet to reason over in-memory data.  As Pellet Server is updated in the future this client will be updated to take advantage of those updates and to eventually provide for in-memory reasoning.  You may also want to consider using the <see cref="VDS.RDF.Storage.StardogConnector"/> which is the triple store from the same people who developed Pellet and which integrates some Pellet capabilities.
-    /// </para>
-    /// </summary>
-    class NamespaceDoc
-    {
-
-    }
-}
-
-namespace VDS.RDF.Query.Inference.Pellet.Services
-{
-    /// <summary>
-    /// <para>
-    /// Namespace which provides classes which represent the Services offered by a Pellet Server knowledge base.
-    /// </para>
-    /// </summary>
-    class NamespaceDoc
-    {
-
-    }
-}
 
 namespace VDS.RDF.Query.Operators
 {

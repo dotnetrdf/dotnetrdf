@@ -90,11 +90,11 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             var output = new StringBuilder();
             output.Append("GROUP_CONCAT(");
             if (_distinct) output.Append("DISTINCT ");
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             if (_customSeparator)
             {
                 output.Append(" ; SEPARATOR = ");
-                output.Append(_sep.ToString());
+                output.Append(_sep);
             }
             output.Append(")");
             return output.ToString();
@@ -111,6 +111,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             }
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {

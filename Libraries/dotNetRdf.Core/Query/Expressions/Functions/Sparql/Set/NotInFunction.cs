@@ -44,11 +44,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public NotInFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
             : base(expr, set) { }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessNotInFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitNotInFunction(this);
@@ -72,11 +74,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         public override string ToString()
         {
             var output = new StringBuilder();
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             output.Append(" NOT IN (");
             for (var i = 0; i < _expressions.Count; i++)
             {
-                output.Append(_expressions[i].ToString());
+                output.Append(_expressions[i]);
                 if (i < _expressions.Count - 1)
                 {
                     output.Append(" , ");

@@ -30,10 +30,24 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
+    /// <summary>
+    /// The interface for a visitor object that can visit the elements of a SPARQL algebra tree.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface ISparqlAlgebraVisitor<out T>
     {
+        /// <summary>
+        /// Visits an ASK.
+        /// </summary>
+        /// <param name="ask"></param>
+        /// <returns></returns>
         T VisitAsk(Ask ask);
 
+        /// <summary>
+        /// Visits an ASK *.
+        /// </summary>
+        /// <param name="askAny"></param>
+        /// <returns></returns>
         T VisitAskAnyTriples(AskAnyTriples askAny);
 
         /// <summary>
@@ -174,9 +188,9 @@ namespace VDS.RDF.Query
         T VisitSlice(Slice slice);
 
         /// <summary>
-        /// Visits a subquery.
+        /// Visits a sub-query.
         /// </summary>
-        /// <param name="subquery">Subquery.</param>
+        /// <param name="subquery">Sub-query.</param>
         /// <returns></returns>
         T VisitSubQuery(SubQuery subquery);
 
@@ -233,13 +247,60 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         T VisitSingleValueRestrictionFilter(SingleValueRestrictionFilter filter);
 
+        /// <summary>
+        /// Visit a BIND pattern.
+        /// </summary>
+        /// <param name="bindPattern"></param>
+        /// <returns></returns>
         T VisitBindPattern(BindPattern bindPattern);
+
+        /// <summary>
+        /// Visit a FILTER pattern.
+        /// </summary>
+        /// <param name="filterPattern"></param>
+        /// <returns></returns>
         T VisitFilterPattern(FilterPattern filterPattern);
+
+        /// <summary>
+        /// Visit a LET pattern.
+        /// </summary>
+        /// <param name="letPattern"></param>
+        /// <returns></returns>
         T VisitLetPattern(LetPattern letPattern);
+        
+        /// <summary>
+        /// Visit a property function.
+        /// </summary>
+        /// <param name="propertyFunction"></param>
+        /// <returns></returns>
         T VisitPropertyFunction(PropertyFunction propertyFunction);
+
+        /// <summary>
+        /// Visit a property path.
+        /// </summary>
+        /// <param name="propertyPathPattern"></param>
+        /// <returns></returns>
         T VisitPropertyPathPattern(PropertyPathPattern propertyPathPattern);
+
+        /// <summary>
+        /// Visit a sub-query pattern.
+        /// </summary>
+        /// <param name="subQueryPattern"></param>
+        /// <returns></returns>
         T VisitSubQueryPattern(SubQueryPattern subQueryPattern);
+
+        /// <summary>
+        /// Visit a property function pattern.
+        /// </summary>
+        /// <param name="propFunctionPattern"></param>
+        /// <returns></returns>
         T VisitPropertyFunctionPattern(PropertyFunctionPattern propFunctionPattern);
+
+        /// <summary>
+        /// Visit a triple pattern.
+        /// </summary>
+        /// <param name="triplePattern"></param>
+        /// <returns></returns>
         T VisitTriplePattern(TriplePattern triplePattern);
     }
 }

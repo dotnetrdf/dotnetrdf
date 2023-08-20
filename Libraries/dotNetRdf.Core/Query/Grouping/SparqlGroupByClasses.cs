@@ -198,7 +198,7 @@ namespace VDS.RDF.Query.Grouping
             if (_child != null)
             {
                 output.Append(' ');
-                output.Append(_child.ToString());
+                output.Append(_child);
             }
 
             return output.ToString();
@@ -271,7 +271,7 @@ namespace VDS.RDF.Query.Grouping
         {
             var output = new StringBuilder();
             output.Append('(');
-            output.Append(_expr.ToString());
+            output.Append(_expr);
             if (AssignVariable != null)
             {
                 output.Append(" AS ?");
@@ -282,7 +282,7 @@ namespace VDS.RDF.Query.Grouping
             if (_child != null)
             {
                 output.Append(' ');
-                output.Append(_child.ToString());
+                output.Append(_child);
             }
 
             return output.ToString();

@@ -43,6 +43,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             : base(expr) { }
 
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlAggregateProcessor<TResult, TContext, TBinding> processor, TContext context,
             IEnumerable<TBinding> bindings)
         {
@@ -57,11 +58,11 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         {
             if (_distinct)
             {
-                return "SAMPLE(DISTINCT " + _expr.ToString() + ")";
+                return "SAMPLE(DISTINCT " + _expr + ")";
             }
             else
             {
-                return "SAMPLE(" + _expr.ToString() + ")";
+                return "SAMPLE(" + _expr + ")";
             }
         }
 

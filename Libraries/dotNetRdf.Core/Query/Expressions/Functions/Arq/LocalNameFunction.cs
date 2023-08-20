@@ -45,14 +45,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public override string ToString()
         {
-            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName + ">(" + InnerExpression.ToString() + ")";
+            return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName + ">(" + InnerExpression + ")";
         }
 
+        /// <inheritdoc />
         public override TResult Accept<TResult, TContext, TBinding>(ISparqlExpressionProcessor<TResult, TContext, TBinding> processor, TContext context, TBinding binding)
         {
             return processor.ProcessLocalNameFunction(this, context, binding);
         }
 
+        /// <inheritdoc />
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
             return visitor.VisitLocalNameFunction(this);

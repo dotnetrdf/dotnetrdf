@@ -51,8 +51,6 @@ namespace VDS.RDF.Parsing
     public class TriXParser
         : IStoreReader
     {
-        private readonly bool _processDtd = false;
-
         /// <summary>
         /// Current W3C Namespace Uri for TriX.
         /// </summary>
@@ -65,14 +63,14 @@ namespace VDS.RDF.Parsing
         /// underlying XML parser that is used. In particular it can be used to 
         /// disable DTD processing in those environments where remote entity references
         /// might be considered to be a risk.</remarks>
-        public readonly XmlReaderSettings XmlReaderSettings = new XmlReaderSettings
-            {
+        public readonly XmlReaderSettings XmlReaderSettings = new()
+        {
                 DtdProcessing = DtdProcessing.Parse,
                 ConformanceLevel = ConformanceLevel.Document,
                 IgnoreComments = true,
                 IgnoreProcessingInstructions = false,
                 IgnoreWhitespace = true,
-            };
+        };
 
         /// <summary>
         /// Loads the RDF Dataset from the TriX input into the given Triple Store.
@@ -419,20 +417,16 @@ namespace VDS.RDF.Parsing
                 // Load source XML
                 try
                 {
-                    using (var xmlReader = XmlReader.Create(input, XmlReaderSettings))
+                    using var xmlReader = XmlReader.Create(input, XmlReaderSettings);
+                    var source = XDocument.Load(xmlReader);
+                    foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>()
+                                 .Where(pi => pi.Target.Equals("xml-stylesheet")))
                     {
-                        var source = XDocument.Load(xmlReader);
-                        foreach (XProcessingInstruction pi in source.Nodes().OfType<XProcessingInstruction>()
-                            .Where(pi => pi.Target.Equals("xml-stylesheet")))
-                        {
-                            source = ApplyTransform(source, pi);
-                        }
-
-                        using (XmlReader transformedXmlReader = source.CreateReader())
-                        {
-                            TryParseGraphset(transformedXmlReader, handler, uriFactory);
-                        }
+                        source = ApplyTransform(source, pi);
                     }
+
+                    using XmlReader transformedXmlReader = source.CreateReader();
+                    TryParseGraphset(transformedXmlReader, handler, uriFactory);
                 }
                 catch (XmlException xmlEx)
                 {
@@ -452,13 +446,10 @@ namespace VDS.RDF.Parsing
             if (match == null) throw new RdfParseException("Expected href value in xml-stylesheet PI");
             var xslRef = match.Groups[1].Value;
             var xslt = new XslCompiledTransform();
-            var xmlStringBuilder = new StringBuilder();
             xslt.Load(XmlReader.Create(new StreamReader(xslRef), XmlReaderSettings));
             var output = new XDocument();
-            using (XmlWriter writer = output.CreateWriter())
-            {
-                xslt.Transform(input.CreateReader(), writer);
-            }
+            using XmlWriter writer = output.CreateWriter();
+            xslt.Transform(input.CreateReader(), writer);
             return output;
         }
 
