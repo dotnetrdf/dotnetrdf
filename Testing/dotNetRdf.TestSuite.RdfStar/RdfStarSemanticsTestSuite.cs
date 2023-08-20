@@ -31,13 +31,13 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveEntailmentTest")]
-        public void PositiveEntailmentTest(ManifestTestData t)
+        internal void PositiveEntailmentTest(ManifestTestData t)
         {
             RunEntailmentTest(t, true);
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeEntailmentTest")]
-        public void NegativeEntailmentTest(ManifestTestData t)
+        internal void NegativeEntailmentTest(ManifestTestData t)
         {
             RunEntailmentTest(t, false);
         }

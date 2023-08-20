@@ -1,4 +1,5 @@
 ﻿using System;
+using VDS.RDF;
 
 namespace dotNetRdf.TestSupport
 {

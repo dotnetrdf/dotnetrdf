@@ -41,7 +41,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigPositiveSyntax")]
-        public void PositiveSyntaxTest(ManifestTestData t)
+        internal void PositiveSyntaxTest(ManifestTestData t)
         {
             var parser = new TriGParser(TriGSyntax.Rdf11Star);
             var store = new TripleStore();
@@ -49,7 +49,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigNegativeSyntax")]
-        public void NegativeSyntaxTest(ManifestTestData t)
+        internal void NegativeSyntaxTest(ManifestTestData t)
         {
             var parser = new TriGParser(TriGSyntax.Rdf11Star);
             var store = new TripleStore();
@@ -57,7 +57,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTrigEval")]
-        public void EvaluationTest(ManifestTestData t)
+        internal void EvaluationTest(ManifestTestData t)
         {
             var trigParser = new TriGParser(TriGSyntax.Rdf11Star);
             var actual = new TripleStore();

@@ -32,7 +32,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#QueryEvaluationTest")]
-        public void QueryEvaluationTest(ManifestTestData t)
+        internal void QueryEvaluationTest(ManifestTestData t)
         {
             var queryInputPath = t.Manifest.ResolveResourcePath(t.Query);
             var dataInputPath = t.Manifest.ResolveResourcePath(t.Data);
@@ -96,7 +96,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#UpdateEvaluationTest")]
-        public void UpdateEvaluationTest(ManifestTestData t)
+        internal void UpdateEvaluationTest(ManifestTestData t)
         {
             var updateRequestPath = t.Manifest.ResolveResourcePath(t.UpdateRequest);
             var dataInputPath = t.Manifest.ResolveResourcePath(t.UpdateData);

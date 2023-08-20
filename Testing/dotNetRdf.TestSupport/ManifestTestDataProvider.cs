@@ -2,10 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF;
 using Xunit;
 
-namespace dotNetRdf.TestSupport
+namespace VDS.RDF
 {
     /// <summary>
     /// An XUnit test data provider class that loads test definitions from an W3C test manifest RDF file.

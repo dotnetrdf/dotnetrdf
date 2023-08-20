@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using VDS.RDF;
 
-namespace dotNetRdf.TestSupport
+namespace VDS.RDF
 {
     public class ManifestTestData
     {

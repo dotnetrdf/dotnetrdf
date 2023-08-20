@@ -34,7 +34,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTurtlePositiveSyntax")]
-        public void PositiveSyntaxTest(ManifestTestData t)
+        internal void PositiveSyntaxTest(ManifestTestData t)
         {
             var parser = new TurtleParser(TurtleSyntax.Rdf11Star, false);
             var g = new Graph();
@@ -42,13 +42,13 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestNTriplesPositiveSyntax")]
-        public void NTriplesPositiveSyntaxTest(ManifestTestData t)
+        internal void NTriplesPositiveSyntaxTest(ManifestTestData t)
         {
             PositiveSyntaxTest(t);
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTurtleNegativeSyntax")]
-        public void NegativeSyntaxTest(ManifestTestData t)
+        internal void NegativeSyntaxTest(ManifestTestData t)
         {
             var parser = new TurtleParser(TurtleSyntax.Rdf11Star, false);
             var g = new Graph();
@@ -56,7 +56,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/ns/rdftest#TestTurtleEval")]
-        public void EvaluationTest(ManifestTestData t)
+        internal void EvaluationTest(ManifestTestData t)
         {
             var ttlParser = new TurtleParser(TurtleSyntax.Rdf11Star, false);
             var g = new Graph();

@@ -29,28 +29,28 @@ namespace VDS.RDF.TestSuite.RdfStar
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveSyntaxTest11")]
-        public void PositiveSyntaxTest(ManifestTestData t)
+        internal void PositiveSyntaxTest(ManifestTestData t)
         {
             var inputPath = t.Manifest.ResolveResourcePath(t.Action);
             LoadQuery(inputPath);
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeSyntaxTest11")]
-        public void NegativeSyntaxTest(ManifestTestData t)
+        internal void NegativeSyntaxTest(ManifestTestData t)
         {
             var inputPath = t.Manifest.ResolveResourcePath(t.Action);
             Assert.ThrowsAny<RdfException>(() =>LoadQuery(inputPath));
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#PositiveUpdateSyntaxTest11")]
-        public void PositiveUpdateSyntaxTest(ManifestTestData t)
+        internal void PositiveUpdateSyntaxTest(ManifestTestData t)
         {
             var inputPath = t.Manifest.ResolveResourcePath(t.Action);
             LoadUpdate(inputPath);
         }
 
         [ManifestTestRunner("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#NegativeUpdateSyntaxTest11")]
-        public void NegativeUpdateSyntaxTest(ManifestTestData t)
+        internal void NegativeUpdateSyntaxTest(ManifestTestData t)
         {
             var inputPath = t.Manifest.ResolveResourcePath(t.Action);
             Assert.ThrowsAny<RdfException>(() => LoadUpdate(inputPath));
