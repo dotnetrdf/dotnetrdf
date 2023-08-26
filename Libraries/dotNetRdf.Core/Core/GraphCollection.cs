@@ -53,7 +53,7 @@ namespace VDS.RDF
         /// </summary>
         public GraphCollection()
         {
-            _graphs = new MultiDictionary<IRefNode, IGraph>(u => u?.GetHashCode() ?? DefaultGraphId, true, new FastNodeComparer(), MultiDictionaryMode.AVL);
+            _graphs = new MultiDictionary<IRefNode, IGraph>(u => u?.GetHashCode() ?? DefaultGraphId, true, new FastNodeComparer(), MultiDictionaryMode.Avl);
         }
 
         /// <summary>

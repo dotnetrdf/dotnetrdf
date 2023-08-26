@@ -82,7 +82,7 @@ namespace VDS.RDF
 
             //Use a dud hash function to put everything into a single bucket and use
             //the FastNodeComparer
-            var dictionary = new MultiDictionary<INode, int>(n => 1, false, new FastNodeComparer(), MultiDictionaryMode.AVL);
+            var dictionary = new MultiDictionary<INode, int>(n => 1, false, new FastNodeComparer(), MultiDictionaryMode.Avl);
             dictionary.Add(canonical, 1);
             Assert.Equal(1, dictionary[canonical]);
             dictionary.Add(alternate, 2);
@@ -103,7 +103,7 @@ namespace VDS.RDF
             ILiteralNode canonical = (1).ToLiteral(g);
             ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
-            var tree = new AVLTree<INode, int>();
+            var tree = new AvlTree<INode, int>();
             
             tree.Add(canonical, 1);
             Assert.Equal(1, tree[canonical]);
@@ -128,7 +128,7 @@ namespace VDS.RDF
             ILiteralNode canonical = (1).ToLiteral(g);
             ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
-            var tree = new AVLTree<INode, int>(new FastNodeComparer());
+            var tree = new AvlTree<INode, int>(new FastNodeComparer());
 
             tree.Add(canonical, 1);
             Assert.Equal(1, tree[canonical]);
@@ -154,7 +154,7 @@ namespace VDS.RDF
             var a = new Triple(g.CreateVariableNode("s"), g.CreateVariableNode("p"), canonical);
             var b = new Triple(g.CreateVariableNode("s"), g.CreateVariableNode("p"), alternate);
 
-            var tree = new AVLTree<Triple, int>();
+            var tree = new AvlTree<Triple, int>();
 
             tree.Add(a, 1);
             Assert.Equal(1, tree[a]);
@@ -176,12 +176,12 @@ namespace VDS.RDF
         public void IndexingTriplesInBinaryTree2()
         {
             var g = new Graph();
-            ILiteralNode canonical = (1).ToLiteral(g);
+            ILiteralNode canonical = 1.ToLiteral(g);
             ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
             var a = new Triple(g.CreateVariableNode("s"), g.CreateVariableNode("p"), canonical);
             var b = new Triple(g.CreateVariableNode("s"), g.CreateVariableNode("p"), alternate);
 
-            var tree = new AVLTree<Triple, int>(new FullTripleComparer(new FastNodeComparer()));
+            var tree = new AvlTree<Triple, int>(new FullTripleComparer(new FastNodeComparer()));
 
             tree.Add(a, 1);
             Assert.Equal(1, tree[a]);

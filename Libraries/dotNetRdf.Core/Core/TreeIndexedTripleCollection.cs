@@ -71,7 +71,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="fullTripleIndexing">Whether to create subject-predicate, subject-object and subject-predicate indexes in addition to the basic subject, predicate and object indexes. Defaults to true.</param>
         public TreeIndexedTripleCollection(bool fullTripleIndexing)
-             : this(MultiDictionaryMode.AVL, fullTripleIndexing) { }
+             : this(MultiDictionaryMode.Avl, fullTripleIndexing) { }
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection.
@@ -109,28 +109,28 @@ namespace VDS.RDF
         {
             if (subjIndex)
             {
-                _s = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                _s = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.Avl);
                 if (indexQuoted)
                 {
-                    _qs = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                    _qs = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.Avl);
                 }
             }
 
             if (predIndex)
             {
-                _p = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                _p = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.Avl);
                 if (indexQuoted)
                 {
-                    _qp = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                    _qp = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.Avl);
                 }
             }
 
             if (objIndex)
             {
-                _o = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                _o = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.Avl);
                 if (indexQuoted)
                 {
-                    _qo = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.AVL);
+                    _qo = new MultiDictionary<INode, HashSet<Triple>>(new FastVirtualNodeComparer(), MultiDictionaryMode.Avl);
                 }
             }
 
