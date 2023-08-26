@@ -116,7 +116,7 @@ namespace VDS.RDF
             }
             else
             {
-                subtree = new MultiDictionary<Triple, HashSet<Triple>>(hashFunc, false, comparer, MultiDictionaryMode.AVL);
+                subtree = new MultiDictionary<Triple, HashSet<Triple>>(hashFunc, false, comparer, MultiDictionaryMode.Avl);
                 subtree.Add(t, new HashSet<Triple> { t });
                 index.Add(n, subtree);
             }
