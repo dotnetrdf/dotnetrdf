@@ -197,7 +197,8 @@ namespace VDS.RDF
         public void LanguageTagsAreValidated()
         {
             IGraph g = new Graph();
-            Assert.Throws<ArgumentException>(() => g.CreateLiteralNode("example", ValidTurtleLanguageSpecifier));
+            // By default Turtle validation is used
+            g.CreateLiteralNode("example", ValidTurtleLanguageSpecifier);
             Assert.Throws<ArgumentException>(() => g.CreateLiteralNode("example", InvalidLanguageSpecifier));
         }
 
