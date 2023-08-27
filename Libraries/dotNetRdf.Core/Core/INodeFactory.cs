@@ -144,6 +144,11 @@ namespace VDS.RDF
         bool NormalizeLiteralValues { get; set; }
 
         /// <summary>
+        /// Get or set the type of validation to apply to language tags when creating language-tagged literal nodes.
+        /// </summary>
+        LanguageTagValidationMode LanguageTagValidation { get; set; }
+
+        /// <summary>
         /// Resolve a QName to a URI using this factory's <see cref="NamespaceMap"/> and <see cref="BaseUri"/>.
         /// </summary>
         /// <param name="qName"></param>

@@ -66,6 +66,13 @@ namespace VDS.RDF.Parsing.Handlers
             set => _factory.NormalizeLiteralValues = value;
         }
 
+        /// <inheritdoc />
+        public LanguageTagValidationMode LanguageTagValidation
+        {
+            get => _factory.LanguageTagValidation;
+            set => _factory.LanguageTagValidation = value;
+        }
+
         /// <summary>
         /// Resolve a QName to a URI using the handler's underlying node factory to provide the <see cref="INodeFactory.NamespaceMap"/> and <see cref="INodeFactory.BaseUri"/>.
         /// </summary>

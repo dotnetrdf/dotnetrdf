@@ -147,7 +147,10 @@ IBlankNode named = g.CreateBlankNode("ID");
 
 ### Literal Nodes
 
-Literal Nodes are used to refer to actual data values. Values may be plain, language specific or typed. A plain literal is simply textual content while a language specific literal is textual content with a language specified in the form of a country code eg. en-GB, en-US, fr. Finally a typed literal is textual content associated with a Data Type URI which indicates the type of the data represented by the literal. Note that a typed literals Data Type does not guarantee that the content of that literal will be of that type.
+Literal Nodes are used to refer to actual data values.
+Values may be plain, language specific or typed. A plain literal is simply textual content while a language specific literal is textual content with a language specified in the form of a country code eg. en-GB, en-US, fr.
+Finally a typed literal is textual content associated with a Data Type URI which indicates the type of the data represented by the literal.
+Note that a typed literal's Data Type does not guarantee that the content of that literal will be of that type.
 
 A [ILiteralNode](xref:VDS.RDF.ILiteralNode) is constructed as follows:
 
@@ -178,6 +181,11 @@ ILiteralNode aurevoir = g.CreateLiteralNode("au revior","fr");
 ILiteralNode two = g.CreateLiteralNode("2", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 ILiteralNode f = g.CreateLiteralNode("false", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
 ```
+
+> [!NOTE]
+> When you create a literal node using a `Graph` or `NodeFactory`'s `CreateLiteralNode` method, any langauge tag you provide will be validated according to that factory's langauge tag validation mode.
+> Creating a `LiteralNode` using its public constructor does not provide this additional layer of validation.
+> For more information about the langauge tag validation please refer to [Node Factory](node_factory.md).
 
 ### Triple Nodes
 

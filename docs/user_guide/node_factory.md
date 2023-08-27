@@ -26,6 +26,12 @@ The [`UriFactory`](xref:VDS.RDF.INodeFactory.UriFactory) property can be used to
 The [`NormalizeLiteralValues`](xref:VDS.RDF.INodeFactory.NormalizeLiteralValues) property is a flag that can be set to control whether or not the factory applies Unicode normalization to string literals when creating new literal nodes.
 Unicode normalization can aid in more meaningful string comparison when dealing with strings with composing characters.
 
+The [`LanguageTagValidation`](xref:VDS.RDF.INodeFactory.LanguageTagValidation) property specifies what sort of validation to apply to the language specifier of a literal node. The property currently supports three values:
+
+  * [`LangaugeTagValidationMode.None`](xref:VDS.RDF.LangaugeTagValidationMode.None) - no validation is performed
+  * [`LangaugeTagValidationMode.Turtle`](xref:VDS.RDF.LangaugeTagValidationMode.Turtle) - langauge tags are validated to be conformant with the Turtle 1.1 specification. This allows a language tag to match the regular expression [a-zA-Z]+(-[a-zA-Z0-9]+])*. This is less restrictive than the WellFormed mode which imposes some length constraints and other constraints on individual sub-tags. This is the default mode and is restrictive enough to ensure that other RDF processing tools will handle the langauge tags in your data.
+  * [`LangaugeTagValidationMode.WellFormed](xref:VDS.RDF.LangaugeTagValidationMode.WellFormed) - language tags are validated to be well-formed according to the productions of the BCP-47 specification. This includes allowing the grandfathered regular and irregular tags. Use this mode if you are expecting to process or parse the langauge tags in your data with tools that expect to be dealing with BCP-47 language tags.
+
 ## NodeFactory class
 
 The [`NodeFactory`](xref:VDS.RDF.NodeFactory) class provides the default library implementation of the [`INodeFactory`](xref:VDS.RDF.INodeFactory) interface.

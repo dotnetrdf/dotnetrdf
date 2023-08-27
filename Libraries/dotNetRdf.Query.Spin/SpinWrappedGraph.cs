@@ -199,6 +199,13 @@ namespace VDS.RDF.Query.Spin
         }
 
         /// <inheritdoc />
+        public LanguageTagValidationMode LanguageTagValidation
+        {
+            get => LanguageTagValidationMode.None;
+            set => throw new NotSupportedException();
+        }
+
+        /// <inheritdoc />
         public IUriNode CreateUriNode()
         {
             throw new NotImplementedException();

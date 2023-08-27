@@ -82,8 +82,8 @@ namespace VDS.RDF.Parsing
             IrregularGrandfatheredTags.Concat(RegularGrandfatheredTags)
                 .ToDictionary(k => k.ToLowerInvariant(), v => true);
         
-        private static readonly Regex TestRegex = new Regex("(?<language>([a-zA-Z]{2,3}(-(?<extlang>[a-zA-Z]{3}(-[a-zA-Z]{3}){0,2}))?) | ([a-zA-Z]{4,8}))");
-        private static readonly Regex WellFormedTagRegex = new Regex(
+        private static readonly Regex TurtleTagRegex = new("^[a-zA-Z]+(-[a-zA-Z0-9]+)*$");
+        private static readonly Regex WellFormedTagRegex = new(
             "^(?<language>([a-zA-Z]{2,3}(-(?<extlang>[a-zA-Z]{3}(-[a-zA-Z]{3}){0,2}))?)|([a-zA-Z]{4,8}))" +
             "(-(?<script>[a-zA-Z]{4}))?" +
             "(-(?<region>[a-zA-Z]{2}|[0-9]{3}))?" +
@@ -100,6 +100,16 @@ namespace VDS.RDF.Parsing
         {
             return GrandfatheredTagsLookup.ContainsKey(languageTag.ToLowerInvariant()) ||
                    WellFormedTagRegex.IsMatch(languageTag);
+        }
+
+        /// <summary>
+        /// Determine if a string is valid against the LANGTAG production in the Turtle 1.1 specification
+        /// </summary>
+        /// <param name="languageTag">The string to check.</param>
+        /// <returns>True if <paramref name="languageTag"/> matches the Turtle 1.1 definition of /^[a-zA-Z]+(-[a-zA-Z0-9]+)*$/ .</returns>
+        public static bool IsValidTurtle(string languageTag)
+        {
+            return TurtleTagRegex.IsMatch(languageTag);
         }
     }
 }

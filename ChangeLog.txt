@@ -1,6 +1,8 @@
 ﻿Change Log
 ==========
 
+ENHANCEMENT: Language tag validation in the `NodeFactory` now supports three modes. `LanguageTagValidationMode.None` disables langauge tag validation. `LanguageTagValidationMode.Turtle` validates language tags against the more relaxed definition in the Turtle 1.1 specification. `LanguageTagValidationMode.WellFormed` validates language tags against the stricter BCP-47 production for well-formed tags. The default validation mode is now set to `LanguageTagValidationMode.Turtle`. The properties `NodeFactory.ValidateLanguageTags` and `NodeFactoryOptions.ValidateLanguageTags` are both deprecated and replaced by `INodeFactory.LanguageTagValidation` and `NodeFactoryOptions.LanguageTagValidation` respectively. Thanks to @IS4Code for their suggestions and input on this. (#565)
+
 3.0.1
 -----
 

@@ -90,7 +90,9 @@ namespace VDS.RDF
             if (options == null) throw new ArgumentNullException(nameof(options));
             BaseUri = options.BaseUri;
             NormalizeLiteralValues = options.NormalizeLiteralValues;
-            ValidateLanguageSpecifiers = options.ValidateLanguageSpecifiers;
+#pragma warning disable CS0618 // Type or member is obsolete
+            LanguageTagValidation = !options.ValidateLanguageSpecifiers ? LanguageTagValidationMode.None: options.LanguageTagValidation;
+#pragma warning restore CS0618 // Type or member is obsolete
             NamespaceMap = namespaceMap ?? new NamespaceMapper();
             UriFactory = uriFactory ?? RDF.UriFactory.Root;
         }
@@ -98,12 +100,28 @@ namespace VDS.RDF
         #region INodeFactory Members
 
         /// <inheritdoc />
-        public bool NormalizeLiteralValues { get; set; } 
+        public bool NormalizeLiteralValues { get; set; }
 
         /// <summary>
         /// Get or set the flag that controls whether or not language tags are validated when creating language-tagged literal nodes.
         /// </summary>
-        public bool ValidateLanguageSpecifiers { get; set; } = true;
+        /// <remarks>
+        /// This property is now deprecated and replaced by <see cref="LanguageTagValidation"/>.
+        /// Setting this property to 'true' will set <see cref="LanguageTagValidation"/> to <see cref="LanguageTagValidationMode.Turtle"/>.
+        /// Setting this property to 'false' will set <see cref="LanguageTagValidation"/> to <see cref="LanguageTagValidationMode.None"/>.
+        /// </remarks>
+        [Obsolete("Use LanguageTagValidation to set the validation mode.")]
+        public bool ValidateLanguageSpecifiers
+        {
+            get => LanguageTagValidation != LanguageTagValidationMode.None;
+            set => LanguageTagValidation =
+                value ? LanguageTagValidationMode.Turtle : LanguageTagValidationMode.None;
+        }
+
+        /// <summary>
+        /// Get or set the type of validation to apply to language tags when creating language-tagged literal nodes.
+        /// </summary>
+        public LanguageTagValidationMode LanguageTagValidation { get; set; } = LanguageTagValidationMode.WellFormed;
 
         /// <summary>
         /// Resolve a QName to a URI using this factory's <see cref="INodeFactory.NamespaceMap"/> and <see cref="INodeFactory.BaseUri"/>.
@@ -183,11 +201,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, string langSpec)
         {
-            if (ValidateLanguageSpecifiers && !LanguageTag.IsWellFormed(langSpec))
-            {
-                throw new ArgumentException(
-                    $"The language specifier {langSpec} is not a well-formed BCP-47 language tag.");
-            }
+            ValidateLanguageSpecifier(langSpec);
             return new LiteralNode(literal, langSpec, NormalizeLiteralValues);
         }
 
@@ -267,6 +281,32 @@ namespace VDS.RDF
         }
 
         #endregion
+
+        private void ValidateLanguageSpecifier(string langSpec)
+        {
+            if (string.IsNullOrEmpty(langSpec)) return;
+            switch (LanguageTagValidation)
+            {
+                case LanguageTagValidationMode.None:
+                    break;
+                case LanguageTagValidationMode.Turtle:
+                    if (!LanguageTag.IsValidTurtle(langSpec))
+                    {
+                        throw new ArgumentException(
+                            $"The provided language specifier '{langSpec}' does not conform to the Turtle 1.1 grammar.",
+                            nameof(langSpec));
+                    }
+                    break;
+                case LanguageTagValidationMode.WellFormed:
+                    if (!LanguageTag.IsWellFormed(langSpec))
+                    {
+                        throw new ArgumentException(
+                            $"The provided language specifier '{langSpec}' is not a well-formed BCP47 language tag.",
+                            nameof(langSpec));
+                    }
+                    break;
+            }
+        }
     }
 
 
@@ -369,6 +409,12 @@ namespace VDS.RDF
         public bool NormalizeLiteralValues
         {
             get => false;
+            set => throw new NotImplementedException("Not needed by the MockNodeFactory");
+        }
+
+        public LanguageTagValidationMode LanguageTagValidation
+        {
+            get => LanguageTagValidationMode.None;
             set => throw new NotImplementedException("Not needed by the MockNodeFactory");
         }
 
