@@ -114,6 +114,14 @@ namespace VDS.RDF
         }
 
         /// <inheritdoc />
+        public LanguageTagValidationMode LanguageTagValidation
+        {
+            get => _g.LanguageTagValidation;
+            set => _g.LanguageTagValidation = value;
+        }
+
+
+        /// <inheritdoc />
         public virtual IEnumerable<INode> Nodes => _g.Nodes;
 
 

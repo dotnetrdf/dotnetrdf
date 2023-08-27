@@ -159,6 +159,13 @@ namespace VDS.RDF.Parsing
         }
 
         /// <inheritdoc />
+        public LanguageTagValidationMode LanguageTagValidation
+        {
+            get => _innerHandler.LanguageTagValidation;
+            set => _innerHandler.LanguageTagValidation = value;
+        }
+        
+        /// <inheritdoc />
         public Uri ResolveQName(string qName)
         {
             return _innerHandler.ResolveQName(qName);

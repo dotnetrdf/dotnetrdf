@@ -147,6 +147,13 @@ namespace VDS.RDF
             set => _g.UriFactory = value;
         }
 
+        /// <inheritdoc />
+        public LanguageTagValidationMode LanguageTagValidation
+        {
+            get => _g.LanguageTagValidation;
+            set => _g.LanguageTagValidation = value;
+        }
+
         /// <inheritdoc/>
         public IEnumerable<INode> Nodes => _g.Nodes;
 

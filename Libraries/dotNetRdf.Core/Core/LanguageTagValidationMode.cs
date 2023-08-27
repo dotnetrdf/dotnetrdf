@@ -1,4 +1,4 @@
-/*
+﻿/*
 // <copyright>
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
@@ -24,35 +24,28 @@
 // </copyright>
 */
 
-using System;
-
 namespace VDS.RDF
 {
     /// <summary>
-    /// Configuration options that can be passed to the <see cref="NodeFactory"/> constructor.
+    /// Enumeration of the forms of language tag validation supported by the library.
     /// </summary>
-    public class NodeFactoryOptions
+    public enum LanguageTagValidationMode
     {
         /// <summary>
-        /// The initial base URI to use for the resolution of relative URI references. Defaults to null.
+        /// Do not perform any validation on language tags
         /// </summary>
-        public Uri BaseUri { get; set; }
-
+        None = 0,
         /// <summary>
-        /// Whether or not to normalize the value strings of literal nodes.
+        /// Validate language tags against the production defined in the Turtle 1.1 specification
         /// </summary>
-        public bool NormalizeLiteralValues { get; set; }
-
+        /// <remarks>
+        /// <para>The Turtle 1.1 grammar requires a language tag to match the production: <code>'@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*</code>.</para>
+        /// <para>NOTE: This validation is more lax than the <see cref="WellFormed"/> validation option.</para>
+        /// </remarks>
+        Turtle = 1,
         /// <summary>
-        /// Whether or not to validate the language specifier of language-tagged literal nodes.
+        /// Validate that language tags are well-formed according to the rules defined by the BCP-47 specification.
         /// </summary>
-        [Obsolete("Replaced by NodeFactoryOptions.LanguageTagValidation")]
-        public bool ValidateLanguageSpecifiers { get; set; } = true;
-
-        /// <summary>
-        /// Set the type of validation applied to the language specified of language tagged literal nodes.
-        /// </summary>
-        public LanguageTagValidationMode LanguageTagValidation { get; set; } = LanguageTagValidationMode.Turtle;
-
+        WellFormed = 2,
     }
 }

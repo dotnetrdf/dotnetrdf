@@ -174,6 +174,12 @@ namespace VDS.RDF
         public virtual bool NormalizeLiteralValues { get; set; } = Options.LiteralValueNormalization;
 #pragma warning restore CS0618 // Type or member is obsolete
 
+        /// <inheritdoc />
+        public LanguageTagValidationMode LanguageTagValidation
+        {
+            get => NodeFactory.LanguageTagValidation;
+            set => NodeFactory.LanguageTagValidation = value;
+        }
         #endregion
 
         #region Triple Assertion & Retraction

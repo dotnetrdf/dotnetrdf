@@ -190,20 +190,40 @@ namespace VDS.RDF
             Assert.Single(g.GetTriplesWithObject(ucase));
         }
 
-        const string InvalidLanguageSpecifier = "ab-12";
+        const string ValidTurtleLanguageSpecifier = "ab-12";
+        private const string InvalidLanguageSpecifier = "ab12";
 
         [Fact]
         public void LanguageTagsAreValidated()
         {
             IGraph g = new Graph();
+            Assert.Throws<ArgumentException>(() => g.CreateLiteralNode("example", ValidTurtleLanguageSpecifier));
             Assert.Throws<ArgumentException>(() => g.CreateLiteralNode("example", InvalidLanguageSpecifier));
         }
 
         [Fact]
         public void LanguageTagValidationCanBeDisabled()
         {
-            IGraph g = new Graph(null, new NodeFactory(new NodeFactoryOptions() { ValidateLanguageSpecifiers = false }));
+            IGraph g = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.None }));
+            g.CreateLiteralNode("example", ValidTurtleLanguageSpecifier);
             g.CreateLiteralNode("example", InvalidLanguageSpecifier);
+        }
+
+        [Fact]
+        public void LanguageTagValidationCanBeTurtle()
+        {
+            IGraph g = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.Turtle }));
+            g.CreateLiteralNode("example", ValidTurtleLanguageSpecifier);
+            Assert.Throws<ArgumentException>(() => g.CreateLiteralNode("example", InvalidLanguageSpecifier));
+        }
+
+        [Fact]
+        public void EmptyLanguageTagsAreNotValidated()
+        {
+            IGraph g1 = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.WellFormed }));
+            IGraph g2 = new Graph(null, new NodeFactory(new NodeFactoryOptions() { LanguageTagValidation = LanguageTagValidationMode.Turtle }));
+            g1.CreateLiteralNode("example", "");
+            g2.CreateLiteralNode("example", "");
         }
 
         [Fact]
