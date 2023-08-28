@@ -481,24 +481,21 @@ namespace VDS.RDF.Writing
                     }
 
                     // Build the collection recursively
-                    var c = new OutputRdfCollection(false);
+                    var membersStack = new Stack<Triple>();
 
                     // Get the thing that is the rdf:first related to this rdf:rest
                     Triple[] firsts = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, first).ToArray();//context.Graph.GetTriples(relfirstsel).Distinct();
-                    Triple temp = null;
-                    if (firsts.Length > 1)
+                    if (firsts.Length != 1)
                     {
-                        // Strange error
-                        throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
+                        // Node has multiple firsts or no firsts so the list cannot be compressed
+                        break;
                     }
-                    else if (firsts.Length == 1)
-                    {
-                        // Stick this item onto the Stack
-                        temp = firsts[0];
-                        c.Triples.Add(temp);
-                    }
+                    // Stick this item onto the Stack
+                    Triple temp = firsts[0];
+                    membersStack.Push(temp);
 
                     // See if this thing is the rdf:rest of anything else
+                    var canCompress = true;
                     do
                     {
                         Triple[] ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject).ToArray();
@@ -513,30 +510,30 @@ namespace VDS.RDF.Writing
                         {
                             firsts = context.Graph.GetTriplesWithSubjectPredicate(t2.Subject, first).Distinct(new FullTripleComparer(new FastNodeComparer())).ToArray();
 
-                            if (firsts.Length > 1)
+                            if (firsts.Length != 1)
                             {
-                                // Strange error
-                                throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
+                                // If a list node has multiple firsts or no first then the list cannot be compressed
+                                canCompress = false;
+                                break;
                             }
-                            else if (firsts.Length == 1)
+                            // Stick this item onto the Stack
+                            temp = firsts[0];
+                            // If Item is a named list node cannot compress
+                            if (temp.Subject.NodeType != NodeType.Blank)
                             {
-                                // Stick this item onto the Stack
-                                temp = firsts[0];
-                                // If Item is a named list node cannot compress
-                                if (temp.Subject.NodeType != NodeType.Blank)
-                                {
-                                    break;
-                                }
+                                break;
+                            }
 
-                                c.Triples.Add(temp);
-                            }
+                            membersStack.Push(temp);
                         }
-                    } while (true);
+                    } while (canCompress);
 
                     // Can only compress if every List Node has a Blank Node Subject
-                    if (c.Triples.All(x => x.Subject.NodeType == NodeType.Blank))
+                    if (canCompress && membersStack.All(x => x.Subject.NodeType == NodeType.Blank))
                     {
-                        context.Collections.Add(firsts[0].Subject, c);
+                        var collection = new OutputRdfCollection(false);
+                        collection.Triples.AddRange(membersStack);
+                        context.Collections.Add(firsts[0].Subject, collection);
                     }
                 }
             }
@@ -548,13 +545,13 @@ namespace VDS.RDF.Writing
                 var bnodes = context.Graph.Nodes.BlankNodes().ToList();
                 foreach (IBlankNode b in bnodes)
                 {
-                    if (context.Collections.ContainsKey(b))
+                    // Drop list roots and list nodes
+                    if (context.Collections.ContainsKey(b) || (context.Collections.Values.Any(c => !c.IsExplicit && c.Triples.Any(t => t.Subject.Equals(b)))))
                     {
                         continue;
                     }
 
                     var ts = context.Graph.GetTriples(b).ToList();
-
                     if (ts.Count <= 1)
                     {
                         // This Blank Node is only used once
@@ -569,6 +566,7 @@ namespace VDS.RDF.Writing
                         {
                             ts.RemoveAll(t => t.Object.Equals(b));
                         }
+
                         var c = new OutputRdfCollection(true);
                         c.Triples.AddRange(ts);
                         context.Collections.Add(b, c);
@@ -595,22 +593,15 @@ namespace VDS.RDF.Writing
                     // If there are no Triples in the Collection then this is a single use Blank Node so can always compress
                     if (c.Triples.Count > 0 && c.Triples.Count == context.Graph.GetTriples(kvp.Key).Count())
                     {
-                        // TODO: This doesn't work because it can conflict
-                        // In this case we can remove a single Triple from the Collection and hope this allows us to compress
-                        // context.Collections[kvp.Key].Triples.RemoveAt(0);
-
                         context.Collections.Remove(kvp.Key);
                     }
                 }
                 else
                 {
-                    // For implicit collections if the number of Triples in the Collection is exactly ((t*3) - 1) those in the Graph then
-                    // can't compress i.e. the collection is not linked to anything else
-                    // Or if the number of mentions compared to the expected mentions differs by more than 1 then
-                    // can't compress i.e. the collection is linked to more than one thing
-                    var mentions = context.Graph.GetTriples(kvp.Key).Count();
-                    var expectedMentions = ((c.Triples.Count * 3) - 1);
-                    if (expectedMentions == mentions || mentions - expectedMentions != 1)
+                    // An implicit (rdf:List) collection can be compressed only if the root node is the object of a single statement
+                    // If the node is the object of more than one statement the collection cannot be compressed
+                    var mentions = context.Graph.GetTriplesWithObject(kvp.Key).Count();
+                    if (mentions != 1)
                     {
                         context.Collections.Remove(kvp.Key);
                     }
