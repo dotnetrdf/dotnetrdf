@@ -264,7 +264,7 @@ namespace VDS.RDF.Writing
             // Take care of any collections that weren't yet written
             foreach (KeyValuePair<INode, OutputRdfCollection> kvp in context.Collections)
             {
-                if (!kvp.Value.HasBeenWritten)
+                if (!kvp.Value.HasBeenWritten && kvp.Value.Triples.Count > 0)
                 {
                     // Generate a rdf:Description node and then write the collection
                     context.Writer.WriteStartElement("rdf", "Description", NamespaceMapper.RDF);
@@ -657,6 +657,10 @@ namespace VDS.RDF.Writing
 
                 // rdf:rest Node
                 context.Writer.WriteStartElement("rdf", "rest", NamespaceMapper.RDF);
+                if (c.Triples.Count > 0)
+                {
+                    context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
+                }
             }
             // Terminate the list and close all the open rdf:rest elements
             context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, RdfSpecsHelper.RdfListNil);
