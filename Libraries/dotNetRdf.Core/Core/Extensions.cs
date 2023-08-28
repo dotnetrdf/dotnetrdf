@@ -154,7 +154,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IEnumerable<IBlankNode> BlankNodes(this IEnumerable<INode> ns)
         {
-            return ns.OfType<IBlankNode>();
+            return ns.OfType<IBlankNode>().Where(n => n.NodeType == NodeType.Blank);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IEnumerable<ILiteralNode> LiteralNodes(this IEnumerable<INode> ns)
         {
-            return ns.OfType<ILiteralNode>();
+            return ns.OfType<ILiteralNode>().Where(n => n.NodeType == NodeType.Literal);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IEnumerable<IUriNode> UriNodes(this IEnumerable<INode> ns)
         {
-            return ns.OfType<IUriNode>();
+            return ns.OfType<IUriNode>().Where(n => n.NodeType == NodeType.Uri);
         }
 
         /// <summary>
