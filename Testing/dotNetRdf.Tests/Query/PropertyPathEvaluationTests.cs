@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using FluentAssertions;
 using System;
 using System.IO;
 using System.Linq;
@@ -594,6 +595,37 @@ select ?superclass where {
             var rset = (SparqlResultSet)results;
             Assert.Equal(1, rset.Count);
             Assert.Equal(g.CreateUriNode("Frame:Sheep"), rset[0]["prey"]);
+        }
+
+        [Fact]
+        public void Issue571PropertyPathEvaluation()
+        {
+            IGraph graph = new Graph();
+            graph.LoadFromString("""
+                                 @prefix : <http://example.org/> .
+                                 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+                                 :age rdfs:domain :Person .
+                                 """);
+            var results = graph.ExecuteQuery("""
+                                 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                               
+                                 SELECT *
+                                     WHERE {
+                                     ?property rdfs:domain ?class .
+                                     ?sub rdfs:subClassOf* ?class .
+                                 }
+                               """) as SparqlResultSet;
+            results.Count.Should().Be(1);
+            var results2 = graph.ExecuteQuery("""
+                                               PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                                             
+                                               SELECT *
+                                                   WHERE {
+                                                   ?property rdfs:domain ?class .
+                                                   ?c rdfs:subClassOf* ?class .
+                                               }
+                                             """) as SparqlResultSet;
+            results2.Count.Should().Be(1);
         }
     }
 }

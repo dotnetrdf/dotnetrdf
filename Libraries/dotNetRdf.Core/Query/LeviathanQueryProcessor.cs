@@ -1642,6 +1642,21 @@ namespace VDS.RDF.Query
         protected void GetPathStarts(IPathOperator pathOperator, SparqlEvaluationContext context, List<List<INode>> paths, bool reverse)
         {
             var nodes = new HashSet<KeyValuePair<INode, INode>>();
+            if (pathOperator is ZeroOrMorePath)
+            {
+                // Include the trivial identity mapping for any node that is not a predicate node
+                // ISparqlDataset does not currently provide an accessor for all nodes, so construct the distinct set here
+                var distinctNodes = new HashSet<INode>();
+                foreach (Triple t in context.Data.Triples)
+                {
+                    distinctNodes.Add(t.Subject);
+                    distinctNodes.Add(t.Object);
+                }
+                foreach (INode node in distinctNodes)
+                {
+                    nodes.Add(new KeyValuePair<INode, INode>(node, node));
+                }
+            }
             if (pathOperator.Path is Property path)
             {
                 INode predicate = path.Predicate;
