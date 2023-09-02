@@ -30,12 +30,9 @@ namespace VDS.RDF.Writing
 
     public class GraphVizTests
     {
-        [SkippableFact]
+        [Fact]
         public void WritingGraphViz1()
         {
-            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseGraphViz),
-                "Test Config marks GraphViz as unavailable, test cannot be run");
-
             var g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 

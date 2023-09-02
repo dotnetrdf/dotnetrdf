@@ -26,6 +26,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 using VDS.RDF.Writing.Contexts;
 
 namespace VDS.RDF.Writing
@@ -53,7 +54,7 @@ namespace VDS.RDF.Writing
         public override void Save(IGraph g, string filename)
         {
             // Open the Stream for the File
-            var output = new StreamWriter(File.OpenWrite(filename));
+            using var output = new StreamWriter(File.OpenWrite(filename), Encoding.UTF8);
 
             // Call the other version of Save to do the actual work
             Save(g, output);
@@ -68,74 +69,77 @@ namespace VDS.RDF.Writing
         {
             var context = new BaseWriterContext(g, output) { PrettyPrint = PrettyPrintMode };
 
-            GraphVizWriter.WriteGraph(context, CollapseLiterals);
+            WriteGraph(context, CollapseLiterals);
         }
 
         private static void WriteGraph(BaseWriterContext context, bool collapseLiterals)
         {
-            context.Output.Write(DOT.Digraph);
+            context.Output.Write(Dot.Digraph);
 
             if (context.Graph.BaseUri != null)
             {
-                var graphId = GraphVizWriter.ReduceToQName(context.Graph.BaseUri, context);
+                var graphId = ReduceToQName(context.Graph.BaseUri, context);
 
-                GraphVizWriter.Prettify(DOT.Space, context);
-                GraphVizWriter.WriteQuoted(graphId, context);
+                Prettify(Dot.Space, context);
+                WriteQuoted(graphId, context);
             }
 
-            GraphVizWriter.Prettify(DOT.Space, context);
-            context.Output.Write(DOT.OpenCurly);
-            GraphVizWriter.Prettify(DOT.NewLine, context);
+            Prettify(Dot.Space, context);
+            context.Output.Write(Dot.OpenCurly);
+            Prettify(Dot.NewLine, context);
 
             foreach (Triple t in context.Graph.Triples)
             {
-                GraphVizWriter.WriteTriple(t, context, collapseLiterals);
+                WriteTriple(t, context, collapseLiterals);
             }
 
-            context.Output.Write(DOT.CloseCurly);
+            context.Output.Write(Dot.CloseCurly);
         }
 
         private static void WriteTriple(Triple triple, BaseWriterContext context, bool collapseLiterals)
         {
-            // Output Node lines for Literal Node so we show them as Boxes
-            // This is in keeping with Standard Graph representation of RDF
-            // Literals are shown in Boxes, Uri Nodes in ellipses (GraphViz's default shape)
-            var subjectId = GraphVizWriter.ProcessNode(triple, TripleSegment.Subject, context, collapseLiterals);
-            var objectId = GraphVizWriter.ProcessNode(triple, TripleSegment.Object, context, collapseLiterals);
+            if (triple.Predicate is IUriNode predicateNode)
+            {
+                // Output Node lines for Literal Node so we show them as Boxes
+                // This is in keeping with Standard Graph representation of RDF
+                // Literals are shown in Boxes, Uri Nodes in ellipses (GraphViz's default shape)
+                var subjectId = ProcessNode(triple, TripleSegment.Subject, context, collapseLiterals);
+                var objectId = ProcessNode(triple, TripleSegment.Object, context, collapseLiterals);
 
-            // Output the actual lines that state the relationship between the Nodes
-            // We use the Predicate as the Label on the relationship
-            var predicateLabel = GraphVizWriter.ReduceToQName((triple.Predicate as IUriNode).Uri, context);
+                // Output the actual lines that state the relationship between the Nodes
+                // We use the Predicate as the Label on the relationship
+                var predicateLabel = ReduceToQName(predicateNode.Uri, context);
 
-            GraphVizWriter.Prettify(DOT.Tab, context);
-            GraphVizWriter.WriteQuoted(subjectId, context);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            context.Output.Write(DOT.Arrow);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            GraphVizWriter.WriteQuoted(objectId, context);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            context.Output.Write(DOT.OpenSquare);
-            context.Output.Write(DOT.Label);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            context.Output.Write(DOT.Equal);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            GraphVizWriter.WriteQuoted(predicateLabel, context);
-            context.Output.Write(DOT.CloseSquare);
-            context.Output.Write(DOT.Semicolon);
-            GraphVizWriter.Prettify(DOT.NewLine, context);
+                Prettify(Dot.Tab, context);
+                WriteQuoted(subjectId, context);
+                Prettify(Dot.Space, context);
+                context.Output.Write(Dot.Arrow);
+                Prettify(Dot.Space, context);
+                WriteQuoted(objectId, context);
+                Prettify(Dot.Space, context);
+                context.Output.Write(Dot.OpenSquare);
+                context.Output.Write(Dot.Label);
+                Prettify(Dot.Space, context);
+                context.Output.Write(Dot.Equal);
+                Prettify(Dot.Space, context);
+                WriteQuoted(predicateLabel, context);
+                context.Output.Write(Dot.CloseSquare);
+                context.Output.Write(Dot.Semicolon);
+                Prettify(Dot.NewLine, context);
+            }
         }
 
         private static string ProcessNode(Triple t, TripleSegment segment, BaseWriterContext context, bool collapseLiterals)
         {
-            INode node = GraphVizWriter.GetNode(t, segment);
+            INode node = GetNode(t, segment);
 
             switch (node)
             {
-                case ILiteralNode literalnode:
-                    return GraphVizWriter.WriteLiteralNode(literalnode, t, context, collapseLiterals);
+                case ILiteralNode literalNode:
+                    return WriteLiteralNode(literalNode, t, context, collapseLiterals);
 
                 case IUriNode uriNode:
-                    return GraphVizWriter.ReduceToQName(uriNode.Uri, context);
+                    return ReduceToQName(uriNode.Uri, context);
 
                 case IBlankNode blankNode:
                     return blankNode.ToString();
@@ -145,7 +149,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private static string WriteLiteralNode(ILiteralNode literalnode, Triple t, BaseWriterContext context, bool collapseLiterals)
+        private static string WriteLiteralNode(ILiteralNode literalNode, Triple t, BaseWriterContext context, bool collapseLiterals)
         {
             // Example output:
             //     "h" [label = "v", shape = box];
@@ -155,62 +159,62 @@ namespace VDS.RDF.Writing
             // Literal nodes are identified either by their value or by their containing triple.
             // When identified by value, there will be a single node representing all literals with the same value.
             // When identified by triple, there will be a separate node representing each triple that has an object with that value.
-            var idObject = collapseLiterals ? literalnode as object : t as object;
+            var idObject = collapseLiterals ? literalNode : t as object;
             var nodeId = idObject.GetHashCode().ToString();
 
-            GraphVizWriter.Prettify(DOT.Tab, context);
-            GraphVizWriter.WriteQuoted(nodeId, context);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            context.Output.Write(DOT.OpenSquare);
-            context.Output.Write(DOT.Label);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            context.Output.Write(DOT.Equal);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            GraphVizWriter.WriteLiteralNodeLabel(literalnode, context);
-            context.Output.Write(DOT.Comma);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            context.Output.Write(DOT.Shape);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            context.Output.Write(DOT.Equal);
-            GraphVizWriter.Prettify(DOT.Space, context);
-            context.Output.Write(DOT.Box);
-            context.Output.Write(DOT.CloseSquare);
-            context.Output.Write(DOT.NewLine, context);
+            Prettify(Dot.Tab, context);
+            WriteQuoted(nodeId, context);
+            Prettify(Dot.Space, context);
+            context.Output.Write(Dot.OpenSquare);
+            context.Output.Write(Dot.Label);
+            Prettify(Dot.Space, context);
+            context.Output.Write(Dot.Equal);
+            Prettify(Dot.Space, context);
+            WriteLiteralNodeLabel(literalNode, context);
+            context.Output.Write(Dot.Comma);
+            Prettify(Dot.Space, context);
+            context.Output.Write(Dot.Shape);
+            Prettify(Dot.Space, context);
+            context.Output.Write(Dot.Equal);
+            Prettify(Dot.Space, context);
+            context.Output.Write(Dot.Box);
+            context.Output.Write(Dot.CloseSquare);
+            context.Output.Write(Dot.NewLine);
 
             return nodeId;
         }
 
-        private static void WriteQuoted(string value, BaseWriterContext context)
+        private static void WriteQuoted(string value, IWriterContext context)
         {
-            context.Output.Write(DOT.Quote);
+            context.Output.Write(Dot.Quote);
 
             context.Output.Write(value);
 
-            context.Output.Write(DOT.Quote);
+            context.Output.Write(Dot.Quote);
         }
 
-        private static void WriteLiteralNodeLabel(ILiteralNode literalnode, BaseWriterContext context)
+        private static void WriteLiteralNodeLabel(ILiteralNode literalNode, BaseWriterContext context)
         {
-            var nodeValue = GraphVizWriter.Escape(literalnode.Value);
+            var nodeValue = Escape(literalNode.Value);
 
-            context.Output.Write(DOT.Quote);
+            context.Output.Write(Dot.Quote);
             context.Output.Write(nodeValue);
 
-            if (!string.IsNullOrEmpty(literalnode.Language))
+            if (!string.IsNullOrEmpty(literalNode.Language))
             {
                 context.Output.Write("@");
-                context.Output.Write(literalnode.Language);
+                context.Output.Write(literalNode.Language);
             }
 
-            if (literalnode.DataType != null)
+            if (literalNode.DataType != null)
             {
-                var datatype = GraphVizWriter.ReduceToQName(literalnode.DataType, context);
+                var datatype = ReduceToQName(literalNode.DataType, context);
 
                 context.Output.Write("^^");
                 context.Output.Write(datatype);
             }
 
-            context.Output.Write(DOT.Quote);
+            context.Output.Write(Dot.Quote);
         }
 
         private static string ReduceToQName(Uri uri, BaseWriterContext context)
@@ -271,7 +275,7 @@ namespace VDS.RDF.Writing
             return "GraphViz DOT";
         }
 
-        private static class DOT
+        private static class Dot
         {
             internal const string Digraph = "digraph";
             internal const string Label = "label";
