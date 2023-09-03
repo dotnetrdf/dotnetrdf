@@ -192,7 +192,11 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            return new ZeroOrMorePath(context.Subject, context.Object, _path);
+            var lhsContext = new PathTransformContext(context);
+            var rhsContext = new PathTransformContext(context);
+            ISparqlAlgebra lhs = new ZeroLengthPath(lhsContext.Subject, lhsContext.Object, _path);
+            ISparqlAlgebra rhs = _path.ToAlgebra(rhsContext);
+            return new Distinct(new Union(lhs, rhs));
         }
     }
 

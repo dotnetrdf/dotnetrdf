@@ -615,8 +615,9 @@ select ?superclass where {
                                      ?sub rdfs:subClassOf* ?class .
                                  }
                                """) as SparqlResultSet;
-            results.Count.Should().Be(1);
-            var results2 = graph.ExecuteQuery("""
+            results.Should().NotBeNull();
+            results?.Count.Should().Be(1);
+            results = graph.ExecuteQuery("""
                                                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                                              
                                                SELECT *
@@ -625,7 +626,30 @@ select ?superclass where {
                                                    ?c rdfs:subClassOf* ?class .
                                                }
                                              """) as SparqlResultSet;
-            results2.Count.Should().Be(1);
+            results.Should().NotBeNull();
+            results?.Count.Should().Be(1);
+            results = graph.ExecuteQuery("""
+                                               PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                                             
+                                               SELECT *
+                                                   WHERE {
+                                                   ?property rdfs:domain ?class .
+                                                   ?sub rdfs:subClassOf? ?class .
+                                               }
+                                             """) as SparqlResultSet;
+            results.Should().NotBeNull();
+            results?.Count.Should().Be(1);
+            results = graph.ExecuteQuery("""
+                                           PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                                         
+                                           SELECT *
+                                               WHERE {
+                                               ?property rdfs:domain ?class .
+                                               ?c rdfs:subClassOf? ?class .
+                                           }
+                                         """) as SparqlResultSet;
+            results.Should().NotBeNull();
+            results?.Count.Should().Be(1);
         }
     }
 }
