@@ -83,7 +83,15 @@ dnr:TripleStore a rdfs:Class ;
 dnr:GraphCollection a rdfs:Class ;
 					  rdfs:label "Class of Graph Collections" ;
 					  rdfs:comment "A Graph Collection is any class which extends the BaseGraphCollection abstract class.  A Graph Collection defines the low level storage of Graphs within a Triple Store" .
-				
+
+dnr:NodeFactory a rdfs:Class;
+    rdfs:label "Class of Node Factories";
+    rdfs:comment "A NodeFactory is any class which implements the INodeFactory interface. A NodeFactory is used to construct the RDF terms (nodes). A NodeFactory may be shared across multiple graphs to allow those graphs to share node instances and so reduce memory usage." .
+
+dnr:UriFactory a rdfs:Class ;
+    rdfs:label "Class of URI Factories" ;
+    rdfs:comment "A UriFactory is any class which implements the IUriFactory interface. A UriFactory is used to construct (and optionally to cache) URI instances. a UriFactory may be shared across multiple graphs or NodeFactories to share URI instances and so reduce memory usage." .
+
 dnr:Graph a rdfs:Class ;
 		  rdfs:label "Class of Graphs" ;
 		  rdfs:comment "A Graph is any class which implements the IGraph interface.  A Graph is used to define a Graph which may be composed of data from single/multiple sources, in the case of multiple sources the resulting Graph is the merge of all those sources." .
@@ -345,7 +353,51 @@ dnr:usingGraph a rdf:Property ;
 			   rdfs:label "Using Graph" ;
 			   rdfs:comment "This property indicates that an object uses a Graph." ;
 			   rdfs:range dnr:Graph .
-			   
+
+# Properties for configuring a NodeFactory
+# NB: assignUri is also valid on a NodeFactory
+
+dnr:withLanguageTagValidation a rdf:Property ;
+    rdfs:label "With Language Tag Validation Mode" ;
+    rdfs:comment "This property indicates what sort of validation a node factory should apply to the language tag of literal nodes. Supported values are: 'none' or 'false' for no validation, 'turtle' or 'true' for lax validation in conformance with the Turtle 1.1 specification, or 'bcp47' or 'wellformed' for validation in conformance with the BCP-47 definition of a well-formed language tag. All accepted values are case-insensitive." ;
+    rdfs:domain dnr:NodeFactory ;
+    rdfs:range xsd:string .
+
+dnr:normalizeLiterals a rdf:Property ;
+    rdfs:label "Normalize Literals" ;
+    rdfs:comment "This property configures whether or not a Node Factory should normalize the string value of literal nodes." ;
+    rdfs:domain dnr:NodeFactory ;
+    rdfs:range xsd:boolean .
+
+dnr:usingUriFactory a rdf:Property ;
+    rdfs:label "Using URI Factory" ;
+    rdfs:comment "This property configures the UriFactory to use for a Graph or NodeFactory instance." ;
+    rdfs:domain dnr:Graph ;
+    rdfs:domain dnr:NodeFactory ;
+    rdfs:domain dnr:TripleStore ;
+    rdfs:range dnr:UriFactory .
+
+# Properties for configuring UriFactories
+
+dnr:withParent a rdf:Property ;
+    rdfs:label "With Parent" ;
+    rdfs:comment "This property configures the parent UriFactory that a UriFactory will check for already cached URIs before minting a new URI instance." ;
+    rdfs:domain dnr:UriFactory ;
+    rdfs:range dnr:UriFactory .
+
+dnr:internUris a rdf:Property ;
+    rdfs:label "Intern URIs" ;
+    rdfs:comment "This property configures whether a UriFactory will intern (cache) the URIs it creates to enable reuse." ;
+    rdfs:domain dnr:UriFactory ;
+    rdfs:range xsd:boolean .
+
+# Properties which set the node factory for graphs
+dnr:usingNodeFactory a rdf:Property ;
+    rdfs:label "Using Node Factory" ;
+    rdfs:comment "This property indicates that a Graph should use the specified Node Factory when constructing nodes." ;
+    rdfs:range dnr:NodeFactory ;
+    rdfs:domain dnr:Graph .
+
 # Properties which set the low level storage for Graphs and Triple Collections
 
 dnr:usingTripleCollection a rdf:Property ;
@@ -407,10 +459,15 @@ dnr:withUri a rdf:Property ;
 			rdfs:comment "This property defines the URI of a Graph to be retrieved from a database/generic store connection.  This is only valid in conjunction with a dnr:fromDatabase or dnr:fromStore property." ;
 			rdfs:domain dnr:Graph .
 			
+dnr:withName a rdf:Property ;
+    rdfs:label "With Name" ;
+    rdfs:comment "This property defines a URI or blank node name for a graph created through the configuration loader." ;
+    rdfs:domain dnr:Graph .
+
 dnr:assignUri a rdf:Property ;
 			  rdfs:label "Assign URI" ;
 			  rdfs:comment "This property assigns the resulting Graph the given Base URI." ;
-			  rdfs:domain dnr:Graph .
+			  rdfs:domain dnr:Graph, dnr:NodeFactory .
 			  
 # Properties for SPARQL related stuff
 

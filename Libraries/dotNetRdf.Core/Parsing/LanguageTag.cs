@@ -103,7 +103,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Determine if a string is valid against the LANGTAG production in the Turtle 1.1 specification
+        /// Determine if a string is valid against the LANGTAG production in the Turtle 1.1 specification.
         /// </summary>
         /// <param name="languageTag">The string to check.</param>
         /// <returns>True if <paramref name="languageTag"/> matches the Turtle 1.1 definition of /^[a-zA-Z]+(-[a-zA-Z0-9]+)*$/ .</returns>

@@ -96,6 +96,15 @@ namespace VDS.RDF.Configuration
                             // Properties for setting low level storage for Triple Stores and Graphs
                             PropertyUsingTripleCollection = ConfigurationNamespace + "usingTripleCollection",
                             PropertyUsingGraphCollection = ConfigurationNamespace + "usingGraphCollection",
+                            PropertyWithName = ConfigurationNamespace + "withName",
+                            PropertyUsingNodeFactory = ConfigurationNamespace + "usingNodeFactory",
+                            PropertyUsingUriFactory = ConfigurationNamespace + "usingUriFactory",
+                            // Properties for configuring a Node Factory
+                            PropertyWithLanguageTagValidation = ConfigurationNamespace + "withLanguageTagValidation",
+                            PropertyNormalizeLiterals = ConfigurationNamespace + "normalizeLiterals",
+                            // Properties for configuring a URI Factory
+                            PropertyWithParent = ConfigurationNamespace + "withParent",
+                            PropertyInternUris = ConfigurationNamespace + "internUris",
                             // Properties for defining where data comes from
                             PropertyFromFile = ConfigurationNamespace + "fromFile",
                             PropertyFromEmbedded = ConfigurationNamespace + "fromEmbedded",
@@ -236,9 +245,12 @@ namespace VDS.RDF.Configuration
             // Default Data Factories
             new GraphFactory(),
             new StoreFactory(),
-
             new CollectionFactory(),
 
+            // Support Factories
+            new NodeFactoryFactory(),
+            new UriFactoryFactory(),
+            
             // Default Manager Factories
             new StorageFactory(),
             new DatasetFactory(),

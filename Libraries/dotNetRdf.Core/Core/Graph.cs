@@ -109,6 +109,14 @@ namespace VDS.RDF
 
 
         /// <summary>
+        /// Creates a new instance of a named graph.
+        /// </summary>
+        /// <param name="name">The graph name.</param>
+        public Graph(IRefNode name) : this(name, null)
+        {
+        }
+        
+        /// <summary>
         /// Creates a new instance of a named using the given triple collection.
         /// </summary>
         /// <param name="name">The graph name.</param>

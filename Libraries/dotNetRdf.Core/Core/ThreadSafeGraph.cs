@@ -58,6 +58,34 @@ namespace VDS.RDF
             : base(new ThreadSafeTripleCollection(tripleCollection)) { }
 
         /// <summary>
+        /// Creates a new Thread Safe graph using the given name, factories and triple collection.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="tripleCollection"/> is not an instance of <see cref="ThreadSafeTripleCollection"/>, it will be wrapped in a <see cref="ThreadSafeTripleCollection"/>.
+        /// This constructor is used by the <see cref="GraphFactory"/> class in the Configuration namespace.
+        /// </remarks>
+        /// <param name="name"></param>
+        /// <param name="nodeFactory"></param>
+        /// <param name="uriFactory"></param>
+        /// <param name="tripleCollection"></param>
+        /// <param name="emptyNamespaceMap"></param>
+        public ThreadSafeGraph(
+            IRefNode name, 
+            INodeFactory nodeFactory = null,
+            IUriFactory uriFactory = null, 
+            BaseTripleCollection tripleCollection = null, 
+            bool emptyNamespaceMap = false)
+            :base(name, nodeFactory, uriFactory, 
+                tripleCollection is ThreadSafeTripleCollection ? 
+                    tripleCollection : 
+                    tripleCollection != null ? 
+                        new ThreadSafeTripleCollection(tripleCollection) : 
+                        new ThreadSafeTripleCollection(new TreeIndexedTripleCollection(true)),
+                emptyNamespaceMap)
+        {
+        }
+        
+        /// <summary>
         /// Creates a new Thread Safe graph using a Thread Safe triple collection.
         /// </summary>
         /// <param name="tripleCollection">Thread Safe triple collection.</param>

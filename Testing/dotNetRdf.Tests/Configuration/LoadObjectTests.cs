@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using FluentAssertions;
 using System;
 using Xunit;
 using VDS.RDF.Query.PropertyFunctions;
@@ -219,6 +220,66 @@ _:b a dnr:TripleCollection ;
             Assert.Equal(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
         }
 
+        [Fact]
+        public void ConfigurationLoadNamedGraphEmpty()
+        {
+            var graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:Graph ;
+  dnr:type ""VDS.RDF.Graph"" ;
+  dnr:withName <http://example.org/graph> ;
+  dnr:usingNodeFactory _:b ;
+  dnr:usingUriFactory _:c .
+_:b a dnr:NodeFactory ;
+  dnr:type ""VDS.RDF.NodeFactory"" .
+_:c a dnr:UriFactory ;
+  dnr:type ""VDS.RDF.CachingUriFactory"" .";
+            var g = new Graph();
+            g.LoadFromString(graph);
+            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            result.Should().BeAssignableTo<Graph>();
+            Assert.NotNull(result);
+            Assert.NotNull(result.Name);
+            result.Name.Should().BeAssignableTo<IUriNode>().Which.Uri.ToString().Should()
+                .Be("http://example.org/graph");
+        }
+        
+        [Fact]
+        public void ConfigurationLoadNamedThreadSafeGraphEmpty()
+        {
+            var graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:Graph ;
+  dnr:type ""VDS.RDF.ThreadSafeGraph"" ;
+  dnr:withName <http://example.org/graph> .";
+            var g = new Graph();
+            g.LoadFromString(graph);
+            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            result.Should().BeAssignableTo<ThreadSafeGraph>();
+            Assert.NotNull(result);
+            Assert.NotNull(result.Name);
+            result.Name.Should().BeAssignableTo<IUriNode>().Which.Uri.ToString().Should()
+                .Be("http://example.org/graph");
+        }
+
+        [Fact]
+        public void ConfigurationLoadNamedGraphThreadSafeGraphWithCollection()
+        {
+            var graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:Graph ;
+  dnr:type ""VDS.RDF.ThreadSafeGraph"" ;
+  dnr:withName <http://example.org/graph> ;
+  dnr:usingTripleCollection _:b .
+_:b a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" .";
+            var g = new Graph();
+            g.LoadFromString(graph);
+            var result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            result.Should().BeAssignableTo<ThreadSafeGraph>();
+            result.Triples.Should().BeAssignableTo<ThreadSafeTripleCollection>();
+            Assert.NotNull(result);
+            Assert.NotNull(result.Name);
+            result.Name.Should().BeAssignableTo<IUriNode>().Which.Uri.ToString().Should()
+                .Be("http://example.org/graph");
+        }
         [Fact]
         public void ConfigurationLoadObjectTripleStoreEmpty1()
         {
