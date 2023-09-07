@@ -65,19 +65,28 @@ namespace VDS.RDF.Configuration
             // Check whether to use a specific Graph Collection
             INode collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
 
+            INode uriFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+                g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingUriFactory)));
+
             // Instantiate the Store Class
             switch (targetType.FullName)
             {
                 case TripleStore:
+                    IUriFactory uriFactory = UriFactory.Root;
+                    if (uriFactoryNode != null)
+                    {
+                        uriFactory = ConfigurationLoader.LoadObject(g, uriFactoryNode) as IUriFactory;
+                    }
+
                     if (collectionNode == null)
                     {
-                        store = new TripleStore();
+                        store = new TripleStore(new GraphCollection(), uriFactory);
                     }
                     else
                     {
                         var graphCollection = ConfigurationLoader.LoadObject(g, collectionNode) as BaseGraphCollection;
                         if (graphCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Triple Store identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of the required type BaseGraphCollection");
-                        store = new TripleStore(graphCollection);
+                        store = new TripleStore(graphCollection, uriFactory);
                     }
                     break;
 

@@ -4,7 +4,7 @@ Graphs can be specified using the [Configuration Vocabulary](http://www.dotnetrd
 
 Graphs are loaded from Configuration in the following way:
 
-1. Instantiate a Graph of the correct type as specified by the `dnr:type` property
+1. Instantiate a Graph of the correct type as specified by the `dnr:type` property, optionally setting the graph name, node factory and/or URI factory.
 1. Fill Graph with data from specified sources in the following order:
     1. Other Graphs
     1. Files
@@ -23,14 +23,73 @@ Graphs are loaded from Configuration in the following way:
 At it's most basic a Graph is specified as follows:
 
 ```turtle
-
 @prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 
 _:graph a dnr:Graph ;
   dnr:type "VDS.RDF.Graph" .
 ```
 
-With the built in loader you can specify any type which implements the `IGraph` interface and has a public unparameterized constructor.
+With the built in loader you can specify any type which implements the `IGraph` interface and has a public constructor with the following signature:
+```c#
+public {Type}(IRefNode name, 
+            INodeFactory nodeFactory,
+            IUriFactory uriFactory, 
+            BaseTripleCollection tripleCollection, 
+            bool emptyNamespaceMap)
+```
+
+## Specifying a graph name
+
+A graph can be configured with a name as follows:
+```turtle
+@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+
+_:graph a dnr:Graph ;
+  dnr:type "VDS.RDF.Graph" ;
+  dnr:withName <http://example.org/my/graph/name> .
+```
+The value of the `dnr:withName` property can be either a URI or a blank node.
+
+## Specifying the NodeFactory to use
+
+You can configure a graph to use a specific NodeFactory instance for instantiating its nodes.
+This factory will be used when loading data into the graph.
+
+```turtle
+@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+
+_:nodeFactory a dnr:NodeFactory ;
+  dnr:type "VDS.RDF.NodeFactory" .
+
+_:graph a dnr:Graph ;
+  dnr:type "VDS.RDF.Graph" ;
+  dnr:withName <http://example.org/my/graph/name> ;
+  dnr:usingNodeFactory _:nodeFactory .
+```
+
+The NodeFactory options can also be configured. 
+See [Configuring Node Factories](node_factory.md)) for more information.
+
+## Specifying the UriFactory to use
+
+You can configure a graph to use a specific NodeFactory instance for instantiating its nodes.
+This factory will be used when loading data into the graph.
+
+```turtle
+@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+
+_:uriFactory a dnr:UriFactory ;
+   dnr:type "VDS.RDF.CachingUriFactory" .
+
+_:graph a dnr:Graph ;
+  dnr:type "VDS.RDF.Graph" ;
+  dnr:withName <http://example.org/my/graph/name> ;
+  dnr:usingUriFactory _:uriFactory .
+```
+
+The UriFactory options can also be configured.
+See [Configuring URI Factories](uri_factory.md)) for more information.
+
 
 ## Data Source Configuration 
 

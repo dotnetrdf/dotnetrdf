@@ -53,23 +53,72 @@ namespace VDS.RDF.Configuration
             obj = null;
             IGraph output;
 
+            // Check whether to create with a name
+            INode nameNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+                g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyWithName)));
+            
             // Check whether to use a specific Triple Collection
-            INode collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingTripleCollection)));
+            INode collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, 
+                g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingTripleCollection)));
+
+            INode nodeFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+                g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingNodeFactory)));
+
+            INode uriFactoryNode = ConfigurationLoader.GetConfigurationNode(g, objNode,
+                g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingUriFactory)));
 
             try
             {
-                if (collectionNode == null)
-                {
-                    // Simple Graph creation
-                    output = (IGraph)Activator.CreateInstance(targetType);
-                }
-                else
+                BaseTripleCollection tripleCollection = null;
+                if (collectionNode != null)
                 {
                     // Graph with custom triple collection
-                    var tripleCollection = ConfigurationLoader.LoadObject(g, collectionNode) as BaseTripleCollection;
-                    if (tripleCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Graph identified by the Node '" + objNode.ToString() + "' as the dnr:usingTripleCollection points to an object which cannot be loaded as an instance of the required type BaseTripleCollection");
-                    output = (IGraph)Activator.CreateInstance(targetType, new object[] { tripleCollection });
+                    tripleCollection =
+                        ConfigurationLoader.LoadObject(g, collectionNode) as BaseTripleCollection;
+                    if (tripleCollection == null)
+                        throw new DotNetRdfConfigurationException(
+                            "Unable to load the Graph identified by the Node '" + objNode.ToString() +
+                            "' as the dnr:usingTripleCollection points to an object which cannot be loaded as an instance of the required type BaseTripleCollection");
                 }
+
+                INodeFactory nodeFactory = null;
+                if (nodeFactoryNode != null)
+                {
+                    nodeFactory = ConfigurationLoader.LoadObject(g, nodeFactoryNode) as INodeFactory;
+                    if (nodeFactory == null)
+                    {
+                        throw new DotNetRdfConfigurationException(
+                            $"Unable to load the Graph identified by the node '{objNode.ToString()}'" +
+                            "as the dnr:usingNodeFactory property points to an object which cannot be loaded as an instance of the required type INodeFactory.");
+                    }
+                }
+
+                IRefNode graphName = null;
+                if (nameNode != null)
+                {
+                    if (nameNode is not IRefNode refNode)
+                    {
+                        throw new DotNetRdfConfigurationException(
+                            $"Unable to create named graph identified by the node '{objNode.ToString()}'. Graph name must be either a URI or a blank node.");
+                    }
+
+                    graphName = refNode;
+                }
+
+                IUriFactory uriFactory = null;
+                if (uriFactoryNode != null)
+                {
+                    uriFactory = ConfigurationLoader.LoadObject(g, uriFactoryNode) as IUriFactory;
+                    if (uriFactory == null)
+                    {
+                        throw new DotNetRdfConfigurationException(
+                            $"Unable to load the Graph identified by the node '{objNode.ToString()}'" +
+                            "as the dnr:withUriFactory property points to an object which cannot be loaded as an instance of the required type IUriFactory.");
+                    }
+                }
+
+                output = (IGraph)Activator.CreateInstance(targetType, graphName, nodeFactory, uriFactory,
+                    tripleCollection, false);
             }
             catch
             {

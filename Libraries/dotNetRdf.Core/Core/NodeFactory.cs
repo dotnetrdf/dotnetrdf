@@ -79,6 +79,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Creates a new Node Factory with default settings.
+        /// </summary>
+        public NodeFactory(): this(new NodeFactoryOptions()) {}
+
+        /// <summary>
         /// Creates a new Node Factory.
         /// </summary>
         /// <param name="options">Configuration options for this node factory.</param>
