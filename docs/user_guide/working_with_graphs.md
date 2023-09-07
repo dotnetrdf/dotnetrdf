@@ -140,6 +140,19 @@ ts = g.GetTriplesWithPredicate(rdfType);
 ts = g.GetTriplesWithObject(person);
 ```
 
+From dotNetRDF 3.1 the `Triples` property of a graph also supports tuple-based indexing.
+You can use a three-tuple of INode instances (or null in any of the three positions) to return an enumeration of all triples with matching nodes.
+
+```csharp
+// Building on the preceding example we can also find triples in the following ways:
+
+// All triples with a given subject
+ts = g.Triples[(select, null, null)];
+
+// All triples with a given predicate and object
+ts = g.Triples[(null, rdfType, person)];
+```
+
 ## Merging Graphs
 
 The `Merge(…)` method allows for Graphs to be merged together. The method takes an IGraph as an argument and then has an optional second argument which is a Boolean indicating whether to preserve the original Graph URIs associated with Nodes.

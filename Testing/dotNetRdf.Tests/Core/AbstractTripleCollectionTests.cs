@@ -28,6 +28,8 @@ using System;
 using System.Linq;
 using Xunit;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
+using NJsonSchema.Infrastructure;
 
 namespace VDS.RDF
 {
@@ -367,6 +369,54 @@ namespace VDS.RDF
                 .Should().BeEmpty();
             collection.QuotedWithSubjectPredicate(NodeFactory.CreateUriNode("ex:s"), NodeFactory.CreateUriNode("ex:p"))
                 .Should().Contain(quotedTriple).And.NotContain(assertedTriple);
+        }
+
+        [Fact]
+        public void CollectionTupleIndexing()
+        {
+            BaseTripleCollection collection = GetInstance();
+            INode a = NodeFactory.CreateUriNode("ex:a");
+            INode b = NodeFactory.CreateUriNode("ex:b");
+            INode c = NodeFactory.CreateUriNode("ex:c");
+            INode d = NodeFactory.CreateUriNode("ex:d");
+            INode x = NodeFactory.CreateUriNode("ex:x");
+            INode b1 = NodeFactory.CreateBlankNode("b1");
+            INode l1 = NodeFactory.CreateLiteralNode("l1");
+            INode q1 = NodeFactory.CreateTripleNode(new Triple(a, b, c));
+            var t1 = new Triple(a,b,c);
+            var t2 = new Triple(a,b, b1);
+            var t3 = new Triple(b1, d, l1);
+            var t4 = new Triple(a, d, q1);
+            var t5 = new Triple(x, b, c);
+            collection.Add(t1);
+            collection.Add(t2);
+            collection.Add(t3);
+            collection.Add(t4);
+            collection.Add(t5);
+
+            // subject match
+            collection[(b1, null, null)].Should().ContainSingle(t => t.Equals(t3));
+            collection[(d, null, null)].Should().BeEmpty();
+            // subject predicate match
+            collection[(a, d, null)].Should().ContainSingle(t => t.Equals(t4));
+            collection[(a, x, null)].Should().BeEmpty();
+            // subject object match
+            collection[(a, null, c)].Should().ContainSingle(t => t.Equals(t1));
+            collection[(a, null, d)].Should().BeEmpty();
+            // predicate match
+            collection[(null, d, null)].ToList().Should().HaveCount(2).And.Contain(t3).And.Contain(t4);
+            collection[(null, x, null)].Should().BeEmpty();
+            // predicate object match
+            collection[(null, d, l1)].Should().ContainSingle(t => t.Equals(t3));
+            collection[(null, d, b1)].Should().BeEmpty();
+            
+            // subject object match
+            collection[(a, null, c)].Should().ContainSingle(t => t.Equals(t1));
+            collection[(a, null, d)].Should().BeEmpty();
+
+            // subject predicate object match
+            collection[(a, d, q1)].Should().ContainSingle(t=> t.Equals(t4));
+            collection[(a, b, q1)].Should().BeEmpty();
         }
     }
 

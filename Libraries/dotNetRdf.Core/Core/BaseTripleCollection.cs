@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF
 {
@@ -91,6 +92,46 @@ namespace VDS.RDF
         /// <returns></returns>
         /// <exception cref="KeyNotFoundException">Thrown if the given Triple doesn't exist.</exception>
         public abstract Triple this[Triple t] { get; }
+
+        /// <summary>
+        /// Gets the triples that match the provided pattern.
+        /// </summary>
+        /// <param name="pattern">A tuple of subject, predicate and object node. Each item in the tuple is nullable, with a null value indicating a wildcard for matching in that position.</param>
+        public virtual IEnumerable<Triple> this[(INode s, INode p, INode o) pattern]
+        {
+            get
+            {
+                if (pattern.s == null)
+                {
+                    if (pattern.p == null)
+                    {
+                        return pattern.o == null ? this : this.WithObject(pattern.o);
+                    }
+
+                    return pattern.o == null
+                        ? this.WithPredicate(pattern.p)
+                        : this.WithPredicateObject(pattern.p, pattern.o);
+                }
+
+                if (pattern.p == null)
+                {
+                    return pattern.o == null
+                        ? this.WithSubject(pattern.s)
+                        : this.WithSubjectObject(pattern.s, pattern.o);
+                }
+
+                if (pattern.o == null) return this.WithSubjectPredicate(pattern.s, pattern.p);
+                try
+                {
+                    Triple t = this[new Triple(pattern.s, pattern.p, pattern.o)];
+                    return t.AsEnumerable();
+                }
+                catch (KeyNotFoundException)
+                {
+                    return Enumerable.Empty<Triple>();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets all the nodes which are objects of asserted triples in the triple collection.
