@@ -1,6 +1,8 @@
 ﻿Change Log
 ==========
 
+ENHANCEMENT: The `BaseTripleCollection` class (which is the type of the `Triples` property on `IGraph`) now supports indexing with a three-tuple of nullable INode instances as a more compact way to use the existing WithSubject(), WithSubjectPredicate() etc. methods.
+ENHANCEMENT: The ConfigurationLoader now supports creating NodeFactory and UriFactory instances and using them to configure Graphs and Triple Stores.
 ENHANCEMENT: Language tag validation in the `NodeFactory` now supports three modes. `LanguageTagValidationMode.None` disables langauge tag validation. `LanguageTagValidationMode.Turtle` validates language tags against the more relaxed definition in the Turtle 1.1 specification. `LanguageTagValidationMode.WellFormed` validates language tags against the stricter BCP-47 production for well-formed tags. The default validation mode is now set to `LanguageTagValidationMode.Turtle`. The properties `NodeFactory.ValidateLanguageTags` and `NodeFactoryOptions.ValidateLanguageTags` are both deprecated and replaced by `INodeFactory.LanguageTagValidation` and `NodeFactoryOptions.LanguageTagValidation` respectively. Thanks to @IS4Code for their suggestions and input on this. (#565)
 FIX: Fix for the code that detects compressable collections which should ensure that rdf:List collections that can be represented in compressed syntax in Turtle/N3/TriG are properly compressed, and to ensure that oddly shaped lists where list nodes have multiple or missing rdf:first triples or multiple rdf:rest triples do not cause the serialisation process to throw an exception.  Thanks to @faubulous for the report (#519, #575)
 
