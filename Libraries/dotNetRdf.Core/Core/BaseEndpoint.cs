@@ -35,6 +35,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base class for HTTP endpoints.
     /// </summary>
+    [Obsolete("This class is obsolete and will be removed in a future release.")]
     public abstract class BaseEndpoint
         : IConfigurationSerializable
     {
