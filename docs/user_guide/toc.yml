@@ -23,6 +23,8 @@
       href: updating_with_sparql.md
     - name: Formats Supported
       href: formats.md
+    - name: dotNetRdf Assembly Signing
+      href: assembly_signing.md
 - name: Going Deeper
   href: going_deeper.md
   items:

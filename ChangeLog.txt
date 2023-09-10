@@ -1,10 +1,16 @@
 ﻿Change Log
 ==========
 
-ENHANCEMENT: The `BaseTripleCollection` class (which is the type of the `Triples` property on `IGraph`) now supports indexing with a three-tuple of nullable INode instances as a more compact way to use the existing WithSubject(), WithSubjectPredicate() etc. methods.
-ENHANCEMENT: The ConfigurationLoader now supports creating NodeFactory and UriFactory instances and using them to configure Graphs and Triple Stores.
+3.1
+---
+
+FIX: We marked a few additional APIs as obsolete. These are mostly internal/protected APIs so this change will only affect users who are extending the affected classes. The APIs that have been deprecated are those that are internally implemented using the old HttpWebRequest web APIs and all of them have alternatives that are implemented uing the more modern HttpClient API. (#88)
+FIX: The processing of a SPARQL zero-or-more property path was fixed to properly handle the case where there is no initial context and the path must be treated as matching all triples that match the subject and object elements of the triple pattern. Thanks to @giacomociti for the bug report and repro. (#571)
+ENHANCEMENT: The `BaseTripleCollection` class (which is the type of the `Triples` property on `IGraph`) now supports indexing with a three-tuple of nullable INode instances as a more compact way to use the existing WithSubject(), WithSubjectPredicate() etc. methods. e.g. graph.Triples[(s, p, null)] returns an enumeration of all triples with the specified subject and predicate nodes. (#498)
+ENHANCEMENT: The ConfigurationLoader now supports creating NodeFactory and UriFactory instances and using them to configure Graphs and Triple Stores. It has also been updated to provide a way to set the name of a graph independetly of the BaseUri of the graph. (#500)
 ENHANCEMENT: Language tag validation in the `NodeFactory` now supports three modes. `LanguageTagValidationMode.None` disables langauge tag validation. `LanguageTagValidationMode.Turtle` validates language tags against the more relaxed definition in the Turtle 1.1 specification. `LanguageTagValidationMode.WellFormed` validates language tags against the stricter BCP-47 production for well-formed tags. The default validation mode is now set to `LanguageTagValidationMode.Turtle`. The properties `NodeFactory.ValidateLanguageTags` and `NodeFactoryOptions.ValidateLanguageTags` are both deprecated and replaced by `INodeFactory.LanguageTagValidation` and `NodeFactoryOptions.LanguageTagValidation` respectively. Thanks to @IS4Code for their suggestions and input on this. (#565)
 FIX: Fix for the code that detects compressable collections which should ensure that rdf:List collections that can be represented in compressed syntax in Turtle/N3/TriG are properly compressed, and to ensure that oddly shaped lists where list nodes have multiple or missing rdf:first triples or multiple rdf:rest triples do not cause the serialisation process to throw an exception.  Thanks to @faubulous for the report (#519, #575)
+DOCUMENTATION: Add documentation about the way we now sign the assemblies, how that affects the use of the assemblies we distribute and our recommendation for users who need signed assemblies for full-trust situations.
 
 3.0.1
 -----

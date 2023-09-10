@@ -12,3 +12,5 @@ This section contains the following sections:
     In line with the deprecation policy, we have (where possible) retained the global static as a way of configuring a global default, but marked the property as deprecated. 
     In a small number of cases this has not been possible and the static property has been removed.
     The [Global Options Changes](global_options_changes.md) goes through the changes made and how to migrate code that makes use of those properties.
+  * We changed [the way in which the dotNetRDF assemblies are signed](assembly_signing.md) which may in certain cases prevent the assemblies being referenced. 
+    Typically these will be cases where the application is assuming/requiring strong trust in the assemblies and where we would recommend building the assemblies from source and signing with your own key.
