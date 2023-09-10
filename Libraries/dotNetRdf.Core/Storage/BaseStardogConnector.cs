@@ -2078,7 +2078,7 @@ namespace VDS.RDF.Storage
         /// Adds Stardog specific request headers; reasoning needed for &lt; 2.2.
         /// </summary>
         /// <param name="request"></param>
-        [Obsolete("This method is obsolete and will be removed in a future release. Replaced by AddStartdogHeaders(HttpRequestMessage).")]
+        [Obsolete("This method is obsolete and will be removed in a future release. Replaced by AddStardogHeaders(HttpRequestMessage).")]
         protected virtual void AddStardogHeaders(HttpWebRequest request)
         {
 #if !NETCORE

@@ -341,6 +341,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("This method is obsolete and will be removed in a future release.")]
         protected internal void SaveGraphAsync(HttpWebRequest request, IRdfWriter writer, IGraph g, AsyncStorageCallback callback, object state)
         {
             request.BeginGetRequestStream(r =>
@@ -556,6 +557,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete.</param>
         /// <param name="callback">Callback.</param>
         /// <param name="state">State to pass to the callback.</param>
+        [Obsolete("This method is obsolete and will be removed in a future release")]
         protected internal void DeleteGraphAsync(HttpWebRequest request, bool allow404, string graphUri, AsyncStorageCallback callback, object state)
         {
             request.BeginGetResponse(r =>
