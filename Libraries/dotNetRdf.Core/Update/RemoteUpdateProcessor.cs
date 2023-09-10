@@ -35,6 +35,7 @@ namespace VDS.RDF.Update
     /// </summary>
     public class RemoteUpdateProcessor : ISparqlUpdateProcessor
     {
+        [Obsolete]
         private readonly SparqlRemoteUpdateEndpoint _endpoint;
         private readonly SparqlUpdateClient _client;
 

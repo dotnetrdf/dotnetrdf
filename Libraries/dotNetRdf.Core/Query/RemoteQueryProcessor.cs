@@ -37,6 +37,7 @@ namespace VDS.RDF.Query
     public class RemoteQueryProcessor
         : ISparqlQueryProcessor
     {
+        [Obsolete]
         private readonly SparqlRemoteEndpoint _endpoint;
         private readonly ISparqlQueryClient _client;
         private readonly SparqlFormatter _formatter = new SparqlFormatter();
