@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using Xunit;
@@ -39,6 +40,7 @@ namespace VDS.RDF.Query
    public class RemoteEndpoints
     {
         const int AsyncTimeout = 45000;
+        public static readonly HttpClient HttpClient = new();
 
         public static SparqlRemoteEndpoint GetQueryEndpoint()
         {

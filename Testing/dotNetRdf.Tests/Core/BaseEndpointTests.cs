@@ -5,6 +5,7 @@ using Xunit;
 
 namespace VDS.RDF.Core
 {
+    [Obsolete("Tests for obsolete class")]
     public class BaseEndpointTests
     {
         [Fact]
@@ -93,6 +94,7 @@ namespace VDS.RDF.Core
         }
     }
 
+    [Obsolete]
     class TestEndpoint : BaseEndpoint
     {
         public TestEndpoint(Uri target) : base(target) { }

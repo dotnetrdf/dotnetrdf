@@ -31,284 +31,246 @@ using Xunit;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
+using System.Net.Http;
+using VDS.RDF.Update;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Storage
 {
     public class ReadWriteSparqlTests
     {
-        private readonly NTriplesFormatter _formatter = new NTriplesFormatter();
+        private readonly ITestOutputHelper _testOutputHelper;
+        private readonly NTriplesFormatter _formatter = new();
+        private static readonly HttpClient HttpClient = new();
+
+        public ReadWriteSparqlTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
 
         public static ReadWriteSparqlConnector GetConnection()
         {
-            return new ReadWriteSparqlConnector(RemoteEndpoints.GetQueryEndpoint(), RemoteEndpoints.GetUpdateEndpoint());
+            Skip.IfNot(TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS),
+                "Test Config marks IIS as unavailable, cannot run test");
+            return new ReadWriteSparqlConnector(
+                new SparqlQueryClient(HttpClient,
+                    new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri))),
+                new SparqlUpdateClient(HttpClient,
+                    new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri))));
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlSaveGraph()
         {
-            try
+            var g = new Graph();
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            g.BaseUri = new Uri("http://example.org/readWriteTest");
+
+            //Save Graph to ReadWriteSparql
+            ReadWriteSparqlConnector readWrite = GetConnection();
+            readWrite.SaveGraph(g);
+            _testOutputHelper.WriteLine("Graph saved to ReadWriteSparql OK");
+
+            //Now retrieve Graph from ReadWriteSparql
+            var h = new Graph();
+            readWrite.LoadGraph(h, "http://example.org/readWriteTest");
+
+            _testOutputHelper.WriteLine();
+            foreach (Triple t in h.Triples)
             {
-                var g = new Graph();
-                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
-                g.BaseUri = new Uri("http://example.org/readWriteTest");
-
-                //Save Graph to ReadWriteSparql
-                ReadWriteSparqlConnector readWrite = GetConnection();
-                readWrite.SaveGraph(g);
-                Console.WriteLine("Graph saved to ReadWriteSparql OK");
-
-                //Now retrieve Graph from ReadWriteSparql
-                var h = new Graph();
-                readWrite.LoadGraph(h, "http://example.org/readWriteTest");
-
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
-                Assert.Equal(g, h);
+                _testOutputHelper.WriteLine(t.ToString(_formatter));
             }
-            finally
-            {
-            }
+
+            Assert.Equal(g, h);
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlSaveDefaultGraph()
         {
-            try
+            var g = new Graph();
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            g.BaseUri = null;
+
+            //Save Graph to ReadWriteSparql
+            ReadWriteSparqlConnector readWrite = GetConnection();
+            readWrite.SaveGraph(g);
+            _testOutputHelper.WriteLine("Graph saved to ReadWriteSparql OK");
+
+            //Now retrieve Graph from ReadWriteSparql
+            var h = new Graph();
+            readWrite.LoadGraph(h, (Uri)null);
+
+            _testOutputHelper.WriteLine();
+            foreach (Triple t in h.Triples)
             {
-                var g = new Graph();
-                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
-                g.BaseUri = null;
-
-                //Save Graph to ReadWriteSparql
-                ReadWriteSparqlConnector readWrite = GetConnection();
-                readWrite.SaveGraph(g);
-                Console.WriteLine("Graph saved to ReadWriteSparql OK");
-
-                //Now retrieve Graph from ReadWriteSparql
-                var h = new Graph();
-                readWrite.LoadGraph(h, (Uri)null);
-
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
-                Assert.Equal(g, h);
-                Assert.Null(h.BaseUri);
+                _testOutputHelper.WriteLine(t.ToString(_formatter));
             }
-            finally
-            {
-            }
+
+            Assert.Equal(g, h);
+            Assert.Null(h.BaseUri);
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlSaveDefaultGraph2()
         {
-            try
+            var g = new Graph();
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            g.BaseUri = null;
+
+            //Save Graph to ReadWriteSparql
+            ReadWriteSparqlConnector readWrite = GetConnection();
+            readWrite.SaveGraph(g);
+            _testOutputHelper.WriteLine("Graph saved to ReadWriteSparql OK");
+
+            //Now retrieve Graph from ReadWriteSparql
+            var h = new Graph();
+            readWrite.LoadGraph(h, (String)null);
+
+            _testOutputHelper.WriteLine();
+            foreach (Triple t in h.Triples)
             {
-                var g = new Graph();
-                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
-                g.BaseUri = null;
-
-                //Save Graph to ReadWriteSparql
-                ReadWriteSparqlConnector readWrite = GetConnection();
-                readWrite.SaveGraph(g);
-                Console.WriteLine("Graph saved to ReadWriteSparql OK");
-
-                //Now retrieve Graph from ReadWriteSparql
-                var h = new Graph();
-                readWrite.LoadGraph(h, (String)null);
-
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
-                Assert.Equal(g, h);
-                Assert.Null(h.BaseUri);
+                _testOutputHelper.WriteLine(t.ToString(_formatter));
             }
-            finally
-            {
-            }
+
+            Assert.Equal(g, h);
+            Assert.Null(h.BaseUri);
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlLoadGraph()
         {
-            try
+            //Ensure that the Graph will be there using the SaveGraph() test
+            StorageReadWriteSparqlSaveGraph();
+
+            var g = new Graph();
+            g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
+            g.BaseUri = new Uri("http://example.org/readWriteTest");
+
+            //Try to load the relevant Graph back from the Store
+            ReadWriteSparqlConnector readWrite = GetConnection();
+
+            var h = new Graph();
+            readWrite.LoadGraph(h, "http://example.org/readWriteTest");
+
+            _testOutputHelper.WriteLine();
+            foreach (Triple t in h.Triples)
             {
-                //Ensure that the Graph will be there using the SaveGraph() test
-                StorageReadWriteSparqlSaveGraph();
-
-                var g = new Graph();
-                g.LoadFromFile(Path.Combine("resources", "InferenceTest.ttl"));
-                g.BaseUri = new Uri("http://example.org/readWriteTest");
-
-                //Try to load the relevant Graph back from the Store
-                ReadWriteSparqlConnector readWrite = GetConnection();
-
-                var h = new Graph();
-                readWrite.LoadGraph(h, "http://example.org/readWriteTest");
-
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(_formatter));
-                }
-
-                Assert.Equal(g, h);
+                _testOutputHelper.WriteLine(t.ToString(_formatter));
             }
-            finally
-            {
-            }
+
+            Assert.Equal(g, h);
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlDeleteGraph()
         {
+            StorageReadWriteSparqlSaveGraph();
+
+            ReadWriteSparqlConnector readWrite = GetConnection();
+            readWrite.DeleteGraph("http://example.org/readWriteTest");
+
+            var g = new Graph();
             try
             {
-                StorageReadWriteSparqlSaveGraph();
-
-                ReadWriteSparqlConnector readWrite = GetConnection();
-                readWrite.DeleteGraph("http://example.org/readWriteTest");
-
-                var g = new Graph();
-                try
-                {
-                    readWrite.LoadGraph(g, "http://example.org/readWriteTest");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Errored as expected since the Graph was deleted");
-                    TestTools.ReportError("Error", ex);
-                }
-                Console.WriteLine();
-
-                //If we do get here without erroring then the Graph should be empty
-                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                readWrite.LoadGraph(g, "http://example.org/readWriteTest");
             }
-            finally
+            catch (Exception ex)
             {
+                _testOutputHelper.WriteLine("Errored as expected since the Graph was deleted");
+                TestTools.ReportError("Error", ex);
             }
+            _testOutputHelper.WriteLine();
+
+            //If we do get here without erroring then the Graph should be empty
+            Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlDeleteDefaultGraph()
         {
+            StorageReadWriteSparqlSaveDefaultGraph();
+
+            ReadWriteSparqlConnector readWrite = GetConnection();
+            readWrite.DeleteGraph((Uri)null);
+
+            var g = new Graph();
             try
             {
-                StorageReadWriteSparqlSaveDefaultGraph();
-
-                ReadWriteSparqlConnector readWrite = GetConnection();
-                readWrite.DeleteGraph((Uri)null);
-
-                var g = new Graph();
-                try
-                {
-                    readWrite.LoadGraph(g, (Uri)null);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Errored as expected since the Graph was deleted");
-                    TestTools.ReportError("Error", ex);
-                }
-                Console.WriteLine();
-
-                //If we do get here without erroring then the Graph should be empty
-                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                readWrite.LoadGraph(g, (Uri)null);
             }
-            finally
+            catch (Exception ex)
             {
+                _testOutputHelper.WriteLine("Errored as expected since the Graph was deleted");
+                TestTools.ReportError("Error", ex);
             }
+            _testOutputHelper.WriteLine();
+
+            //If we do get here without erroring then the Graph should be empty
+            Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlDeleteDefaultGraph2()
         {
+            StorageReadWriteSparqlSaveDefaultGraph();
+
+            ReadWriteSparqlConnector readWrite = GetConnection();
+            readWrite.DeleteGraph((String)null);
+
+            var g = new Graph();
             try
             {
-                StorageReadWriteSparqlSaveDefaultGraph();
-
-                ReadWriteSparqlConnector readWrite = GetConnection();
-                readWrite.DeleteGraph((String)null);
-
-                var g = new Graph();
-                try
-                {
-                    readWrite.LoadGraph(g, (Uri)null);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Errored as expected since the Graph was deleted");
-                    TestTools.ReportError("Error", ex);
-                }
-                Console.WriteLine();
-
-                //If we do get here without erroring then the Graph should be empty
-                Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                readWrite.LoadGraph(g, (Uri)null);
             }
-            finally
+            catch (Exception ex)
             {
+                _testOutputHelper.WriteLine("Errored as expected since the Graph was deleted");
+                TestTools.ReportError("Error", ex);
             }
+            _testOutputHelper.WriteLine();
+
+            //If we do get here without erroring then the Graph should be empty
+            Assert.True(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlAddTriples()
         {
-            try
+            StorageReadWriteSparqlSaveGraph();
+
+            var g = new Graph();
+            var ts = new List<Triple>
             {
-                StorageReadWriteSparqlSaveGraph();
+                new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
+                    g.CreateUriNode(new Uri("http://example.org/predicate")),
+                    g.CreateUriNode(new Uri("http://example.org/object")))
+            };
 
-                var g = new Graph();
-                var ts = new List<Triple>
-                {
-                    new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
-                        g.CreateUriNode(new Uri("http://example.org/predicate")),
-                        g.CreateUriNode(new Uri("http://example.org/object")))
-                };
+            ReadWriteSparqlConnector readWrite = GetConnection();
+            readWrite.UpdateGraph("http://example.org/readWriteTest", ts, null);
 
-                ReadWriteSparqlConnector readWrite = GetConnection();
-                readWrite.UpdateGraph("http://example.org/readWriteTest", ts, null);
-
-                readWrite.LoadGraph(g, "http://example.org/readWriteTest");
-                Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
-            }
-            finally
-            {
-            }
+            readWrite.LoadGraph(g, "http://example.org/readWriteTest");
+            Assert.True(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
         }
 
         [SkippableFact]
         public void StorageReadWriteSparqlRemoveTriples()
         {
-            try
+            StorageReadWriteSparqlSaveGraph();
+
+            var g = new Graph();
+            var ts = new List<Triple>
             {
-                StorageReadWriteSparqlSaveGraph();
+                new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
+                    g.CreateUriNode(new Uri("http://example.org/predicate")),
+                    g.CreateUriNode(new Uri("http://example.org/object")))
+            };
 
-                var g = new Graph();
-                var ts = new List<Triple>
-                {
-                    new Triple(g.CreateUriNode(new Uri("http://example.org/subject")),
-                        g.CreateUriNode(new Uri("http://example.org/predicate")),
-                        g.CreateUriNode(new Uri("http://example.org/object")))
-                };
+            ReadWriteSparqlConnector readWrite = GetConnection();
+            readWrite.UpdateGraph("http://example.org/readWriteTest", null, ts);
 
-                ReadWriteSparqlConnector readWrite = GetConnection();
-                readWrite.UpdateGraph("http://example.org/readWriteTest", null, ts);
-
-                readWrite.LoadGraph(g, "http://example.org/readWriteTest");
-                Assert.True(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
-            }
-            finally
-            {
-            }
+            readWrite.LoadGraph(g, "http://example.org/readWriteTest");
+            Assert.True(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
         }
 
         [SkippableFact]
@@ -345,9 +307,9 @@ namespace VDS.RDF.Storage
             Assert.False(g.IsEmpty, "Graph should be non-empty");
             foreach (Triple t in g.Triples)
             {
-                Console.WriteLine(t.ToString(_formatter));
+                _testOutputHelper.WriteLine(t.ToString(_formatter));
             }
-            Console.WriteLine();
+            _testOutputHelper.WriteLine();
 
             //Try a DROP Graph to see if that works
             command = "DROP GRAPH <http://example.org/Ilson>";
@@ -392,8 +354,8 @@ namespace VDS.RDF.Storage
             var temp = ConfigurationLoader.LoadObject(g, n);
             Assert.IsType<ReadWriteSparqlConnector>(temp);
             var connector2 = (ReadWriteSparqlConnector)temp;
-            Assert.True(EqualityHelper.AreUrisEqual(connector.Endpoint.Uri, connector2.Endpoint.Uri));
-            Assert.True(EqualityHelper.AreUrisEqual(connector.UpdateEndpoint.Uri, connector2.UpdateEndpoint.Uri));
+            Assert.True(EqualityHelper.AreUrisEqual(connector.QueryClient.EndpointUri, connector2.QueryClient.EndpointUri));
+            Assert.True(EqualityHelper.AreUrisEqual(connector.UpdateClient.EndpointUri, connector2.UpdateClient.EndpointUri));
         }
     }
 }

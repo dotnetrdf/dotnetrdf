@@ -912,8 +912,8 @@ namespace VDS.RDF.Query.Spin
                 }
                 SetActiveGraph(g.BaseUri);
                 _hasPendingChanges = true;
-                Storage.UpdateGraph(Configuration.GetTripleAdditionsMonitorUri(g), g.Additions, null);
-                Storage.UpdateGraph(Configuration.GetTripleRemovalsMonitorUri(g), g.Removals, null);
+                Storage.UpdateGraph(g.CreateUriNode(Configuration.GetTripleAdditionsMonitorUri(g)), g.Additions, null);
+                Storage.UpdateGraph(g.CreateUriNode(Configuration.GetTripleRemovalsMonitorUri(g)), g.Removals, null);
                 g.Reset();
             }
         }
