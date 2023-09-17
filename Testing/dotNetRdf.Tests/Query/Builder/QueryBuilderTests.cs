@@ -805,5 +805,21 @@ namespace VDS.RDF.Query.Builder
             Assert.Equal(2, q1.RootGraphPattern.ChildGraphPatterns.First().ChildGraphPatterns.Count());
             Assert.Contains(q1.RootGraphPattern.ChildGraphPatterns.First().ChildGraphPatterns, p => p.ToString().Contains("p2"));
         }
+
+        [Fact]
+        public void CanBuildQueryWithGroupBySeveralVariables()
+        {
+            SparqlQuery query = QueryBuilder.Select(b => b.Sum("c")).As("sum")
+                .Where(p => p
+                    .Subject("x").PredicateUri(new Uri("http://example.org/a")).Object("a")
+                    .Subject("x").PredicateUri(new Uri("http://example.org/b")).Object("b")
+                    .Subject("x").PredicateUri(new Uri("http://example.org/c")).Object("c"))
+                .GroupBy("x")
+                .GroupBy("a")
+                .GroupBy("b")
+                .BuildQuery();
+            query.GroupBy.Variables.Count().Should().Be(3);
+            query.GroupBy.ToString().Should().Be("?x ?a ?b");
+        }
     }
 }

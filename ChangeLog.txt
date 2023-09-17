@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+Latest
+------
+
+FIX: Fixed a bug with handling multiple .GroupBy() calls in the QueryBuilder which was resulting in only the first and last expressions in the GroupBy chain to be added to the built query. Thanks to @jiatao99 for the bug report and proposed fix. (#407)
+
 3.1
 ---
 
