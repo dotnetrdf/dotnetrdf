@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,6 +40,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="set"></param>
         /// <returns></returns>
+        [Obsolete("Replaced by the ISparqlResultFactory interface and its implementation.")]
         public static SparqlResult AsSparqlResult(this ISet set)
         {
             return new SparqlResult(set.Variables.Select(var => new KeyValuePair<string, INode>(var, set[var])));
