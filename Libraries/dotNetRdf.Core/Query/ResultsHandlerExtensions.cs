@@ -77,7 +77,7 @@ namespace VDS.RDF.Query
                     }
                     foreach (ISet s in context.OutputMultiset.Sets)
                     {
-                        if (!handler.HandleResult(s.AsSparqlResult())) ParserHelper.Stop();
+                        if (!handler.HandleResult(context.Options.SparqlResultFactory.MakeResult(s))) ParserHelper.Stop();
                     }
 
                     // The VirtualCount property on SparqlQuery has been marked obsolete

@@ -139,6 +139,10 @@ namespace VDS.RDF.Query
             set => _describer = value;
         }
 
-
+        /// <summary>
+        /// Gets/Sets the <see cref="ISparqlResultFactory"/> which creates the <see cref="ISparqlResult"/> instances
+        /// that are passed to a <see cref="ISparqlResultsHandler"/>.
+        /// </summary>
+        public ISparqlResultFactory SparqlResultFactory { get; set; } = new SparqlResultFactory();
     }
 }
