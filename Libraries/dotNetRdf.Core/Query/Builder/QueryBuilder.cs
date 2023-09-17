@@ -343,7 +343,7 @@ namespace VDS.RDF.Query.Builder
                 }
                 else
                 {
-                    lastGroup.Child = buildGroup(Prefixes);
+                    lastGroup = lastGroup.Child = buildGroup(Prefixes);
                 }
             }
 
