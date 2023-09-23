@@ -50,15 +50,14 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
     public abstract class BaseLuceneSearchProvider
         : IFullTextSearchProvider, IConfigurationSerializable
     {
-        private Directory _indexDir;
+        private readonly Directory _indexDir;
         private DirectoryReader _indexReader;
         private LucSearch.IndexSearcher _searcher;
-        private StandardQueryParser _parser;
+        private readonly StandardQueryParser _parser;
         private LuceneVersion _version;
-        private Analyzer _analyzer;
-        private IFullTextIndexSchema _schema;
-        private bool _autoSync = true;
-        private UriComparer _uriComparer = new UriComparer();
+        private readonly Analyzer _analyzer;
+        private readonly IFullTextIndexSchema _schema;
+        private UriComparer _uriComparer = new();
 
         /// <summary>
         /// Creates a new Base Lucene Search Provider.
@@ -68,13 +67,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="analyzer">Analyzer.</param>
         /// <param name="schema">Index Schema.</param>
         /// <param name="autoSync">Whether the Search Provider should stay in sync with the underlying index.</param>
-        public BaseLuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
+        protected BaseLuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
         {
             _version = ver;
             _indexDir = indexDir;
             _analyzer = analyzer;
             _schema = schema;
-            _autoSync = autoSync;
+            IsAutoSynced = autoSync;
 
             //Create necessary objects
             _indexReader = DirectoryReader.Open(indexDir);
@@ -90,7 +89,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="indexDir">Directory.</param>
         /// <param name="analyzer">Analyzer.</param>
         /// <param name="schema">Index Schema.</param>
-        public BaseLuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
+        protected BaseLuceneSearchProvider(LuceneVersion ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
             : this(ver, indexDir, analyzer, schema, true) { }
 
         /// <summary>
@@ -114,9 +113,9 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             LucSearch.TopDocs docs = _searcher.Search(q, limit);
 
-            return (from doc in docs.ScoreDocs
-                    where doc.Score > scoreThreshold
-                    select _searcher.Doc(doc.Doc).ToResult(doc.Score, _schema));
+            return from doc in docs.ScoreDocs
+                where doc.Score > scoreThreshold
+                select _searcher.Doc(doc.Doc).ToResult(doc.Score, _schema);
         }
 
         /// <summary>
@@ -131,8 +130,8 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             var collector = new DocCollector(scoreThreshold);
             _searcher.Search(q, collector);
-            return (from doc in collector.Documents
-                    select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema));
+            return from doc in collector.Documents
+                select _searcher.Doc(doc.Key).ToResult(doc.Value, _schema);
         }
 
         /// <summary>
@@ -147,8 +146,8 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             LucSearch.Query q = _parser.Parse(text, _schema.IndexField);
             LucSearch.TopDocs docs = _searcher.Search(q, limit);
 
-            return (from doc in docs.ScoreDocs
-                    select _searcher.Doc(doc.Doc).ToResult(doc.Score, _schema));
+            return from doc in docs.ScoreDocs
+                select _searcher.Doc(doc.Doc).ToResult(doc.Score, _schema);
         }
 
         /// <summary>
@@ -333,8 +332,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             else
             {
                 var uris = new HashSet<Uri>(graphUris, new UriComparer());
-                if (uris.Count == 0) return results;
-                return results.Where(r => uris.Contains(r.GraphUri));
+                return uris.Count == 0 ? results : results.Where(r => uris.Contains(r.GraphUri));
             }
         }
 
@@ -343,35 +341,30 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         {
             if (graphNames == null) return results;
             var names = new HashSet<IRefNode>(graphNames, new FastNodeComparer());
-            if (names.Count == 0) return results;
-            return results.Where(r => names.Contains(r.GraphName));
+            return names.Count == 0 ? results : results.Where(r => names.Contains(r.GraphName));
         }
 
         /// <summary>
         /// Gets whether this search provider is always seeing the latest state of the index.
         /// </summary>
-        public bool IsAutoSynced
-        {
-            get
-            {
-                return _autoSync;
-            }
-        }
+        public bool IsAutoSynced { get; }
 
         /// <summary>
         /// Ensures that the Index Searcher is searching the current Index unless this feature has been disabled by the user.
         /// </summary>
         private void EnsureCurrent()
         {
-            if (_autoSync)
+            if (!IsAutoSynced)
             {
-                DirectoryReader newReader = DirectoryReader.OpenIfChanged(_indexReader);
-                if (newReader != null)
-                {
-                    _indexReader.Dispose();
-                    _indexReader = newReader;
-                    _searcher = new LucSearch.IndexSearcher(_indexReader);
-                }
+                return;
+            }
+
+            var newReader = DirectoryReader.OpenIfChanged(_indexReader);
+            if (newReader != null)
+            {
+                _indexReader.Dispose();
+                _indexReader = newReader;
+                _searcher = new LucSearch.IndexSearcher(_indexReader);
             }
         }
 
@@ -448,7 +441,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             context.Graph.Assert(searcherObj, index, analyzerObj);
 
             //Serialize auto-sync settings
-            context.Graph.Assert(searcherObj, indexSync, _autoSync.ToLiteral(context.Graph));
+            context.Graph.Assert(searcherObj, indexSync, IsAutoSynced.ToLiteral(context.Graph));
         }
     }
 }

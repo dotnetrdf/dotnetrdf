@@ -102,16 +102,16 @@ namespace VDS.RDF.Configuration
                     INode datasetNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(g.UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                     if (datasetNode == null) throw new DotNetRdfConfigurationException("Unable to load the Full Text Indexed Dataset specified by the Node '" + objNode.ToString() + "' as there was no value specified for the required dnr:usingDataset property");
                     var tempDataset = ConfigurationLoader.LoadObject(g, datasetNode);
-                    if (tempDataset is ISparqlDataset)
+                    if (tempDataset is ISparqlDataset sparqlDataset)
                     {
                         //Then load the indexer associated with the dataset
                         INode indexerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, indexerProperty);
                         if (indexerNode == null) throw new DotNetRdfConfigurationException("Unable to load the Full Text Indexed Dataset specified by the Node '" + objNode.ToString() + " as there was no value specified for the required dnr-ft:indexer property");
                         var tempIndexer = ConfigurationLoader.LoadObject(g, indexerNode);
-                        if (tempIndexer is IFullTextIndexer)
+                        if (tempIndexer is IFullTextIndexer fullTextIndexer)
                         {
                             var indexNow = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(FullTextHelper.PropertyIndexNow)), false);
-                            obj = new FullTextIndexedDataset((ISparqlDataset)tempDataset, (IFullTextIndexer)tempIndexer, indexNow);
+                            obj = new FullTextIndexedDataset(sparqlDataset, fullTextIndexer, indexNow);
                         }
                         else
                         {
@@ -129,9 +129,9 @@ namespace VDS.RDF.Configuration
                     INode providerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, searcher);
                     if (providerNode == null) throw new DotNetRdfConfigurationException("Unable to load the Full Text Optimiser specified by the Node '" + objNode.ToString() + "' as there was no value specified for the required dnr-ft:searcher property");
                     var tempSearcher = ConfigurationLoader.LoadObject(g, providerNode);
-                    if (tempSearcher is IFullTextSearchProvider)
+                    if (tempSearcher is IFullTextSearchProvider fullTextSearchProvider)
                     {
-                        obj = new FullTextOptimiser((IFullTextSearchProvider)tempSearcher);
+                        obj = new FullTextOptimiser(fullTextSearchProvider);
                     }
                     else
                     {
@@ -149,45 +149,31 @@ namespace VDS.RDF.Configuration
                     tempIndex = ConfigurationLoader.GetConfigurationNode(g, objNode, index);
                     if (tempIndex == null) throw new DotNetRdfConfigurationException("Unable to load the Lucene Indexer specified by the Node '" + objNode.ToString() + "' as there was no value specified for the required dnr-ft:index property");
                     tempIndex = ConfigurationLoader.LoadObject(g, (INode)tempIndex);
-                    if (tempIndex is Directory)
+                    if (tempIndex is Directory directory)
                     {
                         //Next get the Analyzer (assume Standard if none specified)
                         tempAnalyzer = ConfigurationLoader.GetConfigurationNode(g, objNode, analyzer);
-                        if (tempAnalyzer == null)
-                        {
-                            tempAnalyzer = new StandardAnalyzer(GetLuceneVersion(ver));
-                        } 
-                        else 
-                        {
-                            tempAnalyzer = ConfigurationLoader.LoadObject(g, (INode)tempAnalyzer);
-                        }
+                        tempAnalyzer = tempAnalyzer == null ? new StandardAnalyzer(GetLuceneVersion(ver)) : ConfigurationLoader.LoadObject(g, (INode)tempAnalyzer);
 
-                        if (tempAnalyzer is Analyzer)
+                        if (tempAnalyzer is Analyzer indexAnalyzer)
                         {
                             //Finally get the Schema (assume Default if none specified)
                             tempSchema = ConfigurationLoader.GetConfigurationNode(g, objNode, schema);
-                            if (tempSchema == null)
-                            {
-                                tempSchema = new DefaultIndexSchema();
-                            }
-                            else
-                            {
-                                tempSchema = ConfigurationLoader.LoadObject(g, (INode)tempSchema);
-                            }
+                            tempSchema = tempSchema == null ? new DefaultIndexSchema() : ConfigurationLoader.LoadObject(g, (INode)tempSchema);
 
-                            if (tempSchema is IFullTextIndexSchema)
+                            if (tempSchema is IFullTextIndexSchema fullTextIndexSchema)
                             {
                                 //Now we can create the Object
                                 switch (targetType.FullName)
                                 {
                                     case LuceneObjectsIndexer:
-                                        obj = new LuceneObjectsIndexer((Directory)tempIndex, (Analyzer)tempAnalyzer, (IFullTextIndexSchema)tempSchema);
+                                        obj = new LuceneObjectsIndexer(directory, indexAnalyzer, fullTextIndexSchema);
                                         break;
                                     case LucenePredicatesIndexer:
-                                        obj = new LucenePredicatesIndexer((Directory)tempIndex, (Analyzer)tempAnalyzer, (IFullTextIndexSchema)tempSchema);
+                                        obj = new LucenePredicatesIndexer(directory, indexAnalyzer, fullTextIndexSchema);
                                         break;
                                     case LuceneSubjectsIndexer:
-                                        obj = new LuceneSubjectsIndexer((Directory)tempIndex, (Analyzer)tempAnalyzer, (IFullTextIndexSchema)tempSchema);
+                                        obj = new LuceneSubjectsIndexer(directory, indexAnalyzer, fullTextIndexSchema);
                                         break;
                                     case LuceneSearchProvider:
                                         //Before the Search Provider has been loaded determine whether we need to carry out auto-indexing
@@ -206,24 +192,24 @@ namespace VDS.RDF.Configuration
                                                 foreach (INode sourceNode in sources)
                                                 {
                                                     var source = ConfigurationLoader.LoadObject(g, sourceNode);
-                                                    if (source is ISparqlDataset)
+                                                    switch (source)
                                                     {
-                                                        indexer.Index((ISparqlDataset)source);
-                                                    }
-                                                    else if (source is ITripleStore)
-                                                    {
-                                                        foreach (IGraph graph in ((ITripleStore)source).Graphs)
-                                                        {
+                                                        case ISparqlDataset dataset:
+                                                            indexer.Index(dataset);
+                                                            break;
+                                                        case ITripleStore store:
+                                                            {
+                                                                foreach (IGraph graph in store.Graphs)
+                                                                {
+                                                                    indexer.Index(graph);
+                                                                }
+                                                                break;
+                                                            }
+                                                        case IGraph graph:
                                                             indexer.Index(graph);
-                                                        }
-                                                    }
-                                                    else if (source is IGraph)
-                                                    {
-                                                        indexer.Index((IGraph)source);
-                                                    }
-                                                    else
-                                                    {
-                                                        throw new DotNetRdfConfigurationException("Unable to load the Lucene Search Provider specified by the Node '" + objNode.ToString() + "' as a value given for the dnr-ft:buildIndexFor property ('" + sourceNode.ToString() + "') pointed to an Object which could not be loaded as a type that implements one of the required interfaces: IGraph, ITripleStore or ISparqlDataset");
+                                                            break;
+                                                        default:
+                                                            throw new DotNetRdfConfigurationException("Unable to load the Lucene Search Provider specified by the Node '" + objNode.ToString() + "' as a value given for the dnr-ft:buildIndexFor property ('" + sourceNode.ToString() + "') pointed to an Object which could not be loaded as a type that implements one of the required interfaces: IGraph, ITripleStore or ISparqlDataset");
                                                     }
                                                 }
                                             } 
@@ -235,7 +221,7 @@ namespace VDS.RDF.Configuration
 
                                         //Then we actually load the Search Provider
                                         var autoSync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(g.UriFactory.Create(FullTextHelper.PropertyIndexSync)), true);
-                                        obj = new LuceneSearchProvider(GetLuceneVersion(ver), (Directory)tempIndex, (Analyzer)tempAnalyzer, (IFullTextIndexSchema)tempSchema, autoSync);
+                                        obj = new LuceneSearchProvider(GetLuceneVersion(ver), directory, indexAnalyzer, fullTextIndexSchema, autoSync);
                                         break;
                                 }
                             }

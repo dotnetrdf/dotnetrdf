@@ -97,7 +97,6 @@ namespace VDS.RDF.Query.FullText.Search
         public INode Node
         {
             get; 
-            private set;
         }
 
         /// <summary>
@@ -106,7 +105,6 @@ namespace VDS.RDF.Query.FullText.Search
         public double Score
         {
             get; 
-            private set;
         }
 
         /// <summary>
