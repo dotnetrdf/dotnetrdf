@@ -44,14 +44,14 @@ namespace VDS.RDF.Query
 {
     static class FullTextExtensions
     {
-        private static NodeFactory _factory = new NodeFactory(new NodeFactoryOptions());
+        private static readonly NodeFactory NodeFactory = new(new NodeFactoryOptions());
         private static SHA256Managed _sha256;
 
         internal static ISet ToSet(this IFullTextSearchResult result, String matchVar, String scoreVar)
         {
             var s = new Set();
             if (matchVar != null) s.Add(matchVar, result.Node);
-            if (scoreVar != null) s.Add(scoreVar, result.Score.ToLiteral(_factory));
+            if (scoreVar != null) s.Add(scoreVar, result.Score.ToLiteral(NodeFactory));
             return s;
         }
 
@@ -74,8 +74,8 @@ namespace VDS.RDF.Query
             IIndexableField graphField = doc.GetField(schema.GraphField);
             IRefNode graphName = graphField == null ? null :
                 graphField.GetStringValue().StartsWith("_:") ? 
-                (IRefNode)_factory.CreateBlankNode(graphField.GetStringValue()) :
-                _factory.CreateUriNode(_factory.UriFactory.Create(graphField.GetStringValue()));
+                NodeFactory.CreateBlankNode(graphField.GetStringValue()) :
+                NodeFactory.CreateUriNode(NodeFactory.UriFactory.Create(graphField.GetStringValue()));
 
             //Then get the node value
             IIndexableField nodeValueField = doc.GetField(schema.NodeValueField);
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query
             {
                 case NodeType.Blank:
                     //Can just create a Blank Node
-                    return new FullTextSearchResult(graphName, _factory.CreateBlankNode(nodeValue), score);
+                    return new FullTextSearchResult(graphName, NodeFactory.CreateBlankNode(nodeValue), score);
 
                 case NodeType.Literal:
                     //Need to get Meta field to determine whether we have a language or datatype present
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query
                     if (nodeMetaField == null)
                     {
                         //Assume a Plain Literal
-                        return new FullTextSearchResult(graphName, _factory.CreateLiteralNode(nodeValue), score);
+                        return new FullTextSearchResult(graphName, NodeFactory.CreateLiteralNode(nodeValue), score);
                     }
                     else
                     {
@@ -103,18 +103,18 @@ namespace VDS.RDF.Query
                         if (nodeMeta.StartsWith("@"))
                         {
                             //Language Specified literal
-                            return new FullTextSearchResult(graphName, _factory.CreateLiteralNode(nodeValue, nodeMeta.Substring(1)), score);
+                            return new FullTextSearchResult(graphName, NodeFactory.CreateLiteralNode(nodeValue, nodeMeta.Substring(1)), score);
                         }
                         else
                         {
                             //Assume a Datatyped literal
-                            return new FullTextSearchResult(graphName, _factory.CreateLiteralNode(nodeValue, _factory.UriFactory.Create(nodeMeta)), score);
+                            return new FullTextSearchResult(graphName, NodeFactory.CreateLiteralNode(nodeValue, NodeFactory.UriFactory.Create(nodeMeta)), score);
                         }
                     }
 
                 case NodeType.Uri:
                     //Can just create a URI Node
-                    return new FullTextSearchResult(graphName, _factory.CreateUriNode(_factory.UriFactory.Create(nodeValue)), score);
+                    return new FullTextSearchResult(graphName, NodeFactory.CreateUriNode(NodeFactory.UriFactory.Create(nodeValue)), score);
 
                 default:
                     throw new RdfQueryException("Only Blank, Literal and URI Nodes may be retrieved from a Lucene Document");
@@ -176,10 +176,10 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         internal static String GetSha256Hash(this String s)
         {
-            if (s == null) throw new ArgumentNullException("s");
+            if (s == null) throw new ArgumentNullException(nameof(s));
 
             //Only instantiate the SHA256 class when we first use it
-            if (_sha256 == null) _sha256 = new SHA256Managed();
+            _sha256 ??= new SHA256Managed();
 
             var input = Encoding.UTF8.GetBytes(s);
             var output = _sha256.ComputeHash(input);
@@ -208,10 +208,10 @@ namespace VDS.RDF.Query
             {
                 context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(directory.GetType().FullName + ", Lucene.Net"));
             }
-            else if (directory is FSDirectory)
+            else if (directory is FSDirectory fsDirectory)
             {
                 context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(typeof(FSDirectory).FullName + ", Lucene.Net"));
-                context.Graph.Assert(dirObj, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyFromFile)), context.Graph.CreateLiteralNode(((FSDirectory)directory).Directory.FullName));
+                context.Graph.Assert(dirObj, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyFromFile)), context.Graph.CreateLiteralNode(fsDirectory.Directory.FullName));
             }
             else
             {
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query
             INode analyzerObj = context.NextSubject;
 
             Type t = analyzer.GetType();
-            if (t.GetConstructor(Type.EmptyTypes) != null || t.GetConstructor(new Type[] { typeof(Lucene.Net.Util.LuceneVersion) }) != null)
+            if (t.GetConstructor(Type.EmptyTypes) != null || t.GetConstructor(new[] { typeof(Lucene.Net.Util.LuceneVersion) }) != null)
             {
                 context.Graph.Assert(analyzerObj, rdfType, analyzerClass);
                 context.Graph.Assert(analyzerObj, dnrType, context.Graph.CreateLiteralNode(t.AssemblyQualifiedName));
@@ -269,19 +269,18 @@ namespace VDS.RDF.Query
         {
             INode dnrType = context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.PropertyType));
             INode rdfType = context.Graph.CreateUriNode(context.UriFactory.Create(RdfSpecsHelper.RdfType));
-            var assm = Assembly.GetAssembly(factoryType).FullName;
-            if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
+            var assembly = Assembly.GetAssembly(factoryType).FullName;
+            if (assembly.Contains(',')) assembly = assembly.Substring(0, assembly.IndexOf(','));
 
             //Firstly need to ensure our object factory has been referenced
             var factoryCheck = new SparqlParameterizedString();
             factoryCheck.Namespaces.AddNamespace("dnr", context.UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
-            factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assm + "' . }";
-            var rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
-            if (!rset.Result)
+            factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assembly + "' . }";
+            if (context.Graph.ExecuteQuery(factoryCheck) is SparqlResultSet { Result: false })
             {
                 INode factory = context.Graph.CreateBlankNode();
                 context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(context.UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
-                context.Graph.Assert(new Triple(factory, dnrType, context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assm)));
+                context.Graph.Assert(new Triple(factory, dnrType, context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assembly)));
             }
         }
     }

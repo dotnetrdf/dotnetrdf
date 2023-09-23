@@ -42,8 +42,8 @@ namespace VDS.RDF.Query.Optimisation
     public class FullTextOptimiser
         : IAlgebraOptimiser, IConfigurationSerializable
     {
-        private IFullTextSearchProvider _provider;
-        private IEnumerable<IPropertyFunctionFactory> _factories = new IPropertyFunctionFactory[] { new FullTextPropertyFunctionFactory() };
+        private readonly IFullTextSearchProvider _provider;
+        private readonly IEnumerable<IPropertyFunctionFactory> _factories = new IPropertyFunctionFactory[] { new FullTextPropertyFunctionFactory() };
 
         /// <inheritdoc/>
         public bool UnsafeOptimisation { get; set; }

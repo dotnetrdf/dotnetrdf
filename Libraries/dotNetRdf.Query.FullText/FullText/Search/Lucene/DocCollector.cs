@@ -38,8 +38,8 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         : ICollector
     {
         private Scorer _scorer;
-        private int _currBase = 0;
-        private readonly List<KeyValuePair<int,double>> _docs = new List<KeyValuePair<int,double>>();
+        private int _currBase;
+        private readonly List<KeyValuePair<int,double>> _docs = new();
         private readonly double _scoreThreshold = Double.NaN;
 
         /// <summary>

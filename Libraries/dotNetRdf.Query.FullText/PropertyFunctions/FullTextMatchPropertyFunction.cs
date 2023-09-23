@@ -40,10 +40,12 @@ namespace VDS.RDF.Query.PropertyFunctions
     /// Property Function which does full text matching.
     /// </summary>
     public class FullTextMatchPropertyFunction
-        : ISparqlPropertyFunction, ILeviathanPropertyFunction
+        : ILeviathanPropertyFunction
     {
-        private PatternItem _matchVar, _scoreVar, _searchVar;
-        private List<String> _vars = new List<String>();
+        private readonly PatternItem _matchVar;
+        private readonly PatternItem _scoreVar;
+        private readonly PatternItem _searchVar;
+        private readonly List<String> _vars = new();
         private int? _limit;
         private double? _threshold;
 
@@ -53,7 +55,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <param name="info">Property Function information.</param>
         public FullTextMatchPropertyFunction(PropertyFunctionInfo info)
         {
-            if (info == null) throw new ArgumentNullException("info");
+            if (info == null) throw new ArgumentNullException(nameof(info));
             if (!EqualityHelper.AreUrisEqual(info.FunctionUri, FunctionUri)) throw new ArgumentException("Property Function information is not valid for this function");
 
             //Get basic arguments
@@ -93,29 +95,24 @@ namespace VDS.RDF.Query.PropertyFunctions
                             throw new RdfQueryException("Cannot use a non-numeric constant as the limit/score threshold for full text queries, must use a numeric constant");
                     }
                     break;
-                case 3:
                 default:
                     PatternItem arg1 = info.ObjectArgs[1];
                     PatternItem arg2 = info.ObjectArgs[2];
                     if (!arg1.IsFixed || !arg2.IsFixed) throw new RdfQueryException("Cannot use a variable as the limit/score threshold for full text queries, must use a numeric constant");
                     IValuedNode n1 = ((NodeMatchPattern)arg1).Node.AsValuedNode();
-                    switch (n1.NumericType)
+                    _threshold = n1.NumericType switch
                     {
-                        case SparqlNumericType.NaN:
-                            throw new RdfQueryException("Cannot use a non-numeric constant as the score threshold for full text queries, must use a numeric constant");
-                        default:
-                            _threshold = n1.AsDouble();
-                            break;
-                    }
+                        SparqlNumericType.NaN => throw new RdfQueryException(
+                            "Cannot use a non-numeric constant as the score threshold for full text queries, must use a numeric constant"),
+                        _ => n1.AsDouble()
+                    };
                     IValuedNode n2 = ((NodeMatchPattern)arg2).Node.AsValuedNode();
-                    switch (n2.NumericType)
+                    _limit = n2.NumericType switch
                     {
-                        case SparqlNumericType.NaN:
-                            throw new RdfQueryException("Cannot use a non-numeric constant as the limit for full text queries, must use a numeric constant");
-                        default:
-                            _limit = (int)n2.AsInteger();
-                            break;
-                    }
+                        SparqlNumericType.NaN => throw new RdfQueryException(
+                            "Cannot use a non-numeric constant as the limit for full text queries, must use a numeric constant"),
+                        _ => (int)n2.AsInteger()
+                    };
                     break;
             }
         }
@@ -154,8 +151,10 @@ namespace VDS.RDF.Query.PropertyFunctions
             if (context.InputMultiset.IsEmpty) return context.InputMultiset; //Can abort evaluation if input is null
 
             //Then we need to retrieve the full text search provider
-            var provider = context[FullTextHelper.ContextKey] as IFullTextSearchProvider;
-            if (provider == null) throw new FullTextQueryException("No Full Text Search Provider is available, please ensure you attach a FullTextQueryOptimiser to your query");
+            if (context[FullTextHelper.ContextKey] is not IFullTextSearchProvider provider)
+            {
+                throw new FullTextQueryException("No Full Text Search Provider is available, please ensure you attach a FullTextQueryOptimiser to your query");
+            }
 
             //First determine whether we can apply the limit when talking to the provider
             //Essentially as long as the Match Variable (the one we'll bind results to) is not already
@@ -247,15 +246,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <returns></returns>
         protected IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<IRefNode> graphUris, IFullTextSearchProvider provider, string search)
         {
-            if (_threshold.HasValue)
-            {
-                //Use a Score Threshold
-                return provider.Match(graphUris, search, _threshold.Value);
-            }
-            else
-            {
-                return provider.Match(graphUris, search);
-            }
+            return _threshold.HasValue ? provider.Match(graphUris, search, _threshold.Value) : provider.Match(graphUris, search);
         }
 
         /// <summary>
@@ -268,15 +259,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <returns></returns>
         protected virtual IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<IRefNode> graphUris, IFullTextSearchProvider provider, string search, int limit)
         {
-            if (_threshold.HasValue)
-            {
-                //Use a Score Threshold
-                return provider.Match(graphUris, search, _threshold.Value, limit);
-            }
-            else
-            {
-                return provider.Match(graphUris, search, limit);
-            }
+            return _threshold.HasValue ? provider.Match(graphUris, search, _threshold.Value, limit) : provider.Match(graphUris, search, limit);
         }
     }
 }

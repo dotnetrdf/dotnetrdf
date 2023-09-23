@@ -42,13 +42,11 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <returns></returns>
         public bool IsPropertyFunction(Uri u)
         {
-            switch (u.AbsoluteUri)
+            return u.AbsoluteUri switch
             {
-                case FullTextHelper.FullTextMatchPredicateUri:
-                    return true;
-                default:
-                    return false;
-            }
+                FullTextHelper.FullTextMatchPredicateUri => true,
+                _ => false
+            };
         }
 
         /// <summary>
