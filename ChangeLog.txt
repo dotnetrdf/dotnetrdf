@@ -1,9 +1,10 @@
 ﻿Change Log
 ==========
 
-Latest
+3.1.1
 ------
 
+FIX: Fixed a bug in the JsonLdWriter that caused an error when handling an RDF list with an unreferenced initial blank node. Thanks to @petarhristov94 for the report and repro. (#600)
 FIX: Fixed a bug with handling multiple .GroupBy() calls in the QueryBuilder which was resulting in only the first and last expressions in the GroupBy chain to be added to the built query. Thanks to @jiatao99 for the bug report and proposed fix. (#407)
 ENHANCEMENT: Added `VDS.RDF.Query.ISparqlResultFactory` to allow implementers to specify how an `ISet` of variable bindings are converted to an `ISparqlResult` instance before being passed to the client's `ISparqlResultHandler`. The factory instance to be used can now be set via the `LeviathanQueryOptions.SparqlResultFactory` property. The default implementation creates instances of the `VDS.RDF.SparqlResult` class. Thanks to @jiatao99 for the suggestion. (#478)
 
