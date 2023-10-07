@@ -395,7 +395,8 @@ namespace VDS.RDF.Writing
             if (!RdfSpecsHelper.RdfListRest.Equals(property)) return false;
             var nodeId = node["@id"].Value<string>();
             if (nodeId == null || !JsonLdUtils.IsBlankNodeIdentifier(nodeId)) return false;
-            if (!nodeUsagesMap.ContainsKey(nodeId)) return false;
+            if (!nodeUsagesMap.TryGetValue(nodeId, out Usage usage)) return false;
+            if (usage == null) return false;
 
             var first = node[RdfSpecsHelper.RdfListFirst] as JArray;
             var rest = node[RdfSpecsHelper.RdfListRest] as JArray;
