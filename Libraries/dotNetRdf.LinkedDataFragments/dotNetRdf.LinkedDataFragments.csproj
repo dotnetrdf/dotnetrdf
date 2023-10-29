@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>dotNetRdf.LDF</AssemblyName>
+    <AssemblyTitle>dotNetRdf Linked Data Fragments Support</AssemblyTitle>
+    <RootNamespace>VDS.RDF.LDF</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet Package Metadata. Additional values are inherited from ../Directory.Build.props -->
+    <PackageId>dotNetRdf.LDF</PackageId>
+    <Title>dotNetRdf Linked Data Fragments Support</Title>
+    <Description>Provides support for Linked Data Fragments.</Description>
+    <PackageTags>RDF;LDF;TPF;PQF;linked data fragments;triple pattern fragments;quad pattern fragments</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dotNetRdf.Core\dotNetRdf.Core.csproj" />
+  </ItemGroup>
+
+</Project>
