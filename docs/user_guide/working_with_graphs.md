@@ -58,7 +58,7 @@ The `Triples` property returns a `BaseTripleCollection` object which is a collec
 
 ## Asserting and Retracting Triples
 
-As already seen in the [[Library Overview|Library-Overview]] and [[Hello World|Hello-World]] one of the key functions of the Graph is to allow Triples to be asserted and retracted. For this the `Assert(…)` and `Retract(…)` methods are provided. Both of these methods can take either a single Triple or an enumerable of Triples.
+As already seen in the [Core Concepts](core_concepts.md) and [Hello World](hello_world.md) one of the key functions of the Graph is to allow Triples to be asserted and retracted. For this the `Assert(…)` and `Retract(…)` methods are provided. Both of these methods can take either a single Triple or an enumerable of Triples.
 
 Asserting a triple causes it to be added to the triple collection of the graph, retracting a triple causes the reverse to occur. Depending on the `IGraph` implementation being used additional actions may also be taken as part of the assertion and retraction process.
 
@@ -66,7 +66,7 @@ Asserting a triple causes it to be added to the triple collection of the graph, 
 
 ## Creating Nodes
 
-As also seen in [[Library Overview|Library-Overview]] all Nodes must be created by an `INodeFactory` which all `IGraph` implementations must also implement. Therefore a graph provides `CreateBlankNode(…)`, `CreateLiteralNode(…)` and `CreateURINode(…)`, see the earlier [[Library Overview|Library-Overview]] for usage examples.
+As also seen in [Core Concepts](core_concepts.md) all Nodes must be created by an `INodeFactory` which all `IGraph` implementations must also implement. Therefore a graph provides `CreateBlankNode(…)`, `CreateLiteralNode(…)` and `CreateURINode(…)`, see the earlier [Core Concepts](core_concepts.md) for usage examples.
 
 ## Selecting Nodes
 
@@ -161,7 +161,7 @@ The `Merge(…)` method allows for Graphs to be merged together. The method take
 
 ## Graph Equality
 
-Graph Equality (aka Isomorphism) is supported through use of the standard `Equals(Object obj)` method. We also provide an additional overload `Equals(IGraph g, out Dictionary mapping)` which determines equality and if the Graphs are equivalent returns the mapping of Blank Nodes between the two graphs.  See [[Equality and Comparison|Equality-And-Comparison]] for more discussion of this.
+Graph Equality (aka Isomorphism) is supported through use of the standard `Equals(Object obj)` method. We also provide an additional overload `Equals(IGraph g, out Dictionary mapping)` which determines equality and if the Graphs are equivalent returns the mapping of Blank Nodes between the two graphs.  See [Equality and Comparison](equality_and_comparison.md) for more discussion of this.
 
 ## Graph Difference
 
@@ -169,11 +169,11 @@ If you know two Graphs are different it may be useful to know how they are diffe
 
 ## Loading Graphs
 
-The most common way of loading a Graph is to read RDF from a file/URI as described in [[Reading RDF|Reading-RDF]] but there are other ways to read graphs, for example from persistent storage.
+The most common way of loading a Graph is to read RDF from a file/URI as described in [Reading RDF](reading_rdf.md) but there are other ways to read graphs, for example from persistent storage.
 
 ### Triple Store Backed Graphs
 
-Graphs can also be loaded from native Triple Stores which are accessible through the dotNetRDF API. To use a native Triple Store you'll need to use one of the `IStorageProvider` implementations located in the `VDS.RDF.Storage` namespace. Graphs can be loaded using an appropriate overload of the `LoadGraph()` method, see [[Triple Store Integration|Triple-Store-Integration]] for more details.
+Graphs can also be loaded from native Triple Stores which are accessible through the dotNetRDF API. To use a native Triple Store you'll need to use one of the `IStorageProvider` implementations located in the `VDS.RDF.Storage` namespace. Graphs can be loaded using an appropriate overload of the `LoadGraph()` method, see [Triple Store Integration](triple_store_integration.md) for more details.
 
 ### Using the StoreGraphPersistenceWrapper
 
@@ -232,11 +232,11 @@ public class SparqlLoadExample
 
 ## Saving Graphs
 
-The most common way of saving a Graph is to save it to a file as described in [[Writing RDF|Writing-RDF]] but you can also save it to other forms of persistent storage.
+The most common way of saving a Graph is to save it to a file as described in [Writing RDF](writing_rdf.md) but you can also save it to other forms of persistent storage.
 
 ### Triple Store Backed Graphs
 
-The easiest way to save a Graph to a Triple Store is to use the `SaveGraph()` method of an `IStorageProvider` implementation, see [[Triple Store Integration|Triple-Store-Integration]] for more details.
+The easiest way to save a Graph to a Triple Store is to use the `SaveGraph()` method of an `IStorageProvider` implementation, see [Triple Store Integration](triple_store_integration.md) for more details.
 
 Alternatively you can use the `StoreGraphPersistenceWrapper` class described earlier since any changes made to it are automatically saved to the Store (if your store supports this).
 
@@ -255,9 +255,9 @@ The following is a partial list of concrete `IGraph` implementations provided in
 
 # Tutorial Navigation
 
-The next topic is [[Typed Values and Lists|Typed-Values-And-Lists]], the previous topic was [[Writing RDF|Writing-RDF]].
+The next topic is [Typed Values and Lists](typed_values_and_lists.md), the previous topic was [Writing RDF](writing_rdf.md).
 
 User interesting in learning more may want to jump to the following topics:
 
-* [[Using the Namespace Mapper|Using-The-Namespace-Mapper]]
-* [[Triple Store Integration|Triple-Store-Integration]]
+* [Namespace Mapper](namespace_mapper.md)
+* [Triple Store Integration](triple_store_integration.md)
