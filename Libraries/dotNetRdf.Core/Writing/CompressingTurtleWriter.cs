@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -371,6 +372,7 @@ namespace VDS.RDF.Writing
                     c.Triples.RemoveAt(0);
                     if (c.Triples.Count > 0)
                     {
+                        if (context.PrettyPrint) output.AppendLine("");
                         output.Append(' ');
                     }
                 }

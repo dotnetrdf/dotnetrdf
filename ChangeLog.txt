@@ -1,6 +1,11 @@
 ﻿Change Log
 ==========
 
+Unreleased
+------
+
+FIX: Fixed the formatting of pretty-printed Turtle files to put each item in an RDF collection onto a separate line. Thanks to @MichaelHoffmeisterFesto for the bug report. (#606)
+
 3.1.1
 ------
 
