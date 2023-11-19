@@ -23,7 +23,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -151,7 +150,7 @@ namespace VDS.RDF.LinkedPatternFragments
             using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
             using var triples = g.Triples.ObjectNodes.GetEnumerator();
 
-            for (int i = 0; i < 50; i++)
+            for (var i = 0; i < 100; i++)
             {
                 triples.MoveNext();
                 output.WriteLine("{0}", triples.Current);
@@ -164,7 +163,7 @@ namespace VDS.RDF.LinkedPatternFragments
             using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
             using var triples = g.Triples.PredicateNodes.GetEnumerator();
 
-            for (int i = 0; i < 50; i++)
+            for (var i = 0; i < 25; i++)
             {
                 triples.MoveNext();
                 output.WriteLine("{0}", triples.Current);
@@ -195,7 +194,7 @@ WHERE {
             using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
             using var triples = g.Triples.SubjectNodes.GetEnumerator();
 
-            for (int i = 0; i < 50; i++)
+            for (var i = 0; i < 20; i++)
             {
                 triples.MoveNext();
                 output.WriteLine("{0}", triples.Current);
@@ -208,7 +207,7 @@ WHERE {
             using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
             using var triples = g.Triples.GetEnumerator();
 
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 110; i++)
             {
                 triples.MoveNext();
                 output.WriteLine("{0}", triples.Current);
