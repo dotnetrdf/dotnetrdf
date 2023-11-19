@@ -1,0 +1,810 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:123_Democratic_Alliance",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-12-03"
+      }
+    },
+    {
+      "@id": "dbpedia:2K_Australia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-04-16"
+      }
+    },
+    {
+      "@id": "dbpedia:3Com",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-04-12"
+      }
+    },
+    {
+      "@id": "dbpedia:3rd_Ward_Brooklyn",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-10-09"
+      }
+    },
+    {
+      "@id": "dbpedia:@Home_Network",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:A._A._Arms",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-08-12"
+      }
+    },
+    {
+      "@id": "dbpedia:AEG",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-10-02"
+      }
+    },
+    {
+      "@id": "dbpedia:AMCARA_Broadcasting_Network",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "2010-10-22"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "2014-01-16"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:AMR_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-12-09"
+      }
+    },
+    {
+      "@id": "dbpedia:AQ_Interactive",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-10-05"
+      }
+    },
+    {
+      "@id": "dbpedia:ASC_Games",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-01-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Aboriginal_and_Torres_Strait_Islander_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Acclaim_Cheltenham",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-09-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Acclaim_Entertainment",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-09-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Acclaim_Games",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-08-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Acclaim_Studios_Austin",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-09-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Action_Congress_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1981-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Action_Group_(Nigeria)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1966-01-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Action_Party_(Italy)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1947-04-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Adelphia_Communications_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-07-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Admiralty_Research_Establishment",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Advancement_Unification_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-10-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Advenza_Freight",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-10-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Aer_Arann",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-03-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Aereo",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-11-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Affliction_Entertainment",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:African_and_Malagasy_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1985-03-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Ageia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-02-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Agence_nationale_pour_lemploi",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-12-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Agere_Systems",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-04-02"
+      }
+    },
+    {
+      "@id": "dbpedia:AgustaWestland",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Ahdut_HaAvoda",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1968-01-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Aide-toi,_le_ciel_taidera",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1830-08-02"
+      }
+    },
+    {
+      "@id": "dbpedia:AirSet",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-07-27"
+      }
+    },
+    {
+      "@id": "dbpedia:AirTran_Holdings",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-05-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Alabama_National_BanCorporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-02-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Albanian_Fascist_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1943-07-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Albanian_Mobile_Communications",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-07-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Alberta_Farmers_Co-operative_Elevator_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1917-09-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Alberta_International_and_Intergovernmental_Relations",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-06-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Alenia_Aermacchi",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Alenia_Marconi_Systems",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-05-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Alianza_(Chile)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-01-29"
+      }
+    },
+    {
+      "@id": "dbpedia:All-German_Bloc/League_of_Expellees_and_Deprived_of_Rights",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1961-04-15"
+      }
+    },
+    {
+      "@id": "dbpedia:All-India_Muslim_League",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1947-08-14"
+      }
+    },
+    {
+      "@id": "dbpedia:All-Russian_Fascist_Organisation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1934-04-26"
+      }
+    },
+    {
+      "@id": "dbpedia:All_Peoples_Party_(Bhutan)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-07-25"
+      }
+    },
+    {
+      "@id": "dbpedia:All_for_Latvia!",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-07-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Allbritton_Communications",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-08-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Allders",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-01-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Allgemeine_SS",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Alliance_Party_(Malaysia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1973-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Alliance_for_European_Integration",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-02-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Alliance_for_the_Protection_of_Nature_and_Society",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-03-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Alliance_for_the_Village_and_Countryside",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-08-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Alliance_of_Free_Democrats",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-10-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Alliance_of_Green_Democrats",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-02-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Alliance_of_Independents",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-12-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Alliant_Techsystems",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-02-09"
+      }
+    },
+    {
+      "@id": "dbpedia:AlliedSignal",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-12-01"
+      }
+    },
+    {
+      "@id": "dbpedia:AlphaSim",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-08-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Alternative_Party_(Turkey)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-03-15"
+      }
+    },
+    {
+      "@id": "dbpedia:AmSouth_Bancorporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-11-04"
+      }
+    },
+    {
+      "@id": "dbpedia:American_Broadcasting-Paramount_Theatres",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:American_Freedom_Mortgage",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-01-30"
+      }
+    },
+    {
+      "@id": "dbpedia:American_Type_Founders",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-08-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Ames_(store)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-09-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Anacostia_Waterfront_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-07-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Anatolia_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Anglo_Irish_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Animal_Health_Board_(New_Zealand)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Animation_studios_owned_by_The_Walt_Disney_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-01-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Anti-Revolutionary_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1980-09-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Antony_Gibbs_&_Sons",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-06-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Apcar_and_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1912-01-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Arab_Liberation_Movement",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1963-03-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Arab_List_for_Bedouin_and_Villagers",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1977-03-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Arakan_League_for_Democracy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-01-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Arbogast_&_Bastian",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1985-01-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Argentine_Patriotic_League",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1931-05-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Article_50",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-01-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Asian_Games_Federation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1981-11-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Askatasuna",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-02-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Assets_Recovery_Agency",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Astra-Unceta_y_Cia_SA",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-05-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Astral_Media",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Atari,_Inc.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1984-03-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Audit_Commission_(United_Kingdom)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Aust_Ferry",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1966-09-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Austar",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-05-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Australian_Customs_Service",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-05-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Australian_Customs_and_Border_Protection_Service",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Australian_National_Railways_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Australian_Railroad_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Australian_Shipping_Board",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1961-11-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Auto_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1969-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Auto_Windscreens",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-02-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Autokoritehdas",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1933-03-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Autoteollisuus-Bilindustri",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1932-10-20"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+          },
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=2"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

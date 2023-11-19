@@ -1,0 +1,822 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Department_of_the_Environment,_Sport_and_Territories",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-10-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Environment,_Water,_Heritage_and_the_Arts",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-09-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Environment_(1997–1998)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-10-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Environment_(Australia,_1975)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Environment_and_Heritage",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-01-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Environment_and_Water_Resources",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-12-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Interior_(1932–39)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1939-04-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Interior_(1939–72)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1972-12-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Media",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Navy_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1973-11-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Northern_Territory_(1972–75)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-06-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Northern_Territory_(1975–78)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-09-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Special_Minister_of_State_(1972–75)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_the_Special_Minister_of_State_(1983–87)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Desilu_Productions",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1967-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Destra_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-11-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Detroit_Automobile_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1901-11-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Deutsche_Rechtspartei",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1950-01-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Dial-a-Phone",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-09-15"
+      }
+    },
+    {
+      "@id": "dbpedia:DigiCube",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-11-26"
+      }
+    },
+    {
+      "@id": "dbpedia:DigiNotar",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-09-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Digital_Anvil",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-01-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Dinamic_Multimedia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-09-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Director_of_Passenger_Rail_Franchising",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-01-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Directorate-General_for_External_Relations_(European_Commission)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-12-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Dischan_Media",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-07-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Discovery_Holding_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Distributed_Systems_Technology_Centre",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Dixons_(retailer)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-10-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Dixons_Retail",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-08-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Dobson_Cellular",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-11-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Doctrinaires",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1830-08-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Dominican_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1962-01-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Dominicks",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-12-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Doraville_Assembly",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-09-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Dorian_Gray_(club)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Dragon_Lady_Comics",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-02-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Dream_FM_Network",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Drewry_Communications",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Driving_Standards_Agency",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Dublin_United_Transport_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Duncan_&_Miller_Glass_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1955-06-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Dutch_East_India_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1799-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Dynamix",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-08-14"
+      }
+    },
+    {
+      "@id": "dbpedia:EMI",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-28"
+      }
+    },
+    {
+      "@id": "dbpedia:EMI_Music_Japan",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:East_India_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1874-06-01"
+      }
+    },
+    {
+      "@id": "dbpedia:East_Lancashire_Railway_1844–59",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1859-05-13"
+      }
+    },
+    {
+      "@id": "dbpedia:East_Town_Railway_Workshops",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1986-10-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Eastern_Norway_Regional_Health_Authority",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-06-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Ecast,_Inc.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-03-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Ecologist_Union_of_Romania_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-08-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Ecologists_and_Civic_Networks",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-05-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Economic_Stabilization_Agency",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1953-04-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Ecosocialists_of_Greece",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Egyptian_Arab_Union_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Egyptian_Citizen_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:El_Zorro_(railway)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-06-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Electronic_Data_Systems",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-09-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Element_14_(company)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-10-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Elswick_Hopper",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1994-09-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Energy_Research_and_Development_Administration",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1977-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:England_First_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-06-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Enix",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Escape_Dynamics",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Estonian_Left_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-06-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Eterniti_Motors",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-02-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Ethel_Austin",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-01-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Etibank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-04-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Eton_Racing_Boats",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-02-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Euro-Populars_for_San_Marino",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-03-04"
+      }
+    },
+    {
+      "@id": "dbpedia:EuroBancshares",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-04-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Europe_Écologie",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-11-13"
+      }
+    },
+    {
+      "@id": "dbpedia:European_Democracy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-12-06"
+      }
+    },
+    {
+      "@id": "dbpedia:European_Republicans_Movement",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-02-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Eurostar_Automobilwerk",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-07-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Euskal_Herritarrok",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-05-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Euskal_Iraultzarako_Alderdia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1981-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Evangelical_Peoples_Party_(Netherlands)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-03-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Eventis",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-02-05"
+      }
+    },
+    {
+      "@id": "dbpedia:FBBank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-05-11"
+      }
+    },
+    {
+      "@id": "dbpedia:FRAP_(Chile)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1969-10-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Faction_independent_of_Ahdut_HaAvoda",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1954-01-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Fadesa",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-12-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Falange_Española_Tradicionalista_y_de_las_Juntas_de_Ofensiva_Nacional_Sindicalista",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1977-04-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Falange_Española_de_las_JONS",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1937-04-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Farmer-Labour_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1925-12-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Farmer_Jack",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-07-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Fasci_Autonomi_dAzione_Rivoluzionaria",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1914-12-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Fasci_Italiani_di_Combattimento",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1921-11-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Fasci_dAzione_Internazionalista",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1914-12-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Fastnet_Line",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-02-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Fatherland_Front_(Austria)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1938-03-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Fatherland_League_(Norway)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1940-09-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Fatherland_Party_(Norway)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Fatherland_–_All_Russia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-04-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Federal_Financial_Markets_Service",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Federal_Home_Loan_Bank_Board",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-12-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Federal_Housing_Finance_Board",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-07-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Federal_Power_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1977-10-01"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=7"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=7"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=7",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=8"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=6"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

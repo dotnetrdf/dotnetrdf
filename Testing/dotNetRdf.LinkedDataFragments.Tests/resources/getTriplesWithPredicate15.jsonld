@@ -1,0 +1,822 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Party_of_the_Swedes",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-05-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Party_of_the_Venetians",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-09-12"
+      }
+    },
+    {
+      "@id": "dbpedia:PassAlong_Networks",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-05-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Patriot_of_Ukraine",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-12-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Patriotic_Electoral_Coalition",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-08-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Pauling_&_Co.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-04-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Payless_Cashways",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-09-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Peace_Party_(Turkey)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-05-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Peace_and_Democracy_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-07-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Peanut_Corporation_of_America",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-02-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Pensioners_Party_(Hungary)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-03-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Pentax",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:People_for_Real,_Open_and_United_Democracy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-08-12"
+      }
+    },
+    {
+      "@id": "dbpedia:People_of_the_Orient_Party_–_Christian_Democrats",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-12-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Alliance_(Spain)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-01-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Democracy_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-03-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Democratic_Party_(Spain)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-06-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Democratic_Reform_Committee",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-05-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Freedom_Party_%22For_Russia_without_Lawlessness_and_Corruption%22",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-06-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Life_First",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-12-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_National_Party_(Belize)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-09-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_National_Party_(Ghana)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1981-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_New_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-03-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Party_(Spain,_1976)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-02-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Party_of_Catalonia_(1973-1976)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1976-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Party_xe2x80x93_Dan_Diaconescu",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-06-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Party_xe2x80x93_Movement_for_a_Democratic_Slovakia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-01-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Power_Party_(Thailand)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-12-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Progressive_Alliance_(Sint_Maarten)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-07-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Union_of_Estonia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-03-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Peoples_Voice_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Perot_Systems",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-09-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Personalist_Labor_Revolutionary_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1963-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Persönlicher_Stab_Reichsführer-SS",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Philadelphia_Media_Holdings",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-12-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Phillips_Petroleum_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-08-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Phytopharm",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-10-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Pillar_Data_Systems",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-07-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Pim_Fortuyn_List",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Pinfari",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-07-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Piratbyrån",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-06-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Pivotal_Games",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-08-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Pixar_Canada",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-10-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Playcast_Media_Systems",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-06-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Plymouth_(automobile)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-06-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Poland_Comes_First",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-12-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Poland_Plus",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-09-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Polikarpov",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1944-07-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Polish_Peoples_Party_%22Piast%22_(1913xe2x80x9331)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1931-03-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Polish_United_Workers_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-01-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Political_Party_of_Radicals",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-02-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Politics_XXI",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-04-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Politischer_Arbeiter-Zirkel",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1919-01-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Pontiac",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-10-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Popular_Democratic_Front_(Italy)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1948-04-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Popular_Movement_of_the_Revolution",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-05-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Portugal_Ahead",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-11-26"
+      }
+    },
+    {
+      "@id": "dbpedia:PostRank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-05-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Postal_and_Telecommunications_Department",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1980-11-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Postmaster-Generals_Department",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Powertel_(United_States)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-05-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Prabhat_Film_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1953-10-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Premier_American_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-01-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Presidential_Council_of_the_Hungarian_Peoples_Republic",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-10-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Pride_Fighting_Championships",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-10-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Pride_International",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-05-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Prime_Ministers_Department_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1971-03-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Prime_Ministry_Intelligence_Office",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1984-08-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Prince_Motor_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1966-08-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Privatbanen_Sønderjylland",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-03-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Pro-Euro_Conservative_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-12-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Pro_Patria_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-10-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Proffitts",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-03-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Progress_Party_(Ghana)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1972-01-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Progress_and_Development",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1977-03-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Progressive_Democratic_Party_(Gibraltar)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-08-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Progressive_Democrats",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-11-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Progressive_Party_(Israel)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1961-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Progressive_Party_(Singapore)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1956-05-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Progressive_Party_(South_Korea)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1958-02-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Progressive_Peoples_Party_(Germany)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2020-11-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Progressive_Republican_Party_(Turkey)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1925-06-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Project_Sora",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Proletarian_Democracy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-06-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Prosperous_Peace_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-03-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Prosser_Twin_Cylinder_Car_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1884-02-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Pseudo_Interactive",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-04-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Public_Transport_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1980-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Public_Works_Department_(Western_Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1984-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Publishing_and_Broadcasting_Limited",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-12-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Pērkonkrusts",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1941-08-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Quest_Software",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Quick_Off_The_Mark_Productions",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2016-02-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Qwest",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-08-01"
+      }
+    },
+    {
+      "@id": "dbpedia:RAO_UES",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:RIA_Novosti",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:RISCOS_Ltd",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-05-14"
+      }
+    },
+    {
+      "@id": "dbpedia:R_&_G_Financial_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-04-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Radical_Democracy_(Chile)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-07-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Radical_Movement_of_Social_Democratic_Alliance",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-04-15"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=15"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=15"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=15",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=16"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=14"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

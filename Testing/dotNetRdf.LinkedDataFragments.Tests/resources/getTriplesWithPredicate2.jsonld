@@ -1,0 +1,822 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Aztar",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-01-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Aérospatiale",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-07-10"
+      }
+    },
+    {
+      "@id": "dbpedia:B._Altman_and_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-01-29"
+      }
+    },
+    {
+      "@id": "dbpedia:BAE_Systems_Avionics",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-05-03"
+      }
+    },
+    {
+      "@id": "dbpedia:BASA-press",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:BBC_Switch",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-12-18"
+      }
+    },
+    {
+      "@id": "dbpedia:BHC_Communications",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-07-31"
+      }
+    },
+    {
+      "@id": "dbpedia:BP_Solar",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-12-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Baath_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1966-02-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Baath_Party_(Iraqi-dominated_faction)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-05-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Babcock_&_Brown",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-08-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Baja_Broadband",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-05-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Banco_Crédito_y_Ahorro_Ponceño",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Banco_Etcheverría",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-10-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Banco_de_Ponce",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Bancorex",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-08-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Bangladesh_Krishak_Sramik_Awami_League",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-08-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Bank_PHB",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-08-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Bank_PHB_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-08-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Bank_of_Bombay",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1921-01-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Bank_of_Calcutta",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1921-01-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Bank_of_Madras",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1921-01-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Banka_Baltija",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-06-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Bareilly–Pilibheet_Provincial_State_Railway",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1891-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Barings_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-02-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Barisan_Alternatif",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-03-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Barrington_Broadcasting",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-11-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Batasuna",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-01-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Battle_of_the_Dance",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-06-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Bavarian_Peoples_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1933-07-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Bay_State_Newspaper_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-01-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Be_Inc.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-11-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Beacon_Communications_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-01-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Beatties_of_London",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-03-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Belair_National_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1977-01-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Bell_Aircraft",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1960-07-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Belle_Foods",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-10-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Belo",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-12-23"
+      }
+    },
+    {
+      "@id": "dbpedia:BenQ-Siemens",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-01-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Benfica_Stars_Fund",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-09-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Bengal_and_North_Western_Railway",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1943-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Bermuda_Democratic_Alliance",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-05-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Bernies",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Bertelsmann_Music_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Best_Buy_Europe",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-01-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Bhutan_Peoples_Unity_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-07-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Bickley-Warren_Productions",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-07-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Bid_Shopping",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-04-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Bitstream_Inc.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-03-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Bizarre_Creations",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-02-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Black_Front",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1934-07-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Black_Native_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1944-06-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Blackshirts",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1943-12-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Blimey!_Games",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-01-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Blip_(website)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-08-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Blitz_Games_Studios",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Blockbuster_LLC",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-11-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Blue_Valley_Creamery_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1939-03-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Bluetongue_Brewery",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-05-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Bmycharity",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Bombay_Talkies",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1953-10-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Boomtown,_Inc.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Borders_(UK)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-12-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Boss_Game_Studios",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-06-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Boston_Bypass_Independents",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-08-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Bottom_Dollar_Food",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-01-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Bramer_Banking_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-04-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Brasil_Telecom",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-01-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Brazilian_Integralism",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1937-11-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Brazilian_Integralist_Action",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1937-11-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Bresnan_Communications",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-06-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Brighton_City_Airways",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-05-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Brisbane_Water_(utility)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Bristol_Corporation_of_the_Poor",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1836-10-17"
+      }
+    },
+    {
+      "@id": "dbpedia:British_Aerospace",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-11-30"
+      }
+    },
+    {
+      "@id": "dbpedia:British_Aircraft_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1977-04-29"
+      }
+    },
+    {
+      "@id": "dbpedia:British_Energy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:British_Motor_Holdings",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1968-01-17"
+      }
+    },
+    {
+      "@id": "dbpedia:British_Steel",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-10-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Broad_Front_UNEN",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-03-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Broad_Party_of_Socialist_Left",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-03-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Broadview_Security",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-09-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Budcat_Creations",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-11-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Buell_Motorcycle_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-10-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Bulgarian_Communist_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-04-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Bullfrog_Productions",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-08-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Bureau_of_the_Public_Debt",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-10-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Burma_Economic_Development_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1963-10-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Burma_Socialist_Programme_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1988-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Busscar",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Bynesruten",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1972-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:CHB_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:CSR_Corporation_Limited",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-06-01"
+      }
+    },
+    {
+      "@id": "dbpedia:CTVglobemedia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:C_Level_Design",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-11-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Cabinet_of_Ministers_(Soviet_Union)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-09-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Cable_&_Wireless_plc",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-03-26"
+      }
+    },
+    {
+      "@id": "dbpedia:California_Business,_Transportation_and_Housing_Agency",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:California_Department_of_Corporations",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:California_Department_of_Financial_Institutions",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-01"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=2"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=2"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=2",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=3"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

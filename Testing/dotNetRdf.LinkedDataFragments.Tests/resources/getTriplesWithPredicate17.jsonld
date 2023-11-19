@@ -1,0 +1,821 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Sammarinese_Union_of_Moderates",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-11-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Sangkum",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1970-03-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Sarawak_National_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-01-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Saturn_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-10-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Save_the_ADI_Site_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-08-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Scarborough_Building_Society",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-03-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Schutzstaffel",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Score_Media",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-04-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Scottish_Crop_Research_Institute",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Scottish_Liberal_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1988-03-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Scottish_North_Eastern_Counties_Constabulary",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-05-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Scottish_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1934-04-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Scottish_Police_Services_Authority",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:SeaFrance",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-01-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Securitate",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-12-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Securities_Commission_of_New_Zealand",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-04-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Security_Council_of_the_Soviet_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-12-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Sega_Racing_Studio",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-04-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Selex_ES",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Semangat_46",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-10-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Sendo",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-06-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Sephardim_and_Oriental_Communities",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1951-09-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Serb_List_(2006)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-01-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Shaba_Games",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-10-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Shakai_Taishūtō",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1940-07-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Shannon_Development",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-11-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Shaw_Wallace",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Shimpotō",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1898-06-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Sibirtelecom",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Sicherheitsdienst",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Sicherheitspolizei",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1939-09-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Sicilian_Independence_Movement",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1951-06-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Sigurimi",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-07-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Silver_Legion_of_America",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1941-12-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Simitar_Entertainment",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-05-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Simson_(company)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-02-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Singapore_Bus_Service",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Sir_Lindsay_Parkinson",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1974-09-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Sixth_Central_Pay_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-03-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Skjerstad_Kraftlag",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-11-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Sky_Financial_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Christian_Conservative_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1957-07-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Christian_Party_(Italy)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1948-04-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democracy_of_the_Republic_of_Poland",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-04-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Forum",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-04-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Hungarian_Civic_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-05-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Party_(Brazil,_1945-65)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1965-10-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Party_(Latvia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Party_(New_Zealand)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1916-07-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Party_(Spain,_1976)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-02-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Party_(UK)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1988-03-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Party_in_the_GDR",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-09-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Party_of_Hungarian_Gypsies",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-02-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Party_of_Russia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-04-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Democratic_Peoples_Party_(Turkey)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-03-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Liberal_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-02-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Social_Protection_Peoples_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-12-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Convergence_of_Catalonia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1976-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Cooperation_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1963-03-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Party_(Italy,_1996)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-01-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Party_(South_Korea)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-03-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Party_of_America",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1972-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Party_of_Catalonia-Congress",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-07-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Party_of_Catalonia-Regroupment",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-07-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Party_of_Vietnam",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1988-07-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Peoples_Party_(Norway)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1976-04-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Reich_Party",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "1952-09-12"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "1952-10-23"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:Socialist_Unity_Party_(Turkey)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-07-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Unity_Party_of_Germany",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-12-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Workers_Party_(Chile)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1922-01-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Socialist_Workers_Party_of_Finland",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1923-08-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Society_for_Political_Change",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-08-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Society_for_Underwater_Historical_Research",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-03-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Society_of_Montana_Pioneers",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1962-08-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Société_Provençale_de_Constructions_Aéronautiques",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1937-02-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Sogecuatro",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-06-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Solid_Fuels_Administration_for_War",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1947-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:SonicWall",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-05-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Sony_BMG",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Sony_Mobile_Display",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Soul_Daddy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-06-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Soup2Nuts",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:South_African_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1934-12-04"
+      }
+    },
+    {
+      "@id": "dbpedia:South_Australian_Railways",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:South_Eastern_Sydney_and_Illawarra_Area_Health_Service",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Southeast_Asia_Treaty_Organization",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1977-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Southern_Cross_Broadcasting",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-11-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Southern_Norway_Regional_Health_Authority",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-06-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Southern_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-06-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Southern_Party_(Chile)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-06-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Spanish_Confederation_of_Autonomous_Right-wing_Groups",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1937-04-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Spanish_Democratic_Socialist_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-04-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Spanish_Peoples_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1977-05-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Specter_Aircraft",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-02-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Spike_(company)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Spinner_(website)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-04-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Spirit_of_Japan_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Spümcø",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-07-18"
+      }
+    },
+    {
+      "@id": "dbpedia:StB",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-02-01"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=17"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=17"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=17",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=18"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=16"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

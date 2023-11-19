@@ -1,0 +1,821 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Stainless_Steel_Studios",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-11-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Stan_Lee_Media",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-12-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Standard_Federal_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-10-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Standard_Treasury",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-08-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Stanford_Financial_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-02-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Stasi",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-10-03"
+      }
+    },
+    {
+      "@id": "dbpedia:State_Committee_on_the_State_of_Emergency",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-08-22"
+      }
+    },
+    {
+      "@id": "dbpedia:State_Council_of_the_Soviet_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-12-26"
+      }
+    },
+    {
+      "@id": "dbpedia:State_Political_Directorate",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1923-11-15"
+      }
+    },
+    {
+      "@id": "dbpedia:State_Protection_Authority",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1956-11-07"
+      }
+    },
+    {
+      "@id": "dbpedia:State_Rail_Authority",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:State_Transport_Authority_(South_Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1994-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Stellent",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-12-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Storm_Financial",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-03-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Strikeforce_(mixed_martial_arts)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-01-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Strong_Ukraine",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-03-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Studio_B_Productions",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-09-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Sturmabteilung",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Subsistence_Homesteads_Division",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1935-05-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Sud_Aviation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1970-07-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Sudeten_German_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1938-11-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Suez_(company)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-07-22"
+      }
+    },
+    {
+      "@id": "dbpedia:SunRocket",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-07-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Sun_Media",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-04-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Sunrise_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-11-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Super_de_Boer",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-07-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Surabaya_Stock_Exchange",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-10-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Suzak_Inc.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-08-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Svyazinvest",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Swallow_Sidecar_Company",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "1930-09-30"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "1934-08-01"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:Swedish_East_India_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1813-12-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Swedish_Rail_Administration",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Swedish_Road_Administration",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Swedish_State_Railways",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Sweetbay_Supermarket",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-10-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Sydney_Fast_Ferries",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Sydney_Ferries_Limited",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1951-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Sydney_Harbour_Transport_Board",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1974-11-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Sydney_South_West_Area_Health_Service",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Symbian_Ltd.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-12-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Symbolics",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-05-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Synaspismos",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Syrian_Turkmen_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-02-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Syrian_Turkmen_Movement",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-02-15"
+      }
+    },
+    {
+      "@id": "dbpedia:TACO_Faurecia_Design_Center",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-11-30"
+      }
+    },
+    {
+      "@id": "dbpedia:THQ",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-01-23"
+      }
+    },
+    {
+      "@id": "dbpedia:TIBS_Holdings",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-05-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Tab_Communications",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-01-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Taft-Peirce_Manufacturing_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-10-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Talkback_Thames",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Tamil_National_Liberation_Alliance",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-06-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Tandberg",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-04-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Tandberg_Data",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-04-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Tanjug",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-10-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Tapulous",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-01-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Target_Canada",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-04-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Tax_Cuts_Japan",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-11-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Taylor,_Bean_&_Whitaker",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-08-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Technical_Supervisory_Authority_for_Cableways_(Norway)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Tecmo",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Telewest",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-02-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Thai_Nation_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-12-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Thai_Rak_Thai_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-05-30"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Alliance_(France)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-17"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Attachmate_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-11-20"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Beaver_Mills_Lumber_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1910-10-07"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Code_Monkeys",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-02-01"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Democrats_(Italy)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-03-23"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Extreme",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1904-05-27"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Frontier_(Hong_Kong)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-11-23"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Great_Atlantic_&_Pacific_Tea_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-11-25"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Greens_(France)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-11-13"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Italian_Socialists",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-10-10"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Jolly_Giant",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-10-04"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Link_(retailer)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-06-21"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Linkery",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-15"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Mountain",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1795-05-21"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Network_(political_party)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-02-27"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Olive_Tree_(Italy)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-10-14"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Participation_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-12-05"
+      }
+    },
+    {
+      "@id": "dbpedia:The_People_of_Freedom",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-11-16"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Plain",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1795-11-02"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Planet_Internet_Services",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-11-15"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Popular_(department_store)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-11-06"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Republic_of_New_Zealand_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-07-30"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Room_Store",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-11-26"
+      }
+    },
+    {
+      "@id": "dbpedia:The_Union_(Italy)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-02-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Thermidorians",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1799-11-10"
+      }
+    },
+    {
+      "@id": "dbpedia:ThinkFilm",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-10-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Think_Global",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-06-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Thomas_A._Edison,_Inc.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1957-01-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Thomas_Cook_AG",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-02-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Thomas_Properties_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-12-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Thornburg_Mortgage",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Thrifty_PayLess",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-10-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Tierra_Comunera",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-01-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Tirhut_Railway",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1943-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Together_for_Šumadija",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-06-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Tomorrow_Party_of_Japan",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-05-17"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=18"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=18"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=18",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=19"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=17"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

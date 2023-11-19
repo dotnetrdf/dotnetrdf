@@ -1,0 +1,607 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Boston_Store_(Erie,_Pennsylvania)__Boston_Store__1",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1979-07-07"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Transitional_Council__National_Transitional_Council__1",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-08-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Skype_Qik__,_Inc.__1",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-04-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Sydney_Metro_(2008_proposal)__Sydney_Metro_Authority__1",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Wage_Stabilization_Board",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "1947-02-24"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "1953-02-06"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:Waldenbooks",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-07-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Walter_Alexander_Coachbuilders",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:War_Industries_Board",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1919-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Warid_Bangladesh",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-12-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Warner_Independent_Pictures",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Waste_Services_Inc.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Watani_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1952-07-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Water_Authority_of_Western_Australia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Wavefield_Inseis",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-12-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Weintraub_Entertainment_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-09-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Welsh_Language_Board",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:West_Coast_Railway_(Victoria)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-08-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Westbeach_Recorders",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-05-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Western_Australian_Government_Railways",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Western_Australian_Government_Railways_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Western_Bridge_Corporate_Federal_Credit_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-07-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Western_Electric",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-02-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Western_National_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-06-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Western_Publishing",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-08-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Western_Wireless_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-08-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Westrail",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-12-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Westwood_Studios",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-01-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Whigs_(British_political_party)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1859-06-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Whisper_Systems",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-11-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Wholesale_Applications_Community",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-07-17"
+      }
+    },
+    {
+      "@id": "dbpedia:WiQuest_Communications",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-10-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Wideload_Games",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-03-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Widgetbox",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-03-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Willamette_Industries",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-06-14"
+      }
+    },
+    {
+      "@id": "dbpedia:William_Low",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1994-09-02"
+      }
+    },
+    {
+      "@id": "dbpedia:With_Monti_for_Italy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-10-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Wm._Crichton_&_Co.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1913-04-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Wolfson_Microelectronics",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-04-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Womens_National_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Woolworths.co.uk",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-10-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Woolworths_Group",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "2009-01-06"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "2015-10-13"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:Workers_Party_(Czech_Republic)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Workers_Party_(Turkey)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-02-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Workers_Party_of_North_Korea",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1949-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Workers_Party_of_South_Korea",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1949-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Works_Progress_Administration",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1943-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:World_Extreme_Cagefighting",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-12-16"
+      }
+    },
+    {
+      "@id": "dbpedia:World_Wrestling_League",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-10-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Wärtsilä_Marine",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-10-23"
+      }
+    },
+    {
+      "@id": "dbpedia:XM_Satellite_Radio",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-01-13"
+      }
+    },
+    {
+      "@id": "dbpedia:XYZnetworks",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-05-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Xbox_Entertainment_Studios",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-10-29"
+      }
+    },
+    {
+      "@id": "dbpedia:YMCA_SCUBA_Program",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Yamaichi_Securities",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-06-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Young_Broadcasting",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-11-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Young_Egypt_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Young_Progressive_Democrats",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-09-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Your_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-11-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Yukos",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-11-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Yulia_Tymoshenko_Bloc",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-12-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Zavvi_(retailer)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-03-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Zellers",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Zi_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-04-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Zombie_Studios",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-01-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Åbo_Skeppswarf",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1883-10-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Étranges_Libellules",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-06-29"
+      }
+    },
+    {
+      "@id": "dbpedia:İnterbank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-07-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Ūkio_bankas",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-02-12"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=20"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=20"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=20",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=19"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

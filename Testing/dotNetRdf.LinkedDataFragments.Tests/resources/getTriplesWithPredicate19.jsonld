@@ -1,0 +1,821 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Toonami_Jetstream",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-01-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Topcraft",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1986-06-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Topsy_Labs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Tower_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-02-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Tower_Hamlets_First",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "2015-04-23"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "2015-04-29"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:TraXion",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:TransAdelaide",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-08-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Transdev_(historic)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-03-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Transend_Networks",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Transeuropa_Ferries",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-04-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Transit_New_Zealand",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-07-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Transport_Construction_Authority",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Trauma_Studios",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-06-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Treasury_Holdings",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-10-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Triumph_Engineering",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1983-08-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Tryvandsbanen",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1920-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Tsar_Lazar_Guard",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-09-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Turkey_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-08-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Two_Tribes_B.V.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-01-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Türk_Ticaret_Bankası",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-08-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Tōhōkai",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1944-03-23"
+      }
+    },
+    {
+      "@id": "dbpedia:UAL_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:USA_Broadcasting",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-01-14"
+      }
+    },
+    {
+      "@id": "dbpedia:US_Airways_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-12-09"
+      }
+    },
+    {
+      "@id": "dbpedia:US_Cable",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-08-21"
+      }
+    },
+    {
+      "@id": "dbpedia:US_West",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Ukrainian_Democratic_Alliance_for_Reform",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-08-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Ukrainian_National_Assembly_xe2x80x93_Ukrainian_Peoples_Self-Defence",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-05-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Ukrainian_Social_Democratic_Labour_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1950-03-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Ultimate_Electronics",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-04-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Ultra-royalist",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1830-08-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Underground_Development",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Unified_Progressive_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-12-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Union_Revolutionary_Council",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1974-03-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Union_des_forces_progressistes_(Canada)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-02-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Union_for_a_Popular_Movement",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-05-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Union_of_Right_Forces",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-11-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Union_of_Socialists",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1949-01-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Union_of_the_Centrist_Center",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-05-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Union_of_the_Democratic_Centre_(Spain)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1983-02-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Unipol_Assicurazioni_(subsidiary)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-01-06"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Bermuda_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Black_Association_for_Development",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1974-02-08"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Christian_Democrats",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-12-06"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Commercial_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-11-06"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Confederate_Veterans",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1951-05-30"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Conservative_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1966-05-11"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Defense",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-06-24"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Democrats_of_Hong_Kong",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1994-10-02"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Devices",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-09-17"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Gas_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1968-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Labour_Party_(New_Zealand)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1916-07-07"
+      }
+    },
+    {
+      "@id": "dbpedia:United_New_Democratic_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-02-17"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Peoples_Party_(Poland)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-11-29"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Popular_Front_(Iraq)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1954-09-22"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Smallholders_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-08-02"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Socialist_Party_(Italy,_1922–30)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1930-06-19"
+      }
+    },
+    {
+      "@id": "dbpedia:United_Socialist_Party_(Italy,_1949–51)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1951-05-01"
+      }
+    },
+    {
+      "@id": "dbpedia:United_States_Assay_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1980-03-14"
+      }
+    },
+    {
+      "@id": "dbpedia:United_States_Bureau_of_Mines",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-03-30"
+      }
+    },
+    {
+      "@id": "dbpedia:United_States_Customs_Service",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-03-01"
+      }
+    },
+    {
+      "@id": "dbpedia:United_States_Department_of_War",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1947-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:United_States_Fish_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1940-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:United_States_Information_Agency",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:United_States_Office_of_War_Information",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-09-15"
+      }
+    },
+    {
+      "@id": "dbpedia:United_States_Post_Office_Department",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1971-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Unity_(Hungary)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-04-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Unity_(Russian_political_party)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-12-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Unity_Party_(China)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1913-05-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Unity_Party_(Japan)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-09-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Unity_Party_(Turkey)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1981-10-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Universomo",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-03-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Unocal_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-08-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Upper_Willamette_Transportation_Line",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1860-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Uralsvyazinform",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Urban_Transit_Authority",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-01-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Uri_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-08-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Ustaše",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Uttar_Pradesh_Revolutionary_Socialist_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1952-11-30"
+      }
+    },
+    {
+      "@id": "dbpedia:VG_Holding_Corp.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-10-11"
+      }
+    },
+    {
+      "@id": "dbpedia:VREAM",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Valdostan_Renewal",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Vanajan_Autotehdas",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1968-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:VectorCell",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-11-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Venetian_National_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-09-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Vestax",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-12-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Viacom_(original)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Vidacare_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-12-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Viewzi",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-12-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Vigil_Games",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-01-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Virgin_Cars",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Visio_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-01-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Vlaams_Blok",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-11-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Voce",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-02-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Voom_HD_Networks",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-01-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Vulcan_(Turku_shipyard)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1924-08-07"
+      }
+    },
+    {
+      "@id": "dbpedia:W._&_C._French",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1973-11-06"
+      }
+    },
+    {
+      "@id": "dbpedia:W_Holding_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-04-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Wafd_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1952-07-23"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=19"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=19"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=19",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=20"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=18"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

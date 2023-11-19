@@ -1,0 +1,822 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Federation_for_the_Stability_of_Hong_Kong",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-06-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Federation_of_Democratic_and_Liberal_Parties",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-01-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Fellowship_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-08-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Fenosa",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1982-11-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Feuillant_(political_group)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1793-11-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Fiat_Industrial",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Fiat_S.p.A.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-10-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Fictionwise",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-12-04"
+      }
+    },
+    {
+      "@id": "dbpedia:FilmDistrict",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-02-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Finance_and_Credit_(bank)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Financial_Management_Service",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-10-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Financial_Regulator",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Fireworks_Entertainment",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-03-14"
+      }
+    },
+    {
+      "@id": "dbpedia:First_American_National_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Fisher_Communications",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-08-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Fleer",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-05-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Fleischer_Studios",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1942-08-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Flooz.com",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-08-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Focus_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Fokker",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-03-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Fondiaria-Sai",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-01-06"
+      }
+    },
+    {
+      "@id": "dbpedia:FontShop_International",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-07-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Foodtown",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-11-13"
+      }
+    },
+    {
+      "@id": "dbpedia:For_Fatherland_and_Freedom/LNNK",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-07-23"
+      }
+    },
+    {
+      "@id": "dbpedia:For_Italy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-01-11"
+      }
+    },
+    {
+      "@id": "dbpedia:For_Peace_and_Stability_(parliamentary_group)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-11-27"
+      }
+    },
+    {
+      "@id": "dbpedia:For_a_Good_Latvia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-10-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Force_of_the_South",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-07-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Fore_River_Shipyard",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1986-06-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Foreign_Ministry_of_the_Independent_State_of_Croatia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Forfás",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-08-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Fortune_Brands",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-10-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Fortune_Hi-Tech_Marketing",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-01-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Forza_Italia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-03-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Fossa_dei_Leoni",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-11-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Foundry_Networks",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-12-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Four_Points_Media_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Frederick_Loeser_&_Co.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1952-02-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Free_German_Workers_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-02-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Free_Radical_Design",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-07-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Freedom_Party_(Egypt)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Freedom_Party_(Netherlands)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1948-01-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Freedom_Union_(Poland)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-05-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Freedom_and_Justice_Party_(Egypt)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-08-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Freescale_Semiconductor",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Freethinkers_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1936-08-04"
+      }
+    },
+    {
+      "@id": "dbpedia:FreightCorp",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-01-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Freight_Australia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-08-16"
+      }
+    },
+    {
+      "@id": "dbpedia:French_Popular_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-02-22"
+      }
+    },
+    {
+      "@id": "dbpedia:French_Section_of_the_Workers_International",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1969-05-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Fresh_&_Easy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-10-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Front_for_Change_(Ukraine)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-06-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Frontier_Airlines_Holdings",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Frozen_Codebase",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Fusion_Consulting",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Future_Hope_Alliance",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-02-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Future_Shop",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-03-28"
+      }
+    },
+    {
+      "@id": "dbpedia:G17_Plus",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-04-21"
+      }
+    },
+    {
+      "@id": "dbpedia:GMAC_ResCap",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-12-17"
+      }
+    },
+    {
+      "@id": "dbpedia:GTE_Interactive_Media",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-03-14"
+      }
+    },
+    {
+      "@id": "dbpedia:GUS_(retailer)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-10-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Galerías_Preciados",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-11-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Galician_Democratic_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-01-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Galician_Regionalist_Association",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1892-01-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Galician_Unity_(1991)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-09-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Galician_Workers_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1980-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Galleon_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-10-21"
+      }
+    },
+    {
+      "@id": "dbpedia:GameSpy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-02-21"
+      }
+    },
+    {
+      "@id": "dbpedia:GameSpy_Technology",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-05-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Game_Council_New_South_Wales",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Game_Designers_Workshop",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-02-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Gateway,_Inc.",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-10-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Gaz_de_France",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-07-22"
+      }
+    },
+    {
+      "@id": "dbpedia:General_Aeroplane_Company",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1918-08-28"
+      }
+    },
+    {
+      "@id": "dbpedia:General_Post_Office",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1969-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:General_Zionists",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1961-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:German_Fatherland_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1918-12-10"
+      }
+    },
+    {
+      "@id": "dbpedia:German_Free-minded_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1893-05-07"
+      }
+    },
+    {
+      "@id": "dbpedia:German_Imperial_Admiralty_Staff",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1919-09-15"
+      }
+    },
+    {
+      "@id": "dbpedia:German_Imperial_Naval_Office",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1919-07-15"
+      }
+    },
+    {
+      "@id": "dbpedia:German_Peoples_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:German_Progress_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1884-03-05"
+      }
+    },
+    {
+      "@id": "dbpedia:German_Social_Union_(West_Germany)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1962-05-25"
+      }
+    },
+    {
+      "@id": "dbpedia:German_Workers_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1920-02-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Germanic-SS",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Gesher_–_Zionist_Religious_Centre",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1984-06-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Gestapo",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Girondins",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1793-10-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Glitnir_(bank)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-10-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Global_Intelligence_Alliance_Group",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-10-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Gnome_et_Rhône",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Goldwyn_Pictures",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1924-04-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Good_Governance_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-04-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Gosplan",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Government_Information_Office",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-05-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Government_of_the_Independent_State_of_Croatia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Graakalbanen",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1972-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Grad_Associates",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Grand_Union_(supermarket)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Grand_coalition_(Italy)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-11-16"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=8"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=8"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=8",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=9"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=7"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

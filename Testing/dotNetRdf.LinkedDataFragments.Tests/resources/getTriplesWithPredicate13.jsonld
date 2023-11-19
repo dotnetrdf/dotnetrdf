@@ -1,0 +1,818 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:National_Alliance_of_Liberals",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1972-01-13"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Bank_of_New_Zealand",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-10-28"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Commercial_Bank_Mauritius",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2016-01-04"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Congress_for_New_Politics",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-01-20"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Constitution_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1918-10-29"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Consumer_Agency",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Defense_Research_Committee",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "1941-06-28"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "1947-01-20"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:National_Democracy_(Czechoslovakia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1934-10-27"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Democratic_Alliance_(Hungary)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-01-20"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Democratic_Party_(Austria,_1967–88)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1988-06-25"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Democratic_Party_(Chile)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1988-09-12"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Democratic_Party_(Egypt)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-04-16"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Democratic_Party_of_Germany_(East_Germany)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-03-27"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Democratic_Union_(Brazil)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1965-10-27"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Directorate_of_Intelligence_and_Prevention_Services",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-12-04"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Emergency_Management_Agency",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-11-19"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Falange",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1957-07-28"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Fascist_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1943-07-27"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Forces_Movement",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-10-31"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Harmony_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-10"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Housing_and_Planning_Advice_Unit",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-06-28"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Hydrocarbons_Institute",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-06-16"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Independence_Party_(Belize)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1973-09-27"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Institute_of_Concessions_(Colombia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-11-03"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Institute_of_Renewable_Natural_Resources_and_Environment_(Colombia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Labor_Board",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1934-06-29"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Labor_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1917-02-17"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Labour_Front_(Chile)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-04-29"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Labour_Organisation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-06-14"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Languages_Committee",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Liberal_Party-Brătianu",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1938-01-10"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Liberal_Party_(UK,_1922)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1923-11-13"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Party_(Chile,_1966)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1994-08-18"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Party_of_Scotland",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1934-04-07"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Party_of_Work",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1918-10-22"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Peasant_Party_(Hungary)",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "1956-11-04"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "1998-06-15"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:National_Radical_Camp_(1934)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1934-07-10"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Recovery_Administration",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1935-05-27"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Religious_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-11-18"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Renewal_Alliance",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1979-12-20"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Resurrection_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-09-22"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Roads_Authority",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-08-01"
+      }
+    },
+    {
+      "@id": "dbpedia:National_School_of_Government",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Security_Council_(Saudi_Arabia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-01-29"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Security_Organization",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1986-06-05"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Semiconductor",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-09-23"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Smallholders_and_Civic_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-11-06"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Socialist_Dutch_Workers_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1941-12-14"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Socialist_Front",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-11-22"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Socialist_League_of_the_Reich_for_Physical_Exercise",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-31"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Socialist_Movement_in_the_Netherlands",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-06"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Socialist_Party_(Romania)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1934-07-05"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Socialist_Workers_Party_of_Denmark",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Solidarity_Party_(Portugal)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-01-10"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Union_Movement",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-04-29"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Union_of_South_African_Students",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-07-02"
+      }
+    },
+    {
+      "@id": "dbpedia:National_War_Labor_Board",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "1919-05-31"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "1945-12-31"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:National_Water_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-11-25"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Workers_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1937-10-09"
+      }
+    },
+    {
+      "@id": "dbpedia:National_Youth_Advocacy_Coalition",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-05-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Nationalist_Liberal_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1979-07-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Navini_Networks",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-10-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Nazi_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1945-10-10"
+      }
+    },
+    {
+      "@id": "dbpedia:NeXT",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Nebula_(company)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Nepali_Congress_(Democratic)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-09-25"
+      }
+    },
+    {
+      "@id": "dbpedia:NetDevil",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-02-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Netherlands_Agency_for_Aerospace_Programmes",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Network_Systems_Corporation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-09-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Neversoft",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-07-10"
+      }
+    },
+    {
+      "@id": "dbpedia:NewAlliance_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-04-15"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Centre_(Latvia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-10"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Conservative_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-11-10"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Democracy_(Sweden)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-02-25"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Democracy_Party_(Portugal)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-09-23"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Era_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-08-06"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Fraternity_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-04-27"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Frontier_Party_(Japan)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-12-31"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Future_Coalition_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-09-26"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Iran_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-03-02"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Korea_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-11-21"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Party_(Turkey)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-05-20"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Party_Sakigake",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2004-06-22"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Peoples_Party_of_Korea",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1946-11-23"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Pole_for_Italy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-05-08"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Progressive_Party_(South_Korea)",
+      "dbpedia-owl:extinctionDate": [
+        {
+          "@type": "xsd:date",
+          "@value": "2012-04-12"
+        },
+        {
+          "@type": "xsd:date",
+          "@value": "2013-06-23"
+        }
+      ]
+    },
+    {
+      "@id": "dbpedia:New_Proton_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-11-22"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Socialist_Party_(San_Marino)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-05-30"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Spirit_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Swedish_Peoples_League",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1930-10-01"
+      }
+    },
+    {
+      "@id": "dbpedia:New_TT_Hellenic_Postbank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-12-27"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Union_(Social_Liberals)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-07-09"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Way_(Israel)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-05-07"
+      }
+    },
+    {
+      "@id": "dbpedia:New_World_Pictures",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-01-22"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Zealand_Post_Office",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:New_Zealand_Socialist_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1913-07-01"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=13"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=13"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=13",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=14"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=12"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

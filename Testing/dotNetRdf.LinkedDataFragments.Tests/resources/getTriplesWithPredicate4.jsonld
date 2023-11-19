@@ -1,0 +1,822 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Communist_Party_of_Turkmenistan",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-12-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Communist_Party_of_Ukraine",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-12-16"
+      }
+    },
+    {
+      "@id": "dbpedia:Communist_Party_of_Uzbekistan",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-11-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Communist_Party_of_the_Russian_Soviet_Federative_Socialist_Republic",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-08-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Communist_Party_of_the_Soviet_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-08-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Community_Weeklies",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-01-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Community_of_Royalist_Peoples_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-01-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Compagnie_des_mines_dAnzin",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1946-05-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Competition_Authority_(Ireland)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-10-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Competition_Commission",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Compromise_Independent_Smallholders_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-03-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Concentration_of_Peoples_Forces",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1983-01-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Confederate_Patent_Office",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1865-05-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Confederate_States_Department_of_the_Navy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1865-05-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Confederation_of_Democracy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1973-05-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Connex_Melbourne",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-11-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Conoco",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2002-08-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Conservative_Party_(Brazil)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1889-11-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Conservative_Party_(Panama)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1952-09-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Conservative_Party_(Romania)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-06-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Conservative_Peoples_Party_(Poland)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-03-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Conservative_Republican_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1930-10-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Consolidated_Media_Holdings",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-11-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Constitution_Party_(Estonia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-06-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Constitutional_Democratic_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1917-12-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Consumer_Futures",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Convergence_and_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-06-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Cooperation_and_Development",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1967-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Corinthian_Colleges",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-04-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Corixa_(company)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Council_for_Economic_Planning_and_Development",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-01-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Council_of_Ministers_of_the_Hungarian_Peoples_Republic",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-10-23"
+      }
+    },
+    {
+      "@id": "dbpedia:CountryLink",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Creative_Korea_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-04-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Creative_Loafing",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-07-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Crichton_(Turku_shipyard)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1924-08-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Critical_Left",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-07-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Croat_Peoples_Union",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Croatian_Bloc_(political_party)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-01-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Croatian_Coalition_(2010)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-03-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Croatian_True_Revival",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-08-02"
+      }
+    },
+    {
+      "@id": "dbpedia:Cruise_West",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-09-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Crytek_USA",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-07-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Cyberflix",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-11-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Cycling_England",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Cyrix",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-11-11"
+      }
+    },
+    {
+      "@id": "dbpedia:DBFX",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-05-17"
+      }
+    },
+    {
+      "@id": "dbpedia:DB_AutoZug",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-30"
+      }
+    },
+    {
+      "@id": "dbpedia:DG_(company)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-02-07"
+      }
+    },
+    {
+      "@id": "dbpedia:DKTronics",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-05-24"
+      }
+    },
+    {
+      "@id": "dbpedia:DSB_Bank",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-10-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Daewoo",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-11-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Daimaru",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-02-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Dalmatian_Action",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-02-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Day_Software",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-07-28"
+      }
+    },
+    {
+      "@id": "dbpedia:De_Havilland_Marine",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1982-06-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Deb_Shops",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-03-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Defence_Materiel_Organisation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Dell_AppAssure",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-02-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Dell_Compellent",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-02-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Dell_Wyse",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-05-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Delrina",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1995-11-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Democracy_is_Freedom_–_The_Daisy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-10-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Democrat_Party_(Turkey,_historical)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1961-09-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Alliance_(Greece)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-05-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Centre_(Croatia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-11-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Coalition_Party_(Hungary)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-09-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Farmers_Party_of_Germany",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-09-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Justice_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-01-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Labor_Party_(South_Korea)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-12-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Left_(Italy)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-10-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Left_(Spain)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1979-01-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Left_Peoples_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-06-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Liberal_Party_(Romania)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-11-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Movement_(Israel)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1981-03-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Movement_for_Change",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-09-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_National_Salvation_Front",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-07-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Opposition_of_Serbia",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2003-11-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_(1912)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1913-05-29"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_(Romania)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-12-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_(South_Korea,_2000)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-06-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_(South_Korea,_2007)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2008-02-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_(South_Korea,_2008)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2011-12-15"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_(South_Korea,_2011)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-03-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_of_Chile_(1988)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1989-02-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_of_Japan_(1996–98)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-04-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_of_Vietnam",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1988-01-20"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_of_the_Atlantic",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-09-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Party_of_the_Left",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-02-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Peoples_Party_(Turkey)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2005-08-17"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Political_Turning_Point",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2012-11-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Progress_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Renewal_Party_(Portugal)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2000-04-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Social_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-04-04"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Socialist_Party_(Japan)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1994-12-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Socialist_Radical_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-05-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Society_Party",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-12-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Union_(Italy)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1999-02-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Union_(Poland)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1994-04-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Democratic_Youth_Federation_of_Kiskunfélegyháza",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-04-08"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=4"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=4"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=4",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=5"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=3"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

@@ -1,0 +1,822 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "dbpedia:Democratic_and_Social_Centre_(Spain)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-02-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Democrats_of_the_Left",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-10-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_for_Business,_Enterprise_and_Regulatory_Reform",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-06-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_for_Education_and_Skills_(United_Kingdom)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-06-28"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_for_Planning_and_Infrastructure",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-07-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Aboriginal_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1990-03-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Administrative_Services_(1975)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Administrative_Services_(1975–84)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1984-12-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Administrative_Services_(1987–93)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-03-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Administrative_Services_(1994–97)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-10-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Agriculture,_Fisheries_and_Forestry_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Agriculture_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-09-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Agriculture_(Australia,_1974–75)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Air_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1973-11-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Arts,_Heritage_and_Environment",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Aviation_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Broadband,_Communications_and_the_Digital_Economy",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Business_and_Consumer_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1982-05-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Civil_Aviation_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1973-11-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Climate_Change",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-03-08"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Climate_Change_and_Energy_Efficiency",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-03-25"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Commerce_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1942-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Commerce_and_Agriculture",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1956-01-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Communications,_Information_Technology_and_the_Arts",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-12-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Communications_(1980–87)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Communications_(1993–94)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1994-01-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Communications_(2013–15)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2015-09-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Communications_and_the_Arts_(1994–98)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-10-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Community,_Culture_and_Leisure_(Isle_of_Man)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-04-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Community_Services",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Community_Services_and_Health",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1991-06-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Construction",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-12-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Consumer_and_Employment_Protection",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2009-01-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Customs_and_Excise",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-03-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Defence_(1901–21)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1921-12-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Defence_(1921–39)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1939-11-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Defence_Co-ordination",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1942-04-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Defence_Support",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1984-12-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Education,_Employment_and_Workplace_Relations",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Education,_Science_and_Training",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-12-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Education,_Training_and_Youth_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-11-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Education_(1972–83)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1983-03-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Education_(1984–87)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Education_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-12-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Education_and_Science_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1972-12-19"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Education_and_Youth_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1984-12-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Employment,_Education,_Training_and_Youth_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-10-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Employment,_Education_and_Training",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-03-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Employment,_Workplace_Relations_and_Small_Business",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-11-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Employment_and_Industrial_Relations_(1975–78)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-12-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Employment_and_Industrial_Relations_(1982–87)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Employment_and_Workplace_Relations",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-12-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Employment_and_Youth_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1982-05-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Environment,_Housing_and_Community_Development",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1978-12-05"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Environment_and_Conservation_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-04-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Environment_and_Conservation_(Western_Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-06-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_External_Affairs_(1901–16)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1916-11-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_External_Affairs_(1921–70)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1970-11-06"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_External_Territories_(1941–51)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1951-05-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_External_Territories_(1968–73)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1973-11-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Families,_Community_Services_and_Indigenous_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-12-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Families,_Housing,_Community_Services_and_Indigenous_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Family_and_Community_Services_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-01-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Finance_(1976–97)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-10-09"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Finance_and_Administration",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-12-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Finance_and_Deregulation",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Foreign_Affairs_(Australia)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Fuel,_Shipping_and_Transport",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1951-05-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Health,_Housing,_Local_Government_and_Community_Services",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-12-23"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Health,_Housing_and_Community_Services",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-03-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Health_(1921–87)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Health_(Isle_of_Man)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2014-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Health_and_Aged_Care",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-11-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Health_and_Ageing",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Health_and_Family_Services",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1998-10-21"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Health_and_Social_Security_(Isle_of_Man)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2010-03-31"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Home_Affairs_(1901–16)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1916-11-14"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Home_Affairs_(1928–32)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1932-04-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Home_Affairs_(1977–80)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1980-11-03"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Home_Affairs_and_Environment",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1984-12-13"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Home_Security",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1946-02-01"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Home_and_Territories",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1928-12-10"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Housing",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1973-11-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Housing_and_Construction_(1973–75)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1975-12-22"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Housing_and_Construction_(1978–82)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1982-05-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Housing_and_Construction_(1983–87)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Housing_and_Regional_Development",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-03-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Human_Services_and_Health",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-03-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Immigration",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1974-06-12"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Immigration,_Local_Government_and_Ethnic_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1993-03-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Immigration_and_Citizenship",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Immigration_and_Ethnic_Affairs_(1975–87)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1987-07-24"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Immigration_and_Ethnic_Affairs_(1993–96)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1996-03-11"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Immigration_and_Multicultural_Affairs_(1996–2001)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2001-11-26"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Immigration_and_Multicultural_Affairs_(2006–07)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2007-01-30"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Immigration_and_Multicultural_and_Indigenous_Affairs",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2006-01-27"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Industrial_Relations_(1978–82)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1982-05-07"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Industrial_Relations_(1987–97)",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "1997-07-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Industry,_Innovation,_Climate_Change,_Science,_Research_and_Tertiary_Education",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-09-18"
+      }
+    },
+    {
+      "@id": "dbpedia:Department_of_Industry,_Innovation,_Science,_Research_and_Tertiary_Education",
+      "dbpedia-owl:extinctionDate": {
+        "@type": "xsd:date",
+        "@value": "2013-03-25"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=5"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=5"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=5",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s <http://dbpedia.org/ontology/extinctionDate> ?o }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 1970,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:next": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=6"
+          },
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=4"
+          },
+          "hydra:totalItems": 1970
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate#metadata"
+    }
+  ]
+}

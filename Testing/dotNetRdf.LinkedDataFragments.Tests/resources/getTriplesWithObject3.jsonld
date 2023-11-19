@@ -1,0 +1,446 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dc": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "dc11": "http://purl.org/dc/elements/1.1/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "geo": "http://www.w3.org/2003/01/geo/wgs84_pos#",
+    "dbpedia": "http://dbpedia.org/resource/",
+    "dbpedia-owl": "http://dbpedia.org/ontology/",
+    "dbpprop": "http://dbpedia.org/property/",
+    "hydra": "http://www.w3.org/ns/hydra/core#",
+    "void": "http://rdfs.org/ns/void#"
+  },
+  "@graph": [
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q11366131",
+      "http://wikidata.dbpedia.org/property/birthDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/dateOfBirth": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q13056931",
+      "http://wikidata.dbpedia.org/property/deathDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q155689",
+      "http://wikidata.dbpedia.org/property/discovered": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q16013832",
+      "http://wikidata.dbpedia.org/property/dateOfDeath": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q16013845",
+      "http://wikidata.dbpedia.org/property/dateOfDeath": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q1606501",
+      "http://wikidata.dbpedia.org/property/dateOfDeath": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q16213248",
+      "http://wikidata.dbpedia.org/property/birthDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/dateOfBirth": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q1797294",
+      "http://wikidata.dbpedia.org/property/dateOfDeath": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q18057253",
+      "http://wikidata.dbpedia.org/property/birthDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q18211008",
+      "http://wikidata.dbpedia.org/property/birthDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/dateOfBirth": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q1886347",
+      "http://wikidata.dbpedia.org/property/termStart": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q1888426",
+      "http://wikidata.dbpedia.org/property/deathDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q191753",
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q19872257",
+      "http://wikidata.dbpedia.org/property/birthDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q19957807",
+      "http://wikidata.dbpedia.org/property/birthDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/dateOfBirth": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q20875790",
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q21622053",
+      "http://wikidata.dbpedia.org/property/dateOfBirth": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q244997",
+      "http://wikidata.dbpedia.org/property/termEnd": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q256763",
+      "http://wikidata.dbpedia.org/property/termEnd": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q3703630",
+      "http://wikidata.dbpedia.org/property/dateOfDeath": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q379373",
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q4228200",
+      "http://wikidata.dbpedia.org/property/termEnd": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q4390046",
+      "http://wikidata.dbpedia.org/property/dateOfDeath": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/deathDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q4940789",
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q5224722",
+      "http://wikidata.dbpedia.org/property/dateOfDeath": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/deathDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q5238852",
+      "http://wikidata.dbpedia.org/property/dateOfDeath": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q55900",
+      "http://wikidata.dbpedia.org/property/termStart": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q5647645",
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q571064",
+      "http://wikidata.dbpedia.org/property/termStart": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q6505233",
+      "http://wikidata.dbpedia.org/property/deathDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q6509793",
+      "http://wikidata.dbpedia.org/property/dateOfDeath": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/deathDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q6691451",
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q7092802",
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q7263258",
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q7278691",
+      "http://wikidata.dbpedia.org/property/deathDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q7281811",
+      "http://wikidata.dbpedia.org/property/airdate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q7768643",
+      "http://wikidata.dbpedia.org/ontology/releaseDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q7821886",
+      "http://wikidata.dbpedia.org/ontology/releaseDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q8054374",
+      "http://wikidata.dbpedia.org/property/dateOfBirth": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q914247",
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@id": "http://wikidata.dbpedia.org/resource/Q954934",
+      "http://wikidata.dbpedia.org/ontology/releaseDate": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      },
+      "http://wikidata.dbpedia.org/property/released": {
+        "@type": "xsd:date",
+        "@value": "1997-02-04"
+      }
+    },
+    {
+      "@graph": [
+        {
+          "@id": "_:object",
+          "hydra:property": {
+            "@id": "rdf:object"
+          },
+          "hydra:variable": "object"
+        },
+        {
+          "@id": "_:predicate",
+          "hydra:property": {
+            "@id": "rdf:predicate"
+          },
+          "hydra:variable": "predicate"
+        },
+        {
+          "@id": "_:subject",
+          "hydra:property": {
+            "@id": "rdf:subject"
+          },
+          "hydra:variable": "subject"
+        },
+        {
+          "@id": "_:triplePattern",
+          "hydra:mapping": [
+            {
+              "@id": "_:subject"
+            },
+            {
+              "@id": "_:predicate"
+            },
+            {
+              "@id": "_:object"
+            }
+          ],
+          "hydra:template": "{{request.origin}}/2016-04/en{?subject,predicate,object}",
+          "hydra:variableRepresentation": {
+            "@id": "hydra:ExplicitRepresentation"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/#dataset",
+          "hydra:member": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en#dataset",
+          "@type": [
+            "void:Dataset",
+            "hydra:Collection"
+          ],
+          "void:subset": [
+            {
+              "@id": "{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date&page=3"
+            },
+            {
+              "@id": "{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date"
+            }
+          ],
+          "hydra:search": {
+            "@id": "_:triplePattern"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date",
+          "void:subset": {
+            "@id": "{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date&page=3"
+          }
+        },
+        {
+          "@id": "{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date&page=3",
+          "@type": "hydra:PartialCollectionView",
+          "dc:description": {
+            "@language": "en",
+            "@value": "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s ?p \"1997-02-04\"^^http://www.w3.org/2001/XMLSchema#date }."
+          },
+          "dc:source": {
+            "@id": "{{request.origin}}/2016-04/en#dataset"
+          },
+          "dc:title": {
+            "@language": "en",
+            "@value": "Linked Data Fragment of DBpedia 2016-04"
+          },
+          "void:triples": 251,
+          "hydra:first": {
+            "@id": "{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date&page=1"
+          },
+          "hydra:itemsPerPage": 100,
+          "hydra:previous": {
+            "@id": "{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date&page=2"
+          },
+          "hydra:totalItems": 251
+        }
+      ],
+      "@id": "{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date#metadata"
+    }
+  ]
+}
