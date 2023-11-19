@@ -770,13 +770,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    var lines = temp.Split('\n');
-                    for (var i = 0; i < lines.Length; i++)
-                    {
-                        if (i > 0) output.Append(indent);
-                        output.Append(lines[i]);
-                        if (i < lines.Length - 1) output.AppendLine();
-                    }
+                    output.AppendBlockIndented(temp, indent, false);
                 }
                 if (linebreaks) output.AppendLine();
             }
@@ -791,13 +785,7 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    var lines = temp.Split('\n');
-                    for (var i = 0; i < lines.Length; i++)
-                    {
-                        if (i > 0) output.Append(indent);
-                        output.Append(lines[i]);
-                        if (i < lines.Length - 1) output.AppendLine();
-                    }
+                    output.AppendBlockIndented(temp, indent, false);
                 }
                 if (linebreaks) output.AppendLine();
             }
