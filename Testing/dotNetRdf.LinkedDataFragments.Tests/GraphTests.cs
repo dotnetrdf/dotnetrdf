@@ -31,7 +31,7 @@ using Xunit.Abstractions;
 
 namespace VDS.RDF.LinkedPatternFragments
 {
-    public class GraphTests
+    public abstract class GraphTests
     {
         private static readonly NodeFactory factory = new();
         private readonly ITestOutputHelper output;
@@ -41,10 +41,12 @@ namespace VDS.RDF.LinkedPatternFragments
             this.output = output;
         }
 
+        protected abstract Graph Graph { get; }
+
         [Fact]
         public void ContainsTriple()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             var s = UriNode("http://dbpedia.org/ontology/extinctionDate");
             var p = UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
             var o = UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#Property");
@@ -56,8 +58,8 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void EqualsTest()
         {
-            using var g1 = new Graph("https://fragments.dbpedia.org/2016-04/en");
-            using var g2 = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g1 = this.Graph;
+            using var g2 = this.Graph;
             var equals = g1.Equals(g2);
 
             output.WriteLine("{0}", equals);
@@ -66,7 +68,7 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void GetTriplesWithObject()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             var o = LiteralNode("1997-02-04", XmlSpecsHelper.XmlSchemaDataTypeDate);
             var triples = g.GetTriplesWithObject(o);
 
@@ -79,7 +81,7 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void GetTriplesWithPredicate()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             var p = UriNode("http://dbpedia.org/ontology/extinctionDate");
             var triples = g.GetTriplesWithPredicate(p);
 
@@ -92,7 +94,7 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void GetTriplesWithPredicateObject()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             var p = UriNode("http://dbpedia.org/ontology/extinctionDate");
             var o = LiteralNode("2011-10-05", XmlSpecsHelper.XmlSchemaDataTypeDate);
             var triples = g.GetTriplesWithPredicateObject(p, o);
@@ -106,7 +108,7 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void GetTriplesWithSubject()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             var s = UriNode("http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853");
             var triples = g.GetTriplesWithSubject(s);
 
@@ -119,7 +121,7 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void GetTriplesWithSubjectObject()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             var s = UriNode("http://dbpedia.org/resource/123_Democratic_Alliance");
             var o = LiteralNode("707366241", XmlSpecsHelper.XmlSchemaDataTypeInteger);
             var triples = g.GetTriplesWithSubjectObject(s, o);
@@ -133,7 +135,7 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void GetTriplesWithSubjectPredicate()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             var s = UriNode("http://dbpedia.org/resource/123_Democratic_Alliance");
             var p = UriNode("http://dbpedia.org/ontology/extinctionDate");
             var triples = g.GetTriplesWithSubjectPredicate(s, p);
@@ -147,7 +149,7 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void ObjectNodes()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             using var triples = g.Triples.ObjectNodes.GetEnumerator();
 
             for (var i = 0; i < 100; i++)
@@ -160,7 +162,7 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void PredicateNodes()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             using var triples = g.Triples.PredicateNodes.GetEnumerator();
 
             for (var i = 0; i < 25; i++)
@@ -173,7 +175,7 @@ namespace VDS.RDF.LinkedPatternFragments
         [Fact]
         public void Sparql()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
@@ -191,7 +193,7 @@ WHERE {
         [Fact]
         public void SubjectNodes()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             using var triples = g.Triples.SubjectNodes.GetEnumerator();
 
             for (var i = 0; i < 20; i++)
@@ -204,7 +206,7 @@ WHERE {
         [Fact]
         public void Triples()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             using var triples = g.Triples.GetEnumerator();
 
             for (var i = 0; i < 110; i++)
@@ -217,7 +219,7 @@ WHERE {
         [Fact]
         public void TriplesCount()
         {
-            using var g = new Graph("https://fragments.dbpedia.org/2016-04/en");
+            using var g = this.Graph;
             var count = g.Triples.Count;
 
             output.WriteLine("{0}", count);
