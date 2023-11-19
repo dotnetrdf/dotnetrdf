@@ -46,17 +46,17 @@ namespace VDS.RDF.LinkedPatternFragments
                 throw new ArgumentNullException(nameof(template));
             }
 
-            if (subject is object && subject.NodeType != NodeType.Uri)
+            if (subject is not null && subject.NodeType != NodeType.Uri)
             {
                 throw new ArgumentException("Subject can only be IRI", nameof(subject));
             }
 
-            if (predicate is object && predicate.NodeType != NodeType.Uri)
+            if (predicate is not null && predicate.NodeType != NodeType.Uri)
             {
                 throw new ArgumentException("Predicate can only be IRI", nameof(predicate));
             }
 
-            if (@object is object && @object.NodeType != NodeType.Uri && @object.NodeType != NodeType.Literal)
+            if (@object is not null && @object.NodeType != NodeType.Uri && @object.NodeType != NodeType.Literal)
             {
                 throw new ArgumentException("Object can only be IRI or literal", nameof(@object));
             }
@@ -75,17 +75,17 @@ namespace VDS.RDF.LinkedPatternFragments
                 var variables = new Dictionary<string, object>();
                 var formatter = (INodeFormatter)new ExplicitRepresentationFormatter();
 
-                if (this.subject is object)
+                if (this.subject is not null)
                 {
                     variables.Add("subject", formatter.Format(this.subject));
                 }
 
-                if (this.predicate is object)
+                if (this.predicate is not null)
                 {
                     variables.Add("predicate", formatter.Format(this.predicate));
                 }
 
-                if (this.@object is object)
+                if (this.@object is not null)
                 {
                     variables.Add("object", formatter.Format(this.@object));
                 }
