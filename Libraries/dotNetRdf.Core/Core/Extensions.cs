@@ -732,21 +732,64 @@ namespace VDS.RDF
         /// </remarks>
         public static void AppendLineIndented(this StringBuilder builder, string line, int indent)
         {
+            var indentString = new string(' ', indent);
             if (line.Contains('\n'))
             {
                 var lines = line.Split('\n');
                 foreach (var l in lines)
                 {
                     if (string.IsNullOrEmpty(l) || l.ToCharArray().All(c => char.IsWhiteSpace(c))) continue;
-                    builder.AppendLine(new string(' ', indent) + l);
+                    builder.Append(indentString);
+                    builder.AppendLine(l.TrimEnd('\r'));
                 }
             }
             else
             {
-                builder.AppendLine(new string(' ', indent) + line);
+                builder.Append(indentString);
+                builder.AppendLine(line);
             }
         }
 
+        /// <summary>
+        /// Append all of the lines in <paramref name="block"/> to this StringBuilder with the specified indent
+        /// as space characters.
+        /// </summary>
+        /// <param name="builder">The StringBuilder to append the block to.</param>
+        /// <param name="block">The block to be appended.</param>
+        /// <param name="indent">The string to prepend to each indented line.</param>
+        /// <param name="indentFirst">Whether to indent the first line of the block or not.</param>
+        public static void AppendBlockIndented(this StringBuilder builder, string block, string indent,
+            bool indentFirst = false)
+        {
+            if (!block.Contains('\n'))
+            {
+                if (indentFirst)
+                {
+                    builder.Append(indent);
+                }
+                builder.Append(block);
+                return;
+            }
+
+            var lines = block.Split('\n');
+            for (var ix = 0; ix < lines.Length; ix++)
+            {
+                if (ix > 0 || indentFirst)
+                {
+                    builder.Append(indent);
+                }
+
+                var line = lines[ix].TrimEnd('\r');
+                if (ix < lines.Length - 1)
+                {
+                    builder.AppendLine(line);
+                }
+                else
+                {
+                    builder.Append(line);
+                }
+            }
+        }
 
         /// <summary>
         /// Determines whether a string is ASCII.
