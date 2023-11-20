@@ -30,6 +30,7 @@ using VDS.RDF.LinkedPatternFragments.Hydra;
 
 namespace VDS.RDF.LinkedPatternFragments
 {
+    // TODO: Remove System.Linq once classes here renamed
     public class Graph : RDF.Graph
     {
         private readonly IriTemplate template;
@@ -39,21 +40,6 @@ namespace VDS.RDF.LinkedPatternFragments
             using var tripleStore = new TripleStore(UriFactory.Create(baseUri));
             this.template = tripleStore.Metadata.Search;
             this._triples = new TripleCollection(this.template);
-        }
-
-        public override bool Assert(Triple t)
-        {
-            throw new NotSupportedException("This graph is read-only.");
-        }
-
-        public override bool Assert(IEnumerable<Triple> ts)
-        {
-            throw new NotSupportedException("This graph is read-only.");
-        }
-
-        public override void Clear()
-        {
-            throw new NotSupportedException("This graph is read-only.");
         }
 
         public override bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
@@ -70,24 +56,58 @@ namespace VDS.RDF.LinkedPatternFragments
             return base.Equals(g, out mapping);
         }
 
-        public override IBlankNode GetBlankNode(string nodeId)
-        {
-            throw new NotSupportedException("This graph does not support blank nodes.");
-        }
+        #region Mutation methods throw because this graph is read-only
 
-        public override void Merge(IGraph g, bool keepOriginalGraphUri)
-        {
-            throw new NotSupportedException("This graph is read-only.");
-        }
+        public override bool Assert(Triple t) => throw new NotSupportedException("This graph is read-only.");
 
-        public override bool Retract(Triple t)
-        {
-            throw new NotSupportedException("This graph is read-only.");
-        }
+        public override bool Assert(IEnumerable<Triple> ts) => throw new NotSupportedException("This graph is read-only.");
 
-        public override bool Retract(IEnumerable<Triple> ts)
-        {
-            throw new NotSupportedException("This graph is read-only.");
-        }
+        public override void Clear() => throw new NotSupportedException("This graph is read-only.");
+
+        public override void Merge(IGraph g) => throw new NotSupportedException("This graph is read-only.");
+
+        public override void Merge(IGraph g, bool keepOriginalGraphUri) => throw new NotSupportedException("This graph is read-only.");
+
+        public override bool Retract(Triple t) => throw new NotSupportedException("This graph is read-only.");
+
+        public override bool Retract(IEnumerable<Triple> ts) => throw new NotSupportedException("This graph is read-only.");
+
+        #endregion
+
+        #region Some methods and properties short-circuit to empty due to unsupported features in LDF
+
+        public override IEnumerable<INode> AllQuotedNodes => System.Linq.Enumerable.Empty<INode>();
+
+        public override bool ContainsQuotedTriple(Triple t) => false;
+
+        public override IBlankNode GetBlankNode(string nodeId) => null;
+
+        public override IEnumerable<Triple> GetQuoted(INode n) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuoted(Uri uri) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuotedWithObject(Uri u) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuotedWithSubject(Uri u) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuotedWithObject(INode n) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuotedWithPredicate(INode n) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuotedWithSubject(INode n) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<INode> QuotedNodes => System.Linq.Enumerable.Empty<INode>();
+
+        public override IEnumerable<Triple> QuotedTriples => System.Linq.Enumerable.Empty<Triple>();
+
+        #endregion
     }
 }

@@ -31,6 +31,7 @@ using VDS.RDF.LinkedPatternFragments.Hydra;
 
 namespace VDS.RDF.LinkedPatternFragments
 {
+    // TODO: Remove System.Linq once classes here renamed
     internal class TripleCollection : BaseTripleCollection
     {
         private readonly IriTemplate template;
@@ -132,29 +133,40 @@ namespace VDS.RDF.LinkedPatternFragments
 
         public override IEnumerable<Triple> Asserted => this;
 
-        protected override bool Add(Triple t)
-        {
-            throw new NotSupportedException("This triple collection is read-only.");
-        }
+        #region Mutation methods throw because this triple collection is read-only
 
-        protected override bool Delete(Triple t)
-        {
-            throw new NotSupportedException("This triple collection is read-only.");
-        }
+        protected override bool Add(Triple t) => throw new NotSupportedException("This triple collection is read-only.");
 
-        public override bool ContainsQuoted(Triple t)
-        {
-            throw new NotSupportedException("This triple collection does not support quoting.");
-        }
+        protected override bool Delete(Triple t) => throw new NotSupportedException("This triple collection is read-only.");
 
-        public override int QuotedCount => throw new NotSupportedException("This triple collection does not support quoting.");
+        #endregion
 
-        public override IEnumerable<INode> QuotedObjectNodes => throw new NotSupportedException("This triple collection does not support quoting.");
+        #region Some methods and properties short-circuit to empty due to unsupported features in LDF
 
-        public override IEnumerable<INode> QuotedPredicateNodes => throw new NotSupportedException("This triple collection does not support quoting.");
+        public override bool ContainsQuoted(Triple t) => false;
 
-        public override IEnumerable<INode> QuotedSubjectNodes => throw new NotSupportedException("This triple collection does not support quoting.");
+        public override IEnumerable<Triple> Quoted => System.Linq.Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> Quoted => throw new NotSupportedException("This triple collection does not support quoting.");
+        public override int QuotedCount => 0;
+
+        public override IEnumerable<INode> QuotedObjectNodes => System.Linq.Enumerable.Empty<INode>();
+
+        public override IEnumerable<INode> QuotedPredicateNodes => System.Linq.Enumerable.Empty<INode>();
+
+        public override IEnumerable<INode> QuotedSubjectNodes => System.Linq.Enumerable.Empty<INode>();
+
+        public override IEnumerable<Triple> QuotedWithObject(INode obj) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> QuotedWithPredicate(INode pred) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> QuotedWithPredicateObject(INode pred, INode obj) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> QuotedWithSubject(INode subj) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> QuotedWithSubjectObject(INode subj, INode obj) => System.Linq.Enumerable.Empty<Triple>();
+
+        public override IEnumerable<Triple> QuotedWithSubjectPredicate(INode subj, INode pred) => System.Linq.Enumerable.Empty<Triple>();
+
+        #endregion
     }
 }
