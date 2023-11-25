@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit.Abstractions;
 
-namespace VDS.RDF.LinkedPatternFragments
+namespace VDS.RDF.LDF
 {
     public class DBPediaGraphTests : GraphTests
     {

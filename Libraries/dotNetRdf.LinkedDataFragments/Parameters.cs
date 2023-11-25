@@ -27,10 +27,10 @@
 using System;
 using System.Collections.Generic;
 using Resta.UriTemplates;
-using VDS.RDF.LinkedPatternFragments.Hydra;
+using VDS.RDF.LDF.Hydra;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.LinkedPatternFragments
+namespace VDS.RDF.LDF
 {
     internal class Parameters
     {

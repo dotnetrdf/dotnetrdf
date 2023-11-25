@@ -30,7 +30,7 @@ using System.Text;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.LinkedPatternFragments.Hydra
+namespace VDS.RDF.LDF.Hydra
 {
     internal class ExplicitRepresentationFormatter : INodeFormatter
     {

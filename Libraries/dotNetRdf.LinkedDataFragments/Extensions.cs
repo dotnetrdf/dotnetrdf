@@ -27,7 +27,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.LinkedPatternFragments
+namespace VDS.RDF.LDF
 {
     internal static class Extensions
     {

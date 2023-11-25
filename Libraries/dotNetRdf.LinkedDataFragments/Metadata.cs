@@ -27,9 +27,9 @@
 using System;
 using System.Linq;
 using VDS.RDF.Nodes;
-using VDS.RDF.LinkedPatternFragments.Hydra;
+using VDS.RDF.LDF.Hydra;
 
-namespace VDS.RDF.LinkedPatternFragments
+namespace VDS.RDF.LDF
 {
     internal class Metadata : WrapperGraph
     {

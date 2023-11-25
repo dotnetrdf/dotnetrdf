@@ -29,7 +29,7 @@ using VDS.RDF.Writing.Formatting;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace VDS.RDF.LinkedPatternFragments
+namespace VDS.RDF.LDF
 {
     public abstract class GraphTests
     {

@@ -28,7 +28,7 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.LinkedPatternFragments.Hydra
+namespace VDS.RDF.LDF.Hydra
 {
     internal class IriTemplateMapping : GraphWrapperNode
     {

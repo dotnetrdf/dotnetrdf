@@ -26,7 +26,7 @@
 
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.LinkedPatternFragments
+namespace VDS.RDF.LDF
 {
     internal static class Vocabulary
     {

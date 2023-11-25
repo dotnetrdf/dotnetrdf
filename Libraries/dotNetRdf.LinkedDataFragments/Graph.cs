@@ -26,9 +26,9 @@
 
 using System;
 using System.Collections.Generic;
-using VDS.RDF.LinkedPatternFragments.Hydra;
+using VDS.RDF.LDF.Hydra;
 
-namespace VDS.RDF.LinkedPatternFragments
+namespace VDS.RDF.LDF
 {
     // TODO: Remove System.Linq once classes here renamed
     public class Graph : RDF.Graph

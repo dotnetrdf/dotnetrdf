@@ -31,7 +31,7 @@ using WireMock.Server;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace VDS.RDF.LinkedPatternFragments
+namespace VDS.RDF.LDF
 {
     [Collection("QpfServer")]
     public class MockGraphTests : GraphTests
