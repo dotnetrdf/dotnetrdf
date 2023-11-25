@@ -41,7 +41,7 @@ namespace VDS.RDF.LDF
             this.output = output;
         }
 
-        protected abstract Graph Graph { get; }
+        protected abstract LdfGraph Graph { get; }
 
         [Fact]
         public void ContainsTriple()

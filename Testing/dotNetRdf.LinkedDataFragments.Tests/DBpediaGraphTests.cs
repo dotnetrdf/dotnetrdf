@@ -31,6 +31,6 @@ namespace VDS.RDF.LDF
     {
         public DBPediaGraphTests(ITestOutputHelper output) : base(output) { }
 
-        protected override Graph Graph => new("https://fragments.dbpedia.org/2016-04/en");
+        protected override LdfGraph Graph => new("https://fragments.dbpedia.org/2016-04/en");
     }
 }

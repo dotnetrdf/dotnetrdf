@@ -25,45 +25,59 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace VDS.RDF.LDF
 {
-    internal class TripleStore : WrapperTripleStore
+    internal class LdfEnumerator : IEnumerator<Triple>
     {
-        private readonly Uri uri;
+        private IEnumerator<Triple> e;
+        private Uri uri;
 
-        internal TripleStore(Uri uri)
-            : base(new RDF.TripleStore())
+        internal LdfEnumerator(Uri uri)
         {
             this.uri = uri;
-            this.LoadFromUri(uri);
         }
 
-        internal Metadata Metadata
+        Triple IEnumerator<Triple>.Current => this.e.Current;
+
+        object IEnumerator.Current => ((IEnumerator<Triple>)this).Current;
+
+        void IDisposable.Dispose()
         {
-            get
-            {
-                return (
-                    from g in this.Graphs
-                    where g.Name is not null
-                    select new Metadata(g, this.uri))
-                    .Single();
-            }
+            this.e?.Dispose();
         }
 
-        internal IEnumerable<Triple> Data
+        bool IEnumerator.MoveNext()
         {
-            get
+            if (this.e is null)
             {
-                if (!this.HasGraph((IRefNode)null))
-                {
-                    return System.Linq.Enumerable.Empty<Triple>();
-                }
+                using var ts = new LdfTripleStore(this.uri);
 
-                return this.Graphs[(IRefNode)null].Triples;
+                this.e = ts.Data.GetEnumerator();
+                this.uri = ts.Metadata.NextPageUri;
             }
+
+            if (this.e.MoveNext())
+            {
+                return true;
+            }
+
+            if (this.uri is null)
+            {
+                return false;
+            }
+
+            this.e.Dispose();
+            this.e = null;
+
+            return ((IEnumerator)this).MoveNext();
+        }
+
+        void IEnumerator.Reset()
+        {
+            throw new NotSupportedException("This enumerator cannot be reset.");
         }
     }
 }

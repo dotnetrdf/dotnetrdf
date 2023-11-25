@@ -25,22 +25,45 @@
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VDS.RDF.LDF
 {
-    internal class Enumerable : IEnumerable<Triple>
+    internal class LdfTripleStore : WrapperTripleStore
     {
         private readonly Uri uri;
 
-        internal Enumerable(Uri uri)
+        internal LdfTripleStore(Uri uri)
+            : base(new TripleStore())
         {
             this.uri = uri;
+            this.LoadFromUri(uri);
         }
 
-        IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new Enumerator(this.uri);
+        internal Metadata Metadata
+        {
+            get
+            {
+                return (
+                    from g in this.Graphs
+                    where g.Name is not null
+                    select new Metadata(g, this.uri))
+                    .Single();
+            }
+        }
 
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Triple>)this).GetEnumerator();
+        internal IEnumerable<Triple> Data
+        {
+            get
+            {
+                if (!this.HasGraph((IRefNode)null))
+                {
+                    return Enumerable.Empty<Triple>();
+                }
+
+                return this.Graphs[(IRefNode)null].Triples;
+            }
+        }
     }
 }

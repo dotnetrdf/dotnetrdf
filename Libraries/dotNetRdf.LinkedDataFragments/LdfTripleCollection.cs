@@ -31,12 +31,11 @@ using VDS.RDF.LDF.Hydra;
 
 namespace VDS.RDF.LDF
 {
-    // TODO: Remove System.Linq once classes here renamed
-    internal class TripleCollection : BaseTripleCollection
+    internal class LdfTripleCollection : BaseTripleCollection
     {
         private readonly IriTemplate template;
 
-        internal TripleCollection(IriTemplate template)
+        internal LdfTripleCollection(IriTemplate template)
         {
             this.template = template;
         }
@@ -45,7 +44,7 @@ namespace VDS.RDF.LDF
         {
             get
             {
-                using var ts = new TripleStore(new Parameters(this.template));
+                using var ts = new LdfTripleStore(new Parameters(this.template));
                 return (int)ts.Metadata.TripleCount;
             }
         }
@@ -89,7 +88,7 @@ namespace VDS.RDF.LDF
 
         public override bool Contains(Triple t)
         {
-            return new Enumerable(new Parameters(this.template, t.Subject, t.Predicate, t.Object)).Any();
+            return new LdfEnumerable(new Parameters(this.template, t.Subject, t.Predicate, t.Object)).Any();
         }
 
         public override void Dispose()
@@ -98,37 +97,37 @@ namespace VDS.RDF.LDF
 
         public override IEnumerator<Triple> GetEnumerator()
         {
-            return new Enumerator(new Parameters(this.template));
+            return new LdfEnumerator(new Parameters(this.template));
         }
 
         public override IEnumerable<Triple> WithObject(INode obj)
         {
-            return new Enumerable(new Parameters(this.template, @object: obj));
+            return new LdfEnumerable(new Parameters(this.template, @object: obj));
         }
 
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
-            return new Enumerable(new Parameters(this.template, predicate: pred));
+            return new LdfEnumerable(new Parameters(this.template, predicate: pred));
         }
 
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            return new Enumerable(new Parameters(this.template, predicate: pred, @object: obj));
+            return new LdfEnumerable(new Parameters(this.template, predicate: pred, @object: obj));
         }
 
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
-            return new Enumerable(new Parameters(this.template, subj));
+            return new LdfEnumerable(new Parameters(this.template, subj));
         }
 
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            return new Enumerable(new Parameters(this.template, subj, @object: obj));
+            return new LdfEnumerable(new Parameters(this.template, subj, @object: obj));
         }
 
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            return new Enumerable(new Parameters(this.template, subj, pred));
+            return new LdfEnumerable(new Parameters(this.template, subj, pred));
         }
 
         public override IEnumerable<Triple> Asserted => this;
@@ -145,27 +144,27 @@ namespace VDS.RDF.LDF
 
         public override bool ContainsQuoted(Triple t) => false;
 
-        public override IEnumerable<Triple> Quoted => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> Quoted => Enumerable.Empty<Triple>();
 
         public override int QuotedCount => 0;
 
-        public override IEnumerable<INode> QuotedObjectNodes => System.Linq.Enumerable.Empty<INode>();
+        public override IEnumerable<INode> QuotedObjectNodes => Enumerable.Empty<INode>();
 
-        public override IEnumerable<INode> QuotedPredicateNodes => System.Linq.Enumerable.Empty<INode>();
+        public override IEnumerable<INode> QuotedPredicateNodes => Enumerable.Empty<INode>();
 
-        public override IEnumerable<INode> QuotedSubjectNodes => System.Linq.Enumerable.Empty<INode>();
+        public override IEnumerable<INode> QuotedSubjectNodes => Enumerable.Empty<INode>();
 
-        public override IEnumerable<Triple> QuotedWithObject(INode obj) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> QuotedWithObject(INode obj) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> QuotedWithPredicate(INode pred) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> QuotedWithPredicate(INode pred) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> QuotedWithPredicateObject(INode pred, INode obj) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> QuotedWithPredicateObject(INode pred, INode obj) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> QuotedWithSubject(INode subj) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> QuotedWithSubject(INode subj) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> QuotedWithSubjectObject(INode subj, INode obj) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> QuotedWithSubjectObject(INode subj, INode obj) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> QuotedWithSubjectPredicate(INode subj, INode pred) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> QuotedWithSubjectPredicate(INode subj, INode pred) => Enumerable.Empty<Triple>();
 
         #endregion
     }

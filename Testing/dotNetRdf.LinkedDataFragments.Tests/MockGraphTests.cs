@@ -40,7 +40,7 @@ namespace VDS.RDF.LDF
 
         public MockGraphTests(MockQpfServer qpfServer, ITestOutputHelper output) : base(output) => this.qpfServer = qpfServer;
 
-        protected override Graph Graph => new(qpfServer.BaseUri + "2016-04/en");
+        protected override LdfGraph Graph => new(qpfServer.BaseUri + "2016-04/en");
     }
 
     [CollectionDefinition("QpfServer")]

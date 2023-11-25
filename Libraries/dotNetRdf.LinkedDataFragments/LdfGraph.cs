@@ -26,25 +26,25 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.LDF.Hydra;
 
 namespace VDS.RDF.LDF
 {
-    // TODO: Remove System.Linq once classes here renamed
-    public class Graph : RDF.Graph
+    public class LdfGraph : Graph
     {
         private readonly IriTemplate template;
 
-        public Graph(string baseUri)
+        public LdfGraph(string baseUri)
         {
-            using var tripleStore = new TripleStore(UriFactory.Create(baseUri));
+            using var tripleStore = new LdfTripleStore(UriFactory.Create(baseUri));
             this.template = tripleStore.Metadata.Search;
-            this._triples = new TripleCollection(this.template);
+            this._triples = new LdfTripleCollection(this.template);
         }
 
         public override bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            if (g is Graph fragments)
+            if (g is LdfGraph fragments)
             {
                 if (this.template.Template == fragments.template.Template)
                 {
@@ -76,37 +76,37 @@ namespace VDS.RDF.LDF
 
         #region Some methods and properties short-circuit to empty due to unsupported features in LDF
 
-        public override IEnumerable<INode> AllQuotedNodes => System.Linq.Enumerable.Empty<INode>();
+        public override IEnumerable<INode> AllQuotedNodes => Enumerable.Empty<INode>();
 
         public override bool ContainsQuotedTriple(Triple t) => false;
 
         public override IBlankNode GetBlankNode(string nodeId) => null;
 
-        public override IEnumerable<Triple> GetQuoted(INode n) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuoted(INode n) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuoted(Uri uri) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuoted(Uri uri) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuotedWithObject(Uri u) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuotedWithObject(Uri u) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuotedWithSubject(Uri u) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuotedWithSubject(Uri u) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuotedWithObject(INode n) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuotedWithObject(INode n) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuotedWithPredicate(INode n) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuotedWithPredicate(INode n) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuotedWithSubject(INode n) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuotedWithSubject(INode n) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj) => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj) => Enumerable.Empty<Triple>();
 
-        public override IEnumerable<INode> QuotedNodes => System.Linq.Enumerable.Empty<INode>();
+        public override IEnumerable<INode> QuotedNodes => Enumerable.Empty<INode>();
 
-        public override IEnumerable<Triple> QuotedTriples => System.Linq.Enumerable.Empty<Triple>();
+        public override IEnumerable<Triple> QuotedTriples => Enumerable.Empty<Triple>();
 
         #endregion
     }

@@ -30,54 +30,17 @@ using System.Collections.Generic;
 
 namespace VDS.RDF.LDF
 {
-    internal class Enumerator : IEnumerator<Triple>
+    internal class LdfEnumerable : IEnumerable<Triple>
     {
-        private IEnumerator<Triple> e;
-        private Uri uri;
+        private readonly Uri uri;
 
-        internal Enumerator(Uri uri)
+        internal LdfEnumerable(Uri uri)
         {
             this.uri = uri;
         }
 
-        Triple IEnumerator<Triple>.Current => this.e.Current;
+        IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new LdfEnumerator(this.uri);
 
-        object IEnumerator.Current => ((IEnumerator<Triple>)this).Current;
-
-        void IDisposable.Dispose()
-        {
-            this.e?.Dispose();
-        }
-
-        bool IEnumerator.MoveNext()
-        {
-            if (this.e is null)
-            {
-                using var ts = new TripleStore(this.uri);
-
-                this.e = ts.Data.GetEnumerator();
-                this.uri = ts.Metadata.NextPageUri;
-            }
-
-            if (this.e.MoveNext())
-            {
-                return true;
-            }
-
-            if (this.uri is null)
-            {
-                return false;
-            }
-
-            this.e.Dispose();
-            this.e = null;
-
-            return ((IEnumerator)this).MoveNext();
-        }
-
-        void IEnumerator.Reset()
-        {
-            throw new NotSupportedException("This enumerator cannot be reset.");
-        }
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Triple>)this).GetEnumerator();
     }
 }
