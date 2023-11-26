@@ -48,8 +48,6 @@ namespace VDS.RDF.LDF
 
             internal static IUriNode Mapping { get; } = Node(BaseUri, "mapping");
 
-            internal static IUriNode Search { get; } = Node(BaseUri, "search");
-
             internal static IUriNode Template { get; } = Node(BaseUri, "template");
         }
 

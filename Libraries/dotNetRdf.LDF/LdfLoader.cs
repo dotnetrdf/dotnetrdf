@@ -72,7 +72,7 @@ namespace VDS.RDF.LDF
             new LeviathanUpdateProcessor(ts).ProcessCommandSet(LdfLoader.delete);
         }
 
-        internal Graph Data { get; private set; } = new Graph();
+        internal Graph Data { get; } = new Graph();
 
         internal LdfMetadataGraph Metadata { get; private set; }
 
