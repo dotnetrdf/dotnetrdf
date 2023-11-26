@@ -77,17 +77,17 @@ namespace VDS.RDF.LDF
 
                 if (this.subject is not null)
                 {
-                    variables.Add("subject", formatter.Format(this.subject));
+                    variables.Add(this.template.SubjectVariable, formatter.Format(this.subject));
                 }
 
                 if (this.predicate is not null)
                 {
-                    variables.Add("predicate", formatter.Format(this.predicate));
+                    variables.Add(this.template.PredicateVariable, formatter.Format(this.predicate));
                 }
 
                 if (this.@object is not null)
                 {
-                    variables.Add("object", formatter.Format(this.@object));
+                    variables.Add(this.template.ObjectVariable, formatter.Format(this.@object));
                 }
 
                 return uriTemplate.ResolveUri(variables);
