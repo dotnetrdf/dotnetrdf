@@ -37,8 +37,8 @@ namespace VDS.RDF.LDF
 
         public LdfGraph(string baseUri)
         {
-            using var tripleStore = new LdfTripleStore(UriFactory.Create(baseUri));
-            this.template = tripleStore.Metadata.Search;
+            using var loader = new LdfLoader(UriFactory.Create(baseUri));
+            this.template = loader.Metadata.Search;
             this._triples = new LdfTripleCollection(this.template);
         }
 

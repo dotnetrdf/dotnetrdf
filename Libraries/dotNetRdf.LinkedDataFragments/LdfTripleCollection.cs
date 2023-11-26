@@ -44,8 +44,8 @@ namespace VDS.RDF.LDF
         {
             get
             {
-                using var ts = new LdfTripleStore(new Parameters(this.template));
-                return (int)ts.Metadata.TripleCount;
+                using var loader = new LdfLoader(new Parameters(this.template));
+                return (int)loader.Metadata.TripleCount;
             }
         }
 

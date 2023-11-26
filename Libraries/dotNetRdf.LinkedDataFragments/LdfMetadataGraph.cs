@@ -25,45 +25,44 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.LDF.Hydra;
+using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.LDF
 {
-    internal class LdfTripleStore : WrapperTripleStore
+    internal class LdfMetadataGraph : WrapperGraph
     {
-        private readonly Uri uri;
+        private const string selectSparql = """
+            PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+            PREFIX void:  <http://rdfs.org/ns/void#>
 
-        internal LdfTripleStore(Uri uri)
-            : base(new TripleStore())
-        {
-            this.uri = uri;
-            this.LoadFromUri(uri);
-        }
-
-        internal Metadata Metadata
-        {
-            get
-            {
-                return (
-                    from g in this.Graphs
-                    where g.Name is not null
-                    select new Metadata(g, this.uri))
-                    .Single();
+            SELECT DISTINCT ?fragment ?search
+            WHERE {
+            	?fragment ^void:subset   ?dataset .
+            	?page     ^void:subset   ?fragment .
+            	?search   ^hydra:search  ?dataset .
+            	?mapping  ^hydra:mapping ?search .
             }
-        }
+            """;
+        private static readonly SparqlQuery select = new SparqlQueryParser().ParseFromString(selectSparql);
 
-        internal IEnumerable<Triple> Data
+        internal LdfMetadataGraph(IGraph g) : base(g)
         {
-            get
-            {
-                if (!this.HasGraph((IRefNode)null))
-                {
-                    return Enumerable.Empty<Triple>();
-                }
+            var result = ((SparqlResultSet)this.ExecuteQuery(select)).Single();
+            var fragment = new GraphWrapperNode(result["fragment"], this);
 
-                return this.Graphs[(IRefNode)null].Triples;
-            }
+            this.NextPageUri = Vocabulary.Hydra.Next.ObjectsOf(fragment).Cast<IUriNode>().SingleOrDefault()?.Uri;
+            this.TripleCount = Vocabulary.Void.Triples.ObjectsOf(fragment).SingleOrDefault()?.AsValuedNode().AsInteger();
+            this.Search = new IriTemplate(result["search"], this);
         }
+
+        internal IriTemplate Search { get; private set; }
+
+        internal Uri NextPageUri { get; private set; }
+
+        internal long? TripleCount { get; private set; }
     }
 }

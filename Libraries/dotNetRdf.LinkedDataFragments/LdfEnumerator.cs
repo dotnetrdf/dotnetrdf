@@ -53,10 +53,10 @@ namespace VDS.RDF.LDF
         {
             if (this.e is null)
             {
-                using var ts = new LdfTripleStore(this.uri);
+                using var loader = new LdfLoader(this.uri);
 
-                this.e = ts.Data.GetEnumerator();
-                this.uri = ts.Metadata.NextPageUri;
+                this.e = loader.Data.Triples.GetEnumerator();
+                this.uri = loader.Metadata.NextPageUri;
             }
 
             if (this.e.MoveNext())
