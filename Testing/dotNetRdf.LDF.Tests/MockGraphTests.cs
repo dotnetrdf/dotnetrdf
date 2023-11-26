@@ -54,36 +54,36 @@ namespace VDS.RDF.LDF
         {
             Server = WireMockServer.Start();
 
-            var file = (string q) => Response.Create()
+            static IResponseBuilder file(string q) => Response.Create()
                 .WithHeader("Content-Type", "text/turtle")
                 .WithTransformer(true)
                 .WithBodyFromFile(Path.Combine("resources", $"{q}.ttl"));
 
-            var root = () => Request.Create().WithPath("/2016-04/en");
+            static IRequestBuilder root() => Request.Create().WithPath("/2016-04/en");
             Server.Given(root()).RespondWith(file("root"));
             Server.Given(root().WithParam("page")).RespondWith(file("root{{request.query.page}}"));
 
             var containsTriple = root().WithParam("subject", "http://dbpedia.org/ontology/extinctionDate").WithParam("predicate", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type").WithParam("object", "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property");
             Server.Given(containsTriple).RespondWith(file("containsTriple"));
 
-            var triplesWithObject = () => root().WithParam("object", "\"1997-02-04\"^^http://www.w3.org/2001/XMLSchema#date");
+            static IRequestBuilder triplesWithObject() => root().WithParam("object", "\"1997-02-04\"^^http://www.w3.org/2001/XMLSchema#date");
             Server.Given(triplesWithObject()).RespondWith(file("getTriplesWithObject"));
             Server.Given(triplesWithObject().WithParam("page")).RespondWith(file("getTriplesWithObject{{request.query.page}}"));
 
-            var triplesWithPredicate = () => root().WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate");
+            static IRequestBuilder triplesWithPredicate() => root().WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate");
             Server.Given(triplesWithPredicate()).RespondWith(file("getTriplesWithPredicate"));
             Server.Given(triplesWithPredicate().WithParam("page")).RespondWith(file("getTriplesWithPredicate{{request.query.page}}"));
 
-            var triplesWithPredicateObject = () => root().WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate").WithParam("object", "\"2011-10-05\"^^http://www.w3.org/2001/XMLSchema#date");
+            static IRequestBuilder triplesWithPredicateObject() => root().WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate").WithParam("object", "\"2011-10-05\"^^http://www.w3.org/2001/XMLSchema#date");
             Server.Given(triplesWithPredicateObject()).RespondWith(file("getTriplesWithPredicateObject"));
 
-            var triplesWithSubject = () => root().WithParam("subject", "http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853");
+            static IRequestBuilder triplesWithSubject() => root().WithParam("subject", "http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853");
             Server.Given(triplesWithSubject()).RespondWith(file("getTriplesWithSubject"));
 
-            var triplesWithSubjectObject = () => root().WithParam("subject", "http://dbpedia.org/resource/123_Democratic_Alliance").WithParam("object", "\"707366241\"^^http://www.w3.org/2001/XMLSchema#integer");
+            static IRequestBuilder triplesWithSubjectObject() => root().WithParam("subject", "http://dbpedia.org/resource/123_Democratic_Alliance").WithParam("object", "\"707366241\"^^http://www.w3.org/2001/XMLSchema#integer");
             Server.Given(triplesWithSubjectObject()).RespondWith(file("getTriplesWithSubjectObject"));
 
-            var triplesWithSubjectPredicate = () => root().WithParam("subject", "http://dbpedia.org/resource/123_Democratic_Alliance").WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate");
+            static IRequestBuilder triplesWithSubjectPredicate() => root().WithParam("subject", "http://dbpedia.org/resource/123_Democratic_Alliance").WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate");
             Server.Given(triplesWithSubjectPredicate()).RespondWith(file("getTriplesWithSubjectPredicate"));
         }
 

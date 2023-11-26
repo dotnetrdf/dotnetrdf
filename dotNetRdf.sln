@@ -84,9 +84,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf", "Libraries\dotN
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.TestSuite.Rdfa", "Testing\dotNetRdf.TestSuite.Rdfa\dotNetRdf.TestSuite.Rdfa.csproj", "{5F113BF3-5AD0-4ED0-87CF-D55E2875352B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.LinkedDataFragments", "Libraries\dotNetRdf.LinkedDataFragments\dotNetRdf.LinkedDataFragments.csproj", "{A533FBB5-C8AE-456C-9F0D-258793F9C08C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.LDF", "Libraries\dotNetRdf.LDF\dotNetRdf.LDF.csproj", "{A533FBB5-C8AE-456C-9F0D-258793F9C08C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.LinkedDataFragments.Tests", "Testing\dotNetRdf.LinkedDataFragments.Tests\dotNetRdf.LinkedDataFragments.Tests.csproj", "{76EC005A-3789-4592-AA99-2BAB36045BEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.LDF.Tests", "Testing\dotNetRdf.LDF.Tests\dotNetRdf.LDF.Tests.csproj", "{76EC005A-3789-4592-AA99-2BAB36045BEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

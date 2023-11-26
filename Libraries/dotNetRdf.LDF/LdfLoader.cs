@@ -65,7 +65,7 @@ namespace VDS.RDF.LDF
             var original = new Graph();
             original.LoadFromUri(uri, new TurtleParser()); // TODO: Parser
             Data.Merge(original);
-            this.Metadata = new LdfMetadataGraph(original);
+            Metadata = new LdfMetadataGraph(original);
 
             using var ts = new TripleStore();
             ts.Add(Data);
@@ -78,8 +78,8 @@ namespace VDS.RDF.LDF
 
         public void Dispose()
         {
-            this.Data.Dispose();
-            this.Metadata.Dispose();
+            Data.Dispose();
+            Metadata.Dispose();
         }
     }
 }

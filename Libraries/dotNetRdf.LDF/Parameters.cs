@@ -71,32 +71,29 @@ namespace VDS.RDF.LDF
         {
             get
             {
-                var uriTemplate = new UriTemplate(this.template.Template);
+                var uriTemplate = new UriTemplate(template.Template);
                 var variables = new Dictionary<string, object>();
                 var formatter = (INodeFormatter)new ExplicitRepresentationFormatter();
 
-                if (this.subject is not null)
+                if (subject is not null)
                 {
-                    variables.Add(this.template.SubjectVariable, formatter.Format(this.subject));
+                    variables.Add(template.SubjectVariable, formatter.Format(subject));
                 }
 
-                if (this.predicate is not null)
+                if (predicate is not null)
                 {
-                    variables.Add(this.template.PredicateVariable, formatter.Format(this.predicate));
+                    variables.Add(template.PredicateVariable, formatter.Format(predicate));
                 }
 
-                if (this.@object is not null)
+                if (@object is not null)
                 {
-                    variables.Add(this.template.ObjectVariable, formatter.Format(this.@object));
+                    variables.Add(template.ObjectVariable, formatter.Format(@object));
                 }
 
                 return uriTemplate.ResolveUri(variables);
             }
         }
 
-        public static implicit operator Uri(Parameters parameters)
-        {
-            return parameters.Uri;
-        }
+        public static implicit operator Uri(Parameters parameters) => parameters.Uri;
     }
 }

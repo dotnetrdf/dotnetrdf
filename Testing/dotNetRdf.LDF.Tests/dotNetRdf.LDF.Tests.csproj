@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\dotNetRdf.LinkedDataFragments\dotNetRdf.LinkedDataFragments.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.LDF\dotNetRdf.LDF.csproj" />
   </ItemGroup>
 
   <ItemGroup>

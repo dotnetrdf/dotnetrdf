@@ -38,19 +38,16 @@ namespace VDS.RDF.LDF
         public LdfGraph(string baseUri)
         {
             using var loader = new LdfLoader(UriFactory.Create(baseUri));
-            this.template = loader.Metadata.Search;
-            this._triples = new LdfTripleCollection(this.template);
+            template = loader.Metadata.Search;
+            _triples = new LdfTripleCollection(template);
         }
 
         public override bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
         {
-            if (g is LdfGraph fragments)
+            if (g is LdfGraph fragments && template.Template == fragments.template.Template)
             {
-                if (this.template.Template == fragments.template.Template)
-                {
-                    mapping = new Dictionary<INode, INode>();
-                    return true;
-                }
+                mapping = new Dictionary<INode, INode>();
+                return true;
             }
 
             return base.Equals(g, out mapping);

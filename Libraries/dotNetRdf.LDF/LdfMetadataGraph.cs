@@ -54,9 +54,9 @@ namespace VDS.RDF.LDF
             var result = ((SparqlResultSet)this.ExecuteQuery(select)).Single();
             var fragment = new GraphWrapperNode(result["fragment"], this);
 
-            this.NextPageUri = Vocabulary.Hydra.Next.ObjectsOf(fragment).Cast<IUriNode>().SingleOrDefault()?.Uri;
-            this.TripleCount = Vocabulary.Void.Triples.ObjectsOf(fragment).SingleOrDefault()?.AsValuedNode().AsInteger();
-            this.Search = new IriTemplate(result["search"], this);
+            NextPageUri = Vocabulary.Hydra.Next.ObjectsOf(fragment).Cast<IUriNode>().SingleOrDefault()?.Uri;
+            TripleCount = Vocabulary.Void.Triples.ObjectsOf(fragment).SingleOrDefault()?.AsValuedNode().AsInteger();
+            Search = new IriTemplate(result["search"], this);
         }
 
         internal IriTemplate Search { get; private set; }

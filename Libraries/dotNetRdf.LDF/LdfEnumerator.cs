@@ -25,46 +25,50 @@
 */
 
 using System;
-using System.Globalization;
-using System.Text;
-using VDS.RDF.Writing;
-using VDS.RDF.Writing.Formatting;
+using System.Collections;
+using System.Collections.Generic;
 
-namespace VDS.RDF.LDF.Hydra
+namespace VDS.RDF.LDF
 {
-    internal class ExplicitRepresentationFormatter : INodeFormatter
+    internal class LdfEnumerator : IEnumerator<Triple>
     {
-        string INodeFormatter.Format(INode n)
+        private IEnumerator<Triple> e;
+        private Uri uri;
+
+        internal LdfEnumerator(Uri uri) => this.uri = uri;
+
+        Triple IEnumerator<Triple>.Current => e.Current;
+
+        object IEnumerator.Current => ((IEnumerator<Triple>)this).Current;
+
+        void IDisposable.Dispose() => e?.Dispose();
+
+        bool IEnumerator.MoveNext()
         {
-            switch (n)
+            if (e is null)
             {
-                case IUriNode uriNode:
-                    return uriNode.Uri.AbsoluteUri;
+                using var loader = new LdfLoader(uri);
 
-                case ILiteralNode literalNode:
-                    var builder = new StringBuilder();
-                    builder.AppendFormat(CultureInfo.InvariantCulture, "\"{0}\"", literalNode.Value);
-
-                    if (literalNode.DataType is not null)
-                    {
-                        builder.AppendFormat(CultureInfo.InvariantCulture, "^^{0}", literalNode.DataType.AbsoluteUri);
-                    }
-
-                    if (!string.IsNullOrEmpty(literalNode.Language))
-                    {
-                        builder.AppendFormat(CultureInfo.InvariantCulture, "@{0}", literalNode.Language);
-                    }
-
-                    return builder.ToString();
-
-                default:
-                    throw new NotSupportedException("Only IRI and literal nodes are supported.");
+                e = loader.Data.Triples.GetEnumerator();
+                uri = loader.Metadata.NextPageUri;
             }
+
+            if (e.MoveNext())
+            {
+                return true;
+            }
+
+            if (uri is null)
+            {
+                return false;
+            }
+
+            e.Dispose();
+            e = null;
+
+            return ((IEnumerator)this).MoveNext();
         }
 
-        string INodeFormatter.Format(INode n, TripleSegment? segment)
-        {
-            return ((INodeFormatter)this).Format(n);
-        }
+        void IEnumerator.Reset() => throw new NotSupportedException("This enumerator cannot be reset.");
     }
 }

@@ -24,48 +24,34 @@
 // </copyright>
 */
 
-using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Nodes;
-using VDS.RDF.LDF.Hydra;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF.Hydra
 {
-    internal class Metadata : WrapperGraph
+    internal class IriTemplate : GraphWrapperNode
     {
-        private readonly Uri uri;
+        [DebuggerStepThrough]
+        internal IriTemplate(INode node, IGraph graph) : base(node, graph) { }
 
-        internal Metadata(IGraph original, Uri uri)
-            : base(original)
-        {
-            this.uri = uri;
-            this.Fragment = new GraphWrapperNode(this.CreateUriNode(this.uri), this);
-        }
+        public string SubjectVariable => SelectMapping(Vocabulary.Rdf.Subject);
 
-        internal IriTemplate Search
-        {
-            get
-            {
-                return this.GetTriplesWithPredicate(Vocabulary.Hydra.Search).Select(t => new IriTemplate(t.Object, this)).SingleOrDefault();
-            }
-        }
+        public string PredicateVariable => SelectMapping(Vocabulary.Rdf.Predicate);
 
-        internal Uri NextPageUri
-        {
-            get
-            {
-                return Vocabulary.Hydra.Next.ObjectsOf(this.Fragment).Cast<IUriNode>().SingleOrDefault()?.Uri;
-            }
-        }
+        public string ObjectVariable => SelectMapping(Vocabulary.Rdf.Object);
 
-        internal long? TripleCount
-        {
-            get
-            {
-                return Vocabulary.Void.Triples.ObjectsOf(this.Fragment).SingleOrDefault()?.AsValuedNode().AsInteger();
-            }
-        }
+        public string Template => Vocabulary.Hydra.Template.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
 
-        private GraphWrapperNode Fragment { get; set; }
+        private IEnumerable<IriTemplateMapping> Mappings =>
+            from n in Vocabulary.Hydra.Mapping.ObjectsOf(this)
+            select new IriTemplateMapping(n, Graph);
+
+        private string SelectMapping(IUriNode property) => (
+                from m in Mappings
+                where m.Property.Equals(property)
+                select m.Variable)
+                .SingleOrDefault();
     }
 }

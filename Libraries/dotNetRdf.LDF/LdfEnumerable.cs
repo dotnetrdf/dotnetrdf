@@ -24,7 +24,6 @@
 // </copyright>
 */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -32,14 +31,11 @@ namespace VDS.RDF.LDF
 {
     internal class LdfEnumerable : IEnumerable<Triple>
     {
-        private readonly Uri uri;
+        private readonly Parameters parameters;
 
-        internal LdfEnumerable(Uri uri)
-        {
-            this.uri = uri;
-        }
+        internal LdfEnumerable(Parameters parameters) => this.parameters = parameters;
 
-        IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new LdfEnumerator(this.uri);
+        IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new LdfEnumerator(parameters);
 
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Triple>)this).GetEnumerator();
     }

@@ -24,34 +24,15 @@
 // </copyright>
 */
 
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Nodes;
 
-namespace VDS.RDF.LDF.Hydra
+namespace VDS.RDF.LDF
 {
-    internal class IriTemplateMapping : GraphWrapperNode
+    internal static class Extensions
     {
-        [DebuggerStepThrough]
-        internal IriTemplateMapping(INode node, IGraph graph)
-            : base(node, graph)
-        {
-        }
-
-        internal string Variable
-        {
-            get
-            {
-                return Vocabulary.Hydra.Variable.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
-            }
-        }
-
-        internal INode Property
-        {
-            get
-            {
-                return Vocabulary.Hydra.Property.ObjectsOf(this).SingleOrDefault();
-            }
-        }
+        internal static IEnumerable<INode> ObjectsOf(this INode predicate, GraphWrapperNode subject) =>
+            from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
+            select t.Object;
     }
 }

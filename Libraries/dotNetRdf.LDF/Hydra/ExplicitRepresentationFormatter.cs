@@ -24,18 +24,42 @@
 // </copyright>
 */
 
-using System.Collections.Generic;
-using System.Linq;
+using System;
+using System.Globalization;
+using System.Text;
+using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF.Hydra
 {
-    internal static class Extensions
+    internal class ExplicitRepresentationFormatter : INodeFormatter
     {
-        internal static IEnumerable<INode> ObjectsOf(this INode predicate, GraphWrapperNode subject)
+        string INodeFormatter.Format(INode node) => node switch
         {
-            return
-                from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
-                select t.Object;
+            IUriNode n => n.Uri.AbsoluteUri,
+            ILiteralNode n => Format(n),
+            _ => throw new NotSupportedException("Only IRI and literal nodes are supported.")
+        };
+
+        // Explicit representation is the same regardless of position
+        string INodeFormatter.Format(INode n, TripleSegment? segment) => ((INodeFormatter)this).Format(n);
+
+        private static string Format(ILiteralNode literalNode)
+        {
+            var builder = new StringBuilder();
+            builder.AppendFormat(CultureInfo.InvariantCulture, "\"{0}\"", literalNode.Value);
+
+            if (literalNode.DataType is not null)
+            {
+                builder.AppendFormat(CultureInfo.InvariantCulture, "^^{0}", literalNode.DataType.AbsoluteUri);
+            }
+
+            if (!string.IsNullOrEmpty(literalNode.Language))
+            {
+                builder.AppendFormat(CultureInfo.InvariantCulture, "@{0}", literalNode.Language);
+            }
+
+            return builder.ToString();
         }
     }
 }
