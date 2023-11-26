@@ -55,9 +55,9 @@ namespace VDS.RDF.LDF
             Server = WireMockServer.Start();
 
             var file = (string q) => Response.Create()
-                .WithHeader("Content-Type", "application/ld+json")
+                .WithHeader("Content-Type", "text/turtle")
                 .WithTransformer(true)
-                .WithBodyFromFile(Path.Combine("resources", $"{q}.jsonld"));
+                .WithBodyFromFile(Path.Combine("resources", $"{q}.ttl"));
 
             var root = () => Request.Create().WithPath("/2016-04/en");
             Server.Given(root()).RespondWith(file("root"));
