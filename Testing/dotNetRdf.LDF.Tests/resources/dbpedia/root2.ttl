@@ -36,8 +36,7 @@ _:object hydra:variable "object";
     void:triples "1040358853"^^xsd:integer;
     hydra:itemsPerPage "100"^^xsd:integer;
     hydra:first <{{request.origin}}/2016-04/en?page=1>;
-    hydra:previous <{{request.origin}}/2016-04/en?page=1>;
-    hydra:next <{{request.origin}}/2016-04/en?page=3>.
+    hydra:previous <{{request.origin}}/2016-04/en?page=1>.
 <http://0-cdl.library.cornell.edu.source.unco.edu/moa/browse.monographs/waro.html> dbpprop:url <http://0-cdl.library.cornell.edu.source.unco.edu/moa/browse.monographs/waro.html>;
     dbpprop:volume "VI", "XLVI", "XXVIII", "XXXV", "XXXVI";
     dbpprop:year "1882", "1890", "1891", "1894".

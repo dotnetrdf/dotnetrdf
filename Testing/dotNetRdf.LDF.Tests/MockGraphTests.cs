@@ -57,7 +57,7 @@ namespace VDS.RDF.LDF
             static IResponseBuilder file(string q) => Response.Create()
                 .WithHeader("Content-Type", "text/turtle")
                 .WithTransformer(true)
-                .WithBodyFromFile(Path.Combine("resources", $"{q}.ttl"));
+                .WithBodyFromFile(Path.Combine("resources", "dbpedia", $"{q}.ttl"));
 
             static IRequestBuilder root() => Request.Create().WithPath("/2016-04/en");
             Server.Given(root()).RespondWith(file("root"));

@@ -36,8 +36,7 @@ _:object hydra:variable "object";
     void:triples "251"^^xsd:integer;
     hydra:itemsPerPage "100"^^xsd:integer;
     hydra:first <{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date&page=1>;
-    hydra:previous <{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date&page=1>;
-    hydra:next <{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date&page=3>.
+    hydra:previous <{{request.origin}}/2016-04/en?object=%221997-02-04%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23date&page=1>.
 <http://variety.com/1997/scene/vpage/oscar-watch-88-1117435978/> dbpprop:date "1997-02-04"^^xsd:date.
 <http://www.cnn.com/US/9702/04/simpson.verdict1/index.html> dbpprop:date "1997-02-04"^^xsd:date.
 <http://www.collectionscanada.gc.ca/rpm/028020-119.01-e.php?brws_s=1&file_num=nlc008388.7772&type=1&interval=24&PHPSESSID=adi8sjvtk744tnp1av8s57ktv2> dbpprop:date "1997-02-04"^^xsd:date.

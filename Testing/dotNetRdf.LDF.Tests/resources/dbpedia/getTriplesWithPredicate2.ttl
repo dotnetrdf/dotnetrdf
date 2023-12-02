@@ -36,8 +36,7 @@ _:object hydra:variable "object";
     void:triples "1970"^^xsd:integer;
     hydra:itemsPerPage "100"^^xsd:integer;
     hydra:first <{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1>;
-    hydra:previous <{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1>;
-    hydra:next <{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=3>.
+    hydra:previous <{{request.origin}}/2016-04/en?predicate=http%3A%2F%2Fdbpedia.org%2Fontology%2FextinctionDate&page=1>.
 dbpedia:Aztar dbpedia-owl:extinctionDate "2007-01-04"^^xsd:date.
 <http://dbpedia.org/resource/Aérospatiale> dbpedia-owl:extinctionDate "2000-07-10"^^xsd:date.
 <http://dbpedia.org/resource/B._Altman_and_Company> dbpedia-owl:extinctionDate "1990-01-29"^^xsd:date.
