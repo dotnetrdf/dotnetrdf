@@ -32,43 +32,56 @@ namespace VDS.RDF.LDF
 {
     internal class LdfEnumerator : IEnumerator<Triple>
     {
-        private IEnumerator<Triple> e;
-        private Uri uri;
+        private Uri nextPage;
+        private Triple current;
+        private IEnumerator<Triple> underlyingTriples;
 
-        internal LdfEnumerator(Uri uri) => this.uri = uri;
+        internal LdfEnumerator(Uri firstPage) => nextPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
 
-        Triple IEnumerator<Triple>.Current => e.Current;
+        Triple IEnumerator<Triple>.Current => current;
 
-        object IEnumerator.Current => ((IEnumerator<Triple>)this).Current;
-
-        void IDisposable.Dispose() => e?.Dispose();
+        object IEnumerator.Current => (this as IEnumerator<Triple>).Current;
 
         bool IEnumerator.MoveNext()
         {
-            if (e is null)
+            if (underlyingTriples is null)
             {
-                using var loader = new LdfLoader(uri);
-
-                e = loader.Data.Triples.GetEnumerator();
-                uri = loader.Metadata.NextPageUri;
+                InitializeCurrentPage();
             }
 
-            if (e.MoveNext())
+            if (underlyingTriples.MoveNext())
             {
+                current = underlyingTriples.Current;
                 return true;
             }
 
-            if (uri is null)
+            if (nextPage is null)
             {
+                current = null;
                 return false;
             }
 
-            e.Dispose();
-            e = null;
-
-            return ((IEnumerator)this).MoveNext();
+            return AdvanceToNextPage();
         }
 
+        void IDisposable.Dispose() => underlyingTriples?.Dispose();
+
         void IEnumerator.Reset() => throw new NotSupportedException("This enumerator cannot be reset.");
+
+        private void InitializeCurrentPage()
+        {
+            using var loader = new LdfLoader(nextPage);
+
+            underlyingTriples = loader.Data.Triples.GetEnumerator();
+            nextPage = loader.Metadata.NextPageUri;
+        }
+
+        private bool AdvanceToNextPage()
+        {
+            underlyingTriples.Dispose();
+            underlyingTriples = null;
+
+            return (this as IEnumerator).MoveNext();
+        }
     }
 }

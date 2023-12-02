@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleToSuffix Include=".Tests"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Resta.UriTemplates" Version="1.4.0" />
   </ItemGroup>
 

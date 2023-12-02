@@ -39,7 +39,7 @@ namespace VDS.RDF.LDF
             PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
             PREFIX void:  <http://rdfs.org/ns/void#>
 
-            SELECT DISTINCT ?fragment ?search
+            SELECT DISTINCT ?page ?search
             WHERE {
             	?fragment ^void:subset   ?dataset .
             	?page     ^void:subset   ?fragment .
@@ -51,11 +51,17 @@ namespace VDS.RDF.LDF
 
         internal LdfMetadataGraph(IGraph g) : base(g)
         {
-            var result = ((SparqlResultSet)this.ExecuteQuery(select)).Single();
-            var fragment = new GraphWrapperNode(result["fragment"], this);
+            var sparqlResults = this.ExecuteQuery(select) as SparqlResultSet;
+            if (sparqlResults.Count != 1) // TODO: Express invariants as SHACL?
+            {
+                throw new LdfException("Could not interpret metadata in TPF response graph");
+            }
 
-            NextPageUri = Vocabulary.Hydra.Next.ObjectsOf(fragment).Cast<IUriNode>().SingleOrDefault()?.Uri;
-            TripleCount = Vocabulary.Void.Triples.ObjectsOf(fragment).SingleOrDefault()?.AsValuedNode().AsInteger();
+            var result = sparqlResults.Single();
+            var page = new GraphWrapperNode(result["page"], this);
+
+            NextPageUri = Vocabulary.Hydra.Next.ObjectsOf(page).Cast<IUriNode>().SingleOrDefault()?.Uri;
+            TripleCount = Vocabulary.Void.Triples.ObjectsOf(page).SingleOrDefault()?.AsValuedNode().AsInteger();
             Search = new IriTemplate(result["search"], this);
         }
 

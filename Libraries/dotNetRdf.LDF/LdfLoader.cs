@@ -37,25 +37,26 @@ namespace VDS.RDF.LDF
             PREFIX void:  <http://rdfs.org/ns/void#>
 
             DELETE {
-            	?datasetContainer ?datasetInverseProperty ?dataset .
-            	?dataset          ?datasetProperty        ?datasetValue .
+            	?datasetContainer ?datasetInverseProperty ?dataset       .
+            	?dataset          ?datasetProperty        ?datasetValue  .
             	?fragment         ?fragmentProperty       ?fragmentValue .
-            	?page             ?pageProperty           ?pageValue .
-            	?search           ?searchProperty         ?searchValue .
-            	?mapping          ?mappingProperty        ?mappingValue .
+            	?page             ?pageProperty           ?pageValue     .
+            	?search           ?searchProperty         ?searchValue   .
+            	?mapping          ?mappingProperty        ?mappingValue  .
             }
             WHERE {
-            	?fragment ^void:subset   ?dataset .
+            	?fragment ^void:subset   ?dataset  .
             	?page     ^void:subset   ?fragment .
-            	?search   ^hydra:search  ?dataset .
-            	?mapping  ^hydra:mapping ?search .
+            	?search   ^hydra:search  ?dataset  .
+            	?mapping  ^hydra:mapping ?search   .
 
-            	?datasetContainer ?datasetInverseProperty ?dataset .
-            	?dataset          ?datasetProperty        ?datasetValue .
-            	?fragment         ?fragmentProperty       ?fragmentValue .
-            	?page             ?pageProperty           ?pageValue .
-            	?search           ?searchProperty         ?searchValue .
-            	?mapping          ?mappingProperty        ?mappingValue .
+            	?dataset  ?datasetProperty  ?datasetValue  .
+            	?fragment ?fragmentProperty ?fragmentValue .
+            	?search   ?searchProperty   ?searchValue   .
+            	?mapping  ?mappingProperty  ?mappingValue  .
+
+            	OPTIONAL { ?datasetContainer ?datasetInverseProperty ?dataset   . }
+            	OPTIONAL { ?page             ?pageProperty           ?pageValue . }
             }
             """;
         private static readonly SparqlUpdateCommandSet delete = new SparqlUpdateParser().ParseFromString(deleteSparql);
