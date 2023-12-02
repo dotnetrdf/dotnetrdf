@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         framework: ["net6.0", "net7.0", "net472"]
-        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.LinkedDataFragments.Tests"]
+        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.LDF.Tests"]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -29,7 +29,7 @@ jobs:
     strategy:
       matrix: 
         framework: ["net6.0", "net7.0"]
-        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.LinkedDataFragments.Tests"]
+        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.LDF.Tests"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
