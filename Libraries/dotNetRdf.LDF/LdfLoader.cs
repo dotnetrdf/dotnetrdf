@@ -26,41 +26,11 @@
 
 using System;
 using VDS.RDF.Parsing;
-using VDS.RDF.Update;
 
 namespace VDS.RDF.LDF
 {
     internal class LdfLoader : IDisposable
     {
-        private const string deleteSparql = """
-            PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
-            PREFIX void:  <http://rdfs.org/ns/void#>
-
-            DELETE {
-            	?datasetContainer ?datasetInverseProperty ?dataset       .
-            	?dataset          ?datasetProperty        ?datasetValue  .
-            	?fragment         ?fragmentProperty       ?fragmentValue .
-            	?page             ?pageProperty           ?pageValue     .
-            	?search           ?searchProperty         ?searchValue   .
-            	?mapping          ?mappingProperty        ?mappingValue  .
-            }
-            WHERE {
-            	?fragment ^void:subset   ?dataset  .
-            	?page     ^void:subset   ?fragment .
-            	?search   ^hydra:search  ?dataset  .
-            	?mapping  ^hydra:mapping ?search   .
-
-            	?dataset  ?datasetProperty  ?datasetValue  .
-            	?fragment ?fragmentProperty ?fragmentValue .
-            	?search   ?searchProperty   ?searchValue   .
-            	?mapping  ?mappingProperty  ?mappingValue  .
-
-            	OPTIONAL { ?datasetContainer ?datasetInverseProperty ?dataset   . }
-            	OPTIONAL { ?page             ?pageProperty           ?pageValue . }
-            }
-            """;
-        private static readonly SparqlUpdateCommandSet delete = new SparqlUpdateParser().ParseFromString(deleteSparql);
-
         internal LdfLoader(Uri uri)
         {
             var original = new Graph();
@@ -70,7 +40,7 @@ namespace VDS.RDF.LDF
 
             using var ts = new TripleStore();
             ts.Add(Data);
-            new LeviathanUpdateProcessor(ts).ProcessCommandSet(LdfLoader.delete);
+            ts.ExecuteUpdate(Queries.Delete);
         }
 
         internal Graph Data { get; } = new Graph();

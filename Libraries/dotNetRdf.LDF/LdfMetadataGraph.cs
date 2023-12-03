@@ -28,47 +28,31 @@ using System;
 using System.Linq;
 using VDS.RDF.LDF.Hydra;
 using VDS.RDF.Nodes;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.LDF
 {
     internal class LdfMetadataGraph : WrapperGraph
     {
-        private const string selectSparql = """
-            PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
-            PREFIX void:  <http://rdfs.org/ns/void#>
-
-            SELECT DISTINCT ?page ?search
-            WHERE {
-            	?fragment ^void:subset   ?dataset .
-            	?page     ^void:subset   ?fragment .
-            	?search   ^hydra:search  ?dataset .
-            	?mapping  ^hydra:mapping ?search .
-            }
-            """;
-        private static readonly SparqlQuery select = new SparqlQueryParser().ParseFromString(selectSparql);
+        private readonly ISparqlResult result;
 
         internal LdfMetadataGraph(IGraph g) : base(g)
         {
-            var sparqlResults = this.ExecuteQuery(select) as SparqlResultSet;
+            var sparqlResults = this.ExecuteQuery(Queries.Select) as SparqlResultSet;
             if (sparqlResults.Count != 1) // TODO: Express invariants as SHACL?
             {
                 throw new LdfException("Could not interpret metadata in TPF response graph");
             }
 
-            var result = sparqlResults.Single();
-            var page = new GraphWrapperNode(result["page"], this);
-
-            NextPageUri = Vocabulary.Hydra.Next.ObjectsOf(page).Cast<IUriNode>().SingleOrDefault()?.Uri;
-            TripleCount = Vocabulary.Void.Triples.ObjectsOf(page).SingleOrDefault()?.AsValuedNode().AsInteger();
-            Search = new IriTemplate(result["search"], this);
+            result = sparqlResults.Single();
         }
 
-        internal IriTemplate Search { get; private set; }
+        internal IriTemplate Search => new(result["search"], this);
 
-        internal Uri NextPageUri { get; private set; }
+        internal Uri NextPageUri => Vocabulary.Hydra.Next.ObjectsOf(Page).Cast<IUriNode>().SingleOrDefault()?.Uri;
 
-        internal long? TripleCount { get; private set; }
+        internal long? TripleCount => Vocabulary.Void.Triples.ObjectsOf(Page).SingleOrDefault()?.AsValuedNode().AsInteger();
+
+        private GraphWrapperNode Page => new(result["page"], this);
     }
 }
