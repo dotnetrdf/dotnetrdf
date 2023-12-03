@@ -26,14 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using Xunit;
-using Xunit.Abstractions;
 using FluentAssertions;
 using System.Collections;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using System.IO;
-using FluentAssertions.Execution;
 
 namespace VDS.RDF.LDF
 {
@@ -41,14 +39,9 @@ namespace VDS.RDF.LDF
     public class LdfEnumeratorTests
     {
         private readonly MockServer server;
-        private readonly ITestOutputHelper output;
         private readonly Uri someUri = new("urn:a:b");
 
-        public LdfEnumeratorTests(MockServer server, ITestOutputHelper output)
-        {
-            this.server = server;
-            this.output = output;
-        }
+        public LdfEnumeratorTests(MockServer server) => this.server = server;
 
         [Fact(DisplayName = "Requires first page")]
         public void RequiresUri()
@@ -77,7 +70,7 @@ namespace VDS.RDF.LDF
         [Fact(DisplayName = "IEnumerator invariant: Cannot move beyond last element")]
         public void CannotMoveBeyondLast()
         {
-            var e = new LdfEnumerator(new(server.BaseUri + "singleData")) as IEnumerator;
+            var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator;
             e.MoveNext();
 
             e.MoveNext().Should().BeFalse("because it was called after the last element");
@@ -86,7 +79,7 @@ namespace VDS.RDF.LDF
         [Fact(DisplayName = "IEnumerator invariant: Current element is the same object until MoveNext is called")]
         public void SameCurrent()
         {
-            var e = new LdfEnumerator(new(server.BaseUri + "singleData")) as IEnumerator;
+            var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator;
             e.MoveNext();
 
             e.Current.Should().BeSameAs(e.Current, "because it was not moved");
@@ -95,16 +88,16 @@ namespace VDS.RDF.LDF
         [Fact(DisplayName = "IEnumerator<T> invariant: Current element is the same object until MoveNext is called")]
         public void GenericSameCurrent()
         {
-            var e = new LdfEnumerator(new(server.BaseUri + "singleData")) as IEnumerator<Triple>;
+            var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator<Triple>;
             e.MoveNext();
 
             e.Current.Should().BeSameAs(e.Current, "because it was not moved");
         }
 
         [Fact(DisplayName = "IEnumerator invariant: Current element is undefined (null) beyond the last element")]
-        public void x1()
+        public void NoCurrentBeyondLast()
         {
-            var e = new LdfEnumerator(new(server.BaseUri + "singleData")) as IEnumerator;
+            var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator;
             e.MoveNext();
             e.MoveNext();
 
@@ -112,9 +105,9 @@ namespace VDS.RDF.LDF
         }
 
         [Fact(DisplayName = "IEnumerator<T> invariant: Current element is undefined (null) beyond the last element")]
-        public void x2222()
+        public void GenericNoCurrentBeyondLast()
         {
-            var e = new LdfEnumerator(new(server.BaseUri + "singleData")) as IEnumerator<Triple>;
+            var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator<Triple>;
             e.MoveNext();
             e.MoveNext();
 
@@ -124,7 +117,7 @@ namespace VDS.RDF.LDF
         [Fact(DisplayName = "Same current element between generic and non-generic")]
         public void IdenticalCurrent()
         {
-            var generic = new LdfEnumerator(new(server.BaseUri + "singleData")) as IEnumerator<Triple>;
+            var generic = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator<Triple>;
             var nonGeneric = generic as IEnumerator;
             generic.MoveNext();
 
@@ -134,27 +127,26 @@ namespace VDS.RDF.LDF
         [Fact(DisplayName = "Shows no elements when response has only controls")]
         public void ControlsOnly()
         {
-            var e = new LdfEnumerator(new(server.BaseUri + "minimalControls")) as IEnumerator;
+            var e = new LdfEnumerator(new(server.BaseUri, MockServer.minimalControls)) as IEnumerator;
 
             e.MoveNext().Should().BeFalse("because it contains controls only");
         }
 
         [Fact(DisplayName = "Traverses next page")]
-        public void y()
+        public void TraversesNextPage()
         {
-            var e = new LdfEnumerator(new(server.BaseUri + "hasNextPage")) as IEnumerator;
+            var e = new LdfEnumerator(new(server.BaseUri, MockServer.hasNextPage)) as IEnumerator;
             e.MoveNext();
 
             e.MoveNext().Should().BeTrue("because it traverses next page");
         }
 
-        [Fact(DisplayName = "Cannot be reset")]
+        [Fact(DisplayName = "Disposes underlying triples")]
         public void DisposesUnderlying()
         {
             var subject = new LdfEnumerator(someUri) as IDisposable;
-            
-            subject.Invoking(e => e.Dispose())
-                .Should().NotThrow("because it is disposable");
+
+            subject.Invoking(e => e.Dispose()).Should().NotThrow("because it is disposable");
         }
 
         [Fact(DisplayName = "Cannot be reset")]
@@ -162,8 +154,7 @@ namespace VDS.RDF.LDF
         {
             var subject = new LdfEnumerator(someUri) as IEnumerator;
 
-            subject.Invoking(e => e.Reset())
-                .Should().ThrowExactly<NotSupportedException>("because it is not supported");
+            subject.Invoking(e => e.Reset()).Should().ThrowExactly<NotSupportedException>("because it is not supported");
         }
     }
 
@@ -172,24 +163,29 @@ namespace VDS.RDF.LDF
 
     public sealed class MockServer : IDisposable
     {
+        internal static readonly string minimalControls = "minimalControls";
+        internal static readonly string singleData = "singleData";
+        internal static readonly string hasNextPage = "hasNextPage";
+
         private readonly WireMockServer server;
 
         public MockServer()
         {
             server = WireMockServer.Start();
 
-            static IRequestBuilder path(string p) => Request.Create().WithPath(p);
-            static IResponseBuilder file(string q) => Response.Create()
+            static IRequestBuilder path(string p) => Request.Create().WithPath($"/{p}");
+            static IResponseBuilder file(string f) => Response.Create()
                 .WithHeader("Content-Type", "text/turtle")
                 .WithTransformer(true)
-                .WithBodyFromFile(Path.Combine("resources", $"{q}.ttl"));
+                .WithBodyFromFile(Path.Combine("resources", $"{f}.ttl"));
+            void endpoint(string e) => server.Given(path(e)).RespondWith(file(e));
 
-            server.Given(path("/minimalControls")).RespondWith(file("minimalControls"));
-            server.Given(path("/singleData")).RespondWith(file("singleData"));
-            server.Given(path("/hasNextPage")).RespondWith(file("hasNextPage"));
+            endpoint(minimalControls);
+            endpoint(singleData);
+            endpoint(hasNextPage);
         }
 
-        public Uri BaseUri => new(server.Url);
+        internal Uri BaseUri => new(server.Url);
 
         void IDisposable.Dispose() => server.Stop();
     }
