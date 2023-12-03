@@ -36,13 +36,13 @@ namespace VDS.RDF.LDF.Hydra
         [DebuggerStepThrough]
         internal IriTemplate(INode node, IGraph graph) : base(node, graph) { }
 
-        public string SubjectVariable => SelectMapping(Vocabulary.Rdf.Subject);
+        internal string SubjectVariable => SelectMapping(Vocabulary.Rdf.Subject);
 
-        public string PredicateVariable => SelectMapping(Vocabulary.Rdf.Predicate);
+        internal string PredicateVariable => SelectMapping(Vocabulary.Rdf.Predicate);
 
-        public string ObjectVariable => SelectMapping(Vocabulary.Rdf.Object);
+        internal string ObjectVariable => SelectMapping(Vocabulary.Rdf.Object);
 
-        public string Template => Vocabulary.Hydra.Template.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
+        internal string Template => Vocabulary.Hydra.Template.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
 
         private IEnumerable<IriTemplateMapping> Mappings =>
             from n in Vocabulary.Hydra.Mapping.ObjectsOf(this)

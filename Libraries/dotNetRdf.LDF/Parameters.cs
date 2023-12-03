@@ -24,9 +24,9 @@
 // </copyright>
 */
 
+using Resta.UriTemplates;
 using System;
 using System.Collections.Generic;
-using Resta.UriTemplates;
 using VDS.RDF.LDF.Hydra;
 using VDS.RDF.Writing.Formatting;
 
@@ -34,12 +34,15 @@ namespace VDS.RDF.LDF
 {
     internal class Parameters
     {
-        private readonly IriTemplate template;
-        private readonly INode subject;
-        private readonly INode predicate;
-        private readonly INode @object;
+        private Uri uri;
 
         internal Parameters(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
+        {
+            Validate(template, subject, predicate, @object);
+            Calculate(template, subject, predicate, @object);
+        }
+
+        private static void Validate(IriTemplate template, INode subject, INode predicate, INode @object)
         {
             if (template is null)
             {
@@ -48,52 +51,44 @@ namespace VDS.RDF.LDF
 
             if (subject is not null && subject.NodeType != NodeType.Uri)
             {
-                throw new ArgumentException("Subject can only be IRI", nameof(subject));
+                throw new ArgumentOutOfRangeException(nameof(subject), subject.NodeType, "Must be IRI");
             }
 
             if (predicate is not null && predicate.NodeType != NodeType.Uri)
             {
-                throw new ArgumentException("Predicate can only be IRI", nameof(predicate));
+                throw new ArgumentOutOfRangeException(nameof(predicate), predicate.NodeType, "Must be IRI");
             }
 
             if (@object is not null && @object.NodeType != NodeType.Uri && @object.NodeType != NodeType.Literal)
             {
-                throw new ArgumentException("Object can only be IRI or literal", nameof(@object));
+                throw new ArgumentOutOfRangeException(nameof(@object), @object.NodeType, "Must be IRI or literal");
             }
-
-            this.template = template;
-            this.subject = subject;
-            this.predicate = predicate;
-            this.@object = @object;
         }
 
-        private Uri Uri
+        private void Calculate(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
         {
-            get
+            var uriTemplate = new UriTemplate(template.Template);
+            var variables = new Dictionary<string, object>();
+            var formatter = (INodeFormatter)new ExplicitRepresentationFormatter();
+
+            if (subject is not null)
             {
-                var uriTemplate = new UriTemplate(template.Template);
-                var variables = new Dictionary<string, object>();
-                var formatter = (INodeFormatter)new ExplicitRepresentationFormatter();
-
-                if (subject is not null)
-                {
-                    variables.Add(template.SubjectVariable, formatter.Format(subject));
-                }
-
-                if (predicate is not null)
-                {
-                    variables.Add(template.PredicateVariable, formatter.Format(predicate));
-                }
-
-                if (@object is not null)
-                {
-                    variables.Add(template.ObjectVariable, formatter.Format(@object));
-                }
-
-                return uriTemplate.ResolveUri(variables);
+                variables.Add(template.SubjectVariable, formatter.Format(subject));
             }
+
+            if (predicate is not null)
+            {
+                variables.Add(template.PredicateVariable, formatter.Format(predicate));
+            }
+
+            if (@object is not null)
+            {
+                variables.Add(template.ObjectVariable, formatter.Format(@object));
+            }
+
+            uri = uriTemplate.ResolveUri(variables);
         }
 
-        public static implicit operator Uri(Parameters parameters) => parameters.Uri;
+        public static implicit operator Uri(Parameters parameters) => parameters.uri;
     }
 }
