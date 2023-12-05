@@ -29,210 +29,209 @@ using VDS.RDF.Writing.Formatting;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF;
+
+public abstract class GraphTests
 {
-    public abstract class GraphTests
+    private static readonly NodeFactory factory = new();
+    private readonly ITestOutputHelper output;
+
+    public GraphTests(ITestOutputHelper output)
     {
-        private static readonly NodeFactory factory = new();
-        private readonly ITestOutputHelper output;
+        this.output = output;
+    }
 
-        public GraphTests(ITestOutputHelper output)
+    protected abstract LdfGraph Graph { get; }
+
+    [Fact]
+    public void ContainsTriple()
+    {
+        using var g = this.Graph;
+        var s = UriNode("http://dbpedia.org/ontology/extinctionDate");
+        var p = UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+        var o = UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#Property");
+        var t = new Triple(s, p, o);
+
+        output.WriteLine("{0}", g.ContainsTriple(t));
+    }
+
+    [Fact]
+    public void EqualsTest()
+    {
+        using var g1 = this.Graph;
+        using var g2 = this.Graph;
+        var equals = g1.Equals(g2);
+
+        output.WriteLine("{0}", equals);
+    }
+
+    [Fact]
+    public void GetTriplesWithObject()
+    {
+        using var g = this.Graph;
+        var o = LiteralNode("1997-02-04", XmlSpecsHelper.XmlSchemaDataTypeDate);
+        var triples = g.GetTriplesWithObject(o);
+
+        foreach (var triple in triples)
         {
-            this.output = output;
+            output.WriteLine("{0}", triple);
         }
+    }
 
-        protected abstract LdfGraph Graph { get; }
+    [Fact]
+    public void GetTriplesWithPredicate()
+    {
+        using var g = this.Graph;
+        var p = UriNode("http://dbpedia.org/ontology/extinctionDate");
+        var triples = g.GetTriplesWithPredicate(p);
 
-        [Fact]
-        public void ContainsTriple()
+        foreach (var triple in triples)
         {
-            using var g = this.Graph;
-            var s = UriNode("http://dbpedia.org/ontology/extinctionDate");
-            var p = UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-            var o = UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#Property");
-            var t = new Triple(s, p, o);
-
-            output.WriteLine("{0}", g.ContainsTriple(t));
+            output.WriteLine("{0}", triple);
         }
+    }
 
-        [Fact]
-        public void EqualsTest()
+    [Fact]
+    public void GetTriplesWithPredicateObject()
+    {
+        using var g = this.Graph;
+        var p = UriNode("http://dbpedia.org/ontology/extinctionDate");
+        var o = LiteralNode("2011-10-05", XmlSpecsHelper.XmlSchemaDataTypeDate);
+        var triples = g.GetTriplesWithPredicateObject(p, o);
+
+        foreach (var triple in triples)
         {
-            using var g1 = this.Graph;
-            using var g2 = this.Graph;
-            var equals = g1.Equals(g2);
-
-            output.WriteLine("{0}", equals);
+            output.WriteLine("{0}", triple);
         }
+    }
 
-        [Fact]
-        public void GetTriplesWithObject()
+    [Fact]
+    public void GetTriplesWithSubject()
+    {
+        using var g = this.Graph;
+        var s = UriNode("http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853");
+        var triples = g.GetTriplesWithSubject(s);
+
+        foreach (var triple in triples)
         {
-            using var g = this.Graph;
-            var o = LiteralNode("1997-02-04", XmlSpecsHelper.XmlSchemaDataTypeDate);
-            var triples = g.GetTriplesWithObject(o);
-
-            foreach (var triple in triples)
-            {
-                output.WriteLine("{0}", triple);
-            }
+            output.WriteLine("{0}", triple);
         }
+    }
 
-        [Fact]
-        public void GetTriplesWithPredicate()
+    [Fact]
+    public void GetTriplesWithSubjectObject()
+    {
+        using var g = this.Graph;
+        var s = UriNode("http://dbpedia.org/resource/123_Democratic_Alliance");
+        var o = LiteralNode("707366241", XmlSpecsHelper.XmlSchemaDataTypeInteger);
+        var triples = g.GetTriplesWithSubjectObject(s, o);
+
+        foreach (var triple in triples)
         {
-            using var g = this.Graph;
-            var p = UriNode("http://dbpedia.org/ontology/extinctionDate");
-            var triples = g.GetTriplesWithPredicate(p);
-
-            foreach (var triple in triples)
-            {
-                output.WriteLine("{0}", triple);
-            }
+            output.WriteLine("{0}", triple);
         }
+    }
 
-        [Fact]
-        public void GetTriplesWithPredicateObject()
+    [Fact]
+    public void GetTriplesWithSubjectPredicate()
+    {
+        using var g = this.Graph;
+        var s = UriNode("http://dbpedia.org/resource/123_Democratic_Alliance");
+        var p = UriNode("http://dbpedia.org/ontology/extinctionDate");
+        var triples = g.GetTriplesWithSubjectPredicate(s, p);
+
+        foreach (var triple in triples)
         {
-            using var g = this.Graph;
-            var p = UriNode("http://dbpedia.org/ontology/extinctionDate");
-            var o = LiteralNode("2011-10-05", XmlSpecsHelper.XmlSchemaDataTypeDate);
-            var triples = g.GetTriplesWithPredicateObject(p, o);
-
-            foreach (var triple in triples)
-            {
-                output.WriteLine("{0}", triple);
-            }
+            output.WriteLine("{0}", triple);
         }
+    }
 
-        [Fact]
-        public void GetTriplesWithSubject()
+    [Fact]
+    public void ObjectNodes()
+    {
+        using var g = this.Graph;
+        using var triples = g.Triples.ObjectNodes.GetEnumerator();
+
+        for (var i = 0; i < 100; i++)
         {
-            using var g = this.Graph;
-            var s = UriNode("http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853");
-            var triples = g.GetTriplesWithSubject(s);
-
-            foreach (var triple in triples)
-            {
-                output.WriteLine("{0}", triple);
-            }
+            triples.MoveNext();
+            output.WriteLine("{0}", triples.Current);
         }
+    }
 
-        [Fact]
-        public void GetTriplesWithSubjectObject()
+    [Fact]
+    public void PredicateNodes()
+    {
+        using var g = this.Graph;
+        using var triples = g.Triples.PredicateNodes.GetEnumerator();
+
+        for (var i = 0; i < 25; i++)
         {
-            using var g = this.Graph;
-            var s = UriNode("http://dbpedia.org/resource/123_Democratic_Alliance");
-            var o = LiteralNode("707366241", XmlSpecsHelper.XmlSchemaDataTypeInteger);
-            var triples = g.GetTriplesWithSubjectObject(s, o);
-
-            foreach (var triple in triples)
-            {
-                output.WriteLine("{0}", triple);
-            }
+            triples.MoveNext();
+            output.WriteLine("{0}", triples.Current);
         }
+    }
 
-        [Fact]
-        public void GetTriplesWithSubjectPredicate()
-        {
-            using var g = this.Graph;
-            var s = UriNode("http://dbpedia.org/resource/123_Democratic_Alliance");
-            var p = UriNode("http://dbpedia.org/ontology/extinctionDate");
-            var triples = g.GetTriplesWithSubjectPredicate(s, p);
-
-            foreach (var triple in triples)
-            {
-                output.WriteLine("{0}", triple);
-            }
-        }
-
-        [Fact]
-        public void ObjectNodes()
-        {
-            using var g = this.Graph;
-            using var triples = g.Triples.ObjectNodes.GetEnumerator();
-
-            for (var i = 0; i < 100; i++)
-            {
-                triples.MoveNext();
-                output.WriteLine("{0}", triples.Current);
-            }
-        }
-
-        [Fact]
-        public void PredicateNodes()
-        {
-            using var g = this.Graph;
-            using var triples = g.Triples.PredicateNodes.GetEnumerator();
-
-            for (var i = 0; i < 25; i++)
-            {
-                triples.MoveNext();
-                output.WriteLine("{0}", triples.Current);
-            }
-        }
-
-        [Fact]
-        public void Sparql()
-        {
-            using var g = this.Graph;
-            var results = (SparqlResultSet)g.ExecuteQuery(@"
+    [Fact]
+    public void Sparql()
+    {
+        using var g = this.Graph;
+        var results = (SparqlResultSet)g.ExecuteQuery(@"
 SELECT *
 WHERE {
     <http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853> ?p ?o .
 }
 ");
 
-            var formatter = new SparqlFormatter();
-            foreach (var result in results)
-            {
-                output.WriteLine(formatter.Format(result));
-            }
-        }
-
-        [Fact]
-        public void SubjectNodes()
+        var formatter = new SparqlFormatter();
+        foreach (var result in results)
         {
-            using var g = this.Graph;
-            using var triples = g.Triples.SubjectNodes.GetEnumerator();
-
-            for (var i = 0; i < 20; i++)
-            {
-                triples.MoveNext();
-                output.WriteLine("{0}", triples.Current);
-            }
+            output.WriteLine(formatter.Format(result));
         }
+    }
 
-        [Fact]
-        public void Triples()
+    [Fact]
+    public void SubjectNodes()
+    {
+        using var g = this.Graph;
+        using var triples = g.Triples.SubjectNodes.GetEnumerator();
+
+        for (var i = 0; i < 20; i++)
         {
-            using var g = this.Graph;
-            using var triples = g.Triples.GetEnumerator();
-
-            for (var i = 0; i < 110; i++)
-            {
-                triples.MoveNext();
-                output.WriteLine("{0}", triples.Current);
-            }
+            triples.MoveNext();
+            output.WriteLine("{0}", triples.Current);
         }
+    }
 
-        [Fact]
-        public void TriplesCount()
+    [Fact]
+    public void Triples()
+    {
+        using var g = this.Graph;
+        using var triples = g.Triples.GetEnumerator();
+
+        for (var i = 0; i < 110; i++)
         {
-            using var g = this.Graph;
-            var count = g.Triples.Count;
-
-            output.WriteLine("{0}", count);
+            triples.MoveNext();
+            output.WriteLine("{0}", triples.Current);
         }
+    }
 
-        private static IUriNode UriNode(string uri)
-        {
-            return factory.CreateUriNode(UriFactory.Create(uri));
-        }
+    [Fact]
+    public void TriplesCount()
+    {
+        using var g = this.Graph;
+        var count = g.Triples.Count;
 
-        private static ILiteralNode LiteralNode(string literal, string datatype)
-        {
-            return factory.CreateLiteralNode(literal, UriFactory.Create(datatype));
-        }
+        output.WriteLine("{0}", count);
+    }
+
+    private static IUriNode UriNode(string uri)
+    {
+        return factory.CreateUriNode(UriFactory.Create(uri));
+    }
+
+    private static ILiteralNode LiteralNode(string literal, string datatype)
+    {
+        return factory.CreateLiteralNode(literal, UriFactory.Create(datatype));
     }
 }

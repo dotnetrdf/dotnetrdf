@@ -29,6 +29,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.LDF;
+
 internal static class Queries
 {
     private static readonly string preamble = """

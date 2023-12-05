@@ -31,64 +31,63 @@ using WireMock.Server;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF;
+
+[Collection("QpfServer")]
+public class MockGraphTests : GraphTests
 {
-    [Collection("QpfServer")]
-    public class MockGraphTests : GraphTests
+    private readonly MockQpfServer qpfServer;
+
+    public MockGraphTests(MockQpfServer qpfServer, ITestOutputHelper output) : base(output) => this.qpfServer = qpfServer;
+
+    protected override LdfGraph Graph => new(qpfServer.BaseUri + "2016-04/en");
+}
+
+[CollectionDefinition("QpfServer")]
+public class QpfServerCollection : ICollectionFixture<MockQpfServer> { }
+
+public sealed class MockQpfServer : IDisposable
+{
+    private readonly WireMockServer server;
+
+    public MockQpfServer()
     {
-        private readonly MockQpfServer qpfServer;
+        server = WireMockServer.Start();
 
-        public MockGraphTests(MockQpfServer qpfServer, ITestOutputHelper output) : base(output) => this.qpfServer = qpfServer;
+        static IResponseBuilder file(string q) => Response.Create()
+            .WithHeader("Content-Type", "text/turtle")
+            .WithTransformer(true)
+            .WithBodyFromFile(Path.Combine("resources", "dbpedia", $"{q}.ttl"));
 
-        protected override LdfGraph Graph => new(qpfServer.BaseUri + "2016-04/en");
+        static IRequestBuilder root() => Request.Create().WithPath("/2016-04/en");
+        server.Given(root()).RespondWith(file("root"));
+        server.Given(root().WithParam("page")).RespondWith(file("root{{request.query.page}}"));
+
+        var containsTriple = root().WithParam("subject", "http://dbpedia.org/ontology/extinctionDate").WithParam("predicate", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type").WithParam("object", "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property");
+        server.Given(containsTriple).RespondWith(file("containsTriple"));
+
+        static IRequestBuilder triplesWithObject() => root().WithParam("object", "\"1997-02-04\"^^http://www.w3.org/2001/XMLSchema#date");
+        server.Given(triplesWithObject()).RespondWith(file("getTriplesWithObject"));
+        server.Given(triplesWithObject().WithParam("page")).RespondWith(file("getTriplesWithObject{{request.query.page}}"));
+
+        static IRequestBuilder triplesWithPredicate() => root().WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate");
+        server.Given(triplesWithPredicate()).RespondWith(file("getTriplesWithPredicate"));
+        server.Given(triplesWithPredicate().WithParam("page")).RespondWith(file("getTriplesWithPredicate{{request.query.page}}"));
+
+        static IRequestBuilder triplesWithPredicateObject() => root().WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate").WithParam("object", "\"2011-10-05\"^^http://www.w3.org/2001/XMLSchema#date");
+        server.Given(triplesWithPredicateObject()).RespondWith(file("getTriplesWithPredicateObject"));
+
+        static IRequestBuilder triplesWithSubject() => root().WithParam("subject", "http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853");
+        server.Given(triplesWithSubject()).RespondWith(file("getTriplesWithSubject"));
+
+        static IRequestBuilder triplesWithSubjectObject() => root().WithParam("subject", "http://dbpedia.org/resource/123_Democratic_Alliance").WithParam("object", "\"707366241\"^^http://www.w3.org/2001/XMLSchema#integer");
+        server.Given(triplesWithSubjectObject()).RespondWith(file("getTriplesWithSubjectObject"));
+
+        static IRequestBuilder triplesWithSubjectPredicate() => root().WithParam("subject", "http://dbpedia.org/resource/123_Democratic_Alliance").WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate");
+        server.Given(triplesWithSubjectPredicate()).RespondWith(file("getTriplesWithSubjectPredicate"));
     }
 
-    [CollectionDefinition("QpfServer")]
-    public class QpfServerCollection : ICollectionFixture<MockQpfServer> { }
+    public Uri BaseUri => new(server.Url);
 
-    public sealed class MockQpfServer : IDisposable
-    {
-        private readonly WireMockServer server;
-
-        public MockQpfServer()
-        {
-            server = WireMockServer.Start();
-
-            static IResponseBuilder file(string q) => Response.Create()
-                .WithHeader("Content-Type", "text/turtle")
-                .WithTransformer(true)
-                .WithBodyFromFile(Path.Combine("resources", "dbpedia", $"{q}.ttl"));
-
-            static IRequestBuilder root() => Request.Create().WithPath("/2016-04/en");
-            server.Given(root()).RespondWith(file("root"));
-            server.Given(root().WithParam("page")).RespondWith(file("root{{request.query.page}}"));
-
-            var containsTriple = root().WithParam("subject", "http://dbpedia.org/ontology/extinctionDate").WithParam("predicate", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type").WithParam("object", "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property");
-            server.Given(containsTriple).RespondWith(file("containsTriple"));
-
-            static IRequestBuilder triplesWithObject() => root().WithParam("object", "\"1997-02-04\"^^http://www.w3.org/2001/XMLSchema#date");
-            server.Given(triplesWithObject()).RespondWith(file("getTriplesWithObject"));
-            server.Given(triplesWithObject().WithParam("page")).RespondWith(file("getTriplesWithObject{{request.query.page}}"));
-
-            static IRequestBuilder triplesWithPredicate() => root().WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate");
-            server.Given(triplesWithPredicate()).RespondWith(file("getTriplesWithPredicate"));
-            server.Given(triplesWithPredicate().WithParam("page")).RespondWith(file("getTriplesWithPredicate{{request.query.page}}"));
-
-            static IRequestBuilder triplesWithPredicateObject() => root().WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate").WithParam("object", "\"2011-10-05\"^^http://www.w3.org/2001/XMLSchema#date");
-            server.Given(triplesWithPredicateObject()).RespondWith(file("getTriplesWithPredicateObject"));
-
-            static IRequestBuilder triplesWithSubject() => root().WithParam("subject", "http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853");
-            server.Given(triplesWithSubject()).RespondWith(file("getTriplesWithSubject"));
-
-            static IRequestBuilder triplesWithSubjectObject() => root().WithParam("subject", "http://dbpedia.org/resource/123_Democratic_Alliance").WithParam("object", "\"707366241\"^^http://www.w3.org/2001/XMLSchema#integer");
-            server.Given(triplesWithSubjectObject()).RespondWith(file("getTriplesWithSubjectObject"));
-
-            static IRequestBuilder triplesWithSubjectPredicate() => root().WithParam("subject", "http://dbpedia.org/resource/123_Democratic_Alliance").WithParam("predicate", "http://dbpedia.org/ontology/extinctionDate");
-            server.Given(triplesWithSubjectPredicate()).RespondWith(file("getTriplesWithSubjectPredicate"));
-        }
-
-        public Uri BaseUri => new(server.Url);
-
-        void IDisposable.Dispose() => server.Stop();
-    }
+    void IDisposable.Dispose() => server.Stop();
 }

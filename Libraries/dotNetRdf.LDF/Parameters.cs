@@ -30,65 +30,64 @@ using System.Collections.Generic;
 using VDS.RDF.LDF.Hydra;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF;
+
+internal class Parameters
 {
-    internal class Parameters
+    private Uri uri;
+
+    internal Parameters(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
     {
-        private Uri uri;
-
-        internal Parameters(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
-        {
-            Validate(template, subject, predicate, @object);
-            Calculate(template, subject, predicate, @object);
-        }
-
-        private static void Validate(IriTemplate template, INode subject, INode predicate, INode @object)
-        {
-            if (template is null)
-            {
-                throw new ArgumentNullException(nameof(template));
-            }
-
-            if (subject is not null && subject.NodeType != NodeType.Uri)
-            {
-                throw new ArgumentOutOfRangeException(nameof(subject), subject.NodeType, "Must be IRI");
-            }
-
-            if (predicate is not null && predicate.NodeType != NodeType.Uri)
-            {
-                throw new ArgumentOutOfRangeException(nameof(predicate), predicate.NodeType, "Must be IRI");
-            }
-
-            if (@object is not null && @object.NodeType != NodeType.Uri && @object.NodeType != NodeType.Literal)
-            {
-                throw new ArgumentOutOfRangeException(nameof(@object), @object.NodeType, "Must be IRI or literal");
-            }
-        }
-
-        private void Calculate(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
-        {
-            var uriTemplate = new UriTemplate(template.Template);
-            var variables = new Dictionary<string, object>();
-            var formatter = (INodeFormatter)new ExplicitRepresentationFormatter();
-
-            if (subject is not null)
-            {
-                variables.Add(template.SubjectVariable, formatter.Format(subject));
-            }
-
-            if (predicate is not null)
-            {
-                variables.Add(template.PredicateVariable, formatter.Format(predicate));
-            }
-
-            if (@object is not null)
-            {
-                variables.Add(template.ObjectVariable, formatter.Format(@object));
-            }
-
-            uri = uriTemplate.ResolveUri(variables);
-        }
-
-        public static implicit operator Uri(Parameters parameters) => parameters.uri;
+        Validate(template, subject, predicate, @object);
+        Calculate(template, subject, predicate, @object);
     }
+
+    private static void Validate(IriTemplate template, INode subject, INode predicate, INode @object)
+    {
+        if (template is null)
+        {
+            throw new ArgumentNullException(nameof(template));
+        }
+
+        if (subject is not null && subject.NodeType != NodeType.Uri)
+        {
+            throw new ArgumentOutOfRangeException(nameof(subject), subject.NodeType, "Must be IRI");
+        }
+
+        if (predicate is not null && predicate.NodeType != NodeType.Uri)
+        {
+            throw new ArgumentOutOfRangeException(nameof(predicate), predicate.NodeType, "Must be IRI");
+        }
+
+        if (@object is not null && @object.NodeType != NodeType.Uri && @object.NodeType != NodeType.Literal)
+        {
+            throw new ArgumentOutOfRangeException(nameof(@object), @object.NodeType, "Must be IRI or literal");
+        }
+    }
+
+    private void Calculate(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
+    {
+        var uriTemplate = new UriTemplate(template.Template);
+        var variables = new Dictionary<string, object>();
+        var formatter = (INodeFormatter)new ExplicitRepresentationFormatter();
+
+        if (subject is not null)
+        {
+            variables.Add(template.SubjectVariable, formatter.Format(subject));
+        }
+
+        if (predicate is not null)
+        {
+            variables.Add(template.PredicateVariable, formatter.Format(predicate));
+        }
+
+        if (@object is not null)
+        {
+            variables.Add(template.ObjectVariable, formatter.Format(@object));
+        }
+
+        uri = uriTemplate.ResolveUri(variables);
+    }
+
+    public static implicit operator Uri(Parameters parameters) => parameters.uri;
 }

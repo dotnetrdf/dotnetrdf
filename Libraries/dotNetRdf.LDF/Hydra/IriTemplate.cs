@@ -29,29 +29,28 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.LDF.Hydra
+namespace VDS.RDF.LDF.Hydra;
+
+internal class IriTemplate : GraphWrapperNode
 {
-    internal class IriTemplate : GraphWrapperNode
-    {
-        [DebuggerStepThrough]
-        internal IriTemplate(INode node, IGraph graph) : base(node, graph) { }
+    [DebuggerStepThrough]
+    internal IriTemplate(INode node, IGraph graph) : base(node, graph) { }
 
-        internal string SubjectVariable => SelectMapping(Vocabulary.Rdf.Subject);
+    internal string SubjectVariable => SelectMapping(Vocabulary.Rdf.Subject);
 
-        internal string PredicateVariable => SelectMapping(Vocabulary.Rdf.Predicate);
+    internal string PredicateVariable => SelectMapping(Vocabulary.Rdf.Predicate);
 
-        internal string ObjectVariable => SelectMapping(Vocabulary.Rdf.Object);
+    internal string ObjectVariable => SelectMapping(Vocabulary.Rdf.Object);
 
-        internal string Template => Vocabulary.Hydra.Template.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
+    internal string Template => Vocabulary.Hydra.Template.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
 
-        private IEnumerable<IriTemplateMapping> Mappings =>
-            from n in Vocabulary.Hydra.Mapping.ObjectsOf(this)
-            select new IriTemplateMapping(n, Graph);
+    private IEnumerable<IriTemplateMapping> Mappings =>
+        from n in Vocabulary.Hydra.Mapping.ObjectsOf(this)
+        select new IriTemplateMapping(n, Graph);
 
-        private string SelectMapping(IUriNode property) => (
-                from m in Mappings
-                where m.Property.Equals(property)
-                select m.Variable)
-                .SingleOrDefault();
-    }
+    private string SelectMapping(IUriNode property) => (
+            from m in Mappings
+            where m.Property.Equals(property)
+            select m.Variable)
+            .SingleOrDefault();
 }

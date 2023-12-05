@@ -27,30 +27,29 @@
 using System;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF;
+
+internal class LdfLoader : IDisposable
 {
-    internal class LdfLoader : IDisposable
+    internal LdfLoader(Uri uri)
     {
-        internal LdfLoader(Uri uri)
-        {
-            var original = new Graph();
-            original.LoadFromUri(uri, new TurtleParser()); // TODO: Parser
-            Data.Merge(original);
-            Metadata = new LdfMetadataGraph(original);
+        var original = new Graph();
+        original.LoadFromUri(uri, new TurtleParser()); // TODO: Parser
+        Data.Merge(original);
+        Metadata = new LdfMetadataGraph(original);
 
-            using var ts = new TripleStore();
-            ts.Add(Data);
-            ts.ExecuteUpdate(Queries.Delete);
-        }
+        using var ts = new TripleStore();
+        ts.Add(Data);
+        ts.ExecuteUpdate(Queries.Delete);
+    }
 
-        internal Graph Data { get; } = new Graph();
+    internal Graph Data { get; } = new Graph();
 
-        internal LdfMetadataGraph Metadata { get; private set; }
+    internal LdfMetadataGraph Metadata { get; private set; }
 
-        public void Dispose()
-        {
-            Data.Dispose();
-            Metadata.Dispose();
-        }
+    public void Dispose()
+    {
+        Data.Dispose();
+        Metadata.Dispose();
     }
 }

@@ -27,12 +27,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF;
+
+internal static class Extensions
 {
-    internal static class Extensions
-    {
-        internal static IEnumerable<INode> ObjectsOf(this INode predicate, GraphWrapperNode subject) =>
-            from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
-            select t.Object;
-    }
+    internal static IEnumerable<INode> ObjectsOf(this INode predicate, GraphWrapperNode subject) =>
+        from t in subject.Graph.GetTriplesWithSubjectPredicate(subject, predicate)
+        select t.Object;
 }

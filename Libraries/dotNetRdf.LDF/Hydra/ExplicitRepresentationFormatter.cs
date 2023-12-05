@@ -30,36 +30,35 @@ using System.Text;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.LDF.Hydra
+namespace VDS.RDF.LDF.Hydra;
+
+internal class ExplicitRepresentationFormatter : INodeFormatter
 {
-    internal class ExplicitRepresentationFormatter : INodeFormatter
+    string INodeFormatter.Format(INode node) => node switch
     {
-        string INodeFormatter.Format(INode node) => node switch
+        IUriNode n => n.Uri.AbsoluteUri,
+        ILiteralNode n => Format(n),
+        _ => throw new NotSupportedException("Only IRI and literal nodes are supported.")
+    };
+
+    // Explicit representation is the same regardless of position
+    string INodeFormatter.Format(INode n, TripleSegment? segment) => ((INodeFormatter)this).Format(n);
+
+    private static string Format(ILiteralNode literalNode)
+    {
+        var builder = new StringBuilder();
+        builder.AppendFormat(CultureInfo.InvariantCulture, "\"{0}\"", literalNode.Value);
+
+        if (literalNode.DataType is not null)
         {
-            IUriNode n => n.Uri.AbsoluteUri,
-            ILiteralNode n => Format(n),
-            _ => throw new NotSupportedException("Only IRI and literal nodes are supported.")
-        };
-
-        // Explicit representation is the same regardless of position
-        string INodeFormatter.Format(INode n, TripleSegment? segment) => ((INodeFormatter)this).Format(n);
-
-        private static string Format(ILiteralNode literalNode)
-        {
-            var builder = new StringBuilder();
-            builder.AppendFormat(CultureInfo.InvariantCulture, "\"{0}\"", literalNode.Value);
-
-            if (literalNode.DataType is not null)
-            {
-                builder.AppendFormat(CultureInfo.InvariantCulture, "^^{0}", literalNode.DataType.AbsoluteUri);
-            }
-
-            if (!string.IsNullOrEmpty(literalNode.Language))
-            {
-                builder.AppendFormat(CultureInfo.InvariantCulture, "@{0}", literalNode.Language);
-            }
-
-            return builder.ToString();
+            builder.AppendFormat(CultureInfo.InvariantCulture, "^^{0}", literalNode.DataType.AbsoluteUri);
         }
+
+        if (!string.IsNullOrEmpty(literalNode.Language))
+        {
+            builder.AppendFormat(CultureInfo.InvariantCulture, "@{0}", literalNode.Language);
+        }
+
+        return builder.ToString();
     }
 }

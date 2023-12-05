@@ -27,16 +27,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF;
+
+internal class LdfEnumerable : IEnumerable<Triple>
 {
-    internal class LdfEnumerable : IEnumerable<Triple>
-    {
-        private readonly Parameters parameters;
+    private readonly Parameters parameters;
 
-        internal LdfEnumerable(Parameters parameters) => this.parameters = parameters;
+    internal LdfEnumerable(Parameters parameters) => this.parameters = parameters;
 
-        IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new LdfEnumerator(parameters);
+    IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new LdfEnumerator(parameters);
 
-        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Triple>)this).GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Triple>)this).GetEnumerator();
 }

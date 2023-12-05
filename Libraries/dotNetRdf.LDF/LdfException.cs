@@ -25,6 +25,7 @@
 */
 
 using System;
+
 namespace VDS.RDF.LDF;
 
 public class LdfException : RdfException

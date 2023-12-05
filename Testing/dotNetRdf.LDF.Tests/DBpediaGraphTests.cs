@@ -25,12 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit.Abstractions;
 
-namespace VDS.RDF.LDF
-{
-    public class DBPediaGraphTests : GraphTests
-    {
-        public DBPediaGraphTests(ITestOutputHelper output) : base(output) { }
+namespace VDS.RDF.LDF;
 
-        protected override LdfGraph Graph => new("https://fragments.dbpedia.org/2016-04/en");
-    }
+public class DBPediaGraphTests : GraphTests
+{
+    public DBPediaGraphTests(ITestOutputHelper output) : base(output) { }
+
+    protected override LdfGraph Graph => new("https://fragments.dbpedia.org/2016-04/en");
 }

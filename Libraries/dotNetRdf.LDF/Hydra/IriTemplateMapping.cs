@@ -28,15 +28,14 @@ using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Nodes;
 
-namespace VDS.RDF.LDF.Hydra
+namespace VDS.RDF.LDF.Hydra;
+
+internal class IriTemplateMapping : GraphWrapperNode
 {
-    internal class IriTemplateMapping : GraphWrapperNode
-    {
-        [DebuggerStepThrough]
-        internal IriTemplateMapping(INode node, IGraph graph) : base(node, graph) { }
+    [DebuggerStepThrough]
+    internal IriTemplateMapping(INode node, IGraph graph) : base(node, graph) { }
 
-        internal string Variable => Vocabulary.Hydra.Variable.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
+    internal string Variable => Vocabulary.Hydra.Variable.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
 
-        internal INode Property => Vocabulary.Hydra.Property.ObjectsOf(this).SingleOrDefault();
-    }
+    internal INode Property => Vocabulary.Hydra.Property.ObjectsOf(this).SingleOrDefault();
 }

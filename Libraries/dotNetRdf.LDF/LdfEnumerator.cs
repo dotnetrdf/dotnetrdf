@@ -28,60 +28,59 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF;
+
+internal class LdfEnumerator : IEnumerator<Triple>
 {
-    internal class LdfEnumerator : IEnumerator<Triple>
+    private Uri nextPage;
+    private Triple current;
+    private IEnumerator<Triple> underlyingTriples;
+
+    internal LdfEnumerator(Uri firstPage) => nextPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
+
+    Triple IEnumerator<Triple>.Current => current;
+
+    object IEnumerator.Current => (this as IEnumerator<Triple>).Current;
+
+    bool IEnumerator.MoveNext()
     {
-        private Uri nextPage;
-        private Triple current;
-        private IEnumerator<Triple> underlyingTriples;
-
-        internal LdfEnumerator(Uri firstPage) => nextPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
-
-        Triple IEnumerator<Triple>.Current => current;
-
-        object IEnumerator.Current => (this as IEnumerator<Triple>).Current;
-
-        bool IEnumerator.MoveNext()
+        if (underlyingTriples is null)
         {
-            if (underlyingTriples is null)
-            {
-                InitializeCurrentPage();
-            }
-
-            if (underlyingTriples.MoveNext())
-            {
-                current = underlyingTriples.Current;
-                return true;
-            }
-
-            if (nextPage is null)
-            {
-                current = null;
-                return false;
-            }
-
-            return AdvanceToNextPage();
+            InitializeCurrentPage();
         }
 
-        void IDisposable.Dispose() => underlyingTriples?.Dispose();
-
-        void IEnumerator.Reset() => throw new NotSupportedException("This enumerator cannot be reset.");
-
-        private void InitializeCurrentPage()
+        if (underlyingTriples.MoveNext())
         {
-            using var loader = new LdfLoader(nextPage);
-
-            underlyingTriples = loader.Data.Triples.GetEnumerator();
-            nextPage = loader.Metadata.NextPageUri;
+            current = underlyingTriples.Current;
+            return true;
         }
 
-        private bool AdvanceToNextPage()
+        if (nextPage is null)
         {
-            underlyingTriples.Dispose();
-            underlyingTriples = null;
-
-            return (this as IEnumerator).MoveNext();
+            current = null;
+            return false;
         }
+
+        return AdvanceToNextPage();
+    }
+
+    void IDisposable.Dispose() => underlyingTriples?.Dispose();
+
+    void IEnumerator.Reset() => throw new NotSupportedException("This enumerator cannot be reset.");
+
+    private void InitializeCurrentPage()
+    {
+        using var loader = new LdfLoader(nextPage);
+
+        underlyingTriples = loader.Data.Triples.GetEnumerator();
+        nextPage = loader.Metadata.NextPageUri;
+    }
+
+    private bool AdvanceToNextPage()
+    {
+        underlyingTriples.Dispose();
+        underlyingTriples = null;
+
+        return (this as IEnumerator).MoveNext();
     }
 }

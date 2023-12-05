@@ -29,82 +29,81 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.LDF.Hydra;
 
-namespace VDS.RDF.LDF
+namespace VDS.RDF.LDF;
+
+public class LdfGraph : Graph
 {
-    public class LdfGraph : Graph
+    private readonly IriTemplate template;
+
+    public LdfGraph(string baseUri)
     {
-        private readonly IriTemplate template;
-
-        public LdfGraph(string baseUri)
-        {
-            using var loader = new LdfLoader(UriFactory.Create(baseUri));
-            template = loader.Metadata.Search;
-            _triples = new LdfTripleCollection(template);
-        }
-
-        public override bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
-        {
-            if (g is LdfGraph fragments && template.Template == fragments.template.Template)
-            {
-                mapping = new Dictionary<INode, INode>();
-                return true;
-            }
-
-            return base.Equals(g, out mapping);
-        }
-
-        #region Mutation methods throw because this graph is read-only
-
-        public override bool Assert(Triple t) => throw new NotSupportedException("This graph is read-only.");
-
-        public override bool Assert(IEnumerable<Triple> ts) => throw new NotSupportedException("This graph is read-only.");
-
-        public override void Clear() => throw new NotSupportedException("This graph is read-only.");
-
-        public override void Merge(IGraph g) => throw new NotSupportedException("This graph is read-only.");
-
-        public override void Merge(IGraph g, bool keepOriginalGraphUri) => throw new NotSupportedException("This graph is read-only.");
-
-        public override bool Retract(Triple t) => throw new NotSupportedException("This graph is read-only.");
-
-        public override bool Retract(IEnumerable<Triple> ts) => throw new NotSupportedException("This graph is read-only.");
-
-        #endregion
-
-        #region Some methods and properties short-circuit to empty due to unsupported features in LDF
-
-        public override IEnumerable<INode> AllQuotedNodes => Enumerable.Empty<INode>();
-
-        public override bool ContainsQuotedTriple(Triple t) => false;
-
-        public override IBlankNode GetBlankNode(string nodeId) => null;
-
-        public override IEnumerable<Triple> GetQuoted(INode n) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuoted(Uri uri) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuotedWithObject(Uri u) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuotedWithSubject(Uri u) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuotedWithObject(INode n) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuotedWithPredicate(INode n) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuotedWithSubject(INode n) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj) => Enumerable.Empty<Triple>();
-
-        public override IEnumerable<INode> QuotedNodes => Enumerable.Empty<INode>();
-
-        public override IEnumerable<Triple> QuotedTriples => Enumerable.Empty<Triple>();
-
-        #endregion
+        using var loader = new LdfLoader(UriFactory.Create(baseUri));
+        template = loader.Metadata.Search;
+        _triples = new LdfTripleCollection(template);
     }
+
+    public override bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
+    {
+        if (g is LdfGraph fragments && template.Template == fragments.template.Template)
+        {
+            mapping = new Dictionary<INode, INode>();
+            return true;
+        }
+
+        return base.Equals(g, out mapping);
+    }
+
+    #region Mutation methods throw because this graph is read-only
+
+    public override bool Assert(Triple t) => throw new NotSupportedException("This graph is read-only.");
+
+    public override bool Assert(IEnumerable<Triple> ts) => throw new NotSupportedException("This graph is read-only.");
+
+    public override void Clear() => throw new NotSupportedException("This graph is read-only.");
+
+    public override void Merge(IGraph g) => throw new NotSupportedException("This graph is read-only.");
+
+    public override void Merge(IGraph g, bool keepOriginalGraphUri) => throw new NotSupportedException("This graph is read-only.");
+
+    public override bool Retract(Triple t) => throw new NotSupportedException("This graph is read-only.");
+
+    public override bool Retract(IEnumerable<Triple> ts) => throw new NotSupportedException("This graph is read-only.");
+
+    #endregion
+
+    #region Some methods and properties short-circuit to empty due to unsupported features in LDF
+
+    public override IEnumerable<INode> AllQuotedNodes => Enumerable.Empty<INode>();
+
+    public override bool ContainsQuotedTriple(Triple t) => false;
+
+    public override IBlankNode GetBlankNode(string nodeId) => null;
+
+    public override IEnumerable<Triple> GetQuoted(INode n) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuoted(Uri uri) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithObject(Uri u) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithSubject(Uri u) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithObject(INode n) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithPredicate(INode n) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithSubject(INode n) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<INode> QuotedNodes => Enumerable.Empty<INode>();
+
+    public override IEnumerable<Triple> QuotedTriples => Enumerable.Empty<Triple>();
+
+    #endregion
 }
