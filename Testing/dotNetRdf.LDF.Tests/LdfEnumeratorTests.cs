@@ -36,12 +36,9 @@ using System.IO;
 namespace VDS.RDF.LDF;
 
 [Collection("MockServer")]
-public class LdfEnumeratorTests
+public class LdfEnumeratorTests(MockServer server)
 {
-    private readonly MockServer server;
     private readonly Uri someUri = new("urn:a:b");
-
-    public LdfEnumeratorTests(MockServer server) => this.server = server;
 
     [Fact(DisplayName = "Requires first page")]
     public void RequiresUri()

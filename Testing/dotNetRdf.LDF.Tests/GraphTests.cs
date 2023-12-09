@@ -31,15 +31,9 @@ using Xunit.Abstractions;
 
 namespace VDS.RDF.LDF;
 
-public abstract class GraphTests
+public abstract class GraphTests(ITestOutputHelper output)
 {
     private static readonly NodeFactory factory = new();
-    private readonly ITestOutputHelper output;
-
-    public GraphTests(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
 
     protected abstract LdfGraph Graph { get; }
 
