@@ -35,44 +35,52 @@ internal class LdfTripleCollection : BaseTripleCollection
 {
     private readonly IriTemplate template;
 
-    internal LdfTripleCollection(IriTemplate template) => this.template = template;
+    internal LdfTripleCollection(IriTemplate template) => this.template = template ?? throw new ArgumentNullException(nameof(template));
 
-    public override int Count // TODO: 0 if missing
+    public override int Count
     {
         get
         {
             using var loader = new LdfLoader(new Parameters(template));
-            return (int)loader.Metadata.TripleCount;
+
+            return loader.Metadata.TripleCount switch
+            {
+                null or < 0 => default,
+                > int.MaxValue => int.MaxValue,
+                var castable => (int)castable
+            };
         }
     }
 
-    public override IEnumerable<INode> ObjectNodes => this.Select(t => t.Object).Distinct();
+    public override IEnumerable<INode> ObjectNodes => (from t in this select t.Object).Distinct();
 
-    public override IEnumerable<INode> PredicateNodes => this.Select(t => t.Predicate).Distinct();
+    public override IEnumerable<INode> PredicateNodes => (from t in this select t.Predicate).Distinct();
 
-    public override IEnumerable<INode> SubjectNodes => this.Select(t => t.Subject).Distinct();
+    public override IEnumerable<INode> SubjectNodes => (from t in this select t.Subject).Distinct();
 
     public override Triple this[Triple t] => Contains(t) ? t : throw new KeyNotFoundException();
 
-    public override bool Contains(Triple t) => new LdfEnumerable(new Parameters(template, t.Subject, t.Predicate, t.Object)).Any();
+    public override bool Contains(Triple t) => LdfEnumerable(t.Subject, t.Predicate, t.Object).Any();
 
     public override void Dispose() { }
 
     public override IEnumerator<Triple> GetEnumerator() => new LdfEnumerator(new Parameters(template));
 
-    public override IEnumerable<Triple> WithObject(INode obj) => new LdfEnumerable(new Parameters(template, @object: obj));
+    public override IEnumerable<Triple> WithObject(INode o) => LdfEnumerable(o: o);
 
-    public override IEnumerable<Triple> WithPredicate(INode pred) => new LdfEnumerable(new Parameters(template, predicate: pred));
+    public override IEnumerable<Triple> WithPredicate(INode p) => LdfEnumerable(p: p);
 
-    public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj) => new LdfEnumerable(new Parameters(template, predicate: pred, @object: obj));
+    public override IEnumerable<Triple> WithPredicateObject(INode p, INode o) => LdfEnumerable(p: p, o: o);
 
-    public override IEnumerable<Triple> WithSubject(INode subj) => new LdfEnumerable(new Parameters(template, subj));
+    public override IEnumerable<Triple> WithSubject(INode s) => LdfEnumerable(s);
 
-    public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj) => new LdfEnumerable(new Parameters(template, subj, @object: obj));
+    public override IEnumerable<Triple> WithSubjectObject(INode s, INode o) => LdfEnumerable(s, o: o);
 
-    public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred) => new LdfEnumerable(new Parameters(template, subj, pred));
+    public override IEnumerable<Triple> WithSubjectPredicate(INode s, INode p) => LdfEnumerable(s, p);
 
     public override IEnumerable<Triple> Asserted => this;
+
+    private IEnumerable<Triple> LdfEnumerable(INode s = null, INode p = null, INode o = null) => new LdfEnumerable(new Parameters(template, s, p, o));
 
     #region Mutation methods throw because this triple collection is read-only
 
@@ -84,11 +92,11 @@ internal class LdfTripleCollection : BaseTripleCollection
 
     #region Some methods and properties short-circuit to empty due to unsupported features in LDF
 
-    public override bool ContainsQuoted(Triple t) => false;
+    public override bool ContainsQuoted(Triple t) => default;
 
     public override IEnumerable<Triple> Quoted => Enumerable.Empty<Triple>();
 
-    public override int QuotedCount => 0;
+    public override int QuotedCount => default;
 
     public override IEnumerable<INode> QuotedObjectNodes => Enumerable.Empty<INode>();
 

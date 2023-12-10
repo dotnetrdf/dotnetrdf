@@ -162,7 +162,10 @@ public sealed class MockServer : IDisposable
 {
     internal static readonly string minimalControls = "minimalControls";
     internal static readonly string singleData = "singleData";
+    internal static readonly string multipleData = "multipleData";
     internal static readonly string hasNextPage = "hasNextPage";
+    internal static readonly string hasCount = "hasCount";
+    internal static readonly string hasLargeCount = "hasLargeCount";
 
     private readonly WireMockServer server;
 
@@ -179,7 +182,10 @@ public sealed class MockServer : IDisposable
 
         endpoint(minimalControls);
         endpoint(singleData);
+        endpoint(multipleData);
         endpoint(hasNextPage);
+        endpoint(hasCount);
+        endpoint(hasLargeCount);
     }
 
     internal Uri BaseUri => new(server.Url);
