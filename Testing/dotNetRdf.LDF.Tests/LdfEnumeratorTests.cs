@@ -48,7 +48,7 @@ public class LdfEnumeratorTests(MockServer server)
         constructor.Should().ThrowExactly<ArgumentNullException>("because the first page was null");
     }
 
-    [Fact(DisplayName = "IEnumerator invariant: Current element is undefined (null) before the first element ")]
+    [Fact(DisplayName = "IEnumerator invariant: Current element is undefined (null) before the first element")]
     public void NoCurrentBeforeFirst()
     {
         var e = new LdfEnumerator(someUri) as IEnumerator;
