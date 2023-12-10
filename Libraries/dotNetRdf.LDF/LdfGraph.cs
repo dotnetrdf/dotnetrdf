@@ -33,24 +33,24 @@ namespace VDS.RDF.LDF;
 
 public class LdfGraph : Graph
 {
-    private readonly IriTemplate template;
+    private readonly IriTemplate search;
 
     public LdfGraph(string baseUri)
     {
         using var loader = new LdfLoader(UriFactory.Create(baseUri));
-        template = loader.Metadata.Search;
-        _triples = new LdfTripleCollection(template);
+        search = loader.Metadata.Search;
+        _triples = new LdfTripleCollection(search);
     }
 
-    public override bool Equals(IGraph g, out Dictionary<INode, INode> mapping)
+    public override bool Equals(IGraph other, out Dictionary<INode, INode> mapping)
     {
-        if (g is LdfGraph fragments && template.Template == fragments.template.Template)
+        if (other is not LdfGraph otherLdf)
         {
-            mapping = new Dictionary<INode, INode>();
-            return true;
+            return base.Equals(other, out mapping);
         }
 
-        return base.Equals(g, out mapping);
+        mapping = null; // No blanks in QPF
+        return search.Template == otherLdf.search.Template;
     }
 
     #region Mutation methods throw because this graph is read-only

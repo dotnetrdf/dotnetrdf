@@ -7,7 +7,7 @@ PREFIX void: <http://rdfs.org/ns/void#>
         void:subset [] # page
     ] ;
     hydra:search [
-        hydra:template "{{request.origin}}{?subject,predicate,object}";
+        hydra:template "{{request.origin}}{{request.absolutepath}}{?subject,predicate,object}";
         hydra:mapping [
             hydra:variable "subject" ;
             hydra:property rdf:subject ;
@@ -23,4 +23,4 @@ PREFIX void: <http://rdfs.org/ns/void#>
     ]
 ] .
 
-</singleData/s> </singleData/p> </singleData/o> .
+<urn:example:s1> <urn:example:p1> <urn:example:o1> .
