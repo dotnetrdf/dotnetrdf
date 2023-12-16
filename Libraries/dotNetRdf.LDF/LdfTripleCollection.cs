@@ -37,6 +37,7 @@ internal class LdfTripleCollection : BaseTripleCollection
 
     internal LdfTripleCollection(IriTemplate template) => this.template = template ?? throw new ArgumentNullException(nameof(template));
 
+    /// <remarks>Caution: When the LDF response has no triple count statement in the metadata section then every invocation of this property enumerates the collection which potentially involves numerous network requests.</remarks>
     public override int Count
     {
         get
@@ -45,7 +46,8 @@ internal class LdfTripleCollection : BaseTripleCollection
 
             return loader.Metadata.TripleCount switch
             {
-                null or < 0 => default,
+                null => this.Count(),
+                < 0 => default,
                 > int.MaxValue => int.MaxValue,
                 var castable => (int)castable
             };

@@ -52,13 +52,13 @@ public class LdfTripleCollectionTests(MockServer server)
         constructor.Should().ThrowExactly<ArgumentNullException>("because the template was null");
     }
 
-    [Fact(DisplayName = "Count is zero when missing from metadata")]
+    [Fact(DisplayName = "Count enumerates when missing from metadata")]
     public void Count0() =>
         CollectionWithNoData.Count.Should().Be(0, "because metadata lacks triple count");
 
     [Fact(DisplayName = "Count is zero when negative")]
     public void CountNegative() =>
-        CollectionWithNoData.Count.Should().Be(0, "because metadata is negative");
+        CollectionFromMockData(MockServer.hasNegativeCount).Count.Should().Be(0, "because metadata is negative");
 
     [Fact(DisplayName = "Count is maximized to int")]
     public void CountMaximized() =>

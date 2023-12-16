@@ -166,6 +166,7 @@ public sealed class MockServer : IDisposable
     internal static readonly string hasNextPage = "hasNextPage";
     internal static readonly string hasCount = "hasCount";
     internal static readonly string hasLargeCount = "hasLargeCount";
+    internal static readonly string hasNegativeCount = "hasNegativeCount";
 
     private readonly WireMockServer server;
 
@@ -186,6 +187,7 @@ public sealed class MockServer : IDisposable
         endpoint(hasNextPage);
         endpoint(hasCount);
         endpoint(hasLargeCount);
+        endpoint(hasNegativeCount);
     }
 
     internal Uri BaseUri => new(server.Url);
