@@ -27,7 +27,6 @@ using FluentAssertions;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace VDS.RDF.LDF;
@@ -54,282 +53,129 @@ public class LdfTripleCollectionTests(MockServer server)
     }
 
     [Fact(DisplayName = "Count is zero when missing from metadata")]
-    public void Count0()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.Count.Should().Be(0, "because metadata lacks triple count");
-    }
+    public void Count0() =>
+        CollectionWithNoData.Count.Should().Be(0, "because metadata lacks triple count");
 
     [Fact(DisplayName = "Count is zero when negative")]
-    public void CountNegative()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.Count.Should().Be(0, "because metadata is negative");
-    }
+    public void CountNegative() =>
+        CollectionWithNoData.Count.Should().Be(0, "because metadata is negative");
 
     [Fact(DisplayName = "Count is maximized to int")]
-    public void CountMaximized()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.hasLargeCount));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.Count.Should().Be(int.MaxValue, "because metadata was larger then an int");
-    }
+    public void CountMaximized() =>
+        CollectionFromMockData(MockServer.hasLargeCount).Count.Should().Be(int.MaxValue, "because metadata was larger then an int");
 
     [Fact(DisplayName = "Count is populated from metadata")]
     public void CountFromMetadata()
     {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.hasCount));
-        var template = loader.Metadata.Search;
+        var c = CollectionFromMockData(MockServer.hasCount, out var loader);
         var tripleCount = (int)loader.Metadata.TripleCount;
-        var c = new LdfTripleCollection(template);
 
         c.Count.Should().Be(tripleCount, "because metadata has triple count");
     }
 
     [Fact(DisplayName = "Returns object nodes")]
-    public void ObjectNodes()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.ObjectNodes.Should().Contain([o1, o2], "data has those objects");
-    }
+    public void ObjectNodes() =>
+        CollectionWithData.ObjectNodes.Should().Contain([o1, o2], "data has those objects");
 
     [Fact(DisplayName = "Returns predicate nodes")]
-    public void PredicateNodes()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.PredicateNodes.Should().Contain([p1, p2], "because data has those predicates");
-    }
+    public void PredicateNodes() =>
+        CollectionWithData.PredicateNodes.Should().Contain([p1, p2], "because data has those predicates");
 
     [Fact(DisplayName = "Returns subject nodes")]
-    public void SubjectNodes()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.SubjectNodes.Should().Contain([s1, s2], "because data has those subjects");
-    }
+    public void SubjectNodes() =>
+        CollectionWithData.SubjectNodes.Should().Contain([s1, s2], "because data has those subjects");
 
     [Fact(DisplayName = "Indexer throws for missing triple")]
     public void IndexerThrows()
     {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        var indexer = () => c[t1];
+        var indexer = () => CollectionWithNoData[t1];
 
         indexer.Should().ThrowExactly<KeyNotFoundException>("because data lacks that triple");
     }
 
     [Fact(DisplayName = "Indexer returns contained triple")]
-    public void IndexerReturnsContained()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c[t1].Should().Be(t1, "because data has that triple");
-    }
+    public void IndexerReturnsContained() =>
+        CollectionWithData[t1].Should().Be(t1, "because data has that triple");
 
     [Fact(DisplayName = "Contains is false for triple missing from data")]
-    public void DoesNotContain()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.Contains(t1).Should().BeFalse("because data lacks that triple");
-    }
+    public void DoesNotContain() =>
+        CollectionWithNoData.Contains(t1).Should().BeFalse("because data lacks that triple");
 
     [Fact(DisplayName = "Contains is true for triple in data")]
-    public void DoesContains()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.Contains(t1).Should().BeTrue("because data has that triple");
-    }
+    public void DoesContains() =>
+        CollectionWithData.Contains(t1).Should().BeTrue("because data has that triple");
 
     [Fact(DisplayName = "Dispose is a no-op")]
     public void Dispose()
     {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        var dispose = () => c.Dispose();
+        var dispose = () => CollectionWithData.Dispose();
 
         dispose.Should().NotThrow("because it is disposable");
     }
 
     [Fact(DisplayName = "Enumerator is empty without data")]
-    public void GetEnumeratorEmpty()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.Should().BeEmpty("because QPF data is empty");
-    }
+    public void GetEnumeratorEmpty() =>
+        CollectionWithNoData.Should().BeEmpty("because QPF data is empty");
 
     [Fact(DisplayName = "Enumerator contains data from QPF")]
-    public void GetEnumeratorHasData()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.Should().Contain([t1, t2], "because QPF data has them");
-    }
+    public void GetEnumeratorHasData() =>
+        CollectionWithData.Should().Contain([t1, t2], "because QPF data has them");
 
     [Fact(DisplayName = "With object empty without data")]
-    public void WithObjectEmpty()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithObject(o1).Should().BeEmpty("because it is missing from QPF data");
-    }
+    public void WithObjectEmpty() =>
+        CollectionWithNoData.WithObject(o1).Should().BeEmpty("because it is missing from QPF data");
 
     [Fact(DisplayName = "With object contains data from QPF")]
-    public void WithObjectHasData()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithObject(o1).Should().Contain(t1, "because QPF data has that object");
-    }
+    public void WithObjectHasData() =>
+        CollectionWithData.WithObject(o1).Should().Contain(t1, "because QPF data has that object");
 
     [Fact(DisplayName = "With predicate empty without data")]
-    public void WithPredicateEmpty()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithPredicate(p1).Should().BeEmpty("because it is missing from QPF data");
-    }
+    public void WithPredicateEmpty() =>
+        CollectionWithNoData.WithPredicate(p1).Should().BeEmpty("because it is missing from QPF data");
 
     [Fact(DisplayName = "With predicate contains data from QPF")]
-    public void WithPredicateHasData()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithPredicate(p1).Should().Contain(t1, "because QPF data has that object");
-    }
+    public void WithPredicateHasData() =>
+        CollectionWithData.WithPredicate(p1).Should().Contain(t1, "because QPF data has that object");
 
     [Fact(DisplayName = "With predicate & object empty without data")]
-    public void WithPredicateObjectEmpty()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithPredicateObject(p1, o1).Should().BeEmpty("because it is missing from QPF data");
-    }
+    public void WithPredicateObjectEmpty() =>
+        CollectionWithNoData.WithPredicateObject(p1, o1).Should().BeEmpty("because it is missing from QPF data");
 
     [Fact(DisplayName = "With predicate & object contains data from QPF")]
-    public void WithPredicateObjectHasData()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithPredicateObject(p1, o1).Should().Contain(t1, "because QPF data has that object");
-    }
+    public void WithPredicateObjectHasData() =>
+        CollectionWithData.WithPredicateObject(p1, o1).Should().Contain(t1, "because QPF data has that object");
 
     [Fact(DisplayName = "With subject empty without data")]
-    public void WithSubjectEmpty()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithSubject(s1).Should().BeEmpty("because it is missing from QPF data");
-    }
+    public void WithSubjectEmpty() =>
+        CollectionWithNoData.WithSubject(s1).Should().BeEmpty("because it is missing from QPF data");
 
     [Fact(DisplayName = "With subject contains data from QPF")]
-    public void WithSubjectHasData()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithSubject(s1).Should().Contain(t1, "because QPF data has that object");
-    }
+    public void WithSubjectHasData() =>
+        CollectionWithData.WithSubject(s1).Should().Contain(t1, "because QPF data has that object");
 
     [Fact(DisplayName = "With subject & object empty without data")]
-    public void WithSubjectObjectEmpty()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithSubjectObject(s1, o1).Should().BeEmpty("because it is missing from QPF data");
-    }
+    public void WithSubjectObjectEmpty() =>
+        CollectionWithNoData.WithSubjectObject(s1, o1).Should().BeEmpty("because it is missing from QPF data");
 
     [Fact(DisplayName = "With subject & object contains data from QPF")]
-    public void WithSubjectObjectHasData()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithSubjectObject(s1, o1).Should().Contain(t1, "because QPF data has that object");
-    }
+    public void WithSubjectObjectHasData() =>
+        CollectionWithData.WithSubjectObject(s1, o1).Should().Contain(t1, "because QPF data has that object");
 
     [Fact(DisplayName = "With subject & predicate empty without data")]
-    public void WithSubjectPredicateEmpty()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.minimalControls));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithSubjectPredicate(s1, p1).Should().BeEmpty("because it is missing from QPF data");
-    }
+    public void WithSubjectPredicateEmpty() =>
+        CollectionWithNoData.WithSubjectPredicate(s1, p1).Should().BeEmpty("because it is missing from QPF data");
 
     [Fact(DisplayName = "With subject & predicate contains data from QPF")]
-    public void WithSubjectPredicateHasData()
-    {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
-
-        c.WithSubjectPredicate(s1, p1).Should().Contain(t1, "because QPF data has that object");
-    }
+    public void WithSubjectPredicateHasData() =>
+        CollectionWithData.WithSubjectPredicate(s1, p1).Should().Contain(t1, "because QPF data has that object");
 
     [Fact(DisplayName = "Asserted triples are the same as all triples")]
     public void AssertedSame()
     {
-        using var loader = new LdfLoader(new(server.BaseUri, MockServer.multipleData));
-        var template = loader.Metadata.Search;
-        var c = new LdfTripleCollection(template);
+        var c = CollectionWithData;
 
         c.Asserted.Should().BeSameAs(c, "because QPF does not support RDF*");
     }
-
-
-
 
     #region Mutation & RDF*
 
@@ -337,7 +183,7 @@ public class LdfTripleCollectionTests(MockServer server)
     [Fact(DisplayName = "Cannot add triple")]
     public void CannotAdd()
     {
-        var add = () => new Graph(AnyLdfTriplesCollection()).Assert((Triple)null);
+        var add = () => new Graph(CollectionWithNoData).Assert((Triple)null);
 
         add.Should().ThrowExactly<NotSupportedException>("because QPF does not support mutation");
     }
@@ -345,48 +191,71 @@ public class LdfTripleCollectionTests(MockServer server)
     [Fact(DisplayName = "Cannot remove triple")]
     public void CannotRemove()
     {
-        var remove = () => new Graph(AnyLdfTriplesCollection()).Retract((Triple)null);
+        var remove = () => new Graph(CollectionWithNoData).Retract((Triple)null);
 
         remove.Should().ThrowExactly<NotSupportedException>("because QPF does not support mutation");
     }
 
     [Fact(DisplayName = "Contain no quoted triples")]
-    public void NotContainsQuoted() => AnyLdfTriplesCollection().ContainsQuoted(null).Should().BeFalse("because QPF does not support RDF*");
+    public void NotContainsQuoted() =>
+        CollectionWithNoData.ContainsQuoted(null).Should().BeFalse("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted triples are empty")]
-    public void QuotedEmpty() => AnyLdfTriplesCollection().Quoted.Should().BeEmpty("because QPF does not support RDF*");
+    public void QuotedEmpty() =>
+        CollectionWithNoData.Quoted.Should().BeEmpty("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted triple count is 0")]
-    public void QuotedCount0() => AnyLdfTriplesCollection().QuotedCount.Should().Be(0, "because QPF does not support RDF*");
+    public void QuotedCount0() =>
+        CollectionWithNoData.QuotedCount.Should().Be(0, "because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted objects are empty")]
-    public void QuotedObjectsEmpty() => AnyLdfTriplesCollection().QuotedObjectNodes.Should().BeEmpty("because QPF does not support RDF*");
+    public void QuotedObjectsEmpty() =>
+        CollectionWithNoData.QuotedObjectNodes.Should().BeEmpty("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted predicates are empty")]
-    public void QuotedPredicatesEmpty() => AnyLdfTriplesCollection().QuotedPredicateNodes.Should().BeEmpty("because QPF does not support RDF*");
+    public void QuotedPredicatesEmpty() =>
+        CollectionWithNoData.QuotedPredicateNodes.Should().BeEmpty("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted subjects are empty")]
-    public void QuotedSubjectsEmpty() => AnyLdfTriplesCollection().QuotedSubjectNodes.Should().BeEmpty("because QPF does not support RDF*");
+    public void QuotedSubjectsEmpty() =>
+        CollectionWithNoData.QuotedSubjectNodes.Should().BeEmpty("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted triples with object are empty")]
-    public void QuotedWithObjectEmpty() => AnyLdfTriplesCollection().QuotedWithObject(null).Should().BeEmpty("because QPF does not support RDF*");
+    public void QuotedWithObjectEmpty() =>
+        CollectionWithNoData.QuotedWithObject(null).Should().BeEmpty("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted triples with predicate are empty")]
-    public void QuotedWithPredicateEmpty() => AnyLdfTriplesCollection().QuotedWithPredicate(null).Should().BeEmpty("because QPF does not support RDF*");
+    public void QuotedWithPredicateEmpty() =>
+        CollectionWithNoData.QuotedWithPredicate(null).Should().BeEmpty("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted triples with predicate and object are empty")]
-    public void QuotedWithPredicateObjectEmpty() => AnyLdfTriplesCollection().QuotedWithPredicateObject(null, null).Should().BeEmpty("because QPF does not support RDF*");
+    public void QuotedWithPredicateObjectEmpty() =>
+        CollectionWithNoData.QuotedWithPredicateObject(null, null).Should().BeEmpty("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted triples with subject are empty")]
-    public void QuotedWithSubjectEmpty() => AnyLdfTriplesCollection().QuotedWithSubject(null).Should().BeEmpty("because QPF does not support RDF*");
+    public void QuotedWithSubjectEmpty() =>
+        CollectionWithNoData.QuotedWithSubject(null).Should().BeEmpty("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted triples with subject and object are empty")]
-    public void QuotedWithSubjectObjectEmpty() => AnyLdfTriplesCollection().QuotedWithSubjectObject(null, null).Should().BeEmpty("because QPF does not support RDF*");
+    public void QuotedWithSubjectObjectEmpty() =>
+        CollectionWithNoData.QuotedWithSubjectObject(null, null).Should().BeEmpty("because QPF does not support RDF*");
 
     [Fact(DisplayName = "Quoted triples with subject and predicate are empty")]
-    public void QuotedWithSubjectPredicateEmpty() => AnyLdfTriplesCollection().QuotedWithSubjectPredicate(null, null).Should().BeEmpty("because QPF does not support RDF*");
-
-    private LdfTripleCollection AnyLdfTriplesCollection() => new(new LdfLoader(new(server.BaseUri, MockServer.minimalControls)).Metadata.Search);
+    public void QuotedWithSubjectPredicateEmpty() =>
+        CollectionWithNoData.QuotedWithSubjectPredicate(null, null).Should().BeEmpty("because QPF does not support RDF*");
 
     #endregion
+
+    private LdfTripleCollection CollectionWithNoData => CollectionFromMockData(MockServer.minimalControls);
+
+    private LdfTripleCollection CollectionWithData => CollectionFromMockData(MockServer.multipleData);
+
+    private LdfTripleCollection CollectionFromMockData(string name) => CollectionFromMockData(name, out var _);
+
+    private LdfTripleCollection CollectionFromMockData(string name, out LdfLoader loader)
+    {
+        loader = new LdfLoader(new(server.BaseUri, name));
+        var template = loader.Metadata.Search;
+        return new LdfTripleCollection(template);
+    }
 }
