@@ -31,5 +31,5 @@ public class DBPediaGraphTests : GraphTests
 {
     public DBPediaGraphTests(ITestOutputHelper output) : base(output) { }
 
-    protected override LdfGraph Graph => new("https://fragments.dbpedia.org/2016-04/en");
+    protected override LdfGraph Graph => new(new("https://fragments.dbpedia.org/2016-04/en"));
 }

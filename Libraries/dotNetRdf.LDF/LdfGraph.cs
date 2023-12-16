@@ -35,13 +35,14 @@ public class LdfGraph : Graph
 {
     private readonly IriTemplate search;
 
-    public LdfGraph(string baseUri)
+    public LdfGraph(Uri baseUri)
     {
-        using var loader = new LdfLoader(UriFactory.Create(baseUri));
+        using var loader = new LdfLoader(baseUri ?? throw new ArgumentNullException(nameof(baseUri)));
         search = loader.Metadata.Search;
         _triples = new LdfTripleCollection(search);
     }
 
+    /// <remarks>Caution: Comparing LDF graphs to other types of graphs requires enumerating all statements in the LDF graph, which potentially involves numerous network requests.</remarks>
     public override bool Equals(IGraph other, out Dictionary<INode, INode> mapping)
     {
         if (other is not LdfGraph otherLdf)
@@ -75,9 +76,9 @@ public class LdfGraph : Graph
 
     public override IEnumerable<INode> AllQuotedNodes => Enumerable.Empty<INode>();
 
-    public override bool ContainsQuotedTriple(Triple t) => false;
+    public override bool ContainsQuotedTriple(Triple t) => default;
 
-    public override IBlankNode GetBlankNode(string nodeId) => null;
+    public override IBlankNode GetBlankNode(string nodeId) => default;
 
     public override IEnumerable<Triple> GetQuoted(INode n) => Enumerable.Empty<Triple>();
 
@@ -85,13 +86,13 @@ public class LdfGraph : Graph
 
     public override IEnumerable<Triple> GetQuotedWithObject(Uri u) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => Enumerable.Empty<Triple>();
-
-    public override IEnumerable<Triple> GetQuotedWithSubject(Uri u) => Enumerable.Empty<Triple>();
-
     public override IEnumerable<Triple> GetQuotedWithObject(INode n) => Enumerable.Empty<Triple>();
 
+    public override IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => Enumerable.Empty<Triple>();
+
     public override IEnumerable<Triple> GetQuotedWithPredicate(INode n) => Enumerable.Empty<Triple>();
+
+    public override IEnumerable<Triple> GetQuotedWithSubject(Uri u) => Enumerable.Empty<Triple>();
 
     public override IEnumerable<Triple> GetQuotedWithSubject(INode n) => Enumerable.Empty<Triple>();
 
