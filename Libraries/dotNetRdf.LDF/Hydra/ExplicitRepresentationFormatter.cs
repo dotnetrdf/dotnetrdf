@@ -27,6 +27,7 @@
 using System;
 using System.Globalization;
 using System.Text;
+using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -34,22 +35,26 @@ namespace VDS.RDF.LDF.Hydra;
 
 internal class ExplicitRepresentationFormatter : INodeFormatter
 {
+    private readonly static Uri xsdString = UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
+    private readonly static Uri langString = UriFactory.Create(RdfSpecsHelper.RdfLangString);
+
     string INodeFormatter.Format(INode node) => node switch
     {
+        null => throw new ArgumentNullException(nameof(node)),
         IUriNode n => n.Uri.AbsoluteUri,
         ILiteralNode n => Format(n),
-        _ => throw new NotSupportedException("Only IRI and literal nodes are supported.")
+        _ => throw new LdfException("Only IRI and literal nodes are supported.")
     };
 
     // Explicit representation is the same regardless of position
-    string INodeFormatter.Format(INode n, TripleSegment? segment) => ((INodeFormatter)this).Format(n);
+    string INodeFormatter.Format(INode n, TripleSegment? _) => ((INodeFormatter)this).Format(n);
 
     private static string Format(ILiteralNode literalNode)
     {
         var builder = new StringBuilder();
         builder.AppendFormat(CultureInfo.InvariantCulture, "\"{0}\"", literalNode.Value);
 
-        if (literalNode.DataType is not null)
+        if (literalNode.DataType is not null && literalNode.DataType != xsdString && literalNode.DataType != langString)
         {
             builder.AppendFormat(CultureInfo.InvariantCulture, "^^{0}", literalNode.DataType.AbsoluteUri);
         }
