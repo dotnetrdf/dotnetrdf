@@ -27,9 +27,7 @@ using Xunit.Abstractions;
 
 namespace VDS.RDF.LDF;
 
-public class DBPediaGraphTests : GraphTests
+public class DBPediaGraphTests(ITestOutputHelper output) : GraphTests(output)
 {
-    public DBPediaGraphTests(ITestOutputHelper output) : base(output) { }
-
     protected override LdfGraph Graph => new(new("https://fragments.dbpedia.org/2016-04/en"));
 }

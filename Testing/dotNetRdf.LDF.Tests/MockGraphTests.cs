@@ -34,11 +34,9 @@ using Xunit.Abstractions;
 namespace VDS.RDF.LDF;
 
 [Collection("QpfServer")]
-public class MockGraphTests : GraphTests
+public class MockGraphTests(MockQpfServer qpfServer, ITestOutputHelper output) : GraphTests(output)
 {
-    private readonly MockQpfServer qpfServer;
-
-    public MockGraphTests(MockQpfServer qpfServer, ITestOutputHelper output) : base(output) => this.qpfServer = qpfServer;
+    private readonly MockQpfServer qpfServer = qpfServer;
 
     protected override LdfGraph Graph => new(new(qpfServer.BaseUri, "2016-04/en"));
 }
