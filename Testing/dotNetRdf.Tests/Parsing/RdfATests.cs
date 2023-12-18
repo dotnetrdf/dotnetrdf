@@ -93,7 +93,7 @@ namespace VDS.RDF.Parsing
         {
             var load = () => new Graph().LoadFromUri(server.UriFor("/dbpedia_ldf.html"));
 
-            load.Should().NotThrow("because the parser should set its base URI from the handler if its options don't have one.");
+            load.Should().NotThrow("because the parser should set its base URI from the handler if its options don't have one");
         }
     }
 }
