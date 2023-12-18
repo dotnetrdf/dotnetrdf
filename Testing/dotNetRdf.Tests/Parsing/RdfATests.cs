@@ -31,7 +31,8 @@ using Xunit;
 
 namespace VDS.RDF.Parsing
 {
-    public class RdfATests
+    [Collection("RdfServer")]
+    public class RdfATests(RdfServerFixture server)
     {
         [Fact]
         public void ParsingRdfABadSyntax()
@@ -85,6 +86,14 @@ namespace VDS.RDF.Parsing
             TestTools.ShowGraph(g);
 
             Assert.Equal(1, g.Triples.Count);
+        }
+
+        [Fact(DisplayName = "Populates base URI from handler if missing from options")]
+        public void BaseFromHandler()
+        {
+            var load = () => new Graph().LoadFromUri(server.UriFor("/dbpedia_ldf.html"));
+
+            load.Should().NotThrow("because the parser should set its base URI from the handler if its options don't have one.");
         }
     }
 }
