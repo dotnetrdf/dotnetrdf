@@ -204,8 +204,8 @@ namespace VDS.RDF.Parsing
                 THtmlDocument doc = LoadAndParse(input);
 
                 var context =
-                    new RdfAParserContext<THtmlDocument>(handler, doc, uriFactory) { BaseUri = _options.Base };
-                
+                    new RdfAParserContext<THtmlDocument>(handler, doc, uriFactory) { BaseUri = _options.Base ?? handler.BaseUri };
+
                 Parse(context);
             }
             finally
@@ -934,7 +934,7 @@ namespace VDS.RDF.Parsing
 
                                 listMapping[predicateNode].Add(currentObj);
                             }
-                        } 
+                        }
                         else if (!context.Handler.HandleTriple(new Triple(newSubj, predicateNode, currentObj)))
                         {
                             ParserHelper.Stop();
@@ -1297,7 +1297,7 @@ namespace VDS.RDF.Parsing
             if (dt != null)
             {
                 return context.Handler.CreateLiteralNode(literalValue, dt);
-            } 
+            }
             return string.IsNullOrEmpty(lang) ? context.Handler.CreateLiteralNode(literalValue) : context.Handler.CreateLiteralNode(literalValue, lang);
         }
 
@@ -1544,7 +1544,7 @@ namespace VDS.RDF.Parsing
         {
             return IsTerm(value) ? ResolveTermOrCurie(context, evalContext, value) : ResolveCurieOrAbsUri(context, evalContext, value);
         }
-        
+
         private static INode ResolveCurieOrAbsUri(RdfAParserContext<THtmlDocument> context, RdfAEvaluationContext evalContext, string value)
         {
             if (IsBlankNode(value))
@@ -1591,7 +1591,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    
+
                     INode n = skipTerms ? ResolveCurieOrAbsUri(context, evalContext, val) : ResolveTermOrCurieOrAbsUri(context, evalContext, val);
                     nodes.Add(n);
                 }
@@ -1772,7 +1772,7 @@ namespace VDS.RDF.Parsing
                     SetAttribute(n, "xmlns:"+ prefix, evalContext.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);
                 }
             }
-            
+
             // Recurse on any child nodes
             foreach (TElement child in GetChildren(n).OfType<TElement>().Where(c=>!IsTextNode(c)))
             {
@@ -1802,7 +1802,7 @@ namespace VDS.RDF.Parsing
             {
                 var prefix = value.Substring(0, value.IndexOf(':'));
                 var reference = value.Substring(value.IndexOf(':') + 1);
-                return (XmlSpecsHelper.IsNCName(prefix) || prefix.Equals("_")) && 
+                return (XmlSpecsHelper.IsNCName(prefix) || prefix.Equals("_")) &&
                        (evalContext.NamespaceMap.HasNamespace(prefix) || context.DefaultContext.NamespaceMap.HasNamespace(prefix))  && 
                        (context.Syntax != RdfASyntax.RDFa_1_0 || IriSpecsHelper.IsIrelativeRef(reference));
             }
