@@ -32,13 +32,21 @@ namespace VDS.RDF.LDF.Hydra;
 
 internal class IriTemplate(INode node, IGraph graph) : GraphWrapperNode(node, graph)
 {
-    internal string SubjectVariable => SelectMapping(Vocabulary.Rdf.Subject);
+    internal string SubjectVariable => 
+        SelectMapping(Vocabulary.Rdf.Subject) 
+        ?? throw new LdfException("IRI template contains no subject");
 
-    internal string PredicateVariable => SelectMapping(Vocabulary.Rdf.Predicate);
+    internal string PredicateVariable => 
+        SelectMapping(Vocabulary.Rdf.Predicate) 
+        ?? throw new LdfException("IRI template contains no predicate mapping");
 
-    internal string ObjectVariable => SelectMapping(Vocabulary.Rdf.Object);
+    internal string ObjectVariable => 
+        SelectMapping(Vocabulary.Rdf.Object) 
+        ?? throw new LdfException("IRI template contains no object mapping");
 
-    internal string Template => Vocabulary.Hydra.Template.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
+    internal string Template => 
+        Vocabulary.Hydra.Template.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString() 
+        ?? throw new LdfException("IRI template contains no template statement");
 
     private IEnumerable<IriTemplateMapping> Mappings =>
         from n in Vocabulary.Hydra.Mapping.ObjectsOf(this)
