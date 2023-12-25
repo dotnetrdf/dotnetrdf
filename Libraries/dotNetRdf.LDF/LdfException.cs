@@ -24,13 +24,6 @@
 // </copyright>
 */
 
-using System;
-
 namespace VDS.RDF.LDF;
 
-public class LdfException : RdfException
-{
-    public LdfException(string message) : base(message) { }
-
-    public LdfException(string message, Exception innerException) : base(message, innerException) { }
-}
+public class LdfException(string message) : RdfException(message) { }

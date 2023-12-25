@@ -27,12 +27,11 @@ using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.LDF.Hydra;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Hydra;
 
 public class ExplicitRepresentationFormatterTests
 {
