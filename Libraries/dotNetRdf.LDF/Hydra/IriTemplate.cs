@@ -25,17 +25,13 @@
 */
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.LDF.Hydra;
 
-internal class IriTemplate : GraphWrapperNode
+internal class IriTemplate(INode node, IGraph graph) : GraphWrapperNode(node, graph)
 {
-    [DebuggerStepThrough]
-    internal IriTemplate(INode node, IGraph graph) : base(node, graph) { }
-
     internal string SubjectVariable => SelectMapping(Vocabulary.Rdf.Subject);
 
     internal string PredicateVariable => SelectMapping(Vocabulary.Rdf.Predicate);
