@@ -31,7 +31,11 @@ namespace VDS.RDF.LDF.Hydra;
 
 internal class IriTemplateMapping(INode node, IGraph graph) : GraphWrapperNode(node, graph)
 {
-    internal string Variable => Vocabulary.Hydra.Variable.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString();
+    internal string Variable =>
+        Vocabulary.Hydra.Variable.ObjectsOf(this).SingleOrDefault()?.AsValuedNode().AsString()
+        ?? throw new LdfException("IRI template mapping contains no variable statement");
 
-    internal INode Property => Vocabulary.Hydra.Property.ObjectsOf(this).SingleOrDefault();
+    internal INode Property =>
+        Vocabulary.Hydra.Property.ObjectsOf(this).SingleOrDefault()
+        ?? throw new LdfException("IRI template mapping contains no property statement");
 }
