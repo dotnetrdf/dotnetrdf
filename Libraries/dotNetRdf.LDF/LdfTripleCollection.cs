@@ -28,23 +28,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.LDF.Hydra;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.LDF;
 
 internal class LdfTripleCollection : BaseTripleCollection
 {
     private readonly IriTemplate template;
+    private readonly IRdfReader reader;
+    private readonly Loader loader;
 
-    internal LdfTripleCollection(IriTemplate template) => this.template = template ?? throw new ArgumentNullException(nameof(template));
+    internal LdfTripleCollection(IriTemplate template, IRdfReader reader = null, Loader loader = null)
+    {
+        this.template = template ?? throw new ArgumentNullException(nameof(template));
+        this.reader = reader;
+        this.loader = loader;
+    }
 
     /// <remarks>Caution: When the LDF response has no triple count statement in the metadata section then every invocation of this property enumerates the collection which potentially involves numerous network requests.</remarks>
     public override int Count
     {
         get
         {
-            using var loader = new LdfLoader(new Parameters(template));
+            using var ldf = new LdfLoader(new Parameters(template), reader, loader);
 
-            return loader.Metadata.TripleCount switch
+            return ldf.Metadata.TripleCount switch
             {
                 null => this.Count(),
                 < 0 => default,
@@ -66,7 +74,7 @@ internal class LdfTripleCollection : BaseTripleCollection
 
     public override void Dispose() { }
 
-    public override IEnumerator<Triple> GetEnumerator() => new LdfEnumerator(new Parameters(template));
+    public override IEnumerator<Triple> GetEnumerator() => new LdfEnumerator(new Parameters(template), reader, loader);
 
     public override IEnumerable<Triple> WithObject(INode o) => LdfEnumerable(o: o);
 
@@ -82,7 +90,7 @@ internal class LdfTripleCollection : BaseTripleCollection
 
     public override IEnumerable<Triple> Asserted => this;
 
-    private IEnumerable<Triple> LdfEnumerable(INode s = null, INode p = null, INode o = null) => new LdfEnumerable(new Parameters(template, s, p, o));
+    private IEnumerable<Triple> LdfEnumerable(INode s = null, INode p = null, INode o = null) => new LdfEnumerable(new Parameters(template, s, p, o), reader, loader);
 
     #region Mutation methods throw because this triple collection is read-only
 

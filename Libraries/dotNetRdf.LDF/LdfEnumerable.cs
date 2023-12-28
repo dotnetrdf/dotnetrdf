@@ -27,16 +27,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.LDF;
 
 internal class LdfEnumerable : IEnumerable<Triple>
 {
     private readonly Uri firstPage;
+    private readonly IRdfReader reader;
+    private readonly Loader loader;
 
-    internal LdfEnumerable(Uri firstPage) => this.firstPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
+    internal LdfEnumerable(Uri firstPage, IRdfReader reader = null, Loader loader = null)
+    {
+        this.firstPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
+        this.reader = reader;
+        this.loader = loader;
+    }
 
-    IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new LdfEnumerator(firstPage);
+    IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new LdfEnumerator(firstPage, reader, loader);
 
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Triple>)this).GetEnumerator();
 }

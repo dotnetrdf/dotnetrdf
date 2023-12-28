@@ -27,16 +27,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.LDF;
 
 internal class LdfEnumerator : IEnumerator<Triple>
 {
+    private readonly IRdfReader reader;
+    private readonly Loader loader;
     private Uri nextPage;
     private Triple current;
     private IEnumerator<Triple> underlyingTriples;
 
-    internal LdfEnumerator(Uri firstPage) => nextPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
+    internal LdfEnumerator(Uri firstPage, IRdfReader reader = null, Loader loader = null)
+    {
+        nextPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
+        this.reader = reader;
+        this.loader = loader;
+    }
 
     Triple IEnumerator<Triple>.Current => current;
 
@@ -70,10 +78,10 @@ internal class LdfEnumerator : IEnumerator<Triple>
 
     private void InitializeCurrentPage()
     {
-        using var loader = new LdfLoader(nextPage);
+        using var ldfLoader = new LdfLoader(nextPage, reader, loader);
 
-        underlyingTriples = loader.Data.Triples.GetEnumerator();
-        nextPage = loader.Metadata.NextPageUri;
+        underlyingTriples = ldfLoader.Data.Triples.GetEnumerator();
+        nextPage = ldfLoader.Metadata.NextPageUri;
     }
 
     private bool AdvanceToNextPage()

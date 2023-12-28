@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.LDF.Hydra;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.LDF;
 
@@ -54,13 +55,15 @@ public class LdfGraph : Graph
     /// Initializes a new instance of the <see cref="LdfGraph"/> class.
     /// </summary>
     /// <param name="baseUri">The URI of the TPF endpoint used to obtain triples.</param>
+    /// <param name="reader">(Optional) The reader to be used for parsing LDF responses (Turtle by default).</param>
+    /// <param name="loader">(Optional) The loader to be used when sending LDF requests (<see cref="Loader"/> by default).</param>
     /// <exception cref="ArgumentNullException"><paramref name="baseUri"/> is <see langword="null"/>.</exception>
     /// <remarks>When this constructor is called then a network request will be sent to gather the LDF metadata.</remarks>
-    public LdfGraph(Uri baseUri)
+    public LdfGraph(Uri baseUri, IRdfReader reader = null, Loader loader = null)
     {
-        using var loader = new LdfLoader(baseUri ?? throw new ArgumentNullException(nameof(baseUri)));
-        search = loader.Metadata.Search;
-        _triples = new LdfTripleCollection(search);
+        using var ldf = new LdfLoader(baseUri ?? throw new ArgumentNullException(nameof(baseUri)), reader, loader);
+        search = ldf.Metadata.Search;
+        _triples = new LdfTripleCollection(search, reader, loader);
     }
 
     /// <summary>

@@ -31,10 +31,10 @@ namespace VDS.RDF.LDF;
 
 internal class LdfLoader : IDisposable
 {
-    internal LdfLoader(Uri uri)
+    internal LdfLoader(Uri uri, IRdfReader reader = null, Loader loader = null)
     {
         var original = new Graph();
-        original.LoadFromUri(uri, new TurtleParser()); // TODO: Parser
+        original.LoadFromUri(uri, reader ?? new TurtleParser(), loader);
         Data.Merge(original);
         Metadata = new LdfMetadataGraph(original);
 
