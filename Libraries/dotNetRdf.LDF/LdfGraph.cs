@@ -45,6 +45,7 @@ namespace VDS.RDF.LDF;
 /// </list>
 /// </para>
 /// </remarks>
+/// <exception cref="LdfException">Throw under various circumstances to represent operations that are illigal in the context of LDF or when this client is not compatible with the response from the LDF endpoint.</exception>
 public class LdfGraph : Graph
 {
     private readonly IriTemplate search;

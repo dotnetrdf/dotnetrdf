@@ -26,4 +26,8 @@
 
 namespace VDS.RDF.LDF;
 
+/// <summary>
+/// This excetion represents errors that occur while working with Linked Data Fragments.
+/// </summary>
+/// <param name="message">The error message.</param>
 public class LdfException(string message) : RdfException(message) { }
