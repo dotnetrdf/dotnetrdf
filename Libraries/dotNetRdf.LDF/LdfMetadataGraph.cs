@@ -39,7 +39,7 @@ namespace VDS.RDF.LDF
         internal LdfMetadataGraph(IGraph g) : base(g)
         {
             var sparqlResults = this.ExecuteQuery(Queries.Select) as SparqlResultSet;
-            if (sparqlResults.Count != 1) // TODO: Express invariants as SHACL?
+            if (sparqlResults.Count != 1)
             {
                 throw new LdfException("Could not interpret metadata in TPF response graph");
             }
