@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using FluentAssertions;
+using FluentAssertions.Execution;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -41,7 +42,7 @@ public class LdfGraphTests(MockServer server)
         constructor.Should().ThrowExactly<ArgumentNullException>("because the base URI was null");
     }
 
-    [Fact(DisplayName = "Supports underlying brute-force equality checking")]
+    [Fact(DisplayName = "Supports underlying brute-force equality checking (positive)")]
     public void UnderlyingEquality()
     {
         var other = new Graph();
@@ -50,16 +51,48 @@ public class LdfGraphTests(MockServer server)
             other.CreateUriNode(other.UriFactory.Create("urn:example:p1")),
             other.CreateUriNode(other.UriFactory.Create("urn:example:o1")));
 
-        GraphWithData.Equals(other).Should().BeTrue("because triples are the same");
+        using (new AssertionScope())
+        {
+            GraphWithData.Equals(other, out var mapping).Should().BeTrue("because triples are the same");
+            mapping.Should().BeNull("because LDF does not support blank nodes");
+        }
+    }
+
+    [Fact(DisplayName = "Supports underlying brute-force equality checking (negative)")]
+    public void UnderlyingEquality2()
+    {
+        var other = new Graph();
+        other.Assert(
+            other.CreateBlankNode(),
+            other.CreateUriNode(other.UriFactory.Create("urn:example:p1")),
+            other.CreateUriNode(other.UriFactory.Create("urn:example:o1")));
+
+        using (new AssertionScope())
+        {
+            GraphWithData.Equals(other, out var mapping).Should().BeFalse("because triples differ");
+            mapping.Should().BeNull("because LDF does not support blank nodes");
+        }
     }
 
     [Fact(DisplayName = "Two LDF graphs with the same search templates are equal")]
-    public void TemplateEquality() =>
-        GraphWithNoData.Equals(GraphWithNoData).Should().BeTrue("because search templates are equal");
+    public void TemplateEquality()
+    {
+        using (new AssertionScope())
+        {
+            GraphWithNoData.Equals(GraphWithNoData, out var mapping).Should().BeTrue("because search templates are equal");
+            mapping.Should().BeNull("because LDF does not support blank nodes");
+        }
+    }
 
     [Fact(DisplayName = "Two LDF graphs with different search templates are not equal")]
-    public void TemplateInequality() =>
-        GraphWithNoData.Equals(GraphWithData).Should().BeFalse("because search templates differ");
+    public void TemplateInequality()
+    {
+        using (new AssertionScope())
+        {
+            GraphWithNoData.Equals(GraphWithData, out var mapping).Should().BeFalse("because search templates differ");
+            mapping.Should().BeNull("because LDF does not support blank nodes");
+        }
+    }
 
     #region Mutation & RDF*
 
