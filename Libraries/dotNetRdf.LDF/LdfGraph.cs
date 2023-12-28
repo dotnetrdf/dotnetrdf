@@ -31,10 +31,30 @@ using VDS.RDF.LDF.Hydra;
 
 namespace VDS.RDF.LDF;
 
+/// <summary>
+/// A <see cref="IGraph">graph</see> that dispatches all operations to a Triple Pattern Fragments (TPF) endpoint.
+/// </summary>
+/// <remarks>
+/// <para>Caution: All operations on this graph lead to (potentially numerous) network requests. This presents complexity characteristics that are very different from those you might expect from in-memory implementations of the <see cref="IGraph">interface</see>.</para>
+/// <para>
+/// This graph, like LDF itself, does not support
+/// <list type="bullet">
+/// <item>blank nodes,</item>
+/// <item>quoted triples or</item>
+/// <item>mutation.</item>
+/// </list>
+/// </para>
+/// </remarks>
 public class LdfGraph : Graph
 {
     private readonly IriTemplate search;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LdfGraph"/> class.
+    /// </summary>
+    /// <param name="baseUri">The URI of the TPF endpoint used to obtain triples.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="baseUri"/> is <see langword="null"/>.</exception>
+    /// <remarks>When this constructor is called then a network request will be sent to gather the LDF metadata.</remarks>
     public LdfGraph(Uri baseUri)
     {
         using var loader = new LdfLoader(baseUri ?? throw new ArgumentNullException(nameof(baseUri)));
@@ -42,7 +62,17 @@ public class LdfGraph : Graph
         _triples = new LdfTripleCollection(search);
     }
 
-    /// <remarks>Caution: Comparing LDF graphs to other types of graphs requires enumerating all statements in the LDF graph, which potentially involves numerous network requests.</remarks>
+    /// <summary>
+    /// Determines whether this graph is equal to the <paramref name="other"/> graph.
+    /// </summary>
+    /// <param name="other">Graph to test for equality.</param>
+    /// <param name="mapping">Always <see langword="null"/> because Linked Data Fragments does not support blank nodes.</param>
+    /// <returns>Whether this graph is equal to the <paramref name="other"/> graph.</returns>
+    /// <remarks>
+    /// <para>LDF graphs are equal to each other if their search templates are the same.</para>
+    /// <para>An LDF graph might be equal to other graph types if they contain the same triples.</para>
+    /// <para>Caution: Comparing LDF graphs to other types of graphs requires enumerating all statements in the LDF graph, which potentially involves numerous network requests.</para>
+    /// </remarks>
     public override bool Equals(IGraph other, out Dictionary<INode, INode> mapping)
     {
         if (other is not LdfGraph otherLdf)
@@ -56,54 +86,170 @@ public class LdfGraph : Graph
 
     #region Mutation methods throw because this graph is read-only
 
-    public override bool Assert(Triple t) => throw new NotSupportedException("This graph is read-only.");
+    /// <summary>
+    /// This graph cannot assert a triple because Linked Data Fragments does not support mutation.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Nothing.</returns>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public override bool Assert(Triple _) => throw new NotSupportedException("This graph is read-only.");
 
-    public override bool Assert(IEnumerable<Triple> ts) => throw new NotSupportedException("This graph is read-only.");
+    /// <summary>
+    /// This graph cannot assert triples because Linked Data Fragments does not support mutation.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Nothing.</returns>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public override bool Assert(IEnumerable<Triple> _) => throw new NotSupportedException("This graph is read-only.");
 
+    /// <summary>
+    /// This graph cannot be cleared because Linked Data Fragments does not support mutation.
+    /// </summary>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override void Clear() => throw new NotSupportedException("This graph is read-only.");
 
-    public override void Merge(IGraph g) => throw new NotSupportedException("This graph is read-only.");
+    /// <summary>
+    /// This graph cannot merge another because Linked Data Fragments does not support mutation.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public override void Merge(IGraph _) => throw new NotSupportedException("This graph is read-only.");
 
-    public override void Merge(IGraph g, bool keepOriginalGraphUri) => throw new NotSupportedException("This graph is read-only.");
+    /// <summary>
+    /// This graph cannot merge another because Linked Data Fragments does not support mutation.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <param name="__">Ignored.</param>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public override void Merge(IGraph _, bool __) => throw new NotSupportedException("This graph is read-only.");
 
-    public override bool Retract(Triple t) => throw new NotSupportedException("This graph is read-only.");
+    /// <summary>
+    /// This graph cannot retract a triple because Linked Data Fragments does not support mutation.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Nothing.</returns>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public override bool Retract(Triple _) => throw new NotSupportedException("This graph is read-only.");
 
-    public override bool Retract(IEnumerable<Triple> ts) => throw new NotSupportedException("This graph is read-only.");
+    /// <summary>
+    /// This graph cannot retract triples because Linked Data Fragments does not support mutation.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Nothing.</returns>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public override bool Retract(IEnumerable<Triple> _) => throw new NotSupportedException("This graph is read-only.");
 
     #endregion
 
     #region Some methods and properties short-circuit to empty due to unsupported features in LDF
 
+    /// <summary>
+    /// This graph returns no quoted nodes because Linked Data Fragments does not support RDF*.
+    /// </summary>
     public override IEnumerable<INode> AllQuotedNodes => Enumerable.Empty<INode>();
 
-    public override bool ContainsQuotedTriple(Triple t) => default;
+    /// <summary>
+    /// This graph does not contain any quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>False.</returns>
+    public override bool ContainsQuotedTriple(Triple _) => default;
 
-    public override IBlankNode GetBlankNode(string nodeId) => default;
+    /// <summary>
+    /// This graph returns no blank nodes because Linked Data Fragments does not support blank nodes.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Null.</returns>
+    public override IBlankNode GetBlankNode(string _) => default;
 
-    public override IEnumerable<Triple> GetQuoted(INode n) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuoted(INode _) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuoted(Uri uri) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuoted(Uri _) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithObject(Uri u) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithObject(Uri _) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithObject(INode n) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithObject(INode _) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithPredicate(Uri u) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithPredicate(Uri _) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithPredicate(INode n) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithPredicate(INode _) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithSubject(Uri u) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithSubject(Uri _) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithSubject(INode n) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithSubject(INode _) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <param name="__">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode _, INode __) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <param name="__">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithSubjectObject(INode _, INode __) => Enumerable.Empty<Triple>();
 
-    public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj) => Enumerable.Empty<Triple>();
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
+    /// <param name="_">Ignored.</param>
+    /// <param name="__">Ignored.</param>
+    /// <returns>Empty.</returns>
+    public override IEnumerable<Triple> GetQuotedWithPredicateObject(INode _, INode __) => Enumerable.Empty<Triple>();
 
+    /// <summary>
+    /// This graph returns no quoted nodes because Linked Data Fragments does not support RDF*.
+    /// </summary>
     public override IEnumerable<INode> QuotedNodes => Enumerable.Empty<INode>();
 
+    /// <summary>
+    /// This graph returns no quoted triples because Linked Data Fragments does not support RDF*.
+    /// </summary>
     public override IEnumerable<Triple> QuotedTriples => Enumerable.Empty<Triple>();
 
     #endregion
