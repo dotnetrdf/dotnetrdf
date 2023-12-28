@@ -67,7 +67,6 @@ internal class Parameters
 
     private void Calculate(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
     {
-        var uriTemplate = new UriTemplate(template.Template);
         var variables = new Dictionary<string, object>();
         var formatter = (INodeFormatter)new ExplicitRepresentationFormatter();
 
@@ -86,7 +85,7 @@ internal class Parameters
             variables.Add(template.ObjectVariable, formatter.Format(@object));
         }
 
-        uri = uriTemplate.ResolveUri(variables);
+        uri = new UriTemplate(template.Template).ResolveUri(variables);
     }
 
     public static implicit operator Uri(Parameters parameters) => parameters.uri;

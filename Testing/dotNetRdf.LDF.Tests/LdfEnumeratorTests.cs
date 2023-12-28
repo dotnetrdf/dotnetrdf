@@ -23,15 +23,15 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using Xunit;
 using FluentAssertions;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
-using System.IO;
+using Xunit;
 
 namespace VDS.RDF.LDF;
 
