@@ -29,16 +29,16 @@ using System.Collections;
 using System.Collections.Generic;
 using Xunit;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
-public class LdfEnumerableTests
+public class TpfEnumerableTests
 {
     private readonly Uri someUri = new("urn:a:b");
 
     [Fact(DisplayName = "Requires first page")]
     public void RequiresUri()
     {
-        var constructor = () => new LdfEnumerable(null);
+        var constructor = () => new TpfEnumerable(null);
 
         constructor.Should().ThrowExactly<ArgumentNullException>("because the first page was null");
     }
@@ -46,16 +46,16 @@ public class LdfEnumerableTests
     [Fact(DisplayName = "Generic returns our enumerator")]
     public void GenericEnumerator()
     {
-        var e = new LdfEnumerable(someUri) as IEnumerable<Triple>;
+        var e = new TpfEnumerable(someUri) as IEnumerable<Triple>;
 
-        e.GetEnumerator().Should().BeOfType<LdfEnumerator>("because it is an LDF enumerable");
+        e.GetEnumerator().Should().BeOfType<TpfEnumerator>("because it is an LDF enumerable");
     }
 
     [Fact(DisplayName = "Non Generic returns our enumerator")]
     public void NonGenericEnumerator()
     {
-        var e = new LdfEnumerable(someUri) as IEnumerable;
+        var e = new TpfEnumerable(someUri) as IEnumerable;
 
-        e.GetEnumerator().Should().BeOfType<LdfEnumerator>("because it is an LDF enumerable");
+        e.GetEnumerator().Should().BeOfType<TpfEnumerator>("because it is an LDF enumerable");
     }
 }

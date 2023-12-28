@@ -29,15 +29,15 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
 [Collection("MockServer")]
-public class LdfGraphTests(MockServer server)
+public class TpfLiveGraphTests(MockServer server)
 {
     [Fact(DisplayName = "Requires base URI")]
     public void RequiresBaseUri()
     {
-        var constructor = () => new LdfGraph(null);
+        var constructor = () => new TpfLiveGraph(null);
 
         constructor.Should().ThrowExactly<ArgumentNullException>("because the base URI was null");
     }
@@ -218,13 +218,13 @@ public class LdfGraphTests(MockServer server)
 
     #endregion
 
-    private LdfGraph GraphWithNoData => GrpahFromMockData(MockServer.minimalControls);
+    private TpfLiveGraph GraphWithNoData => GrpahFromMockData(MockServer.minimalControls);
 
-    private LdfGraph GraphWithData => GrpahFromMockData(MockServer.singleData);
+    private TpfLiveGraph GraphWithData => GrpahFromMockData(MockServer.singleData);
 
-    private LdfGraph GrpahFromMockData(string name)
+    private TpfLiveGraph GrpahFromMockData(string name)
     {
-        return new LdfGraph(new(server.BaseUri, name));
+        return new TpfLiveGraph(new(server.BaseUri, name));
     }
 
 }

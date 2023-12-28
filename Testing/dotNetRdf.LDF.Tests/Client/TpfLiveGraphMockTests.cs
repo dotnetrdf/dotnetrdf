@@ -31,14 +31,14 @@ using WireMock.Server;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
 [Collection("QpfServer")]
-public class MockGraphTests(MockQpfServer qpfServer, ITestOutputHelper output) : GraphTests(output)
+public class TpfLiveGraphMockTests(MockQpfServer qpfServer, ITestOutputHelper output) : TpfLiveGraphBaseTests(output)
 {
     private readonly MockQpfServer qpfServer = qpfServer;
 
-    protected override LdfGraph Graph => new(new(qpfServer.BaseUri, "2016-04/en"));
+    protected override TpfLiveGraph Graph => new(new(qpfServer.BaseUri, "2016-04/en"));
 }
 
 [CollectionDefinition("QpfServer")]

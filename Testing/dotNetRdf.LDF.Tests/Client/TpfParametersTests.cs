@@ -32,9 +32,9 @@ using VDS.RDF.LDF.Hydra;
 using VDS.RDF.Writing.Formatting;
 using Xunit;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
-public class ParametersTests
+public class TpfParametersTests
 {
     private const string templateString = "urn:example:qpfBase{?subject,predicate,object}";
     private const INode nil = null;
@@ -51,7 +51,7 @@ public class ParametersTests
     [Fact(DisplayName = "Requires template")]
     public void RequiresUri()
     {
-        var constructor = () => new Parameters(null);
+        var constructor = () => new TpfParameters(null);
 
         constructor.Should().ThrowExactly<ArgumentNullException>("because the template was null");
     }
@@ -60,7 +60,7 @@ public class ParametersTests
     [MemberData(nameof(IllegalPatterns))]
     public void RejectsIllegal(INode s, INode p, INode o, string param, string type)
     {
-        var constructor = () => new Parameters(template, s, p, o);
+        var constructor = () => new TpfParameters(template, s, p, o);
 
         constructor.Should().ThrowExactly<ArgumentOutOfRangeException>("because the {0} was a {1}", param, type);
     }
@@ -69,7 +69,7 @@ public class ParametersTests
     [MemberData(nameof(LegalPatterns))]
     public void ResolvesLegal(INode s, INode p, INode o)
     {
-        var uri = (Uri)new Parameters(template, s, p, o);
+        var uri = (Uri)new TpfParameters(template, s, p, o);
 
         uri.Should().Be(ResolveTemplate(s, p, o));
     }

@@ -29,66 +29,22 @@ using System.Collections;
 using System.Collections.Generic;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
-internal class LdfEnumerator : IEnumerator<Triple>
+internal class TpfEnumerable : IEnumerable<Triple>
 {
+    private readonly Uri firstPage;
     private readonly IRdfReader reader;
     private readonly Loader loader;
-    private Uri nextPage;
-    private Triple current;
-    private IEnumerator<Triple> underlyingTriples;
 
-    internal LdfEnumerator(Uri firstPage, IRdfReader reader = null, Loader loader = null)
+    internal TpfEnumerable(Uri firstPage, IRdfReader reader = null, Loader loader = null)
     {
-        nextPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
+        this.firstPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
         this.reader = reader;
         this.loader = loader;
     }
 
-    Triple IEnumerator<Triple>.Current => current;
+    IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new TpfEnumerator(firstPage, reader, loader);
 
-    object IEnumerator.Current => (this as IEnumerator<Triple>).Current;
-
-    bool IEnumerator.MoveNext()
-    {
-        if (underlyingTriples is null)
-        {
-            InitializeCurrentPage();
-        }
-
-        if (underlyingTriples.MoveNext())
-        {
-            current = underlyingTriples.Current;
-            return true;
-        }
-
-        if (nextPage is null)
-        {
-            current = null;
-            return false;
-        }
-
-        return AdvanceToNextPage();
-    }
-
-    void IDisposable.Dispose() => underlyingTriples?.Dispose();
-
-    void IEnumerator.Reset() => throw new NotSupportedException("This enumerator cannot be reset.");
-
-    private void InitializeCurrentPage()
-    {
-        using var ldfLoader = new LdfLoader(nextPage, reader, loader);
-
-        underlyingTriples = ldfLoader.Data.Triples.GetEnumerator();
-        nextPage = ldfLoader.Metadata.NextPageUri;
-    }
-
-    private bool AdvanceToNextPage()
-    {
-        underlyingTriples.Dispose();
-        underlyingTriples = null;
-
-        return (this as IEnumerator).MoveNext();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Triple>)this).GetEnumerator();
 }

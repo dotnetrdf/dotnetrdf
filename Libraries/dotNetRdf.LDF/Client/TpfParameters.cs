@@ -30,13 +30,13 @@ using System.Collections.Generic;
 using VDS.RDF.LDF.Hydra;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
-internal class Parameters
+internal class TpfParameters
 {
     private Uri uri;
 
-    internal Parameters(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
+    internal TpfParameters(IriTemplate template, INode subject = null, INode predicate = null, INode @object = null)
     {
         Validate(template, subject, predicate, @object);
         Calculate(template, subject, predicate, @object);
@@ -88,5 +88,5 @@ internal class Parameters
         uri = new UriTemplate(template.Template).ResolveUri(variables);
     }
 
-    public static implicit operator Uri(Parameters parameters) => parameters.uri;
+    public static implicit operator Uri(TpfParameters parameters) => parameters.uri;
 }

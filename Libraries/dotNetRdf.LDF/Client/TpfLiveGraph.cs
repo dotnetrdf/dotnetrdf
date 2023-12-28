@@ -30,7 +30,7 @@ using System.Linq;
 using VDS.RDF.LDF.Hydra;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
 /// <summary>
 /// A <see cref="IGraph">graph</see> that dispatches all operations to a Triple Pattern Fragments (TPF) endpoint.
@@ -47,23 +47,23 @@ namespace VDS.RDF.LDF;
 /// </para>
 /// </remarks>
 /// <exception cref="LdfException">Throw under various circumstances to represent operations that are illigal in the context of LDF or when this client is not compatible with the response from the LDF endpoint.</exception>
-public class LdfGraph : Graph
+public class TpfLiveGraph : Graph
 {
     private readonly IriTemplate search;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LdfGraph"/> class.
+    /// Initializes a new instance of the <see cref="TpfLiveGraph"/> class.
     /// </summary>
     /// <param name="baseUri">The URI of the TPF endpoint used to obtain triples.</param>
     /// <param name="reader">(Optional) The reader to be used for parsing LDF responses (Turtle by default).</param>
     /// <param name="loader">(Optional) The loader to be used when sending LDF requests (<see cref="Loader"/> by default).</param>
     /// <exception cref="ArgumentNullException"><paramref name="baseUri"/> is <see langword="null"/>.</exception>
     /// <remarks>When this constructor is called then a network request will be sent to gather the LDF metadata.</remarks>
-    public LdfGraph(Uri baseUri, IRdfReader reader = null, Loader loader = null)
+    public TpfLiveGraph(Uri baseUri, IRdfReader reader = null, Loader loader = null)
     {
-        using var ldf = new LdfLoader(baseUri ?? throw new ArgumentNullException(nameof(baseUri)), reader, loader);
-        search = ldf.Metadata.Search;
-        _triples = new LdfTripleCollection(search, reader, loader);
+        using var fragment = new TpfLoader(baseUri ?? throw new ArgumentNullException(nameof(baseUri)), reader, loader);
+        search = fragment.Metadata.Search;
+        _triples = new TpfTripleCollection(search, reader, loader);
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public class LdfGraph : Graph
     /// </remarks>
     public override bool Equals(IGraph other, out Dictionary<INode, INode> mapping)
     {
-        if (other is not LdfGraph otherLdf)
+        if (other is not TpfLiveGraph otherLdf)
         {
             return base.Equals(other, out mapping);
         }

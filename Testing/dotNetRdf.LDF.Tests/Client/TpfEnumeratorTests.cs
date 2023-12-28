@@ -33,17 +33,17 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
 [Collection("MockServer")]
-public class LdfEnumeratorTests(MockServer server)
+public class TpfEnumeratorTests(MockServer server)
 {
     private readonly Uri someUri = new("urn:a:b");
 
     [Fact(DisplayName = "Requires first page")]
     public void RequiresUri()
     {
-        var constructor = () => new LdfEnumerator(null);
+        var constructor = () => new TpfEnumerator(null);
 
         constructor.Should().ThrowExactly<ArgumentNullException>("because the first page was null");
     }
@@ -51,7 +51,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "IEnumerator invariant: Current element is undefined (null) before the first element")]
     public void NoCurrentBeforeFirst()
     {
-        var e = new LdfEnumerator(someUri) as IEnumerator;
+        var e = new TpfEnumerator(someUri) as IEnumerator;
 
         e.Current.Should().BeNull("because it was called before the first element");
     }
@@ -59,7 +59,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "IEnumerator<T> invariant: Current element is undefined (null) before the first element")]
     public void GenericNoCurrentBeforeFirst()
     {
-        var e = new LdfEnumerator(someUri) as IEnumerator<Triple>;
+        var e = new TpfEnumerator(someUri) as IEnumerator<Triple>;
 
         e.Current.Should().BeNull("because it was called before the first element");
     }
@@ -67,7 +67,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "IEnumerator invariant: Cannot move beyond last element")]
     public void CannotMoveBeyondLast()
     {
-        var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator;
+        var e = new TpfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator;
         e.MoveNext();
 
         e.MoveNext().Should().BeFalse("because it was called after the last element");
@@ -76,7 +76,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "IEnumerator invariant: Current element is the same object until MoveNext is called")]
     public void SameCurrent()
     {
-        var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator;
+        var e = new TpfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator;
         e.MoveNext();
 
         e.Current.Should().BeSameAs(e.Current, "because it was not moved");
@@ -85,7 +85,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "IEnumerator<T> invariant: Current element is the same object until MoveNext is called")]
     public void GenericSameCurrent()
     {
-        var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator<Triple>;
+        var e = new TpfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator<Triple>;
         e.MoveNext();
 
         e.Current.Should().BeSameAs(e.Current, "because it was not moved");
@@ -94,7 +94,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "IEnumerator invariant: Current element is undefined (null) beyond the last element")]
     public void NoCurrentBeyondLast()
     {
-        var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator;
+        var e = new TpfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator;
         e.MoveNext();
         e.MoveNext();
 
@@ -104,7 +104,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "IEnumerator<T> invariant: Current element is undefined (null) beyond the last element")]
     public void GenericNoCurrentBeyondLast()
     {
-        var e = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator<Triple>;
+        var e = new TpfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator<Triple>;
         e.MoveNext();
         e.MoveNext();
 
@@ -114,7 +114,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "Same current element between generic and non-generic")]
     public void IdenticalCurrent()
     {
-        var generic = new LdfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator<Triple>;
+        var generic = new TpfEnumerator(new(server.BaseUri, MockServer.singleData)) as IEnumerator<Triple>;
         var nonGeneric = generic as IEnumerator;
         generic.MoveNext();
 
@@ -124,7 +124,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "Shows no elements when response has only controls")]
     public void ControlsOnly()
     {
-        var e = new LdfEnumerator(new(server.BaseUri, MockServer.minimalControls)) as IEnumerator;
+        var e = new TpfEnumerator(new(server.BaseUri, MockServer.minimalControls)) as IEnumerator;
 
         e.MoveNext().Should().BeFalse("because it contains controls only");
     }
@@ -132,7 +132,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "Traverses next page")]
     public void TraversesNextPage()
     {
-        var e = new LdfEnumerator(new(server.BaseUri, MockServer.hasNextPage)) as IEnumerator;
+        var e = new TpfEnumerator(new(server.BaseUri, MockServer.hasNextPage)) as IEnumerator;
         e.MoveNext();
 
         e.MoveNext().Should().BeTrue("because it traverses next page");
@@ -141,7 +141,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "Disposes underlying triples")]
     public void DisposesUnderlying()
     {
-        var subject = new LdfEnumerator(someUri) as IDisposable;
+        var subject = new TpfEnumerator(someUri) as IDisposable;
 
         subject.Invoking(e => e.Dispose()).Should().NotThrow("because it is disposable");
     }
@@ -149,7 +149,7 @@ public class LdfEnumeratorTests(MockServer server)
     [Fact(DisplayName = "Cannot be reset")]
     public void CannotBeReset()
     {
-        var subject = new LdfEnumerator(someUri) as IEnumerator;
+        var subject = new TpfEnumerator(someUri) as IEnumerator;
 
         subject.Invoking(e => e.Reset()).Should().ThrowExactly<NotSupportedException>("because it is not supported");
     }

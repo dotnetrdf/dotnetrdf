@@ -30,15 +30,15 @@ using System.Linq;
 using VDS.RDF.LDF.Hydra;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
-internal class LdfTripleCollection : BaseTripleCollection
+internal class TpfTripleCollection : BaseTripleCollection
 {
     private readonly IriTemplate template;
     private readonly IRdfReader reader;
     private readonly Loader loader;
 
-    internal LdfTripleCollection(IriTemplate template, IRdfReader reader = null, Loader loader = null)
+    internal TpfTripleCollection(IriTemplate template, IRdfReader reader = null, Loader loader = null)
     {
         this.template = template ?? throw new ArgumentNullException(nameof(template));
         this.reader = reader;
@@ -50,9 +50,9 @@ internal class LdfTripleCollection : BaseTripleCollection
     {
         get
         {
-            using var ldf = new LdfLoader(new Parameters(template), reader, loader);
+            using var fragment = new TpfLoader(new TpfParameters(template), reader, loader);
 
-            return ldf.Metadata.TripleCount switch
+            return fragment.Metadata.TripleCount switch
             {
                 null => this.Count(),
                 < 0 => default,
@@ -74,7 +74,7 @@ internal class LdfTripleCollection : BaseTripleCollection
 
     public override void Dispose() { }
 
-    public override IEnumerator<Triple> GetEnumerator() => new LdfEnumerator(new Parameters(template), reader, loader);
+    public override IEnumerator<Triple> GetEnumerator() => new TpfEnumerator(new TpfParameters(template), reader, loader);
 
     public override IEnumerable<Triple> WithObject(INode o) => LdfEnumerable(o: o);
 
@@ -90,7 +90,7 @@ internal class LdfTripleCollection : BaseTripleCollection
 
     public override IEnumerable<Triple> Asserted => this;
 
-    private IEnumerable<Triple> LdfEnumerable(INode s = null, INode p = null, INode o = null) => new LdfEnumerable(new Parameters(template, s, p, o), reader, loader);
+    private IEnumerable<Triple> LdfEnumerable(INode s = null, INode p = null, INode o = null) => new TpfEnumerable(new TpfParameters(template, s, p, o), reader, loader);
 
     #region Mutation methods throw because this triple collection is read-only
 

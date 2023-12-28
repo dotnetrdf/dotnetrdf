@@ -29,10 +29,10 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
 [Collection("MockServer")]
-public class LdfTripleCollectionTests(MockServer server)
+public class TpfTripleCollectionTests(MockServer server)
 {
     private readonly static NodeFactory factory = new();
     private readonly static INode s1 = factory.CreateUriNode(UriFactory.Create("urn:example:s1"));
@@ -47,7 +47,7 @@ public class LdfTripleCollectionTests(MockServer server)
     [Fact(DisplayName = "Requires template")]
     public void RequiresTemplate()
     {
-        var constructor = () => new LdfTripleCollection(null);
+        var constructor = () => new TpfTripleCollection(null);
 
         constructor.Should().ThrowExactly<ArgumentNullException>("because the template was null");
     }
@@ -246,16 +246,16 @@ public class LdfTripleCollectionTests(MockServer server)
 
     #endregion
 
-    private LdfTripleCollection CollectionWithNoData => CollectionFromMockData(MockServer.minimalControls);
+    private TpfTripleCollection CollectionWithNoData => CollectionFromMockData(MockServer.minimalControls);
 
-    private LdfTripleCollection CollectionWithData => CollectionFromMockData(MockServer.multipleData);
+    private TpfTripleCollection CollectionWithData => CollectionFromMockData(MockServer.multipleData);
 
-    private LdfTripleCollection CollectionFromMockData(string name) => CollectionFromMockData(name, out var _);
+    private TpfTripleCollection CollectionFromMockData(string name) => CollectionFromMockData(name, out var _);
 
-    private LdfTripleCollection CollectionFromMockData(string name, out LdfLoader loader)
+    private TpfTripleCollection CollectionFromMockData(string name, out TpfLoader loader)
     {
-        loader = new LdfLoader(new(server.BaseUri, name));
+        loader = new TpfLoader(new(server.BaseUri, name));
         var template = loader.Metadata.Search;
-        return new LdfTripleCollection(template);
+        return new TpfTripleCollection(template);
     }
 }

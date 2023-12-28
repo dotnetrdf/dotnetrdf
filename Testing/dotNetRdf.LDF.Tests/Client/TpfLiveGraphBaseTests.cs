@@ -29,13 +29,13 @@ using VDS.RDF.Writing.Formatting;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
-public abstract class GraphTests(ITestOutputHelper output)
+public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
 {
     private static readonly NodeFactory factory = new();
 
-    protected abstract LdfGraph Graph { get; }
+    protected abstract TpfLiveGraph Graph { get; }
 
     [Fact]
     public void ContainsTriple()

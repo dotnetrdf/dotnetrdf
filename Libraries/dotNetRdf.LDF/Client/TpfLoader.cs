@@ -25,26 +25,31 @@
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
-internal class LdfEnumerable : IEnumerable<Triple>
+internal class TpfLoader : IDisposable
 {
-    private readonly Uri firstPage;
-    private readonly IRdfReader reader;
-    private readonly Loader loader;
-
-    internal LdfEnumerable(Uri firstPage, IRdfReader reader = null, Loader loader = null)
+    internal TpfLoader(Uri uri, IRdfReader reader = null, Loader loader = null)
     {
-        this.firstPage = firstPage ?? throw new ArgumentNullException(nameof(firstPage));
-        this.reader = reader;
-        this.loader = loader;
+        var original = new Graph();
+        original.LoadFromUri(uri, reader ?? new TurtleParser(), loader);
+        Data.Merge(original);
+        Metadata = new TpfMetadataGraph(original);
+
+        using var ts = new TripleStore();
+        ts.Add(Data);
+        ts.ExecuteUpdate(Queries.Delete);
     }
 
-    IEnumerator<Triple> IEnumerable<Triple>.GetEnumerator() => new LdfEnumerator(firstPage, reader, loader);
+    internal Graph Data { get; } = new Graph();
 
-    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Triple>)this).GetEnumerator();
+    internal TpfMetadataGraph Metadata { get; private set; }
+
+    public void Dispose()
+    {
+        Data.Dispose();
+        Metadata.Dispose();
+    }
 }

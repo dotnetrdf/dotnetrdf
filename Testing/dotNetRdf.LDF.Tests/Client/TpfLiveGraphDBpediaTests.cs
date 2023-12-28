@@ -25,9 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit.Abstractions;
 
-namespace VDS.RDF.LDF;
+namespace VDS.RDF.LDF.Client;
 
-public class DBPediaGraphTests(ITestOutputHelper output) : GraphTests(output)
+public class TpfLiveGraphDBpediaTests(ITestOutputHelper output) : TpfLiveGraphBaseTests(output)
 {
-    protected override LdfGraph Graph => new(new("https://fragments.dbpedia.org/2016-04/en"));
+    protected override TpfLiveGraph Graph => new(new("https://fragments.dbpedia.org/2016-04/en"));
 }
