@@ -27,7 +27,7 @@ using Xunit.Abstractions;
 
 namespace VDS.RDF.LDF.Client;
 
-public class TpfLiveGraphDBpediaTests(ITestOutputHelper output) : TpfLiveGraphBaseTests(output)
+public class E2EDBpediaTests(ITestOutputHelper output) : E2EBaseTests(output)
 {
     protected override TpfLiveGraph Graph => new(new("https://fragments.dbpedia.org/2016-04/en"));
 }

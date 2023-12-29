@@ -34,7 +34,7 @@ using Xunit.Abstractions;
 namespace VDS.RDF.LDF.Client;
 
 [Collection("QpfServer")]
-public class TpfLiveGraphMockTests(MockQpfServer qpfServer, ITestOutputHelper output) : TpfLiveGraphBaseTests(output)
+public class E2EMockTests(MockQpfServer qpfServer, ITestOutputHelper output) : E2EBaseTests(output)
 {
     private readonly MockQpfServer qpfServer = qpfServer;
 

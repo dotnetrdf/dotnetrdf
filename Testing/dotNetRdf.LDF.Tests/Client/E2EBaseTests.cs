@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System.Diagnostics.CodeAnalysis;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -31,13 +32,16 @@ using Xunit.Abstractions;
 
 namespace VDS.RDF.LDF.Client;
 
-public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
+[SuppressMessage("Usage", "xUnit1004:Test methods should not be skipped", Justification = BecauseThisIsExampleCode)]
+public abstract class E2EBaseTests(ITestOutputHelper output)
 {
+    private const string BecauseThisIsExampleCode = "Skipping example code";
+
     private static readonly NodeFactory factory = new();
 
     protected abstract TpfLiveGraph Graph { get; }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void ContainsTriple()
     {
         using var g = this.Graph;
@@ -49,7 +53,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         output.WriteLine("{0}", g.ContainsTriple(t));
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void EqualsTest()
     {
         using var g1 = this.Graph;
@@ -59,7 +63,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         output.WriteLine("{0}", equals);
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void GetTriplesWithObject()
     {
         using var g = this.Graph;
@@ -72,7 +76,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void GetTriplesWithPredicate()
     {
         using var g = this.Graph;
@@ -85,7 +89,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void GetTriplesWithPredicateObject()
     {
         using var g = this.Graph;
@@ -99,7 +103,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void GetTriplesWithSubject()
     {
         using var g = this.Graph;
@@ -112,7 +116,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void GetTriplesWithSubjectObject()
     {
         using var g = this.Graph;
@@ -126,7 +130,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void GetTriplesWithSubjectPredicate()
     {
         using var g = this.Graph;
@@ -140,7 +144,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void ObjectNodes()
     {
         using var g = this.Graph;
@@ -153,7 +157,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void PredicateNodes()
     {
         using var g = this.Graph;
@@ -166,7 +170,7 @@ public abstract class TpfLiveGraphBaseTests(ITestOutputHelper output)
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void Sparql()
     {
         using var g = this.Graph;
@@ -184,7 +188,7 @@ WHERE {
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void SubjectNodes()
     {
         using var g = this.Graph;
@@ -197,7 +201,7 @@ WHERE {
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void Triples()
     {
         using var g = this.Graph;
@@ -210,7 +214,7 @@ WHERE {
         }
     }
 
-    [Fact]
+    [Fact(Skip = BecauseThisIsExampleCode)]
     public void TriplesCount()
     {
         using var g = this.Graph;
