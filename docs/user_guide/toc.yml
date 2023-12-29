@@ -105,6 +105,8 @@
 - name: JSON-LD API
   href: jsonld/toc.yml
   topicHref: jsonld/api.md
+- name: Linked Data Fragments API
+  href: linked_data_fragments_api.md
 - name: How-To Guides
   href: howto/toc.yml
   topicHref: howto/index.md
