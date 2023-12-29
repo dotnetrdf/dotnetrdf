@@ -8,8 +8,8 @@ public class JoinEnumeratorTests : EnumeratorTestBase
     [Fact]
     public async void TestIntegerSequence()
     {
-        var seq = new IntegerSequence(_nodeFactory, "x", 0, 6, 3);
-        Assert.Throws<InvalidOperationException>(() => seq.Current);
+        var enumeration = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 6, 3);
+        IAsyncEnumerator<ISet> seq = enumeration.Evaluate(null, null).GetAsyncEnumerator();
         Assert.True(await seq.MoveNextAsync());
         Assert.Equal("0", (seq.Current["x"] as ILiteralNode)?.Value);
         Assert.True(await seq.MoveNextAsync());
@@ -20,15 +20,42 @@ public class JoinEnumeratorTests : EnumeratorTestBase
     }
 
     [Fact]
-    public async void SimpleJoin()
+    public async void SimpleJoinLhsCompletesFirst()
     {
-        var lhs = new IntegerSequence(_nodeFactory, "x", 0, 60, 3, wait:100);
-        var rhs = new IntegerSequence(_nodeFactory, "x", 0, 60, 5);
-        var join = new JoinEnumerator(lhs, rhs, new[] { "x" });
-        List<ISet> results = await ReadAllAsync(join);
+        var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
+        var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5, wait:100);
+        var join = new AsyncJoinEvaluation(lhs, rhs, new[] { "x" });
+        List<ISet> results = await join.Evaluate(null, null).ToListAsync();
         Assert.Equal(5, results.Count);
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.Value).ToArray();
         Assert.Contains("0", resultValues);
         Assert.Equivalent(new []{"0", "15", "30", "60", "45"}, resultValues);
     }
+
+    [Fact]
+    public async void SimpleJoinRhsCompletesFirst()
+    {
+        var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3, wait:100);
+        var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
+        var join = new AsyncJoinEvaluation(lhs, rhs, new[] { "x" });
+        List<ISet> results = await join.Evaluate(null, null).ToListAsync();
+        Assert.Equal(5, results.Count);
+        var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.Value).ToArray();
+        Assert.Contains("0", resultValues);
+        Assert.Equivalent(new []{"0", "15", "30", "60", "45"}, resultValues);
+    }
+    
+    [Fact]
+    public async void SimpleJoinLhsInterleaved()
+    {
+        var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
+        var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
+        var join = new AsyncJoinEvaluation(lhs, rhs, new[] { "x" });
+        List<ISet> results = await join.Evaluate(null, null).ToListAsync();
+        Assert.Equal(5, results.Count);
+        var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.Value).ToArray();
+        Assert.Contains("0", resultValues);
+        Assert.Equivalent(new []{"0", "15", "30", "60", "45"}, resultValues);
+    }
+
 }

@@ -6,7 +6,7 @@ namespace dotNetRdf.Query.PullEvaluation;
 
 public class EvaluationBuilder
 {
-    public IAsyncEnumerator<ISet> Build(ISparqlAlgebra algebra, PullEvaluationContext context) 
+    public IAsyncEvaluation Build(ISparqlAlgebra algebra, PullEvaluationContext context) 
     {
         if (algebra is IBgp bgp)
         {
@@ -16,28 +16,27 @@ public class EvaluationBuilder
         throw new RdfQueryException($"Unsupported algebra {algebra}");
     }
 
-    private IAsyncEnumerator<ISet> Build(ITriplePattern triplePattern, PullEvaluationContext context)
+    private IAsyncEvaluation Build(ITriplePattern triplePattern, PullEvaluationContext context)
     {
         if (triplePattern is IMatchTriplePattern matchTriplePattern)
         {
-            return new TriplePatternEnumerator(matchTriplePattern, context);
+            return new AsyncTriplePatternEvaluation(matchTriplePattern);
         }
 
         throw new RdfQueryException($"Unsupported algebra {triplePattern}");
     }
 
-    private IAsyncEnumerator<ISet> Build(IBgp bgp, PullEvaluationContext context)
+    private IAsyncEvaluation Build(IBgp bgp, PullEvaluationContext context)
     {
         ISet<string> boundVars = new HashSet<string>(bgp.TriplePatterns[0].Variables);
-        IAsyncEnumerator<ISet> result = Build(bgp.TriplePatterns[0], context);
+        IAsyncEvaluation result = Build(bgp.TriplePatterns[0], context);
         for (var i = 1; i < bgp.TriplePatterns.Count; i++)
         {
             ITriplePattern tp = bgp.TriplePatterns[i];
             ISet<string> joinVars = new HashSet<string>(boundVars);
             joinVars.IntersectWith(bgp.Variables);
-            result = new JoinEnumerator(result, Build(tp, context), joinVars.ToArray());
+            result = new AsyncJoinEvaluation(result, Build(tp, context), joinVars.ToArray());
         }
-
         return result;
     }
 }

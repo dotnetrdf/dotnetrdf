@@ -4,7 +4,7 @@ using VDS.RDF.Query.Datasets;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-public class PullQueryProcessor : IAsyncEnumerable<ISet>
+public class PullQueryProcessor
 {
     private readonly ISparqlAlgebra _algebra;
     private readonly ISparqlDataset _dataset;
@@ -15,10 +15,11 @@ public class PullQueryProcessor : IAsyncEnumerable<ISet>
         _dataset = dataset;
     }
 
-    public IAsyncEnumerator<ISet> GetAsyncEnumerator(CancellationToken cancellationToken)
+    public IAsyncEnumerable<ISet> Evaluate(CancellationToken cancellationToken = default)
     {
         var builder = new EvaluationBuilder();
         var context = new PullEvaluationContext(_dataset);
-        return builder.Build(_algebra, context);
+        IAsyncEvaluation evaluation = builder.Build(_algebra, context);
+        return evaluation.Evaluate(context, null, cancellationToken);
     }
 }

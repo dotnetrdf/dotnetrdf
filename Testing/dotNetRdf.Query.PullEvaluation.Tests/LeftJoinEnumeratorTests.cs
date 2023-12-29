@@ -9,10 +9,10 @@ public class LeftJoinEnumeratorTests : EnumeratorTestBase
     [Fact]
     public async void WhenRhsCompletesFirst()
     {
-        var lhs = new IntegerSequence(_nodeFactory, "x", 0, 60, 3, 100);
-        var rhs = new IntegerSequence(_nodeFactory, "x", 0, 60, 5);
-        var join = new LeftJoinEnumerator(lhs, rhs, new[] { "x" });
-        List<ISet> results = await ReadAllAsync(join);
+        var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3, 100);
+        var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5);
+        var join = new AsyncLeftJoinEvaluation(lhs, rhs, new[] { "x" });
+        List<ISet> results = await join.Evaluate(null, null).ToListAsync();
         Assert.Equal(21, results.Count);
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.AsValuedNode().AsInteger())
             .ToArray();
@@ -22,10 +22,10 @@ public class LeftJoinEnumeratorTests : EnumeratorTestBase
     [Fact]
     public async void WhenLhsCompletesFirst()
     {
-        var lhs = new IntegerSequence(_nodeFactory, "x", 0, 60, 3);
-        var rhs = new IntegerSequence(_nodeFactory, "x", 0, 60, 5, 100);
-        var join = new LeftJoinEnumerator(lhs, rhs, new[] { "x" });
-        List<ISet> results = await ReadAllAsync(join);
+        var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3);
+        var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 5, 100);
+        var join = new AsyncLeftJoinEvaluation(lhs, rhs, new[] { "x" });
+        List<ISet> results = await join.Evaluate(null, null).ToListAsync();
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.AsValuedNode().AsInteger())
             .ToArray();
         Assert.Equal(21, resultValues.Length);
@@ -35,10 +35,10 @@ public class LeftJoinEnumeratorTests : EnumeratorTestBase
     [Fact]
     public async void WhenInterleaved()
     {
-        var lhs = new IntegerSequence(_nodeFactory, "x", 0, 60, 3, 5);
-        var rhs = new IntegerSequence(_nodeFactory, "x", 0, 100, 5, 5);
-        var join = new LeftJoinEnumerator(lhs, rhs, new[] { "x" });
-        List<ISet> results = await ReadAllAsync(join);
+        var lhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 60, 3, 5);
+        var rhs = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 100, 5, 5);
+        var join = new AsyncLeftJoinEvaluation(lhs, rhs, new[] { "x" });
+        List<ISet> results = await join.Evaluate(null, null).ToListAsync();
         var resultValues = results.Select(r => r["x"]).OfType<ILiteralNode>().Select(n => n.AsValuedNode().AsInteger())
             .ToArray();
         Assert.Equal(21, resultValues.Length);

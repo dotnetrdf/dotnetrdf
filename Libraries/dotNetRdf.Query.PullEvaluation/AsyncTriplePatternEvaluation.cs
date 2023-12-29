@@ -8,30 +8,28 @@ namespace dotNetRdf.Query.PullEvaluation;
 /// </summary>
 public class AsyncTriplePatternEvaluation : IAsyncEvaluation
 {
-    private readonly TriplePattern _triplePattern;
-    private readonly PullEvaluationContext _evaluationContext;
+    private readonly IMatchTriplePattern _triplePattern;
 
     /// <summary>
     /// Construct a new triple pattern evaluator
     /// </summary>
     /// <param name="triplePattern"></param>
-    /// <param name="evaluationContext"></param>
-    public AsyncTriplePatternEvaluation(TriplePattern triplePattern, PullEvaluationContext evaluationContext)
+    public AsyncTriplePatternEvaluation(IMatchTriplePattern triplePattern)
     {
         _triplePattern = triplePattern;
-        _evaluationContext = evaluationContext;
     }
 
 
     /// <summary>
     /// Evaluate the triple pattern optionally using the given input solution.
     /// </summary>
-    /// <param name="input"></param>
+    /// <param name="context">Evaluation context</param>
+    /// <param name="input">Optional input solution</param>
     /// <returns></returns>
-    public IAsyncEnumerable<ISet> Evaluate(ISet? input)
+    public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, CancellationToken cancellationToken = default)
     {
-        return _evaluationContext.GetTriples(_triplePattern, input)
-            .Select(t=>_triplePattern.Evaluate(_evaluationContext,t))
+        return context.GetTriples(_triplePattern, input)
+            .Select(t=>_triplePattern.Evaluate(context,t))
             .Where(set => set != null)
             .ToAsyncEnumerable();
     }

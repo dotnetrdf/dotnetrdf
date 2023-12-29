@@ -1,5 +1,6 @@
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Patterns;
@@ -40,7 +41,7 @@ public class AlgebraEvaluationTests
         var algebra = new Bgp(new TriplePattern(new NodeMatchPattern(_alice), new NodeMatchPattern(_foafKnows), new VariablePattern("x")));
         var p = new PullQueryProcessor(algebra, _dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in p)
+        await foreach (ISet result in p.Evaluate())
         {
             results.Add(result);
         }
@@ -63,7 +64,7 @@ public class AlgebraEvaluationTests
         });
         var processor = new PullQueryProcessor(algebra, _dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor)
+        await foreach (ISet result in processor.Evaluate())
         {
             results.Add(result);
         }
@@ -93,7 +94,7 @@ public class AlgebraEvaluationTests
         });
         var processor = new PullQueryProcessor(algebra, _dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor)
+        await foreach (ISet result in processor.Evaluate())
         {
             results.Add(result);
         }
@@ -109,7 +110,7 @@ public class AlgebraEvaluationTests
     {
         var query = "SELECT * WHERE { ?x a ?y OPTIONAL { ?x <http://example.org/p> ?o } }";
         var parser = new SparqlQueryParser();
-        var sq = parser.ParseFromString(query);
+        SparqlQuery sq = parser.ParseFromString(query);
         _testOutputHelper.WriteLine(sq.ToAlgebra().ToString());
         query = "SELECT * WHERE { ?x a ?y { ?x <http://example.org/p> ?o } }";
         sq = parser.ParseFromString(query);
