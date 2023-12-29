@@ -48,7 +48,7 @@ public class TpfEnumerableTests
     {
         var e = new TpfEnumerable(someUri) as IEnumerable<Triple>;
 
-        e.GetEnumerator().Should().BeOfType<TpfEnumerator>("because it is an LDF enumerable");
+        e.GetEnumerator().Should().BeOfType<TpfEnumerator>("because it is an TPF enumerable");
     }
 
     [Fact(DisplayName = "Non Generic returns our enumerator")]
@@ -56,6 +56,6 @@ public class TpfEnumerableTests
     {
         var e = new TpfEnumerable(someUri) as IEnumerable;
 
-        e.GetEnumerator().Should().BeOfType<TpfEnumerator>("because it is an LDF enumerable");
+        e.GetEnumerator().Should().BeOfType<TpfEnumerator>("because it is an TPF enumerable");
     }
 }

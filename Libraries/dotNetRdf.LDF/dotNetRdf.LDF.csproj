@@ -11,7 +11,7 @@
     <PackageId>dotNetRdf.LDF</PackageId>
     <Title>dotNetRdf Linked Data Fragments Support</Title>
     <Description>Provides support for Linked Data Fragments.</Description>
-    <PackageTags>RDF;LDF;TPF;PQF;linked data fragments;triple pattern fragments;quad pattern fragments</PackageTags>
+    <PackageTags>RDF;LDF;TPF;linked data fragments;triple pattern fragments</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 

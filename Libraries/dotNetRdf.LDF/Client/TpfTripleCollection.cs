@@ -70,27 +70,27 @@ internal class TpfTripleCollection : BaseTripleCollection
 
     public override Triple this[Triple t] => Contains(t) ? t : throw new KeyNotFoundException();
 
-    public override bool Contains(Triple t) => LdfEnumerable(t.Subject, t.Predicate, t.Object).Any();
+    public override bool Contains(Triple t) => TpfEnumerable(t.Subject, t.Predicate, t.Object).Any();
 
     public override void Dispose() { }
 
     public override IEnumerator<Triple> GetEnumerator() => new TpfEnumerator(new TpfParameters(template), reader, loader);
 
-    public override IEnumerable<Triple> WithObject(INode o) => LdfEnumerable(o: o);
+    public override IEnumerable<Triple> WithObject(INode o) => TpfEnumerable(o: o);
 
-    public override IEnumerable<Triple> WithPredicate(INode p) => LdfEnumerable(p: p);
+    public override IEnumerable<Triple> WithPredicate(INode p) => TpfEnumerable(p: p);
 
-    public override IEnumerable<Triple> WithPredicateObject(INode p, INode o) => LdfEnumerable(p: p, o: o);
+    public override IEnumerable<Triple> WithPredicateObject(INode p, INode o) => TpfEnumerable(p: p, o: o);
 
-    public override IEnumerable<Triple> WithSubject(INode s) => LdfEnumerable(s);
+    public override IEnumerable<Triple> WithSubject(INode s) => TpfEnumerable(s);
 
-    public override IEnumerable<Triple> WithSubjectObject(INode s, INode o) => LdfEnumerable(s, o: o);
+    public override IEnumerable<Triple> WithSubjectObject(INode s, INode o) => TpfEnumerable(s, o: o);
 
-    public override IEnumerable<Triple> WithSubjectPredicate(INode s, INode p) => LdfEnumerable(s, p);
+    public override IEnumerable<Triple> WithSubjectPredicate(INode s, INode p) => TpfEnumerable(s, p);
 
     public override IEnumerable<Triple> Asserted => this;
 
-    private IEnumerable<Triple> LdfEnumerable(INode s = null, INode p = null, INode o = null) => new TpfEnumerable(new TpfParameters(template, s, p, o), reader, loader);
+    private IEnumerable<Triple> TpfEnumerable(INode s = null, INode p = null, INode o = null) => new TpfEnumerable(new TpfParameters(template, s, p, o), reader, loader);
 
     #region Mutation methods throw because this triple collection is read-only
 
