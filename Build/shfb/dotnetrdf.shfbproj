@@ -65,6 +65,8 @@
       <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Skos\bin\$(Configuration)\netstandard2.0\dotNetRdf.Skos.xml" />
       <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Writing.HtmlSchema\bin\$(Configuration)\netstandard2.0\dotNetRdf.Writing.HtmlSchema.dll" />
       <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.Writing.HtmlSchema\bin\$(Configuration)\netstandard2.0\dotNetRdf.Writing.HtmlSchema.xml" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.LinkedDataFragments\bin\$(Configuration)\netstandard2.0\dotNetRdf.LinkedDataFragments.dll" />
+      <DocumentationSource sourceFile="..\..\Libraries\dotNetRdf.LinkedDataFragments\bin\$(Configuration)\netstandard2.0\dotNetRdf.LinkedDataFragments.xml" />
     </DocumentationSources>
     <ProjectSummary>
     &amp;lt%3bp&amp;gt%3b&amp;lt%3bstrong&amp;gt%3bdotNetRDF&amp;lt%3b/strong&amp;gt%3b is a C#/.Net Library for working with RDF and the Semantic Web which is entirely free and open source.&amp;lt%3b/p&amp;gt%3b

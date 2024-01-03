@@ -1,0 +1,39 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dc: <http://purl.org/dc/terms/>.
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix dc11: <http://purl.org/dc/elements/1.1/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix dbpedia-owl: <http://dbpedia.org/ontology/>.
+@prefix dbpprop: <http://dbpedia.org/property/>.
+@prefix hydra: <http://www.w3.org/ns/hydra/core#>.
+@prefix void: <http://rdfs.org/ns/void#>.
+
+<{{request.origin}}/#dataset> hydra:member <{{request.origin}}/2016-04/en#dataset>.
+<{{request.origin}}/2016-04/en#dataset> a void:Dataset, hydra:Collection;
+    void:subset <{{request.origin}}/2016-04/en?subject=http%3A%2F%2Fdbpedia.org%2Fresource%2F123_Democratic_Alliance&object=%22707366241%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23integer>;
+    hydra:search _:triplePattern.
+_:triplePattern hydra:template "{{request.origin}}/2016-04/en{?subject,predicate,object}";
+    hydra:variableRepresentation hydra:ExplicitRepresentation;
+    hydra:mapping _:subject, _:predicate, _:object.
+_:subject hydra:variable "subject";
+    hydra:property rdf:subject.
+_:predicate hydra:variable "predicate";
+    hydra:property rdf:predicate.
+_:object hydra:variable "object";
+    hydra:property rdf:object.
+<{{request.origin}}/2016-04/en?subject=http%3A%2F%2Fdbpedia.org%2Fresource%2F123_Democratic_Alliance&object=%22707366241%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23integer> void:subset <{{request.origin}}/2016-04/en?subject=http%3A%2F%2Fdbpedia.org%2Fresource%2F123_Democratic_Alliance&object=%22707366241%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23integer>;
+    a hydra:PartialCollectionView;
+    dcterms:title "Linked Data Fragment of DBpedia 2016-04"@en;
+    dcterms:description "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { <http://dbpedia.org/resource/123_Democratic_Alliance> ?p \"707366241\"^^http://www.w3.org/2001/XMLSchema#integer }."@en;
+    dcterms:source <{{request.origin}}/2016-04/en#dataset>;
+    hydra:totalItems "88"^^xsd:integer;
+    void:triples "88"^^xsd:integer;
+    hydra:itemsPerPage "100"^^xsd:integer;
+    hydra:first <{{request.origin}}/2016-04/en?subject=http%3A%2F%2Fdbpedia.org%2Fresource%2F123_Democratic_Alliance&object=%22707366241%22%5E%5Ehttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23integer&page=1>.
+<http://dbpedia.org/resource/123_Democratic_Alliance> dbpedia-owl:wikiPageRevisionID "707366241"^^xsd:integer.

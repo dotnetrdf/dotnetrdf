@@ -1,0 +1,106 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dc: <http://purl.org/dc/terms/>.
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix dc11: <http://purl.org/dc/elements/1.1/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix dbpedia: <http://dbpedia.org/resource/>.
+@prefix dbpedia-owl: <http://dbpedia.org/ontology/>.
+@prefix dbpprop: <http://dbpedia.org/property/>.
+@prefix hydra: <http://www.w3.org/ns/hydra/core#>.
+@prefix void: <http://rdfs.org/ns/void#>.
+
+<{{request.origin}}/#dataset> hydra:member <{{request.origin}}/2016-04/en#dataset>.
+<{{request.origin}}/2016-04/en#dataset> a void:Dataset, hydra:Collection;
+    void:subset <{{request.origin}}/2016-04/en>;
+    hydra:search _:triplePattern.
+_:triplePattern hydra:template "{{request.origin}}/2016-04/en{?subject,predicate,object}";
+    hydra:variableRepresentation hydra:ExplicitRepresentation;
+    hydra:mapping _:subject, _:predicate, _:object.
+_:subject hydra:variable "subject";
+    hydra:property rdf:subject.
+_:predicate hydra:variable "predicate";
+    hydra:property rdf:predicate.
+_:object hydra:variable "object";
+    hydra:property rdf:object.
+<{{request.origin}}/2016-04/en> void:subset <{{request.origin}}/2016-04/en>;
+    a hydra:PartialCollectionView;
+    dcterms:title "Linked Data Fragment of DBpedia 2016-04"@en;
+    dcterms:description "Triple Pattern Fragment of the 'DBpedia 2016-04' dataset containing triples matching the pattern { ?s ?p ?o }."@en;
+    dcterms:source <{{request.origin}}/2016-04/en#dataset>;
+    hydra:totalItems "1040358853"^^xsd:integer;
+    void:triples "1040358853"^^xsd:integer;
+    hydra:itemsPerPage "100"^^xsd:integer;
+    hydra:first <{{request.origin}}/2016-04/en?page=1>;
+    hydra:next <{{request.origin}}/2016-04/en?page=2>.
+<http://0-access.newspaperarchive.com.lib.utep.edu/us/mississippi/biloxi/biloxi-daily-herald/1899/05-06/page-6?tag=tierce+wine&rtserp=tags/tierce-wine?page=2> dbpprop:date "1899-05-06"^^xsd:date;
+    dbpprop:isCitedBy <http://dbpedia.org/resource/Tierce_(unit)>;
+    dbpprop:newspaper "Biloxi Daily Herald";
+    dbpprop:page "6";
+    dbpprop:title "A New System of Weights and Measures";
+    dbpprop:url <http://0-access.newspaperarchive.com.lib.utep.edu/us/mississippi/biloxi/biloxi-daily-herald/1899/05-06/page-6?tag=tierce+wine&rtserp=tags/tierce-wine?page=2>.
+<http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853> dbpprop:accessdate "2010-04-21"^^xsd:date;
+    dbpprop:date "1937-01-04"^^xsd:date;
+    dbpprop:format "PDF";
+    dbpprop:isCitedBy dbpedia:List_of_Attorneys_General_of_Wisconsin;
+    dbpprop:location "Oshkosh, Wisconsin";
+    dbpprop:page "6";
+    dbpprop:title "New Administrations Started";
+    dbpprop:url <http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=7578853>;
+    dbpprop:work "Oshkosh Daily Northwestern".
+<http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=8716084> dbpprop:accessdate "2010-04-21"^^xsd:date;
+    dbpprop:date "1939-01-02"^^xsd:date;
+    dbpprop:format "PDF";
+    dbpprop:isCitedBy dbpedia:List_of_Attorneys_General_of_Wisconsin;
+    dbpprop:location "Sheboygan, Wisconsin";
+    dbpprop:page "1";
+    dbpprop:title "Gov. Julius P. Heil Takes Office";
+    dbpprop:url <http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=8716084>;
+    dbpprop:work "The Sheboygan Press".
+<http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=99852035> dbpprop:accessdate "2010-04-21"^^xsd:date;
+    dbpprop:date "1933-01-03"^^xsd:date;
+    dbpprop:format "PDF";
+    dbpprop:isCitedBy dbpedia:List_of_Attorneys_General_of_Wisconsin;
+    dbpprop:location "Madison, Wisconsin";
+    dbpprop:page "1";
+    dbpprop:title "Governor Takes Oath Amid Cheers of 5,000";
+    dbpprop:url <http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=99852035>;
+    dbpprop:work "Wisconsin State Journal".
+<http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=99989278> dbpprop:accessdate "2010-04-21"^^xsd:date;
+    dbpprop:date "1951-01-02"^^xsd:date;
+    dbpprop:format "PDF";
+    dbpprop:isCitedBy dbpedia:List_of_Attorneys_General_of_Wisconsin;
+    dbpprop:location "Madison, Wisconsin";
+    dbpprop:page "2";
+    dbpprop:title "Highlights of Inauguration Ceremony as Five State Republican Officials Take Oaths in Capitol";
+    dbpprop:url <http://0-access.newspaperarchive.com.topcat.switchinc.org/Viewer.aspx?img=99989278>;
+    dbpprop:work "Wisconsin State Journal".
+<http://0-astatine.llu.edu.catalog.llu.edu/docs/AH/AH-V18N1/index.djvu?djvuopts&page=25> dbpprop:date "Summer 1998";
+    dbpprop:first "Raymond";
+    dbpprop:format "DjVu";
+    dbpprop:isCitedBy dbpedia:Seventh-day_Adventist_Commentary_Reference_Series;
+    dbpprop:journal dbpedia:Adventist_Heritage;
+    dbpprop:last "Cottrell";
+    dbpprop:number "1";
+    dbpprop:pages "26–34";
+    dbpprop:publisher "LLU";
+    dbpprop:title "The Story of the Bible Commentary";
+    dbpprop:url <http://0-astatine.llu.edu.catalog.llu.edu/docs/AH/AH-V18N1/index.djvu?djvuopts&page=25>;
+    dbpprop:volume "18".
+<http://0-cdl.library.cornell.edu.source.unco.edu/moa/browse.monographs/waro.html> dbpprop:accessdate "2007-11-05"^^xsd:date, "2007-11-09"^^xsd:date, "2007-11-25"^^xsd:date, "2007-11-30"^^xsd:date;
+    dbpprop:authorLink "Albion P. Howe";
+    dbpprop:authorlink "Henry Jackson Hunt", "Quincy Adams Gilmore";
+    dbpprop:first "A.P.", "Charles R.", "Henry J.", "John W.", "Q.A.", "Robert N.";
+    dbpprop:isCitedBy dbpedia:Battery_Rodgers, dbpedia:Fort_Sumter, dbpedia:Rodman_gun, dbpedia:Siege_artillery_in_the_American_Civil_War;
+    dbpprop:issue "2", "II", "Part I";
+    dbpprop:journal "The War of the Rebellion: A Compilation of the Official Records of the Union and Confederate Armies, Series I.";
+    dbpprop:last "Gilmore", "Howe", "Hunt", "Scott", "Suter", "Turner";
+    dbpprop:location "Washington, D.C.";
+    dbpprop:pages "117–119", "148–65", "212–225", "212–25", "3–40", "650", "659–662", "883–897";
+    dbpprop:publisher "Government Printing Office";
+    dbpprop:ref "harv";
+    dbpprop:title "--05-17"^^xsd:gMonthDay, "--06-01"^^xsd:gMonthDay, "--06-08"^^xsd:gMonthDay, "--08-12"^^xsd:gMonthDay, "--10-20"^^xsd:gMonthDay, "Report of Maj. Gen. Quincy A. Gilmore, U.S. Army, Commanding Department of the South with Congratulatory Orders.", "Reports", "Reports.".

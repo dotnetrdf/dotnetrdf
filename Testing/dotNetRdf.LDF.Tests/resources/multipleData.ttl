@@ -1,0 +1,27 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX void: <http://rdfs.org/ns/void#>
+
+[ # dataset
+    void:subset [ # fragment
+        void:subset [] # page
+    ] ;
+    hydra:search [
+        hydra:template "{{request.origin}}{{request.absolutepath}}{?subject,predicate,object}";
+        hydra:mapping [
+            hydra:variable "subject" ;
+            hydra:property rdf:subject ;
+        ] ,
+        [
+            hydra:variable "predicate" ;
+            hydra:property rdf:predicate ;
+        ] ,
+        [
+            hydra:variable "object" ;
+            hydra:property rdf:object ;
+        ]
+    ]
+] .
+
+<urn:example:s1> <urn:example:p1> <urn:example:o1> .
+<urn:example:s2> <urn:example:p2> <urn:example:o2> .
