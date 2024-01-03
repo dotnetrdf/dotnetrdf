@@ -4,6 +4,7 @@
 Unreleased
 ------
 
+NEW: Linked Data Fragments (LDF) client - a new implementation of the `IGraph` interface that dispatches all graph operations to a Triple Pattern Fragments (TPF) endpoint. Thanks to @langsamu for the contribution. (#608)
 FIX: Fixed the formatting of pretty-printed Turtle files to put each item in an RDF collection onto a separate line. Thanks to @MichaelHoffmeisterFesto for the bug report. (#606)
 
 3.1.1
