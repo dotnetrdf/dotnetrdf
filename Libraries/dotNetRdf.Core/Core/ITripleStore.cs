@@ -64,6 +64,11 @@ namespace VDS.RDF
             get;
         }
 
+        IEnumerable<Quad> Quads
+        {
+            get;
+        }
+
         /// <summary>
         /// Get the preferred URI factory to use when creating URIs in this store.
         /// </summary>

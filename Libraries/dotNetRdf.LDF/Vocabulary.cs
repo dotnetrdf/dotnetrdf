@@ -66,4 +66,11 @@ internal static class Vocabulary
 
         internal static IUriNode Object { get; } = Node(RdfSpecsHelper.RdfObject);
     }
+
+    internal static class Foaf
+    {
+        private const string BaseUri = "http://xmlns.com/foaf/0.1/";
+
+        internal static IUriNode PrimaryTopic { get; } = Node(BaseUri, "primaryTopic");
+    }
 }

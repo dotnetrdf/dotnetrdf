@@ -35,6 +35,7 @@ internal static class Queries
     private static readonly string preamble = """
         PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
         PREFIX void:  <http://rdfs.org/ns/void#>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
         """;
 
     private static readonly string shape = """
@@ -50,6 +51,18 @@ internal static class Queries
             SELECT DISTINCT ?page ?search
             WHERE {
                 {{shape}}
+            }
+            """);
+
+    internal static SparqlQuery SelectQpf { get; } = new SparqlQueryParser().ParseFromString($$"""
+            {{preamble}}
+
+            SELECT DISTINCT ?controls
+            WHERE {
+                GRAPH ?controls {
+                    ?controls foaf:primaryTopic ?fragment .
+                    {{shape}}
+                }
             }
             """);
 

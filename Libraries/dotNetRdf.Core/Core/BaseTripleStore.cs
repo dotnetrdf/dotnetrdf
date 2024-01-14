@@ -105,6 +105,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets all the Quads in the Triple Store.
+        /// </summary>
+        public IEnumerable<Quad> Quads =>
+            from g in _graphs
+            from t in g.Triples
+            select new Quad(g.Name, t);
+
+        /// <summary>
         /// Get the preferred URI factory to use when creating URIs in this store.
         /// </summary>
         public abstract IUriFactory UriFactory { get; }

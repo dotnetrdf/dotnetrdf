@@ -100,6 +100,14 @@ namespace VDS.RDF
             }
         }
 
+        public virtual IEnumerable<Quad> Quads
+        {
+            get 
+            {
+                return _store.Quads;
+            }
+        }
+
         /// <summary>
         /// Get the preferred URI factory to use when creating URIs in this store.
         /// </summary>

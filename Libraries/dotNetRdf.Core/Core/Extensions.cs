@@ -1298,8 +1298,9 @@ namespace VDS.RDF
         /// This is just a shortcut to using the static <strong>LoadDataset()</strong> methods from the <see cref="Loader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace.
         /// </remarks>
 
-        public static void LoadFromUri(this ITripleStore store, Uri u, IStoreReader parser, Loader loader)
+        public static void LoadFromUri(this ITripleStore store, Uri u, IStoreReader parser, Loader loader = null)
         {
+            loader ??= new Loader();
             loader.LoadDataset(store, u, parser);
         }
 
