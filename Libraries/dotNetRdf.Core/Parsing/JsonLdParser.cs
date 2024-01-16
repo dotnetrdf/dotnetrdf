@@ -82,6 +82,18 @@ namespace VDS.RDF.Parsing
                 Load(new StoreHandler(store), reader, store.UriFactory);
             }
         }
+        
+        /// <summary>
+        /// Adds the RDF quads found in the JSON-LD to the specified store.
+        /// </summary>
+        /// <param name="store">The store to add the parsed RDF quads to.</param>
+        /// <param name="input">The expanded JSON-LD document.</param>
+        internal void LoadCanonicalized(ITripleStore store, JArray input)
+        {
+            if (store == null) throw new ArgumentNullException(nameof(store));
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            LoadCanonicalized(new StoreHandler(store), input, store.UriFactory);
+        }
 
         /// <inheritdoc/>
         public void Load(ITripleStore store, TextReader input)
@@ -118,23 +130,27 @@ namespace VDS.RDF.Parsing
 
         /// <inheritdoc />
         public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory) {
+            JToken element;
+            using (var reader = new JsonTextReader(input) { DateParseHandling = DateParseHandling.None })
+            {
+                element = JToken.ReadFrom(reader);
+            }
+
+            JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
+            Load(handler, expandedElement, uriFactory);
+        }
+        
+        private void Load(IRdfHandler handler, JArray input, IUriFactory uriFactory) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (input == null) throw new ArgumentNullException(nameof(input));
             if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-
 
             handler.StartRdf();
             IUriNode rdfTypeNode = handler.CreateUriNode(uriFactory.Create(RdfNs + "type"));
             try
             {
-                JToken element;
-                using (var reader = new JsonTextReader(input) { DateParseHandling = DateParseHandling.None })
-                {
-                    element = JToken.ReadFrom(reader);
-                }
-                JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
                 var nodeMapGenerator = new NodeMapGenerator();
-                JObject nodeMap = nodeMapGenerator.GenerateNodeMap(expandedElement);
+                JObject nodeMap = nodeMapGenerator.GenerateNodeMap(input);
                 foreach (JProperty p in nodeMap.Properties())
                 {
                     var graphName = p.Name;
@@ -202,6 +218,103 @@ namespace VDS.RDF.Parsing
                                 {
                                     var predicateNode = MakeNode(handler, property, graphNode) as IRefNode;
                                     INode objectNode = MakeNode(handler, item, graphNode);
+                                    if (predicateNode != null && objectNode != null)
+                                    {
+                                        handler.HandleQuad(new Triple(subjectNode, predicateNode, objectNode), graphNode);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                handler.EndRdf(false);
+                throw;
+            }
+            handler.EndRdf(true);
+        }
+        
+        private void LoadCanonicalized(IRdfHandler handler, JArray input, IUriFactory uriFactory) {
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
+
+            handler.NormalizeLiteralValues = true;
+            handler.StartRdf();
+            IUriNode rdfTypeNode = handler.CreateUriNode(uriFactory.Create(RdfNs + "type"));
+            try
+            {
+                var nodeMapGenerator = new NodeMapGenerator();
+                JObject nodeMap = nodeMapGenerator.GenerateNodeMap(input, new BlankNodeGenerator("c14n"));
+                foreach (JProperty p in nodeMap.Properties())
+                {
+                    var graphName = p.Name;
+                    var graph = p.Value as JObject;
+                    if (graph == null) continue;
+                    IRefNode graphNode;
+                    if (graphName == "@default")
+                    {
+                        graphNode = null;
+                    }
+                    else
+                    {
+                        if (IsBlankNodeIdentifier(graphName))
+                        {
+                            graphNode = handler.CreateBlankNode(graphName.Substring(2));
+                        } 
+                        else if (Uri.TryCreate(graphName, UriKind.Absolute, out Uri graphIri) && graphIri.IsWellFormedOriginalString())
+                        {
+                            graphNode = handler.CreateUriNode(graphIri);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    foreach (JProperty gp in graph.Properties())
+                    {
+                        var subject = gp.Name;
+                        var node = gp.Value as JObject;
+                        IRefNode subjectNode;
+                        if (IsBlankNodeIdentifier(subject))
+                        {
+                            subjectNode = handler.CreateBlankNode(subject.Substring(2));
+                        }
+                        else
+                        {
+                            if (!(Uri.TryCreate(subject, UriKind.Absolute, out Uri subjectIri) &&
+                                  subjectIri.IsWellFormedOriginalString()))
+                            {
+                                RaiseWarning(
+                                    $"Unable to generate a well-formed absolute IRI for subject `{subjectIri}`. This subject will be ignored.");
+                                continue;
+                            }
+                            subjectNode = handler.CreateUriNode(subjectIri);
+                        }
+                        foreach (JProperty np in node.Properties())
+                        {
+                            var property = np.Name;
+                            var values = np.Value as JArray;
+                            if (property.Equals("@type"))
+                            {
+                                foreach (JToken type in values)
+                                {
+                                    INode typeNode = MakeNodeCanonicalized(handler, type, graphNode);
+                                    if (typeNode != null)
+                                    {
+                                        handler.HandleQuad(new Triple(subjectNode, rdfTypeNode, typeNode), graphNode);
+                                    }
+                                }
+                            }
+                            else if ((JsonLdUtils.IsBlankNodeIdentifier(property) && ParserOptions.ProduceGeneralizedRdf) ||
+                                     Uri.IsWellFormedUriString(property, UriKind.Absolute))
+                            {
+                                foreach (JToken item in values)
+                                {
+                                    var predicateNode = MakeNodeCanonicalized(handler, property, graphNode) as IRefNode;
+                                    INode objectNode = MakeNodeCanonicalized(handler, item, graphNode);
                                     if (predicateNode != null && objectNode != null)
                                     {
                                         handler.HandleQuad(new Triple(subjectNode, predicateNode, objectNode), graphNode);
@@ -300,26 +413,24 @@ namespace VDS.RDF.Parsing
                     }
                     // Otherwise direction mode is CompoundLiteral
                     IBlankNode literalNode = handler.CreateBlankNode();
-                    Uri xsdString =
-                        UriFactory.Root.Create(XmlSpecsHelper.XmlSchemaDataTypeString);
                     handler.HandleQuad(new Triple(
                         literalNode,
                         handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfValue)),
-                        handler.CreateLiteralNode(literalValue, xsdString)),
+                        handler.CreateLiteralNode(literalValue)),
                         graphName);
                     if (!string.IsNullOrEmpty(language))
                     {
                         handler.HandleQuad(new Triple(
                             literalNode,
                             handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfLanguage)),
-                            handler.CreateLiteralNode(language, xsdString)),
+                            handler.CreateLiteralNode(language)),
                             graphName);
                     }
 
                     handler.HandleQuad(new Triple(
                         literalNode,
                         handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfDirection)),
-                        handler.CreateLiteralNode(direction, xsdString)),
+                        handler.CreateLiteralNode(direction)),
                         graphName);
 
                     return literalNode;
@@ -354,6 +465,141 @@ namespace VDS.RDF.Parsing
 
             return null;
         }
+        
+        private INode MakeNodeCanonicalized(IRdfHandler handler, JToken token, IRefNode graphName, bool allowRelativeIri = false)
+        {
+            if (token is JValue)
+            {
+                var stringValue = token.Value<string>();
+                if (JsonLdUtils.IsBlankNodeIdentifier(stringValue))
+                {
+                    return handler.CreateBlankNode(stringValue.Substring(2));
+                }
+                if (Uri.TryCreate(stringValue, allowRelativeIri ? UriKind.RelativeOrAbsolute : UriKind.Absolute, out Uri iri))
+                {
+                    if (!Uri.IsWellFormedUriString(stringValue, allowRelativeIri ? UriKind.RelativeOrAbsolute : UriKind.Absolute)) return null;
+                    return handler.CreateUriNode(iri);
+                }
+                return null;
+            }
+
+            if (JsonLdUtils.IsValueObject(token) && token is JObject valueObject)
+            {
+                string literalValue;
+                JToken value = valueObject["@value"];
+                var datatype = valueObject.Property("@type")?.Value.Value<string>();
+                var language = valueObject.Property("@language")?.Value.Value<string>();
+                if (datatype == "@json")
+                {
+                    datatype = RdfNs + "JSON";
+                    var serializer = new JsonLiteralSerializer();
+                    literalValue = serializer.Serialize(value);
+                }
+                else if (value.Type == JTokenType.Boolean)
+                {
+                    literalValue = value.Value<bool>() ? "true" : "false";
+                    datatype ??= XsdNs + "boolean";
+                }
+                else if (value.Type == JTokenType.Float ||
+                         value.Type == JTokenType.Integer && datatype != null && datatype.Equals(XsdNs + "double"))
+                {
+                    var doubleValue = value.Value<double>();
+                    var roundedValue = Math.Round(doubleValue);
+                    if (doubleValue.Equals(roundedValue) && doubleValue < 1e21 && datatype == null)
+                    {
+                        // Integer values up to 10^21 should be rendered as an integer rather than a float
+                        literalValue = roundedValue.ToString("F0");
+                        // The JSON-LD test suite requires no leading minus sign when the value is 0
+                        if (literalValue.Equals("-0")) literalValue = "0";
+                        datatype = XsdNs + "integer";
+                    }
+                    else
+                    {
+                        literalValue = value.Value<double>().ToString("E15", CultureInfo.InvariantCulture);
+                        literalValue = ExponentialFormatMatcher.Replace(literalValue, "$1E");
+                        if (literalValue.EndsWith("E")) literalValue = literalValue + "0";
+                        datatype ??= XsdNs + "double";
+                    }
+                }
+                else if (value.Type == JTokenType.Integer ||
+                         value.Type == JTokenType.Float && datatype != null && datatype.Equals(XsdNs + "integer"))
+                {
+                    literalValue = value.Value<long>().ToString("D", CultureInfo.InvariantCulture);
+                    datatype ??= XsdNs + "integer";
+                }
+                else if (value.Type == JTokenType.Date)
+                {
+                    literalValue = valueObject.Property("@value")?.Value<string>();
+                }
+                else if (valueObject.ContainsKey("@direction") && ParserOptions.RdfDirection.HasValue)
+                {
+                    literalValue = value.Value<string>();
+                    var direction = valueObject["@direction"].Value<string>();
+                    language = valueObject.ContainsKey("@language")
+                        ? valueObject["@language"].Value<string>().ToLowerInvariant()
+                        : string.Empty;
+                    if (ParserOptions.RdfDirection == JsonLdRdfDirectionMode.I18NDatatype)
+                    {
+                        datatype = "https://www.w3.org/ns/i18n#" + language + "_" + direction;
+                        return handler.CreateLiteralNode(literalValue, new Uri(datatype));
+                    }
+                    // Otherwise direction mode is CompoundLiteral
+                    IBlankNode literalNode = handler.CreateBlankNode();
+                    handler.HandleQuad(new Triple(
+                        literalNode,
+                        handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfValue)),
+                        handler.CreateLiteralNode(literalValue, null as Uri)),
+                        graphName);
+                    if (!string.IsNullOrEmpty(language))
+                    {
+                        handler.HandleQuad(new Triple(
+                            literalNode,
+                            handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfLanguage)),
+                            handler.CreateLiteralNode(language, null as Uri)),
+                            graphName);
+                    }
+
+                    handler.HandleQuad(new Triple(
+                        literalNode,
+                        handler.CreateUriNode(UriFactory.Root.Create(RdfSpecsHelper.RdfDirection)),
+                        handler.CreateLiteralNode(direction, null as Uri)),
+                        graphName);
+
+                    return literalNode;
+                }
+                else
+                {
+                    literalValue = value.Value<string>();
+                    if (datatype == null && language == null)
+                    {
+                        datatype = XsdNs + "string";
+                    }
+                }
+
+                if (language != null)
+                {
+                    return LanguageTag.IsWellFormed(language) ? handler.CreateLiteralNode(literalValue, language) : null;
+                } 
+                return datatype == XsdNs + "string"
+                    ? handler.CreateLiteralNode(literalValue, null as Uri)
+                    : handler.CreateLiteralNode(literalValue, new Uri(datatype));
+            }
+            if (JsonLdUtils.IsListObject(token))
+            {
+                var listArray = token["@list"] as JArray;
+                return MakeRdfList(handler, listArray, graphName);
+            }
+
+            if((token as JObject)?.Property("@id")!=null)
+            {
+                // Must be a node object
+                var nodeObject = (JObject) token;
+                return MakeNode(handler, nodeObject["@id"], graphName);
+            }
+
+            return null;
+        }
+
 
         private INode MakeRdfList(IRdfHandler handler, JArray list, IRefNode graphName)
         {

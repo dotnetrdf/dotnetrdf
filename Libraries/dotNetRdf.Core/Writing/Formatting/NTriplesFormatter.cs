@@ -271,7 +271,11 @@ namespace VDS.RDF.Writing.Formatting
             //    return FormatUri(u.ToString());
             //}
 
-            return FormatUri(Rfc3987Formatter.EscapeUriString(u.ToString()));
+            var uriString = u.ToString();
+            if (uriString.EndsWith("/") && !u.OriginalString.EndsWith("/")) uriString = uriString.Substring(0, uriString.Length - 1);
+            else if (!uriString.EndsWith("/") && u.OriginalString.EndsWith("/")) uriString += '/';
+
+            return FormatUri(Rfc3987Formatter.EscapeUriString(uriString));
         }
 
         /// <inheritdoc />

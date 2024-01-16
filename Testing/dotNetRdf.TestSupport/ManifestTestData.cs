@@ -53,6 +53,10 @@ namespace VDS.RDF
             .GetTriplesWithSubjectPredicate(TestNode, Graph.CreateUriNode("mf:entailmentRegime"))
             .Select(t => t.Object).OfType<ILiteralNode>().Select(t => t.Value).FirstOrDefault();
 
+        public string HashAlgorithm => Graph
+            .GetTriplesWithSubjectPredicate(TestNode, Graph.GetUriNode("rdfc:hashAlgorithm"))
+            .Select(t => t.Object).OfType<ILiteralNode>().Select(lit => lit.Value).FirstOrDefault();
+
         public override string ToString()
         {
             return Id;

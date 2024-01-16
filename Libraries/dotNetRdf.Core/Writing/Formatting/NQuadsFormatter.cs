@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using System;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
@@ -98,5 +99,15 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         public NQuads11Formatter()
             : base(NQuadsSyntax.Rdf11) { }
+        
+        /// <summary>
+        /// Return the datatype specification for a literal value.
+        /// </summary>
+        /// <param name="datatypeUri">The datatype URI.</param>
+        /// <returns>The formatted datatype specification unless <paramref name="datatypeUri"/> matches the XML Schema String datatype URI, in which case an empty string is returned.</returns>
+        protected override string FormatDatatype(Uri datatypeUri)
+        {
+            return datatypeUri.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString) ? string.Empty : base.FormatDatatype(datatypeUri);
+        }
     }
 }

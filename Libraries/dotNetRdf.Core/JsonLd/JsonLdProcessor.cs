@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.JsonLd.Processors;
 using VDS.RDF.JsonLd.Syntax;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.JsonLd
 {
@@ -453,6 +454,19 @@ namespace VDS.RDF.JsonLd
         public JToken Flatten(JToken input, JToken context)
         {
             return Flatten(input, context, _options);
+        }
+
+        /// <summary>
+        /// Returns the canonicalized RDF corresponding to the (already expanded!) JSON-LD input.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string Canonicalize(JArray input)
+        {
+            var store = new TripleStore();
+            new JsonLdParser().LoadCanonicalized(store, input);
+
+            return CanonicalizeProcessor.Canonicalize(store);
         }
 
         private static void ReplaceNulls(JToken token)
