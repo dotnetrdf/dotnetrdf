@@ -33,6 +33,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF;
 
+/// <summary>
+/// Implementation of the RDFC-1.0 algorithm. Transforms a RDF graph into its canonical form.
+/// </summary>
+/// <param name="hashAlgorithm"></param>
 public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 {
     private const string CanonicalIdentifier = "c14n";
@@ -73,7 +77,8 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
                 _hashToBlankNodesMap.Add(hash, identifier);
             }
 
-            foreach (var entry in _hashToBlankNodesMap.OrderBy(p => p.Key).Where(pair => pair.Value.Count <= 1))
+            foreach (KeyValuePair<string, List<string>> entry in _hashToBlankNodesMap.OrderBy(p => p.Key)
+                         .Where(pair => pair.Value.Count <= 1))
             {
                 _canonicalIssuer.GenerateBlankNodeIdentifier(entry.Value[0]);
                 _hashToBlankNodesMap.Remove(entry.Value[0]);
@@ -82,7 +87,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
             }
         }
 
-        foreach (var entry in _hashToBlankNodesMap.OrderBy(p => p.Key))
+        foreach (KeyValuePair<string, List<string>> entry in _hashToBlankNodesMap.OrderBy(p => p.Key))
         {
             var hashPathList = new List<(string hash, IBlankNodeGenerator issuer)>();
             foreach (var blankNodeIdentifier in entry.Value)
@@ -104,7 +109,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
         foreach (IGraph graph in inputDatasetEnum)
         {
-            var graphName = graph.Name is BlankNode graphBlankNode
+            IRefNode graphName = graph.Name is BlankNode graphBlankNode
                 ? new BlankNode(_canonicalIssuer.GenerateBlankNodeIdentifier(graphBlankNode.InternalID).Substring(2))
                 : graph.Name;
 
@@ -137,7 +142,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
     {
         var formatter = new NQuads11Formatter();
 
-        var nquads = _blankNodeToQuadsMap[identifier]
+        IOrderedEnumerable<string> nquads = _blankNodeToQuadsMap[identifier]
             .Select(quad => PrepareQuadForHash(quad, identifier))
             .Select(quad => formatter.Format(quad.Triple, quad.Graph) + '\n')
             .OrderBy(p => p, StringComparer.Ordinal);
@@ -150,7 +155,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
         if (_nquadsRecursionLimit-- <= 0) throw new Exception("Recursion limit reached");
 
         var relatedHashToBlankNodesMap = new MultiValueDictionary<string, string>();
-        foreach (var quad in _blankNodeToQuadsMap[identifier])
+        foreach (Quad quad in _blankNodeToQuadsMap[identifier])
         {
             ProcessRelatedComponent(quad.Subject, "s", identifier, quad, issuer, ref relatedHashToBlankNodesMap);
             ProcessRelatedComponent(quad.Object, "o", identifier, quad, issuer, ref relatedHashToBlankNodesMap);
@@ -159,15 +164,16 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
         List<string> dataToHash = [];
 
-        foreach (var mapping in relatedHashToBlankNodesMap.OrderBy(p => p.Key, StringComparer.Ordinal))
+        foreach (KeyValuePair<string, List<string>> mapping in relatedHashToBlankNodesMap.OrderBy(p => p.Key,
+                     StringComparer.Ordinal))
         {
             dataToHash.Add(mapping.Key);
             var chosenPath = string.Empty;
             IBlankNodeGenerator chosenIssuer = null;
 
-            foreach (var permutation in Permute(mapping.Value))
+            foreach (IList<string> permutation in Permute(mapping.Value))
             {
-                var issuerCopy = issuer.Clone();
+                IBlankNodeGenerator issuerCopy = issuer.Clone();
                 var path = string.Empty;
                 var recursionList = new List<string>();
 
@@ -194,7 +200,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
                 foreach (var related in recursionList)
                 {
-                    var result = HashNDegreeQuads(related, issuerCopy, out var issuerCopyRecurse);
+                    var result = HashNDegreeQuads(related, issuerCopy, out IBlankNodeGenerator issuerCopyRecurse);
                     path += issuerCopy.GenerateBlankNodeIdentifier(related);
                     path += $"<{result}>";
                     issuerCopy = issuerCopyRecurse;
@@ -270,19 +276,19 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
     private static Quad PrepareQuadForHash(Quad quad, string referenceId)
     {
-        var graph = quad.Graph is BlankNode blankRefNode
+        IRefNode graph = quad.Graph is BlankNode blankRefNode
             ? new BlankNode(blankRefNode.InternalID == referenceId ? "a" : "z")
             : quad.Graph;
 
-        var subj = quad.Subject is BlankNode blankSubjectNode
+        INode subj = quad.Subject is BlankNode blankSubjectNode
             ? new BlankNode(blankSubjectNode.InternalID == referenceId ? "a" : "z")
             : quad.Subject;
 
-        var pred = quad.Predicate is BlankNode blankPredicateNode
+        INode pred = quad.Predicate is BlankNode blankPredicateNode
             ? new BlankNode(blankPredicateNode.InternalID == referenceId ? "a" : "z")
             : quad.Predicate;
 
-        var obj = quad.Object is BlankNode blankObjectNode
+        INode obj = quad.Object is BlankNode blankObjectNode
             ? new BlankNode(blankObjectNode.InternalID == referenceId ? "a" : "z")
             : quad.Object;
 
@@ -321,10 +327,10 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
 
     private class Quad(Triple triple, IRefNode graph)
     {
-        internal INode Subject = triple.Subject;
-        internal INode Predicate = triple.Predicate;
-        internal INode Object = triple.Object;
-        internal IRefNode Graph = graph;
+        internal readonly INode Subject = triple.Subject;
+        internal readonly INode Predicate = triple.Predicate;
+        internal readonly INode Object = triple.Object;
+        internal readonly IRefNode Graph = graph;
         internal Triple Triple => new(Subject, Predicate, Object);
     }
 
