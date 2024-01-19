@@ -38,11 +38,7 @@ public class RdfCanonTestSuite(ITestOutputHelper output) : RdfTestSuite
         TripleStore resultStore = new RdfCanonicalizer(t.HashAlgorithm ?? "SHA256").Canonicalize(inputStore.Graphs);
 
         var formatter = new NQuads11Formatter();
-        var sb = new StringBuilder();
-        resultStore.Graphs
-            .SelectMany(graph => graph.Triples.Select(triple => formatter.Format(triple, graph.Name)))
-            .OrderBy(p => p, StringComparer.Ordinal).ToList().ForEach(s => sb.AppendLine(s));
-        var result = sb.ToString();
+        var result = formatter.Format(resultStore);
 
         result.Should().BeEquivalentTo(expectedResult);
     }
@@ -57,15 +53,10 @@ public class RdfCanonTestSuite(ITestOutputHelper output) : RdfTestSuite
             var inputStore = new TripleStore();
             inputStore.LoadFromFile(dataInputPath);
 
-            TripleStore resultStore =
-                new RdfCanonicalizer(t.HashAlgorithm ?? "SHA256").Canonicalize(inputStore.Graphs);
+            TripleStore resultStore = new RdfCanonicalizer(t.HashAlgorithm ?? "SHA256").Canonicalize(inputStore.Graphs);
 
             var formatter = new NQuads11Formatter();
-            var sb = new StringBuilder();
-            resultStore.Graphs
-                .SelectMany(graph => graph.Triples.Select(triple => formatter.Format(triple, graph.Name)))
-                .OrderBy(p => p, StringComparer.Ordinal).ToList().ForEach(s => sb.AppendLine(s));
-            result = sb.ToString();
+            result = formatter.Format(resultStore);
         }
         catch
         {

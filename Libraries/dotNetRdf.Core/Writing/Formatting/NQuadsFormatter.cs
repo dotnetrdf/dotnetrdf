@@ -25,6 +25,8 @@
 */
 
 using System;
+using System.Linq;
+using System.Text;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
@@ -85,6 +87,20 @@ namespace VDS.RDF.Writing.Formatting
                 return base.Format(t);
             }
             return Format(t.Subject, TripleSegment.Subject) + " " + Format(t.Predicate, TripleSegment.Predicate) + " " + Format(t.Object, TripleSegment.Object) + " " + Format(graph) + " .";
+        }
+
+        /// <summary>
+        /// Formats a TripleStore as a String. Especially useful for canonicalized graphs.
+        /// </summary>
+        /// <param name="store"></param>
+        /// <returns></returns>
+        public string Format(TripleStore store)
+        {
+            var sb = new StringBuilder();
+            store.Graphs
+                .SelectMany(graph => graph.Triples.Select(triple => this.Format(triple, graph.Name)))
+                .OrderBy(p => p, StringComparer.Ordinal).ToList().ForEach(s => sb.AppendLine(s));
+            return sb.ToString();
         }
     }
 
