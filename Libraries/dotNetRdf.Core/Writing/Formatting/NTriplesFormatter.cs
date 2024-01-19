@@ -272,8 +272,16 @@ namespace VDS.RDF.Writing.Formatting
             //}
 
             var uriString = u.ToString();
-            if (uriString.EndsWith("/") && !u.OriginalString.EndsWith("/")) uriString = uriString.Substring(0, uriString.Length - 1);
-            else if (!uriString.EndsWith("/") && u.OriginalString.EndsWith("/")) uriString += '/';
+            if (uriString.EndsWith("/") && !u.OriginalString.EndsWith("/"))
+                uriString = uriString.Substring(0, uriString.Length - 1);
+            else if (!uriString.EndsWith("/") && u.OriginalString.EndsWith("/"))
+                uriString += '/';
+            else if (uriString.Contains("/#") && !u.OriginalString.Contains("/#"))
+                uriString = uriString.Replace("/#", "#");
+            else if (uriString.Contains("/#") && !u.OriginalString.Contains("/#"))
+                uriString = uriString.Replace("/#", "#");
+            else if (!uriString.Contains("/#") && u.OriginalString.Contains("/#"))
+                uriString = uriString.Replace("#", "/#");
 
             return FormatUri(Rfc3987Formatter.EscapeUriString(uriString));
         }
