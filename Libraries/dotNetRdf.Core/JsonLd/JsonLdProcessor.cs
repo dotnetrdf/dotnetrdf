@@ -464,7 +464,7 @@ namespace VDS.RDF.JsonLd
         public static string Canonicalize(JArray input)
         {
             var store = new TripleStore();
-            new JsonLdParser().LoadCanonicalized(store, input);
+            new JsonLdParser().Load(store, input);
 
             return CanonicalizeProcessor.Canonicalize(store);
         }

@@ -51,6 +51,13 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
     /// </summary>
     /// <param name="inputDataset"></param>
     /// <returns></returns>
+    public TripleStore Canonicalize(ITripleStore inputDataset) => this.Canonicalize(inputDataset.Graphs);
+
+    /// <summary>
+    /// This implements https://w3c-ccg.github.io/rdf-dataset-canonicalization/spec/.
+    /// </summary>
+    /// <param name="inputDataset"></param>
+    /// <returns></returns>
     public TripleStore Canonicalize(IEnumerable<IGraph> inputDataset)
     {
         var outputDataset = new TripleStore();
