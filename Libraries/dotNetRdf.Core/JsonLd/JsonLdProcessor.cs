@@ -461,6 +461,7 @@ namespace VDS.RDF.JsonLd
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
+        /// <remarks>Caution: Make sure to use DateParseHandling.None when deserializing the JSON document.</remarks>
         public static string Canonicalize(JArray input)
         {
             var store = new TripleStore();
