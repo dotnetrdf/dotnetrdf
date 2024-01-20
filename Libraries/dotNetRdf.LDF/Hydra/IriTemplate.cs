@@ -32,6 +32,10 @@ namespace VDS.RDF.LDF.Hydra;
 
 internal class IriTemplate(INode node, IGraph graph) : GraphWrapperNode(node, graph)
 {
+    internal string GraphVariable =>
+        SelectMapping(Vocabulary.Rdf.Subject) // TODO: Predicate
+        ?? throw new LdfException("IRI template contains no graph");
+
     internal string SubjectVariable =>
         SelectMapping(Vocabulary.Rdf.Subject)
         ?? throw new LdfException("IRI template contains no subject");
