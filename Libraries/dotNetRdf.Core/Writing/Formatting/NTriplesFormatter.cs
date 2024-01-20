@@ -145,7 +145,7 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
-        private static string EscapeString(string s)
+        private string EscapeString(string s)
         {
             var builder = new StringBuilder();
             foreach (var c in s)
@@ -158,6 +158,9 @@ namespace VDS.RDF.Writing.Formatting
 
                     // Escape other non-printable characters as \uXXXX.
                     _ when c < ' ' || c == 0x7F => @"\u" + ((int)c).ToString("X4"),
+
+                    // For Original NTriples syntax characters outside the ASCII range must be escaped
+                    _ when Syntax == NTriplesSyntax.Original && c > 127 => @"\u" + ((int)c).ToString("X4"),
 
                     // Everything else gets passed through verbatim.
                     _ => c,

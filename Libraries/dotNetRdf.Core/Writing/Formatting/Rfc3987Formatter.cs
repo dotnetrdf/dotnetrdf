@@ -68,6 +68,10 @@ namespace VDS.RDF.Writing.Formatting
             }
         }
 
+        private static bool IsHexChar(int c)
+        {
+            return c is >= '0' and <= '9' or >= 'A' and <= 'F' or >= 'a' and <= 'f';
+        }
         public static string EscapeUriString(string uriString)
         {
             var builder = new StringBuilder();
@@ -91,6 +95,13 @@ namespace VDS.RDF.Writing.Formatting
                             continue;
                         }
 
+                        if (!IsHexChar(escaped1.Value))
+                        {
+                            builder.AppendEscaped(c);
+                            builder.AppendEscaped(escaped1.Value);
+                            continue;
+                        }
+
                         if (enumerator.MoveNext())
                         {
                             escaped2 = enumerator.Current;
@@ -102,7 +113,14 @@ namespace VDS.RDF.Writing.Formatting
                             continue;
                         }
 
-                        builder.AppendFormat("%{0}{1}", escaped1, escaped2);
+                        if (!IsHexChar(escaped2.Value))
+                        {
+                            builder.AppendEscaped(c);
+                            builder.AppendEscaped(escaped1.Value);
+                            builder.AppendEscaped(escaped2.Value);
+                        }
+
+                        builder.AppendFormat("%{0}{1}", Char.ConvertFromUtf32(escaped1.Value), Char.ConvertFromUtf32(escaped2.Value));
                     }
                     else
                     {
