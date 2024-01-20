@@ -25,7 +25,6 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
@@ -39,18 +38,6 @@ namespace VDS.RDF.Writing.Formatting
         : BaseFormatter, ICommentFormatter
     {
         private readonly BlankNodeOutputMapper _bnodeMapper;
-
-        /// <summary>
-        /// Set of characters which must be escaped in Literals.
-        /// </summary>
-        protected readonly List<string[]> _litEscapes = new List<string[]>
-        {
-            new [] { @"\", @"\\" },
-            new [] { "\"", "\\\"" },
-            new [] { "\n", @"\n" },
-            new [] { "\r", @"\r" },
-            new [] { "\t", @"\t" },
-        };
 
         /// <summary>
         /// Creates a new NTriples formatter.
@@ -142,9 +129,7 @@ namespace VDS.RDF.Writing.Formatting
             var output = new StringBuilder();
 
             output.Append('"');
-            var value = l.Value;
-            value = Escape(value, _litEscapes);
-            output.Append(FormatChar(value.ToCharArray()));
+            output.Append(EscapeString(l.Value));
             output.Append('"');
 
             if (!l.Language.Equals(string.Empty))
@@ -158,6 +143,27 @@ namespace VDS.RDF.Writing.Formatting
             }
 
             return output.ToString();
+        }
+
+        private static string EscapeString(string s)
+        {
+            var builder = new StringBuilder();
+            foreach (var c in s)
+            {
+                builder.Append(c switch
+                {
+                    // https://www.w3.org/TR/n-triples/#grammar-production-ECHAR
+                    '\t' => @"\t", '\b' => @"\b", '\n' => @"\n", '\r' => @"\r", '\f' => @"\f",
+                    '"' => "\\\"", '\\' => @"\\",
+
+                    // Escape other non-printable characters as \uXXXX.
+                    _ when c < ' ' || c == 0x7F => @"\u" + ((int)c).ToString("X4"),
+
+                    // Everything else gets passed through verbatim.
+                    _ => c,
+                });
+            }
+            return builder.ToString();
         }
 
         /// <summary>
