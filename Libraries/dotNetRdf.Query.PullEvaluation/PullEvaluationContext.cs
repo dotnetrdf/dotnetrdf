@@ -1,23 +1,50 @@
+using System.Globalization;
 using VDS.RDF;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Patterns;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
 public class PullEvaluationContext : IPatternEvaluationContext
 {
-    public ISparqlDataset Data { get; }
+    private readonly BaseTripleCollection _defaultGraph;
+    private readonly IDictionary<IRefNode, BaseTripleCollection> _namedGraphs;
+    
     public bool RigorousEvaluation { get; }
+    internal IEnumerable<IRefNode> NamedGraphNames => _namedGraphs.Keys;
+    
+    public ISparqlExpressionProcessor<IValuedNode, PullEvaluationContext, ISet> ExpressionProcessor { get; }
 
-    public PullEvaluationContext(ISparqlDataset data)
+    public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null)
     {
-        Data = data;
+        if (unionDefaultGraph)
+        {
+            _defaultGraph = new UnionTripleCollection(data.Graphs.First().Triples, data.Graphs.Skip(1).Select(g=>g.Triples));
+        }
+        else
+        {
+            if (defaultGraphNames != null)
+            {
+                var graphNames = defaultGraphNames.ToList();
+                _defaultGraph = new UnionTripleCollection(data[graphNames[0]].Triples,
+                    graphNames.Select(g => data[g].Triples));
+            }
+            else
+            {
+                _defaultGraph = data.HasGraph((IRefNode)null) ? data[(IRefNode)null].Triples : new TripleCollection();
+            }
+        }
+
+        _namedGraphs = namedGraphs != null ? namedGraphs.ToDictionary(g => g, g => data.HasGraph(g) ? data[g].Triples : new TripleCollection()) : new Dictionary<IRefNode, BaseTripleCollection>();
         RigorousEvaluation = true;
+        ExpressionProcessor = new PullExpressionProcessor(
+            new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal), UriFactory.Root,
+            RigorousEvaluation);
     }
 
-    private INode? GetNode(PatternItem patternItem, ISet? inputBindings)
+    private static INode? GetNode(PatternItem patternItem, ISet? inputBindings)
     {
         if (patternItem is NodeMatchPattern nodeMatchPattern) { return nodeMatchPattern.Node; }
 
@@ -30,21 +57,32 @@ public class PullEvaluationContext : IPatternEvaluationContext
         return null;
     }
 
-    internal IEnumerable<Triple> GetTriples(IMatchTriplePattern triplePattern, ISet? inputBindings)
+    private bool ContainsTriple(Triple t, IRefNode? activeGraph)
     {
+        if (activeGraph != null)
+        {
+            return _namedGraphs.ContainsKey(activeGraph) && _namedGraphs[activeGraph].Contains(t);
+        }
+
+        return _defaultGraph.Contains(t);
+    }
+
+    internal IEnumerable<Triple> GetTriples(IMatchTriplePattern triplePattern, ISet? inputBindings, IRefNode? activeGraph)
+    {
+        BaseTripleCollection tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
         // Expand quoted triple patterns in subject or object position of the triple pattern
         if (triplePattern.Subject is QuotedTriplePattern subjectTriplePattern)
         {
-            return GetQuotedTriples(subjectTriplePattern).SelectMany(tn =>
+            return GetQuotedTriples(subjectTriplePattern, activeGraph).SelectMany(tn =>
                 GetTriples(new TriplePattern(new NodeMatchPattern(tn), triplePattern.Predicate,
-                    triplePattern.Object), inputBindings));
+                    triplePattern.Object), inputBindings, activeGraph));
         }
 
         if (triplePattern.Object is QuotedTriplePattern objectTriplePattern)
         {
-            return GetQuotedTriples(objectTriplePattern).SelectMany(tn =>
+            return GetQuotedTriples(objectTriplePattern, activeGraph).SelectMany(tn =>
                 GetTriples(new TriplePattern(triplePattern.Subject, triplePattern.Predicate,
-                    new NodeMatchPattern(tn)), inputBindings));
+                    new NodeMatchPattern(tn)), inputBindings, activeGraph));
         }
 
         INode? subj = GetNode(triplePattern.Subject, inputBindings);
@@ -58,71 +96,59 @@ public class PullEvaluationContext : IPatternEvaluationContext
                 {
                     // Return if the triple exists
                     var t = new Triple(subj, pred, obj);
-                    return Data.ContainsTriple(t) ? t.AsEnumerable() : Enumerable.Empty<Triple>();
+                    return ContainsTriple(t, activeGraph) ? t.AsEnumerable() : Enumerable.Empty<Triple>();
                 }
-                return Data.GetTriplesWithSubjectPredicate(subj, pred);
             }
-
-            return obj != null ? Data.GetTriplesWithSubjectObject(subj, obj) : Data.GetTriplesWithSubject(subj);
         }
-
-        if (pred != null)
-        {
-            return obj != null ? Data.GetTriplesWithPredicateObject(pred, obj) : Data.GetTriplesWithPredicate(pred);
-        }
-
-        return obj != null ? Data.GetTriplesWithObject(obj) : Data.Triples;
+        return tripleCollection[(subj, pred, obj)];
     }
 
-    private IEnumerable<ITripleNode> GetQuotedTriples(QuotedTriplePattern qtp)
+    private IEnumerable<ITripleNode> GetQuotedTriples(QuotedTriplePattern qtp, IRefNode? activeGraph)
     {
         TriplePattern triplePattern = qtp.QuotedTriple;
         INode s, p, o;
+        BaseTripleCollection tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
         switch (triplePattern.IndexType)
         {
             case TripleIndexType.Subject:
                 s = ((NodeMatchPattern)triplePattern.Subject).Node;
-                return Data.GetQuotedWithSubject(s).Select(t => new TripleNode(t));
+                return tripleCollection.QuotedWithSubject(s).Select(t => new TripleNode(t));
 
             case TripleIndexType.Predicate:
                 p = ((NodeMatchPattern)triplePattern.Predicate).Node;
-                return Data.GetQuotedWithPredicate(p).Select(t => new TripleNode(t));
+                return tripleCollection.QuotedWithPredicate(p).Select(t => new TripleNode(t));
 
             case TripleIndexType.Object:
                 o = ((NodeMatchPattern)triplePattern.Object).Node;
-                return Data.GetQuotedWithObject(o).Select(t => new TripleNode(t));
+                return tripleCollection.QuotedWithObject(o).Select(t => new TripleNode(t));
 
             case TripleIndexType.SubjectPredicate:
                 s = ((NodeMatchPattern)triplePattern.Subject).Node;
                 p = ((NodeMatchPattern)triplePattern.Predicate).Node;
-                return Data.GetQuotedWithSubjectPredicate(s, p).Select(t => new TripleNode(t));
+                return tripleCollection.QuotedWithSubjectPredicate(s, p).Select(t => new TripleNode(t));
 
             case TripleIndexType.SubjectObject:
                 s = ((NodeMatchPattern)triplePattern.Subject).Node;
                 o = ((NodeMatchPattern)triplePattern.Object).Node;
-                return Data.GetQuotedWithSubjectObject(s, o).Select(t => new TripleNode(t));
+                return tripleCollection.QuotedWithSubjectObject(s, o).Select(t => new TripleNode(t));
 
             case TripleIndexType.PredicateObject:
                 p = ((NodeMatchPattern)triplePattern.Predicate).Node;
                 o = ((NodeMatchPattern)triplePattern.Object).Node;
-                return Data.GetQuotedWithPredicateObject(p, o).Select(t => new TripleNode(t));
+                return tripleCollection.QuotedWithPredicateObject(p, o).Select(t => new TripleNode(t));
 
             case TripleIndexType.NoVariables:
                 s = ((NodeMatchPattern)triplePattern.Subject).Node;
                 p = ((NodeMatchPattern)triplePattern.Predicate).Node;
                 o = ((NodeMatchPattern)triplePattern.Object).Node;
                 var t = new Triple(s, p, o);
-                if (Data.ContainsQuotedTriple(t))
+                if (tripleCollection.ContainsQuoted(t))
                 {
                     return new[] { new TripleNode(t) };
                 }
-                else
-                {
-                    return Enumerable.Empty<ITripleNode>();
-                }
+                return Enumerable.Empty<ITripleNode>();
             case TripleIndexType.None:
-                return Data.QuotedTriples.Select(t => new TripleNode(t));
-
+                return tripleCollection.Quoted.Select(t => new TripleNode(t));
         }
 
         return Enumerable.Empty<ITripleNode>();

@@ -26,4 +26,7 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Query.PullEvaluation\dotNetRdf.Query.PullEvaluation.csproj" />
+  </ItemGroup>
 </Project>

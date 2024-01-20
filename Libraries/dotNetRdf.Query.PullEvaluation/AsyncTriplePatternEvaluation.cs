@@ -1,3 +1,4 @@
+using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
@@ -26,9 +27,9 @@ public class AsyncTriplePatternEvaluation : IAsyncEvaluation
     /// <param name="context">Evaluation context</param>
     /// <param name="input">Optional input solution</param>
     /// <returns></returns>
-    public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default)
     {
-        return context.GetTriples(_triplePattern, input)
+        return context.GetTriples(_triplePattern, input, activeGraph)
             .Select(t=>_triplePattern.Evaluate(context,t))
             .Where(set => set != null)
             .ToAsyncEnumerable();

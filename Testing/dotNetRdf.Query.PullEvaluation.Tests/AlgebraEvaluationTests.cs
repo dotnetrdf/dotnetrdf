@@ -1,6 +1,4 @@
 using VDS.RDF;
-using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Patterns;
@@ -12,9 +10,12 @@ namespace dotNetRdf.Query.PullEvaluation.Tests;
 public class AlgebraEvaluationTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
-    private readonly ISparqlDataset _dataset;
+    private readonly IGraph _g;
+    private readonly ITripleStore _dataset;
     private readonly INode _alice;
     private readonly IUriNode _bob;
+    private readonly IUriNode _carol;
+    private readonly IUriNode _dave;
     private readonly IUriNode _bobHome;
     private readonly INode _foafKnows;
     private readonly INode _foafName;
@@ -23,12 +24,15 @@ public class AlgebraEvaluationTests
     public AlgebraEvaluationTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
-        var g = new Graph();
-        g.LoadFromFile("resources/single_graph.ttl");
-        _dataset = new InMemoryDataset(g);
-        INodeFactory nodeFactory = g;
+        _g = new Graph();
+        _g.LoadFromFile("resources/single_graph.ttl");
+        _dataset = new TripleStore();
+        _dataset.Add(_g);
+        INodeFactory nodeFactory = _g;
         _alice = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://example.org/alice"));
         _bob = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://example.org/bob"));
+        _carol = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://example.org/carol"));
+        _dave = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://example.org/dave"));
         _bobHome = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://example.org/pages/bob"));
         _foafKnows = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://xmlns.com/foaf/0.1/knows"));
         _foafName = nodeFactory.CreateUriNode(nodeFactory.UriFactory.Create("http://xmlns.com/foaf/0.1/name"));
@@ -39,9 +43,9 @@ public class AlgebraEvaluationTests
     public async void SingleTriplePatternMatch()
     {
         var algebra = new Bgp(new TriplePattern(new NodeMatchPattern(_alice), new NodeMatchPattern(_foafKnows), new VariablePattern("x")));
-        var p = new PullQueryProcessor(algebra, _dataset);
+        var p = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in p.Evaluate())
+        await foreach (ISet result in p.Evaluate(algebra))
         {
             results.Add(result);
         }
@@ -62,9 +66,9 @@ public class AlgebraEvaluationTests
                 new NodeMatchPattern(_foafName),
                 new VariablePattern("xname"))
         });
-        var processor = new PullQueryProcessor(algebra, _dataset);
+        var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor.Evaluate())
+        await foreach (ISet result in processor.Evaluate(algebra))
         {
             results.Add(result);
         }
@@ -92,9 +96,9 @@ public class AlgebraEvaluationTests
                 new NodeMatchPattern(_foafHomepage),
                 new VariablePattern("xhome")),
         });
-        var processor = new PullQueryProcessor(algebra, _dataset);
+        var processor = new PullQueryProcessor(_dataset);
         var results = new List<ISet>();
-        await foreach (ISet result in processor.Evaluate())
+        await foreach (ISet result in processor.Evaluate(algebra))
         {
             results.Add(result);
         }
@@ -106,17 +110,31 @@ public class AlgebraEvaluationTests
     }
 
     [Fact]
-    public void TestOptional()
+    public async void TestOptional()
     {
-        var query = "SELECT * WHERE { ?x a ?y OPTIONAL { ?x <http://example.org/p> ?o } }";
-        var parser = new SparqlQueryParser();
-        SparqlQuery sq = parser.ParseFromString(query);
-        _testOutputHelper.WriteLine(sq.ToAlgebra().ToString());
-        query = "SELECT * WHERE { ?x a ?y { ?x <http://example.org/p> ?o } }";
-        sq = parser.ParseFromString(query);
-        _testOutputHelper.WriteLine(sq.ToAlgebra().ToString());
-        query = "SELECT * WHERE { ?x a ?y . ?x <http://example.org/p> ?o }";
-        sq = parser.ParseFromString(query);
-        _testOutputHelper.WriteLine(sq.ToAlgebra().ToString());
+        var algebra = new LeftJoin(
+            new Bgp(
+                new TriplePattern(
+                    new NodeMatchPattern(_bob),
+                    new NodeMatchPattern(_foafKnows),
+                    new VariablePattern("x")
+                )
+            ),
+            new Bgp(
+                new TriplePattern(
+                    new VariablePattern("x"),
+                    new NodeMatchPattern(_foafName),
+                    new VariablePattern("xname")))
+        );
+        var processor =  new PullQueryProcessor(_dataset);
+        IList<ISet> results = await processor.Evaluate(algebra).ToListAsync();
+        Assert.Equal(2, results.Count);
+        var expectResult1 = new Set();
+        expectResult1.Add("x", _carol);
+        expectResult1.Add("xname", _g.CreateLiteralNode("Carol"));
+        var expectResult2 = new Set();
+        expectResult2.Add("x", _dave);
+        Assert.Contains(expectResult1, results);
+        Assert.Contains(expectResult2, results);
     }
 }

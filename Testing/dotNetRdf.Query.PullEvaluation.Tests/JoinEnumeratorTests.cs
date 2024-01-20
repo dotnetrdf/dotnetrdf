@@ -9,7 +9,7 @@ public class JoinEnumeratorTests : EnumeratorTestBase
     public async void TestIntegerSequence()
     {
         var enumeration = new AsyncIntegerEnumeration(_nodeFactory, "x", 0, 6, 3);
-        IAsyncEnumerator<ISet> seq = enumeration.Evaluate(null, null).GetAsyncEnumerator();
+        IAsyncEnumerator<ISet> seq = enumeration.Evaluate(null, null, null).GetAsyncEnumerator();
         Assert.True(await seq.MoveNextAsync());
         Assert.Equal("0", (seq.Current["x"] as ILiteralNode)?.Value);
         Assert.True(await seq.MoveNextAsync());

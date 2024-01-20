@@ -1,3 +1,4 @@
+using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 
 namespace dotNetRdf.Query.PullEvaluation;
@@ -17,12 +18,12 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
         _rhs = rhs;
     }
 
-    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph = default, CancellationToken cancellationToken = default)
     {
         _lhsHasMore = true;
         _rhsHasMore = true;
-        _lhsResults = _lhs.Evaluate(context, input).GetAsyncEnumerator(cancellationToken);
-        _rhsResults = _rhs.Evaluate(context, input).GetAsyncEnumerator(cancellationToken);
+        _lhsResults = _lhs.Evaluate(context, input, activeGraph).GetAsyncEnumerator(cancellationToken);
+        _rhsResults = _rhs.Evaluate(context, input, activeGraph).GetAsyncEnumerator(cancellationToken);
         Task<bool> lhsMoveNext = _lhsResults.MoveNextAsync().AsTask();
         Task<bool> rhsMoveNext = _rhsResults.MoveNextAsync().AsTask();
         IAsyncEnumerable<ISet>? joinEnumerator = null;

@@ -1,3 +1,4 @@
+using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 
 namespace dotNetRdf.Query.PullEvaluation;
@@ -9,6 +10,7 @@ public interface IAsyncEvaluation
     /// </summary>
     /// <param name="context">The evaluation context to use.</param>
     /// <param name="input">The variable bindings to apply to the evaluation. Null if there are no input variable bindings.</param>
+    /// <param name="activeGraph">Overrides the active graph(s) in the context dataset.</param>
     /// <returns>An async enumerable over the results of the evaluation.</returns>
-    IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default);
 }
