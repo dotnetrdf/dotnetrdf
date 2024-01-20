@@ -284,8 +284,6 @@ namespace VDS.RDF.Writing.Formatting
                 uriString += '/';
             else if (uriString.Contains("/#") && !u.OriginalString.Contains("/#"))
                 uriString = uriString.Replace("/#", "#");
-            else if (uriString.Contains("/#") && !u.OriginalString.Contains("/#"))
-                uriString = uriString.Replace("/#", "#");
             else if (!uriString.Contains("/#") && u.OriginalString.Contains("/#"))
                 uriString = uriString.Replace("#", "/#");
 
