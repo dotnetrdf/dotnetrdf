@@ -465,7 +465,7 @@ namespace VDS.RDF.JsonLd
         public static string Canonicalize(JArray input)
         {
             var store = new TripleStore();
-            new JsonLdParser().Load(store, input);
+            new JsonLdParser().Load(store, input.DeepClone() as JArray);
 
             return new RdfCanonicalizer().Canonicalize(store).SerializedNQuads;
         }
