@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VDS.RDF.JsonLd.Processors
 {
@@ -36,7 +37,7 @@ namespace VDS.RDF.JsonLd.Processors
     {
         private readonly string _prefix;
         private int _counter;
-        private readonly Dictionary<string, string> _identifierMap = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _identifierMap = new();
 
         /// <summary>
         /// Create a new generator instance.
@@ -49,6 +50,13 @@ namespace VDS.RDF.JsonLd.Processors
                 throw new ArgumentException("The counter prefix must be a non-empty string.");
             }
             _prefix = "_:" + counterPrefix;
+        }
+        
+        private BlankNodeGenerator(string prefix, int counter, Dictionary<string, string> identifierMap)
+        {
+            _prefix = prefix;
+            _counter = counter;
+            _identifierMap = identifierMap;
         }
 
         /// <summary>
@@ -75,5 +83,32 @@ namespace VDS.RDF.JsonLd.Processors
             // 4 - Return the new blank node identifier.
             return mappedIdentifier;
         }
+
+        /// <inheritdoc/>
+        public string GetMappedIdentifier(string identifier)
+        {
+            // If identifier is not null and has an entry in the identifier map, return the mapped identifier.
+            if (identifier != null && _identifierMap.TryGetValue(identifier, out var mappedIdentifier))
+            {
+                return mappedIdentifier;
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<string> GetMappedIdentifiers()
+        {
+            return _identifierMap.Keys;
+        }
+
+        /// <inheritdoc />
+        public IBlankNodeGenerator Clone()
+        {
+            return new BlankNodeGenerator(_prefix, _counter, new Dictionary<string, string>(_identifierMap));
+        }
+
+        /// <inheritdoc />
+        public IDictionary<string, string> GetDictionary() => this._identifierMap;
     }
 }
