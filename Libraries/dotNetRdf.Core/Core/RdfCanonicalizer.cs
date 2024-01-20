@@ -47,73 +47,79 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
     private int _nquadsRecursionLimit = 1000;
 
     /// <summary>
-    /// This implements https://w3c-ccg.github.io/rdf-dataset-canonicalization/spec/.
+    /// This implements RDFC-1.0 (https://www.w3.org/TR/rdf-canon).
     /// </summary>
     /// <param name="inputDataset"></param>
     /// <returns></returns>
-    public TripleStore Canonicalize(ITripleStore inputDataset) => this.Canonicalize(inputDataset.Graphs);
-
-    /// <summary>
-    /// This implements https://w3c-ccg.github.io/rdf-dataset-canonicalization/spec/.
-    /// </summary>
-    /// <param name="inputDataset"></param>
-    /// <returns></returns>
-    public TripleStore Canonicalize(IEnumerable<IGraph> inputDataset)
+    public CanonicalizedRdfDataset Canonicalize(ITripleStore inputDataset)
     {
-        var outputDataset = new TripleStore();
-        var inputDatasetEnum = inputDataset.ToList();
+        // 1) Create the canonicalization state (done in constructor).
+        // Note: Since our input will always be a dataset, we do not need to parse n-quads syntax.
 
+        var outputDataset = new TripleStore();
+        var inputDatasetEnum = inputDataset.Graphs.ToList();
+
+        // 2) For every quad (generated here using LINQ) in the input dataset
+        // 2.1) For every blank node of the quad, add an entry to _blankNodeToQuadsMap linking them
         inputDatasetEnum.SelectMany(graph =>
                 graph.Triples.SelectMany(triple =>
                     triple.Nodes.Concat([graph.Name]).OfType<BlankNode>().Select(node => (graph, triple, node))))
             .ToList().ForEach(item =>
                 _blankNodeToQuadsMap.Add(item.node.InternalID, new Quad(item.triple, item.graph.Name)));
 
-        var nonNormalizedIdentifiers = _blankNodeToQuadsMap.Keys.ToList();
-
-        var simple = true;
-
-        while (simple)
+        // 3) For each key in _blankNodeToQuadsMap
+        foreach (var identifier in _blankNodeToQuadsMap.Keys.ToList())
         {
-            simple = false;
-            _hashToBlankNodesMap.Clear();
-
-            foreach (var identifier in nonNormalizedIdentifiers)
-            {
-                var hash = HashFirstDegreeQuads(identifier);
-                _hashToBlankNodesMap.Add(hash, identifier);
-            }
-
-            foreach (KeyValuePair<string, List<string>> entry in _hashToBlankNodesMap.OrderBy(p => p.Key)
-                         .Where(pair => pair.Value.Count <= 1))
-            {
-                _canonicalIssuer.GenerateBlankNodeIdentifier(entry.Value[0]);
-                _hashToBlankNodesMap.Remove(entry.Value[0]);
-                nonNormalizedIdentifiers.Remove(entry.Value[0]);
-                simple = true;
-            }
+            // 3.1) Create a hash using HashFirstDegreeQuads
+            var hash = HashFirstDegreeQuads(identifier);
+            // 3.2) Add the an entry to _hashToBlankNodesMap
+            _hashToBlankNodesMap.Add(hash, identifier);
         }
 
-        foreach (KeyValuePair<string, List<string>> entry in _hashToBlankNodesMap.OrderBy(p => p.Key))
+        // 4) For each entry of _hashToBlankNodesMap, code point ordered by hash
+        // 4.1) Skipping entries that have more than one value
+        foreach (KeyValuePair<string, List<string>> entry in _hashToBlankNodesMap
+                     .OrderBy(p => p.Key, StringComparer.Ordinal).Where(pair => pair.Value.Count <= 1))
         {
+            // 4.2) Issue a canonical identifier for the blank node
+            _canonicalIssuer.GenerateBlankNodeIdentifier(entry.Value[0]);
+            // 4.3) Remove the entry from _hashToBlankNodesMap
+            _hashToBlankNodesMap.Remove(entry.Value[0]);
+        }
+
+        // 5) For each entry of _hashToBlankNodesMap, code point ordered by hash 
+        foreach (KeyValuePair<string, List<string>> entry in _hashToBlankNodesMap.OrderBy(p => p.Key,
+                     StringComparer.Ordinal))
+        {
+            // 5.1) Create hashPathList where each item will be a result of running HashNDegreeQuads
             var hashPathList = new List<(string hash, IBlankNodeGenerator issuer)>();
+
+            // 5.2) For each blank node identifier in the map entry 
             foreach (var blankNodeIdentifier in entry.Value)
             {
+                // 5.2.1) If a canonical identifier has already been issued, continue to the next blank node identifier
                 if (blankNodeIdentifier.StartsWith($"_:{CanonicalIdentifier}")) continue;
+                // 5.2.2) Create temporary issuer, an identifier issuer initialized with the prefix 'b' (the default)
                 var tempIssuer = new BlankNodeGenerator();
+                // 5.2.3) Generate a temporary blank node identifier using tempIssuer
                 tempIssuer.GenerateBlankNodeIdentifier(blankNodeIdentifier);
+                // 5.2.4) Run HashNDegreeQuads for the blank node identifier, passing the other variables we just set up
                 hashPathList.Add((
                     HashNDegreeQuads(blankNodeIdentifier, tempIssuer, out IBlankNodeGenerator resultIssuer),
                     resultIssuer));
             }
 
-            foreach (var identifier in hashPathList.OrderBy(p => p.hash)
+            // 5.3) For each entry of hashPathList, code point ordered by the hash
+            // 5.3.1a) For each blank node identifier issued by the temporary identifier (aggregated here using LINQ)
+            foreach (var identifier in hashPathList.OrderBy(p => p.hash, StringComparer.Ordinal)
                          .SelectMany(result => result.issuer.GetMappedIdentifiers()))
             {
+                // 5.3.1b) generate a canonical identifier
                 _canonicalIssuer.GenerateBlankNodeIdentifier(identifier);
             }
         }
 
+        // Generate the canonicalized dataset
         foreach (IGraph graph in inputDatasetEnum)
         {
             IRefNode graphName = graph.Name is BlankNode graphBlankNode
@@ -142,7 +148,7 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
             outputDataset.Add(nGraph, true);
         }
 
-        return outputDataset;
+        return new CanonicalizedRdfDataset(inputDataset, outputDataset, _canonicalIssuer.GetDictionary());
     }
 
     private string HashFirstDegreeQuads(string identifier)
@@ -365,8 +371,38 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
     }
 
     /// <summary>
-    /// Returns the canonical issuer's mapping dictionary, for unit tests.
+    /// A canonicalized RDF dataset, as per https://www.w3.org/TR/rdf-canon/#dfn-canonicalized-dataset.
+    /// It does not contain the input blank node identifier map, as n-quads inputs are not currently supported.
     /// </summary>
-    /// <returns></returns>
-    public IDictionary<string, string> GetMappingDictionary() => _canonicalIssuer.GetDictionary();
+    /// <remarks>
+    /// For convenience, this also contains the serialized n-quads format, as well as the output dataset.
+    /// </remarks>
+    /// <param name="inputDataset"></param>
+    /// <param name="outputDataset"></param>
+    /// <param name="issuedIdentifiersMap"></param>
+    public class CanonicalizedRdfDataset(
+        ITripleStore inputDataset,
+        ITripleStore outputDataset,
+        IDictionary<string, string> issuedIdentifiersMap)
+    {
+        /// <summary>
+        /// The dataset, serialized in canonical n-quads form.
+        /// </summary>
+        public readonly string SerializedNQuads = new NQuads11Formatter().Format(outputDataset);
+
+        /// <summary>
+        /// The input dataset.
+        /// </summary>
+        public readonly ITripleStore InputDataset = inputDataset;
+
+        /// <summary>
+        /// The canonicalized output dataset.
+        /// </summary>
+        public readonly ITripleStore OutputDataset = outputDataset;
+
+        /// <summary>
+        /// The mapping between original blank node identifiers and their canonical counterparts.
+        /// </summary>
+        public readonly IDictionary<string, string> IssuedIdentifiersMap = issuedIdentifiersMap;
+    }
 }

@@ -94,7 +94,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="store"></param>
         /// <returns></returns>
-        public string Format(TripleStore store)
+        public string Format(ITripleStore store)
         {
             var sb = new StringBuilder();
             store.Graphs

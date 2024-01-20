@@ -467,7 +467,7 @@ namespace VDS.RDF.JsonLd
             var store = new TripleStore();
             new JsonLdParser().Load(store, input);
 
-            return CanonicalizeProcessor.Canonicalize(store);
+            return new RdfCanonicalizer().Canonicalize(store).SerializedNQuads;
         }
 
         private static void ReplaceNulls(JToken token)

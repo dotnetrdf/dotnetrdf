@@ -28,59 +28,38 @@ public class RdfCanonTestSuite(ITestOutputHelper output) : RdfTestSuite
     [ManifestTestRunner("https://w3c.github.io/rdf-canon/tests/vocab#RDFC10EvalTest")]
     internal void EvalTest(ManifestTestData t)
     {
-        var dataInputPath = t.Manifest.ResolveResourcePath(t.Action);
         var resultInputPath = t.Manifest.ResolveResourcePath(t.Result);
         var expectedResult = File.ReadAllText(resultInputPath);
 
-        var inputStore = new TripleStore();
-        inputStore.LoadFromFile(dataInputPath);
+        RdfCanonicalizer.CanonicalizedRdfDataset result = RunCanonicalize(t);
 
-        TripleStore resultStore = new RdfCanonicalizer(t.HashAlgorithm ?? "SHA256").Canonicalize(inputStore.Graphs);
-
-        var formatter = new NQuads11Formatter();
-        var result = formatter.Format(resultStore);
-
-        result.Should().BeEquivalentTo(expectedResult);
+        result.SerializedNQuads.Should().BeEquivalentTo(expectedResult);
     }
 
     [ManifestTestRunner("https://w3c.github.io/rdf-canon/tests/vocab#RDFC10NegativeEvalTest")]
     internal void NegativeEvalTest(ManifestTestData t)
     {
-        string result = null;
-        var dataInputPath = t.Manifest.ResolveResourcePath(t.Action);
-        try
-        {
-            var inputStore = new TripleStore();
-            inputStore.LoadFromFile(dataInputPath);
-
-            TripleStore resultStore = new RdfCanonicalizer(t.HashAlgorithm ?? "SHA256").Canonicalize(inputStore.Graphs);
-
-            var formatter = new NQuads11Formatter();
-            result = formatter.Format(resultStore);
-        }
-        catch
-        {
-            // ignored
-        }
-
-        result.Should().BeNull();
+        Assert.ThrowsAny<Exception>(() => RunCanonicalize(t));
     }
 
     [ManifestTestRunner("https://w3c.github.io/rdf-canon/tests/vocab#RDFC10MapTest")]
     internal void MapTest(ManifestTestData t)
     {
-        var dataInputPath = t.Manifest.ResolveResourcePath(t.Action);
         var resultInputPath = t.Manifest.ResolveResourcePath(t.Result);
         var expectedResultJson = File.ReadAllText(resultInputPath);
         var expectedResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(expectedResultJson);
+        
+        RdfCanonicalizer.CanonicalizedRdfDataset result = RunCanonicalize(t);
 
-        var inputStore = new TripleStore();
-        inputStore.LoadFromFile(dataInputPath);
-
-        var canonicalizer = new RdfCanonicalizer(t.HashAlgorithm ?? "SHA256");
-        canonicalizer.Canonicalize(inputStore.Graphs);
-        var dict = canonicalizer.GetMappingDictionary().Select(p =>
+        var dict = result.IssuedIdentifiersMap.Select(p =>
             new KeyValuePair<string, string>(p.Key, p.Value.StartsWith("_:") ? p.Value.Substring(2) : p.Value));
         dict.Should().BeEquivalentTo(expectedResult);
+    }
+
+    private static RdfCanonicalizer.CanonicalizedRdfDataset RunCanonicalize(ManifestTestData t)
+    {
+        var inputStore = new TripleStore();
+        inputStore.LoadFromFile(t.Manifest.ResolveResourcePath(t.Action));
+        return new RdfCanonicalizer(t.HashAlgorithm ?? "SHA256").Canonicalize(inputStore);
     }
 }
