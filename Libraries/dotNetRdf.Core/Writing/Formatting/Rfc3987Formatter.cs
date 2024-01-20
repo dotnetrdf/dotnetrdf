@@ -25,16 +25,53 @@
 */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
     internal static class Rfc3987Formatter
     {
+        private class RuneEnumerator(string input) : IEnumerator<int>
+        {
+            private int _index = -1;
+
+            public bool MoveNext()
+            {
+                if (++_index >= input.Length)
+                {
+                    return false;
+                }
+
+                Current = Char.ConvertToUtf32(input, _index);
+                if (Char.IsSurrogatePair(input, _index))
+                {
+                    _index++;
+                }
+
+                return true;
+            }
+
+            public void Reset()
+            {
+                _index = -1;
+            }
+
+            public int Current { get; private set; }
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose()
+            {
+                input = null;
+            }
+        }
+
         public static string EscapeUriString(string uriString)
         {
             var builder = new StringBuilder();
-            using (CharEnumerator enumerator = uriString.GetEnumerator())
+            using (var enumerator = new RuneEnumerator(uriString))
             {
                 while (enumerator.MoveNext())
                 {
@@ -42,8 +79,8 @@ namespace VDS.RDF.Writing.Formatting
                     if (c == '%')
                     {
                         // Possibly already escaped
-                        char? escaped1 = null;
-                        char? escaped2 = null;
+                        int? escaped1 = null;
+                        int? escaped2 = null;
                         if (enumerator.MoveNext())
                         {
                             escaped1 = enumerator.Current;
@@ -77,34 +114,35 @@ namespace VDS.RDF.Writing.Formatting
             return builder.ToString();
         }
 
-        private static void AppendEscaped(this StringBuilder builder, char c)
+        private static void AppendEscaped(this StringBuilder builder, int c)
         {
+            var s = Char.ConvertFromUtf32(c);
             if (c >= 0x30 && c <= 0x39)
             {
                  // DIGIT
-                 builder.Append(c);
+                 builder.Append(s);
             }
             else if (c >= 0x041 && c <= 0x5a)
             {
                 // ALPHA
-                builder.Append(c);
+                builder.Append(s);
             }
             else if (c >= 0x61 && c <= 0x7a)
             {
                 // alpha
-                builder.Append(c);
+                builder.Append(s);
             }
             else if (c == '-' || c == '.' || c == '_' || c == '~')
             {
                 // unreserved
-                builder.Append(c);
+                builder.Append(s);
             }
             else if (c == ':' || c == '/' || c == '?' || c == '#' || c == '[' || c == ']' || c == '@' ||
               c == '!' || c == '$' || c == '&' || c == '\'' || c == '(' || c == ')' || c == '*' ||
               c == '+' || c == ',' || c == ';' || c == '=')
             {
                 // reserved
-                builder.Append(c);
+                builder.Append(s);
             }
             else if (c >= 0xA0 && c <= 0xD7FF || c >= 0xF900 && c <= 0xFDCF || c >= 0xFDF0 && c <= 0xFFEF ||
               c >= 0x10000 && c <= 0x1FFFD || c >= 0x20000 && c <= 0x2FFFD || c >= 0x30000 && c <= 0x3FFFD
@@ -113,29 +151,20 @@ namespace VDS.RDF.Writing.Formatting
               || c >= 0xA0000 && c <= 0xAFFFD || c >= 0xB0000 && c <= 0xBFFFD || c >= 0xC0000 && c <= 0xCFFFD
               || c >= 0xD0000 && c <= 0xDFFFD || c >= 0xE1000 && c <= 0xEFFFD)
             {
-                builder.Append(c);
+                builder.Append(s);
             }
-            else if (c >= 0xE000 && c <= 0xF8FF || c >= 0xF0000 && c <= 0xFFFFD && c >= 0x100000 && c <= 0x10FFFD)
+            else if (c >= 0xE000 && c <= 0xF8FF || c >= 0xF0000 && c <= 0xFFFFD || c >= 0x100000 && c <= 0x10FFFD)
             {
-                builder.Append(c);
+                builder.Append(s);
             }
             else
             {
-                builder.Append(EscapeChar(c));
+                foreach (var b in Encoding.UTF8.GetBytes(s))
+                {
+                    builder.Append('%');
+                    builder.AppendFormat("{0:X2}", b);
+                }
             }
-        }
-
-        private static string EscapeChar(char c)
-        {
-            var bytes = Encoding.UTF8.GetBytes(new[] {c});
-            var builder = new StringBuilder();
-            foreach (var b in bytes)
-            {
-                builder.Append('%');
-                builder.AppendFormat("{0:X2}", b);
-            }
-
-            return builder.ToString();
         }
     }
 }
