@@ -107,6 +107,8 @@
   topicHref: jsonld/api.md
 - name: Linked Data Fragments API
   href: linked_data_fragments_api.md
+- name: RDF Canonicalization API
+  href: rdf_canonicalization_api.md
 - name: How-To Guides
   href: howto/toc.yml
   topicHref: howto/index.md

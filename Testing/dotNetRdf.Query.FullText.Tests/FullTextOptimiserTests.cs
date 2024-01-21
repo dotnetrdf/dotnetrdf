@@ -39,6 +39,7 @@ namespace VDS.RDF.Query.FullText
 {
     [Trait("category", "explicit")]
     [Trait("category", "fulltext")]
+    [Collection("FullText")]
     public class FullTextOptimiserTests
     {
         private readonly SparqlQueryParser _parser = new();
