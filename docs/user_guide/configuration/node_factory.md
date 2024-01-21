@@ -52,7 +52,7 @@ _:nodeFactory a dnr:NodeFactory ;
 
 ### Configuring Literal Normalization
 
-The [`NormalizeLiterals`](xref:VDS.RDF.INodeFactory.NormalizeLiterals) property can be configured using boolean value as follows:
+The [`NormalizeLiteralValues`](xref:VDS.RDF.INodeFactory.NormalizeLiteralValues) property can be configured using boolean value as follows:
 
 ```turtle
 @prefix dnr: <http://www.dotnetrdf.org/configuration#> .
