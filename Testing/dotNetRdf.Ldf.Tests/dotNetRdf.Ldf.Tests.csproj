@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <RootNamespace>dotNetRdf.LDF.Tests</RootNamespace>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
@@ -16,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\dotNetRdf.LDF\dotNetRdf.LDF.csproj" />
+    <ProjectReference Include="..\..\Libraries\dotNetRdf.Ldf\dotNetRdf.Ldf.csproj" />
   </ItemGroup>
 
   <ItemGroup>
