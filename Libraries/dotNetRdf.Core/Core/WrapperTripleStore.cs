@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+#nullable enable
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing;
@@ -127,7 +128,7 @@ namespace VDS.RDF
         }
 
         /// <inheritdoc />
-        public virtual bool Add(IRefNode graphName)
+        public virtual bool Add(IRefNode? graphName)
         {
             return _store.Add(graphName);
         }
@@ -192,7 +193,7 @@ namespace VDS.RDF
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         [Obsolete("Replaced by Remove(IRefNode)")]
-        public virtual bool Remove(Uri graphUri)
+        public virtual bool Remove(Uri? graphUri)
         {
             return _store.Remove(graphUri);
         }
@@ -202,7 +203,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">The name of the graph to remove.</param>
         /// <returns>True if the operation removed a graph, false if no matching graph was found to remove.</returns>
-        public virtual bool Remove(IRefNode graphName)
+        public virtual bool Remove(IRefNode? graphName)
         {
             return _store.Remove(graphName);
         }
@@ -224,7 +225,7 @@ namespace VDS.RDF
         /// <param name="graphName">The name of the graph to check for.</param>
         /// <returns>True if this store contains a graph with the specified name, false otherwise.</returns>
         /// <remarks>Pass null for<paramref name="graphName"/> to check for the default (unnamed) graph.</remarks>
-        public virtual bool HasGraph(IRefNode graphName)
+        public virtual bool HasGraph(IRefNode? graphName)
         {
             return _store.HasGraph(graphName);
         }
@@ -248,32 +249,38 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">The name of the graph to be retrieved. May be null to retrieve the default (unnamed) graph.</param>
         /// <returns></returns>
-        public virtual IGraph this[IRefNode graphName] => _store[graphName];
+        public virtual IGraph this[IRefNode? graphName] => _store[graphName];
+
+        /// <inheritdoc />
+        public IEnumerable<Quad> GetQuads(INode? s = null, INode? p = null, INode? o = null, IRefNode? g = null, bool allGraphs = true)
+        {
+            return _store.GetQuads(s, p, o, g, allGraphs);
+        }
 
         /// <summary>
         /// Event which is raised when a graph is added
         /// </summary>
-        public event TripleStoreEventHandler GraphAdded;
+        public event TripleStoreEventHandler? GraphAdded;
 
         /// <summary>
         /// Events which is raised when a graph is removed
         /// </summary>
-        public event TripleStoreEventHandler GraphRemoved;
+        public event TripleStoreEventHandler? GraphRemoved;
 
         /// <summary>
         /// Event which is raised when a graph is changed
         /// </summary>
-        public event TripleStoreEventHandler GraphChanged;
+        public event TripleStoreEventHandler? GraphChanged;
 
         /// <summary>
         /// Event which is raised when a graph is cleared
         /// </summary>
-        public event TripleStoreEventHandler GraphCleared;
+        public event TripleStoreEventHandler? GraphCleared;
 
         /// <summary>
         /// Event which is raised when a graph is merged
         /// </summary>
-        public event TripleStoreEventHandler GraphMerged;
+        public event TripleStoreEventHandler? GraphMerged;
 
         /// <summary>
         /// Helper method for raising the <see cref="GraphAdded">Graph Added</see> event manually.

@@ -339,6 +339,71 @@ namespace VDS.RDF
             Assert.False(store.HasGraph(unnamed));
         }
 
+        [Fact]
+        public void MatchQuadsInNamedGraph()
+        {
+            ITripleStore store = GetInstance();
+            INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+            INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+            INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+            IRefNode g = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+            IRefNode g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
+            store.Assert(new Quad(s, p, o, g));
+            store.Assert(new Quad(s, p, o, g2));
+            Assert.Single(store.GetQuads(s: s, g: g));
+            Assert.Single(store.GetQuads(p: p, g: g));
+            Assert.Single(store.GetQuads(o: o, g: g));
+            Assert.Single(store.GetQuads(g: g));
+            Assert.Single(store.GetQuads(s, p, g:g));
+            Assert.Single(store.GetQuads(s, o: o, g:g));
+            Assert.Single(store.GetQuads(p: p, o: o, g: g));
+            Assert.Single(store.GetQuads(s, p, o, g));
+        }
+
+        [Fact]
+        public void MatchQuadsInUnnamedGraph()
+        {
+            ITripleStore store = GetInstance();
+            INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+            INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+            INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+            IRefNode? unnamed = null;
+            IRefNode g = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+            store.Assert(new Quad(s, p, o, unnamed));
+            store.Assert(new Quad(s, p, o, g));
+            Assert.Single(store.GetQuads(s: s, allGraphs:false));
+            Assert.Single(store.GetQuads(p: p, allGraphs:false));
+            Assert.Single(store.GetQuads(o: o, allGraphs:false));
+            Assert.Single(store.GetQuads(allGraphs:false));
+            Assert.Single(store.GetQuads(s, p, allGraphs:false));
+            Assert.Single(store.GetQuads(s, o: o, allGraphs:false));
+            Assert.Single(store.GetQuads(p: p, o: o, allGraphs:false));
+            Assert.Single(store.GetQuads(s, p, o, unnamed, allGraphs:false));
+        }
+
+        [Fact]
+        public void MatchQuadsInAllGraphs()
+        {
+            ITripleStore store = GetInstance();
+            INode s = new UriNode(store.UriFactory.Create("https://example.org/s"));
+            INode p = new UriNode(store.UriFactory.Create("https://example.org/p"));
+            INode o = new UriNode(store.UriFactory.Create("https://example.org/o"));
+            IRefNode g = new UriNode(store.UriFactory.Create("https://example.org/g1"));
+            IRefNode g2 = new UriNode(store.UriFactory.Create("https://example.org/g2"));
+            IRefNode? unnamed = null; 
+            store.Assert(new Quad(s, p, o, g));
+            store.Assert(new Quad(s, p, o, g2));
+            store.Assert(new Quad(s, p, o, unnamed));
+            Assert.Equal(3, store.GetQuads(s: s).Count());
+            Assert.Equal(3,store.GetQuads(p: p).Count());
+            Assert.Equal(3,store.GetQuads(o: o).Count());
+            Assert.Equal(3,store.GetQuads().Count());
+            Assert.Equal(3,store.GetQuads(s, p).Count());
+            Assert.Equal(3,store.GetQuads(s, o: o).Count());
+            Assert.Equal(3,store.GetQuads(p: p, o: o).Count());
+            Assert.Equal(3,store.GetQuads(s, p, o).Count());
+        }
+
     }
 
 

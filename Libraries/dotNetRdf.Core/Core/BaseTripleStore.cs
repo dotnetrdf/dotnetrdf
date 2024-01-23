@@ -24,6 +24,8 @@
 // </copyright>
 */
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -248,7 +250,7 @@ namespace VDS.RDF
         /// <param name="graphName">The name of the graph to check for.</param>
         /// <returns>True if this store contains a graph with the specified name, false otherwise.</returns>
         /// <remarks>Pass null for<paramref name="graphName"/> to check for the default (unnamed) graph.</remarks>
-        public bool HasGraph(IRefNode graphName)
+        public bool HasGraph(IRefNode? graphName)
         {
             return _graphs.Contains(graphName);
         }
@@ -259,7 +261,7 @@ namespace VDS.RDF
         /// <param name="graphUri">Graph URI.</param>
         /// <returns></returns>
         [Obsolete("Replaced by this[IRefNode]")]
-        public IGraph this[Uri graphUri]
+        public IGraph this[Uri? graphUri]
         {
             get
             {
@@ -272,11 +274,54 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">The name of the graph to be retrieved. May be null to retrieve the default (unnamed) graph.</param>
         /// <returns></returns>
-        public IGraph this[IRefNode graphName] => _graphs[graphName];
+        public IGraph this[IRefNode? graphName] => _graphs[graphName];
 
         #endregion
 
         #region Events
+
+        /// <inheritdoc />
+        public IEnumerable<Quad> GetQuads(INode? s = null, INode? p = null, INode? o = null, IRefNode? g = null, bool allGraphs = true)
+        {
+            if (g == null && allGraphs)
+            {
+                return Graphs.SelectMany(g => GetTriplesFromGraph(g, s, p, o).Select(t => new Quad(t, g.Name)));
+            }
+            return !HasGraph(g) ? Enumerable.Empty<Quad>() : GetTriplesFromGraph(Graphs[g], s, p, o).Select(t => new Quad(t, g));
+        }
+
+        /// <summary>
+        /// Returns an enumeration of the Triples in the specified graph that match the specified node filters.
+        /// </summary>
+        /// <param name="graph">The graph to return triples from.</param>
+        /// <param name="s">The subject node to filter on, or null to match all subject nodes.</param>
+        /// <param name="p">The predicate node to filter on, or null to match all predicate nodes.</param>
+        /// <param name="o">The object node to filter on, or null to match all object nodes.</param>
+        /// <returns>An enumeration of the triples that match the specified filter.</returns>
+        protected virtual IEnumerable<Triple> GetTriplesFromGraph(IGraph graph, INode? s, INode? p, INode? o)
+        {
+            if (s == null)
+            {
+                if (p == null)
+                {
+                    return o == null ? graph.Triples : graph.GetTriplesWithObject(o);
+                }
+                return o == null ? graph.GetTriplesWithPredicate(p) : graph.GetTriplesWithPredicateObject(p, o);
+            }
+
+            if (p == null)
+            {
+                return o == null ? graph.GetTriplesWithSubject(s) : graph.GetTriplesWithSubjectObject(s, o);
+            }
+
+            if (o == null)
+            {
+                return graph.GetTriplesWithSubjectPredicate(s, p);
+            }
+
+            var t = new Triple(s, p, o);
+            return graph.ContainsTriple(t) ? t.AsEnumerable() : Enumerable.Empty<Triple>();
+        }
 
         /// <summary>
         /// Event which is raised when a Graph is added
