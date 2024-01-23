@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
+using System.Linq;
 using Xunit;
 
 namespace VDS.RDF
@@ -110,6 +111,72 @@ namespace VDS.RDF
 
             Assert.True(store.HasGraph(g.Name));
         }
+
+        [Fact]
+        public void EnumerateQuads01()
+        {
+            ITripleStore store = GetInstance();
+            IGraph g = new Graph(new UriNode(new Uri("http://example.org/g1")));
+            INode s1 = g.CreateUriNode(new Uri("http://example.org/s1"));
+            IUriNode p = g.CreateUriNode(new Uri("http://example.org/p"));
+            IUriNode o = g.CreateUriNode(new Uri("http://example.org/o"));
+            IUriNode s2 = g.CreateUriNode(new Uri("http://example.org/s2"));
+            g.Assert(new Triple(s1, p, o));
+            g.Assert(new Triple(s2, p, o));
+            
+            // No quads until graph is added
+            var quads = store.Quads.ToList();
+            Assert.Empty(quads);
+            
+            store.Add(g);
+            
+            quads = store.Quads.ToList();
+            Assert.Equal(2, quads.Count);
+            Assert.Contains(new Quad(s1, p, o, g.Name), quads);
+            Assert.Contains(new Quad(s2, p, o, g.Name), quads);
+        }
+        
+        [Fact]
+        public void EnumerateQuads02()
+        {
+            ITripleStore store = GetInstance();
+            IGraph g1 = new Graph(new UriNode(new Uri("http://example.org/g1")));
+            INode s1 = g1.CreateUriNode(new Uri("http://example.org/s1"));
+            IUriNode p = g1.CreateUriNode(new Uri("http://example.org/p"));
+            IUriNode o = g1.CreateUriNode(new Uri("http://example.org/o"));
+            IUriNode s2 = g1.CreateUriNode(new Uri("http://example.org/s2"));
+            g1.Assert(new Triple(s1, p, o));
+            g1.Assert(new Triple(s2, p, o));
+
+            IGraph g2 = new Graph(new UriNode(new Uri("http://example.org/g2")));
+            INode s12 = g2.CreateUriNode(new Uri("http://example.org/s1"));
+            IUriNode p2 = g2.CreateUriNode(new Uri("http://example.org/p"));
+            IUriNode o2 = g2.CreateUriNode(new Uri("http://example.org/o"));
+            IUriNode s22 = g2.CreateUriNode(new Uri("http://example.org/s2"));
+            g2.Assert(new Triple(s12, p2, o2));
+            g2.Assert(new Triple(s22, p2, o2));
+
+            // No quads until graph is added
+            var quads = store.Quads.ToList();
+            Assert.Empty(quads);
+            
+            store.Add(g1);
+            
+            quads = store.Quads.ToList();
+            Assert.Equal(2, quads.Count);
+            Assert.Contains(new Quad(s1, p, o, g1.Name), quads);
+            Assert.Contains(new Quad(s2, p, o, g1.Name), quads);
+
+            store.Add(g2);
+
+            quads = store.Quads.ToList();
+            Assert.Equal(4, quads.Count);
+            Assert.Contains(new Quad(s1, p, o, g1.Name), quads);
+            Assert.Contains(new Quad(s2, p, o, g1.Name), quads);
+            Assert.Contains(new Quad(s12, p2, o2, g2.Name), quads);
+            Assert.Contains(new Quad(s22, p2, o2, g2.Name), quads);
+        }
+
     }
 
 

@@ -104,6 +104,17 @@ namespace VDS.RDF
             }
         }
 
+        /// <inheritdoc />
+        public IEnumerable<Quad> Quads
+        {
+            get
+            {
+                return from g in _graphs
+                    from t in g.Triples
+                    select new Quad(t, g.Name);
+            }
+        }
+
         /// <summary>
         /// Get the preferred URI factory to use when creating URIs in this store.
         /// </summary>

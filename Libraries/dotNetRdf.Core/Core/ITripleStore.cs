@@ -63,6 +63,12 @@ namespace VDS.RDF
         {
             get;
         }
+        
+        /// <summary>
+        /// Gets all the Quads in the Triple Store which are currently loaded in memory.
+        /// </summary>
+        /// <remarks>Since a Triple Store object may represent only a snapshot of the underlying Store evaluating this enumerator may only return some of the Quads in the Store and may depending on specific Triple Store return nothing.</remarks>
+        IEnumerable<Quad> Quads { get; }
 
         /// <summary>
         /// Get the preferred URI factory to use when creating URIs in this store.
