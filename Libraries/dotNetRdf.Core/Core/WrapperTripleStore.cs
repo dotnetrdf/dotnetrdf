@@ -114,6 +114,24 @@ namespace VDS.RDF
         /// </summary>
         public virtual IUriFactory UriFactory => _store.UriFactory;
 
+        /// <inheritdoc />
+        public virtual void Assert(Quad quad)
+        {
+            _store.Assert(quad);
+        }
+
+        /// <inheritdoc />
+        public virtual void Retract(Quad quad)
+        {
+            _store.Retract(quad);
+        }
+
+        /// <inheritdoc />
+        public virtual bool Add(IRefNode graphName)
+        {
+            return _store.Add(graphName);
+        }
+
         /// <summary>
         /// Adds a Graph to the store.
         /// </summary>

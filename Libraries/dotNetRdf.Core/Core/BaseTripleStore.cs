@@ -121,7 +121,39 @@ namespace VDS.RDF
         public abstract IUriFactory UriFactory { get; }
         #endregion
 
+        #region Assert/Retract Quads
+
+        /// <inheritdoc />
+        public void Assert(Quad quad)
+        {
+            if (!HasGraph(quad.Graph))
+            {
+                Add(quad.Graph);
+            }
+            Graphs[quad.Graph].Assert(quad.AsTriple());
+        }
+
+        /// <inheritdoc />
+        public void Retract(Quad quad)
+        {
+            if (HasGraph(quad.Graph))
+            {
+                Graphs[quad.Graph].Retract(quad.AsTriple());
+            }
+        }
+        #endregion
+
         #region Loading & Unloading
+
+        /// <summary>
+        /// Add a new empty graph with the specified name to the triple store
+        /// </summary>
+        /// <param name="graphName">The name of the graph to add.</param>
+        /// <returns>True if the execution resulted in a new graph being added to the triplestore, false otherwise.</returns>
+        public virtual bool Add(IRefNode graphName)
+        {
+            return !HasGraph(graphName) && Graphs.Add(new Graph(graphName), false);
+        }
 
         /// <summary>
         /// Adds a Graph into the Triple Store.

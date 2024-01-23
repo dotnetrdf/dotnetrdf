@@ -31,6 +31,8 @@ namespace VDS.RDF;
 /**
  * Class for representing quads in memory.
  */
+
+#nullable enable
 public sealed class Quad: IComparable<Quad>, IEquatable<Quad>
 {
     /// <summary>
@@ -51,11 +53,18 @@ public sealed class Quad: IComparable<Quad>, IEquatable<Quad>
     /// <summary>
     /// Get the graph node of the quad.
     /// </summary>
-    public IRefNode Graph { get; }
+    public IRefNode? Graph { get; }
     
     private readonly int _hashCode;
 
-    public Quad(INode subject, INode predicate, INode @object, IRefNode graphName)
+    /// <summary>
+    /// Construct a new Quad with the specified subject, predicate, object, and optionally graph.
+    /// </summary>
+    /// <param name="subject">The subject node of the quad.</param>
+    /// <param name="predicate">The predicate node of the quad.</param>
+    /// <param name="object">The object node of the quad.</param>
+    /// <param name="graphName">The graph that the statement is in. A null value indicates the unnamed graph.</param>
+    public Quad(INode subject, INode predicate, INode @object, IRefNode? graphName)
     {
         Subject = subject;
         Predicate = predicate;
@@ -65,10 +74,24 @@ public sealed class Quad: IComparable<Quad>, IEquatable<Quad>
             Subject.GetHashCode(),
             Predicate.GetHashCode(),
             Object.GetHashCode(),
-            Graph.GetHashCode());
+            Graph?.GetHashCode() ?? -1);
     }
     
-    public Quad(Triple t, IRefNode graph) : this(t.Subject, t.Predicate, t.Object, graph) {}
+    /// <summary>
+    /// Construct a new Quad with the specified triple contained in the specified graph.
+    /// </summary>
+    /// <param name="t">The subject, predicate and object of the quad as a <see cref="Triple"/>.</param>
+    /// <param name="graph">The graph that the statement is in. A null value indicates the unnamed graph.</param>
+    public Quad(Triple t, IRefNode? graph) : this(t.Subject, t.Predicate, t.Object, graph) {}
+
+    /// <summary>
+    /// Create and return a new <see cref="Triple"/> instance created with the <see cref="Subject"/>, <see cref="Predicate"/>, and <see cref="Object"/> of this quad.
+    /// </summary>
+    /// <returns>A new <see cref="Triple"/> instance.</returns>
+    public Triple AsTriple()
+    {
+        return new Triple(Subject, Predicate, Object);
+    }
     
     /// <inheritdoc />
     public int CompareTo(Quad other)
@@ -93,7 +116,14 @@ public sealed class Quad: IComparable<Quad>, IEquatable<Quad>
                 result = Object.CompareTo(other.Object);
                 if (result == 0)
                 {
-                    result = Graph.CompareTo(other.Graph);
+                    if (Graph == null)
+                    {
+                        result = other.Graph == null ? 0 : 1;
+                    }
+                    else
+                    {
+                        result = Graph.CompareTo(other.Graph);
+                    }
                 }
             }
         }

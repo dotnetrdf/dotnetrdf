@@ -76,7 +76,31 @@ namespace VDS.RDF
         IUriFactory UriFactory { get; }
         #endregion
 
+        #region Assert & Retract Quads
+
+        /// <summary>
+        /// Assert a quad in the triple store.
+        /// </summary>
+        /// <param name="quad">The quad to be added.</param>
+        /// <remarks>If the quad's graph is not currently in the triple store, a new graph will be added.</remarks>
+        public void Assert(Quad quad);
+
+        /// <summary>
+        /// Remove a quad from the triple store.
+        /// </summary>
+        /// <param name="quad">The quad to be removed.</param>
+        /// <remarks>If the quad's graph is not currently in the triple store, this operation will make no modification to the triple store. Otherwise it will invoke the Retract method on the graph.</remarks>
+        public void Retract(Quad quad);
+
+        #endregion
         #region Loading & Unloading Graphs
+
+        /// <summary>
+        /// Adds an empty graph with the specified name to the triple store.
+        /// </summary>
+        /// <param name="graphName"></param>
+        /// <returns>True if a new graph was added, false otherwise.</returns>
+        bool Add(IRefNode graphName);
 
         /// <summary>
         /// Adds a Graph into the Triple Store.
