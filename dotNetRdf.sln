@@ -82,17 +82,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Core", "Libraries
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf", "Libraries\dotNetRdf\dotNetRdf.csproj", "{0DAB8880-7EB6-4239-8051-D8F7B2AC9979}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.TestSuite.Rdfa", "Testing\dotNetRdf.TestSuite.Rdfa\dotNetRdf.TestSuite.Rdfa.csproj", "{5F113BF3-5AD0-4ED0-87CF-D55E2875352B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.TestSuite.Rdfa", "Testing\dotNetRdf.TestSuite.Rdfa\dotNetRdf.TestSuite.Rdfa.csproj", "{5F113BF3-5AD0-4ED0-87CF-D55E2875352B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Ldf", "Libraries\dotNetRdf.Ldf\dotNetRdf.Ldf.csproj", "{A533FBB5-C8AE-456C-9F0D-258793F9C08C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.Ldf.Tests", "Testing\dotNetRdf.Ldf.Tests\dotNetRdf.Ldf.Tests.csproj", "{76EC005A-3789-4592-AA99-2BAB36045BEF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotNetRdf.TestSuite.RdfCanon", "Testing\dotNetRdf.TestSuite.RdfCanon\dotNetRdf.TestSuite.RdfCanon.csproj", "{4F98E70A-551B-4435-85FC-605E63FCD511}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reproductions", "Reproductions", "{3321B92A-BFE7-4970-8ABA-6755D75FE786}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageTagsRepro", "LanguageTagsRepro\LanguageTagsRepro.csproj", "{19412510-1945-421D-AFC1-7209DBD2CF0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRdf.TestSuite.RdfCanon", "Testing\dotNetRdf.TestSuite.RdfCanon\dotNetRdf.TestSuite.RdfCanon.csproj", "{4F98E70A-551B-4435-85FC-605E63FCD511}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -524,18 +520,6 @@ Global
 		{4F98E70A-551B-4435-85FC-605E63FCD511}.Release|x64.Build.0 = Release|Any CPU
 		{4F98E70A-551B-4435-85FC-605E63FCD511}.Release|x86.ActiveCfg = Release|Any CPU
 		{4F98E70A-551B-4435-85FC-605E63FCD511}.Release|x86.Build.0 = Release|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Debug|x64.Build.0 = Debug|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Debug|x86.Build.0 = Debug|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Release|x64.ActiveCfg = Release|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Release|x64.Build.0 = Release|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Release|x86.ActiveCfg = Release|Any CPU
-		{19412510-1945-421D-AFC1-7209DBD2CF0F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -576,7 +560,6 @@ Global
 		{A533FBB5-C8AE-456C-9F0D-258793F9C08C} = {3B3CCD52-CF1B-492C-A5F8-FBB626C5039C}
 		{76EC005A-3789-4592-AA99-2BAB36045BEF} = {F0F45D49-20AC-4407-8618-8C3650E34B97}
 		{4F98E70A-551B-4435-85FC-605E63FCD511} = {F0F45D49-20AC-4407-8618-8C3650E34B97}
-		{19412510-1945-421D-AFC1-7209DBD2CF0F} = {3321B92A-BFE7-4970-8ABA-6755D75FE786}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {801E5D6F-1615-444B-BDE4-8A6A30FE0520}
