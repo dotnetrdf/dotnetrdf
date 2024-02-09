@@ -27,7 +27,6 @@
 using System.Collections.Generic;
 using VDS.Common.Collections;
 using VDS.Common.References;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Construct
@@ -171,18 +170,14 @@ namespace VDS.RDF.Query.Construct
 
                 case NodeType.Literal:
                     var l = (ILiteralNode)n;
-                    if (l.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfLangString))
+                    if (!l.Language.Equals(string.Empty))
                     {
                         temp = NodeFactory.CreateLiteralNode(l.Value, l.Language);
                     }
                     else if (l.DataType != null)
                     {
                         temp = NodeFactory.CreateLiteralNode(l.Value, l.DataType);
-                    } 
-                    else if (!l.Language.Equals(string.Empty))
-                    {
-                        temp = NodeFactory.CreateLiteralNode(l.Value, l.Language);
-                    } 
+                    }
                     else
                     {
                         temp = NodeFactory.CreateLiteralNode(l.Value);
