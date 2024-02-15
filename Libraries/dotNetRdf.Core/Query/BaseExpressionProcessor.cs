@@ -1249,7 +1249,7 @@ namespace VDS.RDF.Query
                     if (s.NodeType == NodeType.Literal)
                     {
                         var lit = (ILiteralNode)s;
-                        if (lit.DataType == null)
+                        if (lit.DataType == null || lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                         {
                             if (lit.Language.Equals(string.Empty))
                             {
