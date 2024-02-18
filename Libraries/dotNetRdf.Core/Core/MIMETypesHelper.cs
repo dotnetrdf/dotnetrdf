@@ -100,7 +100,7 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for TriG.
         /// </summary>
-        public static readonly string[] TriG = { "application/x-trig" };
+        public static readonly string[] TriG = { "application/trig", "application/x-trig" };
 
         /// <summary>
         /// MIME Types for TriX.
