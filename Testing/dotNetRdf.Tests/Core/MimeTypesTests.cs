@@ -2685,7 +2685,7 @@ namespace VDS.RDF
         {
             var request = new HttpRequestMessage();
             request.Headers.Add(HeaderNames.Accept, MimeTypesHelper.HttpSparqlAcceptHeader);
-            Assert.Equal(17, request.Headers.Accept.Count);
+            Assert.Equal(12, request.Headers.Accept.Count);
         }
 
         [Fact]
@@ -2693,7 +2693,7 @@ namespace VDS.RDF
         {
             var request = new HttpRequestMessage();
             request.Headers.Add(HeaderNames.Accept, MimeTypesHelper.HttpAcceptHeader);
-            Assert.Equal(41, request.Headers.Accept.Count);
+            Assert.Equal(21, request.Headers.Accept.Count);
         }
 
         [Fact]
@@ -2701,7 +2701,7 @@ namespace VDS.RDF
         {
             var request = new HttpRequestMessage();
             request.Headers.Add(HeaderNames.Accept, MimeTypesHelper.HttpRdfDatasetAcceptHeader);
-            Assert.Equal(10, request.Headers.Accept.Count);
+            Assert.Equal(6, request.Headers.Accept.Count);
         }
     }
 }

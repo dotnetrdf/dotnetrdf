@@ -429,8 +429,7 @@ namespace VDS.RDF
 
 
         #endregion
-
-
+        
         #region IDisposable Members
 
         /// <summary>

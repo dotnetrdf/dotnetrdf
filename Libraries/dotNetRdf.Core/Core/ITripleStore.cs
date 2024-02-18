@@ -24,6 +24,8 @@
 // </copyright>
 */
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using VDS.RDF.Parsing;
@@ -63,6 +65,12 @@ namespace VDS.RDF
         {
             get;
         }
+        
+        /// <summary>
+        /// Gets all the Quads in the Triple Store which are currently loaded in memory.
+        /// </summary>
+        /// <remarks>Since a Triple Store object may represent only a snapshot of the underlying Store evaluating this enumerator may only return some of the Quads in the Store and may depending on specific Triple Store return nothing.</remarks>
+        IEnumerable<Quad> Quads { get; }
 
         /// <summary>
         /// Get the preferred URI factory to use when creating URIs in this store.
@@ -70,7 +78,31 @@ namespace VDS.RDF
         IUriFactory UriFactory { get; }
         #endregion
 
+        #region Assert & Retract Quads
+
+        /// <summary>
+        /// Assert a quad in the triple store.
+        /// </summary>
+        /// <param name="quad">The quad to be added.</param>
+        /// <remarks>If the quad's graph is not currently in the triple store, a new graph will be added.</remarks>
+        public void Assert(Quad quad);
+
+        /// <summary>
+        /// Remove a quad from the triple store.
+        /// </summary>
+        /// <param name="quad">The quad to be removed.</param>
+        /// <remarks>If the quad's graph is not currently in the triple store, this operation will make no modification to the triple store. Otherwise it will invoke the Retract method on the graph.</remarks>
+        public void Retract(Quad quad);
+
+        #endregion
         #region Loading & Unloading Graphs
+
+        /// <summary>
+        /// Adds an empty graph with the specified name to the triple store.
+        /// </summary>
+        /// <param name="graphName"></param>
+        /// <returns>True if a new graph was added, false otherwise.</returns>
+        bool Add(IRefNode? graphName);
 
         /// <summary>
         /// Adds a Graph into the Triple Store.
@@ -111,14 +143,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph Uri of the Graph to remove.</param>
         [Obsolete("Replaced by Remove(IRefNode)")]
-        bool Remove(Uri graphUri);
+        bool Remove(Uri? graphUri);
 
         /// <summary>
         /// Removes a graph from the triple store.
         /// </summary>
         /// <param name="graphName">The name of the graph to remove.</param>
         /// <returns>True if the operation removed a graph, false if no matching graph was found to remove.</returns>
-        bool Remove(IRefNode graphName);
+        bool Remove(IRefNode? graphName);
 
         #endregion
 
@@ -138,7 +170,7 @@ namespace VDS.RDF
         /// <param name="graphName">The name of the graph to check for.</param>
         /// <returns>True if this store contains a graph with the specified name, false otherwise.</returns>
         /// <remarks>Pass null for<paramref name="graphName"/> to check for the default (unnamed) graph.</remarks>
-        bool HasGraph(IRefNode graphName);
+        bool HasGraph(IRefNode? graphName);
 
         /// <summary>
         /// Gets a Graph from the Triple Store;.
@@ -156,8 +188,22 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphName">The name of the graph to be retrieved. May be null to retrieve the default (unnamed) graph.</param>
         /// <returns></returns>
-        IGraph this[IRefNode graphName] { get; }
+        IGraph this[IRefNode? graphName] { get; }
 
+        #endregion
+        
+        #region Quad Retrieval
+
+        /// <summary>
+        /// Return an enumeration of all quads in the store that match the specified subject, predicate, object and/or graph.
+        /// </summary>
+        /// <param name="s">The subject node to match. Null matches all subject nodes.</param>
+        /// <param name="p">The predicate node to match. Null matches all predicate nodes.</param>
+        /// <param name="o">The object node to match. Null matches all object nodes.</param>
+        /// <param name="g">The graph to match. Null matches all graphs if <paramref name="allGraphs"/> is true, or only the unnamed graph is <paramref name="allGraphs"/> is false.</param>
+        /// <param name="allGraphs"></param>
+        /// <returns></returns>
+        IEnumerable<Quad> GetQuads(INode? s = null, INode? p = null, INode? o = null, IRefNode? g = null, bool allGraphs = true);
         #endregion
 
         #region Events
@@ -165,27 +211,27 @@ namespace VDS.RDF
         /// <summary>
         /// Event which is raised when a Graph is added
         /// </summary>
-        event TripleStoreEventHandler GraphAdded;
+        event TripleStoreEventHandler? GraphAdded;
 
         /// <summary>
         /// Event which is raised when a Graph is removed
         /// </summary>
-        event TripleStoreEventHandler GraphRemoved;
+        event TripleStoreEventHandler? GraphRemoved;
 
         /// <summary>
         /// Event which is raised when a Graphs contents changes
         /// </summary>
-        event TripleStoreEventHandler GraphChanged;
+        event TripleStoreEventHandler? GraphChanged;
 
         /// <summary>
         /// Event which is raised when a Graph is cleared
         /// </summary>
-        event TripleStoreEventHandler GraphCleared;
+        event TripleStoreEventHandler? GraphCleared;
 
         /// <summary>
         /// Event which is raised when a Graph has a merge operation performed on it
         /// </summary>
-        event TripleStoreEventHandler GraphMerged;
+        event TripleStoreEventHandler? GraphMerged;
 
         #endregion
 
