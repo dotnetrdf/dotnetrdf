@@ -16,7 +16,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
         _rightSolutions = new LinkedList<ISet>();
     }
 
-    protected override IEnumerable<ISet> ProcessLhs(ISet lhsResult)
+    protected override IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhsResult)
     {
         if (_rhsHasMore)
         {
@@ -31,7 +31,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
         }
     }
 
-    protected override IEnumerable<ISet> ProcessRhs(ISet rhsResult)
+    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhsResult)
     {
         if (_lhsHasMore)
         {
@@ -42,13 +42,13 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
             .Select(l => l.Join(rhsResult));
     }
 
-    protected override IEnumerable<ISet>? OnLhsDone()
+    protected override IEnumerable<ISet>? OnLhsDone(PullEvaluationContext context)
     {
         _rightSolutions.Clear();
         return null;
     }
 
-    protected override IEnumerable<ISet>? OnRhsDone()
+    protected override IEnumerable<ISet>? OnRhsDone(PullEvaluationContext context)
     {
         _leftSolutions.Clear();
         return null;

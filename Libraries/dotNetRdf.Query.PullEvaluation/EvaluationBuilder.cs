@@ -30,7 +30,14 @@ public class EvaluationBuilder
         IAsyncEvaluation rhs = Build(leftJoin.Rhs);
         var joinVars = new HashSet<string>(leftJoin.Lhs.Variables);
         joinVars.IntersectWith(new HashSet<string>(leftJoin.Rhs.Variables));
-        return new AsyncLeftJoinEvaluation(lhs, rhs, joinVars.ToArray());
+        var joinEval = new AsyncLeftJoinEvaluation(
+            lhs,
+            rhs,
+            joinVars.ToArray(),
+            leftJoin.Rhs.Variables.ToArray(),
+            leftJoin.Filter
+            );
+        return joinEval;
     }
     
     private IAsyncEvaluation BuildTriplePattern(ITriplePattern triplePattern)

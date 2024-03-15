@@ -30,6 +30,12 @@ namespace VDS.RDF
             return new ManifestTestData(_manifest, testNode);
         }
 
+        public ManifestTestData GetTestData(string testId)
+        {
+            ManifestTestData data = _manifest.GetTestData().SingleOrDefault(x => x.Id == testId);
+            Assert.NotNull(data);
+            return data;
+        }
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

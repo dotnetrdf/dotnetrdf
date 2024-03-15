@@ -1,5 +1,6 @@
 #if NET6_0_OR_GREATER
 using dotNetRdf.Query.PullEvaluation;
+using System;
 using System.Threading.Tasks;
 using VDS.RDF.Query;
 using Xunit;
@@ -22,6 +23,14 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
     [MemberData(nameof(DawgQueryEvalTests))]
     public void RunDawgEvaluationTest(ManifestTestData t)
     {
+        base.PerformQueryEvaluationTest(t);
+    }
+
+    [Fact]
+    public void RunSingle()
+    {
+        ManifestTestData t = DawgQueryEvalTests.GetTestData(
+            "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#filter-scope-1");
         base.PerformQueryEvaluationTest(t);
     }
     

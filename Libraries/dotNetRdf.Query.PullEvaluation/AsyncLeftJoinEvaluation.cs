@@ -1,136 +1,156 @@
 using VDS.RDF;
+using VDS.RDF.Nodes;
+using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Filters;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-internal class AsyncLeftJoinEvaluation : AbstractAsyncJoinEvaluation
+internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars, string[] rhsVars, ISparqlFilter? filter)
+    : AbstractAsyncJoinEvaluation(lhs, rhs)
 {
-    private readonly string[] _joinVars;
-    private readonly LinkedList<LhsSolution> _leftSolutions;
-    private readonly LinkedList<ISet> _rightSolutions;
+    private readonly LinkedList<LhsSolution> _leftSolutions = new();
+    private readonly LinkedList<ISet> _rightSolutions = new();
 
-    
-    public AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars) :
-        base(lhs, rhs)
-    {
-        _joinVars = joinVars;
-        _leftSolutions = new LinkedList<LhsSolution>();
-        _rightSolutions = new LinkedList<ISet>();
-    }
-    
-    protected override  IEnumerable<ISet> ProcessLhs(ISet lhSolutionSet)
+
+    protected override  IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolutionSet)
     {
         var lhSolution = new LhsSolution(lhSolutionSet);
         if (_rhsHasMore)
         {
             _leftSolutions.AddLast(lhSolution);
-            return _rightSolutions.Where((rhSolution) => lhSolution.IsCompatibleWith(rhSolution, _joinVars))
-                .Select(lhSolution.Join);
+            return _rightSolutions.Where((rhSolution) => lhSolution.IsCompatibleWith(rhSolution, joinVars))
+                .Select(rhSolution => lhSolution.FilterJoin(rhSolution, s => Filter(s, context)))
+                .WhereNotNull();
         }
 
         var joinSolutions = _rightSolutions
-            .Where(rhSolution => lhSolution.IsCompatibleWith(rhSolution, _joinVars))
-            .Select(lhSolution.Join).ToList();
+            .Where(rhSolution => lhSolution.IsCompatibleWith(rhSolution, joinVars))
+            .Select(rhSolution => lhSolution.FilterJoin(rhSolution, s=>Filter(s, context)))
+            .WhereNotNull()
+            .ToList();
         return joinSolutions.Count == 0 ? lhSolutionSet.AsEnumerable() : joinSolutions;
     }
 
-    protected override IEnumerable<ISet> ProcessRhs(ISet rhSolution)
+    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhSolution)
     {
         if (_lhsHasMore)
         {
             _rightSolutions.AddLast(rhSolution);
         }
 
-        return _leftSolutions.Where(lhSolution => lhSolution.IsCompatibleWith(rhSolution, _joinVars))
-            .Select(lhSolution => lhSolution.Join(rhSolution));
+        return _leftSolutions.Where(lhSolution => lhSolution.IsCompatibleWith(rhSolution, joinVars))
+            .Select(lhSolution => lhSolution.FilterJoin(rhSolution, s => Filter(s, context)))
+            .WhereNotNull();
     }
 
-    protected override IEnumerable<ISet>? OnLhsDone()
+    protected override IEnumerable<ISet>? OnLhsDone(PullEvaluationContext context)
     {
         _rightSolutions.Clear();
         return null;
     }
 
-    protected override IEnumerable<ISet> OnRhsDone()
+    protected override IEnumerable<ISet> OnRhsDone(PullEvaluationContext context)
     {
-        IList<ISet> addResults = _leftSolutions.Where(s => !s.Joined).Select(s=>s.JoinIdentity()).ToList();
+        ISet emptyRhs = new Set();
+        foreach (var variable in rhsVars)
+        {
+            emptyRhs.Add(variable, null);
+        }
+        IList<ISet> addResults = 
+            _leftSolutions.Where(s => !s.Joined)
+                .Select(s=>s.Join(emptyRhs))
+                .ToList();
         _leftSolutions.Clear();
         return addResults;
     }
 
-    private class LhsSolution : ISet
+    private bool Filter(ISet s, PullEvaluationContext context)
     {
-        private readonly ISet _set;
-
-        public LhsSolution(ISet set)
+        if (filter == null) return true;
+        try
         {
-            _set = set;
+            return filter.Expression.Accept(context.ExpressionProcessor, context, s).AsSafeBoolean();
         }
+        catch (RdfQueryException)
+        {
+            return false;
+        }
+    }
 
+    private class LhsSolution(ISet set) : ISet
+    {
         public bool Joined { get; private set; }
 
         public bool Equals(ISet? other)
         {
-            return _set.Equals(other);
+            return set.Equals(other);
         }
 
         public void Add(string variable, INode value)
         {
-            _set.Add(variable, value);
+            set.Add(variable, value);
         }
 
         public bool ContainsVariable(string variable)
         {
-            return _set.ContainsVariable(variable);
+            return set.ContainsVariable(variable);
         }
 
         public bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
         {
-            return _set.IsCompatibleWith(s, vars);
+            return set.IsCompatibleWith(s, vars);
         }
 
         public bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars)
         {
-            return _set.IsMinusCompatibleWith(s, vars);
+            return set.IsMinusCompatibleWith(s, vars);
         }
 
         public int ID
         {
-            get => _set.ID;
-            set => _set.ID = value;
+            get => set.ID;
+            set => set.ID = value;
         }
 
         public void Remove(string variable)
         {
-            _set.Remove(variable);
+            set.Remove(variable);
         }
 
-        public INode this[string variable] => _set[variable];
+        public INode this[string variable] => set[variable];
 
-        public IEnumerable<INode> Values => _set.Values;
+        public IEnumerable<INode> Values => set.Values;
 
-        public IEnumerable<string> Variables => _set.Variables;
+        public IEnumerable<string> Variables => set.Variables;
 
         public ISet Join(ISet other)
         {
-            Joined = true;
-            return _set.Join(other);
+            return set.Join(other);
         }
 
-        public ISet JoinIdentity()
+        public ISet? FilterJoin(ISet other, Func<ISet, bool>? filterFunc = null)
         {
+            ISet joinResult = set.Join(other);
+            if (filterFunc != null)
+            {
+                if (filterFunc(joinResult) == false)
+                {
+                    return null;
+                }
+            }
             Joined = true;
-            return _set;
+            return set.Join(other);
         }
 
         public ISet Copy()
         {
-            return _set.Copy();
+            return set.Copy();
         }
 
         public bool BindsAll(IEnumerable<string> vars)
         {
-            return _set.BindsAll(vars);
+            return set.BindsAll(vars);
         }
     }
 }

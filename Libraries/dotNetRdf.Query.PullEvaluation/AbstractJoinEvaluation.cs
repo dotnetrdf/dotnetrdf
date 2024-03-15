@@ -52,7 +52,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                         _lhsHasMore = lhsMoveNext.Result;
                         if (_lhsHasMore)
                         {
-                            foreach (ISet p in ProcessLhs(_lhsResults.Current))
+                            foreach (ISet p in ProcessLhs(context, _lhsResults.Current))
                             {
                                 yield return p;
                             }
@@ -61,7 +61,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                         }
                         else
                         {
-                            IEnumerable<ISet>? moreResults =  OnLhsDone();
+                            IEnumerable<ISet>? moreResults =  OnLhsDone(context);
                             if (moreResults != null)
                             {
                                 foreach (ISet r in moreResults) { yield return r; }
@@ -73,7 +73,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                         _rhsHasMore = rhsMoveNext.Result;
                         if (_rhsHasMore)
                         {
-                            foreach (ISet p in ProcessRhs(_rhsResults.Current))
+                            foreach (ISet p in ProcessRhs(context, _rhsResults.Current))
                             {
                                 yield return p;
                             }
@@ -82,7 +82,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                         }
                         else
                         {
-                            IEnumerable<ISet>? moreResults = OnRhsDone();
+                            IEnumerable<ISet>? moreResults = OnRhsDone(context);
                             if (moreResults != null)
                             {
                                 foreach (ISet r in moreResults) { yield return r; }
@@ -95,7 +95,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                     _lhsHasMore = await lhsMoveNext;
                     if (_lhsHasMore)
                     {
-                        foreach (ISet p in ProcessLhs(_lhsResults.Current))
+                        foreach (ISet p in ProcessLhs(context, _lhsResults.Current))
                         {
                             yield return p;
                         }
@@ -104,7 +104,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                     }
                     else
                     {
-                        IEnumerable<ISet>? moreResults = OnLhsDone();
+                        IEnumerable<ISet>? moreResults = OnLhsDone(context);
                         if (moreResults != null)
                         {
                             foreach (ISet r in moreResults) { yield return r; }
@@ -117,7 +117,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                 _rhsHasMore = await rhsMoveNext;
                 if (_rhsHasMore)
                 {
-                    foreach (ISet p in ProcessRhs(_rhsResults.Current))
+                    foreach (ISet p in ProcessRhs(context, _rhsResults.Current))
                     {
                         yield return p;
                     }
@@ -126,7 +126,7 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
                 }
                 else
                 {
-                    IEnumerable<ISet>? moreResults = OnRhsDone();
+                    IEnumerable<ISet>? moreResults = OnRhsDone(context);
                     if (moreResults != null)
                     {
                         foreach (ISet r in moreResults) { yield return r; }
@@ -136,8 +136,8 @@ internal abstract class AbstractAsyncJoinEvaluation : IAsyncEvaluation
         } while (_lhsHasMore || _rhsHasMore);
     }
 
-    protected abstract IEnumerable<ISet> ProcessLhs(ISet lhSolution);
-    protected abstract IEnumerable<ISet> ProcessRhs(ISet rhSolution);
-    protected abstract IEnumerable<ISet>? OnLhsDone();
-    protected abstract IEnumerable<ISet>? OnRhsDone();
+    protected abstract IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolution);
+    protected abstract IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhSolution);
+    protected abstract IEnumerable<ISet>? OnLhsDone(PullEvaluationContext context);
+    protected abstract IEnumerable<ISet>? OnRhsDone(PullEvaluationContext context);
 }
