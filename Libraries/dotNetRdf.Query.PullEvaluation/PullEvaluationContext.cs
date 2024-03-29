@@ -38,6 +38,10 @@ public class PullEvaluationContext : IPatternEvaluationContext
         }
 
         _namedGraphs = namedGraphs != null ? namedGraphs.ToDictionary(g => g, g => data.HasGraph(g) ? data[g].Triples : new TripleCollection()) : new Dictionary<IRefNode, BaseTripleCollection>();
+        if (!unionDefaultGraph && defaultGraphNames == null && namedGraphs == null)
+        {
+            _namedGraphs = data.Graphs.Where(g => g.Name != null).ToDictionary(g => g.Name, g => g.Triples);
+        }
         RigorousEvaluation = true;
         ExpressionProcessor = new PullExpressionProcessor(
             new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal), UriFactory.Root,
