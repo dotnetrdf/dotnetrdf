@@ -42,6 +42,7 @@ namespace VDS.RDF.Query.FullText
 {
     [Trait("category", "explicit")]
     [Trait("category", "fulltext")]
+    [Collection("FullText")]
     public class FullTextGraphScopingTests
     {
         private const String FullTextPrefix = "PREFIX pf: <" + FullTextHelper.FullTextMatchNamespace + ">";

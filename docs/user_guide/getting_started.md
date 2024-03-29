@@ -22,6 +22,9 @@ We also provide a number of additional packages that extend the core APIs with a
   
   `dotNetRdf.Inferencing`
   : Provides an API and some support for simple reasoning over RDF graps.
+
+  `dotNetRdf.LDF`
+  : Provides an API for consuming and querying RDF data from a remote source that implements the [Linked Data Fragments](https://linkeddatafragments.org/) specification.
   
   `dotNetRdf.Ontology`
   : Provides a set of high-level APIs for working with RDF Schema and OWL ontologies.

@@ -100,7 +100,7 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for TriG.
         /// </summary>
-        public static readonly string[] TriG = { "application/x-trig" };
+        public static readonly string[] TriG = { "application/trig", "application/x-trig" };
 
         /// <summary>
         /// MIME Types for TriX.
@@ -749,8 +749,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var header = new HttpRequestMessage().Headers.Accept;
-
+                HashSet<MediaTypeWithQualityHeaderValue> accept = [];
                 foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseRdf)
@@ -759,20 +758,26 @@ namespace VDS.RDF
                         {
                             foreach (var mimeType in definition.MimeTypes)
                             {
-                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType, Convert.ToDouble(definition.Preference)));
+                                accept.Add(new MediaTypeWithQualityHeaderValue(mimeType, Convert.ToDouble(definition.Preference)));
                             }
                         }
                         else
                         {
                             foreach (var mimeType in definition.MimeTypes)
                             {
-                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
+                                accept.Add(new MediaTypeWithQualityHeaderValue(mimeType));
                             }
                         }
                     }
                 }
 
-                header.Add(new MediaTypeWithQualityHeaderValue("*/*", .5));
+                accept.Add(new MediaTypeWithQualityHeaderValue("*/*", .5));
+
+                HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
+                foreach (MediaTypeWithQualityHeaderValue headerValue in accept)
+                {
+                    header.Add(headerValue);
+                }
 
                 return header.ToString();
             }
@@ -788,8 +793,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var header = new HttpRequestMessage().Headers.Accept;
-
+                HashSet<MediaTypeWithQualityHeaderValue> accept = [];
                 foreach (MimeTypeDefinition definition in Definitions)
                 {
                     if (definition.CanParseSparqlResults)
@@ -798,19 +802,23 @@ namespace VDS.RDF
                         {
                             foreach (var mimeType in definition.MimeTypes)
                             {
-                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType, Convert.ToDouble(definition.Preference)));
+                                accept.Add(new MediaTypeWithQualityHeaderValue(mimeType, Convert.ToDouble(definition.Preference)));
                             }
                         }
                         else
                         {
                             foreach (var mimeType in definition.MimeTypes)
                             {
-                                header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
+                                accept.Add(new MediaTypeWithQualityHeaderValue(mimeType));
                             }
                         }
                     }
                 }
-
+                HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
+                foreach (MediaTypeWithQualityHeaderValue headerValue in accept)
+                {
+                    header.Add(headerValue);
+                }
                 return header.ToString();
             }
         }
@@ -825,7 +833,7 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var header = new HttpRequestMessage().Headers.Accept;
+                HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
 
                 foreach (MimeTypeDefinition definition in Definitions)
                 {
@@ -863,19 +871,13 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var header = new HttpRequestMessage().Headers.Accept;
-
-                foreach (MimeTypeDefinition definition in Definitions)
+                HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
+                var mimeTypes =
+                    new HashSet<string>(Definitions.Where(d => d.CanParseRdfDatasets).SelectMany(d => d.MimeTypes));
+                foreach (var mimeType in mimeTypes)
                 {
-                    if (definition.CanParseRdfDatasets)
-                    {
-                        foreach (var mimeType in definition.MimeTypes)
-                        {
-                            header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
-                        }
-                    }
+                    header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
                 }
-
                 return header.ToString();
             }
         }
@@ -889,17 +891,12 @@ namespace VDS.RDF
             {
                 if (!_init) Init();
 
-                var header = new HttpRequestMessage().Headers.Accept;
-
-                foreach (MimeTypeDefinition definition in Definitions)
+                HttpHeaderValueCollection<MediaTypeWithQualityHeaderValue> header = new HttpRequestMessage().Headers.Accept;
+                var mimeTypes =
+                    new HashSet<string>(Definitions.Where(d => d.CanParseRdf || d.CanParseRdfDatasets).SelectMany(d => d.MimeTypes));
+                foreach (var mimeType in mimeTypes)
                 {
-                    if (definition.CanParseRdf || definition.CanParseRdfDatasets)
-                    {
-                        foreach (var mimeType in definition.MimeTypes)
-                        {
-                            header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
-                        }
-                    }
+                    header.Add(new MediaTypeWithQualityHeaderValue(mimeType));
                 }
                 header.Add(new MediaTypeWithQualityHeaderValue("*/*", .5));
 

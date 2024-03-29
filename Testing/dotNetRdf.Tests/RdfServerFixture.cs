@@ -35,6 +35,7 @@ namespace VDS.RDF
             RegisterResource("/doap", "application/json", Path.Combine("resources", "rdfserver", "doap.json"));
             RegisterResource("/doap", "application/ld+json", Path.Combine("resources", "rdfserver", "doap.jsonld"));
             RegisterResource("/doap", "text/turtle", Path.Combine("resources", "rdfserver", "doap.ttl"));
+            RegisterResource("/dbpedia_ldf.html", "text/html", Path.Combine("resources", "rdfserver", "dbpedia_ldf.html"));
 
             RegisterResourceWithStringContent("/one.ttl", "text/turtle", "<#s> a <#t> .");
             RegisterResourceWithStringContent("/one.nt", "application/n-triples",

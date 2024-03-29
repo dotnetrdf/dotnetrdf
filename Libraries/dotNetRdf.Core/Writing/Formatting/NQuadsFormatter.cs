@@ -24,6 +24,9 @@
 // </copyright>
 */
 
+using System;
+using System.Linq;
+using System.Text;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
@@ -85,6 +88,20 @@ namespace VDS.RDF.Writing.Formatting
             }
             return Format(t.Subject, TripleSegment.Subject) + " " + Format(t.Predicate, TripleSegment.Predicate) + " " + Format(t.Object, TripleSegment.Object) + " " + Format(graph) + " .";
         }
+
+        /// <summary>
+        /// Formats a TripleStore as a String. Especially useful for canonicalized graphs.
+        /// </summary>
+        /// <param name="store"></param>
+        /// <returns></returns>
+        public string Format(ITripleStore store)
+        {
+            var sb = new StringBuilder();
+            store.Graphs
+                .SelectMany(graph => graph.Triples.Select(triple => this.Format(triple, graph.Name)))
+                .OrderBy(p => p, StringComparer.Ordinal).ToList().ForEach(s => sb.AppendLine(s));
+            return sb.ToString();
+        }
     }
 
     /// <summary>
@@ -98,5 +115,15 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         public NQuads11Formatter()
             : base(NQuadsSyntax.Rdf11) { }
+        
+        /// <summary>
+        /// Return the datatype specification for a literal value.
+        /// </summary>
+        /// <param name="datatypeUri">The datatype URI.</param>
+        /// <returns>The formatted datatype specification unless <paramref name="datatypeUri"/> matches the XML Schema String datatype URI, in which case an empty string is returned.</returns>
+        protected override string FormatDatatype(Uri datatypeUri)
+        {
+            return datatypeUri.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString) ? string.Empty : base.FormatDatatype(datatypeUri);
+        }
     }
 }

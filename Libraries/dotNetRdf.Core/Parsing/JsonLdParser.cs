@@ -82,6 +82,18 @@ namespace VDS.RDF.Parsing
                 Load(new StoreHandler(store), reader, store.UriFactory);
             }
         }
+        
+        /// <summary>
+        /// Adds the RDF quads found in the JSON-LD to the specified store.
+        /// </summary>
+        /// <param name="store">The store to add the parsed RDF quads to.</param>
+        /// <param name="input">The expanded JSON-LD document.</param>
+        internal void Load(ITripleStore store, JArray input)
+        {
+            if (store == null) throw new ArgumentNullException(nameof(store));
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            Load(new StoreHandler(store), input, store.UriFactory);
+        }
 
         /// <inheritdoc/>
         public void Load(ITripleStore store, TextReader input)
@@ -118,23 +130,27 @@ namespace VDS.RDF.Parsing
 
         /// <inheritdoc />
         public void Load(IRdfHandler handler, TextReader input, IUriFactory uriFactory) {
+            JToken element;
+            using (var reader = new JsonTextReader(input) { DateParseHandling = DateParseHandling.None })
+            {
+                element = JToken.ReadFrom(reader);
+            }
+
+            JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
+            Load(handler, expandedElement, uriFactory);
+        }
+        
+        private void Load(IRdfHandler handler, JArray input, IUriFactory uriFactory) {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
             if (input == null) throw new ArgumentNullException(nameof(input));
             if (uriFactory == null) throw new ArgumentNullException(nameof(uriFactory));
-
 
             handler.StartRdf();
             IUriNode rdfTypeNode = handler.CreateUriNode(uriFactory.Create(RdfNs + "type"));
             try
             {
-                JToken element;
-                using (var reader = new JsonTextReader(input) { DateParseHandling = DateParseHandling.None })
-                {
-                    element = JToken.ReadFrom(reader);
-                }
-                JArray expandedElement = JsonLdProcessor.Expand(element, ParserOptions);
                 var nodeMapGenerator = new NodeMapGenerator();
-                JObject nodeMap = nodeMapGenerator.GenerateNodeMap(expandedElement);
+                JObject nodeMap = nodeMapGenerator.GenerateNodeMap(input);
                 foreach (JProperty p in nodeMap.Properties())
                 {
                     var graphName = p.Name;
@@ -219,7 +235,7 @@ namespace VDS.RDF.Parsing
             }
             handler.EndRdf(true);
         }
-
+        
         private const string XsdNs = "http://www.w3.org/2001/XMLSchema#";
         private const string RdfNs = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
         private const string RdfValue = RdfNs + "value";

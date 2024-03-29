@@ -9,8 +9,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        framework: ["net6.0", "net7.0", "net472"]
-        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.Data.DataTables.Tests"]
+        framework: ["net6.0", "net8.0", "net472"]
+        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.TestSuite.RdfCanon", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.Ldf.Tests"]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -28,8 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-        framework: ["net6.0", "net7.0"]
-        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.Data.DataTables.Tests"]
+        framework: ["net6.0", "net8.0"]
+        suite: ["dotNetRdf.Tests", "dotNetRdf.Dynamic.Tests", "dotNetRdf.Inferencing.Tests", "dotNetRdf.Ontology.Tests", "dotNetRdf.Shacl.Tests", "dotNetRdf.Skos.Tests", "dotNetRdf.Query.FullText.Tests", "dotNetRdf.Writing.HtmlSchema.Tests", "dotNetRdf.TestSuite.RdfStar", "dotNetRdf.TestSuite.Rdfa", "dotNetRdf.TestSuite.RdfCanon", "dotNetRdf.Data.DataTables.Tests", "dotNetRdf.Ldf.Tests"]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -48,13 +48,13 @@ jobs:
     - name: Start Fuseki
       run: docker run --rm -d -p 3030:3030 --name fuseki atomgraph/fuseki --mem /ds
     - name: Test Fuskei Connector
-      run: dotnet test -c Release --framework net6.0 --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Fuseki.Tests/dotNetRdf.Connectors.Fuseki.Tests.csproj
+      run: dotnet test -c Release --framework net8.0 --collect:"XPlat Code Coverage" Testing/dotNetRdf.Connectors.Fuseki.Tests/dotNetRdf.Connectors.Fuseki.Tests.csproj
     - name: Stop Fuseki
       run: docker stop fuseki
     - name: Upload Code Coverage
       uses: actions/upload-artifact@v3
       with:
-        name: code-coverage dotNetRdf.Connectors.Fuseki.Tests net6.0
+        name: code-coverage dotNetRdf.Connectors.Fuseki.Tests net8.0
         path: Testing/dotNetRdf.Connectors.Fuseki.Tests/TestResults/*/coverage.cobertura.xml
         
   report:

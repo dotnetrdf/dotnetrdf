@@ -170,14 +170,14 @@ namespace VDS.RDF.Query.Construct
 
                 case NodeType.Literal:
                     var l = (ILiteralNode)n;
-                    if (l.DataType != null)
-                    {
-                        temp = NodeFactory.CreateLiteralNode(l.Value, l.DataType);
-                    } 
-                    else if (!l.Language.Equals(string.Empty))
+                    if (!l.Language.Equals(string.Empty))
                     {
                         temp = NodeFactory.CreateLiteralNode(l.Value, l.Language);
-                    } 
+                    }
+                    else if (l.DataType != null)
+                    {
+                        temp = NodeFactory.CreateLiteralNode(l.Value, l.DataType);
+                    }
                     else
                     {
                         temp = NodeFactory.CreateLiteralNode(l.Value);
