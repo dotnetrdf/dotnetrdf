@@ -32,7 +32,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
     public IAsyncEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, CancellationToken cancellationToken = default)
     {
         var builder = new EvaluationBuilder();
-        var context = new PullEvaluationContext(_tripleStore);
+        var context = new PullEvaluationContext(_tripleStore, unionDefaultGraph:false);
         IAsyncEvaluation evaluation = builder.Build(algebra);
         return evaluation.Evaluate(context, null, null, cancellationToken);
     }

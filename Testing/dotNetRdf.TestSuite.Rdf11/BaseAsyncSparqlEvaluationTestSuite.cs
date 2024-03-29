@@ -87,7 +87,13 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite : RdfTestSuite
 
         var tripleStore = new TripleStore();
         tripleStore.LoadFromFile(dataInputPath);
-
+        if (t.GraphData != null)
+        {
+            var graphDataInputPath = t.Manifest.ResolveResourcePath(t.GraphData);
+            var g = new Graph(new UriNode(t.GraphData));
+            g.LoadFromFile(graphDataInputPath);
+            tripleStore.Add(g);
+        }
         var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
         SparqlQuery query = queryParser.ParseFromFile(queryInputPath);
         var results = await ProcessQueryAsync(tripleStore, query);
