@@ -71,6 +71,7 @@ public class EvaluationBuilder
             ITriplePattern tp = bgp.TriplePatterns[i];
             ISet<string> joinVars = new HashSet<string>(boundVars);
             joinVars.IntersectWith(bgp.Variables);
+            boundVars.UnionWith(bgp.Variables);
             result = new AsyncJoinEvaluation(result, BuildTriplePattern(tp), joinVars.ToArray());
         }
         return result;
