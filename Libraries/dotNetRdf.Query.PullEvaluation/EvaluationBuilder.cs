@@ -20,6 +20,7 @@ public class EvaluationBuilder
             LeftJoin leftJoin => BuildLeftJoin(leftJoin),
             Select select => BuildSelect(select),
             Union union => BuildUnion(union),
+            Ask ask => BuildAsk(ask),
             _ => throw new RdfQueryException($"Unsupported algebra {algebra}")
         };
     }
@@ -106,6 +107,11 @@ public class EvaluationBuilder
             return new AsyncGraphEvaluation(graphName, Build(graph.InnerAlgebra));
         }
         throw new RdfQueryException($"Unsupported graph specifier token {graph.GraphSpecifier}");
+    }
+
+    private IAsyncEvaluation BuildAsk(Ask ask)
+    {
+        return new AsyncAskEvaluation(Build(ask.InnerAlgebra));
     }
 }
 

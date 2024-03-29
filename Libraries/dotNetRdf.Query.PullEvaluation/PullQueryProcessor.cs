@@ -42,7 +42,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
         switch (query.QueryType)
         {
             case SparqlQueryType.Ask:
-            case SparqlQueryType.Select:
+           case SparqlQueryType.Select:
             case SparqlQueryType.SelectAll:
             case SparqlQueryType.SelectAllDistinct:
             case SparqlQueryType.SelectAllReduced:
@@ -143,6 +143,20 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                     }
                     resultsHandler.EndResults(ok);
                         break;
+                case SparqlQueryType.Ask:
+                    if (resultsHandler == null)
+                    {
+                        // Should already be handled above, but this keeps the compiler happy that we have checked the nullable argument.
+                        throw new ArgumentNullException(nameof(resultsHandler), "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
+                    }
+                    resultsHandler.StartResults();
+                    await using (IAsyncEnumerator<ISet>? enumerator = solutionBindings.GetAsyncEnumerator(cts.Token))
+                    {
+                        var hasNext = await enumerator.MoveNextAsync();
+                        resultsHandler.HandleBooleanResult(hasNext);
+                    }
+                    resultsHandler.EndResults(true);
+                    break;
                 default:
                     throw new NotImplementedException(
                         $"Support for query type {query.QueryType} has not yet been implemented.");
