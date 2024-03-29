@@ -134,6 +134,7 @@ public class AlgebraEvaluationTests
         expectResult1.Add("xname", _g.CreateLiteralNode("Carol"));
         var expectResult2 = new Set();
         expectResult2.Add("x", _dave);
+        expectResult2.Add("xname", null);
         Assert.Contains(expectResult1, results);
         Assert.Contains(expectResult2, results);
     }
