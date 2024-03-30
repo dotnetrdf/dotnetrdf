@@ -10,7 +10,7 @@ using Xunit.Abstractions;
 
 namespace VDS.RDF.TestSuite.Rdf11;
 
-public abstract class BaseAsyncSparqlEvaluationTestSuite : RdfTestSuite
+public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper output) : RdfTestSuite
 {
     public static ManifestTestDataProvider SparqlQueryEvalTests = new ManifestTestDataProvider(
         new Uri("http://example/base/manifest.ttl"),
@@ -20,18 +20,11 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite : RdfTestSuite
         new Uri("http://example/base/manifest.ttl"),
         Path.Combine("resources", "sparql11", "data-r2", "manifest-evaluation.ttl"));
 
-    private readonly ITestOutputHelper _output;
-
     protected abstract Task<object> ProcessQueryAsync(TripleStore tripleStore, SparqlQuery query);
-
-    protected BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper output)
-    {
-        _output = output;
-    }
 
     protected async void PerformQueryEvaluationTest(ManifestTestData t)
     {
-        _output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
+        output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
         await InvokeTestRunnerAsync(t);
     }
 
@@ -65,23 +58,25 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite : RdfTestSuite
         var queryInputPath = t.Manifest.ResolveResourcePath(t.Query);
         var dataInputPath = t.Manifest.ResolveResourcePath(t.Data);
         var resultInputPath = t.Manifest.ResolveResourcePath(t.Result);
-        var resultSet = new SparqlResultSet();
-        var resultGraph = new Graph();
+        SparqlResultSet resultSet = null;
+        Graph resultGraph = null;
         var expectGraphResult = false;
 
         if (resultInputPath.EndsWith(".srj"))
         {
+            resultSet = new SparqlResultSet();
             var resultParser = new SparqlJsonParser();
             resultParser.Load(resultSet, resultInputPath);
         }
         else if (resultInputPath.EndsWith(".srx"))
         {
+            resultSet = new SparqlResultSet();
             var resultParser = new SparqlXmlParser();
             resultParser.Load(resultSet, resultInputPath);
         }
         else if (resultInputPath.EndsWith(".ttl"))
         {
-            expectGraphResult = true;
+            resultGraph = new Graph();
             resultGraph.LoadFromFile(resultInputPath, new TurtleParser(TurtleSyntax.W3C, false));
         }
 
@@ -96,14 +91,21 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite : RdfTestSuite
         }
         var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
         SparqlQuery query = queryParser.ParseFromFile(queryInputPath);
+        expectGraphResult = query.QueryType is SparqlQueryType.Construct or SparqlQueryType.Describe;
         var results = await ProcessQueryAsync(tripleStore, query);
+        if (!expectGraphResult && resultGraph != null)
+        {
+            resultSet = new SparqlResultSet();
+            var reader = new SparqlRdfParser();
+            reader.Load(resultSet, resultGraph);
+        }
 
         if (expectGraphResult)
         {
             results.Should().BeAssignableTo<IGraph>();
             var graphDiff = new GraphDiff();
             GraphDiffReport diffReport = graphDiff.Difference(resultGraph, results as IGraph);
-            TestTools.ShowDifferences(diffReport, "Expected Results", "Actual Results", _output);
+            TestTools.ShowDifferences(diffReport, "Expected Results", "Actual Results", output);
             diffReport.AreEqual.Should().BeTrue();
         }
         else
