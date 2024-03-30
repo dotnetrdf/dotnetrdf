@@ -169,40 +169,58 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                             "Cannot use a null rdfHandler when the query is a CONSTRUCT/DESCRIBE");
                     }
                     rdfHandler.StartRdf();
-                    foreach (var prefix in query.NamespaceMap.Prefixes)
+                    try
                     {
-                        if (!rdfHandler.HandleNamespace(prefix, query.NamespaceMap.GetNamespaceUri(prefix)))
+                        foreach (var prefix in query.NamespaceMap.Prefixes)
                         {
-                            throw new RdfParsingTerminatedException();
-                        }
-                    }
-                    var constructContext = new ConstructContext(rdfHandler, false);
-                    await foreach (ISet? s in solutionBindings)
-                    {
-                        try
-                        {
-                            constructContext.Set = s;
-                            foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns.OfType<IConstructTriplePattern>())
+                            if (!rdfHandler.HandleNamespace(prefix, query.NamespaceMap.GetNamespaceUri(prefix)))
                             {
-                                try
-                                {
-                                    if (!rdfHandler.HandleTriple(p.Construct(constructContext))) ParserHelper.Stop();
-                                }
-                                catch (RdfQueryException)
-                                {
-                                    // If we get an error here then we could not construct a specific triple
-                                    // so we continue anyway
-                                }
+                                ParserHelper.Stop();
                             }
                         }
-                        catch (RdfQueryException)
+
+                        var constructContext = new ConstructContext(rdfHandler, false);
+                        await foreach (ISet? s in solutionBindings)
                         {
-                            // If we get an error here this means we couldn't construct for this solution so the
-                            // entire solution is discarded
-                            continue;
+                            try
+                            {
+                                constructContext.Set = s;
+                                foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns
+                                             .OfType<IConstructTriplePattern>())
+                                {
+                                    try
+                                    {
+                                        if (!rdfHandler.HandleTriple(p.Construct(constructContext)))
+                                        {
+                                            ParserHelper.Stop();
+                                        }
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        // If we get an error here then we could not construct a specific triple
+                                        // so we continue anyway
+                                    }
+                                }
+                            }
+                            catch (RdfQueryException)
+                            {
+                                // If we get an error here this means we couldn't construct for this solution so the
+                                // entire solution is discarded
+                                continue;
+                            }
                         }
+
+                        rdfHandler.EndRdf(true);
                     }
-                    rdfHandler.EndRdf(true);
+                    catch (RdfParsingTerminatedException)
+                    {
+                        rdfHandler.EndRdf(true);
+                    }
+                    catch
+                    {
+                        rdfHandler.EndRdf(false);
+                        throw;
+                    }
                     break;
 
                 default:
