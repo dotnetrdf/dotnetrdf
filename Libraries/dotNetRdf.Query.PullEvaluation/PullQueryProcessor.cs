@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
-using VDS.RDF;
+﻿using VDS.RDF;
+using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Construct;
+using VDS.RDF.Query.Patterns;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
@@ -161,6 +162,49 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                     }
                     resultsHandler.EndResults(true);
                     break;
+                case SparqlQueryType.Construct:
+                    if (rdfHandler == null)
+                    {
+                        throw new ArgumentNullException(nameof(rdfHandler),
+                            "Cannot use a null rdfHandler when the query is a CONSTRUCT/DESCRIBE");
+                    }
+                    rdfHandler.StartRdf();
+                    foreach (var prefix in query.NamespaceMap.Prefixes)
+                    {
+                        if (!rdfHandler.HandleNamespace(prefix, query.NamespaceMap.GetNamespaceUri(prefix)))
+                        {
+                            throw new RdfParsingTerminatedException();
+                        }
+                    }
+                    var constructContext = new ConstructContext(rdfHandler, false);
+                    await foreach (ISet? s in solutionBindings)
+                    {
+                        try
+                        {
+                            constructContext.Set = s;
+                            foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns.OfType<IConstructTriplePattern>())
+                            {
+                                try
+                                {
+                                    if (!rdfHandler.HandleTriple(p.Construct(constructContext))) ParserHelper.Stop();
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    // If we get an error here then we could not construct a specific triple
+                                    // so we continue anyway
+                                }
+                            }
+                        }
+                        catch (RdfQueryException)
+                        {
+                            // If we get an error here this means we couldn't construct for this solution so the
+                            // entire solution is discarded
+                            continue;
+                        }
+                    }
+                    rdfHandler.EndRdf(true);
+                    break;
+
                 default:
                     throw new NotImplementedException(
                         $"Support for query type {query.QueryType} has not yet been implemented.");
