@@ -89,7 +89,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
             g.LoadFromFile(graphDataInputPath);
             tripleStore.Add(g);
         }
-        var queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
+        var queryParser = new SparqlQueryParser(queryInputPath.Contains("data-r2") ? SparqlQuerySyntax.Sparql_1_0 : SparqlQuerySyntax.Sparql_1_1);
         SparqlQuery query = queryParser.ParseFromFile(queryInputPath);
         expectGraphResult = query.QueryType is SparqlQueryType.Construct or SparqlQueryType.Describe;
         var results = await ProcessQueryAsync(tripleStore, query);
