@@ -191,6 +191,31 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Load a SPARQL result set from an existing RDF graph.
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <param name="graph"></param>
+        public void Load(ISparqlResultsHandler handler, IGraph graph)
+        {
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+            if (graph == null) throw new ArgumentNullException(nameof(graph));
+            Parse(new SparqlRdfParserContext(graph, handler, graph.UriFactory));
+        }
+
+        
+        /// <summary>
+        /// Load a SPARQL result set from an existing RDF graph.
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="graph"></param>
+        public void Load(SparqlResultSet results, IGraph graph)
+        {
+            if (results == null) throw new ArgumentNullException(nameof(results));
+            if (graph == null) throw new ArgumentNullException(nameof(graph));
+            Load(new ResultSetHandler(results), graph);
+        }
+
+        /// <summary>
         /// Internal method which actually parses the Result Set by traversing the RDF Graph appropriately.
         /// </summary>
         /// <param name="context">Parser Context.</param>
