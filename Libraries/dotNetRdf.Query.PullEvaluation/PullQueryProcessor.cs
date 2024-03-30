@@ -135,6 +135,10 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                         throw new ArgumentNullException(nameof(resultsHandler), "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
                     }
                     resultsHandler.StartResults();
+                    foreach (var v in algebra.Variables)
+                    {
+                        resultsHandler.HandleVariable(v);
+                    }
                     var ok = true;
                     await foreach (ISet? solutionBinding in solutionBindings)
                     {
