@@ -30,7 +30,8 @@ internal class AsyncFilterEvaluation : IAsyncEvaluation
             {
                 // If the result processed was an identity result, swallow the error
                 filterResult = false;
-                if (innerResult.Variables.Any()) { throw; }
+                // If the result processed was an identity result, swallow the error
+                // if (innerResult.Variables.Any()) { throw; } // Rethrowing the exception here causes DAWG tests dawg-bev-5 and dawg-bev-6 to fail
             }
 
             if (filterResult) yield return innerResult;
