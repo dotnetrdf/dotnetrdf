@@ -9,25 +9,29 @@ using Xunit.Abstractions;
 
 namespace VDS.RDF.TestSuite.Rdf11
 {
-    public class SparqlEvaluationTestSuite: RdfTestSuite
+    public class SparqlEvaluationTestSuite(ITestOutputHelper output) : RdfTestSuite
     {
         public static ManifestTestDataProvider SparqlQueryEvalTests = new ManifestTestDataProvider(
             new Uri("http://example/base/manifest.ttl"),
             Path.Combine("resources", "sparql11", "data-sparql11", "manifest-sparql11-query.ttl"));
 
-        private readonly ITestOutputHelper _output;
+        public static ManifestTestDataProvider DawgQueryEvalTests = new(
+            new Uri("http://example/base/manifest.ttl"),
+            Path.Combine("resources", "sparql11", "data-r2", "manifest-evaluation.ttl"));
 
-        public SparqlEvaluationTestSuite(ITestOutputHelper output)
+        [Theory]
+        [MemberData(nameof(DawgQueryEvalTests))]
+        public void RunDawgEvaluationTest(ManifestTestData t)
         {
-            _output = output;
+            output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
+            InvokeTestRunner(t);
         }
 
-        //[Theory(Skip = "To be completed")]
         [Theory]
         [MemberData(nameof(SparqlQueryEvalTests))]
         public void RunQueryEvaluationTest(ManifestTestData t)
         {
-            _output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
+            output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
             InvokeTestRunner(t);
         }
 
@@ -71,7 +75,7 @@ namespace VDS.RDF.TestSuite.Rdf11
                 results.Should().BeAssignableTo<IGraph>();
                 var graphDiff = new GraphDiff();
                 GraphDiffReport diffReport = graphDiff.Difference(resultGraph, results as IGraph);
-                TestTools.ShowDifferences(diffReport, "Expected Results", "Actual Results", _output);
+                TestTools.ShowDifferences(diffReport, "Expected Results", "Actual Results", output);
                 diffReport.AreEqual.Should().BeTrue();
             }
             else
