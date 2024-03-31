@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public const string SparqlRdfResultsNamespace = "http://www.w3.org/2001/sw/DataAccess/tests/result-set#";
 
-        private IRdfReader _parser;
+        private readonly IRdfReader _parser;
 
         /// <summary>
         /// Creates a new SPARQL RDF Parser which will use auto-detection for determining the syntax of input streams/files.
@@ -59,6 +59,11 @@ namespace VDS.RDF.Parsing
         {
             _parser = parser;
         }
+
+        /// <summary>
+        /// Gets/sets whether the parser should explicitly include a NULL result for unbound variables in solutions.
+        /// </summary>
+        public bool PadUnboundVariables { get; set; } = true;
 
         /// <summary>
         /// Loads a SPARQL Result Set from RDF contained in the given Input.
@@ -352,12 +357,15 @@ namespace VDS.RDF.Parsing
                             }
                             if (!ok) throw new RdfParseException("Result Set contains a Solution which has no Bindings");
 
-                            // Check that all Variables are bound for a given result binding nulls where appropriate
-                            foreach (var v in context.Variables)
+                            if (PadUnboundVariables)
                             {
-                                if (!r.HasValue(v))
+                                // Check that all Variables are bound for a given result binding nulls where appropriate
+                                foreach (var v in context.Variables)
                                 {
-                                    r.SetValue(v, null);
+                                    if (!r.HasValue(v))
+                                    {
+                                        r.SetValue(v, null);
+                                    }
                                 }
                             }
 
