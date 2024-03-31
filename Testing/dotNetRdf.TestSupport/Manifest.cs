@@ -71,6 +71,7 @@ namespace VDS.RDF
         {
             INode testApproval = Graph.CreateUriNode("test:approval");
             INode testWithdrawn = Graph.CreateUriNode("test:withdrawn");
+            INode rdfType = Graph.CreateUriNode("rdf:type");
             IEnumerable<INode> manifests = Graph.GetTriplesWithPredicateObject(Graph.CreateUriNode("rdf:type"), Graph.CreateUriNode("mf:Manifest")).Select(t => t.Subject);
             foreach (INode manifest in manifests)
             {
@@ -79,7 +80,8 @@ namespace VDS.RDF
                 {
                     foreach (IUriNode testNode in Graph.GetListItems(testList).OfType<IUriNode>())
                     {
-                        if (!Graph.ContainsTriple(new Triple(testNode, testApproval, testWithdrawn)))
+                        if (!Graph.ContainsTriple(new Triple(testNode, testApproval, testWithdrawn))
+                            && Graph.Triples.WithSubjectPredicate(testNode, rdfType).Any())
                         {
                             yield return new ManifestTestData(this, testNode);
                         }
