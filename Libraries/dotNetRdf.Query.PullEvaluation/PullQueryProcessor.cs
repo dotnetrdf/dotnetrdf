@@ -30,10 +30,10 @@ public class PullQueryProcessor : ISparqlQueryProcessor
     /**
      * Evaluate a SPARQL algebra against the dataset configured for this query processor.
      */
-    public IAsyncEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, PullEvaluationContext? context = null, CancellationToken cancellationToken = default)
     {
         var builder = new EvaluationBuilder();
-        var context = new PullEvaluationContext(_tripleStore, unionDefaultGraph:false);
+        context ??= new PullEvaluationContext(_tripleStore, unionDefaultGraph: false);
         IAsyncEvaluation evaluation = builder.Build(algebra);
         return evaluation.Evaluate(context, null, null, cancellationToken);
     }
@@ -121,7 +121,9 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                 cts.CancelAfter(TimeSpan.FromMilliseconds(this.Timeout));
             }
 
-            IAsyncEnumerable<ISet> solutionBindings = Evaluate(algebra, cts.Token);
+            var evaluationContext =
+                new PullEvaluationContext(_tripleStore, false, query.DefaultGraphNames, query.NamedGraphNames);
+            IAsyncEnumerable<ISet> solutionBindings = Evaluate(algebra, evaluationContext, cts.Token);
             switch (query.QueryType)
             {
                 case SparqlQueryType.Select:
@@ -143,7 +145,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                     var ok = true;
                     await foreach (ISet? solutionBinding in solutionBindings)
                     {
-                        ok = resultsHandler.HandleResult(SparqlResultFactory.MakeResult(solutionBinding));
+                        ok = resultsHandler.HandleResult(SparqlResultFactory.MakeResult(solutionBinding, algebra.Variables));
                         if (!ok) break;
                     }
                     resultsHandler.EndResults(ok);

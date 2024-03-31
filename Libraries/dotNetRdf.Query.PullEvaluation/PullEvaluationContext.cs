@@ -19,6 +19,7 @@ public class PullEvaluationContext : IPatternEvaluationContext
 
     public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null)
     {
+        bool customDefaultGraph = false;
         if (unionDefaultGraph)
         {
             _defaultGraph = new UnionTripleCollection(data.Graphs.First().Triples, data.Graphs.Skip(1).Select(g=>g.Triples));
@@ -27,18 +28,24 @@ public class PullEvaluationContext : IPatternEvaluationContext
         {
             if (defaultGraphNames != null)
             {
-                var graphNames = defaultGraphNames.ToList();
-                _defaultGraph = new UnionTripleCollection(data[graphNames[0]].Triples,
-                    graphNames.Select(g => data[g].Triples));
+                var graphNames = defaultGraphNames.Where(data.HasGraph).ToList();
+                _defaultGraph = graphNames.Count switch
+                {
+                    0 => data.HasGraph((IRefNode?)null) ? data[(IRefNode?)null].Triples : new TripleCollection(),
+                    1 => data[graphNames[0]].Triples,
+                    _ => new UnionTripleCollection(data[graphNames[0]].Triples,
+                        graphNames.Skip(1).Select(g => data[g].Triples))
+                };
+                if (graphNames.Any(g=>g != null)) customDefaultGraph = true;
             }
             else
             {
-                _defaultGraph = data.HasGraph((IRefNode)null) ? data[(IRefNode)null].Triples : new TripleCollection();
+                _defaultGraph = data.HasGraph((IRefNode?)null) ? data[(IRefNode?)null].Triples : new TripleCollection();
             }
         }
 
         _namedGraphs = namedGraphs != null ? namedGraphs.ToDictionary(g => g, g => data.HasGraph(g) ? data[g].Triples : new TripleCollection()) : new Dictionary<IRefNode, BaseTripleCollection>();
-        if (!unionDefaultGraph && defaultGraphNames == null && namedGraphs == null)
+        if (!unionDefaultGraph && !customDefaultGraph && !_namedGraphs.Any())
         {
             _namedGraphs = data.Graphs.Where(g => g.Name != null).ToDictionary(g => g.Name, g => g.Triples);
         }

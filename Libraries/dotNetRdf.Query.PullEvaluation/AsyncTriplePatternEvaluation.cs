@@ -32,6 +32,7 @@ public class AsyncTriplePatternEvaluation : IAsyncEvaluation
         return context.GetTriples(_triplePattern, input, activeGraph)
             .Select(t=>_triplePattern.Evaluate(context,t))
             .Where(set => set != null)
+            .Select(set => input != null ? set.Join(input) : set)
             .ToAsyncEnumerable();
     }
 }

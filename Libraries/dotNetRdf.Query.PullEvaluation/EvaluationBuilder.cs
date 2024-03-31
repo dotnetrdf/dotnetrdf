@@ -98,7 +98,7 @@ public class EvaluationBuilder
     {
         if (graph.GraphSpecifier.TokenType == Token.VARIABLE)
         {
-            return new AsyncGraphEvaluation(graph.GraphSpecifier.Value, Build(graph.InnerAlgebra));
+            return new AsyncGraphEvaluation(graph.GraphSpecifier.Value.TrimStart('?'), Build(graph.InnerAlgebra));
         }
 
         if (graph.GraphSpecifier.TokenType == Token.URI)

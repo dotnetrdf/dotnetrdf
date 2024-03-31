@@ -56,32 +56,42 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
     private async Task QueryEvaluationTest(ManifestTestData t)
     {
         var queryInputPath = t.Manifest.ResolveResourcePath(t.Query);
-        var dataInputPath = t.Manifest.ResolveResourcePath(t.Data);
+        var dataInputPath = t.Data != null ? t.Manifest.ResolveResourcePath(t.Data) : null;
         var resultInputPath = t.Manifest.ResolveResourcePath(t.Result);
-        SparqlResultSet resultSet = null;
-        Graph resultGraph = null;
+        SparqlResultSet expectedResultSet = null;
+        Graph expectedResultGraph = null;
         var expectGraphResult = false;
 
         if (resultInputPath.EndsWith(".srj"))
         {
-            resultSet = new SparqlResultSet();
+            expectedResultSet = new SparqlResultSet();
             var resultParser = new SparqlJsonParser();
-            resultParser.Load(resultSet, resultInputPath);
+            resultParser.Load(expectedResultSet, resultInputPath);
         }
         else if (resultInputPath.EndsWith(".srx"))
         {
-            resultSet = new SparqlResultSet();
+            expectedResultSet = new SparqlResultSet();
             var resultParser = new SparqlXmlParser();
-            resultParser.Load(resultSet, resultInputPath);
+            resultParser.Load(expectedResultSet, resultInputPath);
         }
         else if (resultInputPath.EndsWith(".ttl"))
         {
-            resultGraph = new Graph();
-            resultGraph.LoadFromFile(resultInputPath, new TurtleParser(TurtleSyntax.W3C, false));
+            expectedResultGraph = new Graph() { BaseUri = t.Manifest.BaseUri };
+            expectedResultGraph.LoadFromFile(resultInputPath, new TurtleParser(TurtleSyntax.W3C, false));
         }
 
-        var tripleStore = new TripleStore();
-        tripleStore.LoadFromFile(dataInputPath);
+        var tripleStore = new TripleStore(new ResolverDemandGraphCollection(uri =>
+        {
+            var filePath = t.Manifest.ResolveResourcePath(uri);
+            var g = new Graph(new UriNode(uri));
+            g.LoadFromFile(filePath);
+            return g;
+        }));
+        if (dataInputPath != null)
+        {
+            tripleStore.LoadFromFile(dataInputPath);
+        }
+
         if (t.GraphData != null)
         {
             var graphDataInputPath = t.Manifest.ResolveResourcePath(t.GraphData);
@@ -90,27 +100,28 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
             tripleStore.Add(g);
         }
         var queryParser = new SparqlQueryParser(queryInputPath.Contains("data-r2") ? SparqlQuerySyntax.Sparql_1_0 : SparqlQuerySyntax.Sparql_1_1);
+        queryParser.DefaultBaseUri = t.Manifest.BaseUri;
         SparqlQuery query = queryParser.ParseFromFile(queryInputPath);
         expectGraphResult = query.QueryType is SparqlQueryType.Construct or SparqlQueryType.Describe;
         var results = await ProcessQueryAsync(tripleStore, query);
-        if (!expectGraphResult && resultGraph != null)
+        if (!expectGraphResult && expectedResultGraph != null)
         {
-            resultSet = new SparqlResultSet();
-            var reader = new SparqlRdfParser();
-            reader.Load(resultSet, resultGraph);
+            expectedResultSet = new SparqlResultSet();
+            var reader = new SparqlRdfParser { PadUnboundVariables = false };
+            reader.Load(expectedResultSet, expectedResultGraph);
         }
 
         if (expectGraphResult)
         {
             results.Should().BeAssignableTo<IGraph>();
             var graphDiff = new GraphDiff();
-            GraphDiffReport diffReport = graphDiff.Difference(resultGraph, results as IGraph);
+            GraphDiffReport diffReport = graphDiff.Difference(expectedResultGraph, results as IGraph);
             TestTools.ShowDifferences(diffReport, "Expected Results", "Actual Results", output);
             diffReport.AreEqual.Should().BeTrue();
         }
         else
         {
-            results.Should().BeAssignableTo<SparqlResultSet>().Which.Should().BeEquivalentTo(resultSet);
+            results.Should().BeAssignableTo<SparqlResultSet>().Which.Should().BeEquivalentTo(expectedResultSet);
         }
     }
 
