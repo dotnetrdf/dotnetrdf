@@ -21,6 +21,7 @@ public class EvaluationBuilder
             Select select => BuildSelect(select),
             Union union => BuildUnion(union),
             Ask ask => BuildAsk(ask),
+            Distinct distinct => BuildDistinct(distinct),
             _ => throw new RdfQueryException($"Unsupported algebra {algebra}")
         };
     }
@@ -113,6 +114,11 @@ public class EvaluationBuilder
     private IAsyncEvaluation BuildAsk(Ask ask)
     {
         return new AsyncAskEvaluation(Build(ask.InnerAlgebra));
+    }
+
+    private IAsyncEvaluation BuildDistinct(Distinct distinct)
+    {
+        return new AsyncDistinctEvaluation(Build(distinct.InnerAlgebra));
     }
 }
 

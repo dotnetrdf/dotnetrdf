@@ -89,7 +89,9 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         }));
         if (dataInputPath != null)
         {
-            tripleStore.LoadFromFile(dataInputPath);
+            var g = new Graph{BaseUri = t.GraphData};
+            g.LoadFromFile(dataInputPath);
+            tripleStore.Add(g);
         }
 
         if (t.GraphData != null)
