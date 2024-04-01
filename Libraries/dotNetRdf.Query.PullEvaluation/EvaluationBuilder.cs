@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using System.Runtime.CompilerServices;
 using VDS.RDF;
 using VDS.RDF.Parsing.Tokens;
@@ -25,6 +26,7 @@ public class EvaluationBuilder
             Distinct distinct => BuildDistinct(distinct, context),
             OrderBy orderBy => BuildOrderBy(orderBy, context),
             Slice slice => BuildSlice(slice, context),
+            Extend extend => BuildExtend(extend, context),
             _ => throw new RdfQueryException($"Unsupported algebra {algebra}")
         };
     }
@@ -132,6 +134,11 @@ public class EvaluationBuilder
     private IAsyncEvaluation BuildSlice(Slice slice, PullEvaluationContext context)
     {
         return new AsyncSliceEvaluation(slice, Build(slice.InnerAlgebra, context));
+    }
+
+    private IAsyncEvaluation BuildExtend(Extend extend, PullEvaluationContext context)
+    {
+        return new AsyncExtendEvaluation(extend, context, Build(extend.InnerAlgebra, context));
     }
 }
 
