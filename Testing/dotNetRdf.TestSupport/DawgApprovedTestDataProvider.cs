@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace VDS.RDF;
 
-public class DawgApprovedTestDataProvider : ManifestTestDataProvider
+public class DawgApprovedTestDataProvider : ManifestTestDataProvider, IEnumerable<object[]>
 {
     public DawgApprovedTestDataProvider(Uri baseUri, string manifestPath):base(baseUri, manifestPath, DawgApprovedTestFilter){}
 

@@ -29,8 +29,12 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
     [Fact]
     public void RunSingle()
     {
-        ManifestTestData t = DawgQueryEvalTests.GetTestData(
-            "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional-filter/manifest#dawg-optional-filter-001");
+        // ManifestTestData t = DawgQueryEvalTests.GetTestData(
+        //     "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/optional-filter/manifest#dawg-optional-filter-001");
+        // base.PerformQueryEvaluationTest(t);
+
+        ManifestTestData t = SparqlQueryEvalTests.GetTestData(
+            "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bindings/manifest#inline1");
         base.PerformQueryEvaluationTest(t);
     }
     

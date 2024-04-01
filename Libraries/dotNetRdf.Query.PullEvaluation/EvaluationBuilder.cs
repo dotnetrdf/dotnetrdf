@@ -28,6 +28,7 @@ public class EvaluationBuilder
             Slice slice => BuildSlice(slice, context),
             Extend extend => BuildExtend(extend, context),
             Reduced reduced => BuildReduced(reduced, context),
+            Bindings bindings => BuildBindings(bindings, context),
             _ => throw new RdfQueryException($"Unsupported algebra {algebra}")
         };
     }
@@ -152,6 +153,11 @@ public class EvaluationBuilder
     private IAsyncEvaluation BuildReduced(Reduced reduced, PullEvaluationContext context)
     {
         return new AsyncReducedEvaluation(Build(reduced.InnerAlgebra, context));
+    }
+
+    private IAsyncEvaluation BuildBindings(Bindings bindings, PullEvaluationContext context)
+    {
+        return new AsyncBindingsEvaluation(bindings);
     }
 }
 
