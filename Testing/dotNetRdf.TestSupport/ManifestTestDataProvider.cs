@@ -13,9 +13,9 @@ namespace VDS.RDF
     {
         private readonly Manifest _manifest;
 
-        public ManifestTestDataProvider(Uri baseUri, string manifestPath)
+        public ManifestTestDataProvider(Uri baseUri, string manifestPath, Func<IGraph, INode, bool> testNodeFilter = null)
         {
-            _manifest = new Manifest(baseUri, manifestPath);
+            _manifest = new Manifest(baseUri, manifestPath, testNodeFilter);
         }
 
         public IEnumerator<object[]> GetEnumerator()

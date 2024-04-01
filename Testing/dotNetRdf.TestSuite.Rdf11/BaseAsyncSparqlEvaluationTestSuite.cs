@@ -17,7 +17,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         new Uri("http://example/base/manifest.ttl"),
         Path.Combine("resources", "sparql11", "data-sparql11", "manifest-sparql11-query.ttl"));
 
-    public static ManifestTestDataProvider DawgQueryEvalTests = new(
+    public static DawgApprovedTestDataProvider DawgQueryEvalTests = new(
         new Uri("http://example/base/manifest.ttl"),
         Path.Combine("resources", "sparql11", "data-r2", "manifest-evaluation.ttl"));
 
@@ -116,7 +116,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         if (!expectGraphResult && expectedResultGraph != null)
         {
             expectedResultSet = new SparqlResultSet();
-            var reader = new SparqlRdfParser { PadUnboundVariables = false };
+            var reader = new SparqlRdfParser { PadUnboundVariables = true };
             reader.Load(expectedResultSet, expectedResultGraph);
         }
 
