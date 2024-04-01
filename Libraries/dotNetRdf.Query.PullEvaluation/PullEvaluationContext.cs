@@ -13,13 +13,19 @@ public class PullEvaluationContext : IPatternEvaluationContext
     private readonly IDictionary<IRefNode, BaseTripleCollection> _namedGraphs;
     
     public bool RigorousEvaluation { get; }
+
+    public ISparqlNodeComparer NodeComparer { get; private set; }
+
+    public SparqlOrderingComparer OrderingComparer { get; private set; }
     internal IEnumerable<IRefNode> NamedGraphNames => _namedGraphs.Keys;
     
     public ISparqlExpressionProcessor<IValuedNode, PullEvaluationContext, ISet> ExpressionProcessor { get; }
 
     public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null)
     {
-        bool customDefaultGraph = false;
+        NodeComparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
+        OrderingComparer = new SparqlOrderingComparer(NodeComparer);
+        var customDefaultGraph = false;
         if (unionDefaultGraph)
         {
             _defaultGraph = new UnionTripleCollection(data.Graphs.First().Triples, data.Graphs.Skip(1).Select(g=>g.Triples));

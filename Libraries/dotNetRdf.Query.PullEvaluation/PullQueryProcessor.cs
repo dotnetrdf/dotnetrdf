@@ -34,7 +34,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
     {
         var builder = new EvaluationBuilder();
         context ??= new PullEvaluationContext(_tripleStore, unionDefaultGraph: false);
-        IAsyncEvaluation evaluation = builder.Build(algebra);
+        IAsyncEvaluation evaluation = builder.Build(algebra, context);
         return evaluation.Evaluate(context, null, null, cancellationToken);
     }
 

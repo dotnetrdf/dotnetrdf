@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using VDS.RDF;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
@@ -9,27 +10,29 @@ namespace dotNetRdf.Query.PullEvaluation;
 
 public class EvaluationBuilder
 {
-    public IAsyncEvaluation Build(ISparqlAlgebra algebra)
+    public IAsyncEvaluation Build(ISparqlAlgebra algebra, PullEvaluationContext context)
     {
         return algebra switch
         {
-            Filter filter => BuildFilter(filter),
-            Graph graph => BuildGraph(graph),
-            IBgp bgp => BuildBgp(bgp),
-            Join join => BuildJoin(join),
-            LeftJoin leftJoin => BuildLeftJoin(leftJoin),
-            Select select => BuildSelect(select),
-            Union union => BuildUnion(union),
-            Ask ask => BuildAsk(ask),
-            Distinct distinct => BuildDistinct(distinct),
+            Filter filter => BuildFilter(filter, context),
+            Graph graph => BuildGraph(graph, context),
+            IBgp bgp => BuildBgp(bgp, context),
+            Join join => BuildJoin(join, context),
+            LeftJoin leftJoin => BuildLeftJoin(leftJoin, context),
+            Select select => BuildSelect(select, context),
+            Union union => BuildUnion(union, context),
+            Ask ask => BuildAsk(ask, context),
+            Distinct distinct => BuildDistinct(distinct, context),
+            OrderBy orderBy => BuildOrderBy(orderBy, context),
+            Slice slice => BuildSlice(slice, context),
             _ => throw new RdfQueryException($"Unsupported algebra {algebra}")
         };
     }
 
-    private IAsyncEvaluation BuildLeftJoin(ILeftJoin leftJoin)
+    private IAsyncEvaluation BuildLeftJoin(ILeftJoin leftJoin, PullEvaluationContext context)
     {
-        IAsyncEvaluation lhs = Build(leftJoin.Lhs);
-        IAsyncEvaluation rhs = Build(leftJoin.Rhs);
+        IAsyncEvaluation lhs = Build(leftJoin.Lhs, context);
+        IAsyncEvaluation rhs = Build(leftJoin.Rhs, context);
         var joinVars = new HashSet<string>(leftJoin.Lhs.Variables);
         joinVars.IntersectWith(new HashSet<string>(leftJoin.Rhs.Variables));
         var joinEval = new AsyncLeftJoinEvaluation(
@@ -52,14 +55,14 @@ public class EvaluationBuilder
         throw new RdfQueryException($"Unsupported algebra {triplePattern}");
     }
 
-    private IAsyncEvaluation BuildJoin(Join join)
+    private IAsyncEvaluation BuildJoin(Join join, PullEvaluationContext context)
     {
         ISet<string> joinVars = new HashSet<string>(join.Lhs.Variables);
         joinVars.IntersectWith(join.Rhs.Variables);
-        return new AsyncJoinEvaluation(Build(join.Lhs), Build(join.Rhs), joinVars.ToArray());
+        return new AsyncJoinEvaluation(Build(join.Lhs, context), Build(join.Rhs, context), joinVars.ToArray());
     }
 
-    private IAsyncEvaluation BuildBgp(IBgp bgp)
+    private IAsyncEvaluation BuildBgp(IBgp bgp, PullEvaluationContext context)
     {
         if (bgp.TriplePatterns.Count == 0)
         {
@@ -78,53 +81,64 @@ public class EvaluationBuilder
         return result;
     }
 
-    private IAsyncEvaluation BuildSelect(Select select)
+    private IAsyncEvaluation BuildSelect(Select select, PullEvaluationContext context)
     {
-        if (select.IsSelectAll) { return Build(select.InnerAlgebra); }
+        if (select.IsSelectAll) { return Build(select.InnerAlgebra, context); }
 
-        return new AsyncSelectEvaluation(select, Build(select.InnerAlgebra));
+        return new AsyncSelectEvaluation(select, Build(select.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildFilter(Filter filter)
+    private IAsyncEvaluation BuildFilter(Filter filter, PullEvaluationContext context)
     {
-        return new AsyncFilterEvaluation(filter, Build(filter.InnerAlgebra));
+        return new AsyncFilterEvaluation(filter, Build(filter.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildUnion(Union union)
+    private IAsyncEvaluation BuildUnion(Union union, PullEvaluationContext context)
     {
-        return new AsyncUnionEvaluation(Build(union.Lhs), Build(union.Rhs));
+        return new AsyncUnionEvaluation(Build(union.Lhs, context), Build(union.Rhs, context));
     }
 
-    private IAsyncEvaluation BuildGraph(Graph graph)
+    private IAsyncEvaluation BuildGraph(Graph graph, PullEvaluationContext context)
     {
         if (graph.GraphSpecifier.TokenType == Token.VARIABLE)
         {
-            return new AsyncGraphEvaluation(graph.GraphSpecifier.Value.TrimStart('?'), Build(graph.InnerAlgebra));
+            return new AsyncGraphEvaluation(graph.GraphSpecifier.Value.TrimStart('?'), Build(graph.InnerAlgebra, context));
         }
 
         if (graph.GraphSpecifier.TokenType == Token.URI)
         {
             // TODO: Use URI factory and node factory from context
             var graphName = new UriNode(new Uri(graph.GraphSpecifier.Value));
-            return new AsyncGraphEvaluation(graphName, Build(graph.InnerAlgebra));
+            return new AsyncGraphEvaluation(graphName, Build(graph.InnerAlgebra, context));
         }
         throw new RdfQueryException($"Unsupported graph specifier token {graph.GraphSpecifier}");
     }
 
-    private IAsyncEvaluation BuildAsk(Ask ask)
+    private IAsyncEvaluation BuildAsk(Ask ask, PullEvaluationContext context)
     {
-        return new AsyncAskEvaluation(Build(ask.InnerAlgebra));
+        return new AsyncAskEvaluation(Build(ask.InnerAlgebra, context));
     }
 
-    private IAsyncEvaluation BuildDistinct(Distinct distinct)
+    private IAsyncEvaluation BuildDistinct(Distinct distinct, PullEvaluationContext context)
     {
-        return new AsyncDistinctEvaluation(Build(distinct.InnerAlgebra));
+        return new AsyncDistinctEvaluation(Build(distinct.InnerAlgebra, context));
+    }
+
+    private IAsyncEvaluation BuildOrderBy(OrderBy orderBy, PullEvaluationContext context)
+    {
+        return new AsyncOrderByEvaluation(orderBy, context, Build(orderBy.InnerAlgebra, context));
+    }
+
+    private IAsyncEvaluation BuildSlice(Slice slice, PullEvaluationContext context)
+    {
+        return new AsyncSliceEvaluation(slice, Build(slice.InnerAlgebra, context));
     }
 }
 
 internal class IdentityEvaluation : IAsyncEvaluation
 {
-    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         yield return input ?? new Set();
     }

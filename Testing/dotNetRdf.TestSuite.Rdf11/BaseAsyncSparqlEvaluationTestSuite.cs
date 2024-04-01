@@ -78,6 +78,11 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         {
             expectedResultGraph = new Graph() { BaseUri = t.Manifest.BaseUri };
             expectedResultGraph.LoadFromFile(resultInputPath, new TurtleParser(TurtleSyntax.W3C, false));
+        } 
+        else if (resultInputPath.EndsWith(".rdf"))
+        {
+            expectedResultGraph = new Graph() { BaseUri = t.Manifest.BaseUri };
+            expectedResultGraph.LoadFromFile(resultInputPath, new RdfXmlParser());
         }
 
         var tripleStore = new TripleStore(new ResolverDemandGraphCollection(uri =>
