@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace VDS.RDF
@@ -39,8 +40,8 @@ namespace VDS.RDF
         public Uri Data => Graph.GetTriplesWithSubjectPredicate(ActionNode, Graph.CreateUriNode("qt:data"))
             .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
 
-        public Uri GraphData => Graph.GetTriplesWithSubjectPredicate(ActionNode, Graph.CreateUriNode("qt:graphData"))
-            .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();
+        public IEnumerable<Uri> GraphData => Graph.GetTriplesWithSubjectPredicate(ActionNode, Graph.CreateUriNode("qt:graphData"))
+            .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri);
         
         public Uri UpdateData => Graph.GetTriplesWithSubjectPredicate(ActionNode, Graph.CreateUriNode("ut:data"))
             .Select(t => t.Object).OfType<IUriNode>().Select(n => n.Uri).FirstOrDefault();

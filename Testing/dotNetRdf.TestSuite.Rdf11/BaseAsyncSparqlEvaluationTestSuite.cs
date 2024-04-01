@@ -95,20 +95,21 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         }));
         if (dataInputPath != null)
         {
-            var g = new Graph{BaseUri = t.GraphData};
+            var g = new Graph{BaseUri = t.Data};
             g.LoadFromFile(dataInputPath);
             tripleStore.Add(g);
         }
 
-        if (t.GraphData != null)
+        foreach (Uri graphUri in t.GraphData)
         {
-            var graphDataInputPath = t.Manifest.ResolveResourcePath(t.GraphData);
-            var g = new Graph(new UriNode(t.GraphData));
-            g.LoadFromFile(graphDataInputPath);
+            var g = new Graph(new UriNode(graphUri)) { BaseUri = graphUri };
+            g.LoadFromFile(t.Manifest.ResolveResourcePath(graphUri));
             tripleStore.Add(g);
         }
-        var queryParser = new SparqlQueryParser(queryInputPath.Contains("data-r2") ? SparqlQuerySyntax.Sparql_1_0 : SparqlQuerySyntax.Sparql_1_1);
-        queryParser.DefaultBaseUri = t.Manifest.BaseUri;
+        var queryParser = new SparqlQueryParser(queryInputPath.Contains("data-r2") ? SparqlQuerySyntax.Sparql_1_0 : SparqlQuerySyntax.Sparql_1_1)
+        {
+            DefaultBaseUri = t.Manifest.BaseUri
+        };
         SparqlQuery query = queryParser.ParseFromFile(queryInputPath);
         expectGraphResult = query.QueryType is SparqlQueryType.Construct or SparqlQueryType.Describe;
         var results = await ProcessQueryAsync(tripleStore, query);
