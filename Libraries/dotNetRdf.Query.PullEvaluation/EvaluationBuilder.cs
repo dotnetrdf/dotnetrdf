@@ -27,6 +27,7 @@ public class EvaluationBuilder
             OrderBy orderBy => BuildOrderBy(orderBy, context),
             Slice slice => BuildSlice(slice, context),
             Extend extend => BuildExtend(extend, context),
+            Reduced reduced => BuildReduced(reduced, context),
             _ => throw new RdfQueryException($"Unsupported algebra {algebra}")
         };
     }
@@ -78,7 +79,14 @@ public class EvaluationBuilder
             ISet<string> joinVars = new HashSet<string>(boundVars);
             joinVars.IntersectWith(bgp.Variables);
             boundVars.UnionWith(bgp.Variables);
-            result = new AsyncJoinEvaluation(result, BuildTriplePattern(tp), joinVars.ToArray());
+            if (tp is FilterPattern fp)
+            {
+                result = new AsyncSparqlFilterEvaluation(fp.Filter, result, true);
+            }
+            else
+            {
+                result = new AsyncJoinEvaluation(result, BuildTriplePattern(tp), joinVars.ToArray());
+            }
         }
         return result;
     }
@@ -139,6 +147,11 @@ public class EvaluationBuilder
     private IAsyncEvaluation BuildExtend(Extend extend, PullEvaluationContext context)
     {
         return new AsyncExtendEvaluation(extend, context, Build(extend.InnerAlgebra, context));
+    }
+
+    private IAsyncEvaluation BuildReduced(Reduced reduced, PullEvaluationContext context)
+    {
+        return new AsyncReducedEvaluation(Build(reduced.InnerAlgebra, context));
     }
 }
 

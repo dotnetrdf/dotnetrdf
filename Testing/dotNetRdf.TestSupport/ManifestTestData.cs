@@ -57,8 +57,11 @@ namespace VDS.RDF
             .Select(t => t.Object).OfType<ILiteralNode>().Select(t => t.Value).FirstOrDefault();
 
         public string HashAlgorithm => Graph
-            .GetTriplesWithSubjectPredicate(TestNode, Graph.GetUriNode("rdfc:hashAlgorithm"))
+            .GetTriplesWithSubjectPredicate(TestNode, Graph.CreateUriNode("rdfc:hashAlgorithm"))
             .Select(t => t.Object).OfType<ILiteralNode>().Select(lit => lit.Value).FirstOrDefault();
+
+        public bool LaxCardinality => Graph.ContainsTriple(new Triple(TestNode,
+            Graph.CreateUriNode("mf:resultCardinality"), Graph.CreateUriNode("mf:LaxCardinality")));
 
         public override string ToString()
         {

@@ -2,6 +2,7 @@ using dotNetRdf.TestSupport;
 using FluentAssertions;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -128,7 +129,16 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         }
         else
         {
-            results.Should().BeAssignableTo<SparqlResultSet>().Which.Should().BeEquivalentTo(expectedResultSet);
+            if (t.LaxCardinality)
+            {
+                // With lax cardinality expect only that each result in the actual result set should be in expectedResultSet
+                results.Should().BeAssignableTo<SparqlResultSet>().Which.Should().OnlyContain(actualResult =>
+                    expectedResultSet.Any(expectedResult => expectedResult.Equals(actualResult)));
+            }
+            else
+            {
+                results.Should().BeAssignableTo<SparqlResultSet>().Which.Should().BeEquivalentTo(expectedResultSet);
+            }
         }
     }
 

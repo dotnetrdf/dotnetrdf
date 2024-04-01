@@ -30,7 +30,7 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
     public void RunSingle()
     {
         ManifestTestData t = DawgQueryEvalTests.GetTestData(
-            "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-09b");
+            "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-cmp-01");
         base.PerformQueryEvaluationTest(t);
     }
     
