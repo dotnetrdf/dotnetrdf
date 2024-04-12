@@ -28,17 +28,13 @@ public class AsyncSelectEvaluation : IAsyncEvaluation
         var resultSet = new Set();
         foreach (SparqlVariable sv in _select.SparqlVariables)
         {
-            if (sv.IsResultVariable)
-            {
-                resultSet.Add(sv.Name, innerResult[sv.Name]);
-            }
-            else if (sv.IsProjection)
+            if (sv.IsProjection)
             {
                 throw new NotImplementedException("Projection in SELECT not yet implemented");
             }
-            else if (sv.IsAggregate)
+            if (sv.IsResultVariable)
             {
-                throw new NotImplementedException("Aggregation in SELECT not yet implemented");
+                resultSet.Add(sv.Name, innerResult[sv.Name]);
             }
         }
 

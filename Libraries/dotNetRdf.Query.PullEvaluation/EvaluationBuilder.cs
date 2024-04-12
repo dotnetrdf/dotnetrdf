@@ -1,8 +1,10 @@
+using dotNetRdf.Query.PullEvaluation.Aggregation;
 using Microsoft.Extensions.Configuration;
 using System.Runtime.CompilerServices;
 using VDS.RDF;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 using Graph = VDS.RDF.Query.Algebra.Graph;
@@ -29,6 +31,7 @@ public class EvaluationBuilder
             Extend extend => BuildExtend(extend, context),
             Reduced reduced => BuildReduced(reduced, context),
             Bindings bindings => BuildBindings(bindings, context),
+            GroupBy groupBy => BuildGroupBy(groupBy, context),
             _ => throw new RdfQueryException($"Unsupported algebra {algebra}")
         };
     }
@@ -158,6 +161,38 @@ public class EvaluationBuilder
     private IAsyncEvaluation BuildBindings(Bindings bindings, PullEvaluationContext context)
     {
         return new AsyncBindingsEvaluation(bindings);
+    }
+
+    private IAsyncEvaluation BuildGroupBy(GroupBy groupBy, PullEvaluationContext context)
+    {
+        var ret = new AsyncGroupByEvaluation(groupBy, Build(groupBy.InnerAlgebra, context));
+        foreach (SparqlVariable? aggregate in groupBy.Aggregates)
+        {
+            if (aggregate != null)
+            {
+                ret.AddAggregateProvider(this.Build(aggregate, context));
+            }
+        }
+        return ret;
+    }
+
+    private Func<IAsyncAggregation> Build(SparqlVariable aggregateVariable, PullEvaluationContext context)
+    {
+        if (!aggregateVariable.IsAggregate)
+        {
+            throw new ArgumentException("Provided variable is not an aggregate.", nameof(aggregateVariable));
+        }
+
+        return aggregateVariable.Aggregate switch
+        {
+            CountAggregate count => () => new AsyncCountAggregate(count.Expression, count.Variable, aggregateVariable.Name, context),
+            CountAllAggregate countAll => () => new AsyncCountAllAggregate(countAll, aggregateVariable.Name),
+            SumAggregate sum => () => new AsyncSumAggregate(sum.Expression, sum.Distinct, aggregateVariable.Name, context),
+            AverageAggregate avg => () => new AsyncAverageAggregate(avg.Expression, avg.Distinct, aggregateVariable.Name, context),
+            MaxAggregate max => () => new AsyncMaxAggregate(max.Expression, max.Variable, aggregateVariable.Name, context),
+            MinAggregate min => () => new AsyncMinAggregate(min.Expression, min.Variable, aggregateVariable.Name, context),
+            _ => throw new RdfQueryException($"Unsupported aggregate {aggregateVariable.Aggregate}")
+        };
     }
 }
 

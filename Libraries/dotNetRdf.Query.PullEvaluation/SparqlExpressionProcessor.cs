@@ -23,31 +23,32 @@ internal class PullExpressionProcessor : BaseExpressionProcessor<PullEvaluationC
 
     protected override IEnumerable<ISparqlCustomExpressionFactory> GetExpressionFactories(PullEvaluationContext context)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException("PullExpressionProcessor.GetExpressionFactories not implemented");
     }
 
     public override IValuedNode ProcessAggregateTerm(AggregateTerm aggregate, PullEvaluationContext context, ISet binding)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException("PullExpressionProcessor.ProcessAggregateTerm not implemented");
     }
 
     public override IValuedNode ProcessExistsFunction(ExistsFunction exists, PullEvaluationContext context, ISet binding)
     {
-        throw new NotImplementedException();
+        // return exists.Accept(context.ExpressionProcessor, context, binding);
+        throw new NotImplementedException("PullExpressionProcessor.ProcessExistsFunction not implemented");
     }
 
     public override IValuedNode ProcessBNodeFunction(BNodeFunction bNode, PullEvaluationContext context, ISet binding)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException("PullExpressionProcessor.ProcessBNodeFunction not implemented");
     }
 
     public override IValuedNode ProcessIriFunction(IriFunction iri, PullEvaluationContext context, ISet binding)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException("PullExpressionProcessor.ProcessIriFunction not implemented");
     }
 
     public override IValuedNode ProcessRandFunction(RandFunction rand, PullEvaluationContext context, ISet binding)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException("PullExpressionProcessor.ProcessRandFunction not implemented");
     }
 }

@@ -236,7 +236,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
         }
         catch (Exception e)
         {
-            throw new RdfQueryException("Unexpected error running SPARQL query.", e);
+            throw new RdfQueryException("Unexpected error running SPARQL query: " + e.Message, e);
         }
     }
 }
