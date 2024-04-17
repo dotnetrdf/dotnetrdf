@@ -6,7 +6,13 @@ using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Update;
 using Graph = VDS.RDF.Query.Algebra.Graph;
 
 namespace dotNetRdf.Query.PullEvaluation;
@@ -32,6 +38,7 @@ public class EvaluationBuilder
             Reduced reduced => BuildReduced(reduced, context),
             Bindings bindings => BuildBindings(bindings, context),
             GroupBy groupBy => BuildGroupBy(groupBy, context),
+            Having having => BuildHaving(having, context),
             _ => throw new RdfQueryException($"Unsupported algebra {algebra}")
         };
     }
@@ -176,6 +183,13 @@ public class EvaluationBuilder
         return ret;
     }
 
+    private IAsyncEvaluation BuildHaving(Having having, PullEvaluationContext context)
+    {
+        PushDownAggregatesTransformer t = new();
+        having = t.Transform(having);
+        return new AsyncHavingEvaluation(having, Build(having.InnerAlgebra, context), t.HavingVars);
+    }
+
     private Func<IAsyncAggregation> Build(SparqlVariable aggregateVariable, PullEvaluationContext context)
     {
         if (!aggregateVariable.IsAggregate)
@@ -202,5 +216,41 @@ internal class IdentityEvaluation : IAsyncEvaluation
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         yield return input ?? new Set();
+    }
+}
+
+internal class PushDownAggregatesTransformer : IExpressionTransformer
+{
+    private readonly List<SparqlVariable> _havingVars = new();
+    private readonly string _autoPrefix = "_" + Guid.NewGuid().ToString("N");
+    private int _autoId = 0;
+    
+    public List<SparqlVariable> HavingVars { get { return _havingVars; } }
+    public Having Transform(Having having)
+    {
+        if (having.InnerAlgebra is GroupBy groupBy)
+        {
+            ISparqlExpression havingExpression = having.HavingClause.Expression.Transform(this);
+            var havingPattern = new GroupBy(groupBy.InnerAlgebra, groupBy.Grouping, groupBy.Aggregates.Union(this._havingVars));
+            return new Having(havingPattern, new UnaryExpressionFilter(havingExpression));
+        }
+
+        return having;
+    }
+
+    public ISparqlExpression Transform(ISparqlExpression expr)
+    {
+        if (expr is AggregateTerm aggregateTerm)
+        {
+            var sv = new SparqlVariable(NextId(), aggregateTerm.Aggregate);
+            this._havingVars.Add(sv);
+            return new VariableTerm(sv.Name);
+        }
+        return expr.Transform(this);
+    }
+
+    private string NextId()
+    {
+        return _autoPrefix + _autoId++;
     }
 }
