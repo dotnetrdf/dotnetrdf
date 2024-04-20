@@ -2309,10 +2309,20 @@ namespace VDS.RDF.Query
                             {
                                 return new BooleanNode(b);
                             }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid Lexical Form for xsd:boolean");
-                            }
+
+                            if (lit.Value == "true" || lit.Value == "1") { return new BooleanNode(true); }
+
+                            if (lit.Value == "false" || lit.Value == "0") { return new BooleanNode(false); }
+
+                            throw new RdfQueryException("Invalid Lexical Form for xsd:boolean");
+                        }
+
+                        if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                        {
+                            // Can cast if lexical form matches xsd:boolean's lexical space
+                            if (lit.Value.Equals("0") || lit.Value.Equals("false")) return new BooleanNode(false);
+                            if (lit.Value.Equals("1") || lit.Value.Equals("true")) return new BooleanNode(true);
+                            throw new RdfQueryException("Invalid string value for casting to xsd:boolean");
                         }
 
                         // Cast based on Numeric Type
@@ -2336,6 +2346,16 @@ namespace VDS.RDF.Query
                                 {
                                     throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal as an intermediate stage in casting to a xsd:boolean");
                                 }
+
+                            case SparqlNumericType.Float:
+                                if (float.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture,
+                                        out var fl))
+                                {
+                                    return float.IsNaN(fl) || fl == 0.0d
+                                        ? new BooleanNode(false)
+                                        : new BooleanNode(true);
+                                }
+                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:float as an intermediate stage in casting to a xsd:boolean");
 
                             case SparqlNumericType.Double:
                                 if (double.TryParse(lit.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out var dbl))
