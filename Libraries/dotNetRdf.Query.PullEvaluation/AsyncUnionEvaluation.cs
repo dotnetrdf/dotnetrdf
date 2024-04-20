@@ -15,6 +15,7 @@ internal class AsyncUnionEvaluation : IAsyncEvaluation
     
     public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, CancellationToken cancellationToken = default)
     {
-        return _lhs.Evaluate(context, input, activeGraph, cancellationToken).Union(_rhs.Evaluate(context, input, activeGraph, cancellationToken));
+        return AsyncEnumerableEx.Merge(_lhs.Evaluate(context, input, activeGraph, cancellationToken),
+            _rhs.Evaluate(context, input, activeGraph, cancellationToken));
     }
 }

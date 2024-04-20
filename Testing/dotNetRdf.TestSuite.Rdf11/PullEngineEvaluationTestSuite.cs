@@ -34,7 +34,7 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
         // base.PerformQueryEvaluationTest(t);
 
         ManifestTestData t = SparqlQueryEvalTests.GetTestData(
-            "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#agg-groupconcat-01");
+            "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/bind/manifest#bind07");
         base.PerformQueryEvaluationTest(t);
     }
     
