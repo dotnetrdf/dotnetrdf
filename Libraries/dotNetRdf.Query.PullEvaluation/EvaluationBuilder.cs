@@ -39,7 +39,7 @@ public class EvaluationBuilder
             Bindings bindings => BuildBindings(bindings, context),
             GroupBy groupBy => BuildGroupBy(groupBy, context),
             Having having => BuildHaving(having, context),
-            _ => throw new RdfQueryException($"Unsupported algebra {algebra}")
+            _ => throw new RdfQueryException($"Unsupported query algebra ({algebra.GetType()}: {algebra}")
         };
     }
 
@@ -66,7 +66,16 @@ public class EvaluationBuilder
             return new AsyncTriplePatternEvaluation(matchTriplePattern);
         }
 
-        throw new RdfQueryException($"Unsupported algebra {triplePattern}");
+        if (triplePattern is BindPattern bindPattern)
+        {
+            if (bindPattern.InnerExpression.Variables.Any())
+            {
+                throw new RdfQueryException("Cannot process BIND with variables as first triple pattern");
+            }
+
+            return new AsyncBindPatternEvaluation(bindPattern, null);
+        }
+        throw new RdfQueryException($"Unsupported triple pattern algebra ({triplePattern.GetType()}): {triplePattern}");
     }
 
     private IAsyncEvaluation BuildJoin(Join join, PullEvaluationContext context)
@@ -90,14 +99,12 @@ public class EvaluationBuilder
             ISet<string> joinVars = new HashSet<string>(boundVars);
             joinVars.IntersectWith(bgp.Variables);
             boundVars.UnionWith(bgp.Variables);
-            if (tp is FilterPattern fp)
+            result = tp switch
             {
-                result = new AsyncSparqlFilterEvaluation(fp.Filter, result, true);
-            }
-            else
-            {
-                result = new AsyncJoinEvaluation(result, BuildTriplePattern(tp), joinVars.ToArray());
-            }
+                FilterPattern fp => new AsyncSparqlFilterEvaluation(fp.Filter, result, true),
+                BindPattern bp => new AsyncBindPatternEvaluation(bp, result),
+                _ => new AsyncJoinEvaluation(result, BuildTriplePattern(tp), joinVars.ToArray())
+            };
         }
         return result;
     }
