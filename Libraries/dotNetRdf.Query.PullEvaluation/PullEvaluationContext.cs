@@ -18,13 +18,14 @@ public class PullEvaluationContext : IPatternEvaluationContext
 
     public SparqlOrderingComparer OrderingComparer { get; private set; }
     internal IEnumerable<IRefNode> NamedGraphNames => _namedGraphs.Keys;
-    
+    public string AutoVarPrefix { get; private set; }
     public ISparqlExpressionProcessor<IValuedNode, PullEvaluationContext, ISet> ExpressionProcessor { get; }
 
-    public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null)
+    public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null, string autoVarPrefix = null)
     {
         NodeComparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
         OrderingComparer = new SparqlOrderingComparer(NodeComparer);
+        AutoVarPrefix = autoVarPrefix;
         var customDefaultGraph = false;
         if (unionDefaultGraph)
         {

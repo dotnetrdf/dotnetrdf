@@ -115,14 +115,28 @@ public class PullQueryProcessor : ISparqlQueryProcessor
         var cts = new CancellationTokenSource();
         try
         {
-            ISparqlAlgebra algebra = query.ToAlgebra();
+            var autoVarPrefix = "_auto";
+            while (query.Variables.Any(v => v.Name.StartsWith(autoVarPrefix)))
+            {
+                autoVarPrefix = "_" + autoVarPrefix;
+            }
+            var pushDownAggregatesOptimiser = new PushDownAggregatesOptimiser(autoVarPrefix);
+            ISparqlAlgebra algebra = query.ToAlgebra(
+                true, new []{pushDownAggregatesOptimiser}
+                );
+            
             if (this.Timeout > 0)
             {
                 cts.CancelAfter(TimeSpan.FromMilliseconds(this.Timeout));
             }
 
             var evaluationContext =
-                new PullEvaluationContext(_tripleStore, false, query.DefaultGraphNames, query.NamedGraphNames);
+                new PullEvaluationContext(
+                    _tripleStore,
+                    unionDefaultGraph: false,
+                    defaultGraphNames: query.DefaultGraphNames, 
+                    namedGraphs: query.NamedGraphNames,
+                    autoVarPrefix: autoVarPrefix);
             IAsyncEnumerable<ISet> solutionBindings = Evaluate(algebra, evaluationContext, cts.Token);
             switch (query.QueryType)
             {

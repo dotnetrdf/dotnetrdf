@@ -24,12 +24,14 @@ public class AsyncMaxAggregate : IAsyncAggregation
     }
     public string VariableName { get; }
     public INode? Value { get { return _max; } }
+    private bool _failed = false;
     public void Start()
     {
     }
 
     public bool Accept(ISet s)
     {
+        if (_failed) return true;
         INode? tmp = _maxVar != null
             ? (s.ContainsVariable(_maxVar) ? s[_maxVar] : null)
             : _expression.Accept(_context.ExpressionProcessor, _context, s);
@@ -44,12 +46,17 @@ public class AsyncMaxAggregate : IAsyncAggregation
             return true;
         }
 
-        if (_comparer.TryCompare(tmp, _max, out var result) && result > 0)
+        if (_comparer.TryCompare(tmp, _max, out var result))
         {
-            _max = tmp;
+            if (result > 0)
+            {
+                _max = tmp;
+            }
             return true;
         }
 
+        _failed = true;
+        _max = null;
         return true;
     }
 

@@ -24,17 +24,21 @@ public class AsyncMinAggregate : IAsyncAggregation
     }
     public string VariableName { get; }
     public INode? Value { get { return _min; } }
+
+    private bool _failed = false;
     public void Start()
     {
     }
 
     public bool Accept(ISet s)
     {
+        if (_failed) return true;
         INode? tmp = _maxVar != null
             ? (s.ContainsVariable(_maxVar) ? s[_maxVar] : null)
             : _expression.Accept(_context.ExpressionProcessor, _context, s);
         if (tmp == null)
         {
+            _failed = true;
             return true;
         }
 
@@ -44,12 +48,17 @@ public class AsyncMinAggregate : IAsyncAggregation
             return true;
         }
 
-        if (_comparer.TryCompare(tmp, _min, out var result) && result < 0)
+        if (_comparer.TryCompare(tmp, _min, out var result))
         {
-            _min = tmp;
+            if (result < 0)
+            {
+                _min = tmp;
+            }
             return true;
         }
 
+        _failed = true;
+        _min = null;
         return true;
     }
 

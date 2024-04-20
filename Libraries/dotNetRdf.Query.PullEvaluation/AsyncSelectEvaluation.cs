@@ -19,25 +19,51 @@ public class AsyncSelectEvaluation : IAsyncEvaluation
         await foreach (ISet innerResult in _inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            yield return ProcessInnerResult(innerResult);
+            yield return ProcessInnerResult(innerResult, context);
         }
     }
 
-    private ISet ProcessInnerResult(ISet innerResult)
+    private ISet ProcessInnerResult(ISet innerResult, PullEvaluationContext context)
     {
+        if (_select.IsSelectAll)
+        {
+            // Filter out auto-generated variables
+            foreach (var v in innerResult.Variables)
+            {
+                if (v.StartsWith(context.AutoVarPrefix))
+                {
+                    innerResult.Remove(v);
+                }
+            }
+
+            return innerResult;
+        }
+
         var resultSet = new Set();
         foreach (SparqlVariable sv in _select.SparqlVariables)
         {
-            if (sv.IsProjection)
-            {
-                throw new NotImplementedException("Projection in SELECT not yet implemented");
-            }
             if (sv.IsResultVariable)
             {
-                resultSet.Add(sv.Name, innerResult[sv.Name]);
+                if (sv.Name.StartsWith(context.AutoVarPrefix)) continue;
+                INode? variableBinding =
+                    sv.IsProjection ? TryProcessProjection(sv, innerResult, context) :
+                    innerResult.ContainsVariable(sv.Name) ? innerResult[sv.Name] : null;
+                resultSet.Add(sv.Name, variableBinding);
             }
         }
 
         return resultSet;
-    } 
+    }
+
+    private INode? TryProcessProjection(SparqlVariable sv, ISet innerResult, PullEvaluationContext context)
+    {
+        try
+        {
+            return sv.Projection.Accept(context.ExpressionProcessor, context, innerResult);
+        }
+        catch (RdfQueryException)
+        {
+            return null;
+        }
+    }
 }

@@ -10,12 +10,10 @@ public class AsyncHavingEvaluation : IAsyncEvaluation
 {
     private readonly Having _having;
     private readonly IAsyncEvaluation _inner;
-    private readonly List<SparqlVariable> _toDrop;
-    public AsyncHavingEvaluation(Having having, IAsyncEvaluation inner, List<SparqlVariable> havingVars)
+    public AsyncHavingEvaluation(Having having, IAsyncEvaluation inner)
     {
         _having = having;
         _inner = inner;
-        _toDrop = havingVars;
     }
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -27,10 +25,6 @@ public class AsyncHavingEvaluation : IAsyncEvaluation
                 _having.HavingClause.Expression.Accept(context.ExpressionProcessor, context, solutionBinding);
             if (result?.AsBoolean() ?? false)
             {
-                foreach (SparqlVariable havingVar in _toDrop)
-                {
-                    solutionBinding.Remove(havingVar.Name);
-                }
                 yield return solutionBinding;
             }
         }

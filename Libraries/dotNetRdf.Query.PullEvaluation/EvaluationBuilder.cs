@@ -185,9 +185,7 @@ public class EvaluationBuilder
 
     private IAsyncEvaluation BuildHaving(Having having, PullEvaluationContext context)
     {
-        PushDownAggregatesTransformer t = new();
-        having = t.Transform(having);
-        return new AsyncHavingEvaluation(having, Build(having.InnerAlgebra, context), t.HavingVars);
+        return new AsyncHavingEvaluation(having, Build(having.InnerAlgebra, context));
     }
 
     private Func<IAsyncAggregation> Build(SparqlVariable aggregateVariable, PullEvaluationContext context)
@@ -219,6 +217,7 @@ internal class IdentityEvaluation : IAsyncEvaluation
     }
 }
 
+/*
 internal class PushDownAggregatesTransformer : IExpressionTransformer
 {
     private readonly List<SparqlVariable> _havingVars = new();
@@ -254,3 +253,4 @@ internal class PushDownAggregatesTransformer : IExpressionTransformer
         return _autoPrefix + _autoId++;
     }
 }
+*/
