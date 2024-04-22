@@ -853,6 +853,10 @@ namespace VDS.RDF.Parsing
             {
                 return true;
             }
+            else if (c.IsDigit())
+            {
+                return true;
+            }
             else
             {
                 return false;
