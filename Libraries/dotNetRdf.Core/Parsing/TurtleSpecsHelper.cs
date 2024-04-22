@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using AngleSharp.Text;
 using System;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing.Tokens;
