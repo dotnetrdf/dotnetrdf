@@ -232,7 +232,7 @@ public class EvaluationBuilder
         var subContext = new PullEvaluationContext(context.Data, context.UnionDefaultGraph,
             subQuery.Query.DefaultGraphNames, subQuery.Query.NamedGraphNames, autoVarPrefix);
         var queryAlgebra = subQuery.Query.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
-        return new AsyncSubQueryEvaluation(Build(queryAlgebra, subContext), subContext);
+        return new AsyncSubQueryEvaluation(subQuery,Build(queryAlgebra, subContext), subContext);
     }
 
     private IAsyncEvaluation BuildSubQueryPattern(SubQueryPattern subQueryPattern, PullEvaluationContext context)
@@ -245,7 +245,7 @@ public class EvaluationBuilder
         var subContext = new PullEvaluationContext(context.Data, context.UnionDefaultGraph,
             subQueryPattern.SubQuery.DefaultGraphNames, subQueryPattern.SubQuery.NamedGraphNames, autoVarPrefix);
         var queryAlgebra = subQueryPattern.SubQuery.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
-        return new AsyncSubQueryEvaluation( Build(queryAlgebra, subContext), subContext);
+        return new AsyncSubQueryEvaluation( subQueryPattern,Build(queryAlgebra, subContext), subContext);
     }
 }
 
