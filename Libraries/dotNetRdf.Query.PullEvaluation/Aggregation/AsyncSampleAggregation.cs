@@ -1,5 +1,4 @@
 using VDS.RDF;
-using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions;
 
 namespace dotNetRdf.Query.PullEvaluation.Aggregation;

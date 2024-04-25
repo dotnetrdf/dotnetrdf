@@ -217,6 +217,7 @@ public class EvaluationBuilder
             MaxAggregate max => () => new AsyncMaxAggregate(max.Expression, max.Variable, aggregateVariable.Name, context),
             MinAggregate min => () => new AsyncMinAggregate(min.Expression, min.Variable, aggregateVariable.Name, context),
             SampleAggregate sample => () => new AsyncSampleAggregation(sample.Expression, aggregateVariable.Name, context),
+            GroupConcatAggregate groupConcat => () => new AsyncGroupConcatAggregate(groupConcat.Expression, groupConcat.SeparatorExpression, aggregateVariable.Name, context),
             _ => throw new RdfQueryException($"Unsupported aggregate {aggregateVariable.Aggregate}")
         };
     }
