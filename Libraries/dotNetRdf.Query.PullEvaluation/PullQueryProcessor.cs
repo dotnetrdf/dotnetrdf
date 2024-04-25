@@ -136,7 +136,8 @@ public class PullQueryProcessor : ISparqlQueryProcessor
                     unionDefaultGraph: false,
                     defaultGraphNames: query.DefaultGraphNames, 
                     namedGraphs: query.NamedGraphNames,
-                    autoVarPrefix: autoVarPrefix);
+                    autoVarPrefix: autoVarPrefix,
+                    baseUri: query.BaseUri);
             IAsyncEnumerable<ISet> solutionBindings = Evaluate(algebra, evaluationContext, cts.Token);
             switch (query.QueryType)
             {

@@ -14,6 +14,8 @@ namespace dotNetRdf.Query.PullEvaluation;
 
 internal class PullExpressionProcessor : BaseExpressionProcessor<PullEvaluationContext, ExpressionContext>
 {
+    private readonly Random _rnd = new();
+
     public PullExpressionProcessor(ISparqlNodeComparer nodeComparer, IUriFactory uriFactory, bool useStrictOperators) :
         base(nodeComparer, uriFactory, useStrictOperators)
     {
@@ -88,11 +90,41 @@ internal class PullExpressionProcessor : BaseExpressionProcessor<PullEvaluationC
 
     public override IValuedNode ProcessIriFunction(IriFunction iri, PullEvaluationContext context, ExpressionContext expressionContext)
     {
-        throw new NotImplementedException("PullExpressionProcessor.ProcessIriFunction not implemented");
+        IValuedNode result = iri.InnerExpression.Accept(this, context, expressionContext);
+        if (result == null)
+        {
+            throw new RdfQueryException("Cannot create an IRI from a null");
+        }
+
+        if (result is ILiteralNode lit)
+        {
+            var baseUri = string.Empty;
+            if (context.BaseUri != null)
+            {
+                baseUri = context.BaseUri.ToSafeString();
+            }
+
+            if (lit.DataType == null ||
+                lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString, StringComparison.Ordinal))
+            {
+                var uri = Tools.ResolveUri(lit.Value, baseUri);
+                return new UriNode(context.UriFactory.Create(uri));
+            }
+
+            throw new RdfQueryException("Cannot create an IRI from a non-string typed literal");
+        }
+
+        if (result is IUriNode)
+        {
+            return result;
+        }
+
+        throw new RdfQueryException("Cannot create an IRI from a non-URI/string literal.");
     }
 
     public override IValuedNode ProcessRandFunction(RandFunction rand, PullEvaluationContext context, ExpressionContext expressionContext)
     {
-        throw new NotImplementedException("PullExpressionProcessor.ProcessRandFunction not implemented");
+        // The assumption here is that this method should only ever be invoked once per RandFunction/ExpressionContext pair and so we don't need to track generated values in the expression context
+        return new DoubleNode(_rnd.NextDouble());
     }
 }

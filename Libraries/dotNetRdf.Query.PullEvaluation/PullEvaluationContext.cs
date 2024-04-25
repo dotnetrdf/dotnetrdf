@@ -23,15 +23,18 @@ public class PullEvaluationContext : IPatternEvaluationContext
     public ITripleStore Data { get; private set; }
     public bool UnionDefaultGraph { get; private set; }
     public INodeFactory NodeFactory { get; private set; }
+    public Uri? BaseUri { get; private set; }
+    public IUriFactory UriFactory { get; private set; }
     
-    public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null, string? autoVarPrefix = null, INodeFactory? nodeFactory = null)
+    public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null, string? autoVarPrefix = null, INodeFactory? nodeFactory = null, IUriFactory? uriFactory = null, Uri? baseUri = null)
     {
         NodeFactory = nodeFactory ?? new NodeFactory();
         Data = data;
         UnionDefaultGraph = unionDefaultGraph;
         NodeComparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
         OrderingComparer = new SparqlOrderingComparer(NodeComparer);
-        AutoVarPrefix = autoVarPrefix;
+        AutoVarPrefix = autoVarPrefix ?? "_auto";
+        BaseUri = baseUri;
         var customDefaultGraph = false;
         if (unionDefaultGraph)
         {
@@ -63,9 +66,12 @@ public class PullEvaluationContext : IPatternEvaluationContext
             _namedGraphs = data.Graphs.Where(g => g.Name != null).ToDictionary(g => g.Name, g => g.Triples);
         }
         RigorousEvaluation = true;
+        UriFactory = uriFactory ?? VDS.RDF.UriFactory.Root;
         ExpressionProcessor = new PullExpressionProcessor(
-            new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal), UriFactory.Root,
+            new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal),
+            UriFactory,
             RigorousEvaluation);
+
     }
 
     private static INode? GetNode(PatternItem patternItem, ISet? inputBindings)
