@@ -27,10 +27,10 @@ public interface IAsyncAggregation
     /// <summary>
     /// Invoked once for each solution binding to aggregate over.
     /// </summary>
-    /// <param name="s">The solution binding to include in the aggregate.</param>
+    /// <param name="expressionContext">The context for evaluation of the aggregate expression, consisting of a set of variable bindings and an optional active graph name.</param>
     /// <returns>True if the solution binding was successfully processed by the aggregate, false if an error has occured.</returns>
     /// <remarks>If a call to <see cref="Accept"/> returns false, the caller may choose to end iteration of solutions as an error during aggregation will typically result in a null value being produced for the aggregation.</remarks>
-    public bool Accept(ISet s);
+    public bool Accept(ExpressionContext expressionContext);
     
     /// <summary>
     /// Invoked once after the last <see cref="ISet"/> is passed to <see cref="Accept"/>

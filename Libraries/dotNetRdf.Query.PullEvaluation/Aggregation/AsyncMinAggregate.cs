@@ -30,12 +30,12 @@ public class AsyncMinAggregate : IAsyncAggregation
     {
     }
 
-    public bool Accept(ISet s)
+    public bool Accept(ExpressionContext expressionContext)
     {
         if (_failed) return true;
         INode? tmp = _maxVar != null
-            ? (s.ContainsVariable(_maxVar) ? s[_maxVar] : null)
-            : _expression.Accept(_context.ExpressionProcessor, _context, s);
+            ? (expressionContext.Bindings.ContainsVariable(_maxVar) ? expressionContext.Bindings[_maxVar] : null)
+            : _expression.Accept(_context.ExpressionProcessor, _context, expressionContext);
         if (tmp == null)
         {
             _failed = true;

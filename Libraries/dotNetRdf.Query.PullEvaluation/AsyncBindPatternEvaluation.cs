@@ -24,7 +24,7 @@ public class AsyncBindPatternEvaluation : IAsyncEvaluation
         if (_inner == null)
         {
             ISet result = new Set();
-            result.Add(_bindPattern.Variable, _bindPattern.InnerExpression.Accept(context.ExpressionProcessor, context, result));
+            result.Add(_bindPattern.Variable, _bindPattern.InnerExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(result, activeGraph)));
             yield return result;
         }
         else
@@ -41,7 +41,7 @@ public class AsyncBindPatternEvaluation : IAsyncEvaluation
                 INode? bindValue = null;
                 try
                 {
-                    bindValue = _bindPattern.InnerExpression.Accept(context.ExpressionProcessor, context, solution);
+                    bindValue = _bindPattern.InnerExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solution, activeGraph));
                 }
                 catch
                 {

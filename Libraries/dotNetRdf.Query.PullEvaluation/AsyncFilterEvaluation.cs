@@ -23,7 +23,7 @@ internal class AsyncFilterEvaluation : IAsyncEvaluation
             bool filterResult;
             try
             {
-                filterResult = _filter.SparqlFilter.Expression.Accept(context.ExpressionProcessor, context, innerResult)
+                filterResult = _filter.SparqlFilter.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(innerResult, activeGraph))
                     .AsSafeBoolean();
             }
             catch (RdfQueryException)

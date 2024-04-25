@@ -39,6 +39,7 @@ public class EvaluationBuilder
             Bindings bindings => BuildBindings(bindings, context),
             GroupBy groupBy => BuildGroupBy(groupBy, context),
             Having having => BuildHaving(having, context),
+            SubQuery subQuery => BuildSubQuery(subQuery, context),
             _ => throw new RdfQueryException($"Unsupported query algebra ({algebra.GetType()}: {algebra}")
         };
     }
@@ -59,7 +60,7 @@ public class EvaluationBuilder
         return joinEval;
     }
     
-    private IAsyncEvaluation BuildTriplePattern(ITriplePattern triplePattern)
+    private IAsyncEvaluation BuildTriplePattern(ITriplePattern triplePattern, PullEvaluationContext context)
     {
         if (triplePattern is IMatchTriplePattern matchTriplePattern)
         {
@@ -74,6 +75,11 @@ public class EvaluationBuilder
             }
 
             return new AsyncBindPatternEvaluation(bindPattern, null);
+        }
+
+        if (triplePattern is SubQueryPattern subQueryPattern)
+        {
+            return BuildSubQueryPattern(subQueryPattern, context);
         }
         throw new RdfQueryException($"Unsupported triple pattern algebra ({triplePattern.GetType()}): {triplePattern}");
     }
@@ -92,7 +98,7 @@ public class EvaluationBuilder
             return new IdentityEvaluation();
         }
         ISet<string> boundVars = new HashSet<string>(bgp.TriplePatterns[0].Variables);
-        IAsyncEvaluation result = BuildTriplePattern(bgp.TriplePatterns[0]);
+        IAsyncEvaluation result = BuildTriplePattern(bgp.TriplePatterns[0], context);
         for (var i = 1; i < bgp.TriplePatterns.Count; i++)
         {
             ITriplePattern tp = bgp.TriplePatterns[i];
@@ -103,7 +109,7 @@ public class EvaluationBuilder
             {
                 FilterPattern fp => new AsyncSparqlFilterEvaluation(fp.Filter, result, true),
                 BindPattern bp => new AsyncBindPatternEvaluation(bp, result),
-                _ => new AsyncJoinEvaluation(result, BuildTriplePattern(tp), joinVars.ToArray())
+                _ => new AsyncJoinEvaluation(result, BuildTriplePattern(tp, context), joinVars.ToArray())
             };
         }
         return result;
@@ -210,8 +216,35 @@ public class EvaluationBuilder
             AverageAggregate avg => () => new AsyncAverageAggregate(avg.Expression, avg.Distinct, aggregateVariable.Name, context),
             MaxAggregate max => () => new AsyncMaxAggregate(max.Expression, max.Variable, aggregateVariable.Name, context),
             MinAggregate min => () => new AsyncMinAggregate(min.Expression, min.Variable, aggregateVariable.Name, context),
+            SampleAggregate sample => () => new AsyncSampleAggregation(sample.Expression, aggregateVariable.Name, context),
             _ => throw new RdfQueryException($"Unsupported aggregate {aggregateVariable.Aggregate}")
         };
+    }
+
+    private IAsyncEvaluation BuildSubQuery(SubQuery subQuery, PullEvaluationContext context)
+    {
+        var autoVarPrefix = "_" + context.AutoVarPrefix;
+        while (subQuery.Variables.Any(v => v.StartsWith(autoVarPrefix)))
+        {
+            autoVarPrefix = "_" + autoVarPrefix;
+        }
+        var subContext = new PullEvaluationContext(context.Data, context.UnionDefaultGraph,
+            subQuery.Query.DefaultGraphNames, subQuery.Query.NamedGraphNames, autoVarPrefix);
+        var queryAlgebra = subQuery.Query.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
+        return new AsyncSubQueryEvaluation(Build(queryAlgebra, subContext), subContext);
+    }
+
+    private IAsyncEvaluation BuildSubQueryPattern(SubQueryPattern subQueryPattern, PullEvaluationContext context)
+    {
+        var autoVarPrefix = "_" + context.AutoVarPrefix;
+        while (subQueryPattern.Variables.Any(v => v.StartsWith(autoVarPrefix)))
+        {
+            autoVarPrefix = "_" + autoVarPrefix;
+        }
+        var subContext = new PullEvaluationContext(context.Data, context.UnionDefaultGraph,
+            subQueryPattern.SubQuery.DefaultGraphNames, subQueryPattern.SubQuery.NamedGraphNames, autoVarPrefix);
+        var queryAlgebra = subQueryPattern.SubQuery.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
+        return new AsyncSubQueryEvaluation( Build(queryAlgebra, subContext), subContext);
     }
 }
 

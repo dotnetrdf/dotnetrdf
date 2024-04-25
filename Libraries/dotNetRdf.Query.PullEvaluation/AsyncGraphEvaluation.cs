@@ -6,7 +6,7 @@ namespace dotNetRdf.Query.PullEvaluation;
 internal class AsyncGraphEvaluation : IAsyncEvaluation
 {
     private readonly IAsyncEvaluation _inner;
-    private readonly string _graphVarName;
+    private readonly string? _graphVarName;
     private readonly IRefNode? _graphName;
 
     public AsyncGraphEvaluation(IRefNode graphName, IAsyncEvaluation inner)
@@ -36,7 +36,11 @@ internal class AsyncGraphEvaluation : IAsyncEvaluation
         return context.NamedGraphNames.Select(gn =>
             {
                 ISet inputWithGraphBinding = input?.Copy() ?? new Set();
-                inputWithGraphBinding.Add(_graphVarName, gn);
+                if (_graphVarName != null)
+                {
+                    inputWithGraphBinding.Add(_graphVarName, gn);
+                }
+
                 return _inner.Evaluate(context, inputWithGraphBinding, gn, cancellationToken);
             })
             .Merge();

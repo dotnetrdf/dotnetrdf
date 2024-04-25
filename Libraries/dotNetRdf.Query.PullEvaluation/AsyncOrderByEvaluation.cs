@@ -9,22 +9,25 @@ namespace dotNetRdf.Query.PullEvaluation;
 public class AsyncOrderByEvaluation : IAsyncEvaluation
 {
     private readonly IAsyncEvaluation _inner;
-    private readonly SortedSet<ISet> _sorted;
+    private readonly OrderBy _orderBy;
+
     internal AsyncOrderByEvaluation(OrderBy orderBy, PullEvaluationContext context, IAsyncEvaluation inner)
     {
-        IComparer<ISet> comparer = new NoEqualityComparer<ISet>(MakeSetComparer(orderBy.Ordering, context), 1);
-        _sorted = new SortedSet<ISet>(comparer);
         _inner = inner;
+        _orderBy = orderBy;
     }
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
+        IComparer<ISet> comparer = new NoEqualityComparer<ISet>(MakeSetComparer(_orderBy.Ordering, context, activeGraph), 1);
+        var sorted = new SortedSet<ISet>(comparer);
+      
         await foreach (ISet solution in _inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
-            _sorted.Add(solution);
+            sorted.Add(solution);
         }
 
-        foreach (ISet s in _sorted) { yield return s;}
+        foreach (ISet s in sorted) { yield return s;}
     }
 
     private class NoEqualityComparer<T>(IComparer<T> inner, int valueIfEqual) : IComparer<T>
@@ -35,12 +38,12 @@ public class AsyncOrderByEvaluation : IAsyncEvaluation
             return ret == 0 ? valueIfEqual : ret;
         }
     }
-    private static IComparer<ISet> MakeSetComparer(ISparqlOrderBy ordering, PullEvaluationContext context)
+    private static IComparer<ISet> MakeSetComparer(ISparqlOrderBy ordering, PullEvaluationContext context, IRefNode? activeGraph)
     {
         return ordering switch
         {
-            OrderByVariable obv => new OrderByVariableSetComparer(obv, context),
-            OrderByExpression obe => new OrderByExpressionSetComparer(obe, context),
+            OrderByVariable obv => new OrderByVariableSetComparer(obv, context, activeGraph),
+            OrderByExpression obe => new OrderByExpressionSetComparer(obe, context, activeGraph),
             _ => throw new RdfQueryException("Unable to process ordering algebra " + ordering.GetType())
         };
     }
@@ -49,11 +52,11 @@ public class AsyncOrderByEvaluation : IAsyncEvaluation
         private readonly OrderByVariable _ordering;
         private readonly SparqlOrderingComparer _orderingComparer;
         private readonly IComparer<ISet>? _child;
-        internal OrderByVariableSetComparer(OrderByVariable ordering, PullEvaluationContext context)
+        internal OrderByVariableSetComparer(OrderByVariable ordering, PullEvaluationContext context, IRefNode? activeGraph)
         {
             this._ordering = ordering;
             this._orderingComparer = context.OrderingComparer;
-            _child = ordering.Child != null ? MakeSetComparer(ordering.Child, context) : null;
+            _child = ordering.Child != null ? MakeSetComparer(ordering.Child, context, activeGraph) : null;
         }
         
         public int Compare(ISet x, ISet y)
@@ -86,12 +89,14 @@ public class AsyncOrderByEvaluation : IAsyncEvaluation
         private readonly OrderByExpression _ordering;
         private readonly PullEvaluationContext _context;
         private readonly IComparer<ISet>? _child;
-        internal OrderByExpressionSetComparer(OrderByExpression ordering, PullEvaluationContext context)
+        private readonly IRefNode? _activeGraph;
+        internal OrderByExpressionSetComparer(OrderByExpression ordering, PullEvaluationContext context, IRefNode activeGraph)
         {
             _ordering = ordering;
             _context = context;
-            _child = ordering.Child != null ? MakeSetComparer(ordering.Child, context) : null;
+            _child = ordering.Child != null ? MakeSetComparer(ordering.Child, context, activeGraph) : null;
         }
+
         public int Compare(ISet x, ISet y)
         {
             if (x.Equals(y))
@@ -101,11 +106,11 @@ public class AsyncOrderByEvaluation : IAsyncEvaluation
 
             try
             {
-                INode a = _ordering.Expression.Accept(_context.ExpressionProcessor, _context, x);
+                INode a = _ordering.Expression.Accept(_context.ExpressionProcessor, _context, new ExpressionContext(x, _activeGraph));
                 INode b;
                 try
                 {
-                    b = _ordering.Expression.Accept(_context.ExpressionProcessor, _context, y);
+                    b = _ordering.Expression.Accept(_context.ExpressionProcessor, _context, new ExpressionContext(y, _activeGraph));
                 }
                 catch
                 {
@@ -132,7 +137,7 @@ public class AsyncOrderByEvaluation : IAsyncEvaluation
             {
                 try
                 {
-                    _ordering.Expression.Accept(_context.ExpressionProcessor, _context, y);
+                    _ordering.Expression.Accept(_context.ExpressionProcessor, _context, new ExpressionContext(y, _activeGraph));
 
                     // If evaluating a errors but b evaluates correctly consider a to be NULL and rank a < b
                     return _ordering.Descending ? 1 : -1;

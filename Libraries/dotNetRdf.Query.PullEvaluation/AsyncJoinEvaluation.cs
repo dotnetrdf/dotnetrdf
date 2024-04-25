@@ -1,3 +1,4 @@
+using VDS.RDF;
 using VDS.RDF.Query.Algebra;
 
 namespace dotNetRdf.Query.PullEvaluation;
@@ -16,7 +17,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
         _rightSolutions = new LinkedList<ISet>();
     }
 
-    protected override IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhsResult)
+    protected override IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhsResult, IRefNode? activeGraph)
     {
         if (_rhsHasMore)
         {
@@ -31,7 +32,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
         }
     }
 
-    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhsResult)
+    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhsResult, IRefNode? activeGraph)
     {
         if (_lhsHasMore)
         {

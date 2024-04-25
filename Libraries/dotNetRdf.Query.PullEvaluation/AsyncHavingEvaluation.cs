@@ -22,7 +22,7 @@ public class AsyncHavingEvaluation : IAsyncEvaluation
         {
             cancellationToken.ThrowIfCancellationRequested();
             IValuedNode? result =
-                _having.HavingClause.Expression.Accept(context.ExpressionProcessor, context, solutionBinding);
+                _having.HavingClause.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solutionBinding, activeGraph));
             if (result?.AsBoolean() ?? false)
             {
                 yield return solutionBinding;

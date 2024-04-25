@@ -13,7 +13,8 @@ public class AsyncCountAggregate : IAsyncAggregation
     private PullEvaluationContext _context;
     private string? _countVar;
 
-    public AsyncCountAggregate(ISparqlExpression valueExpression, string? countVar, string variableName, PullEvaluationContext context)
+    public AsyncCountAggregate(ISparqlExpression valueExpression, string? countVar, string variableName,
+        PullEvaluationContext context)
     {
         _expression = valueExpression;
         VariableName = variableName;
@@ -23,7 +24,7 @@ public class AsyncCountAggregate : IAsyncAggregation
     }
 
     public string VariableName { get; }
-    
+
     public INode? Value { get { return new LongNode(_count); } }
 
     public void Start()
@@ -31,15 +32,16 @@ public class AsyncCountAggregate : IAsyncAggregation
         _count = 0;
     }
 
-    public bool Accept(ISet s)
+    public bool Accept(ExpressionContext expressionContext)
     {
-        if (_countVar != null && s.ContainsVariable(_countVar) && s[_countVar] != null)
+        if (_countVar != null && expressionContext.Bindings.ContainsVariable(_countVar) &&
+            expressionContext.Bindings[_countVar] != null)
         {
             _count++;
         }
         else
         {
-            INode? tmp = _expression.Accept(_context.ExpressionProcessor, _context, s);
+            INode? tmp = _expression.Accept(_context.ExpressionProcessor, _context, expressionContext);
             if (tmp != null) _count++;
         }
 
@@ -48,6 +50,6 @@ public class AsyncCountAggregate : IAsyncAggregation
 
     public void End()
     {
-        
+
     }
 }

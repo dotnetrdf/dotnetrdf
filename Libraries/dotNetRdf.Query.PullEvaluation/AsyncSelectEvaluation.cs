@@ -8,22 +8,25 @@ namespace dotNetRdf.Query.PullEvaluation;
 public class AsyncSelectEvaluation : IAsyncEvaluation
 {
     private readonly Select _select;
-    private readonly IAsyncEvaluation _inner; 
+    private readonly IAsyncEvaluation _inner;
+
     internal AsyncSelectEvaluation(Select select, IAsyncEvaluation inner)
     {
         _select = select;
         _inner = inner;
     }
-    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+
+    public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await foreach (ISet innerResult in _inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            yield return ProcessInnerResult(innerResult, context);
+            yield return ProcessInnerResult(innerResult, context, activeGraph);
         }
     }
 
-    private ISet ProcessInnerResult(ISet innerResult, PullEvaluationContext context)
+    private ISet ProcessInnerResult(ISet innerResult, PullEvaluationContext context, IRefNode? activeGraph)
     {
         if (_select.IsSelectAll)
         {
@@ -46,7 +49,7 @@ public class AsyncSelectEvaluation : IAsyncEvaluation
             {
                 if (sv.Name.StartsWith(context.AutoVarPrefix)) continue;
                 INode? variableBinding =
-                    sv.IsProjection ? TryProcessProjection(sv, innerResult, context) :
+                    sv.IsProjection ? TryProcessProjection(sv, innerResult, context, activeGraph) :
                     innerResult.ContainsVariable(sv.Name) ? innerResult[sv.Name] : null;
                 resultSet.Add(sv.Name, variableBinding);
             }
@@ -55,11 +58,13 @@ public class AsyncSelectEvaluation : IAsyncEvaluation
         return resultSet;
     }
 
-    private INode? TryProcessProjection(SparqlVariable sv, ISet innerResult, PullEvaluationContext context)
+    private INode? TryProcessProjection(SparqlVariable sv, ISet innerResult, PullEvaluationContext context,
+        IRefNode? activeGraph)
     {
         try
         {
-            return sv.Projection.Accept(context.ExpressionProcessor, context, innerResult);
+            return sv.Projection.Accept(context.ExpressionProcessor, context,
+                new ExpressionContext(innerResult, activeGraph));
         }
         catch (RdfQueryException)
         {

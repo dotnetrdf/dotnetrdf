@@ -19,7 +19,7 @@ public class AsyncCountAllAggregate : IAsyncAggregation
         _count = 0;
     }
 
-    public bool Accept(ISet s)
+    public bool Accept(ExpressionContext expressionContext)
     {
         _count++;
         return true;

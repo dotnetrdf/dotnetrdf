@@ -31,7 +31,7 @@ public class AsyncExtendEvaluation : IAsyncEvaluation
 
             try
             {
-                INode value = _extend.AssignExpression.Accept(context.ExpressionProcessor, context, solution);
+                INode value = _extend.AssignExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solution, activeGraph));
                 solution.Add(_extend.VariableName, value);
             }
             catch

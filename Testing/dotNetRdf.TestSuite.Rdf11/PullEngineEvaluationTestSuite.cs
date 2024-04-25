@@ -34,7 +34,7 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
         // base.PerformQueryEvaluationTest(t);
 
         ManifestTestData t = SparqlQueryEvalTests.GetTestData(
-            "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/cast/manifest#cast-bool");
+            "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/exists/manifest#exists03");
         base.PerformQueryEvaluationTest(t);
     }
     

@@ -1,6 +1,5 @@
 using VDS.RDF;
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 
 namespace dotNetRdf.Query.PullEvaluation.Aggregation;
@@ -59,10 +58,10 @@ public class AsyncAverageAggregate : IAsyncAggregation
         _doubleSum = 0.0d;
     }
 
-    public bool Accept(ISet s)
+    public bool Accept(ExpressionContext expressionContext)
     {
         if (_error) return false;
-        IValuedNode? tmp = _expression.Accept(_context.ExpressionProcessor, _context, s);
+        IValuedNode? tmp = _expression.Accept(_context.ExpressionProcessor, _context, expressionContext);
         if (tmp == null) { 
             _error = true;
             return false;

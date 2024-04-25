@@ -13,26 +13,26 @@ internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
     private readonly LinkedList<ISet> _rightSolutions = new();
 
 
-    protected override  IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolutionSet)
+    protected override  IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolutionSet, IRefNode? activeGraph)
     {
         var lhSolution = new LhsSolution(lhSolutionSet);
         if (_rhsHasMore)
         {
             _leftSolutions.AddLast(lhSolution);
             return _rightSolutions.Where((rhSolution) => lhSolution.IsCompatibleWith(rhSolution, joinVars))
-                .Select(rhSolution => lhSolution.FilterJoin(rhSolution, s => Filter(s, context)))
+                .Select(rhSolution => lhSolution.FilterJoin(rhSolution, s => Filter(s, context, activeGraph)))
                 .WhereNotNull();
         }
 
         var joinSolutions = _rightSolutions
             .Where(rhSolution => lhSolution.IsCompatibleWith(rhSolution, joinVars))
-            .Select(rhSolution => lhSolution.FilterJoin(rhSolution, s=>Filter(s, context)))
+            .Select(rhSolution => lhSolution.FilterJoin(rhSolution, s=>Filter(s, context, activeGraph)))
             .WhereNotNull()
             .ToList();
         return joinSolutions.Count == 0 ? lhSolutionSet.AsEnumerable() : joinSolutions;
     }
 
-    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhSolution)
+    protected override IEnumerable<ISet> ProcessRhs(PullEvaluationContext context, ISet rhSolution, IRefNode? activeGraph)
     {
         if (_lhsHasMore)
         {
@@ -40,7 +40,7 @@ internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
         }
 
         return _leftSolutions.Where(lhSolution => lhSolution.IsCompatibleWith(rhSolution, joinVars))
-            .Select(lhSolution => lhSolution.FilterJoin(rhSolution, s => Filter(s, context)))
+            .Select(lhSolution => lhSolution.FilterJoin(rhSolution, s => Filter(s, context, activeGraph)))
             .WhereNotNull();
     }
 
@@ -65,12 +65,12 @@ internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
         return addResults;
     }
 
-    private bool Filter(ISet s, PullEvaluationContext context)
+    private bool Filter(ISet s, PullEvaluationContext context, IRefNode? activeGraph)
     {
         if (filter == null) return true;
         try
         {
-            return filter.Expression.Accept(context.ExpressionProcessor, context, s).AsSafeBoolean();
+            return filter.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(s, activeGraph)).AsSafeBoolean();
         }
         catch (RdfQueryException)
         {

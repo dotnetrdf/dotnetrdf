@@ -19,10 +19,16 @@ public class PullEvaluationContext : IPatternEvaluationContext
     public SparqlOrderingComparer OrderingComparer { get; private set; }
     internal IEnumerable<IRefNode> NamedGraphNames => _namedGraphs.Keys;
     public string AutoVarPrefix { get; private set; }
-    public ISparqlExpressionProcessor<IValuedNode, PullEvaluationContext, ISet> ExpressionProcessor { get; }
-
-    public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null, string autoVarPrefix = null)
+    internal ISparqlExpressionProcessor<IValuedNode, PullEvaluationContext, ExpressionContext> ExpressionProcessor { get; }
+    public ITripleStore Data { get; private set; }
+    public bool UnionDefaultGraph { get; private set; }
+    public INodeFactory NodeFactory { get; private set; }
+    
+    public PullEvaluationContext(ITripleStore data, bool unionDefaultGraph = true, IEnumerable<IRefNode?>? defaultGraphNames = null, IEnumerable<IRefNode>? namedGraphs = null, string? autoVarPrefix = null, INodeFactory? nodeFactory = null)
     {
+        NodeFactory = nodeFactory ?? new NodeFactory();
+        Data = data;
+        UnionDefaultGraph = unionDefaultGraph;
         NodeComparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
         OrderingComparer = new SparqlOrderingComparer(NodeComparer);
         AutoVarPrefix = autoVarPrefix;

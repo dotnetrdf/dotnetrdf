@@ -27,14 +27,13 @@ public class AsyncSparqlFilterEvaluation : IAsyncEvaluation
             bool filterResult;
             try
             {
-                filterResult = _filter.Expression.Accept(context.ExpressionProcessor, context, innerResult)
+                filterResult = _filter.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(innerResult, activeGraph))
                     .AsSafeBoolean();
             }
             catch (RdfQueryException)
             {
                 // If the result processed was an identity result, swallow the error
                 filterResult = false;
-                
                 if (!_failSilently && innerResult.Variables.Any()) { throw; }
             }
 

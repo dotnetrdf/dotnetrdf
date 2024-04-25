@@ -55,10 +55,10 @@ public class AsyncSumAggregate : IAsyncAggregation
         _doubleSum = 0.0d;
     }
 
-    public bool Accept(ISet s)
+    public bool Accept(ExpressionContext expressionContext)
     {
         if (_error) return false;
-        IValuedNode? tmp = _expression.Accept(_context.ExpressionProcessor, _context, s);
+        IValuedNode? tmp = _expression.Accept(_context.ExpressionProcessor, _context, expressionContext);
         if (tmp == null) { 
             _error = true;
             return false;
