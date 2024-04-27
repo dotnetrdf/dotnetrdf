@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using AngleSharp.Text;
 using System;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing.Tokens;
@@ -850,6 +851,10 @@ namespace VDS.RDF.Parsing
                      (c >= 0x3001 && c <= 0xd7ff) ||
                      (c >= 0xf900 && c <= 0xfdcf) ||
                      (c >= 0xfdf0 && c <= 0xfffd))
+            {
+                return true;
+            }
+            else if (c.IsDigit())
             {
                 return true;
             }
