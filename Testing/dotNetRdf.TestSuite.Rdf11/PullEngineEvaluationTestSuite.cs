@@ -34,7 +34,7 @@ public class PullEngineEvaluationTestSuite : BaseAsyncSparqlEvaluationTestSuite
         // base.PerformQueryEvaluationTest(t);
 
         ManifestTestData t = SparqlQueryEvalTests.GetTestData(
-            "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/subquery/manifest#subquery02");
+            "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/negation/manifest#full-minuend");
         base.PerformQueryEvaluationTest(t);
     }
     

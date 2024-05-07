@@ -40,6 +40,7 @@ public class EvaluationBuilder
             GroupBy groupBy => BuildGroupBy(groupBy, context),
             Having having => BuildHaving(having, context),
             SubQuery subQuery => BuildSubQuery(subQuery, context),
+            Minus minus => BuildMinus(minus, context),
             _ => throw new RdfQueryException($"Unsupported query algebra ({algebra.GetType()}: {algebra}")
         };
     }
@@ -246,6 +247,13 @@ public class EvaluationBuilder
             subQueryPattern.SubQuery.DefaultGraphNames, subQueryPattern.SubQuery.NamedGraphNames, autoVarPrefix);
         var queryAlgebra = subQueryPattern.SubQuery.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
         return new AsyncSubQueryEvaluation( subQueryPattern,Build(queryAlgebra, subContext), subContext);
+    }
+
+    private IAsyncEvaluation BuildMinus(Minus minus, PullEvaluationContext context)
+    {
+        IAsyncEvaluation lhsEval = Build(minus.Lhs, context);
+        IAsyncEvaluation rhsEval = Build(minus.Rhs, context);
+        return new AsyncMinusEvaluation(minus, lhsEval, rhsEval);
     }
 }
 
