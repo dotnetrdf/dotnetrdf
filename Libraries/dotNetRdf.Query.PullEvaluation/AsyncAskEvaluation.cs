@@ -10,7 +10,7 @@ namespace dotNetRdf.Query.PullEvaluation;
 ///
 /// Yields a single set empty set if the inner algebra yields any result, otherwise yields nothing.
 /// </summary>
-public class AsyncAskEvaluation : IAsyncEvaluation
+internal class AsyncAskEvaluation : IAsyncEvaluation
 {
     private readonly IAsyncEvaluation _inner;
 

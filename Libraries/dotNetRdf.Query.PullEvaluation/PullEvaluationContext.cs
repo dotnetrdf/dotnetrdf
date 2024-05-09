@@ -7,7 +7,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-public class PullEvaluationContext : IPatternEvaluationContext
+internal class PullEvaluationContext : IPatternEvaluationContext
 {
     private readonly BaseTripleCollection _defaultGraph;
     private readonly IDictionary<IRefNode, BaseTripleCollection> _namedGraphs;
@@ -18,7 +18,7 @@ public class PullEvaluationContext : IPatternEvaluationContext
 
     public SparqlOrderingComparer OrderingComparer { get; private set; }
     internal IEnumerable<IRefNode> NamedGraphNames => _namedGraphs.Keys;
-    public string AutoVarPrefix { get; private set; }
+    public VariableFactory AutoVarFactory { get; private set; }
     internal ISparqlExpressionProcessor<IValuedNode, PullEvaluationContext, ExpressionContext> ExpressionProcessor { get; }
     public ITripleStore Data { get; private set; }
     public bool UnionDefaultGraph { get; private set; }
@@ -33,7 +33,7 @@ public class PullEvaluationContext : IPatternEvaluationContext
         UnionDefaultGraph = unionDefaultGraph;
         NodeComparer = new SparqlNodeComparer(CultureInfo.InvariantCulture, CompareOptions.Ordinal);
         OrderingComparer = new SparqlOrderingComparer(NodeComparer);
-        AutoVarPrefix = autoVarPrefix ?? "_auto";
+        AutoVarFactory = new VariableFactory(autoVarPrefix ?? "_auto");
         BaseUri = baseUri;
         var customDefaultGraph = false;
         if (unionDefaultGraph)

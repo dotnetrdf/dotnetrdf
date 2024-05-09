@@ -5,34 +5,26 @@ using VDS.RDF.Query.Algebra;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-public class AsyncExtendEvaluation : IAsyncEvaluation
+internal class AsyncExtendEvaluation(Extend extend, PullEvaluationContext context, IAsyncEvaluation inner)
+    : IAsyncEvaluation
 {
-    private readonly Extend _extend;
-    private readonly PullEvaluationContext _context;
-    private readonly IAsyncEvaluation _inner;
+    private readonly PullEvaluationContext _context = context;
 
-    public AsyncExtendEvaluation(Extend extend, PullEvaluationContext context, IAsyncEvaluation inner)
-    {
-        _extend = extend;
-        _context = context;
-        _inner = inner;
-    }
-    
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (ISet solution in _inner.Evaluate(context, input, activeGraph, cancellationToken))
+        await foreach (ISet solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
-            if (solution.ContainsVariable(_extend.VariableName))
+            if (solution.ContainsVariable(extend.VariableName))
             {
                 throw new RdfQueryException(
-                    $"Cannot assign to the variable ?{_extend.VariableName} since it has previously been used in the query.");
+                    $"Cannot assign to the variable ?{extend.VariableName} since it has previously been used in the query.");
             }
 
             try
             {
-                INode value = _extend.AssignExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solution, activeGraph));
-                solution.Add(_extend.VariableName, value);
+                INode value = extend.AssignExpression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solution, activeGraph));
+                solution.Add(extend.VariableName, value);
             }
             catch
             {

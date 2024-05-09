@@ -7,7 +7,7 @@ namespace dotNetRdf.Query.PullEvaluation;
 /// <summary>
 /// Implements evaluation of a TriplePattern against a PullEvaluationContext returning all matching solution bindings.
 /// </summary>
-public class AsyncTriplePatternEvaluation : IAsyncEvaluation
+internal class AsyncTriplePatternEvaluation : IAsyncEvaluation
 {
     private readonly IMatchTriplePattern _triplePattern;
 

@@ -4,7 +4,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-public class AsyncSubQueryEvaluation: IAsyncEvaluation
+internal class AsyncSubQueryEvaluation: IAsyncEvaluation
 {
     private readonly List<string> _subQueryVariables;
     private readonly IAsyncEvaluation _inner;

@@ -12,14 +12,13 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-internal class PullExpressionProcessor : BaseExpressionProcessor<PullEvaluationContext, ExpressionContext>
+internal class PullExpressionProcessor(
+    ISparqlNodeComparer nodeComparer,
+    IUriFactory uriFactory,
+    bool useStrictOperators)
+    : BaseExpressionProcessor<PullEvaluationContext, ExpressionContext>(nodeComparer, uriFactory, useStrictOperators)
 {
     private readonly Random _rnd = new();
-
-    public PullExpressionProcessor(ISparqlNodeComparer nodeComparer, IUriFactory uriFactory, bool useStrictOperators) :
-        base(nodeComparer, uriFactory, useStrictOperators)
-    {
-    }
 
     protected override IValuedNode GetBoundValue(string variableName, PullEvaluationContext context,
         ExpressionContext expressionContext)

@@ -6,23 +6,15 @@ using VDS.RDF.Query.Ordering;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-public class AsyncOrderByEvaluation : IAsyncEvaluation
+internal class AsyncOrderByEvaluation(OrderBy orderBy, IAsyncEvaluation inner) : IAsyncEvaluation
 {
-    private readonly IAsyncEvaluation _inner;
-    private readonly OrderBy _orderBy;
-
-    internal AsyncOrderByEvaluation(OrderBy orderBy, PullEvaluationContext context, IAsyncEvaluation inner)
-    {
-        _inner = inner;
-        _orderBy = orderBy;
-    }
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        IComparer<ISet> comparer = new NoEqualityComparer<ISet>(MakeSetComparer(_orderBy.Ordering, context, activeGraph), 1);
+        IComparer<ISet> comparer = new NoEqualityComparer<ISet>(MakeSetComparer(orderBy.Ordering, context, activeGraph), 1);
         var sorted = new SortedSet<ISet>(comparer);
       
-        await foreach (ISet solution in _inner.Evaluate(context, input, activeGraph, cancellationToken))
+        await foreach (ISet solution in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             sorted.Add(solution);
         }
@@ -90,11 +82,13 @@ public class AsyncOrderByEvaluation : IAsyncEvaluation
         private readonly PullEvaluationContext _context;
         private readonly IComparer<ISet>? _child;
         private readonly IRefNode? _activeGraph;
+
         internal OrderByExpressionSetComparer(OrderByExpression ordering, PullEvaluationContext context, IRefNode activeGraph)
         {
             _ordering = ordering;
             _context = context;
             _child = ordering.Child != null ? MakeSetComparer(ordering.Child, context, activeGraph) : null;
+            _activeGraph = activeGraph;
         }
 
         public int Compare(ISet x, ISet y)

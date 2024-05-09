@@ -2,17 +2,16 @@ using System.Text;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query;
-using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace dotNetRdf.Query.PullEvaluation.Aggregation;
 
-public class AsyncGroupConcatAggregate : IAsyncAggregation
+internal class AsyncGroupConcatAggregate : IAsyncAggregation
 {
     private readonly StringBuilder _builder;
     private readonly ISparqlExpression _valueExpression;
-    private readonly ISparqlExpression _separatorExpression;
+    private readonly ISparqlExpression? _separatorExpression;
     private readonly bool _hasSeparator;
     private readonly bool _separatorIsConstant;
     private readonly string? _separator;
@@ -65,7 +64,7 @@ public class AsyncGroupConcatAggregate : IAsyncAggregation
                 {
                     _builder.Append(_separator);
                 }
-                else
+                else if (_separatorExpression != null)
                 {
                     IValuedNode separatorTerm = _separatorExpression.Accept(_context.ExpressionProcessor, _context,
                         expressionContext);

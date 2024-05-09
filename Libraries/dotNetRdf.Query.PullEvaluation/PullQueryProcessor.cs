@@ -30,7 +30,7 @@ public class PullQueryProcessor : ISparqlQueryProcessor
     /**
      * Evaluate a SPARQL algebra against the dataset configured for this query processor.
      */
-    public IAsyncEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, PullEvaluationContext? context = null, CancellationToken cancellationToken = default)
+    internal IAsyncEnumerable<ISet> Evaluate(ISparqlAlgebra algebra, PullEvaluationContext? context = null, CancellationToken cancellationToken = default)
     {
         var builder = new EvaluationBuilder();
         context ??= new PullEvaluationContext(_tripleStore, unionDefaultGraph: false);

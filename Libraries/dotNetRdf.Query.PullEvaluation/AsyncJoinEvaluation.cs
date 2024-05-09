@@ -3,19 +3,11 @@ using VDS.RDF.Query.Algebra;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
+internal class AsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars)
+    : AbstractAsyncJoinEvaluation(lhs, rhs)
 {
-    private readonly string[] _joinVars;
-    private readonly LinkedList<ISet> _leftSolutions;
-    private readonly LinkedList<ISet> _rightSolutions;
-
-    public AsyncJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rhs, string[] joinVars)
-    :base(lhs, rhs)
-    {
-        _joinVars = joinVars;
-        _leftSolutions = new LinkedList<ISet>();
-        _rightSolutions = new LinkedList<ISet>();
-    }
+    private readonly LinkedList<ISet> _leftSolutions = new();
+    private readonly LinkedList<ISet> _rightSolutions = new();
 
     protected override IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhsResult, IRefNode? activeGraph)
     {
@@ -25,7 +17,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
         }
 
         foreach (ISet joinResult in _rightSolutions
-                     .Where(r => lhsResult.IsCompatibleWith(r, _joinVars))
+                     .Where(r => lhsResult.IsCompatibleWith(r, joinVars))
                      .Select(lhsResult.Join))
         {
             yield return joinResult;
@@ -39,7 +31,7 @@ internal class AsyncJoinEvaluation : AbstractAsyncJoinEvaluation
             _rightSolutions.AddLast(rhsResult);
         }
 
-        return _leftSolutions.Where(l => l.IsCompatibleWith(rhsResult, _joinVars))
+        return _leftSolutions.Where(l => l.IsCompatibleWith(rhsResult, joinVars))
             .Select(l => l.Join(rhsResult));
     }
 

@@ -6,7 +6,7 @@ using VDS.RDF.Query.Algebra;
 
 namespace dotNetRdf.Query.PullEvaluation.Tests;
 
-public class AsyncIntegerEnumeration : IAsyncEvaluation
+internal class AsyncIntegerEnumeration : IAsyncEvaluation
 {
     private readonly INodeFactory _nodeFactory;
     private readonly string _varName;

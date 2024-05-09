@@ -6,24 +6,16 @@ using VDS.RDF.Query.Expressions;
 
 namespace dotNetRdf.Query.PullEvaluation.Aggregation;
 
-public class AsyncCountAggregate : IAsyncAggregation
+internal class AsyncCountAggregate(
+    ISparqlExpression valueExpression,
+    string? countVar,
+    string variableName,
+    PullEvaluationContext context)
+    : IAsyncAggregation
 {
-    private readonly ISparqlExpression _expression;
-    private long _count;
-    private PullEvaluationContext _context;
-    private string? _countVar;
+    private long _count = 0;
 
-    public AsyncCountAggregate(ISparqlExpression valueExpression, string? countVar, string variableName,
-        PullEvaluationContext context)
-    {
-        _expression = valueExpression;
-        VariableName = variableName;
-        _context = context;
-        _count = 0;
-        _countVar = countVar;
-    }
-
-    public string VariableName { get; }
+    public string VariableName { get; } = variableName;
 
     public INode? Value { get { return new LongNode(_count); } }
 
@@ -34,14 +26,14 @@ public class AsyncCountAggregate : IAsyncAggregation
 
     public bool Accept(ExpressionContext expressionContext)
     {
-        if (_countVar != null && expressionContext.Bindings.ContainsVariable(_countVar) &&
-            expressionContext.Bindings[_countVar] != null)
+        if (countVar != null && expressionContext.Bindings.ContainsVariable(countVar) &&
+            expressionContext.Bindings[countVar] != null)
         {
             _count++;
         }
         else
         {
-            INode? tmp = _expression.Accept(_context.ExpressionProcessor, _context, expressionContext);
+            INode? tmp = valueExpression.Accept(context.ExpressionProcessor, context, expressionContext);
             if (tmp != null) _count++;
         }
 

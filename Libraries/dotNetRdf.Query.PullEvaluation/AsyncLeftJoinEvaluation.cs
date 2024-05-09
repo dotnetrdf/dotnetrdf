@@ -11,8 +11,7 @@ internal class AsyncLeftJoinEvaluation(IAsyncEvaluation lhs, IAsyncEvaluation rh
 {
     private readonly LinkedList<LhsSolution> _leftSolutions = new();
     private readonly LinkedList<ISet> _rightSolutions = new();
-
-
+    
     protected override  IEnumerable<ISet> ProcessLhs(PullEvaluationContext context, ISet lhSolutionSet, IRefNode? activeGraph)
     {
         var lhSolution = new LhsSolution(lhSolutionSet);

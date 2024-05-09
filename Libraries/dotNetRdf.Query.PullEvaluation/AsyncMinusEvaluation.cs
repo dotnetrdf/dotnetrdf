@@ -10,7 +10,6 @@ internal class AsyncMinusEvaluation : IAsyncEvaluation
     private readonly IAsyncEvaluation _rhs;
     private readonly List<string> _minusVars;
     
-    
     public AsyncMinusEvaluation(Minus minus, IAsyncEvaluation lhs, IAsyncEvaluation rhs)
     {
         Minus minus1 = minus;

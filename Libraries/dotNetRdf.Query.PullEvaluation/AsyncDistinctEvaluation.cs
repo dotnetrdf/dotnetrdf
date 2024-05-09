@@ -3,11 +3,11 @@ using VDS.RDF.Query.Algebra;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-public class AsyncDistinctEvaluation(IAsyncEvaluation _inner): IAsyncEvaluation
+internal class AsyncDistinctEvaluation(IAsyncEvaluation inner): IAsyncEvaluation
 {
     public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         CancellationToken cancellationToken = default)
     {
-        return _inner.Evaluate(context, input, activeGraph, cancellationToken).Distinct();
+        return inner.Evaluate(context, input, activeGraph, cancellationToken).Distinct();
     }
 }

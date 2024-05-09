@@ -5,21 +5,12 @@ using VDS.RDF.Query.Algebra;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-public class AsyncSelectEvaluation : IAsyncEvaluation
+internal class AsyncSelectEvaluation(Select select, IAsyncEvaluation inner) : IAsyncEvaluation
 {
-    private readonly Select _select;
-    private readonly IAsyncEvaluation _inner;
-
-    internal AsyncSelectEvaluation(Select select, IAsyncEvaluation inner)
-    {
-        _select = select;
-        _inner = inner;
-    }
-
     public async IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (ISet innerResult in _inner.Evaluate(context, input, activeGraph, cancellationToken))
+        await foreach (ISet innerResult in inner.Evaluate(context, input, activeGraph, cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             yield return ProcessInnerResult(innerResult, context, activeGraph);
@@ -28,12 +19,12 @@ public class AsyncSelectEvaluation : IAsyncEvaluation
 
     private ISet ProcessInnerResult(ISet innerResult, PullEvaluationContext context, IRefNode? activeGraph)
     {
-        if (_select.IsSelectAll)
+        if (select.IsSelectAll)
         {
             // Filter out auto-generated variables
             foreach (var v in innerResult.Variables)
             {
-                if (v.StartsWith(context.AutoVarPrefix))
+                if (v.StartsWith(context.AutoVarFactory.Prefix))
                 {
                     innerResult.Remove(v);
                 }
@@ -43,11 +34,11 @@ public class AsyncSelectEvaluation : IAsyncEvaluation
         }
 
         var resultSet = new Set();
-        foreach (SparqlVariable sv in _select.SparqlVariables)
+        foreach (SparqlVariable sv in select.SparqlVariables)
         {
             if (sv.IsResultVariable)
             {
-                if (sv.Name.StartsWith(context.AutoVarPrefix)) continue;
+                if (sv.Name.StartsWith(context.AutoVarFactory.Prefix)) continue;
                 INode? variableBinding =
                     sv.IsProjection ? TryProcessProjection(sv, innerResult, context, activeGraph) :
                     innerResult.ContainsVariable(sv.Name) ? innerResult[sv.Name] : null;

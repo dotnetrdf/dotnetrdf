@@ -6,15 +6,15 @@ using VDS.RDF.Query.Grouping;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-public class AsyncGroupByEvaluation : IAsyncEvaluation
+internal class AsyncGroupByEvaluation : IAsyncEvaluation
 {
     private readonly GroupBy _groupBy;
     private readonly IAsyncEvaluation _inner;
     private readonly List<string?> _groupVars;
-    private Dictionary<GroupingKey, AsyncGroupEvaluation> _groups;
-    private List<Func<IAsyncAggregation>> _aggregationProviders = new(); 
+    private readonly Dictionary<GroupingKey, AsyncGroupEvaluation> _groups;
+    private readonly List<Func<IAsyncAggregation>> _aggregationProviders = new(); 
 
-    internal AsyncGroupByEvaluation(GroupBy groupBy, IAsyncEvaluation inner)
+    public AsyncGroupByEvaluation(GroupBy groupBy, IAsyncEvaluation inner)
     {
         _groupBy = groupBy;
         _inner = inner;
@@ -30,9 +30,9 @@ public class AsyncGroupByEvaluation : IAsyncEvaluation
         {
             cancellationToken.ThrowIfCancellationRequested();
             var groupingKey = new GroupingKey(EvaluateGroupingKey(solutionBinding, context, _groupBy.Grouping, activeGraph));
-            if (_groups.ContainsKey(groupingKey))
+            if (_groups.TryGetValue(groupingKey, out AsyncGroupEvaluation? group))
             {
-                _groups[groupingKey].Accept(solutionBinding, activeGraph);
+                group.Accept(solutionBinding, activeGraph);
             }
             else
             {
@@ -121,69 +121,5 @@ internal class AsyncGroupEvaluation
         }
 
         return ret;
-    }
-}
-internal class GroupingKey : IEquatable<GroupingKey>
-{
-    private readonly IList<INode?> _bindingsList;
-    private readonly int _hashCode;
-    public GroupingKey(IEnumerable<INode?> bindings)
-    {
-        _bindingsList = bindings.ToList();
-        _hashCode = CombineHashCodes(_bindingsList);
-    }
-
-    private int CombineHashCodes(IEnumerable<INode?> bindings)
-    {
-        return bindings.Aggregate(17, (current, o) => (31 * current) + o?.GetHashCode() ?? 0);
-    }
-
-    public ISet ToSet(IList<string?> varNames)
-    {
-        ISet ret = new Set();
-        for (var i = 0; i < varNames.Count; i++)
-        {
-            if (varNames[i] != null)
-            {
-                ret.Add(varNames[i], _bindingsList[i]);
-            }
-        }
-
-        return ret;
-    }
-
-    public override int GetHashCode()
-    {
-        return _hashCode;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return obj is GroupingKey other && Equals(other);
-    }
-
-    public bool Equals(GroupingKey other)
-    {
-        if (other._bindingsList.Count != _bindingsList.Count) return false;
-        return _bindingsList.SequenceEqual(other._bindingsList, new FastNodeComparer());
-    }
-
-    public override string ToString()
-    {
-        return string.Join(", ", _bindingsList);
-    }
-}
-public static class GroupByExtensions {
-    public static IEnumerable<string?> GroupingKeyNames(this ISparqlGroupBy grouping)
-    {
-        if (grouping.Expression is not null)
-        {
-            yield return grouping.AssignVariable;
-        }
-        foreach (var v in grouping.Variables.Where(x => x != grouping.AssignVariable)) {yield return v;}
-        if (grouping.Child != null)
-        {
-            foreach (var v in grouping.Child.GroupingKeyNames()) yield return v;
-        }
     }
 }

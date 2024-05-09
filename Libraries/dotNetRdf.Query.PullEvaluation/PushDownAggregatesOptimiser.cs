@@ -13,7 +13,7 @@ namespace dotNetRdf.Query.PullEvaluation;
 /// in SELECT and HAVING clauses are pushed down to the GROUP BY so that they can all be evaluated together
 /// and then propagated up as temporary variable bindings
 /// </summary>
-public class PushDownAggregatesOptimiser : IAlgebraOptimiser, IExpressionTransformer
+public class PushDownAggregatesOptimiser(string varPrefix) : IAlgebraOptimiser, IExpressionTransformer
 {
     private bool _isUnsafe = false;
     private int _nextPrefixId = 0;
@@ -22,12 +22,7 @@ public class PushDownAggregatesOptimiser : IAlgebraOptimiser, IExpressionTransfo
     /// <summary>
     /// Gets the prefix assigned to the variables that pushed down aggreagation expressions are assigned to.
     /// </summary>
-    public string AutoVarPrefix { get; private set; }
-
-    public PushDownAggregatesOptimiser(string varPrefix)
-    {
-        AutoVarPrefix = varPrefix;
-    }
+    public string AutoVarPrefix { get; private set; } = varPrefix;
 
     public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
     {

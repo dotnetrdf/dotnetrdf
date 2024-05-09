@@ -4,7 +4,7 @@ using VDS.RDF.Query.Expressions;
 
 namespace dotNetRdf.Query.PullEvaluation.Aggregation;
 
-public class AsyncAverageAggregate : IAsyncAggregation
+internal class AsyncAverageAggregate : IAsyncAggregation
 {
     private readonly ISparqlExpression _expression;
     private readonly bool _distinct;

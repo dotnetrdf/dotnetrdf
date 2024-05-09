@@ -1,23 +1,18 @@
 using dotNetRdf.Query.PullEvaluation.Aggregation;
-using Microsoft.Extensions.Configuration;
+using dotNetRdf.Query.PullEvaluation.Paths;
 using System.Runtime.CompilerServices;
 using VDS.RDF;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Builder.Expressions;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Primary;
-using VDS.RDF.Query.Filters;
-using VDS.RDF.Query.Optimisation;
+using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
-using VDS.RDF.Update;
 using Graph = VDS.RDF.Query.Algebra.Graph;
 
 namespace dotNetRdf.Query.PullEvaluation;
 
-public class EvaluationBuilder
+internal class EvaluationBuilder
 {
     public IAsyncEvaluation Build(ISparqlAlgebra algebra, PullEvaluationContext context)
     {
@@ -81,6 +76,11 @@ public class EvaluationBuilder
         if (triplePattern is SubQueryPattern subQueryPattern)
         {
             return BuildSubQueryPattern(subQueryPattern, context);
+        }
+
+        if (triplePattern is PropertyPathPattern ppPattern)
+        {
+            return BuildPropertyPathPattern(ppPattern, context);
         }
         throw new RdfQueryException($"Unsupported triple pattern algebra ({triplePattern.GetType()}): {triplePattern}");
     }
@@ -161,7 +161,7 @@ public class EvaluationBuilder
 
     private IAsyncEvaluation BuildOrderBy(OrderBy orderBy, PullEvaluationContext context)
     {
-        return new AsyncOrderByEvaluation(orderBy, context, Build(orderBy.InnerAlgebra, context));
+        return new AsyncOrderByEvaluation(orderBy, Build(orderBy.InnerAlgebra, context));
     }
 
     private IAsyncEvaluation BuildSlice(Slice slice, PullEvaluationContext context)
@@ -225,7 +225,7 @@ public class EvaluationBuilder
 
     private IAsyncEvaluation BuildSubQuery(SubQuery subQuery, PullEvaluationContext context)
     {
-        var autoVarPrefix = "_" + context.AutoVarPrefix;
+        var autoVarPrefix = "_" + context.AutoVarFactory.Prefix;
         while (subQuery.Variables.Any(v => v.StartsWith(autoVarPrefix)))
         {
             autoVarPrefix = "_" + autoVarPrefix;
@@ -238,17 +238,54 @@ public class EvaluationBuilder
 
     private IAsyncEvaluation BuildSubQueryPattern(SubQueryPattern subQueryPattern, PullEvaluationContext context)
     {
-        var autoVarPrefix = "_" + context.AutoVarPrefix;
+        var autoVarPrefix = "_" + context.AutoVarFactory.Prefix;
         while (subQueryPattern.Variables.Any(v => v.StartsWith(autoVarPrefix)))
         {
             autoVarPrefix = "_" + autoVarPrefix;
         }
         var subContext = new PullEvaluationContext(context.Data, context.UnionDefaultGraph,
             subQueryPattern.SubQuery.DefaultGraphNames, subQueryPattern.SubQuery.NamedGraphNames, autoVarPrefix);
-        var queryAlgebra = subQueryPattern.SubQuery.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
+        ISparqlAlgebra? queryAlgebra = subQueryPattern.SubQuery.ToAlgebra(true, new[] { new PushDownAggregatesOptimiser(autoVarPrefix) });
         return new AsyncSubQueryEvaluation( subQueryPattern,Build(queryAlgebra, subContext), subContext);
     }
 
+    private IAsyncEvaluation BuildPropertyPathPattern(PropertyPathPattern ppPattern, PullEvaluationContext context)
+    {
+        return Build(ppPattern.Path, ppPattern.Subject, ppPattern.Object, context);
+    }
+
+    private IAsyncEvaluation Build(ISparqlPath path, PatternItem pathStart, PatternItem pathEnd,
+        PullEvaluationContext context)
+    {
+        return path switch
+        {
+            SequencePath sequencePath => BuildSequencePath(sequencePath, pathStart, pathEnd, context),
+            Property propertyPath => BuildPropertyPath(propertyPath.Predicate, pathStart, pathEnd, context),
+            InversePath inversePath => Build(inversePath.Path, pathEnd, pathStart, context),
+            AlternativePath altPath => new AsyncUnionEvaluation(Build(altPath.LhsPath, pathStart, pathEnd, context),
+                Build(altPath.RhsPath, pathStart, pathEnd, context)),
+            ZeroOrOne zeroOrOne => new AsyncZeroOrOnePathEvaluation(Build(zeroOrOne.Path, pathStart, pathEnd, context), pathStart, pathEnd),
+            _ => throw new RdfQueryException($"Unsupported query algebra {path}")
+        };
+    }
+
+    private IAsyncEvaluation BuildSequencePath(SequencePath sequencePath,PatternItem pathStart,  PatternItem pathEnd,
+        PullEvaluationContext context)
+    {
+        var joinVar = context.AutoVarFactory.NextId();
+        var joinVarPattern = new VariablePattern(joinVar);
+        return new AsyncSequencePathEvaluation(
+            Build(sequencePath.LhsPath, pathStart, joinVarPattern, context),
+            Build(sequencePath.RhsPath, joinVarPattern, pathEnd, context),
+            joinVar);
+    }
+
+    private IAsyncEvaluation BuildPropertyPath(INode predicate, PatternItem pathStart, PatternItem pathEnd,
+        PullEvaluationContext _)
+    {
+        return new AsyncTriplePatternEvaluation(new TriplePattern(pathStart, new NodeMatchPattern(predicate), pathEnd));
+    }
+    
     private IAsyncEvaluation BuildMinus(Minus minus, PullEvaluationContext context)
     {
         IAsyncEvaluation lhsEval = Build(minus.Lhs, context);
