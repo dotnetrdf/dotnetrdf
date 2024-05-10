@@ -1,5 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using VDS.RDF;
+using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
@@ -9,40 +11,90 @@ internal class AsyncRepeatablePathEvaluation(
     int minIterations,
     int maxIterations,
     IAsyncPathEvaluation stepEvaluation,
-    PatternItem pathStart,
-    PatternItem pathEnd) : IAsyncEvaluation
+    PatternItem pathEnd) : IAsyncPathEvaluation
 {
-    private readonly HashSet<INode> _visitedNodes = new HashSet<INode>();
-
-    public IAsyncEnumerable<ISet> Evaluate(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
-        CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<PathResult> Evaluate(PatternItem pathStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        return EvaluateStep(context, input, activeGraph, cancellationToken, 1, pathStart);
+        if (minIterations == 0)
+        {
+            var haveStartTerm = TryEvaluatePattern(pathStart, input, out INode? startTerm);
+            var haveEndTerm = TryEvaluatePattern(pathEnd, input, out INode? endTerm);
+            if (haveStartTerm && haveEndTerm && startTerm != null && startTerm.Equals(endTerm))
+            {
+                yield return new PathResult(startTerm, startTerm);
+            } else if (haveStartTerm && startTerm != null && pathEnd is VariablePattern)
+            {
+                yield return new PathResult(startTerm, startTerm);
+            }
+            else if (haveEndTerm && endTerm != null && pathStart is VariablePattern)
+            {
+                yield return new PathResult(endTerm, endTerm);
+            }
+        }
+
+        await foreach (PathResult stepResult in EvaluateStep(context, input, activeGraph, cancellationToken, 1, pathStart, new HashSet<INode>()))
+        {
+            yield return stepResult;
+        }
+    }
+    
+    private static bool TryEvaluatePattern(PatternItem patternItem, ISet? input, [NotNullWhen(returnValue:true)] out INode? node)
+    {
+        switch (patternItem)
+        {
+            case VariablePattern vp:
+                {
+                    if (input != null && input.ContainsVariable(vp.VariableName))
+                    {
+                        INode? tmp = input[vp.VariableName];
+                        if (tmp != null)
+                        {
+                            node = tmp;
+                            return true;
+                        }
+                    }
+
+                    break;
+                }
+            case NodeMatchPattern nmp:
+                node = nmp.Node;
+                return true;
+            default:
+                throw new RdfQueryException(
+                    $"Support for pattern item {patternItem} ({patternItem.GetType()}) is not yet implemented.");
+        }
+
+        node = null;
+        return false;
     }
 
-    private async IAsyncEnumerable<ISet> EvaluateStep(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
-        [EnumeratorCancellation] CancellationToken cancellationToken, int step, PatternItem stepStart)
+    private async IAsyncEnumerable<PathResult> EvaluateStep(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
+        [EnumeratorCancellation] CancellationToken cancellationToken, int step, PatternItem stepStart, HashSet<INode> visited)
     {
-        if (step > maxIterations) yield break;
+        if (maxIterations > 0 && step > maxIterations) yield break;
         stepStart = EvaluatePatternItem(stepStart, input);
         await foreach (PathResult result in stepEvaluation.Evaluate(stepStart, context, input, activeGraph,
                            cancellationToken))
         {
-            if (_visitedNodes.Add(result.PathEnd))
+            if (!visited.Contains(result.EndNode))
             {
                 if (step >= minIterations)
                 {
-                    // Can potentially return a result
-                    ISet output = input != null ? new Set(input) : new Set();
-                    if (pathStart.Accepts(context, result.PathStart, output) &&
-                        pathEnd.Accepts(context, result.PathEnd, output))
+                    var output = new Set();
+                    if (pathEnd.Accepts(context, result.EndNode, output))
                     {
-                        yield return output;
+                        yield return result;
                     }
                 }
 
-                await foreach (ISet nextStepResult in EvaluateStep(context, input, activeGraph, cancellationToken, step + 1,
-                                   new NodeMatchPattern(result.PathEnd)))
+                HashSet<INode> nextVisited =
+                [
+                    ..visited,
+                    result.EndNode
+                ];
+                await foreach (PathResult nextStepResult in EvaluateStep(context, input, activeGraph, cancellationToken, step + 1,
+                                   new NodeMatchPattern(result.EndNode), nextVisited))
                 {
                     yield return nextStepResult;
                 }
