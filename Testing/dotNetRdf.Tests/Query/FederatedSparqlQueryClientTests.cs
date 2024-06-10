@@ -40,11 +40,11 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public void QueryWithResultSetThrowsAnExceptionIfOneEndpointFails()
+        public async void QueryWithResultSetThrowsAnExceptionIfOneEndpointFails()
         {
             var endpoint = new FederatedSparqlQueryClient(
                 HttpClient, new Uri(_fixture.Server1.Urls[0] + "/query"), new Uri(_fixture.Server2.Urls[0] + "/fail"));
-            Assert.ThrowsAsync<RdfQueryException>(() => endpoint.QueryWithResultSetAsync("SELECT * WHERE { ?s ?p ?o }"));
+            await Assert.ThrowsAsync<RdfQueryException>(() => endpoint.QueryWithResultSetAsync("SELECT * WHERE { ?s ?p ?o }"));
         }
 
         [Fact]
