@@ -273,6 +273,16 @@ namespace VDS.RDF.Parsing
         }
 
         [Fact]
+        public async Task LoadGraphFromQuadFormatHttpUri()
+        {
+            var g = new Graph();
+            var loader = new Loader(_serverFixture.Client);
+            Uri resourceUri = _serverFixture.UriFor("/one.trig");
+            await loader.LoadGraphAsync(g, resourceUri);
+            g.Triples.Count.Should().Be(2);
+        }
+
+        [Fact]
         public async Task LoadTripleStoreFromHttpUriFailsIfRequestFails()
         {
             var store = new TripleStore();

@@ -155,15 +155,22 @@ namespace VDS.RDF.Parsing
             // Try to get a Parser from the File Extension if one isn't explicitly specified
             if (parser == null)
             {
+                var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 try
                 {
-                    var ext = MimeTypesHelper.GetTrueFileExtension(filename);
                     parser = MimeTypesHelper.GetParserByFileExtension(ext);
                 }
                 catch (RdfParserSelectionException)
                 {
-                    // If error then we couldn't determine MIME Type from the File Extension
-                    RaiseWarning("Unable to select a parser by determining MIME Type from the File Extension");
+                    try
+                    {
+                        parser = new StoreReaderAdapter(MimeTypesHelper.GetStoreParserByFileExtension(ext));
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        // If error then we couldn't determine MIME Type from the File Extension
+                        RaiseWarning("Unable to select a parser by determining MIME Type from the File Extension");
+                    }
                 }
             }
 
