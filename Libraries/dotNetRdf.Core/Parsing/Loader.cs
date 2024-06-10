@@ -270,14 +270,23 @@ namespace VDS.RDF.Parsing
                 uri = Tools.StripUriFragment(uri);
                 KeyValuePair<string, string>[] headers = new[]
                 {
-                    new KeyValuePair<string, string>("Accept", parser != null ? MimeTypesHelper.CustomHttpAcceptHeader(parser) : MimeTypesHelper.HttpAcceptHeader),
+                    new KeyValuePair<string, string>("Accept", parser != null ? MimeTypesHelper.CustomHttpAcceptHeader(parser) : MimeTypesHelper.HttpRdfOrDatasetAcceptHeader),
                 };
                 using HttpResponseMessage httpResponse = await GetFollowingRedirects(uri, headers, cancellationToken);
                 AssertResponseSuccess(uri, httpResponse);
 
-                parser ??= MimeTypesHelper.GetParser(httpResponse.Content.Headers.ContentType.MediaType);
-                parser.Warning += RaiseWarning;
+                try
+                {
+                    parser ??= MimeTypesHelper.GetParser(httpResponse.Content.Headers.ContentType.MediaType);
+                }
+                catch (RdfParserSelectionException)
+                {
+                    parser ??= new StoreReaderAdapter(
+                        MimeTypesHelper.GetStoreParser(httpResponse.Content.Headers.ContentType.MediaType));
+                }
 
+                parser.Warning += RaiseWarning;
+                
                 // TODO: Replace with an async load method when available
                 parser.Load(handler, new StreamReader(await httpResponse.Content.ReadAsStreamAsync()));
             }

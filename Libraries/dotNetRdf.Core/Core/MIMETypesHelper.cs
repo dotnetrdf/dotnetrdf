@@ -1353,6 +1353,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="ctypes">MIME TYpes.</param>
         /// <param name="tokenQueueMode">The default token queue mode used for tokeniser based parsers.</param>
+        /// <exception cref="RdfParserSelectionException">Raised if there is no </exception>
         /// <returns></returns>
         public static IRdfReader GetParser(IEnumerable<string> ctypes, TokenQueueMode tokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing)
         {
