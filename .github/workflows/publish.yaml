@@ -44,6 +44,7 @@ jobs:
       run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
 
   docs:
+    if: false
     runs-on: windows-latest
     steps:
     - name: Checkout
@@ -67,7 +68,7 @@ jobs:
         echo "::set-output name=value::${GITHUB_REF#refs/tags/}"
       shell: bash
         
-    - name: Create Relase Zip
+    - name: Create Release Zip
       run: 7z a -tzip dotNetRdf_apidocs_${{ steps.version_tag.outputs.value }}.zip Help
       working-directory: Build\shfb
       
