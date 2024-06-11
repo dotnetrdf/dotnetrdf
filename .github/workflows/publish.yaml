@@ -14,6 +14,7 @@ jobs:
         fetch-depth: 0
 
     - name: Write release version
+      shell: bash
       run: |
         VERSION=${GITHUB_REF_NAME#v}
         echo Version: $VERSION
