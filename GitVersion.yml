@@ -1,4 +1,6 @@
-branches: {}
+branches:
+  release:
+    tag: pre
 ignore:
   commits-before: 2017-01-01
 merge-message-formats: {}
