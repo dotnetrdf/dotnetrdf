@@ -13,26 +13,8 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v1.1.1
-      with:
-        versionSpec: '5.x'
-
-    - name: GitVersion
-      id: gitversion
-      uses: gittools/actions/gitversion/execute@v1.1.1
-      with:
-        useConfigFile: true
-      
-    - name: Show GitVersion Value
-      run: |
-        echo "NuGetVersionV2: ${{ steps.gitversion.outputs.NuGetVersionV2 }}"
-        echo "NuGetVersion: ${{ steps.gitversion.outputs.NuGetVersion }}"
-        echo "NuGetPreReleaseTagV2: ${{ steps.gitversion.outputs.NuGetPreReleaseTagV2 }}"
-        echo "NuGetPreReleaseTag: ${{ steps.gitversion.outputs.NuGetPreReleaseTag }}"
-        
     - name: Build solution
-      run: dotnet pack --configuration=Release -p:Version=${{ steps.gitversion.outputs.NuGetVersionV2 }} -p:PackageOutputPath=../../nugets
+      run: dotnet pack --configuration=Release -p:Version=${{ github.ref_name }} -p:PackageOutputPath=../../nugets
       
     - name: Upload NuGet Packages
       uses: actions/upload-artifact@v3
@@ -41,6 +23,7 @@ jobs:
         path: nugets\*.nupkg
 
     - name: Publish NuGet Packages
+      if: false
       run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
 
   docs:
