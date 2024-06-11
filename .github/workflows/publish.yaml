@@ -21,7 +21,7 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_ENV
     
     - name: Build solution
-      run: dotnet pack --configuration=Release -p:Version=${VERSION} -p:PackageOutputPath=../../nugets
+      run: dotnet pack --configuration=Release -p:Version=${{ env.VERSION }} -p:PackageOutputPath=../../nugets
       
     - name: Upload NuGet Packages
       uses: actions/upload-artifact@v3
