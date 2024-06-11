@@ -30,7 +30,6 @@ jobs:
         path: nugets\*.nupkg
 
     - name: Publish NuGet Packages
-      if: false
       run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
 
     - name: Create Release
