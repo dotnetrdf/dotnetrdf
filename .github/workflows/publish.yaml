@@ -34,10 +34,10 @@ jobs:
       run: nuget push nugets\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{ secrets.NUGET_API_KEY }}
 
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
       with:
         draft: true
         prerelease: true
         files: |
-          nugets\*.nupkg
+          nugets/*.nupkg
