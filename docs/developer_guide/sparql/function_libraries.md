@@ -1,6 +1,7 @@
 # Function Libraries
 
-Function Libraries are collections of extension functions that may be used in SPARQL queries and updates.  These are supported by our in-memory [Leviathan Engine](leviathan_engine.md) and some may be supported by other triple stores as well.
+Function Libraries are collections of extension functions that may be used in SPARQL queries and updates.
+These are supported by our in-memory [Leviathan Engine](leviathan_engine.md) and some may be supported by other triple stores as well.
 
 If you are looking to add your own extension functions please see the [Extension Functions](extension_functions.md) documentation for details on how to do that.
 

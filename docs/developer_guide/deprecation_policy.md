@@ -1,6 +1,6 @@
 # Deprecation Policy
 
-Our deprecation policy is a very simple three step process.
+Our deprecation policy is a very simple three-step process.
 
 ## Step 1 - Obsolete but Usable
 
