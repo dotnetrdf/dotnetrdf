@@ -3,7 +3,7 @@
 // dotNetRDF is free and open source software licensed under the MIT License
 // -------------------------------------------------------------------------
 // 
-// Copyright (c) 2009-2023 dotNetRDF Project (http://dotnetrdf.org/)
+// Copyright (c) 2009-2024 dotNetRDF Project (http://dotnetrdf.org/)
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 // </copyright>
 */
 
+using AngleSharp.Text;
 using System;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing.Tokens;
@@ -850,6 +851,10 @@ namespace VDS.RDF.Parsing
                      (c >= 0x3001 && c <= 0xd7ff) ||
                      (c >= 0xf900 && c <= 0xfdcf) ||
                      (c >= 0xfdf0 && c <= 0xfffd))
+            {
+                return true;
+            }
+            else if (c.IsDigit())
             {
                 return true;
             }
