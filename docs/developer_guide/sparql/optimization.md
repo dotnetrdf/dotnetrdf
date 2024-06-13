@@ -10,7 +10,8 @@ If you want to implement your own optimizers see [Implementing Custom Optimisers
 
 # Query Optimisation
 
-Query Optimisation is the first stage of optimisation and it occurs automatically at the end of query parsing. The aim of Query Optimisation is to reorder the Triple Patterns within each Graph Pattern to do several things:
+Query Optimisation is the first stage of optimisation and occurs automatically at the end of query parsing.
+The aim of Query Optimisation is to reorder the Triple Patterns within each Graph Pattern to do several things:
 
 * Evaluate the most selective Triple Patterns first - see Pattern Selectivity
 * Evaluate `FILTER` at the earliest possible point - see Filter Placement
@@ -21,7 +22,8 @@ The optimiser addresses the first three aims in its first pass through and then 
 
 ## Pattern Selectivity
 
-To minimise the size of intermediate results and evaluate queries as quickly as possible it is better if Triple Patterns with higher selectivity are evaluated first wherever possible. The selectivity of a pattern pertains to how restrictive it is and how likely we consider it to return smaller numbers of results.
+To minimise the size of intermediate results and evaluate queries as quickly as possible it is better if Triple Patterns with higher selectivity are evaluated first wherever possible.
+The selectivity of a pattern pertains to how restrictive it is and how likely we consider it to return smaller numbers of results.
 
 Our default selectivity ranking is purely rules based and ranks patterns based on the following order (from highest to lowest selectivity):
 
@@ -33,9 +35,10 @@ Our default selectivity ranking is purely rules based and ranks patterns based o
 6. Predicate
 7. Object
 
-**Note:** The above represents the ranking implemented in the current release, this has changed in the past and may change in the future based on internal testing and benchmarking.  Sometimes you may be able to get better performance by using the statistics based <xref:VDS.RDF.Query.Optimisation.WeightedOptimiser>.
+**Note:** The above represents the ranking implemented in the current release, this has changed in the past and may change in the future based on internal testing and benchmarking.
+Sometimes you may be able to get better performance by using the statistics based <xref:VDS.RDF.Query.Optimisation.WeightedOptimiser>.
 
-The name of a pattern refers to the the parts of the pattern that are not variables, i.e. an example Subject-Predicate pattern would be the following:
+The name of a pattern refers to the parts of the pattern that are not variables, i.e. an example Subject-Predicate pattern would be the following:
 
 ```
 <http://example.org/subject> <http://example.org/predicate> ?obj .
@@ -233,7 +236,7 @@ The engine is optimised to use lazy evaluation wherever possible. What this mean
 
 The more recent releases leverage the .Net PLINQ framework to parallelize parts of the query evaluation wherever possible.  This means queries can take full advantage of the processors available on your machine, see [Performance](performance.md) for performance data which shows just how much of an impact this can have.
 
-Currently the following operations are parallelized:
+Currently, the following operations are parallelized:
 
 * Join
 * Left Join (`OPTIONAL`)
