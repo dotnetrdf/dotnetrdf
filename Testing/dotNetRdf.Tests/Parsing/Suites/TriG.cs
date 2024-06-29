@@ -37,7 +37,7 @@ namespace VDS.RDF.Parsing.Suites
         private readonly ITestOutputHelper _testOutputHelper;
 
         public TriG(ITestOutputHelper testOutputHelper)
-            : base(new TriGParser(), new NQuadsParser(), "trig")
+            : base(new TriGParser(TriGSyntax.MemberSubmission), new NQuadsParser(), "trig")
         {
             _testOutputHelper = testOutputHelper;
             CheckResults = false;

@@ -224,7 +224,7 @@ namespace VDS.RDF.Query
         public void SparqlEvaluationMultipleOptionals()
         {
             var store = new TripleStore();
-            store.LoadFromFile(Path.Combine("resources", "multiple-options.trig"));
+            store.LoadFromFile(Path.Combine("resources", "multiple-options.trig"), new TriGParser(TriGSyntax.MemberSubmission));
 
             var parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "multiple-optionals.rq"));
@@ -245,7 +245,7 @@ namespace VDS.RDF.Query
         public void SparqlEvaluationMultipleOptionals2()
         {
             var store = new TripleStore();
-            store.LoadFromFile(Path.Combine("resources", "multiple-options.trig"));
+            store.LoadFromFile(Path.Combine("resources", "multiple-options.trig"), new TriGParser(TriGSyntax.MemberSubmission));
 
             var parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "multiple-optionals-alternate.rq"));

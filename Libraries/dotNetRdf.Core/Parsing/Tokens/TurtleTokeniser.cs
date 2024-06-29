@@ -987,7 +987,9 @@ namespace VDS.RDF.Parsing.Tokens
                         if (!Value.Equals("prefix".Substring(0, Length), StringComparison.OrdinalIgnoreCase)) break;
                     }
 
-                    if (Value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
+                    var afterPrefix = Peek();
+
+                    if (Value.Equals("prefix", StringComparison.OrdinalIgnoreCase) && char.IsWhiteSpace(afterPrefix))
                     {
                         LastTokenType = Token.PREFIXDIRECTIVE;
                         return new PrefixDirectiveToken(CurrentLine, StartPosition);
