@@ -1,6 +1,13 @@
 ﻿Change Log
 ==========
 
+Next Release (3.2.1)
+------------
+
+ENHANCEMENT: Update default syntax of the TRiG parser to be RDF 1.1 + RDF Star to be consistent with the defaults of the NTriples, NQuads and Turtle parsers. Thanks to @markus-ap for the report. (#640)
+FIX: Fix parsing of datatyped literals in collections in TRiG 1.1 + RDF Star
+Fix: Fix handling of QNames starting with "prefix" in Turtle tokenizer
+
 3.2.0
 ------
 NEW: Implementation of the November 2023 draft of the W3C [RDF Dataset Canonicalization](https://www.w3.org/TR/2023/CRD-rdf-canon-20231130/) specification. Thanks to @zotanmew and @deviant for this contribution. (#615)

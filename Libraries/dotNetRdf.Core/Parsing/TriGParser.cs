@@ -47,7 +47,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Creates a TriG Parser than uses the default syntax.
         /// </summary>
-        public TriGParser()
+        public TriGParser(): this(TriGSyntax.Rdf11Star)
         { }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets/Sets the TriG syntax used.
         /// </summary>
-        public TriGSyntax Syntax { get; set; } = TriGSyntax.MemberSubmission;
+        public TriGSyntax Syntax { get; set; }
 
         /// <summary>
         /// Gets/Sets whether the tokenizer should validate IRI strings.
@@ -1132,18 +1132,34 @@ namespace VDS.RDF.Parsing
                                 item = context.Handler.CreateLiteralNode(obj.Value, next.Value);
                                 break;
                             case Token.HATHAT:
-                                context.Tokens.Dequeue();
-                                next = context.Tokens.Dequeue();
-                                if (next.TokenType == Token.QNAME || next.TokenType == Token.URI)
                                 {
-                                    Uri dt = context.UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
+                                    context.Tokens.Dequeue();
+                                    next = context.Tokens.Dequeue();
+                                    if (next.TokenType == Token.QNAME || next.TokenType == Token.URI)
+                                    {
+                                        Uri dt = context.UriFactory.Create(
+                                            Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri));
+                                        item = context.Handler.CreateLiteralNode(obj.Value, dt);
+                                    }
+                                    else
+                                    {
+                                        throw ParserHelper.Error(
+                                            "Unexpected Token '" + next.GetType() +
+                                            "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token",
+                                            next);
+                                    }
+
+                                    break;
+                                }
+                            case Token.DATATYPE:
+                                {
+                                    IToken dtToken = context.Tokens.Dequeue();
+                                    Uri dt = context.UriFactory.Create(Tools.ResolveUriOrQName(dtToken,
+                                        context.Namespaces,
+                                        context.BaseUri));
                                     item = context.Handler.CreateLiteralNode(obj.Value, dt);
+                                    break;
                                 }
-                                else
-                                {
-                                    throw ParserHelper.Error("Unexpected Token '" + next.GetType() + "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token", next);
-                                }
-                                break;
                             default:
                                 item = context.Handler.CreateLiteralNode(obj.Value);
                                 break;
