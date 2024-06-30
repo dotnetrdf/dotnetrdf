@@ -88,20 +88,6 @@ namespace VDS.RDF.Writing.Formatting
             }
             return Format(t.Subject, TripleSegment.Subject) + " " + Format(t.Predicate, TripleSegment.Predicate) + " " + Format(t.Object, TripleSegment.Object) + " " + Format(graph) + " .";
         }
-
-        /// <summary>
-        /// Formats a TripleStore as a String. Especially useful for canonicalized graphs.
-        /// </summary>
-        /// <param name="store"></param>
-        /// <returns></returns>
-        public string Format(ITripleStore store)
-        {
-            var sb = new StringBuilder();
-            store.Graphs
-                .SelectMany(graph => graph.Triples.Select(triple => this.Format(triple, graph.Name)))
-                .OrderBy(p => p, StringComparer.Ordinal).ToList().ForEach(s => sb.AppendLine(s));
-            return sb.ToString();
-        }
     }
 
     /// <summary>
