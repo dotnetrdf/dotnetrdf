@@ -388,7 +388,22 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
         /// <summary>
         /// The dataset, serialized in canonical n-quads form.
         /// </summary>
-        public readonly string SerializedNQuads = new NQuads11Formatter().Format(outputDataset);
+        public string SerializedNQuads
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                var formatter = new NQuads11Formatter();
+                outputDataset.Graphs
+                    .SelectMany(graph => graph.Triples.Select(triple => formatter.Format(triple, graph.Name)))
+                    .OrderBy(p => p, StringComparer.Ordinal).ToList().ForEach(s =>
+                    {
+                        sb.Append(s);
+                        sb.Append("\n");
+                    });
+                return sb.ToString();
+            }
+        }
 
         /// <summary>
         /// The input dataset.
@@ -405,4 +420,5 @@ public class RdfCanonicalizer(string hashAlgorithm = "SHA256")
         /// </summary>
         public readonly IDictionary<string, string> IssuedIdentifiersMap = issuedIdentifiersMap;
     }
+    
 }
