@@ -29,8 +29,11 @@ public class RdfCanonTestSuite(ITestOutputHelper output) : RdfTestSuite
     internal void EvalTest(ManifestTestData t)
     {
         var resultInputPath = t.Manifest.ResolveResourcePath(t.Result);
-        var expectedResult = File.ReadAllText(resultInputPath);
-
+        string expectedResult;
+        using (var sr = new StreamReader(new FileStream(resultInputPath, FileMode.Open), Encoding.UTF8))
+        {
+            expectedResult = sr.ReadToEnd();
+        }
         RdfCanonicalizer.CanonicalizedRdfDataset result = RunCanonicalize(t);
 
         result.SerializedNQuads.Should().BeEquivalentTo(expectedResult);
