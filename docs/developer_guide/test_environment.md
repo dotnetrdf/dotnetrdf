@@ -41,7 +41,7 @@ So an example name might be `SparqlDatasetDefaultGraphUnion`
 
 If you also develop a patch you will likely want to run more tests than just the ones you created in order to validate that your patch did not cause regressions elsewhere. If the patch is fairly well isolated in relation to your bug then you should typically only need to run the general functional area tests e.g. if you are writing a patch for a parsing problem just run the tests whose names begin Parsing
 
-If your patch is not well isolated or you've changed something where you aren't sure of the full ramifications of your change then you should run all the tests. If you see significant failures that aren't resolved by running the failing tests again (and thus ruling out intermittent failures) then you can still submit your patch but please clearly state that your patch may cause other failures. In some cases the other failures may be that other tests were silently assuming the existing bug without being aware of it but in other cases they may be due to a regression your patch introduces. If you can't figure out this yourself please tell us that this is the case so we can take a more detailed look.
+If your patch is not well isolated, or you've changed something where you aren't sure of the full ramifications of your change then you should run all the tests. If you see significant failures that aren't resolved by running the failing tests again (and thus ruling out intermittent failures) then you can still submit your patch but please clearly state that your patch may cause other failures. In some cases the other failures may be that other tests were silently assuming the existing bug without being aware of it but in other cases they may be due to a regression your patch introduces. If you can't figure out this yourself please tell us that this is the case so that we can take a more detailed look.
 
 ## RDF Test Suites
 
@@ -56,4 +56,4 @@ The `Testing/test_images` folder contains a set of Docker configurations for bui
 
 There is a standalone executable that can be used to run the official SPARQL DAWG test suite to check for SPARQL compliance. It is important to run this anytime you make any change to the SPARQL engine or code related to it. This executable spits out two logs files detailing compliance with SPARQL 1.0 and SPARQL 1.1 - see the end of the file for a summary of the results.
 
-Currently there are 1 failures expected in the 1.0 suite which relate to URI normalization issues which we cannot workaround due to our use of the .Net `Uri` class and there should be no 1.1 failures.
+Currently, there is 1 failure expected in the 1.0 suite which relate to URI normalization issues which we cannot work around due to our use of the .Net `Uri` class and there should be no 1.1 failures.

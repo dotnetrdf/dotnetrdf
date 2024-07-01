@@ -1,6 +1,8 @@
 # XPath Function Library
 
-The XPath Function Library is a library of functions which form part of the W3C specification for XPath. Please follow the appropriate links to see the documentation for the function, we have noted where we don't support all forms of a function. As a general rule for string functions which have forms which support a collation argument we do not support that form.
+The XPath Function Library is a library of functions which form part of the W3C specification for XPath.
+Please follow the appropriate links to see the documentation for the function, we have noted where we don't support all forms of a function.
+As a general rule for string functions which have forms which support a collation argument we do not support that form.
 
 **Note:** Many of these functions now have built-in equivalents in SPARQL 1.1 which often offer better functionality since they are slightly modified to work with RDF where appropriate.
 

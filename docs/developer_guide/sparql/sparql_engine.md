@@ -12,7 +12,7 @@ Leviathan is the code name for our block based in-memory SPARQL evaluation engin
 * Optimisation
   * Powerful query optimizations described on the [SPARQL Optimization](optimization.md) page
 * Extensions
-  * Full Text Query, see [Full Text Querying with SPARQL](/user_guide/full_text_querying_with_sparql.md)
+  * Full Text Query, see [Full Text Querying with SPARQL](../../user_guide/full_text_querying_with_sparql.md)
   * `LET` assignments permitted with semantics equivalent to [ARQ](http://jena.apache.org/documentation/query/index.html)
   * Additional `NMAX` and `NMIN` aggregates (Numeric Maximum and Minimum)
   * Additional `MEDIAN` and `MODE` aggregates

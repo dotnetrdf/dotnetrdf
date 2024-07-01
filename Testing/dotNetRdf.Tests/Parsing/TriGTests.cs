@@ -259,5 +259,16 @@ namespace VDS.RDF.Parsing
             Assert.Single(store.Graphs);
             Assert.Single(store.Triples);
         }
+
+        [Fact]
+        public void ParsingPrefixCalledPrefix()
+        {
+            const string data = @"@prefix prefix1: <http://example.com/>.
+<http://example.org/cyrillic> {
+    prefix1:test1 prefix1:pred1 ""литерал"".
+    prefix1:test2 prefix1:pred1 ""EnglishTest"".
+}";
+            TestParsing(data, TriGSyntax.Rdf11Star, true);
+        }
     }
 }
