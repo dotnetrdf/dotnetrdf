@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using Xunit;
 using VDS.RDF.Parsing;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Query
 {
@@ -38,7 +39,7 @@ namespace VDS.RDF.Query
         }
 
         [Fact]
-        public void SparqlService()
+        public void SparqlServiceQuery()
         {
             _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE { ?s ?p ?o . } LIMIT 10 ");
             var query = $"SELECT * WHERE {{ SERVICE <{_serverFixture.Server.Urls[0] + "/sparql"}> {{ ?s ?p ?o }} }} LIMIT 10";
@@ -52,6 +53,20 @@ namespace VDS.RDF.Query
             Assert.NotEmpty(resultSet.Results);
         }
 
+        [Fact]
+        public void SparqlServiceUpdate()
+        {
+            _serverFixture.RegisterSelectQueryGetHandler("SELECT * WHERE \r\n{ ?s ?p ?o . }\r\n");
+            // _serverFixture.RegisterSelectQueryPostHandler();
+            var query = $"INSERT {{ ?s ?p ?o }} WHERE {{ SERVICE <{_serverFixture.Server.Urls[0] + "/sparql"}> {{ ?s ?p ?o . }} }}";
+            var parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet q = parser.ParseFromString(query);
+
+            var processor =
+                new LeviathanUpdateProcessor(new TripleStore(), options => options.UpdateExecutionTimeout = 15000);
+            processor.ProcessCommandSet(q);
+        }
+        
         [Fact]
         [Trait("Category", "explicit")]
         public void SparqlServiceUsingBindings()
