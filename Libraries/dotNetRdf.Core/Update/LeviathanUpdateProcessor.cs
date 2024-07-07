@@ -973,7 +973,9 @@ namespace VDS.RDF.Update
                     context.Data.SetActiveGraph(cmd.UsingUris.Select<Uri, IRefNode>(u => new UriNode(u)).ToList());
                     datasetOk = true;
                 }
+                queryContext.StartExecution(context.RemainingTimeout);
                 BaseMultiset results = queryContext.Evaluate(where);
+                queryContext.EndExecution();
                 if (results is IdentityMultiset) results = new SingletonMultiset(results.Variables);
                 if (cmd.UsingUris.Any())
                 {
