@@ -172,6 +172,16 @@ namespace VDS.RDF
             }
         }
 
+        public static void AssertIsomorphic(IGraph expectGraph, IGraph actualGraph, ITestOutputHelper outputHelper)
+        {
+            GraphDiffReport diffs = expectGraph.Difference(actualGraph);
+            if (!diffs.AreEqual)
+            {
+                ShowDifferences(diffs, "expected", "actual", outputHelper);
+                Assert.Fail("Graphs are not isomorphic.");
+            }
+        }
+
         public static void ShowGraph(IGraph g, ITestOutputHelper _output)
         {
             try
