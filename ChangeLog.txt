@@ -9,6 +9,7 @@ ENHANCEMENT: Update default syntax of the TRiG parser to be RDF 1.1 + RDF Star t
 FIX: Fix parsing of datatyped literals in collections in TRiG 1.1 + RDF Star
 Fix: Fix handling of QNames starting with "prefix" in Turtle tokenizer
 FIX: Fix RdfCanonicalizer so that the line ending in the canonical NQuads output is always `\n` and not `\r\n` on Windows platforms. Thanks to @veikkoeeva for the report. (#631)
+FIX: Fix handling of CONSTRUCT queries so that blank nodes in the CONSTRUCT template are unique for each solution binding. Thanks to @JohanMollevikCap for the report. (#639)
 
 3.2.0
 ------
