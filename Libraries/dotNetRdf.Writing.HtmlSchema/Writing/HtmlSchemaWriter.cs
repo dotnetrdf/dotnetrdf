@@ -490,7 +490,8 @@ namespace VDS.RDF.Writing
                         }
                         else
                         {
-                            var temp = new Uri(qname, UriKind.RelativeOrAbsolute);
+                            var iri = qname.Trim('<','>');
+                            var temp = new Uri(iri, UriKind.RelativeOrAbsolute);
                             if (!temp.Fragment.Equals(string.Empty))
                             {
                                 context.HtmlWriter.WriteEncodedText(temp.Fragment);
