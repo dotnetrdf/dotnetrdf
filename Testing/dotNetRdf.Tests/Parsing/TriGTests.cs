@@ -23,6 +23,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using FluentAssertions;
 using System;
 using System.IO;
 using System.Linq;
@@ -258,6 +259,19 @@ namespace VDS.RDF.Parsing
             store.LoadFromString(data, new TriGParser(TriGSyntax.Rdf11));
             Assert.Single(store.Graphs);
             Assert.Single(store.Triples);
+        }
+
+        [Fact]
+        public void ParsingPrefixedNameWithColon()
+        {
+            // Reproduce error reported in #634
+            const string input = "@prefix ex: <http://example.org/>. ex:foo { ex:foo:bar:baz ex:value \"a\" . }";
+            var store = new TripleStore();
+            store.LoadFromString(input, new TriGParser(TriGSyntax.Rdf11));
+            Assert.Single(store.Graphs);
+            Assert.Single(store.Triples);
+            store.Triples.First().Subject.Should().BeAssignableTo<IUriNode>().Which.Uri.AbsoluteUri.Should()
+                .Be("http://example.org/foo:bar:baz");
         }
 
         [Fact]
