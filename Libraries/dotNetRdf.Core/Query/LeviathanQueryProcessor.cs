@@ -257,9 +257,9 @@ namespace VDS.RDF.Query
 
                                 // Construct the Triples for each Solution
                                 if (context.OutputMultiset is IdentityMultiset) context.OutputMultiset = new SingletonMultiset();
-                                var constructContext = new ConstructContext(rdfHandler, false);
                                 foreach (ISet s in context.OutputMultiset.Sets)
                                 {
+                                    var constructContext = new ConstructContext(rdfHandler, false);
                                     try
                                     {
                                         constructContext.Set = s;
