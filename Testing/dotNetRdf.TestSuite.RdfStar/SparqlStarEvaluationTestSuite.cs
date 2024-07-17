@@ -136,7 +136,7 @@ namespace VDS.RDF.TestSuite.RdfStar
         {
             ManifestTestData testData =
                 SparqlStarEvalTests.GetTestData(
-                    new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-update-1"));
+                    new Uri("https://w3c.github.io/rdf-star/tests/sparql/eval#sparql-star-expr-1"));
             InvokeTestRunner(testData);
         }
     }
