@@ -257,9 +257,9 @@ namespace VDS.RDF.Query
 
                                 // Construct the Triples for each Solution
                                 if (context.OutputMultiset is IdentityMultiset) context.OutputMultiset = new SingletonMultiset();
-                                var constructContext = new ConstructContext(rdfHandler, false);
                                 foreach (ISet s in context.OutputMultiset.Sets)
                                 {
+                                    var constructContext = new ConstructContext(rdfHandler, false);
                                     try
                                     {
                                         constructContext.Set = s;
@@ -2118,9 +2118,14 @@ namespace VDS.RDF.Query
                 {
                     // Try and get a Result Set from the Service
                     var cts = new CancellationTokenSource();
-                    cts.CancelAfter(TimeSpan.FromMilliseconds(context.RemainingTimeout));
-                    var task = Task.Run(() => endpoint.QueryWithResultSetAsync(query.ToString(), cts.Token));
-                    task.Wait();
+                    var remainingTimeMillis = context.RemainingTimeout;
+                    if (remainingTimeMillis > 0)
+                    {
+                        cts.CancelAfter(TimeSpan.FromMilliseconds(remainingTimeMillis));
+                    }
+
+                    Task<SparqlResultSet> task = endpoint.QueryWithResultSetAsync(query.ToString(), cts.Token);
+                    task.Wait(cts.Token);
                     context.CheckTimeout();
 
                     // Transform this Result Set back into a Multiset

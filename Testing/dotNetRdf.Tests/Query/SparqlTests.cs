@@ -36,6 +36,7 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
+using Xunit.Abstractions;
 
 namespace VDS.RDF.Query
 {
@@ -43,10 +44,12 @@ namespace VDS.RDF.Query
     public class SparqlTests : IClassFixture<MockRemoteSparqlEndpointFixture>
     {
         private MockRemoteSparqlEndpointFixture _serverFixture;
+        private readonly ITestOutputHelper _testOutputHelper;
 
-        public SparqlTests(MockRemoteSparqlEndpointFixture serverFixture)
+        public SparqlTests(MockRemoteSparqlEndpointFixture serverFixture, ITestOutputHelper testOutputHelper)
         {
             _serverFixture = serverFixture;
+            _testOutputHelper = testOutputHelper;
         }
         private object ExecuteQuery(IInMemoryQueryableStore store, string query)
         {
@@ -112,12 +115,12 @@ namespace VDS.RDF.Query
 
             //Set a URI to a valid value
             query.SetUri("s", new Uri("http://example.org"));
-            Console.WriteLine(query.ToString());
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(query.ToString());
+            _testOutputHelper.WriteLine();
 
             //Set the parameter to a null
             query.SetParameter("s", null);
-            Console.WriteLine(query.ToString());
+            _testOutputHelper.WriteLine(query.ToString());
         }
 
         [Fact]
@@ -130,8 +133,8 @@ namespace VDS.RDF.Query
 
             //Set a URI to a valid value
             query.SetUri("s", new Uri("http://example.org"));
-            Console.WriteLine(query.ToString());
-            Console.WriteLine();
+            _testOutputHelper.WriteLine(query.ToString());
+            _testOutputHelper.WriteLine();
 
             //Set the URI to a null
             Assert.Throws<ArgumentNullException>(() => query.SetUri("s", null));
@@ -217,26 +220,26 @@ namespace VDS.RDF.Query
                 var xmlparser = new SparqlXmlParser();
                 var r1 = new SparqlResultSet();
                 xmlparser.Load(r1, "results.xml");
-                Console.WriteLine("Result Set after XML serialization and reparsing contains:");
+                _testOutputHelper.WriteLine("Result Set after XML serialization and reparsing contains:");
                 foreach (SparqlResult r in r1)
                 {
-                    Console.WriteLine(r.ToString());
+                    _testOutputHelper.WriteLine(r.ToString());
                 }
-                Console.WriteLine();
+                _testOutputHelper.WriteLine();
 
                 var jsonparser = new SparqlJsonParser();
                 var r2 = new SparqlResultSet();
                 jsonparser.Load(r2, "results.json");
-                Console.WriteLine("Result Set after JSON serialization and reparsing contains:");
+                _testOutputHelper.WriteLine("Result Set after JSON serialization and reparsing contains:");
                 foreach (SparqlResult r in r2)
                 {
-                    Console.WriteLine(r.ToString());
+                    _testOutputHelper.WriteLine(r.ToString());
                 }
-                Console.WriteLine();
+                _testOutputHelper.WriteLine();
 
                 Assert.Equal(r1, r2);
 
-                Console.WriteLine("Result Sets were equal as expected");
+                _testOutputHelper.WriteLine("Result Sets were equal as expected");
             }
         }
 
@@ -263,8 +266,8 @@ SELECT * WHERE {
             {
                 query.SetLiteral("type", value, false);
                 query.SetLiteral("@type", value, false);
-                Console.WriteLine(query.ToString());
-                Console.WriteLine();
+                _testOutputHelper.WriteLine(query.ToString());
+                _testOutputHelper.WriteLine();
 
                 SparqlQuery q = parser.ParseFromString(query.ToString());
                 Assert.Single(q.Variables);
@@ -282,16 +285,16 @@ SELECT * WHERE {
 
             query.SetUri("type", new Uri("http://example.org/type"));
 
-            Console.WriteLine("Only one of the type parameters should be replaced here");
-            Console.WriteLine(query.ToString());
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("Only one of the type parameters should be replaced here");
+            _testOutputHelper.WriteLine(query.ToString());
+            _testOutputHelper.WriteLine();
 
             query.SetUri("type1", new Uri("http://example.org/anotherType"));
             query.SetUri("type2", new Uri("http://example.org/yetAnotherType"));
 
-            Console.WriteLine("Now all the type parameters should have been replaced");
-            Console.WriteLine(query.ToString());
-            Console.WriteLine();
+            _testOutputHelper.WriteLine("Now all the type parameters should have been replaced");
+            _testOutputHelper.WriteLine(query.ToString());
+            _testOutputHelper.WriteLine();
 
             Assert.Throws<FormatException>(() =>
             {
@@ -361,14 +364,13 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             var parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile(Path.Combine("resources", "anton.rq"));
 
-            object results = g.ExecuteQuery(query);
+            var results = g.ExecuteQuery(query);
             Assert.IsAssignableFrom<SparqlResultSet>(results);
-            if (results is SparqlResultSet)
+            if (results is SparqlResultSet rset)
             {
-                var rset = (SparqlResultSet)results;
-                foreach (SparqlResult r in rset)
+                foreach (ISparqlResult sparqlResult in rset)
                 {
-                    Console.WriteLine(r);
+                    _testOutputHelper.WriteLine(sparqlResult.ToString());
                 }
                 Assert.Equal(1, rset.Count);
             }
@@ -459,11 +461,11 @@ WHERE
         {
             foreach (var query in _langSpecCaseQueries)
             {
-                Console.WriteLine("Checking query:\n" + query);
+                _testOutputHelper.WriteLine("Checking query:\n" + query);
                 var results = g.ExecuteQuery(query) as SparqlResultSet;
                 Assert.NotNull(results);
                 Assert.Equal(1, results.Count);
-                Console.WriteLine();
+                _testOutputHelper.WriteLine();
             }
         }
 
@@ -659,6 +661,50 @@ WHERE  { ?s ?p ?o. BIND(?o / 2 AS ?a) }
             var result = q.Process(queryProcessor);
             SparqlResultSet resultSet = Assert.IsAssignableFrom<SparqlResultSet>(result);
             Assert.Equal(2, resultSet.Count);
+        }
+
+        [Fact]
+        public void ConstructUniqueBNodePerResult()
+        {
+            const string expectResultsTtl = """
+                                            @prefix data: <http://data.example.com/> .
+                                            _:b1 data:subject 1;
+                                                 data:predicate 2;
+                                                 data:object 3 .
+                                            _:b2 data:subject "a" ;
+                                                 data:predicate "b" ;
+                                                 data:object "c" .
+
+                                            """;
+            const string constructQuery = """
+                                          prefix data: <http://data.example.com/>
+                                          construct {
+                                            [ data:subject ?s ; data:predicate ?p ; data:object ?o ] .
+                                          } where {
+                                            {
+                                              select ?s ?p ?o
+                                              where {
+                                                bind(1 as ?s).
+                                                bind(2 as ?p).
+                                                bind(3 as ?o).
+                                              }
+                                            }
+                                            union
+                                            {
+                                              select ?s ?p ?o
+                                              where {
+                                                bind("a" as ?s).
+                                                bind("b" as ?p).
+                                                bind("c" as ?o).
+                                              }
+                                            }
+                                          }
+                                          """;
+            var sourceGraph = new Graph();
+            var expectGraph = new Graph();
+            expectGraph.LoadFromString(expectResultsTtl, new TurtleParser());
+            var actualGraph = sourceGraph.ExecuteQuery(constructQuery) as Graph;
+            TestTools.AssertIsomorphic(expectGraph, actualGraph, _testOutputHelper);
         }
     }
 }

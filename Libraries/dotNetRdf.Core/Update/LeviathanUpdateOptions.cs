@@ -53,7 +53,11 @@ namespace VDS.RDF.Update
         public long UpdateExecutionTimeout
         {
             get => _updateExecutionTimeout;
-            set => _updateExecutionTimeout = Math.Max(0, value);
+            set
+            {
+                _updateExecutionTimeout = Math.Max(0, value);
+                QueryExecutionTimeout = _updateExecutionTimeout;
+            }
         }
     }
 }

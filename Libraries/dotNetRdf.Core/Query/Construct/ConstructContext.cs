@@ -152,6 +152,11 @@ namespace VDS.RDF.Query.Construct
         /// </remarks>
         public INode GetNode(INode n)
         {
+            return GetNode(n, false);
+        }
+
+        private INode GetNode(INode n, bool preserveBlankNodes)
+        {
             _nodeMap ??= new MultiDictionary<INode, INode>(new FastVirtualNodeComparer());
 
             if (_nodeMap.TryGetValue(n, out INode node)) return node;
@@ -160,7 +165,7 @@ namespace VDS.RDF.Query.Construct
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    temp = GetBlankNode(((IBlankNode)n).InternalID);
+                    temp = preserveBlankNodes ? NodeFactory.CreateBlankNode(((IBlankNode)n).InternalID) :  GetBlankNode(((IBlankNode)n).InternalID);
                     break;
 
                 case NodeType.Variable:
@@ -196,9 +201,9 @@ namespace VDS.RDF.Query.Construct
 
                 case NodeType.Triple:
                     var t = (ITripleNode)n;
-                    INode s = GetNode(t.Triple.Subject);
-                    INode p = GetNode(t.Triple.Predicate);
-                    INode o = GetNode(t.Triple.Object);
+                    INode s = GetNode(t.Triple.Subject, true);
+                    INode p = GetNode(t.Triple.Predicate, true);
+                    INode o = GetNode(t.Triple.Object, true);
                     var triple = new Triple(s, p, o);
                     temp = NodeFactory.CreateTripleNode(triple);
                     break;

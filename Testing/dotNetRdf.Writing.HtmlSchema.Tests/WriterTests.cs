@@ -6,6 +6,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using Xunit;
 using Xunit.Abstractions;
+using StringWriter = VDS.RDF.Writing.StringWriter;
 
 namespace VDS.RDF
 {
@@ -91,6 +92,15 @@ namespace VDS.RDF
 
             Assert.True(strWriter.ToString().Contains("ex:one"), "Should have documented ex:one as a range");
             Assert.True(strWriter.ToString().Contains("ex:two"), "Should have documented ex:two as a range");
+        }
+        
+        [Fact]
+        public void ItCanWriteNodesWithNoFragment()
+        {
+            var graph = new Graph();
+            graph.LoadFromString("<http://example.org/MyClass> a <http://www.w3.org/2002/07/owl#Class> .", new TurtleParser());
+            var html = StringWriter.Write(graph, new HtmlSchemaWriter());
+            Assert.True(html.Contains("MyClass"), "Should have documented MyClass as a class");
         }
     }
 
