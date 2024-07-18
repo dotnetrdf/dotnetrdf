@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace VDS.RDF
@@ -115,6 +116,17 @@ namespace VDS.RDF
                 // Register the ID
                 _idmap.Add(id, new BlankNodeIDAssigment(id, false));
             }
+        }
+
+        public void FlushBlankNodeAssignments()
+        {
+            var newMap = new Dictionary<string, BlankNodeIDAssigment>();
+            foreach (KeyValuePair<string, BlankNodeIDAssigment> kvp in _idmap)
+            {
+                newMap[kvp.Key] = new BlankNodeIDAssigment(kvp.Value.ID, true);
+            }
+
+            _idmap = newMap;
         }
     }
 

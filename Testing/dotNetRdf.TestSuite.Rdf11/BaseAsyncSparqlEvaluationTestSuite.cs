@@ -86,16 +86,19 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
             expectedResultGraph.LoadFromFile(resultInputPath, new RdfXmlParser());
         }
 
+        var nodeFactory = new NodeFactory();
         var tripleStore = new TripleStore(new ResolverDemandGraphCollection(uri =>
         {
             var filePath = t.Manifest.ResolveResourcePath(uri);
-            var g = new Graph(new UriNode(uri));
+            var g = new Graph(new UriNode(uri), nodeFactory);
+            nodeFactory.FlushBlankNodeAssignments();
             g.LoadFromFile(filePath);
             return g;
         }));
+        nodeFactory.FlushBlankNodeAssignments();
         if (dataInputPath != null)
         {
-            var g = new Graph{BaseUri = t.Data};
+            var g = new Graph(){BaseUri = t.Data};
             g.LoadFromFile(dataInputPath);
             tripleStore.Add(g);
         }

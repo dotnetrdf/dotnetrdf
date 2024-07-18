@@ -124,6 +124,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Flush any manually assigned blank node ids to start a new context.
+        /// This will force any future creation of a blank node with the same blank node id to map the id to a new
+        /// auto-assigned id.
+        /// </summary>
+        public void FlushBlankNodeAssignments()
+        {
+            _bnodeMap.FlushBlankNodeAssignments();
+        }
+        
+        /// <summary>
         /// Get or set the type of validation to apply to language tags when creating language-tagged literal nodes.
         /// </summary>
         public LanguageTagValidationMode LanguageTagValidation { get; set; } = LanguageTagValidationMode.WellFormed;
