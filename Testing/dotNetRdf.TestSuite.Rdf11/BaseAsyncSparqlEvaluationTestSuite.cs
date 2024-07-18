@@ -116,7 +116,7 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         if (!expectGraphResult && expectedResultGraph != null)
         {
             expectedResultSet = new SparqlResultSet();
-            var reader = new SparqlRdfParser { PadUnboundVariables = true };
+            var reader = new SparqlRdfParser { PadUnboundVariables = false };
             reader.Load(expectedResultSet, expectedResultGraph);
         }
 
@@ -130,15 +130,20 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
         }
         else
         {
+            // Expect to get a SPARQL results set
+            SparqlResultSet actualResults = results.Should().BeAssignableTo<SparqlResultSet>().Subject;
+            // Normalize expected and actual results to drop all unbound variables before comparison
+            actualResults.Trim();
+            expectedResultSet?.Trim();
             if (t.LaxCardinality)
             {
                 // With lax cardinality expect only that each result in the actual result set should be in expectedResultSet
-                results.Should().BeAssignableTo<SparqlResultSet>().Which.Should().OnlyContain(actualResult =>
+                actualResults.Should().OnlyContain(actualResult =>
                     expectedResultSet.Any(expectedResult => expectedResult.Equals(actualResult)));
             }
             else
             {
-                results.Should().BeAssignableTo<SparqlResultSet>().Which.Should().BeEquivalentTo(expectedResultSet);
+                actualResults.Should().BeEquivalentTo(expectedResultSet);
             }
         }
     }
