@@ -1,1 +1,0 @@
-<http://example.org/foo> <http://example.org/bar> "abc"^^<http://example.org/dt> .

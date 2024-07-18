@@ -1,3 +1,0 @@
-SELECT * WHERE {
-    ?s ?p "\U0001f46a" .
-}

@@ -1,6 +1,0 @@
----
-:format: :json
-:manifest:
-- http://www.w3.org/2013/TurtleTests/manifest.ttl
-:bibRef: ! '[[TURTLE]]'
-:name: Turtle
