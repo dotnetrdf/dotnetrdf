@@ -30,7 +30,7 @@ public class PullEngineEvaluationTestSuite(ITestOutputHelper output) : BaseAsync
         // ManifestTestDataProvider provider = Sparql11QueryEvalTests;
         
         ManifestTestData t = provider.GetTestData(
-            "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/dataset/manifest#dawg-dataset-09b");
+            "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-09");
         base.PerformQueryEvaluationTest(t);
     }
     

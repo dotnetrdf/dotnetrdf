@@ -95,20 +95,22 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
             g.LoadFromFile(filePath);
             return g;
         }));
-        nodeFactory.FlushBlankNodeAssignments();
         if (dataInputPath != null)
         {
-            var g = new Graph(){BaseUri = t.Data};
+            nodeFactory.FlushBlankNodeAssignments();
+            var g = new Graph(null, nodeFactory){BaseUri = t.Data};
             g.LoadFromFile(dataInputPath);
             tripleStore.Add(g);
         }
 
         foreach (Uri graphUri in t.GraphData)
         {
-            var g = new Graph(new UriNode(graphUri)) { BaseUri = graphUri };
+            nodeFactory.FlushBlankNodeAssignments();
+            var g = new Graph(new UriNode(graphUri), nodeFactory) { BaseUri = graphUri };
             g.LoadFromFile(t.Manifest.ResolveResourcePath(graphUri));
             tripleStore.Add(g);
         }
+
         var queryParser = new SparqlQueryParser(queryInputPath.Contains("data-r2") ? SparqlQuerySyntax.Sparql_1_0 : SparqlQuerySyntax.Sparql_1_1)
         {
             DefaultBaseUri = t.Manifest.BaseUri
