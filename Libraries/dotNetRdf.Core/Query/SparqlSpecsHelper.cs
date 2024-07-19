@@ -1394,8 +1394,8 @@ namespace VDS.RDF.Query
                     {
                         if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
                         {
-                            // If one is non-numeric then we can't assume non-equality
-                            return false;
+                            // If one is non-numeric then we SHOULD assume non-equality
+                            return true;
                         }
 
                         // Both are Numeric so use Numeric equality

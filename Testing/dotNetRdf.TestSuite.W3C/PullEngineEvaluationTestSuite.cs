@@ -30,13 +30,13 @@ public class PullEngineEvaluationTestSuite(ITestOutputHelper output) : BaseAsync
         // ManifestTestDataProvider provider = Sparql11QueryEvalTests;
         
         ManifestTestData t = provider.GetTestData(
-            "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/graph/manifest#dawg-graph-09");
+            "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-08");
         base.PerformQueryEvaluationTest(t);
     }
     
     protected override async Task<object> ProcessQueryAsync(TripleStore tripleStore, SparqlQuery query)
     {
-            var queryEngine = new PullQueryProcessor(tripleStore);
+            var queryEngine = new PullQueryProcessor(tripleStore) { Timeout = 0 };
             return await queryEngine.ProcessQueryAsync(query);
     }
 }
