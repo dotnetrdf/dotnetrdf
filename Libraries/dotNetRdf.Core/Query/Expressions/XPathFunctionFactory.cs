@@ -153,9 +153,9 @@ namespace VDS.RDF.Query.Expressions
         private string[] AggregateUris = {StringJoin};
 
         /// <summary>
-        /// Argument Type Validator for validating that a Literal either has no datatype or is a String.
+        /// Argument Type Validator for validating that a Literal either has no datatype or is a String or langString.
         /// </summary>
-        public static Func<Uri, bool> AcceptStringArguments = (u => u == null || u.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString));
+        public static Func<Uri, bool> AcceptStringArguments = (u => u == null || u.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString) || u.AbsoluteUri.Equals(RdfSpecsHelper.RdfLangString));
         /// <summary>
         /// Argument Type Validator for validating that a Literal has an Integer datatype.
         /// </summary>

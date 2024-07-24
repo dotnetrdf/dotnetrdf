@@ -1165,52 +1165,42 @@ namespace VDS.RDF.Query
             INode s = strDt.LeftExpression.Accept(this, context, binding);
             INode dt = strDt.RightExpression.Accept(this, context, binding);
 
-            if (s != null)
-            {
-                if (dt != null)
-                {
-                    Uri dtUri;
-                    if (dt.NodeType == NodeType.Uri)
-                    {
-                        dtUri = ((IUriNode)dt).Uri;
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a datatyped literal when the datatype is a non-URI Node");
-                    }
-                    if (s.NodeType == NodeType.Literal)
-                    {
-                        var lit = (ILiteralNode)s;
-                        if (lit.DataType == null)
-                        {
-                            if (lit.Language.Equals(string.Empty))
-                            {
-                                return new StringNode(lit.Value, dtUri);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot create a datatyped literal from a language specified literal");
-                            }
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot create a datatyped literal from a typed literal");
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("Cannot create a datatyped literal from a non-literal Node");
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot create a datatyped literal from a null string");
-                }
-            }
-            else
+            if (s == null)
             {
                 throw new RdfQueryException("Cannot create a datatyped literal from a null string");
             }
+
+            if (dt == null)
+            {
+                throw new RdfQueryException("Cannot create a datatyped literal from a null string");
+            }
+
+            Uri dtUri;
+            if (dt.NodeType == NodeType.Uri)
+            {
+                dtUri = ((IUriNode)dt).Uri;
+            }
+            else
+            {
+                throw new RdfQueryException("Cannot create a datatyped literal when the datatype is a non-URI Node");
+            }
+            if (s.NodeType == NodeType.Literal)
+            {
+                var lit = (ILiteralNode)s;
+                switch (lit.DataType?.AbsoluteUri)
+                {
+                    case null:
+                    case XmlSpecsHelper.XmlSchemaDataTypeString:
+                        return new StringNode(lit.Value, dtUri);
+                    case RdfSpecsHelper.RdfLangString:
+                        throw new RdfQueryException("Cannot create a datatyped literal from a language specified literal");
+                    default:
+                        throw new RdfQueryException("Cannot create a datatyped literal from a typed literal");
+                }
+            }
+
+            throw new RdfQueryException("Cannot create a datatyped literal from a non-literal Node");
+
         }
 
         public virtual IValuedNode ProcessStrLangFunction(StrLangFunction strLang, TContext context, TBinding binding)
