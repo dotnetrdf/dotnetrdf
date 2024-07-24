@@ -23,17 +23,12 @@ public abstract class BaseAsyncSparqlEvaluationTestSuite(ITestOutputHelper outpu
 
     protected abstract Task<object> ProcessQueryAsync(TripleStore tripleStore, SparqlQuery query);
 
-    protected async void PerformQueryEvaluationTest(ManifestTestData t)
+    protected async void PerformTest(ManifestTestData t)
     {
         output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
         await InvokeTestRunnerAsync(t);
     }
-
-    protected void PerformQueryEvaluationTest(Uri testUri)
-    {
-        PerformQueryEvaluationTest(Sparql11QueryEvalTests.GetTestData(testUri));
-    }
-
+    
     private async Task InvokeTestRunnerAsync(ManifestTestData t)
     {
         switch (t.Type.AbsoluteUri)

@@ -584,7 +584,50 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + _output + "\nThe \\u Escape must be followed by four Hex Digits");
                     }
-                    _output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
+
+                    var c = UnicodeSpecsHelper.ConvertToChar(localOutput.ToString());
+                    if (UnicodeSpecsHelper.IsHighSurrogate(c))
+                    {
+                        // Received a high surrogate, so now expect a low surrogate
+                        if (next != '\\')
+                        {
+                            throw Error("Expected a second unicode escape sequence to follow high surrogate.");
+                        }
+
+                        SkipCharacter();
+                        next = Peek();
+                        if (next != 'u')
+                        {
+                            throw Error("Expected a second unicode escape sequence to follow high surrogate.");
+                        }
+
+                        localOutput.Clear();
+                        while (localOutput.Length < 4 && IsHexDigit(next))
+                        {
+                            localOutput.Append(next);
+                            SkipCharacter();
+                            next = Peek();
+                        }
+                        if (localOutput.Length != 4)
+                        {
+                            throw Error(
+                                $"Unexpected Character (Code {(int)next}): {next} encountered while trying to parse Unicode Escape from Content:\n{_output}\nThe \\u Escape must be followed by four Hex Digits");
+                        }
+
+                        var lo = UnicodeSpecsHelper.ConvertToChar(localOutput.ToString());
+                        if (!UnicodeSpecsHelper.IsLowSurrogate(lo))
+                        {
+                            throw Error(
+                                $"Unexpected Character (Code {(int)lo}): {lo} encountered while trying to parse a unicode escape low surrogate.");
+                        }
+
+                        _output.Append(UnicodeSpecsHelper.ConvertToUtf32(c, lo));
+                    }
+                    else
+                    {
+                        _output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
+                    }
+
                     return;
 
                 case 'U':
