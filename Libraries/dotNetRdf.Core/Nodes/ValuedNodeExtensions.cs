@@ -65,15 +65,19 @@ namespace VDS.RDF.Nodes
                         switch (dt)
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
-                                bool bVal;
-                                if (bool.TryParse(lit.Value, out bVal))
+                                if (lit.Value.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+                                    lit.Value.Equals("1", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    return new BooleanNode( bVal);
+                                    return new BooleanNode(true);
                                 }
-                                else
+
+                                if (lit.Value.Equals("false", StringComparison.OrdinalIgnoreCase) ||
+                                    lit.Value.Equals("0", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    return new StringNode( lit.Value, lit.DataType);
+                                    return new BooleanNode(false);
                                 }
+
+                                return new StringNode( lit.Value, lit.DataType);
                             case XmlSpecsHelper.XmlSchemaDataTypeByte:
                                 // xsd:byte actually maps to SignedByte in .Net
                                 sbyte sbVal;

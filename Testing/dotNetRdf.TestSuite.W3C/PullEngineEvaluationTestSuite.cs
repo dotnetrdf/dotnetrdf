@@ -26,11 +26,10 @@ public class PullEngineEvaluationTestSuite(ITestOutputHelper output) : BaseAsync
     [Fact]
     public void RunSingleQueryEvaluation()
     {
-        ManifestTestDataProvider provider = Sparql10QueryEvalTests;
-        // ManifestTestDataProvider provider = Sparql11QueryEvalTests;
-        
-        ManifestTestData t = provider.GetTestData(
-            "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-08");
+        const string testUrl = "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/cast/manifest#cast-int";
+
+        ManifestTestDataProvider provider = testUrl.Contains("data-r2") ? Sparql10QueryEvalTests : Sparql11QueryEvalTests;
+        ManifestTestData t = provider.GetTestData(testUrl);
         base.PerformQueryEvaluationTest(t);
     }
     

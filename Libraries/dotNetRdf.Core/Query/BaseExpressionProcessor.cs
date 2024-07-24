@@ -2533,49 +2533,39 @@ namespace VDS.RDF.Query
                     if (lit.DataType != null)
                     {
                         var dt = lit.DataType.ToString();
-                        if (NumericTypesHelper.IntegerDataTypes.Contains(dt))
+                        switch (dt)
                         {
-                            // Already an integer type so valid as a xsd:decimal
-                            if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var d))
-                            {
-                                // Parsed OK
-                                return new DecimalNode(d);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Invalid lexical form for xsd:decimal");
-                            }
-                        }
-                        else if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
-                        {
-                            // DateTime cast forbidden
-                            throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:decimal");
-                        }
-                        else
-                        {
-                            if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var d))
-                            {
-                                // Parsed OK
-                                return new DecimalNode(d);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
-                            }
+                            case XmlSpecsHelper.XmlSchemaDataTypeBoolean when lit.AsValuedNode() is BooleanNode booleanNode:
+                                return new DecimalNode(booleanNode.AsBoolean() ? 1.0m : 0.0m);
+                            case XmlSpecsHelper.XmlSchemaDataTypeFloat when lit.AsValuedNode() is FloatNode floatNode:
+                                return new DecimalNode(floatNode.AsDecimal());
+                            case XmlSpecsHelper.XmlSchemaDataTypeFloat:
+                                throw new RdfQueryException("Invalid lexical form for xsd:float");
+                            case XmlSpecsHelper.XmlSchemaDataTypeDouble when lit.AsValuedNode() is DoubleNode doubleNode:
+                                return new DecimalNode(doubleNode.AsDecimal());
+                            case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                                // DateTime cast forbidden
+                                throw new RdfQueryException("Cannot cast a xsd:dateTime to a xsd:decimal");
+                            default:
+                                {
+                                    if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var d))
+                                    {
+                                        // Parsed OK
+                                        return new DecimalNode(d);
+                                    }
+
+                                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
+                                }
                         }
                     }
-                    else
+
+                    if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var decimalValue))
                     {
-                        if (decimal.TryParse(lit.Value, NumberStyles.Any ^ NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var d))
-                        {
-                            // Parsed OK
-                            return new DecimalNode(d);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
-                        }
+                        // Parsed OK
+                        return new DecimalNode(decimalValue);
                     }
+
+                    throw new RdfQueryException("Cannot cast the value '" + lit.Value + "' to a xsd:decimal");
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:decimal");
             }
@@ -2604,6 +2594,8 @@ namespace VDS.RDF.Query
                 case NodeType.Literal:
                     if (n is DoubleNode) return n;
                     if (n is FloatNode) return new DoubleNode(n.AsDouble());
+                    if (n is DecimalNode) return new DoubleNode(n.AsDouble());
+                    if (n is BooleanNode) return new DoubleNode(n.AsBoolean() ? 1.0E0 : 0.0E0);
                     // See if the value can be cast
                     var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
@@ -2678,6 +2670,9 @@ namespace VDS.RDF.Query
 
                 case NodeType.Literal:
                     if (n is FloatNode) return n;
+                    if (n is DoubleNode) return new FloatNode(n.AsFloat());
+                    if (n is DecimalNode) return new FloatNode(n.AsFloat());
+                    if (n is BooleanNode) return new FloatNode(n.AsBoolean() ? 1.0f : 0.0f);
                     // See if the value can be cast
                     var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
@@ -2752,6 +2747,9 @@ namespace VDS.RDF.Query
                 case NodeType.Literal:
                     // See if the value can be cast
                     if (n is LongNode) return n;
+                    if (n is DecimalNode || n is DoubleNode || n is FloatNode) return new LongNode(n.AsInteger());
+                    if (n is BooleanNode) return new LongNode(n.AsBoolean() ? 1 : 0);
+                    
                     var lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
