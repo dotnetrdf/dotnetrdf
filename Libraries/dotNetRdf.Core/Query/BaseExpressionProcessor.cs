@@ -1495,6 +1495,7 @@ namespace VDS.RDF.Query
         public virtual IValuedNode ProcessConcatFunction(ConcatFunction concat, TContext context, TBinding binding)
         {
             string langTag = null;
+            var allLangTagged = true;
             var allString = true;
             var allSameTag = true;
 
@@ -1503,32 +1504,29 @@ namespace VDS.RDF.Query
             {
                 INode temp = expr?.Accept(this, context, binding) ?? new StringNode(String.Empty);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument evaluates to a Null");
-
-                switch (temp.NodeType)
+                if (temp is not ILiteralNode lit)
                 {
-                    case NodeType.Literal:
-                        // Check whether the Language Tags and Types are the same
-                        // We need to do this so that we can produce the appropriate output
-                        var lit = (ILiteralNode)temp;
-                        if (langTag == null)
-                        {
-                            langTag = lit.Language;
-                        }
-                        else
-                        {
-                            allSameTag = allSameTag && langTag.Equals(lit.Language);
-                        }
-
-                        // Have to ensure that if Typed is an xsd:string
-                        if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument is a Typed Literal which is not an xsd:string");
-                        allString = allString && lit.DataType != null;
-
-                        output.Append(lit.Value);
-                        break;
-
-                    default:
-                        throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument is not a Literal Node");
+                    throw new RdfQueryException(
+                        "Cannot evaluate the SPARQL CONCAT() function when an argument is not a Literal Node");
                 }
+
+                switch (lit.DataType?.AbsoluteUri)
+                {
+                    case null:
+                    case XmlSpecsHelper.XmlSchemaDataTypeString:
+                        allLangTagged = false;
+                        break;
+                    case RdfSpecsHelper.RdfLangString:
+                        langTag ??= lit.Language;
+                        allSameTag = allSameTag && langTag.Equals(lit.Language);
+                        allString = false;
+                        break;
+                    default:
+                        throw new RdfQueryException(
+                            "Cannot evaluate the SPARQL CONCAT() function when an argument is not a string literal");
+                }
+
+                output.Append(lit.Value);
             }
 
             // Produce the appropriate literal form depending on our inputs
@@ -1536,14 +1534,13 @@ namespace VDS.RDF.Query
             {
                 return new StringNode(output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
-            else if (allSameTag)
+
+            if (allLangTagged && allSameTag)
             {
                 return new StringNode(output.ToString(), langTag);
             }
-            else
-            {
-                return new StringNode(output.ToString());
-            }
+
+            return new StringNode(output.ToString());
         }
 
 
