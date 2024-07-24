@@ -2125,7 +2125,7 @@ namespace VDS.RDF.Query
 
         public virtual IValuedNode ProcessUuidFunction(UUIDFunction uuid, TContext context, TBinding binding)
         {
-            return new UriNode(new Uri("urn:uri:" + Guid.NewGuid()));
+            return new UriNode(new Uri("urn:uuid:" + Guid.NewGuid()));
         }
 
         public virtual IValuedNode ProcessStrUuidFunction(StrUUIDFunction uuid, TContext context, TBinding binding)
