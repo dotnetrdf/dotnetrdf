@@ -1501,7 +1501,7 @@ namespace VDS.RDF.Query
             var output = new StringBuilder();
             foreach (ISparqlExpression expr in concat.Arguments)
             {
-                INode temp = expr.Accept(this, context, binding);
+                INode temp = expr?.Accept(this, context, binding) ?? new StringNode(String.Empty);
                 if (temp == null) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument evaluates to a Null");
 
                 switch (temp.NodeType)
