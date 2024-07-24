@@ -1870,7 +1870,11 @@ namespace VDS.RDF.Query
 
             // Execute
             var lit = (ILiteralNode)textNode;
-            if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
+            if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString) &&
+                !lit.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfLangString))
+            {
+                throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
+            }
             var text = lit.Value;
             var output = Regex.Replace(text, findPattern, replacePattern, options);
 
