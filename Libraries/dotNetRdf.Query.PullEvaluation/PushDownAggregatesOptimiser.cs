@@ -49,6 +49,8 @@ public class PushDownAggregatesOptimiser(string varPrefix) : IAlgebraOptimiser, 
                     return new Select(Optimise(select.InnerAlgebra), select.IsSelectAll, transformedSelectVars);
                 }
                 return select;
+            case OrderBy orderBy:
+                return new OrderBy(orderBy.Transform(this), orderBy.Ordering);
             case Ask ask:
                 return new Ask(Optimise(ask.InnerAlgebra));
         }

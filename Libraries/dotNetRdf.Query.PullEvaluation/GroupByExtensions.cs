@@ -9,7 +9,11 @@ internal static class GroupByExtensions {
         {
             yield return grouping.AssignVariable;
         }
-        foreach (var v in grouping.Variables.Where(x => x != grouping.AssignVariable)) {yield return v;}
+        else
+        {
+            foreach (var v in grouping.Variables.Where(x => x != grouping.AssignVariable)) { yield return v; }
+        }
+
         if (grouping.Child != null)
         {
             foreach (var v in grouping.Child.GroupingKeyNames()) yield return v;

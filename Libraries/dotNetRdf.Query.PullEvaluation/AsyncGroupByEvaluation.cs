@@ -78,10 +78,12 @@ internal class AsyncGroupByEvaluation : IAsyncEvaluation
             INode expressionValue = grouping.Expression.Accept(context.ExpressionProcessor, context, new ExpressionContext(solutionBinding, activeGraph));
             yield return expressionValue;
         }
-
-        foreach (var v in grouping.Variables.Where(x => x != grouping.AssignVariable))
+        else
         {
-            yield return solutionBinding.ContainsVariable(v) ? solutionBinding[v] : null;
+            foreach (var v in grouping.Variables.Where(x => x != grouping.AssignVariable))
+            {
+                yield return solutionBinding.ContainsVariable(v) ? solutionBinding[v] : null;
+            }
         }
 
         if (grouping.Child != null)
