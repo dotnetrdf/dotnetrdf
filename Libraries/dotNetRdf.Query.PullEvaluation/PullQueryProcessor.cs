@@ -141,30 +141,17 @@ public class PullQueryProcessor : ISparqlQueryProcessor
             IAsyncEnumerable<ISet> solutionBindings = Evaluate(algebra, evaluationContext, cts.Token);
             switch (query.QueryType)
             {
-                case SparqlQueryType.Select:
                 case SparqlQueryType.SelectAll:
                 case SparqlQueryType.SelectAllDistinct:
                 case SparqlQueryType.SelectAllReduced:
+                    await ProcessSelectQueryAsync(resultsHandler, query, algebra.Variables.ToList(), solutionBindings);
+                    break;
+                case SparqlQueryType.Select:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    if (resultsHandler == null)
-                    {
-                        // Should already be handled above, but this keeps the compiler happy that we have checked the nullable argument.
-                        throw new ArgumentNullException(nameof(resultsHandler), "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
-                    }
-                    resultsHandler.StartResults();
-                    foreach (var v in algebra.Variables)
-                    {
-                        resultsHandler.HandleVariable(v);
-                    }
-                    var ok = true;
-                    await foreach (ISet? solutionBinding in solutionBindings)
-                    {
-                        ok = resultsHandler.HandleResult(SparqlResultFactory.MakeResult(solutionBinding, algebra.Variables));
-                        if (!ok) break;
-                    }
-                    resultsHandler.EndResults(ok);
-                        break;
+                    await ProcessSelectQueryAsync(resultsHandler, query, query.Variables.Select(v => v.Name).ToList(),
+                        solutionBindings);
+                    break;
                 case SparqlQueryType.Ask:
                     if (resultsHandler == null)
                     {
@@ -253,5 +240,30 @@ public class PullQueryProcessor : ISparqlQueryProcessor
         {
             throw new RdfQueryException("Unexpected error running SPARQL query: " + e.Message, e);
         }
+    }
+
+    private async Task ProcessSelectQueryAsync(ISparqlResultsHandler? resultsHandler, SparqlQuery query, List<string> projectionVars, IAsyncEnumerable<ISet> solutionBindings)
+    {
+        if (resultsHandler == null)
+        {
+            // Should already be handled above, but this keeps the compiler happy that we have checked the nullable argument.
+            throw new ArgumentNullException(nameof(resultsHandler),
+                "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
+        }
+
+        resultsHandler.StartResults();
+        foreach (var v in projectionVars)
+        {
+            resultsHandler.HandleVariable(v);
+        }
+
+        var ok = true;
+        await foreach (ISet? solutionBinding in solutionBindings)
+        {
+            ok = resultsHandler.HandleResult(SparqlResultFactory.MakeResult(solutionBinding, projectionVars));
+            if (!ok) break;
+        }
+
+        resultsHandler.EndResults(ok);
     }
 }
