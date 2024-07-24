@@ -1646,66 +1646,19 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         protected bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
         {
-            if (stringLit.DataType != null)
+            var arg1Datatype = stringLit.DataType?.AbsoluteUri;
+            var arg2Datatype = argLit.DataType?.AbsoluteUri;
+            switch (arg1Datatype)
             {
-                // If 1st argument has a DataType must be an xsd:string or not valid
-                if (!stringLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
-
-                if (argLit.DataType != null)
-                {
-                    // If 2nd argument also has a DataType must also be an xsd:string or not valid
-                    if (!argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
-                    return true;
-                }
-                else if (argLit.Language.Equals(string.Empty))
-                {
-                    // If 2nd argument does not have a DataType but 1st does then 2nd argument must have no
-                    // Language Tag
-                    return true;
-                }
-                else
-                {
-                    // 2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
+                case null:
+                case XmlSpecsHelper.XmlSchemaDataTypeString:
+                    return arg2Datatype == null || arg2Datatype == XmlSpecsHelper.XmlSchemaDataTypeString;
+                case RdfSpecsHelper.RdfLangString:
+                    return arg2Datatype == null || arg2Datatype == XmlSpecsHelper.XmlSchemaDataTypeString ||
+                           (arg2Datatype == RdfSpecsHelper.RdfLangString && stringLit.Language.Equals(argLit.Language));
+                default:
+                    // First argument is not a string literal
                     return false;
-                }
-            }
-            else if (!stringLit.Language.Equals(string.Empty))
-            {
-                if (argLit.DataType != null)
-                {
-                    // If 1st argument has a Language Tag and 2nd Argument is typed then must be xsd:string
-                    // to be valid
-                    return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
-                }
-                else if (argLit.Language.Equals(string.Empty) || stringLit.Language.Equals(argLit.Language))
-                {
-                    // If 1st argument has a Language Tag then 2nd Argument must have same Language Tag 
-                    // or no Language Tag in order to be valid
-                    return true;
-                }
-                else
-                {
-                    // Otherwise Invalid
-                    return false;
-                }
-            }
-            else
-            {
-                if (argLit.DataType != null)
-                {
-                    // If 1st argument is plain literal then 2nd argument must be xsd:string if typed
-                    return argLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
-                }
-                else if (argLit.Language.Equals(string.Empty))
-                {
-                    // If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
-                    return true;
-                }
-                else
-                {
-                    // If 1st argument is plain literal and 2nd has language tag then invalid
-                    return false;
-                }
             }
         }
 
@@ -1781,36 +1734,28 @@ namespace VDS.RDF.Query
             TBinding binding, Func<ILiteralNode, IValuedNode> valueFunc)
         {
             IValuedNode temp = function.InnerExpression.Accept(this, context, binding);
-            if (temp != null)
-            {
-                if (temp.NodeType == NodeType.Literal)
-                {
-                    var lit = (ILiteralNode)temp;
-                    if (lit.DataType != null)
-                    {
-                        if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            return valueFunc(lit);
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Unable to evaluate an XPath String function on a non-string typed Literal");
-                        }
-                    }
-                    else
-                    {
-                        return valueFunc(lit);
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
-                }
-            }
-            else
+            if (temp == null)
             {
                 throw new RdfQueryException("Unable to evaluate an XPath String function on a null input");
             }
+
+            if (temp.NodeType != NodeType.Literal)
+            {
+                throw new RdfQueryException("Unable to evaluate an XPath String function on a non-Literal input");
+            }
+
+            var lit = (ILiteralNode)temp;
+            if (lit.DataType == null)
+            {
+                return valueFunc(lit);
+            }
+
+            return lit.DataType.AbsoluteUri switch
+            {
+                XmlSpecsHelper.XmlSchemaDataTypeString or RdfSpecsHelper.RdfLangString => valueFunc(lit),
+                _ => throw new RdfQueryException(
+                    "Unable to evaluate an XPath String function on a non-string typed Literal")
+            };
         }
         public virtual IValuedNode ProcessEncodeForUriFunction(EncodeForUriFunction encodeForUri, TContext context, TBinding binding)
         {
