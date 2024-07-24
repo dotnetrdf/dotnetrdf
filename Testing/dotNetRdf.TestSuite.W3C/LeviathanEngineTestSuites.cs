@@ -21,7 +21,7 @@ namespace VDS.RDF.TestSuite.W3C
 
         [Theory]
         [MemberData(nameof(Sparql10QueryEvalTests))]
-        public void RunDawgEvaluationTest(ManifestTestData t)
+        public void RunSparql10EvaluationTests(ManifestTestData t)
         {
             output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
             InvokeTestRunner(t);
@@ -29,7 +29,7 @@ namespace VDS.RDF.TestSuite.W3C
 
         [Theory]
         [MemberData(nameof(Sparql11QueryEvalTests))]
-        public void RunQueryEvaluationTest(ManifestTestData t)
+        public void RunSparql11EvaluationTests(ManifestTestData t)
         {
             output.WriteLine($"{t.Id}: {t.Name} is a {t.Type}");
             InvokeTestRunner(t);
