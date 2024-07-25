@@ -95,42 +95,30 @@ internal class AsyncRepeatablePathEvaluation(
     {
         if (maxIterations > 0 && step > maxIterations) yield break;
         stepStart = EvaluatePatternItem(stepStart, input);
+        if (stepStart is NodeMatchPattern nmp)
+        {
+            lock (visited)
+            {
+                if (!visited.Add(nmp.Node)) yield break;
+            }
+        }
         _messages.Add($"EvaluateStep {step} with start {stepStart} with visited {String.Join(", ", visited)}");
         await foreach (PathResult result in stepEvaluation.Evaluate(stepStart, context, input, activeGraph,
                            cancellationToken))
         {
-            if (!visited.Contains(result.EndNode))
+            if (step >= minIterations)
             {
-                if (step >= minIterations)
+                var output = new Set();
+                if (pathEnd.Accepts(context, result.EndNode, output))
                 {
-                    var output = new Set();
-                    if (pathEnd.Accepts(context, result.EndNode, output))
-                    {
-                        _messages.Add($"Yield result {result.StartNode}, {result.EndNode}");
-                        yield return result;
-                    }
+                    _messages.Add($"Yield result {result.StartNode}, {result.EndNode}");
+                    yield return result;
                 }
-
-                // Only include visited node on repetition
-                /*
-                HashSet<INode> nextVisited =
-                [
-                    ..visited,
-                    result.EndNode
-                ];
-                await foreach (PathResult nextStepResult in EvaluateStep(context, input, activeGraph, cancellationToken, step + 1,
-                                   new NodeMatchPattern(result.EndNode), nextVisited))
-                {
-                    yield return nextStepResult;
-                }
-                */
-                // Include visited node on all subsequent evaluation steps
-                visited.Add(result.EndNode);
-                await foreach (PathResult nextStepResult in EvaluateStep(context, input, activeGraph, cancellationToken,
-                                   step + 1, new NodeMatchPattern(result.EndNode), visited))
-                {
-                    yield return nextStepResult;
-                }
+            }
+            await foreach (PathResult nextStepResult in EvaluateStep(context, input, activeGraph, cancellationToken,
+                               step + 1, new NodeMatchPattern(result.EndNode), visited))
+            {
+                yield return nextStepResult;
             }
         }
     }
