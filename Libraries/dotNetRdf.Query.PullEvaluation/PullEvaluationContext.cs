@@ -133,6 +133,13 @@ internal class PullEvaluationContext : IPatternEvaluationContext
         return tripleCollection[(subj, pred, obj)];
     }
 
+    internal IEnumerable<INode> GetNodes(PatternItem nodePattern, IRefNode? activeGraph)
+    {
+        BaseTripleCollection tripleCollection = activeGraph != null ? _namedGraphs[activeGraph] : _defaultGraph;
+        return tripleCollection.SubjectNodes.Where(n => nodePattern.Accepts(this, n, new Set()))
+            .Union(tripleCollection.ObjectNodes.Where(n => nodePattern.Accepts(this, n, new Set())));
+    }
+
     private IEnumerable<ITripleNode> GetQuotedTriples(QuotedTriplePattern qtp, IRefNode? activeGraph)
     {
         TriplePattern triplePattern = qtp.QuotedTriple;

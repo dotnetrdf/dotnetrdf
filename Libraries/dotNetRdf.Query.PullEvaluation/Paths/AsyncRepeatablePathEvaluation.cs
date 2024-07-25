@@ -13,51 +13,28 @@ internal class AsyncRepeatablePathEvaluation(
     IAsyncPathEvaluation stepEvaluation,
     PatternItem pathEnd) : IAsyncPathEvaluation
 {
-    private List<string> _messages = new();
     public async IAsyncEnumerable<PathResult> Evaluate(PatternItem pathStart, PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        HashSet<INode> visited = new();
-        if (minIterations == 0)
+        if (TryEvaluatePattern(pathStart, input, out INode? startNode))
         {
-            var haveStartTerm = TryEvaluatePattern(pathStart, input, out INode? startTerm);
-            var haveEndTerm = TryEvaluatePattern(pathEnd, input, out INode? endTerm);
-            if (haveStartTerm && haveEndTerm && startTerm != null && startTerm.Equals(endTerm))
+            await foreach (PathResult stepResult in EvaluateStep(context, input, activeGraph, cancellationToken, 
+                               startNode,  0, new NodeMatchPattern(startNode), new HashSet<INode>()))
             {
-                visited.Add(startTerm);
-                yield return new PathResult(startTerm, startTerm);
-            } else if (haveStartTerm && startTerm != null && pathEnd is VariablePattern)
-            {
-                visited.Add(startTerm);
-                yield return new PathResult(startTerm, startTerm);
+                yield return stepResult;
             }
-            else if (haveEndTerm && endTerm != null && pathStart is VariablePattern)
+        }
+        else
+        {
+            foreach (INode node in context.GetNodes(pathStart, activeGraph))
             {
-                visited.Add(endTerm);
-                yield return new PathResult(endTerm, endTerm);
-            }
-            else if (!haveStartTerm && !haveEndTerm && pathStart is VariablePattern && pathEnd is VariablePattern)
-            {
-                // Every node in the graph is a match for iteration 0!
-                foreach (var startNode in context.Data.Graphs.SelectMany(g => g.Nodes).Distinct())
+                await foreach (PathResult stepResult in EvaluateStep(context, input, activeGraph, cancellationToken, node, 0,
+                                   new NodeMatchPattern(node), new HashSet<INode>()))
                 {
-                    yield return new PathResult(startNode, startNode);
-                    await foreach (PathResult stepResult in EvaluateStep(context, input, activeGraph, cancellationToken,
-                                       1, new NodeMatchPattern(startNode), new HashSet<INode> { startNode }))
-                    {
-                        yield return stepResult;
-                    }
+                    yield return stepResult;
                 }
-                yield break;
             }
         }
-
-        await foreach (PathResult stepResult in EvaluateStep(context, input, activeGraph, cancellationToken, 1, pathStart, visited))
-        {
-            yield return stepResult;
-        }
-
-        Console.WriteLine(_messages);
     }
     
     private static bool TryEvaluatePattern(PatternItem patternItem, ISet? input, [NotNullWhen(returnValue:true)] out INode? node)
@@ -91,7 +68,7 @@ internal class AsyncRepeatablePathEvaluation(
     }
 
     private async IAsyncEnumerable<PathResult> EvaluateStep(PullEvaluationContext context, ISet? input, IRefNode? activeGraph,
-        [EnumeratorCancellation] CancellationToken cancellationToken, int step, PatternItem stepStart, HashSet<INode> visited)
+        [EnumeratorCancellation] CancellationToken cancellationToken, INode pathStart, int step, PatternItem stepStart, HashSet<INode> visited)
     {
         if (maxIterations > 0 && step > maxIterations) yield break;
         stepStart = EvaluatePatternItem(stepStart, input);
@@ -100,23 +77,18 @@ internal class AsyncRepeatablePathEvaluation(
             lock (visited)
             {
                 if (!visited.Add(nmp.Node)) yield break;
+                if (step >= minIterations)
+                {
+                    yield return new PathResult(pathStart, nmp.Node);
+                }
             }
         }
-        _messages.Add($"EvaluateStep {step} with start {stepStart} with visited {String.Join(", ", visited)}");
+
         await foreach (PathResult result in stepEvaluation.Evaluate(stepStart, context, input, activeGraph,
                            cancellationToken))
         {
-            if (step >= minIterations)
-            {
-                var output = new Set();
-                if (pathEnd.Accepts(context, result.EndNode, output))
-                {
-                    _messages.Add($"Yield result {result.StartNode}, {result.EndNode}");
-                    yield return result;
-                }
-            }
             await foreach (PathResult nextStepResult in EvaluateStep(context, input, activeGraph, cancellationToken,
-                               step + 1, new NodeMatchPattern(result.EndNode), visited))
+                               pathStart, step + 1, new NodeMatchPattern(result.EndNode), visited))
             {
                 yield return nextStepResult;
             }

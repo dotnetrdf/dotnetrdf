@@ -11,7 +11,7 @@ internal class AsyncGraphEvaluation : IAsyncEvaluation
 
     public AsyncGraphEvaluation(IRefNode graphName, IAsyncEvaluation inner)
     {
-        _graphName = _graphName;
+        _graphName = graphName;
         _inner = inner;
     }
 
