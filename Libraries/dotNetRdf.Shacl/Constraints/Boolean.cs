@@ -41,7 +41,8 @@ namespace VDS.RDF.Shacl.Constraints
         {
             get
             {
-                return this.AsValuedNode().AsBoolean();
+                return this.AsValuedNode().AsBoolean() 
+                       && ((ILiteralNode)this).Value.Equals("true"); // SPARQL allows "1" to be interpreted as True, but SHACL does not (see test core/property/uniqueLang-002.ttl)
             }
         }
     }
