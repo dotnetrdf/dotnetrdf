@@ -171,7 +171,8 @@ namespace VDS.RDF.Parsing
 
                             if (lastItem != LastPathItemType.Predicate && lastItem != LastPathItemType.Modifier)
                             {
-                                if (lastItem == LastPathItemType.Sequencer && next.TokenType == Token.HAT && (lastSequencer == Token.DIVIDE || lastSequencer == Token.BITWISEOR))
+                                if ((lastItem == LastPathItemType.Sequencer && next.TokenType == Token.HAT && (lastSequencer == Token.DIVIDE || lastSequencer == Token.BITWISEOR)) ||
+                                    lastItem == LastPathItemType.Negation)
                                 {
                                     // / ^ or | ^ is a valid sequencing
                                 }
