@@ -732,7 +732,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw Error("Encountered a % character in a Local Name but the required two hex digits were not present after it, please use \\% if you wish to represent the percent character itself");
             }
-            if (localOutput.ToString().IsHexEncoding(0))
+            if (!localOutput.ToString().IsHexEncoding(0))
             {
                 throw Error("Invalid % encoded character encountered");
             }
