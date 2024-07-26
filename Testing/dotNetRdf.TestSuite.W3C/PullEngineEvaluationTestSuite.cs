@@ -26,7 +26,7 @@ public class PullEngineEvaluationTestSuite(ITestOutputHelper output) : BaseAsync
     [Fact]
     public void RunSingleQueryEvaluation()
     {
-        const string testUrl = "http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#test_53";
+        const string testUrl = "http://www.w3.org/2001/sw/DataAccess/tests/data-r2/open-world/manifest#open-eq-10";
 
         ManifestTestDataProvider provider = testUrl.Contains("data-r2") ? Sparql10QueryEvalTests : Sparql11QueryEvalTests;
         ManifestTestData t = provider.GetTestData(testUrl);

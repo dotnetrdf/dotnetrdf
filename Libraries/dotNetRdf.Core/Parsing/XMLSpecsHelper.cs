@@ -400,7 +400,8 @@ namespace VDS.RDF.Parsing
                     {
                         if (!l.Language.Equals(string.Empty))
                         {
-                            throw new RdfException("Literals with Language Specifiers do not have a Data Type");
+                            return RdfSpecsHelper.RdfLangString;
+                            // throw new RdfException("Literals with Language Specifiers do not have a Data Type");
                         }
                         else
                         {

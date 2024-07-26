@@ -1370,19 +1370,20 @@ namespace VDS.RDF.Query
                     return !x.Equals(y);
                 }
 
+                if (xtype == RdfSpecsHelper.RdfLangString || ytype == RdfSpecsHelper.RdfLangString)
+                {
+                    if (xtype == ytype)
+                    {
+                        // use direct literal comparison for language tagged literals
+                        return !x.Equals(y);
+                    }
+                    // otherwise a langString cannot equal a non-langString literal
+                    return true;
+                }
                 if (xtype.Equals(string.Empty) || ytype.Equals(string.Empty))
                 {
                     // One/both has an unknown type
-                    if (x.Equals(y))
-                    {
-                        // If RDF Term equality returns true then we return false
-                        return false;
-                    }
-                    else
-                    {
-                        // If RDF Term equality returns false then we error
-                        throw new RdfQueryException("Unable to determine inequality since one/both arguments has an Unknown Type");
-                    }
+                    return false;
                 }
                 else
                 {
@@ -1392,6 +1393,15 @@ namespace VDS.RDF.Query
                     var numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
                     if (numtype != SparqlNumericType.NaN)
                     {
+                        if ((xnumtype != SparqlNumericType.NaN &&
+                             x.AsValuedNode().NumericType == SparqlNumericType.NaN) ||
+                            (ynumtype != SparqlNumericType.NaN &&
+                             y.AsValuedNode().NumericType == SparqlNumericType.NaN))
+                        {
+                            // A node with a numeric datatype has a value that cannot be parsed as such. So comparison must fail.
+                            return false;
+                        }
+
                         if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
                         {
                             // If one is non-numeric then we SHOULD assume non-equality
